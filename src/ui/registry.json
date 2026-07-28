@@ -1158,7 +1158,6 @@
       "title": "Sonner",
       "description": "A shadcn-styled Sonner component for Foldkit.",
       "dependencies": [
-        "@foldkit/ui@^0.121.0",
         "effect@4.0.0-beta.88",
         "foldkit@^0.121.0"
       ],

@@ -14,11 +14,6 @@
       "component": "drawer",
       "priority": "medium",
       "gap": "Currently supports a bottom drawer without drag gestures."
-    },
-    {
-      "component": "sonner",
-      "priority": "medium",
-      "gap": "Toast actions currently dismiss instead of dispatching arbitrary parent actions."
     }
   ],
   "missing": [
