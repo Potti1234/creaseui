@@ -1,6 +1,17 @@
+import { Schema as S } from 'effect'
 import { type Html, html } from "foldkit/html";
+import { m } from 'foldkit/message'
 
 import { cn } from "@/lib/utils";
+
+export const Model = S.Struct({ status: S.Literals(['loading', 'loaded', 'error']) })
+export type Model = typeof Model.Type
+export const Loaded = m('Loaded')
+export const Failed = m('Failed')
+export const Message = S.Union([Loaded, Failed])
+export type Message = typeof Message.Type
+export const init = (): Model => ({ status: 'loading' })
+export const update = (_model: Model, message: Message): Model => ({ status: message._tag === 'Loaded' ? 'loaded' : 'error' })
 
 export type AvatarProps = Readonly<{
   size?: "default" | "sm" | "lg";
@@ -30,26 +41,34 @@ export type AvatarImageProps = Readonly<{
   src: string;
   alt: string;
   class?: string;
+  model?: Model
 }>;
 
-export const avatarImage = <Msg>(props: AvatarImageProps): Html => {
+export const avatarImage = <Msg>(props: AvatarImageProps & Readonly<{ toParentMessage?: (message: Message) => Msg }>): Html => {
   const h = html<Msg>();
+
+  if (props.model?.status === 'error') return h.empty
 
   return h.img([
     h.DataAttribute("slot", "avatar-image"),
     h.Src(props.src),
     h.Alt(props.alt),
-    h.Class(cn("relative z-10 aspect-square size-full", props.class)),
+    ...(props.toParentMessage === undefined ? [] : [h.OnLoad(props.toParentMessage(Loaded())), h.OnError(props.toParentMessage(Failed()))]),
+    ...(props.model?.status === 'loaded' ? [] : [h.DataAttribute('loading', '')]),
+    h.Class(cn("relative z-10 aspect-square size-full data-[loading]:opacity-0", props.class)),
   ]);
 };
 
 export type AvatarFallbackProps = Readonly<{
   class?: string;
   children: ReadonlyArray<Html | string>;
+  model?: Model
 }>;
 
 export const avatarFallback = <Msg>(props: AvatarFallbackProps): Html => {
   const h = html<Msg>();
+
+  if (props.model?.status === 'loaded') return h.empty
 
   return h.div(
     [
@@ -64,7 +83,3 @@ export const avatarFallback = <Msg>(props: AvatarFallbackProps): Html => {
     [...props.children],
   );
 };
-
-// PORT NOTE: Radix tracks image loading and swaps in the fallback. Without that
-// primitive, the fallback is layered behind the image so it remains visible
-// until the image paints and whenever the image source cannot render.

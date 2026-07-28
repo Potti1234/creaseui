@@ -49,6 +49,8 @@ export type ButtonProps<Msg> = Readonly<{
   isDisabled?: boolean
   type?: 'button' | 'submit' | 'reset'
   class?: string
+  slot?: string
+  dataSize?: string
 }>
 
 export const button = <Msg>(props: ButtonProps<Msg>): Html => {
@@ -62,6 +64,8 @@ export const button = <Msg>(props: ButtonProps<Msg>): Html => {
       h.button(
         [
           ...buttonAttributes,
+          ...(props.slot === undefined ? [] : [h.DataAttribute('slot', props.slot)]),
+          ...(props.dataSize === undefined ? [] : [h.DataAttribute('size', props.dataSize)]),
           h.Class(
             cn(
               buttonVariants({

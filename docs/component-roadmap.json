@@ -6,11 +6,6 @@
   },
   "fidelity": [
     {
-      "component": "avatar",
-      "priority": "high",
-      "gap": "Fallback layering does not yet follow image load state."
-    },
-    {
       "component": "dropdown-menu",
       "priority": "high",
       "gap": "Submenus, checkbox items, and radio items are not implemented."
@@ -29,11 +24,6 @@
       "component": "drawer",
       "priority": "medium",
       "gap": "Currently supports a bottom drawer without drag gestures."
-    },
-    {
-      "component": "input-group",
-      "priority": "medium",
-      "gap": "Click-to-focus and several shadcn data attributes need parity."
     },
     {
       "component": "sonner",

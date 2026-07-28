@@ -59,25 +59,27 @@ export type InputGroupAddonVariants = VariantProps<
   typeof inputGroupAddonVariants
 >
 
-export type InputGroupAddonProps = SlotProps &
+export type InputGroupAddonProps<Msg = never> = SlotProps &
   Readonly<{
     align?: InputGroupAddonVariants['align']
+    focusControlId?: string
+    onFocus?: Msg
   }>
 
 export const inputGroupAddon = <Msg>(
-  props: InputGroupAddonProps,
+  props: InputGroupAddonProps<Msg>,
 ): Html => {
   const h = html<Msg>()
   const align = props.align ?? 'inline-start'
 
-  // PORT NOTE: foldkit click handlers emit application messages and do not
-  // expose the DOM event, so the React addon's click-to-focus convenience
-  // cannot be reproduced without adding app-level state or browser effects.
   return h.div(
     [
       h.Role('group'),
       h.DataAttribute('slot', 'input-group-addon'),
       h.DataAttribute('align', align),
+      ...(props.focusControlId === undefined || props.onFocus === undefined
+        ? []
+        : [h.OnClickFocus(`#${props.focusControlId}`, props.onFocus)]),
       h.Class(cn(inputGroupAddonVariants({ align }), props.class)),
     ],
     [...props.children],
@@ -118,13 +120,13 @@ export type InputGroupButtonProps<Msg> = Omit<
 export const inputGroupButton = <Msg>(
   props: InputGroupButtonProps<Msg>,
 ): Html => {
-  // PORT NOTE: src/ui/button.ts does not expose arbitrary data attributes, so
-  // the source component's informational data-size attribute is omitted.
   return button<Msg>({
     children: props.children,
     variant: props.variant ?? 'ghost',
     type: props.type ?? 'button',
     size: 'default',
+    slot: 'input-group-button',
+    dataSize: props.size ?? 'xs',
     ...(props.onClick === undefined ? {} : { onClick: props.onClick }),
     ...(props.isDisabled === undefined
       ? {}
@@ -141,6 +143,7 @@ export const inputGroupText = <Msg>(props: SlotProps): Html => {
 
   return h.span(
     [
+      h.DataAttribute('slot', 'input-group-text'),
       h.Class(
         cn(
           "flex items-center gap-2 text-sm text-muted-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
