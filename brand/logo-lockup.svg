@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 128" width="420" height="128">
+  <!-- Horizontal lockup: mark + typeset wordmark. The wordmark is Inter 600;
+       when Inter isn't available the fallback keeps proportions acceptable.
+       For production, convert the text to outlines. -->
+  <defs>
+    <clipPath id="rounded">
+      <rect x="0" y="0" width="128" height="128" rx="20" />
+    </clipPath>
+  </defs>
+  <g clip-path="url(#rounded)">
+    <path d="M0 0 H64 L128 64 V128 H0 Z" fill="oklch(0.155 0.005 270)" />
+    <path d="M64 0 L128 64 L64 64 Z" fill="oklch(0.42 0.005 270)" />
+    <path d="M64 0 L128 64" stroke="oklch(0.985 0.002 95)" stroke-opacity="0.25" stroke-width="2.5" />
+  </g>
+  <text x="156" y="83"
+    font-family="Inter, 'Inter Display', ui-sans-serif, system-ui, sans-serif"
+    font-size="56" font-weight="600" letter-spacing="-1.5"
+    fill="oklch(0.155 0.005 270)">crease<tspan fill="oklch(0.62 0.15 145)">/</tspan>ui</text>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Accent colorway: ink sheet, fold-green flap. Use sparingly. -->
+  <defs>
+    <clipPath id="rounded">
+      <rect x="0" y="0" width="128" height="128" rx="20" />
+    </clipPath>
+  </defs>
+  <g clip-path="url(#rounded)">
+    <path d="M0 0 H64 L128 64 V128 H0 Z" fill="oklch(0.155 0.005 270)" />
+    <path d="M64 0 L128 64 L64 64 Z" fill="oklch(0.62 0.15 145)" />
+    <path d="M64 0 L128 64" stroke="oklch(0.985 0.002 95)" stroke-opacity="0.25" stroke-width="2.5" />
+  </g>
+</svg>
