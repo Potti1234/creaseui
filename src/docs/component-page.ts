@@ -3,7 +3,7 @@ import { type Html, html } from 'foldkit/html'
 import { cn } from '@/lib/utils'
 import { componentDocsPath } from '@/route'
 
-const COMPONENTS = [
+export const COMPONENTS = [
   'Accordion',
   'Alert',
   'Alert Dialog',
@@ -56,6 +56,9 @@ const COMPONENTS = [
 ] as const
 
 const toSlug = (name: string): string => name.toLowerCase().replaceAll(' ', '-')
+
+export const componentTitle = (slug: string): string | undefined =>
+  COMPONENTS.find(name => toSlug(name) === slug)
 
 export type ExampleConfig = Readonly<{
   title: string

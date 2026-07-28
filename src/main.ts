@@ -19,6 +19,7 @@ import * as ChartsRadar from '@/demo/charts/radar'
 import * as ChartsRadial from '@/demo/charts/radial'
 import * as ChartsTooltip from '@/demo/charts/tooltip'
 import * as AccordionDocs from '@/docs/components/accordion'
+import * as ComponentCatalog from '@/docs/components/catalog'
 import {
   AppRoute,
   type ChartSection,
@@ -558,10 +559,12 @@ const pageView = (model: Model): Html => {
                   GotAccordionDocsMessage({ message }),
               }),
             )
-          : keyed(
-              'page-not-found',
-              notFoundView(`/docs/components/${component}`),
-            ),
+          : ComponentCatalog.hasCatalogPage(component)
+            ? keyed(`page-docs-${component}`, ComponentCatalog.view(component))
+            : keyed(
+                'page-not-found',
+                notFoundView(`/docs/components/${component}`),
+              ),
       NotFound: ({ path }) => keyed('page-not-found', notFoundView(path)),
     }),
   )
@@ -573,8 +576,8 @@ export const view = (model: Model): Document => {
   // so they render without the global header.
   const isFullPage = model.route._tag === 'Block'
   const title =
-    model.route._tag === 'ComponentDocs' && model.route.component === 'accordion'
-      ? 'Accordion - crease/ui'
+    model.route._tag === 'ComponentDocs'
+      ? `${ComponentCatalog.titleFor(model.route.component) ?? 'Not Found'} - crease/ui`
       : 'crease/ui'
 
   return {
