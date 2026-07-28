@@ -1,0 +1,59 @@
+{
+  "$schema": "./component-roadmap.schema.json",
+  "documentation": {
+    "complete": ["accordion"],
+    "next": ["button", "dialog", "input", "select", "dropdown-menu"]
+  },
+  "fidelity": [
+    {
+      "component": "avatar",
+      "priority": "high",
+      "gap": "Fallback layering does not yet follow image load state."
+    },
+    {
+      "component": "dropdown-menu",
+      "priority": "high",
+      "gap": "Submenus, checkbox items, and radio items are not implemented."
+    },
+    {
+      "component": "hover-card",
+      "priority": "high",
+      "gap": "Uses Tooltip as an approximation and needs richer focus behavior."
+    },
+    {
+      "component": "sidebar",
+      "priority": "high",
+      "gap": "Mobile sheet, keyboard shortcut, persistence, and collapsed tooltips are incomplete."
+    },
+    {
+      "component": "drawer",
+      "priority": "medium",
+      "gap": "Currently supports a bottom drawer without drag gestures."
+    },
+    {
+      "component": "input-group",
+      "priority": "medium",
+      "gap": "Click-to-focus and several shadcn data attributes need parity."
+    },
+    {
+      "component": "sonner",
+      "priority": "medium",
+      "gap": "Toast actions currently dismiss instead of dispatching arbitrary parent actions."
+    }
+  ],
+  "missing": [
+    { "component": "form", "priority": "high", "strategy": "Foldkit field validation" },
+    { "component": "input-otp", "priority": "high", "strategy": "New focused input model" },
+    { "component": "context-menu", "priority": "high", "strategy": "Foldkit Menu positioning variant" },
+    { "component": "menubar", "priority": "high", "strategy": "Coordinated Foldkit Menu models" },
+    { "component": "navigation-menu", "priority": "high", "strategy": "New navigation disclosure behavior" },
+    { "component": "carousel", "priority": "medium", "strategy": "Dedicated subscription-driven model" },
+    { "component": "resizable", "priority": "medium", "strategy": "Pointer and keyboard resize model" },
+    { "component": "attachment", "priority": "medium", "strategy": "Foldkit file input composition" },
+    { "component": "bubble", "priority": "medium", "strategy": "Stateless presentation helper" },
+    { "component": "direction", "priority": "medium", "strategy": "Document direction helper" },
+    { "component": "marker", "priority": "medium", "strategy": "Stateless presentation helper" },
+    { "component": "message", "priority": "medium", "strategy": "Stateless composition system" },
+    { "component": "message-scroller", "priority": "medium", "strategy": "Subscription-driven scrolling" }
+  ]
+}

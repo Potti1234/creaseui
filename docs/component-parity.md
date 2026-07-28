@@ -55,3 +55,8 @@ Accessibility behavior should come from Foldkit UI's primitives wherever one is
 available. Visual resemblance alone is not sufficient for declaring a component
 complete; keyboard behavior, focus management, labels, and relevant ARIA state
 must also be verified.
+
+The actionable, machine-readable backlog lives in
+[`component-roadmap.json`](component-roadmap.json). A component documentation
+page is only marked complete after its live examples pass browser interaction,
+typechecking, production build, and registry validation.
