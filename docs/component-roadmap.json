@@ -1,8 +1,8 @@
 {
   "$schema": "./component-roadmap.schema.json",
   "documentation": {
-    "complete": ["accordion"],
-    "next": ["button", "dialog", "input", "select", "dropdown-menu"]
+    "complete": ["all catalog components"],
+    "next": []
   },
   "fidelity": [
     {

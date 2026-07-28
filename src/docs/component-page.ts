@@ -90,10 +90,10 @@ export const codeBlock = <Msg>(code: string): Html => {
   return h.pre(
     [
       h.Class(
-        'overflow-x-auto rounded-lg border bg-muted/35 p-4 font-mono text-[13px] leading-6 text-foreground',
+        'min-w-0 max-w-full overflow-x-auto rounded-lg border bg-muted/35 p-4 font-mono text-[13px] leading-6 text-foreground',
       ),
     ],
-    [h.code([], [code])],
+    [h.code([h.Class('block w-max min-w-full')], [code])],
   )
 }
 
@@ -143,6 +143,8 @@ export type ComponentPageConfig = Readonly<{
   usage: string
   examples: ReadonlyArray<Html>
   apiHref: string
+  composition?: string
+  apiDescription?: string
 }>
 
 export const componentPage = <Msg>(config: ComponentPageConfig): Html => {
@@ -232,6 +234,17 @@ export const componentPage = <Msg>(config: ComponentPageConfig): Html => {
                   codeBlock<Msg>(config.usage),
                 ],
               ),
+              ...(config.composition === undefined
+                ? []
+                : [
+                    h.section(
+                      [h.Id('composition'), h.Class('scroll-mt-24 space-y-4')],
+                      [
+                        h.h2([h.Class('text-xl font-semibold tracking-tight')], ['Composition']),
+                        codeBlock<Msg>(config.composition),
+                      ],
+                    ),
+                  ]),
               ...config.examples,
               h.section(
                 [h.Id('api-reference'), h.Class('scroll-mt-24 space-y-3 border-t pt-10')],
@@ -240,7 +253,9 @@ export const componentPage = <Msg>(config: ComponentPageConfig): Html => {
                   h.p(
                     [h.Class('text-sm leading-6 text-muted-foreground')],
                     [
-                      'Behavior, keyboard interaction, and accessibility are provided by Foldkit UI’s Disclosure primitive. ',
+                      config.apiDescription ??
+                        'Behavior, keyboard interaction, and accessibility follow Foldkit conventions. ',
+                      ' ',
                       h.a(
                         [
                           h.Href(config.apiHref),

@@ -325,7 +325,7 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
 
 // VIEW
 
-const headerLink = (href: string, label: string, isActive: boolean): Html => {
+const headerLink = (href: string, label: string, isActive: boolean, className?: string): Html => {
   const h = html<Message>()
 
   return h.a(
@@ -335,6 +335,7 @@ const headerLink = (href: string, label: string, isActive: boolean): Html => {
         cn(
           'text-sm font-medium transition-colors hover:text-foreground',
           isActive ? 'text-foreground' : 'text-muted-foreground',
+          className,
         ),
       ),
     ],
@@ -352,7 +353,7 @@ const header = (model: Model): Html => {
       h.div(
         [
           h.Class(
-            'mx-auto flex h-14 w-full max-w-[1400px] items-center gap-6 px-4 md:px-8',
+            'mx-auto flex h-14 w-full max-w-[1400px] items-center gap-4 px-4 md:gap-6 md:px-8',
           ),
         ],
         [
@@ -365,12 +366,13 @@ const header = (model: Model): Html => {
             'Docs',
             model.route._tag === 'ComponentDocs',
           ),
-          headerLink('/create', 'Create', model.route._tag === 'Create'),
-          headerLink(chartsPath('area'), 'Charts', isCharts),
+          headerLink('/create', 'Create', model.route._tag === 'Create', 'hidden sm:inline-flex'),
+          headerLink(chartsPath('area'), 'Charts', isCharts, 'hidden sm:inline-flex'),
           headerLink(
             '/blocks/sidebar',
             'Blocks',
             model.route._tag === 'BlocksIndex',
+            'hidden sm:inline-flex',
           ),
           h.button(
             [
