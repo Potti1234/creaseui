@@ -40,13 +40,10 @@ const ROOT_CLASS =
   'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground'
 
 const INPUT_WRAPPER_CLASS =
-  'relative flex h-9 items-center gap-2 border-b px-3 data-[size=sm]:h-8'
+  "relative flex h-9 items-center gap-2 border-b px-3 before:shrink-0 before:text-sm before:text-muted-foreground before:content-['⌕'] data-[size=sm]:h-8"
 
 const INPUT_CLASS =
   'flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden placeholder:text-muted-foreground data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50'
-
-const SEARCH_BUTTON_CLASS =
-  'order-first shrink-0 opacity-50 outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px]'
 
 const CONTENT_CLASS =
   'z-50 w-(--button-width) min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md transition duration-200 ease-out data-[closed]:opacity-0 data-[closed]:scale-95'
@@ -141,9 +138,6 @@ export const combobox = <Item, Value extends string, Msg>(
         hc.DataAttribute('slot', 'command-input-wrapper'),
         hc.DataAttribute('size', props.size ?? 'default'),
       ]),
-      buttonContent: Icon.search<Message>({ class: 'size-4' }),
-      buttonClassName: SEARCH_BUTTON_CLASS,
-      buttonAttributes: childAttributes([hc.AriaLabel('Toggle options')]),
       openOnFocus: true,
       itemsClassName: CONTENT_CLASS,
       itemsAttributes: childAttributes([
