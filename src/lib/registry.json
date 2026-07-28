@@ -1,0 +1,40 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "utils",
+      "type": "registry:lib",
+      "title": "Class Name Utility",
+      "description": "The clsx and tailwind-merge class name helper used by Crease UI.",
+      "dependencies": ["clsx@^2.1.1", "tailwind-merge@^3.3.1"],
+      "files": [
+        {
+          "path": "utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        }
+      ]
+    },
+    {
+      "name": "icons",
+      "type": "registry:lib",
+      "title": "Foldkit Lucide Icons",
+      "description": "Lucide icons rendered with Foldkit's native SVG constructors.",
+      "dependencies": [
+        "effect@4.0.0-beta.88",
+        "foldkit@^0.121.0",
+        "lucide-static@^0.577.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "icon.ts",
+          "type": "registry:lib",
+          "target": "@lib/icon.ts"
+        }
+      ]
+    }
+  ]
+}

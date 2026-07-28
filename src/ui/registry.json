@@ -1,0 +1,48 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "A stateless shadcn-styled button render helper for Foldkit.",
+      "dependencies": [
+        "@foldkit/ui@^0.121.0",
+        "class-variance-authority@^0.7.1",
+        "foldkit@^0.121.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "button.ts",
+          "type": "registry:ui",
+          "target": "@ui/button.ts"
+        }
+      ]
+    },
+    {
+      "name": "dialog",
+      "type": "registry:ui",
+      "title": "Dialog",
+      "description": "A stateful shadcn-styled dialog built on the Foldkit Dialog submodel.",
+      "dependencies": [
+        "@foldkit/ui@^0.121.0",
+        "foldkit@^0.121.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "dialog.ts",
+          "type": "registry:ui",
+          "target": "@ui/dialog.ts"
+        }
+      ]
+    }
+  ]
+}
