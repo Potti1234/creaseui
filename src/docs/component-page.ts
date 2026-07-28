@@ -37,6 +37,7 @@ export const COMPONENTS = [
   'Label',
   'Marker',
   'Message',
+  'Message Scroller',
   'Native Select',
   'Pagination',
   'Popover',

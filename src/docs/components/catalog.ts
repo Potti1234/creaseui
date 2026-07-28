@@ -39,6 +39,7 @@ const descriptions: Readonly<Record<string, string>> = {
   label: 'Renders an accessible label associated with a control.',
   marker: 'Labels or separates a point in a stream of content.',
   message: 'Composes avatars, metadata, content, and footers for conversations.',
+  'message-scroller': 'Keeps long conversations scrollable and provides controls for jumping to either edge.',
   'native-select': 'A styled native select control.',
   pagination: 'Pagination with page and navigation links.',
   popover: 'Displays rich content in a portal, triggered by a button.',

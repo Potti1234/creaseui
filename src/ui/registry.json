@@ -683,6 +683,28 @@
       ]
     },
     {
+      "name": "message-scroller",
+      "type": "registry:ui",
+      "title": "Message Scroller",
+      "description": "A shadcn-styled Message Scroller component for Foldkit.",
+      "dependencies": [
+        "effect@4.0.0-beta.88",
+        "foldkit@^0.121.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "message-scroller.ts",
+          "type": "registry:ui",
+          "target": "@ui/message-scroller.ts"
+        }
+      ]
+    },
+    {
       "name": "message",
       "type": "registry:ui",
       "title": "Message",
