@@ -23,6 +23,7 @@
     "test": "node --test --experimental-strip-types",
     "check": "npm run typecheck && npm test && npm run build",
     "registry:build": "npx --yes shadcn@latest build registry.json --output .registry",
+    "registry:generate": "node scripts/generate-ui-registry.mjs",
     "test:registry": "node scripts/verify-registry-install.mjs"
   },
   "dependencies": {
