@@ -50,6 +50,8 @@ the remaining modules is ongoing.
   onto Foldkit UI.
 - [Component parity](docs/component-parity.md) records coverage and intentional
   differences from shadcn/ui.
+- [Registry installation](docs/registry.md) documents the required shadcn CLI
+  configuration and reproducible installation proof.
 - [Upstream provenance](docs/provenance.md) records the projects this work builds
   on and the policy for future ports.
 - [Contributing](CONTRIBUTING.md) describes the component and commit workflow.
