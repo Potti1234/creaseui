@@ -88,6 +88,27 @@
       ]
     },
     {
+      "name": "attachment",
+      "type": "registry:ui",
+      "title": "Attachment",
+      "description": "A shadcn-styled Attachment component for Foldkit.",
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "foldkit@^0.121.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "attachment.ts",
+          "type": "registry:ui",
+          "target": "@ui/attachment.ts"
+        }
+      ]
+    },
+    {
       "name": "avatar",
       "type": "registry:ui",
       "title": "Avatar",
@@ -146,6 +167,27 @@
           "path": "breadcrumb.ts",
           "type": "registry:ui",
           "target": "@ui/breadcrumb.ts"
+        }
+      ]
+    },
+    {
+      "name": "bubble",
+      "type": "registry:ui",
+      "title": "Bubble",
+      "description": "A shadcn-styled Bubble component for Foldkit.",
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "foldkit@^0.121.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "bubble.ts",
+          "type": "registry:ui",
+          "target": "@ui/bubble.ts"
         }
       ]
     },
@@ -392,6 +434,25 @@
       ]
     },
     {
+      "name": "direction",
+      "type": "registry:ui",
+      "title": "Direction",
+      "description": "A shadcn-styled Direction component for Foldkit.",
+      "dependencies": [
+        "foldkit@^0.121.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme"
+      ],
+      "files": [
+        {
+          "path": "direction.ts",
+          "type": "registry:ui",
+          "target": "@ui/direction.ts"
+        }
+      ]
+    },
+    {
       "name": "drawer",
       "type": "registry:ui",
       "title": "Drawer",
@@ -597,6 +658,47 @@
           "path": "label.ts",
           "type": "registry:ui",
           "target": "@ui/label.ts"
+        }
+      ]
+    },
+    {
+      "name": "marker",
+      "type": "registry:ui",
+      "title": "Marker",
+      "description": "A shadcn-styled Marker component for Foldkit.",
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "foldkit@^0.121.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "marker.ts",
+          "type": "registry:ui",
+          "target": "@ui/marker.ts"
+        }
+      ]
+    },
+    {
+      "name": "message",
+      "type": "registry:ui",
+      "title": "Message",
+      "description": "A shadcn-styled Message component for Foldkit.",
+      "dependencies": [
+        "foldkit@^0.121.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "message.ts",
+          "type": "registry:ui",
+          "target": "@ui/message.ts"
         }
       ]
     },

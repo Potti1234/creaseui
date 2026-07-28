@@ -49,11 +49,6 @@
     { "component": "navigation-menu", "priority": "high", "strategy": "New navigation disclosure behavior" },
     { "component": "carousel", "priority": "medium", "strategy": "Dedicated subscription-driven model" },
     { "component": "resizable", "priority": "medium", "strategy": "Pointer and keyboard resize model" },
-    { "component": "attachment", "priority": "medium", "strategy": "Foldkit file input composition" },
-    { "component": "bubble", "priority": "medium", "strategy": "Stateless presentation helper" },
-    { "component": "direction", "priority": "medium", "strategy": "Document direction helper" },
-    { "component": "marker", "priority": "medium", "strategy": "Stateless presentation helper" },
-    { "component": "message", "priority": "medium", "strategy": "Stateless composition system" },
     { "component": "message-scroller", "priority": "medium", "strategy": "Subscription-driven scrolling" }
   ]
 }
