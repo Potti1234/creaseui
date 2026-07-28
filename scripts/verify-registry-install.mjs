@@ -1,4 +1,4 @@
-import { cpSync, mkdtempSync, mkdirSync, writeFileSync } from 'node:fs'
+import { cpSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { spawnSync } from 'node:child_process'
@@ -7,6 +7,8 @@ const root = process.cwd()
 const fixture = mkdtempSync(join(tmpdir(), 'creaseui-registry-'))
 const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx'
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm'
+const registry = JSON.parse(readFileSync(join(root, 'src', 'ui', 'registry.json'), 'utf8'))
+const componentNames = registry.items.map(item => item.name)
 
 const run = (command, args) => {
   const result = spawnSync(command, args, {
@@ -66,31 +68,18 @@ writeFileSync(
 )
 writeFileSync(
   join(fixture, 'src', 'entry.ts'),
-  `import './styles.css'
-
-import { button } from '@/ui/button'
-import * as Accordion from '@/ui/accordion'
-import * as Dialog from '@/ui/dialog'
-
-export const smoke = {
-  button,
-  accordion: Accordion.accordion,
-  accordionInit: Accordion.init,
-  accordionUpdate: Accordion.update,
-  dialog: Dialog.dialog,
-  dialogInit: Dialog.init,
-  dialogUpdate: Dialog.update,
-}
-`,
+  `import './styles.css'\n\n${componentNames
+    .map((name, index) => `import * as Component${index} from '@/ui/${name}'`)
+    .join('\n')}\n\nexport const installedComponents = [${componentNames
+    .map((_name, index) => `Component${index}`)
+    .join(', ')}]\n`,
 )
 
 run(npx, [
   '--yes',
   'shadcn@latest',
   'add',
-  'Potti1234/creaseui/button',
-  'Potti1234/creaseui/accordion',
-  'Potti1234/creaseui/dialog',
+  ...componentNames.map(name => `Potti1234/creaseui/${name}`),
   '--yes',
 ])
 run(npm, ['install'])
