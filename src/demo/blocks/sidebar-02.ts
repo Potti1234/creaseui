@@ -1,0 +1,445 @@
+import { Match as M, Option, Schema as S } from 'effect'
+import { Command } from 'foldkit'
+import { type Html, html } from 'foldkit/html'
+import { m } from 'foldkit/message'
+import { evo } from 'foldkit/struct'
+
+import * as Icon from '@/lib/icon'
+import {
+  breadcrumb,
+  breadcrumbItem,
+  breadcrumbLink,
+  breadcrumbList,
+  breadcrumbPage,
+  breadcrumbSeparator,
+} from '@/ui/breadcrumb'
+import * as Collapsible from '@/ui/collapsible'
+import * as DropdownMenu from '@/ui/dropdown-menu'
+import { separator } from '@/ui/separator'
+import {
+  sidebar,
+  sidebarContent,
+  sidebarGroup,
+  sidebarGroupContent,
+  sidebarHeader,
+  sidebarInput,
+  sidebarInset,
+  sidebarMenu,
+  sidebarMenuButton,
+  sidebarMenuButtonVariants,
+  sidebarMenuItem,
+  sidebarProvider,
+  sidebarRail,
+  sidebarTrigger,
+} from '@/ui/sidebar'
+
+type Version = '1.0.1' | '1.1.0-alpha' | '2.0.0-beta1'
+
+type NavItem = Readonly<{
+  title: string
+  url: string
+  isActive?: boolean
+}>
+
+type NavGroup = Readonly<{
+  title: string
+  url: string
+  items: ReadonlyArray<NavItem>
+}>
+
+// This is sample data copied from the source block.
+const data = {
+  versions: ['1.0.1', '1.1.0-alpha', '2.0.0-beta1'] satisfies ReadonlyArray<Version>,
+  navMain: [
+    {
+      title: 'Getting Started',
+      url: '#',
+      items: [
+        { title: 'Installation', url: '#' },
+        { title: 'Project Structure', url: '#' },
+      ],
+    },
+    {
+      title: 'Build Your Application',
+      url: '#',
+      items: [
+        { title: 'Routing', url: '#' },
+        { title: 'Data Fetching', url: '#', isActive: true },
+        { title: 'Rendering', url: '#' },
+        { title: 'Caching', url: '#' },
+        { title: 'Styling', url: '#' },
+        { title: 'Optimizing', url: '#' },
+        { title: 'Configuring', url: '#' },
+        { title: 'Testing', url: '#' },
+        { title: 'Authentication', url: '#' },
+        { title: 'Deploying', url: '#' },
+        { title: 'Upgrading', url: '#' },
+        { title: 'Examples', url: '#' },
+      ],
+    },
+    {
+      title: 'API Reference',
+      url: '#',
+      items: [
+        { title: 'Components', url: '#' },
+        { title: 'File Conventions', url: '#' },
+        { title: 'Functions', url: '#' },
+        { title: 'next.config.js Options', url: '#' },
+        { title: 'CLI', url: '#' },
+        { title: 'Edge Runtime', url: '#' },
+      ],
+    },
+    {
+      title: 'Architecture',
+      url: '#',
+      items: [
+        { title: 'Accessibility', url: '#' },
+        { title: 'Fast Refresh', url: '#' },
+        { title: 'Next.js Compiler', url: '#' },
+        { title: 'Supported Browsers', url: '#' },
+        { title: 'Turbopack', url: '#' },
+      ],
+    },
+    {
+      title: 'Community',
+      url: '#',
+      items: [{ title: 'Contribution Guide', url: '#' }],
+    },
+  ] satisfies ReadonlyArray<NavGroup>,
+}
+
+const VersionMenu = DropdownMenu.create<Version>()
+
+// MODEL
+
+export const Model = S.Struct({
+  isSidebarOpen: S.Boolean,
+  selectedVersion: S.String,
+  versionMenu: DropdownMenu.Model,
+  navMain: S.Array(Collapsible.Model),
+})
+export type Model = typeof Model.Type
+
+// MESSAGE
+
+export const ToggledSidebar = m('ToggledSidebar')
+export const GotVersionMenuMessage = m('GotVersionMenuMessage', {
+  message: DropdownMenu.Message,
+})
+export const GotNavMainMessage = m('GotNavMainMessage', {
+  index: S.Number,
+  message: Collapsible.Message,
+})
+
+export const Message = S.Union([
+  ToggledSidebar,
+  GotVersionMenuMessage,
+  GotNavMainMessage,
+])
+export type Message = typeof Message.Type
+
+// INIT
+
+export const init = (): Model => ({
+  isSidebarOpen: true,
+  selectedVersion: data.versions[0] ?? '1.0.1',
+  versionMenu: DropdownMenu.init({
+    id: 'sidebar-02-version-switcher',
+    isAnimated: true,
+  }),
+  navMain: data.navMain.map((_, index) =>
+    Collapsible.init({
+      id: `sidebar-02-nav-main-${index}`,
+      isOpen: true,
+    }),
+  ),
+})
+
+// UPDATE
+
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
+
+export const update = (model: Model, message: Message): UpdateReturn =>
+  M.value(message).pipe(
+    M.withReturnType<UpdateReturn>(),
+    M.tagsExhaustive({
+      ToggledSidebar: () => [
+        evo(model, { isSidebarOpen: current => !current }),
+        [],
+      ],
+      GotVersionMenuMessage: ({ message: childMessage }) => {
+        const [versionMenu, commands, maybeSelection] = VersionMenu.update(
+          model.versionMenu,
+          childMessage,
+        )
+
+        return [
+          evo(model, {
+            versionMenu: () => versionMenu,
+            selectedVersion: current =>
+              Option.match(maybeSelection, {
+                onNone: () => current,
+                onSome: ({ value }) => value,
+              }),
+          }),
+          Command.mapMessages(commands, nextMessage =>
+            GotVersionMenuMessage({ message: nextMessage }),
+          ),
+        ]
+      },
+      GotNavMainMessage: ({ index, message: childMessage }) => {
+        const current = model.navMain[index]
+
+        if (current === undefined) {
+          return [model, []]
+        }
+
+        const [next, commands] = Collapsible.update(current, childMessage)
+
+        return [
+          evo(model, {
+            navMain: groups =>
+              groups.map((group, groupIndex) =>
+                groupIndex === index ? next : group,
+              ),
+          }),
+          Command.mapMessages(commands, nextMessage =>
+            GotNavMainMessage({ index, message: nextMessage }),
+          ),
+        ]
+      },
+    }),
+  )
+
+// VIEW
+
+const versionSwitcher = (model: Model): Html => {
+  const h = html<Message>()
+  const trigger = h.span(
+    [h.Class('contents')],
+    [
+      h.div(
+        [
+          h.Class(
+            'flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground',
+          ),
+        ],
+        [Icon.icon('gallery-vertical-end', { class: 'size-4' })],
+      ),
+      h.div(
+        [h.Class('flex flex-col gap-0.5 leading-none')],
+        [
+          h.span([h.Class('font-medium')], ['Documentation']),
+          h.span([], [`v${model.selectedVersion}`]),
+        ],
+      ),
+      Icon.chevronsUpDown({ class: 'ml-auto size-4' }),
+    ],
+  )
+
+  return sidebarMenu({
+    children: [
+      sidebarMenuItem({
+        children: [
+          DropdownMenu.dropdownMenu<Version, Message>({
+            model: model.versionMenu,
+            toParentMessage: message => GotVersionMenuMessage({ message }),
+            trigger,
+            triggerClass: sidebarMenuButtonVariants({
+              size: 'lg',
+              class:
+                'data-[open]:bg-sidebar-accent data-[open]:text-sidebar-accent-foreground',
+            }),
+            items: data.versions,
+            itemToConfig: version => ({
+              label: h.span(
+                [h.Class('contents')],
+                [
+                  `v${version}`,
+                  ...(version === model.selectedVersion
+                    ? [Icon.check({ class: 'ml-auto size-4' })]
+                    : []),
+                ],
+              ),
+            }),
+            align: 'start',
+            ariaLabel: 'Select documentation version',
+          }),
+        ],
+      }),
+    ],
+  })
+}
+
+const searchForm = (): Html => {
+  const h = html<Message>()
+
+  return h.form(
+    [],
+    [
+      sidebarGroup({
+        class: 'py-0',
+        children: [
+          sidebarGroupContent({
+            class: 'relative',
+            children: [
+              h.label(
+                [h.For('sidebar-02-search'), h.Class('sr-only')],
+                ['Search'],
+              ),
+              sidebarInput({
+                id: 'sidebar-02-search',
+                placeholder: 'Search the docs...',
+                class: 'pl-8',
+              }),
+              Icon.search({
+                class:
+                  'pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none',
+              }),
+            ],
+          }),
+        ],
+      }),
+    ],
+  )
+}
+
+const GROUP_LABEL_CLASS =
+  'flex h-8 shrink-0 items-center rounded-md px-2 font-medium ring-sidebar-ring outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0 group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+
+const navMain = (models: ReadonlyArray<Collapsible.Model>): Html =>
+  sidebarContent<Message>({
+    class: 'gap-0',
+    children: data.navMain.flatMap((group, index) => {
+      const model = models[index]
+
+      if (model === undefined) {
+        return []
+      }
+
+      const h = html<Message>()
+      const trigger = h.span(
+        [h.Class('contents')],
+        [
+          group.title,
+          Icon.chevronRight({
+            class: `ml-auto size-4 transition-transform${
+              model.isOpen ? ' rotate-90' : ''
+            }`,
+          }),
+        ],
+      )
+      const content = sidebarGroupContent<Message>({
+        children: [
+          sidebarMenu({
+            children: group.items.map(item =>
+              sidebarMenuItem({
+                children: [
+                  sidebarMenuButton({
+                    href: item.url,
+                    isActive: item.isActive ?? false,
+                    children: [item.title],
+                  }),
+                ],
+              }),
+            ),
+          }),
+        ],
+      })
+
+      return [
+        sidebarGroup({
+          children: [
+            Collapsible.collapsible({
+              model,
+              toParentMessage: message =>
+                GotNavMainMessage({ index, message }),
+              class: 'group/collapsible',
+              trigger,
+              triggerClass: GROUP_LABEL_CLASS,
+              content,
+            }),
+          ],
+        }),
+      ]
+    }),
+  })
+
+const appSidebar = (model: Model): Html => {
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
+
+  return sidebar<Message>({
+    state,
+    children: [
+      sidebarHeader({
+        children: [versionSwitcher(model), searchForm()],
+      }),
+      navMain(model.navMain),
+      sidebarRail({ onClick: ToggledSidebar() }),
+    ],
+  })
+}
+
+const pageContent = (): Html => {
+  const h = html<Message>()
+
+  return sidebarInset({
+    children: [
+      h.header(
+        [
+          h.Class(
+            'sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4',
+          ),
+        ],
+        [
+          sidebarTrigger({ onClick: ToggledSidebar(), class: '-ml-1' }),
+          separator({ orientation: 'vertical', class: 'mr-2 h-4' }),
+          breadcrumb({
+            children: [
+              breadcrumbList({
+                children: [
+                  breadcrumbItem({
+                    class: 'hidden md:block',
+                    children: [
+                      breadcrumbLink({
+                        href: '#',
+                        children: ['Build Your Application'],
+                      }),
+                    ],
+                  }),
+                  breadcrumbSeparator({ class: 'hidden md:block' }),
+                  breadcrumbItem({
+                    children: [
+                      breadcrumbPage({ children: ['Data Fetching'] }),
+                    ],
+                  }),
+                ],
+              }),
+            ],
+          }),
+        ],
+      ),
+      h.div(
+        [h.Class('flex flex-1 flex-col gap-4 p-4')],
+        Array.from({ length: 24 }, () =>
+          h.div(
+            [h.Class('aspect-video h-12 w-full rounded-lg bg-muted/50')],
+            [],
+          ),
+        ),
+      ),
+    ],
+  })
+}
+
+export const view = (model: Model): Html => {
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
+
+  return sidebarProvider<Message>({
+    state,
+    children: [appSidebar(model), pageContent()],
+  })
+}
+
+// PORT NOTE: foldkit Menu owns panel width through anchor positioning, so the
+// source's Radix-only trigger-width CSS variable is not available.
