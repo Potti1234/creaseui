@@ -537,6 +537,27 @@
       ]
     },
     {
+      "name": "form",
+      "type": "registry:ui",
+      "title": "Form",
+      "description": "A shadcn-styled Form component for Foldkit.",
+      "dependencies": [
+        "foldkit@^0.121.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/field",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "form.ts",
+          "type": "registry:ui",
+          "target": "@ui/form.ts"
+        }
+      ]
+    },
+    {
       "name": "hover-card",
       "type": "registry:ui",
       "title": "Hover Card",
@@ -576,6 +597,26 @@
           "path": "input-group.ts",
           "type": "registry:ui",
           "target": "@ui/input-group.ts"
+        }
+      ]
+    },
+    {
+      "name": "input-otp",
+      "type": "registry:ui",
+      "title": "Input Otp",
+      "description": "A shadcn-styled Input Otp component for Foldkit.",
+      "dependencies": [
+        "foldkit@^0.121.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "input-otp.ts",
+          "type": "registry:ui",
+          "target": "@ui/input-otp.ts"
         }
       ]
     },

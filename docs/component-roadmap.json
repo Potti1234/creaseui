@@ -42,8 +42,6 @@
     }
   ],
   "missing": [
-    { "component": "form", "priority": "high", "strategy": "Foldkit field validation" },
-    { "component": "input-otp", "priority": "high", "strategy": "New focused input model" },
     { "component": "context-menu", "priority": "high", "strategy": "Foldkit Menu positioning variant" },
     { "component": "menubar", "priority": "high", "strategy": "Coordinated Foldkit Menu models" },
     { "component": "navigation-menu", "priority": "high", "strategy": "New navigation disclosure behavior" },
