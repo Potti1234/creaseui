@@ -19,7 +19,9 @@ import * as ChartsRadar from '@/demo/charts/radar'
 import * as ChartsRadial from '@/demo/charts/radial'
 import * as ChartsTooltip from '@/demo/charts/tooltip'
 import * as AccordionDocs from '@/docs/components/accordion'
+import * as CalendarDocs from '@/docs/components/calendar'
 import * as ComponentCatalog from '@/docs/components/catalog'
+import * as RealPreviews from '@/docs/components/real-previews'
 import * as Icon from '@/lib/icon'
 import {
   AppRoute,
@@ -46,6 +48,7 @@ export const Model = S.Struct({
   chartsRadial: ChartsRadial.Model,
   chartsTooltip: ChartsTooltip.Model,
   accordionDocs: AccordionDocs.Model,
+  calendarDocs: CalendarDocs.Model,
 })
 export type Model = typeof Model.Type
 
@@ -88,6 +91,9 @@ export const GotChartsTooltipMessage = m('GotChartsTooltipMessage', {
 export const GotAccordionDocsMessage = m('GotAccordionDocsMessage', {
   message: AccordionDocs.Message,
 })
+export const GotCalendarDocsMessage = m('GotCalendarDocsMessage', {
+  message: CalendarDocs.Message,
+})
 
 export const Message = S.Union([
   CompletedNavigateInternal,
@@ -107,6 +113,8 @@ export const Message = S.Union([
   GotChartsRadialMessage,
   GotChartsTooltipMessage,
   GotAccordionDocsMessage,
+  GotCalendarDocsMessage,
+  RealPreviews.PreviewInteracted,
 ])
 export type Message = typeof Message.Type
 
@@ -129,6 +137,7 @@ export const init: Runtime.RoutingApplicationInit<Model, Message> = (
     chartsRadial: ChartsRadial.init(),
     chartsTooltip: ChartsTooltip.init(),
     accordionDocs: AccordionDocs.init(),
+    calendarDocs: CalendarDocs.init(),
   },
   [],
 ]
@@ -172,6 +181,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       CompletedNavigateInternal: () => [model, []],
       CompletedLoadExternal: () => [model, []],
       CompletedApplyTheme: () => [model, []],
+      PreviewInteracted: () => [model, []],
 
       ClickedThemeToggle: () => {
         const isDark = !model.isDark
@@ -311,6 +321,13 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           ),
         ]
       },
+      GotCalendarDocsMessage: ({ message: childMessage }) => {
+        const [page, commands] = CalendarDocs.update(model.calendarDocs, childMessage)
+        return [
+          evo(model, { calendarDocs: () => page }),
+          Command.mapMessages(commands, next => GotCalendarDocsMessage({ message: next })),
+        ]
+      },
     }),
   )
 
@@ -414,6 +431,7 @@ const accordionDocsView = defineView<
   AccordionDocs.Model,
   AccordionDocs.Message
 >(AccordionDocs.view)
+const calendarDocsView = defineView<CalendarDocs.Model, CalendarDocs.Message>(CalendarDocs.view)
 const blocksRegistryView = defineView<Blocks.Model, Blocks.Message, string>(
   (blocksModel, blockId) => Blocks.view(blocksModel, blockId),
 )
@@ -613,6 +631,17 @@ const pageView = (model: Model): Html => {
                   GotAccordionDocsMessage({ message }),
               }),
             )
+          : component === 'calendar'
+            ? keyed(
+                'page-docs-calendar',
+                h.submodel({
+                  slotId: 'docs-calendar',
+                  model: model.calendarDocs,
+                  view: calendarDocsView,
+                  toParentMessage: (message: CalendarDocs.Message): Message =>
+                    GotCalendarDocsMessage({ message }),
+                }),
+              )
           : ComponentCatalog.hasCatalogPage(component)
             ? keyed(`page-docs-${component}`, ComponentCatalog.view(component))
             : keyed(

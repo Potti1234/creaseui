@@ -1,0 +1,96 @@
+import { Schema as S } from 'effect'
+import { Command } from 'foldkit'
+import { type Html, html } from 'foldkit/html'
+import { m } from 'foldkit/message'
+
+import { componentPage, example } from '@/docs/component-page'
+import * as Calendar from '@/ui/calendar'
+import * as Card from '@/ui/card'
+
+export const Model = S.Struct({
+  basic: Calendar.Model,
+  selected: Calendar.Model,
+  disabled: Calendar.Model,
+})
+export type Model = typeof Model.Type
+
+const Target = S.Literals(['basic', 'selected', 'disabled'])
+type Target = typeof Target.Type
+
+export const GotCalendarMessage = m('GotCalendarMessage', {
+  target: Target,
+  message: Calendar.Message,
+})
+export const Message = S.Union([GotCalendarMessage])
+export type Message = typeof Message.Type
+
+const date = (year: number, month: number, day: number) => ({ year, month, day })
+
+export const init = (): Model => ({
+  basic: Calendar.init({ id: 'docs-calendar-basic', today: date(2026, 7, 28) }),
+  selected: Calendar.init({
+    id: 'docs-calendar-selected',
+    today: date(2026, 7, 28),
+    initialSelectedDate: date(2026, 7, 18),
+  }),
+  disabled: Calendar.init({
+    id: 'docs-calendar-disabled',
+    today: date(2026, 7, 28),
+    initialSelectedDate: date(2026, 7, 18),
+    disabledDaysOfWeek: ['Sunday', 'Saturday'],
+  }),
+})
+
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
+
+export const update = (model: Model, message: Message): UpdateReturn => {
+  const target = message.target
+  const [calendar, commands] = Calendar.update(model[target], message.message)
+  return [
+    { ...model, [target]: calendar },
+    Command.mapMessages(commands, next =>
+      GotCalendarMessage({ target, message: next }),
+    ),
+  ]
+}
+
+const preview = (model: Calendar.Model, target: Target): Html =>
+  Calendar.calendar<Message>({
+    model,
+    toParentMessage: message => GotCalendarMessage({ target, message }),
+  })
+
+export const view = (model: Model): Html => {
+  const h = html<Message>()
+  return componentPage<Message>({
+    name: 'Calendar',
+    description: 'A date field component that allows users to enter and edit dates.',
+    installation: 'npx shadcn@latest add Potti1234/creaseui/calendar',
+    usage: `import * as Calendar from '@/ui/calendar'\n\nCalendar.calendar({\n  model: model.calendar,\n  toParentMessage: message => GotCalendarMessage({ message }),\n})`,
+    composition: 'Calendar.Model\n├── calendar navigation and view mode\n├── focused and selected dates\n└── disabled-date constraints',
+    examples: [
+      example<Message>({
+        title: 'Basic',
+        description: 'A standalone calendar with month and year navigation.',
+        preview: preview(model.basic, 'basic'),
+        code: `Calendar.init({ id: 'calendar', today })`,
+      }),
+      example<Message>({
+        title: 'Selected Date',
+        description: 'Initialize the calendar with a selected date.',
+        preview: Card.card({ children: [
+          Card.cardContent({ class: 'p-0', children: [preview(model.selected, 'selected')] }),
+        ] }),
+        code: `Calendar.init({\n  id: 'calendar',\n  today,\n  initialSelectedDate: { year: 2026, month: 7, day: 18 },\n})`,
+      }),
+      example<Message>({
+        title: 'Disabled Dates',
+        description: 'Weekend dates remain visible while unavailable for selection.',
+        preview: h.div([h.Class('rounded-lg border')], [preview(model.disabled, 'disabled')]),
+        code: `Calendar.init({\n  id: 'calendar',\n  today,\n  disabledDaysOfWeek: [0, 6],\n})`,
+      }),
+    ],
+    apiHref: 'https://foldkit.dev/ui/calendar',
+    apiDescription: 'Calendar delegates focus, keyboard navigation, date selection, and view-mode changes to the Foldkit Calendar state machine.',
+  })
+}

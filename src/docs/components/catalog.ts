@@ -5,6 +5,7 @@ import {
   componentTitle,
   example,
 } from '@/docs/component-page'
+import { hasRealPreview, realPreview } from '@/docs/components/real-previews'
 
 const descriptions: Readonly<Record<string, string>> = {
   alert: 'Displays a callout for important contextual information.',
@@ -91,7 +92,7 @@ export const view = (slug: string): Html => {
     examples: [
       example<never>({
         title: 'Basic',
-        description: `A representative ${name} composition using the default Crease UI theme.`,
+        description: `The default ${name} example, rendered by the installed Crease UI component.`,
         preview: previewFor(slug, name),
         code: `import * as ${name.replaceAll(' ', '')} from '@/ui/${slug}'\n\n// The installed source is yours to compose and edit.`,
         previewClass: 'min-h-48',
@@ -123,6 +124,8 @@ const usageFor = (slug: string, name: string): string => {
 
 const previewFor = (slug: string, name: string): Html => {
   const h = html<never>()
+
+  if (hasRealPreview(slug)) return realPreview(slug)
 
   if (slug === 'typography') return h.article([h.Class('max-w-lg space-y-3')], [
     h.h2([h.Class('text-3xl font-semibold tracking-tight')], ['The Joke Tax Chronicles']),
