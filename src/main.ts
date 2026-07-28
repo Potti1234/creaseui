@@ -311,7 +311,7 @@ const header = (model: Model): Html => {
         [
           h.a(
             [h.Href('/'), h.Class('text-sm font-semibold')],
-            ['foldkit-shadcnui'],
+            ['crease/ui'],
           ),
           headerLink('/create', 'Create', model.route._tag === 'Create'),
           headerLink(chartsPath('area'), 'Charts', isCharts),
@@ -449,7 +449,7 @@ const homeView = (): Html => {
     [
       h.h1(
         [h.Class('text-3xl font-semibold tracking-tight')],
-        ['foldkit-shadcnui'],
+        ['crease/ui'],
       ),
       h.p(
         [h.Class('text-muted-foreground')],
@@ -529,7 +529,7 @@ export const view = (model: Model): Document => {
   const isFullPage = model.route._tag === 'Block'
 
   return {
-    title: 'foldkit-shadcnui',
+    title: 'crease/ui',
     body: isFullPage
       ? h.div([], [pageView(model)])
       : h.div([], [header(model), pageView(model)]),

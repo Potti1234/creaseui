@@ -1,7 +1,8 @@
 # crease/ui — Landing Page Brief
 
 Decisions (2026-07-28): product-first positioning · live component collage hero ·
-registry shown as "coming soon" with copy-paste as the working path today.
+GitHub registry installation as the primary path, with direct source copy as a
+fallback for unpublished items.
 
 Voice: quiet, precise, a little dry. The boldest element on the page is a screenshot
 comparison, not an adjective. No hype words, no emoji.
@@ -39,8 +40,9 @@ same site — the landing links into it as living proof.
 - **Heading:** Three layers, no magic.
 - **Diagram:** foldkit UI (behavior, accessibility) → crease/ui (the styled layer you
   copy) → your app. One fold illustration slot (spot-dialog.png works).
-- **Command block:** `npx shadcn add @crease/button` with badge "registry — coming
-  soon". Below it: "Today: copy the component file into your project. It's yours."
+- **Command block:** `npx shadcn@latest add Potti1234/creaseui/button` with badge
+  "GitHub registry". Below it: "The CLI copies the component into your project.
+  It's yours."
 - **Three bullets:** You own the code (no dependency to babysit) · shadcn-compatible
   tokens (your theme drops in) · every component is a plain foldkit view function.
 
