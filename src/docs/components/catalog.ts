@@ -34,7 +34,9 @@ export const Message = S.Union([GotExampleMessage])
 export type Message = typeof Message.Type
 
 export const init = (): Model => ({
-  examples: Array.from({ length: EXAMPLE_STATE_COUNT }, () => State.init()),
+  examples: Array.from({ length: EXAMPLE_STATE_COUNT }, (_, index) =>
+    State.withExampleIds(State.init(), `catalog-example-${String(index)}`),
+  ),
 })
 
 type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
@@ -135,9 +137,7 @@ export const view = (model: Model, slug: string): Html => {
       `${name}\n├── Model / init / update\n├── ${primaryExport(slug)} view\n└── Source-owned styles and composition`,
     examples: definition.examples.map((config, index) => {
       const previewView = defineView<State.Model, State.Message>(exampleModel =>
-        config.preview(
-          State.withExampleIds(exampleModel, `${slug}-${String(index)}`),
-        ),
+        config.preview(exampleModel),
       )
 
       return example<Message>({

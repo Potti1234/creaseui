@@ -27,6 +27,22 @@ describe('stateful component models', () => {
     assert.equal(withCarousel.input, 'hello@crease.ui')
     assert.equal(withCarousel.carousel.index, 1)
   })
+
+  it('keeps docs dialog animation targets aligned with their rendered ids', () => {
+    const model = CatalogState.withExampleIds(
+      CatalogState.init(),
+      'catalog-example-0',
+    )
+
+    assert.equal(model.alertDialog.animation.id, `${model.alertDialog.id}-panel`)
+    assert.equal(model.dialog.animation.id, `${model.dialog.id}-panel`)
+    assert.equal(
+      model.drawer.dialog.animation.id,
+      `${model.drawer.dialog.id}-panel`,
+    )
+    assert.equal(model.sheet.animation.id, `${model.sheet.id}-panel`)
+  })
+
   it('bounds carousel navigation at the available slides', () => {
     const model = Carousel.init('gallery', 3)
     assert.equal(Carousel.update(model, Carousel.Previous()).index, 0)

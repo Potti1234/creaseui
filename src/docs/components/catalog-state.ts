@@ -214,6 +214,10 @@ export const init = (): Model => ({
  */
 export const withExampleIds = (model: Model, suffix: string): Model => {
   const id = (value: string): string => `${value}-${suffix}`
+  const alertDialogId = id(model.alertDialog.id)
+  const dialogId = id(model.dialog.id)
+  const drawerDialogId = id(model.drawer.dialog.id)
+  const sheetId = id(model.sheet.id)
   return {
     ...model,
     carousel: { ...model.carousel, id: id(model.carousel.id) },
@@ -226,8 +230,8 @@ export const withExampleIds = (model: Model, suffix: string): Model => {
     tabs: { ...model.tabs, id: id(model.tabs.id) },
     alertDialog: {
       ...model.alertDialog,
-      id: id(model.alertDialog.id),
-      animation: { ...model.alertDialog.animation, id: id(model.alertDialog.animation.id) },
+      id: alertDialogId,
+      animation: { ...model.alertDialog.animation, id: `${alertDialogId}-panel` },
     },
     combobox: { ...model.combobox, id: id(model.combobox.id) },
     command: { ...model.command, id: id(model.command.id) },
@@ -239,15 +243,15 @@ export const withExampleIds = (model: Model, suffix: string): Model => {
     },
     dialog: {
       ...model.dialog,
-      id: id(model.dialog.id),
-      animation: { ...model.dialog.animation, id: id(model.dialog.animation.id) },
+      id: dialogId,
+      animation: { ...model.dialog.animation, id: `${dialogId}-panel` },
     },
     drawer: {
       ...model.drawer,
       dialog: {
         ...model.drawer.dialog,
-        id: id(model.drawer.dialog.id),
-        animation: { ...model.drawer.dialog.animation, id: id(model.drawer.dialog.animation.id) },
+        id: drawerDialogId,
+        animation: { ...model.drawer.dialog.animation, id: `${drawerDialogId}-panel` },
       },
     },
     dropdownMenu: { ...model.dropdownMenu, id: id(model.dropdownMenu.id) },
@@ -260,8 +264,8 @@ export const withExampleIds = (model: Model, suffix: string): Model => {
     select: { ...model.select, id: id(model.select.id) },
     sheet: {
       ...model.sheet,
-      id: id(model.sheet.id),
-      animation: { ...model.sheet.animation, id: id(model.sheet.animation.id) },
+      id: sheetId,
+      animation: { ...model.sheet.animation, id: `${sheetId}-panel` },
     },
     sonner: { ...model.sonner, id: id(model.sonner.id) },
     toast: { ...model.toast, id: id(model.toast.id) },
