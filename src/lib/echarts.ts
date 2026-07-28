@@ -23,8 +23,7 @@ import { m } from 'foldkit/message'
 
 import { cn } from '@/lib/utils'
 
-/* ECharts embedded in foldkit, adapted from maas-foldkit's ui/chart.ts Mount +
-   chart-host bridge. Where shadcn wraps recharts (React-only), we render the
+/* ECharts embedded in foldkit. Where shadcn wraps recharts (React-only), we render the
    same visual language through Apache ECharts:
 
    - Each demo card module registers an OPTION BUILDER at module load time,

@@ -1,0 +1,11 @@
+.git
+.github
+.playwright-cli
+.playwright-mcp
+.registry
+.registry-validation
+dist
+node_modules
+npm-debug.log*
+*.local
+
