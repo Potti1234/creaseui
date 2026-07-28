@@ -3,6 +3,7 @@ import { describe, it } from 'node:test'
 
 import { Option } from 'effect'
 
+import * as CatalogState from '../src/docs/components/catalog-state.ts'
 import * as Carousel from '../src/ui/carousel.ts'
 import * as Drawer from '../src/ui/drawer.ts'
 import * as DropdownMenu from '../src/ui/dropdown-menu.ts'
@@ -12,6 +13,20 @@ import * as Sidebar from '../src/ui/sidebar.ts'
 import * as Sonner from '../src/ui/sonner.ts'
 
 describe('stateful component models', () => {
+  it('persists controlled documentation values and child component state', () => {
+    const initial = CatalogState.init()
+    const [withText] = CatalogState.update(
+      initial,
+      CatalogState.ChangedText({ target: 'input', value: 'hello@crease.ui' }),
+    )
+    const [withCarousel] = CatalogState.update(
+      withText,
+      CatalogState.GotCarouselMessage({ message: Carousel.Next() }),
+    )
+
+    assert.equal(withCarousel.input, 'hello@crease.ui')
+    assert.equal(withCarousel.carousel.index, 1)
+  })
   it('bounds carousel navigation at the available slides', () => {
     const model = Carousel.init('gallery', 3)
     assert.equal(Carousel.update(model, Carousel.Previous()).index, 0)

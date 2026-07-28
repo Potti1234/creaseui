@@ -6,15 +6,18 @@ import { m } from 'foldkit/message'
 import { componentPage, example } from '@/docs/component-page'
 import * as Calendar from '@/ui/calendar'
 import * as Card from '@/ui/card'
+import * as Direction from '@/ui/direction'
 
 export const Model = S.Struct({
   basic: Calendar.Model,
   selected: Calendar.Model,
   disabled: Calendar.Model,
+  customSize: Calendar.Model,
+  rtl: Calendar.Model,
 })
 export type Model = typeof Model.Type
 
-const Target = S.Literals(['basic', 'selected', 'disabled'])
+const Target = S.Literals(['basic', 'selected', 'disabled', 'customSize', 'rtl'])
 type Target = typeof Target.Type
 
 export const GotCalendarMessage = m('GotCalendarMessage', {
@@ -39,6 +42,8 @@ export const init = (): Model => ({
     initialSelectedDate: date(2026, 7, 18),
     disabledDaysOfWeek: ['Sunday', 'Saturday'],
   }),
+  customSize: Calendar.init({ id: 'docs-calendar-custom-size', today: date(2026, 7, 28) }),
+  rtl: Calendar.init({ id: 'docs-calendar-rtl', today: date(2026, 7, 28), initialSelectedDate: date(2026, 7, 18) }),
 })
 
 type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
@@ -87,7 +92,26 @@ export const view = (model: Model): Html => {
         title: 'Disabled Dates',
         description: 'Weekend dates remain visible while unavailable for selection.',
         preview: h.div([h.Class('rounded-lg border')], [preview(model.disabled, 'disabled')]),
-        code: `Calendar.init({\n  id: 'calendar',\n  today,\n  disabledDaysOfWeek: [0, 6],\n})`,
+        code: `Calendar.init({\n  id: 'calendar',\n  today,\n  disabledDaysOfWeek: ['Sunday', 'Saturday'],\n})`,
+      }),
+      example<Message>({
+        title: 'Custom Cell Size',
+        description: 'Override the calendar cell token to create a roomier picker without changing its behavior.',
+        preview: Calendar.calendar({
+          model: model.customSize,
+          toParentMessage: message => GotCalendarMessage({ target: 'customSize', message }),
+          class: '[--cell-size:--spacing(10)]',
+        }),
+        code: `Calendar.calendar({\n  ...props,\n  class: '[--cell-size:--spacing(10)]',\n})`,
+      }),
+      example<Message>({
+        title: 'RTL',
+        description: 'Calendar navigation, headings, and grid interaction follow the surrounding text direction.',
+        preview: Direction.direction({
+          direction: 'rtl',
+          children: [preview(model.rtl, 'rtl')],
+        }),
+        code: `Direction.direction({\n  direction: 'rtl',\n  children: [Calendar.calendar(props)],\n})`,
       }),
     ],
     apiHref: 'https://foldkit.dev/ui/calendar',

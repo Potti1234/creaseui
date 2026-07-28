@@ -3,6 +3,10 @@ import { readFileSync } from 'node:fs'
 import { describe, it } from 'node:test'
 
 import { hasRealPreview } from '../src/docs/components/real-previews.ts'
+import {
+  dedicatedExampleTitles,
+  hasDedicatedDefinition,
+} from '../src/docs/components/catalog.ts'
 
 const registry = JSON.parse(readFileSync('src/ui/registry.json', 'utf8')) as {
   items: ReadonlyArray<{ name: string; type: string }>
@@ -40,6 +44,25 @@ describe('component catalog coverage', () => {
       ),
       [],
     )
+  })
+
+  it('has a component-specific shadcn-style definition for every shared route', () => {
+    const standalonePages = new Set(['accordion', 'calendar'])
+    assert.deepEqual(
+      documentedSlugs.filter(
+        slug => !standalonePages.has(slug) && !hasDedicatedDefinition(slug),
+      ),
+      [],
+    )
+  })
+
+  it('provides multiple component-specific examples instead of a generic Basic page', () => {
+    const standalonePages = new Set(['accordion', 'calendar'])
+    const shallowPages = documentedSlugs.filter(
+      slug =>
+        !standalonePages.has(slug) && dedicatedExampleTitles(slug).length < 2,
+    )
+    assert.deepEqual(shallowPages, [])
   })
 
   it('has no unresolved tracked fidelity or missing-component gaps', () => {

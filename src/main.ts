@@ -21,7 +21,6 @@ import * as ChartsTooltip from '@/demo/charts/tooltip'
 import * as AccordionDocs from '@/docs/components/accordion'
 import * as CalendarDocs from '@/docs/components/calendar'
 import * as ComponentCatalog from '@/docs/components/catalog'
-import * as RealPreviews from '@/docs/components/real-previews'
 import * as Icon from '@/lib/icon'
 import {
   AppRoute,
@@ -49,6 +48,7 @@ export const Model = S.Struct({
   chartsTooltip: ChartsTooltip.Model,
   accordionDocs: AccordionDocs.Model,
   calendarDocs: CalendarDocs.Model,
+  catalogDocs: ComponentCatalog.Model,
 })
 export type Model = typeof Model.Type
 
@@ -94,6 +94,9 @@ export const GotAccordionDocsMessage = m('GotAccordionDocsMessage', {
 export const GotCalendarDocsMessage = m('GotCalendarDocsMessage', {
   message: CalendarDocs.Message,
 })
+export const GotCatalogDocsMessage = m('GotCatalogDocsMessage', {
+  message: ComponentCatalog.Message,
+})
 
 export const Message = S.Union([
   CompletedNavigateInternal,
@@ -114,7 +117,7 @@ export const Message = S.Union([
   GotChartsTooltipMessage,
   GotAccordionDocsMessage,
   GotCalendarDocsMessage,
-  RealPreviews.PreviewInteracted,
+  GotCatalogDocsMessage,
 ])
 export type Message = typeof Message.Type
 
@@ -138,6 +141,7 @@ export const init: Runtime.RoutingApplicationInit<Model, Message> = (
     chartsTooltip: ChartsTooltip.init(),
     accordionDocs: AccordionDocs.init(),
     calendarDocs: CalendarDocs.init(),
+    catalogDocs: ComponentCatalog.init(),
   },
   [],
 ]
@@ -181,7 +185,6 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       CompletedNavigateInternal: () => [model, []],
       CompletedLoadExternal: () => [model, []],
       CompletedApplyTheme: () => [model, []],
-      PreviewInteracted: () => [model, []],
 
       ClickedThemeToggle: () => {
         const isDark = !model.isDark
@@ -328,6 +331,13 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           Command.mapMessages(commands, next => GotCalendarDocsMessage({ message: next })),
         ]
       },
+      GotCatalogDocsMessage: ({ message: childMessage }) => {
+        const [catalogDocs, commands] = ComponentCatalog.update(model.catalogDocs, childMessage)
+        return [
+          evo(model, { catalogDocs: () => catalogDocs }),
+          Command.mapMessages(commands, next => GotCatalogDocsMessage({ message: next })),
+        ]
+      },
     }),
   )
 
@@ -337,6 +347,10 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
   Subscription.lift(Board.subscriptions)<Model, Message>({
     toChildModel: model => model.board,
     toParentMessage: message => GotBoardMessage({ message }),
+  }),
+  Subscription.lift(ComponentCatalog.subscriptions)<Model, Message>({
+    toChildModel: model => model.catalogDocs,
+    toParentMessage: message => GotCatalogDocsMessage({ message }),
   }),
 )
 
@@ -432,6 +446,9 @@ const accordionDocsView = defineView<
   AccordionDocs.Message
 >(AccordionDocs.view)
 const calendarDocsView = defineView<CalendarDocs.Model, CalendarDocs.Message>(CalendarDocs.view)
+const catalogDocsView = defineView<ComponentCatalog.Model, ComponentCatalog.Message, string>(
+  (catalogModel, slug) => ComponentCatalog.view(catalogModel, slug),
+)
 const blocksRegistryView = defineView<Blocks.Model, Blocks.Message, string>(
   (blocksModel, blockId) => Blocks.view(blocksModel, blockId),
 )
@@ -643,7 +660,17 @@ const pageView = (model: Model): Html => {
                 }),
               )
           : ComponentCatalog.hasCatalogPage(component)
-            ? keyed(`page-docs-${component}`, ComponentCatalog.view(component))
+            ? keyed(
+                `page-docs-${component}`,
+                h.submodel({
+                  slotId: `docs-${component}`,
+                  model: model.catalogDocs,
+                  view: catalogDocsView,
+                  viewInputs: component,
+                  toParentMessage: (message: ComponentCatalog.Message): Message =>
+                    GotCatalogDocsMessage({ message }),
+                }),
+              )
             : keyed(
                 'page-not-found',
                 notFoundView(`/docs/components/${component}`),
