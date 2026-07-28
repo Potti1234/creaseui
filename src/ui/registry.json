@@ -279,6 +279,28 @@
       ]
     },
     {
+      "name": "carousel",
+      "type": "registry:ui",
+      "title": "Carousel",
+      "description": "A shadcn-styled Carousel component for Foldkit.",
+      "dependencies": [
+        "effect@4.0.0-beta.88",
+        "foldkit@^0.121.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "carousel.ts",
+          "type": "registry:ui",
+          "target": "@ui/carousel.ts"
+        }
+      ]
+    },
+    {
       "name": "chart",
       "type": "registry:ui",
       "title": "Chart",
@@ -933,6 +955,28 @@
           "path": "radio-group.ts",
           "type": "registry:ui",
           "target": "@ui/radio-group.ts"
+        }
+      ]
+    },
+    {
+      "name": "resizable",
+      "type": "registry:ui",
+      "title": "Resizable",
+      "description": "A shadcn-styled Resizable component for Foldkit.",
+      "dependencies": [
+        "effect@4.0.0-beta.88",
+        "foldkit@^0.121.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "resizable.ts",
+          "type": "registry:ui",
+          "target": "@ui/resizable.ts"
         }
       ]
     },

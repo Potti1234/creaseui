@@ -42,7 +42,5 @@
     }
   ],
   "missing": [
-    { "component": "carousel", "priority": "medium", "strategy": "Dedicated subscription-driven model" },
-    { "component": "resizable", "priority": "medium", "strategy": "Pointer and keyboard resize model" }
   ]
 }
