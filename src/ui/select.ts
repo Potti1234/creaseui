@@ -1,0 +1,207 @@
+import { Option } from 'effect'
+import { childAttributes, type Html, html } from 'foldkit/html'
+
+import { Listbox as ListboxPrimitive } from '@foldkit/ui'
+
+import * as Icon from '@/lib/icon'
+import { cn } from '@/lib/utils'
+
+/* Ported from shadcn/ui select.tsx on top of foldkit's single-select
+   config-driven Listbox submodel.
+
+   Class strings are shadcn's, with these adaptations:
+   - Radix highlighted state is driven by foldkit's data-active attribute.
+   - Button disabled styles use data-disabled/aria-disabled because foldkit's
+     Listbox button is not natively disabled.
+   - Radix keyframe animations become finite transitions driven by foldkit's
+     data-closed transition phase. Pass isAnimated: true to init.
+   - The panel uses foldkit Anchor's --button-width variable and forced inline
+     available-height/positioning instead of Radix positioning variables.
+
+   PORT NOTE: foldkit Listbox does not expose per-item attributes. The
+   select-item data slot is therefore placed on the item's content span rather
+   than the primitive's outer role=option element. Arbitrary consumer items are
+   projected through itemToValue, so their values must be unique. */
+
+export const Model = ListboxPrimitive.Model
+export type Model = typeof Model.Type
+export const Message = ListboxPrimitive.Message
+export type Message = typeof Message.Type
+export const OutMessage = ListboxPrimitive.OutMessage
+export type OutMessage<Value extends string = string> =
+  ListboxPrimitive.OutMessage<Value>
+
+export const init = ListboxPrimitive.init
+export const create = ListboxPrimitive.create
+export const update = ListboxPrimitive.create().update
+
+const TRIGGER_CLASS =
+  "flex w-fit items-center justify-between gap-2 rounded-md border border-input bg-transparent px-2.5 py-1.5 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground data-[size=default]:h-8 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
+
+const CONTENT_CLASS =
+  'relative z-50 w-(--button-width) min-w-[8rem] overflow-x-hidden overflow-y-auto rounded-md border bg-popover text-popover-foreground shadow-md transition duration-200 ease-out data-[closed]:opacity-0 data-[closed]:scale-95'
+
+const VIEWPORT_CLASS = 'w-full scroll-my-1 p-1'
+
+const ITEM_CLASS =
+  "group relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[active]:bg-accent data-[active]:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2"
+
+const INDICATOR_CLASS =
+  'absolute right-2 flex size-3.5 items-center justify-center opacity-0 group-data-[selected]:opacity-100'
+
+const LABEL_CLASS = 'px-2 py-1.5 text-xs text-muted-foreground'
+
+const SEPARATOR_CLASS = 'pointer-events-none -mx-1 my-1 h-px bg-border'
+
+const BACKDROP_CLASS = 'fixed inset-0 z-40'
+
+const ANCHOR: ListboxPrimitive.AnchorConfig = {
+  placement: 'bottom-start',
+  gap: 4,
+}
+
+export type SelectSize = 'sm' | 'default'
+
+export type SelectProps<Item, Value extends string, Msg> = Readonly<{
+  model: Model
+  toParentMessage: (message: Message) => Msg
+  items: ReadonlyArray<Item>
+  itemToValue: (item: Item) => Value
+  itemToLabel: (item: Item) => string
+  placeholder?: string
+  triggerClass?: string
+  size?: SelectSize
+  ariaLabel?: string
+  itemGroupKey?: (item: Item, index: number) => string
+  groupToHeading?: (groupKey: string) => string | undefined
+}>
+
+export const select = <Item, Value extends string, Msg>(
+  props: SelectProps<Item, Value, Msg>,
+): Html => {
+  const h = html<Msg>()
+  const hs = html<Message>()
+  const listbox = ListboxPrimitive.create()
+  const values = props.items.map(props.itemToValue)
+  const itemForValue = (value: string): Item | undefined =>
+    props.items.find((item) => props.itemToValue(item) === value)
+  const labelForValue = (value: string): string => {
+    const item = itemForValue(value)
+    return item === undefined ? value : props.itemToLabel(item)
+  }
+  const selectedLabel = Option.match(props.model.maybeSelectedItem, {
+    onNone: () => undefined,
+    onSome: labelForValue,
+  })
+
+  const viewInputs: ListboxPrimitive.ViewInputs<string> = {
+    items: values,
+    itemToValue: (value) => value,
+    itemToSearchText: labelForValue,
+    itemToConfig: (value) => ({
+      className: ITEM_CLASS,
+      content: hs.span(
+        [hs.DataAttribute('slot', 'select-item'), hs.Class('contents')],
+        [
+          hs.span(
+            [
+              hs.DataAttribute('slot', 'select-item-indicator'),
+              hs.Class(INDICATOR_CLASS),
+            ],
+            [Icon.check<Message>({ class: 'size-4' })],
+          ),
+          hs.span([], [labelForValue(value)]),
+        ],
+      ),
+    }),
+    buttonContent: hs.span(
+      [hs.Class('contents')],
+      [
+        hs.span(
+          [hs.DataAttribute('slot', 'select-value')],
+          [selectedLabel ?? props.placeholder ?? ''],
+        ),
+        Icon.chevronDown<Message>({ class: 'size-4 opacity-50' }),
+      ],
+    ),
+    buttonClassName: cn(TRIGGER_CLASS, props.triggerClass),
+    buttonAttributes: childAttributes([
+      hs.DataAttribute('slot', 'select-trigger'),
+      hs.DataAttribute('size', props.size ?? 'default'),
+      ...(selectedLabel === undefined
+        ? [hs.DataAttribute('placeholder', '')]
+        : []),
+    ]),
+    itemsClassName: CONTENT_CLASS,
+    itemsAttributes: childAttributes([
+      hs.DataAttribute('slot', 'select-content'),
+    ]),
+    itemsScrollClassName: VIEWPORT_CLASS,
+    backdropClassName: BACKDROP_CLASS,
+    anchor: ANCHOR,
+    attributes: childAttributes([hs.DataAttribute('slot', 'select')]),
+    ...(props.itemGroupKey === undefined
+      ? {}
+      : {
+          itemGroupKey: (value: string, index: number): string => {
+            const item = itemForValue(value)
+            return item === undefined
+              ? ''
+              : (props.itemGroupKey?.(item, index) ?? '')
+          },
+          groupToHeading: (groupKey: string) => {
+            const heading = props.groupToHeading?.(groupKey)
+            return heading === undefined
+              ? undefined
+              : {
+                  content: hs.span(
+                    [hs.DataAttribute('slot', 'select-label')],
+                    [heading],
+                  ),
+                  className: LABEL_CLASS,
+                }
+          },
+          groupAttributes: childAttributes([
+            hs.DataAttribute('slot', 'select-group'),
+          ]),
+          separatorClassName: SEPARATOR_CLASS,
+          separatorAttributes: childAttributes([
+            hs.DataAttribute('slot', 'select-separator'),
+          ]),
+        }),
+    ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
+  }
+
+  return h.submodel<typeof listbox.view>({
+    slotId: props.model.id,
+    model: props.model,
+    view: listbox.view,
+    viewInputs,
+    toParentMessage: props.toParentMessage,
+  })
+}
+
+/*
+   Minimal wiring:
+
+   type Color = Readonly<{ value: 'red' | 'blue'; label: string }>
+   const ColorSelect = create<Color['value']>()
+
+   // Model: { colorSelect: Model }
+   // Message: GotColorSelectMessage({ message: Message })
+   // Init: colorSelect: init({ id: 'color', isAnimated: true })
+   //
+   // Update:
+   // const [colorSelect, commands, maybeOutMessage] =
+   //   ColorSelect.update(model.colorSelect, message)
+   //
+   // View:
+   // select<Color, Color['value'], AppMessage>({
+   //   model: model.colorSelect,
+   //   toParentMessage: message => GotColorSelectMessage({ message }),
+   //   items: colors,
+   //   itemToValue: color => color.value,
+   //   itemToLabel: color => color.label,
+   //   placeholder: 'Select a color',
+   // })
+*/

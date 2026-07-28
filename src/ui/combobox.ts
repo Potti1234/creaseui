@@ -1,0 +1,215 @@
+import { Option } from 'effect'
+import { childAttributes, type Html, html } from 'foldkit/html'
+
+import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
+
+import * as Icon from '@/lib/icon'
+import { cn } from '@/lib/utils'
+
+/* shadcn's combobox is a Popover + Command composition rather than a
+   standalone primitive. This ports that look onto foldkit's single-select,
+   config-driven Combobox submodel.
+
+   Command's selected/highlighted state is driven by foldkit's data-active
+   attribute, and its disabled input/item styles use foldkit's data-disabled
+   and aria-disabled signals. Popup animation uses a finite data-closed
+   transition; pass isAnimated: true to init.
+
+   PORT NOTE: foldkit Combobox only accepts strings as its internal items, so
+   arbitrary consumer items are projected through itemToValue before being
+   handed to the primitive. Values must be unique.
+
+   PORT NOTE: foldkit Combobox exposes its input-wrapper suffix as a toggle
+   button rather than an arbitrary decorative slot. The search icon uses that
+   button and is visually ordered before the input. Per-item data attributes
+   are not exposed, so command-item is placed on the inner content span. */
+
+export const Model = ComboboxPrimitive.Model
+export type Model = typeof Model.Type
+export const Message = ComboboxPrimitive.Message
+export type Message = typeof Message.Type
+export const OutMessage = ComboboxPrimitive.OutMessage
+export type OutMessage<Value extends string = string> =
+  ComboboxPrimitive.OutMessage<Value>
+
+export const init = ComboboxPrimitive.init
+export const create = ComboboxPrimitive.create
+export const update = ComboboxPrimitive.create().update
+
+const ROOT_CLASS =
+  'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground'
+
+const INPUT_WRAPPER_CLASS =
+  'relative flex h-9 items-center gap-2 border-b px-3 data-[size=sm]:h-8'
+
+const INPUT_CLASS =
+  'flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden placeholder:text-muted-foreground data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50'
+
+const SEARCH_BUTTON_CLASS =
+  'order-first shrink-0 opacity-50 outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px]'
+
+const CONTENT_CLASS =
+  'z-50 w-(--button-width) min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md transition duration-200 ease-out data-[closed]:opacity-0 data-[closed]:scale-95'
+
+const LIST_CLASS =
+  'max-h-[300px] scroll-py-1 overflow-x-hidden overflow-y-auto p-1'
+
+const ITEM_CLASS =
+  "group relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[active]:bg-accent data-[active]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
+
+const INDICATOR_CLASS = 'ml-auto opacity-0 group-data-[selected]:opacity-100'
+
+const GROUP_CLASS =
+  'overflow-hidden p-1 text-foreground [&_[data-slot=combobox-group-heading]]:px-2 [&_[data-slot=combobox-group-heading]]:py-1.5 [&_[data-slot=combobox-group-heading]]:text-xs [&_[data-slot=combobox-group-heading]]:font-medium [&_[data-slot=combobox-group-heading]]:text-muted-foreground'
+
+const SEPARATOR_CLASS = '-mx-1 h-px bg-border'
+
+const BACKDROP_CLASS = 'fixed inset-0 z-40'
+
+export type ComboboxSize = 'sm' | 'default'
+
+export type ComboboxProps<Item, Value extends string, Msg> = Readonly<{
+  model: Model
+  toParentMessage: (message: Message) => Msg
+  items: ReadonlyArray<Item>
+  itemToValue: (item: Item) => Value
+  itemToLabel: (item: Item) => string
+  placeholder?: string
+  triggerClass?: string
+  size?: ComboboxSize
+  ariaLabel?: string
+  itemGroupKey?: (item: Item, index: number) => string
+  groupToHeading?: (groupKey: string) => string | undefined
+}>
+
+export const combobox = <Item, Value extends string, Msg>(
+  props: ComboboxProps<Item, Value, Msg>,
+): Html => {
+  const h = html<Msg>()
+  const hc = html<Message>()
+  const comboboxPrimitive = ComboboxPrimitive.create<Value>()
+  const itemForValue = (value: Value): Item | undefined =>
+    props.items.find((item) => props.itemToValue(item) === value)
+  const labelForValue = (value: Value): string => {
+    const item = itemForValue(value)
+    return item === undefined ? value : props.itemToLabel(item)
+  }
+  const query = props.model.inputValue.trim().toLocaleLowerCase()
+  const isShowingSelectedLabel = Option.exists(
+    props.model.maybeSelectedDisplayText,
+    (displayText) => displayText === props.model.inputValue,
+  )
+  const values = props.items
+    .filter(
+      (item) =>
+        query === '' ||
+        isShowingSelectedLabel ||
+        props.itemToLabel(item).toLocaleLowerCase().includes(query),
+    )
+    .map(props.itemToValue)
+
+  return h.submodel({
+    slotId: props.model.id,
+    model: props.model,
+    view: comboboxPrimitive.view,
+    viewInputs: {
+      items: values,
+      itemToValue: (value) => value,
+      itemToDisplayText: labelForValue,
+      itemToConfig: (value) => ({
+        className: ITEM_CLASS,
+        content: hc.span(
+          [hc.DataAttribute('slot', 'command-item'), hc.Class('contents')],
+          [
+            hc.span([], [labelForValue(value)]),
+            hc.span(
+              [hc.Class(INDICATOR_CLASS)],
+              [Icon.check<Message>({ class: 'size-4' })],
+            ),
+          ],
+        ),
+      }),
+      inputClassName: INPUT_CLASS,
+      inputAttributes: childAttributes([
+        hc.DataAttribute('slot', 'command-input'),
+      ]),
+      ...(props.placeholder === undefined
+        ? {}
+        : { inputPlaceholder: props.placeholder }),
+      inputWrapperClassName: cn(INPUT_WRAPPER_CLASS, props.triggerClass),
+      inputWrapperAttributes: childAttributes([
+        hc.DataAttribute('slot', 'command-input-wrapper'),
+        hc.DataAttribute('size', props.size ?? 'default'),
+      ]),
+      buttonContent: Icon.search<Message>({ class: 'size-4' }),
+      buttonClassName: SEARCH_BUTTON_CLASS,
+      buttonAttributes: childAttributes([hc.AriaLabel('Toggle options')]),
+      openOnFocus: true,
+      itemsClassName: CONTENT_CLASS,
+      itemsAttributes: childAttributes([
+        hc.DataAttribute('slot', 'command-list'),
+      ]),
+      itemsScrollClassName: LIST_CLASS,
+      backdropClassName: BACKDROP_CLASS,
+      className: ROOT_CLASS,
+      attributes: childAttributes([hc.DataAttribute('slot', 'command')]),
+      anchor: { placement: 'bottom-start', gap: 4 },
+      ...(props.itemGroupKey === undefined
+        ? {}
+        : {
+            itemGroupKey: (value: Value, index: number): string => {
+              const item = itemForValue(value)
+              return item === undefined
+                ? ''
+                : (props.itemGroupKey?.(item, index) ?? '')
+            },
+            groupToHeading: (groupKey: string) => {
+              const heading = props.groupToHeading?.(groupKey)
+              return heading === undefined
+                ? undefined
+                : {
+                    content: hc.span(
+                      [hc.DataAttribute('slot', 'combobox-group-heading')],
+                      [heading],
+                    ),
+                  }
+            },
+            groupClassName: GROUP_CLASS,
+            groupAttributes: childAttributes([
+              hc.DataAttribute('slot', 'command-group'),
+            ]),
+            separatorClassName: SEPARATOR_CLASS,
+            separatorAttributes: childAttributes([
+              hc.DataAttribute('slot', 'command-separator'),
+            ]),
+          }),
+      ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
+    },
+    toParentMessage: props.toParentMessage,
+  })
+}
+
+/*
+   Minimal wiring:
+
+   type Framework = Readonly<{ value: 'foldkit' | 'elm'; label: string }>
+   const FrameworkCombobox = create<Framework['value']>()
+
+   // Model: { frameworkCombobox: Model }
+   // Message: GotFrameworkComboboxMessage({ message: Message })
+   // Init: frameworkCombobox: init({ id: 'framework', isAnimated: true })
+   //
+   // Update:
+   // const [frameworkCombobox, commands, maybeOutMessage] =
+   //   FrameworkCombobox.update(model.frameworkCombobox, message)
+   //
+   // View:
+   // combobox<Framework, Framework['value'], AppMessage>({
+   //   model: model.frameworkCombobox,
+   //   toParentMessage: message => GotFrameworkComboboxMessage({ message }),
+   //   items: frameworks,
+   //   itemToValue: framework => framework.value,
+   //   itemToLabel: framework => framework.label,
+   //   placeholder: 'Search frameworks...',
+   // })
+*/
