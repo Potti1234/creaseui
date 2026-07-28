@@ -35,15 +35,16 @@ Foldkit consumers need a `components.json` with TypeScript output and aliases:
 `tsx` must be `true`: the shadcn CLI uses this flag to select TypeScript output,
 even though Crease UI contains no JSX or React.
 
-Install a stateless and a stateful component with:
+Install stateless and stateful components with:
 
 ```sh
 npx shadcn@latest add Potti1234/creaseui/button
+npx shadcn@latest add Potti1234/creaseui/accordion
 npx shadcn@latest add Potti1234/creaseui/dialog
 ```
 
 The repository's end-to-end proof creates a disposable Foldkit/Vite consumer,
-installs both items from GitHub, and runs its typecheck and production build:
+installs the items from GitHub, and runs its typecheck and production build:
 
 ```sh
 npm run test:registry

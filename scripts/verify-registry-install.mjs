@@ -69,10 +69,14 @@ writeFileSync(
   `import './styles.css'
 
 import { button } from '@/ui/button'
+import * as Accordion from '@/ui/accordion'
 import * as Dialog from '@/ui/dialog'
 
 export const smoke = {
   button,
+  accordion: Accordion.accordion,
+  accordionInit: Accordion.init,
+  accordionUpdate: Accordion.update,
   dialog: Dialog.dialog,
   dialogInit: Dialog.init,
   dialogUpdate: Dialog.update,
@@ -85,6 +89,7 @@ run(npx, [
   'shadcn@latest',
   'add',
   'Potti1234/creaseui/button',
+  'Potti1234/creaseui/accordion',
   'Potti1234/creaseui/dialog',
   '--yes',
 ])
