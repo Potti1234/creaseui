@@ -230,7 +230,9 @@ export const accordion = <Msg>(props: AccordionProps<Msg>): Html => {
             },
           },
           toParentMessage: childMessage =>
-            GotDisclosureMessage({ index, message: childMessage }),
+            props.toParentMessage(
+              GotDisclosureMessage({ index, message: childMessage }),
+            ),
         }),
       ]
     }),
