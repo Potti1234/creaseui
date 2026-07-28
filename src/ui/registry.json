@@ -1096,6 +1096,7 @@
       "description": "A shadcn-styled Sidebar component for Foldkit.",
       "dependencies": [
         "class-variance-authority@^0.7.1",
+        "effect@4.0.0-beta.88",
         "foldkit@^0.121.0"
       ],
       "registryDependencies": [

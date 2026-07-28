@@ -4,13 +4,7 @@
     "complete": ["all catalog components"],
     "next": []
   },
-  "fidelity": [
-    {
-      "component": "sidebar",
-      "priority": "high",
-      "gap": "Mobile sheet, keyboard shortcut, persistence, and collapsed tooltips are incomplete."
-    }
-  ],
+  "fidelity": [],
   "missing": [
   ]
 }

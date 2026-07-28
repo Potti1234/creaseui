@@ -1,21 +1,68 @@
 import { type VariantProps, cva } from 'class-variance-authority'
+import { Effect, Option, Schema as S, Stream } from 'effect'
+import { Command } from 'foldkit'
 import { type Html, html } from 'foldkit/html'
+import { m } from 'foldkit/message'
+import * as Subscription from 'foldkit/subscription'
 
 import * as Icon from '@/lib/icon'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/ui/button'
 
-/* Ported from shadcn/ui sidebar.tsx as a stateless foldkit view system.
+/* Ported from shadcn/ui sidebar.tsx as a Foldkit view system.
 
    React context is unnecessary here: pages own the open boolean and pass its
    derived state to sidebarProvider/sidebar. Descendant styling flows through
    the same group and data selectors as shadcn.
 
-   PORT NOTE: Pages own keyboard shortcut subscriptions and persistence. This
-   module does not install cmd/ctrl+b handling or write the sidebar cookie. */
+   Pages may keep owning the boolean directly, or use the Model/update and
+   subscriptions helpers below for persistence and cmd/ctrl+b behavior. */
 
 const SIDEBAR_WIDTH = '16rem'
 const SIDEBAR_WIDTH_ICON = '3rem'
+const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
+
+export const Model = S.Struct({ isOpen: S.Boolean, isMobileOpen: S.Boolean, storageKey: S.String })
+export type Model = typeof Model.Type
+export const Toggled = m('Toggled')
+export const ToggledMobile = m('ToggledMobile')
+export const SetMobileOpen = m('SetMobileOpen', { isOpen: S.Boolean })
+export const CompletedPersist = m('CompletedPersist')
+export const Message = S.Union([Toggled, ToggledMobile, SetMobileOpen, CompletedPersist])
+export type Message = typeof Message.Type
+
+export const init = (config: Readonly<{ defaultOpen?: boolean; storageKey?: string }> = {}): Model => {
+  const storageKey = config.storageKey ?? 'sidebar_state'
+  const cookieValue = typeof document === 'undefined'
+    ? undefined
+    : document.cookie.split('; ').find(value => value.startsWith(`${storageKey}=`))?.split('=')[1]
+  return { isOpen: cookieValue === undefined ? (config.defaultOpen ?? true) : cookieValue === 'true', isMobileOpen: false, storageKey }
+}
+
+const Persist = Command.define('SidebarPersist', { key: S.String, isOpen: S.Boolean }, CompletedPersist)(({ key, isOpen }) => Effect.sync(() => { document.cookie = `${key}=${String(isOpen)}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}; samesite=lax` }).pipe(Effect.as(CompletedPersist())))
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
+export const update = (model: Model, message: Message): UpdateReturn => {
+  switch (message._tag) {
+    case 'Toggled': {
+      const isOpen = !model.isOpen
+      return [{ ...model, isOpen }, [Persist({ key: model.storageKey, isOpen })]]
+    }
+    case 'ToggledMobile': return [{ ...model, isMobileOpen: !model.isMobileOpen }, []]
+    case 'SetMobileOpen': return [{ ...model, isMobileOpen: message.isOpen }, []]
+    case 'CompletedPersist': return [model, []]
+  }
+}
+
+export const shortcut = <Msg>(toMessage: (message: Message) => Msg): Stream.Stream<Msg> =>
+  Subscription.fromEventFilterMap<KeyboardEvent, Msg>({
+    target: document,
+    type: 'keydown',
+    toMessage: event => {
+      if (event.key.toLowerCase() !== 'b' || (!event.metaKey && !event.ctrlKey)) return Option.none()
+      event.preventDefault()
+      return Option.some(toMessage(Toggled()))
+    },
+  })
 
 export type SidebarState = 'expanded' | 'collapsed'
 export type SidebarSide = 'left' | 'right'
@@ -71,15 +118,17 @@ export const sidebarProvider = <Msg>(
   )
 }
 
-export type SidebarProps = Slot &
+export type SidebarProps<Msg> = Slot &
   Readonly<{
     state?: SidebarState
     side?: SidebarSide
     variant?: SidebarVariant
     collapsible?: SidebarCollapsible
+    isMobileOpen?: boolean
+    onMobileDismiss?: Msg
   }>
 
-export const sidebar = <Msg>(props: SidebarProps): Html => {
+export const sidebar = <Msg>(props: SidebarProps<Msg>): Html => {
   const h = html<Msg>()
   const state = props.state ?? 'expanded'
   const side = props.side ?? 'left'
@@ -101,8 +150,6 @@ export const sidebar = <Msg>(props: SidebarProps): Html => {
     )
   }
 
-  /* PORT NOTE: shadcn's mobile branch uses a Sheet with separate mobile state.
-     This desktop-first port renders the desktop branch only. */
   return h.div(
     [
       h.DataAttribute('state', state),
@@ -113,15 +160,27 @@ export const sidebar = <Msg>(props: SidebarProps): Html => {
       h.DataAttribute('variant', variant),
       h.DataAttribute('side', side),
       h.DataAttribute('slot', 'sidebar'),
-      h.Class('group peer hidden text-sidebar-foreground md:block'),
+      h.Class('group peer text-sidebar-foreground'),
     ],
     [
+      ...((props.isMobileOpen ?? false)
+        ? [
+            h.button(
+              [h.Type('button'), h.AriaLabel('Close sidebar'), ...(props.onMobileDismiss === undefined ? [] : [h.OnClick(props.onMobileDismiss)]), h.Class('fixed inset-0 z-40 bg-black/50 md:hidden')],
+              [],
+            ),
+            h.aside(
+              [h.DataAttribute('slot', 'sidebar-mobile'), h.AriaLabel('Sidebar'), h.Class(cn('fixed inset-y-0 z-50 flex w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground shadow-xl md:hidden', side === 'left' ? 'left-0 border-r' : 'right-0 border-l', props.class))],
+              [...props.children],
+            ),
+          ]
+        : []),
       h.div(
         [
           h.DataAttribute('slot', 'sidebar-gap'),
           h.Class(
             cn(
-              'relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear',
+              'relative hidden w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear md:block',
               'group-data-[collapsible=offcanvas]:w-0',
               'group-data-[side=right]:rotate-180',
               variant === 'floating' || variant === 'inset'
@@ -462,11 +521,21 @@ export const sidebarMenuButton = <Msg>(
     ),
   ]
 
-  /* PORT NOTE: tooltip-on-icon-collapse needs one Tooltip submodel per item.
-     The tooltip prop is accepted for clean block ports but is not rendered. */
+  const children = [
+    ...props.children,
+    ...(props.tooltip === undefined
+      ? []
+      : [
+          h.span(
+            [h.Role('tooltip'), h.Class('pointer-events-none fixed left-[calc(var(--sidebar-width-icon)+0.5rem)] z-50 hidden whitespace-nowrap rounded-md bg-primary px-2 py-1 text-xs text-primary-foreground opacity-0 shadow-md transition-opacity group-data-[collapsible=icon]:peer-hover/menu-button:block group-data-[collapsible=icon]:peer-hover/menu-button:opacity-100 group-data-[collapsible=icon]:peer-focus-visible/menu-button:block group-data-[collapsible=icon]:peer-focus-visible/menu-button:opacity-100')],
+            [props.tooltip],
+          ),
+        ]),
+  ]
+
   return props.href === undefined
-    ? h.button([...attributes, h.Type('button')], [...props.children])
-    : h.a([h.Href(props.href), ...attributes], [...props.children])
+    ? h.button([...attributes, h.Type('button'), ...(props.tooltip === undefined ? [] : [h.Title(props.tooltip), h.AriaLabel(props.tooltip)])], children)
+    : h.a([h.Href(props.href), ...attributes, ...(props.tooltip === undefined ? [] : [h.Title(props.tooltip), h.AriaLabel(props.tooltip)])], children)
 }
 
 export type SidebarMenuActionProps<Msg> = SidebarActionProps<Msg> &
