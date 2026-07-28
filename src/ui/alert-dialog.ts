@@ -7,11 +7,9 @@ import { buttonVariants } from '@/ui/button'
 
 /* Ported from shadcn/ui alert-dialog.tsx on top of the foldkit Dialog
    submodel. Positioning and animations use the native fullscreen <dialog>
-   wrapper and foldkit's data-closed transition phase.
-
-   PORT NOTE: Radix AlertDialog prevents outside-click dismissal. The foldkit
-   Dialog primitive always wires its backdrop to RequestedClose and RenderInfo
-   has no way to suppress that behavior, so backdrop clicks close this port. */
+   wrapper and foldkit's data-closed transition phase. Unlike a regular dialog,
+   the overlay intentionally omits the primitive backdrop click handler so an
+   alert dialog can only be dismissed by an explicit action or Escape. */
 
 export const Model = DialogPrimitive.Model
 export type Model = typeof Model.Type
@@ -76,12 +74,36 @@ export const alertDialog = <Msg>(props: AlertDialogProps<Msg>): Html => {
     viewInputs: {
       toView: ({
         dialog: dialogAttributes,
-        backdrop,
         panel,
         closeButton,
         isVisible,
       }: DialogPrimitive.RenderInfo) => {
         const hd = html<Message>()
+        const transitionState = props.model.animation.transitionState
+        const overlayAnimationAttributes =
+          transitionState === 'EnterStart'
+            ? [
+                hd.DataAttribute('closed', ''),
+                hd.DataAttribute('enter', ''),
+                hd.DataAttribute('transition', ''),
+              ]
+            : transitionState === 'EnterAnimating'
+              ? [
+                  hd.DataAttribute('enter', ''),
+                  hd.DataAttribute('transition', ''),
+                ]
+              : transitionState === 'LeaveStart'
+                ? [
+                    hd.DataAttribute('leave', ''),
+                    hd.DataAttribute('transition', ''),
+                  ]
+                : transitionState === 'LeaveAnimating'
+                  ? [
+                      hd.DataAttribute('closed', ''),
+                      hd.DataAttribute('leave', ''),
+                      hd.DataAttribute('transition', ''),
+                    ]
+                  : []
 
         return hd.dialog(
           [
@@ -93,7 +115,8 @@ export const alertDialog = <Msg>(props: AlertDialogProps<Msg>): Html => {
             ? [
                 hd.div(
                   [
-                    ...backdrop,
+                    hd.Style({ minHeight: '100vh' }),
+                    ...overlayAnimationAttributes,
                     hd.DataAttribute('slot', 'alert-dialog-overlay'),
                     hd.Class(OVERLAY_CLASS),
                   ],
