@@ -1,12 +1,27 @@
 {
   "name": "creaseui",
   "version": "0.1.0",
+  "description": "A shadcn/ui-inspired component library for Foldkit.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Potti1234/creaseui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Potti1234/creaseui/issues"
+  },
+  "homepage": "https://github.com/Potti1234/creaseui#readme",
+  "engines": {
+    "node": ">=22.6.0"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node --test --experimental-strip-types",
+    "check": "npm run typecheck && npm test && npm run build"
   },
   "dependencies": {
     "@effect/platform-browser": "4.0.0-beta.88",
