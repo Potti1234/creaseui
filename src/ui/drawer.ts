@@ -1,51 +1,52 @@
+import { Option, Schema as S } from 'effect'
+import { Command } from 'foldkit'
 import { type ChildAttribute, type Html, html } from 'foldkit/html'
+import { m } from 'foldkit/message'
 
 import { Dialog as DialogPrimitive } from '@foldkit/ui'
 
 import { cn } from '@/lib/utils'
 
-/* Ported from shadcn/ui drawer.tsx on top of the foldkit Dialog submodel.
-   This port supports the bottom direction only and uses the fullscreen native
-   <dialog> as its edge-alignment context.
-
-   PORT NOTE: vaul's pointer-driven drag-to-dismiss behavior is not available
-   from the foldkit Dialog primitive, so the handle is visual only. */
-
-export const Model = DialogPrimitive.Model
+export const Model = S.Struct({ dialog: DialogPrimitive.Model, dragStart: S.Option(S.Number), dragOffset: S.Number })
 export type Model = typeof Model.Type
-export const Message = DialogPrimitive.Message
+export const GotDialogMessage = m('GotDialogMessage', { message: DialogPrimitive.Message })
+export const StartedDrag = m('StartedDrag', { position: S.Number })
+export const Dragged = m('Dragged', { offset: S.Number })
+export const EndedDrag = m('EndedDrag')
+export const Message = S.Union([GotDialogMessage, StartedDrag, Dragged, EndedDrag])
 export type Message = typeof Message.Type
 export const OutMessage = DialogPrimitive.OutMessage
 export type OutMessage = typeof OutMessage.Type
 
-export const init = DialogPrimitive.init
-export const update = DialogPrimitive.update
-export const open = DialogPrimitive.open
-export const close = DialogPrimitive.close
+export const init = (config: DialogPrimitive.InitConfig): Model => ({ dialog: DialogPrimitive.init(config), dragStart: Option.none(), dragOffset: 0 })
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>, Option.Option<OutMessage>]
 
-const DIALOG_CLASS =
-  'bg-transparent p-0 open:flex flex-col items-stretch justify-end'
+const mapDialogResult = (model: Model, result: ReturnType<typeof DialogPrimitive.update>): UpdateReturn => {
+  const [dialog, commands, out] = result
+  return [{ ...model, dialog }, Command.mapMessages(commands, message => GotDialogMessage({ message })), out]
+}
 
-const OVERLAY_CLASS =
-  'fixed inset-0 z-50 bg-black/50 transition duration-200 ease-out data-[closed]:opacity-0'
+export const update = (model: Model, message: Message): UpdateReturn => {
+  switch (message._tag) {
+    case 'GotDialogMessage': return mapDialogResult(model, DialogPrimitive.update(model.dialog, message.message))
+    case 'StartedDrag': return [{ ...model, dragStart: Option.some(message.position), dragOffset: 0 }, [], Option.none()]
+    case 'Dragged': return [{ ...model, dragOffset: Math.max(0, message.offset) }, [], Option.none()]
+    case 'EndedDrag':
+      return model.dragOffset >= 120
+        ? mapDialogResult({ ...model, dragStart: Option.none(), dragOffset: 0 }, DialogPrimitive.close(model.dialog))
+        : [{ ...model, dragStart: Option.none(), dragOffset: 0 }, [], Option.none()]
+  }
+}
 
-const CONTENT_CLASS =
-  'group/drawer-content relative z-50 mt-24 flex h-auto max-h-[80vh] flex-col rounded-t-lg border-t bg-background transition duration-200 ease-out data-[closed]:translate-y-full'
+export const open = (model: Model): UpdateReturn => mapDialogResult(model, DialogPrimitive.open(model.dialog))
+export const close = (model: Model): UpdateReturn => mapDialogResult(model, DialogPrimitive.close(model.dialog))
 
-const HANDLE_CLASS =
-  'mx-auto mt-4 h-2 w-[100px] shrink-0 rounded-full bg-muted'
-
-const HEADER_CLASS =
-  'flex flex-col gap-0.5 p-4 text-center md:gap-1.5 md:text-left'
-
+const OVERLAY_CLASS = 'fixed inset-0 z-50 bg-black/50 transition duration-200 ease-out data-[closed]:opacity-0'
+const HEADER_CLASS = 'flex flex-col gap-0.5 p-4 text-center md:gap-1.5 md:text-left'
 const FOOTER_CLASS = 'mt-auto flex flex-col gap-2 p-4'
-const TITLE_CLASS = 'font-semibold text-foreground'
-const DESCRIPTION_CLASS = 'text-sm text-muted-foreground'
 
-export type DrawerSlots = Readonly<{
-  closeButton: ReadonlyArray<ChildAttribute>
-}>
-
+export type DrawerDirection = 'top' | 'right' | 'bottom' | 'left'
+export type DrawerSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute> }>
 export type DrawerProps<Msg> = Readonly<{
   model: Model
   toParentMessage: (message: Message) => Msg
@@ -53,119 +54,67 @@ export type DrawerProps<Msg> = Readonly<{
   description?: string
   content?: (slots: DrawerSlots) => ReadonlyArray<Html>
   footer?: (slots: DrawerSlots) => ReadonlyArray<Html>
-  direction?: 'bottom'
+  direction?: DrawerDirection
   class?: string
 }>
+
+const axisPosition = (direction: DrawerDirection, x: number, y: number): number => direction === 'left' || direction === 'right' ? x : y
+const offsetFrom = (direction: DrawerDirection, start: number, current: number): number => direction === 'top' || direction === 'left' ? start - current : current - start
+const contentClass = (direction: DrawerDirection): string => cn(
+  'group/drawer-content fixed z-50 flex flex-col border bg-background transition-[transform] duration-200 ease-out',
+  direction === 'bottom' && 'inset-x-0 bottom-0 mt-24 max-h-[80vh] rounded-t-lg border-t',
+  direction === 'top' && 'inset-x-0 top-0 mb-24 max-h-[80vh] rounded-b-lg border-b',
+  direction === 'left' && 'inset-y-0 left-0 mr-24 w-3/4 max-w-sm rounded-r-lg border-r',
+  direction === 'right' && 'inset-y-0 right-0 ml-24 w-3/4 max-w-sm rounded-l-lg border-l',
+)
+const dragTransform = (direction: DrawerDirection, offset: number): string => {
+  const value = `${offset}px`
+  return direction === 'bottom' ? `translateY(${value})` : direction === 'top' ? `translateY(-${value})` : direction === 'right' ? `translateX(${value})` : `translateX(-${value})`
+}
 
 export const drawer = <Msg>(props: DrawerProps<Msg>): Html => {
   const h = html<Msg>()
   const direction = props.direction ?? 'bottom'
+  const start = Option.getOrUndefined(props.model.dragStart)
 
-  return h.submodel({
-    slotId: props.model.id,
-    model: props.model,
-    view: DialogPrimitive.view,
-    viewInputs: {
-      toView: ({
-        dialog: dialogAttributes,
-        backdrop,
-        panel,
-        closeButton,
-        isVisible,
-      }: DialogPrimitive.RenderInfo) => {
-        const hd = html<Message>()
-        const slots: DrawerSlots = { closeButton }
-
-        return hd.dialog(
-          [
-            ...dialogAttributes,
-            hd.DataAttribute('slot', 'drawer'),
-            hd.Class(DIALOG_CLASS),
-          ],
-          isVisible
-            ? [
+  return h.div(
+    [
+      h.DataAttribute('slot', 'drawer-root'),
+      h.OnPointerDown((_type, button, x, y) => button === 0 ? Option.some(props.toParentMessage(StartedDrag({ position: axisPosition(direction, x, y) }))) : Option.none()),
+      h.OnPointerMove((x, y) => start === undefined ? Option.none() : Option.some(props.toParentMessage(Dragged({ offset: offsetFrom(direction, start, axisPosition(direction, x, y)) })))),
+      h.OnPointerUp(() => start === undefined ? Option.none() : Option.some(props.toParentMessage(EndedDrag()))),
+    ],
+    [
+      h.submodel({
+        slotId: props.model.dialog.id,
+        model: props.model.dialog,
+        view: DialogPrimitive.view,
+        viewInputs: {
+          toView: ({ dialog: dialogAttributes, backdrop, panel, closeButton, isVisible }: DialogPrimitive.RenderInfo) => {
+            const hd = html<DialogPrimitive.Message>()
+            const slots: DrawerSlots = { closeButton }
+            return hd.dialog(
+              [...dialogAttributes, hd.DataAttribute('slot', 'drawer'), hd.Class('bg-transparent p-0')],
+              isVisible ? [
+                hd.div([...backdrop, hd.DataAttribute('slot', 'drawer-overlay'), hd.Class(OVERLAY_CLASS)], []),
                 hd.div(
+                  [...panel, hd.DataAttribute('slot', 'drawer-content'), hd.DataAttribute('vaul-drawer-direction', direction), hd.Style({ transform: dragTransform(direction, props.model.dragOffset) }), hd.Class(cn(contentClass(direction), props.model.dragOffset > 0 ? 'transition-none' : undefined, props.class))],
                   [
-                    ...backdrop,
-                    hd.DataAttribute('slot', 'drawer-overlay'),
-                    hd.Class(OVERLAY_CLASS),
-                  ],
-                  [],
-                ),
-                hd.div(
-                  [
-                    ...panel,
-                    hd.DataAttribute('slot', 'drawer-content'),
-                    hd.DataAttribute('vaul-drawer-direction', direction),
-                    hd.Class(cn(CONTENT_CLASS, props.class)),
-                  ],
-                  [
-                    hd.span([hd.Class(HANDLE_CLASS)], []),
-                    hd.div(
-                      [
-                        hd.DataAttribute('slot', 'drawer-header'),
-                        hd.Class(HEADER_CLASS),
-                      ],
-                      [
-                        hd.h2(
-                          [
-                            hd.Id(DialogPrimitive.titleId(props.model)),
-                            hd.DataAttribute('slot', 'drawer-title'),
-                            hd.Class(TITLE_CLASS),
-                          ],
-                          [props.title],
-                        ),
-                        ...(props.description === undefined
-                          ? []
-                          : [
-                              hd.p(
-                                [
-                                  hd.Id(
-                                    DialogPrimitive.descriptionId(props.model),
-                                  ),
-                                  hd.DataAttribute(
-                                    'slot',
-                                    'drawer-description',
-                                  ),
-                                  hd.Class(DESCRIPTION_CLASS),
-                                ],
-                                [props.description],
-                              ),
-                            ]),
-                      ],
-                    ),
-                    ...(props.content === undefined ? [] : props.content(slots)),
-                    ...(props.footer === undefined
-                      ? []
-                      : [
-                          hd.div(
-                            [
-                              hd.DataAttribute('slot', 'drawer-footer'),
-                              hd.Class(FOOTER_CLASS),
-                            ],
-                            [...props.footer(slots)],
-                          ),
-                        ]),
+                    hd.div([hd.DataAttribute('slot', 'drawer-handle'), hd.AriaHidden(true), hd.Class(cn('shrink-0 rounded-full bg-muted', direction === 'top' || direction === 'bottom' ? 'mx-auto my-4 h-2 w-[100px]' : 'my-auto h-[100px] w-2', direction === 'left' ? 'order-last ml-auto mr-2' : direction === 'right' ? 'mr-auto ml-2' : undefined))], []),
+                    hd.div([hd.DataAttribute('slot', 'drawer-header'), hd.Class(HEADER_CLASS)], [
+                      hd.h2([hd.Id(DialogPrimitive.titleId(props.model.dialog)), hd.DataAttribute('slot', 'drawer-title'), hd.Class('font-semibold text-foreground')], [props.title]),
+                      ...(props.description === undefined ? [] : [hd.p([hd.Id(DialogPrimitive.descriptionId(props.model.dialog)), hd.DataAttribute('slot', 'drawer-description'), hd.Class('text-sm text-muted-foreground')], [props.description])]),
+                    ]),
+                    ...(props.content?.(slots) ?? []),
+                    ...(props.footer === undefined ? [] : [hd.div([hd.DataAttribute('slot', 'drawer-footer'), hd.Class(FOOTER_CLASS)], [...props.footer(slots)])]),
                   ],
                 ),
-              ]
-            : [],
-        )
-      },
-    },
-    toParentMessage: props.toParentMessage,
-  })
+              ] : [],
+            )
+          },
+        },
+        toParentMessage: message => props.toParentMessage(GotDialogMessage({ message })),
+      }),
+    ],
+  )
 }
-
-/*
-Minimal wiring:
-const model = init({ id: 'filters-drawer', isAnimated: true })
-const [nextModel, commands] = update(model, message)
-drawer({
-  model,
-  toParentMessage: message => GotDrawerMessage({ message }),
-  title: 'Filters',
-  description: 'Narrow the visible results.',
-  direction: 'bottom',
-})
-*/
