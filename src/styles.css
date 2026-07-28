@@ -132,6 +132,10 @@
   }
 }
 
+.theme-toggle-icon {
+  color: var(--color-foreground);
+}
+
 /* Foldkit UI marks transition phases with data-enter / data-leave /
    data-transition / data-closed (Headless-UI style) instead of Radix's
    data-[state=open]. Component class strings target them with Tailwind's

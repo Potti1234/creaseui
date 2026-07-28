@@ -379,7 +379,7 @@ const header = (model: Model): Html => {
               h.AriaLabel(model.isDark ? 'Switch to light mode' : 'Switch to dark mode'),
               h.Title(model.isDark ? 'Switch to light mode' : 'Switch to dark mode'),
               h.Class(
-                'group relative ml-auto inline-flex size-10 shrink-0 items-center justify-center rounded-md text-muted-foreground outline-none transition-[color,background-color,transform] duration-200 hover:bg-accent hover:text-accent-foreground focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.96]',
+                'group relative ml-auto inline-flex size-10 shrink-0 items-center justify-center rounded-md text-foreground outline-none transition-[color,background-color,transform] duration-200 hover:bg-accent hover:text-accent-foreground focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.96]',
               ),
             ],
             [
