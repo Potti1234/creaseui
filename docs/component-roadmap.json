@@ -6,11 +6,6 @@
   },
   "fidelity": [
     {
-      "component": "dropdown-menu",
-      "priority": "high",
-      "gap": "Submenus, checkbox items, and radio items are not implemented."
-    },
-    {
       "component": "sidebar",
       "priority": "high",
       "gap": "Mobile sheet, keyboard shortcut, persistence, and collapsed tooltips are incomplete."

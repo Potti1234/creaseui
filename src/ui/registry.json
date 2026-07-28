@@ -544,12 +544,12 @@
       "title": "Dropdown Menu",
       "description": "A shadcn-styled Dropdown Menu component for Foldkit.",
       "dependencies": [
-        "@foldkit/ui@^0.121.0",
         "effect@4.0.0-beta.88",
         "foldkit@^0.121.0"
       ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
       ],
       "files": [
