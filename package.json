@@ -23,7 +23,7 @@
     "test": "node --test --experimental-strip-types",
     "check": "npm run typecheck && npm test && npm run build",
     "registry:build": "npx --yes shadcn@latest build registry.json --output .registry",
-    "test:registry": "node scripts/test-registry-install.mjs"
+    "test:registry": "node scripts/verify-registry-install.mjs"
   },
   "dependencies": {
     "@effect/platform-browser": "4.0.0-beta.88",
