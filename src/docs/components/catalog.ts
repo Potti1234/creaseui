@@ -26,6 +26,7 @@ const descriptions: Readonly<Record<string, string>> = {
   combobox: 'An autocomplete input and command palette with a list of suggestions.',
   command: 'A fast, composable command menu for Foldkit applications.',
   'context-menu': 'Displays a menu of actions at a contextual trigger.',
+  'data-table': 'Powerful tabular data with filtering, sorting, and pagination.',
   'date-picker': 'A date picker composed from a trigger, popover, and calendar.',
   dialog: 'A window overlaid on the primary window, rendering the content underneath inert.',
   direction: 'Scopes left-to-right or right-to-left document direction.',
@@ -65,9 +66,11 @@ const descriptions: Readonly<Record<string, string>> = {
   table: 'A responsive table component.',
   tabs: 'Layered sections of content displayed one at a time.',
   textarea: 'Displays a multiline text input.',
+  toast: 'A succinct notification surface backed by the Foldkit toast state machine.',
   toggle: 'A two-state button that can be on or off.',
   'toggle-group': 'A set of two-state buttons with shared styling.',
   tooltip: 'A popup that displays information related to an element on hover or focus.',
+  typography: 'Consistent prose styles for headings, paragraphs, quotes, and inline code.',
 }
 
 export const hasCatalogPage = (slug: string): boolean =>

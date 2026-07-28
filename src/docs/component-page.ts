@@ -24,6 +24,7 @@ export const COMPONENTS = [
   'Combobox',
   'Command',
   'Context Menu',
+  'Data Table',
   'Date Picker',
   'Dialog',
   'Direction',
@@ -63,9 +64,11 @@ export const COMPONENTS = [
   'Table',
   'Tabs',
   'Textarea',
+  'Toast',
   'Toggle',
   'Toggle Group',
   'Tooltip',
+  'Typography',
 ] as const
 
 const toSlug = (name: string): string => name.toLowerCase().replaceAll(' ', '-')

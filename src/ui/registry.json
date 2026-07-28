@@ -431,6 +431,28 @@
       ]
     },
     {
+      "name": "data-table",
+      "type": "registry:ui",
+      "title": "Data Table",
+      "description": "A shadcn-styled Data Table component for Foldkit.",
+      "dependencies": [
+        "effect@4.0.0-beta.88",
+        "foldkit@^0.121.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "data-table.ts",
+          "type": "registry:ui",
+          "target": "@ui/data-table.ts"
+        }
+      ]
+    },
+    {
       "name": "date-picker",
       "type": "registry:ui",
       "title": "Date Picker",
@@ -1259,6 +1281,23 @@
       ]
     },
     {
+      "name": "toast",
+      "type": "registry:ui",
+      "title": "Toast",
+      "description": "A shadcn-styled Toast component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/sonner"
+      ],
+      "files": [
+        {
+          "path": "toast.ts",
+          "type": "registry:ui",
+          "target": "@ui/toast.ts"
+        }
+      ]
+    },
+    {
       "name": "toggle-group",
       "type": "registry:ui",
       "title": "Toggle Group",
@@ -1320,6 +1359,26 @@
           "path": "tooltip.ts",
           "type": "registry:ui",
           "target": "@ui/tooltip.ts"
+        }
+      ]
+    },
+    {
+      "name": "typography",
+      "type": "registry:ui",
+      "title": "Typography",
+      "description": "A shadcn-styled Typography component for Foldkit.",
+      "dependencies": [
+        "foldkit@^0.121.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "typography.ts",
+          "type": "registry:ui",
+          "target": "@ui/typography.ts"
         }
       ]
     }
