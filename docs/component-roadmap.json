@@ -11,11 +11,6 @@
       "gap": "Submenus, checkbox items, and radio items are not implemented."
     },
     {
-      "component": "hover-card",
-      "priority": "high",
-      "gap": "Uses Tooltip as an approximation and needs richer focus behavior."
-    },
-    {
       "component": "sidebar",
       "priority": "high",
       "gap": "Mobile sheet, keyboard shortcut, persistence, and collapsed tooltips are incomplete."

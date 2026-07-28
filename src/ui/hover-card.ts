@@ -1,41 +1,70 @@
+import { Effect, Schema as S } from 'effect'
+import { Command } from 'foldkit'
 import { type Html, html } from 'foldkit/html'
-
-import { Tooltip as TooltipPrimitive } from '@foldkit/ui'
+import { m } from 'foldkit/message'
 
 import { cn } from '@/lib/utils'
 
-/* Ported from shadcn/ui hover-card.tsx using foldkit Tooltip for hover state.
-
-   PORT NOTE: This Tooltip-backed approximation does not provide Radix
-   HoverCard's exact focus-open parity or interactive panel behavior. The
-   primitive makes the panel non-interactive and renders a button trigger. */
-
-export const Model = TooltipPrimitive.Model
+export const Model = S.Struct({
+  id: S.String,
+  isOpen: S.Boolean,
+  closeVersion: S.Number,
+  closeDelay: S.Number,
+})
 export type Model = typeof Model.Type
-export const Message = TooltipPrimitive.Message
-export type Message = typeof Message.Type
-export const OutMessage = TooltipPrimitive.OutMessage
-export type OutMessage = typeof OutMessage.Type
 
-export const init = TooltipPrimitive.init
-export const update = TooltipPrimitive.update
-export const reflectShowDelay = TooltipPrimitive.reflectShowDelay
+export const Entered = m('Entered')
+export const Left = m('Left')
+export const CompletedCloseDelay = m('CompletedCloseDelay', { version: S.Number })
+export const Message = S.Union([Entered, Left, CompletedCloseDelay])
+export type Message = typeof Message.Type
+
+export type InitConfig = Readonly<{ id: string; closeDelay?: number; showDelay?: number }>
+export const init = (config: InitConfig): Model => ({
+  id: config.id,
+  isOpen: false,
+  closeVersion: 0,
+  closeDelay: Math.max(0, config.closeDelay ?? 150),
+})
+
+const DelayClose = Command.define(
+  'HoverCardDelayClose',
+  { version: S.Number, delay: S.Number },
+  CompletedCloseDelay,
+)(({ version, delay }) =>
+  Effect.sleep(`${delay} millis`).pipe(Effect.as(CompletedCloseDelay({ version }))),
+)
+
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
+export const update = (model: Model, message: Message): UpdateReturn => {
+  switch (message._tag) {
+    case 'Entered':
+      return [{ ...model, isOpen: true, closeVersion: model.closeVersion + 1 }, []]
+    case 'Left': {
+      const version = model.closeVersion + 1
+      return [{ ...model, closeVersion: version }, [DelayClose({ version, delay: model.closeDelay })]]
+    }
+    case 'CompletedCloseDelay':
+      return message.version === model.closeVersion
+        ? [{ ...model, isOpen: false }, []]
+        : [model, []]
+  }
+}
+
+export const reflectShowDelay = (model: Model, _showDelay: number): Model => model
 
 const CONTENT_CLASS =
-  'z-50 w-64 origin-(--radix-hover-card-content-transform-origin) rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-hidden'
+  'absolute z-50 w-64 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-hidden transition duration-150 data-[closed]:pointer-events-none data-[closed]:scale-95 data-[closed]:opacity-0'
 
 export type HoverCardSide = 'top' | 'right' | 'bottom' | 'left'
 export type HoverCardAlign = 'start' | 'center' | 'end'
 
-type Placement = NonNullable<TooltipPrimitive.AnchorConfig['placement']>
-
-const PLACEMENTS: Readonly<
-  Record<HoverCardSide, Readonly<Record<HoverCardAlign, Placement>>>
-> = {
-  top: { start: 'top-start', center: 'top', end: 'top-end' },
-  right: { start: 'right-start', center: 'right', end: 'right-end' },
-  bottom: { start: 'bottom-start', center: 'bottom', end: 'bottom-end' },
-  left: { start: 'left-start', center: 'left', end: 'left-end' },
+const positionClass = (side: HoverCardSide, align: HoverCardAlign): string => {
+  const sideClass = { top: 'bottom-full mb-2', right: 'left-full ml-2', bottom: 'top-full mt-2', left: 'right-full mr-2' }[side]
+  const alignClass = side === 'top' || side === 'bottom'
+    ? { start: 'left-0', center: 'left-1/2 -translate-x-1/2', end: 'right-0' }[align]
+    : { start: 'top-0', center: 'top-1/2 -translate-y-1/2', end: 'bottom-0' }[align]
+  return `${sideClass} ${alignClass}`
 }
 
 export type HoverCardProps<Msg> = Readonly<{
@@ -53,65 +82,46 @@ export type HoverCardProps<Msg> = Readonly<{
 
 export const hoverCard = <Msg>(props: HoverCardProps<Msg>): Html => {
   const h = html<Msg>()
-  const placement =
-    PLACEMENTS[props.side ?? 'bottom'][props.align ?? 'center']
+  const panelId = `${props.model.id}-content`
+  const disabled = props.isDisabled ?? false
+  const enter = props.toParentMessage(Entered())
+  const leave = props.toParentMessage(Left())
 
-  return h.submodel({
-    slotId: props.model.id,
-    model: props.model,
-    view: TooltipPrimitive.view,
-    viewInputs: {
-      anchor: { placement, gap: 4 },
-      ...(props.isDisabled === undefined
-        ? {}
-        : { isDisabled: props.isDisabled }),
-      ...(props.ariaLabel === undefined
-        ? {}
-        : { ariaLabel: props.ariaLabel }),
-      toView: ({ trigger, panel, isVisible }) => {
-        const hh = html<Message>()
-
-        return hh.div(
-          [hh.DataAttribute('slot', 'hover-card')],
-          [
-            hh.button(
-              [
-                ...trigger,
-                hh.DataAttribute('slot', 'hover-card-trigger'),
-                ...(props.triggerClass === undefined
-                  ? []
-                  : [hh.Class(cn(props.triggerClass))]),
-              ],
-              [props.trigger],
-            ),
-            ...(isVisible
-              ? [
-                  hh.div(
-                    [
-                      ...panel,
-                      hh.DataAttribute('slot', 'hover-card-content'),
-                      hh.Class(cn(CONTENT_CLASS, props.class)),
-                    ],
-                    [props.content],
-                  ),
-                ]
-              : []),
-          ],
-        )
-      },
-    },
-    toParentMessage: props.toParentMessage,
-  })
+  return h.div(
+    [
+      h.DataAttribute('slot', 'hover-card'),
+      h.OnMouseEnter(enter),
+      h.OnMouseLeave(leave),
+      h.Class('relative inline-flex'),
+    ],
+    [
+      h.button(
+        [
+          h.Type('button'),
+          h.Disabled(disabled),
+          h.AriaExpanded(props.model.isOpen),
+          h.AriaControls(panelId),
+          h.OnFocus(enter),
+          h.OnBlur(leave),
+          ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
+          h.DataAttribute('slot', 'hover-card-trigger'),
+          h.Class(cn(props.triggerClass)),
+        ],
+        [props.trigger],
+      ),
+      h.div(
+        [
+          h.Id(panelId),
+          h.DataAttribute('slot', 'hover-card-content'),
+          h.DataAttribute('closed', String(!props.model.isOpen)),
+          h.AriaHidden(!props.model.isOpen),
+          h.Hidden(!props.model.isOpen),
+          h.OnFocus(enter),
+          h.OnBlur(leave),
+          h.Class(cn(CONTENT_CLASS, positionClass(props.side ?? 'bottom', props.align ?? 'center'), props.class)),
+        ],
+        [props.content],
+      ),
+    ],
+  )
 }
-
-/*
-Minimal wiring:
-const model = init({ id: 'user-hover-card', showDelay: 700 })
-const [nextModel, commands, maybeVisibility] = update(model, message)
-hoverCard({
-  model,
-  toParentMessage: message => GotHoverCardMessage({ message }),
-  trigger: '@shadcn',
-  content: profileCard,
-})
-*/
