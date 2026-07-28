@@ -1,4 +1,4 @@
-import { Effect, Match as M, Schema as S } from 'effect'
+import { Match as M, Schema as S } from 'effect'
 import { Command } from 'foldkit'
 import { type Html, html } from 'foldkit/html'
 import { m } from 'foldkit/message'
@@ -21,50 +21,34 @@ import { kbd } from '@/ui/kbd'
 import { separator } from '@/ui/separator'
 
 /* The crease/ui landing page (route: /). Copy and structure follow
-   brand/LANDING.md. Interactive bits: the before/after comparison slider and
-   the light/dark toggle; everything else is static or a standalone chart. */
+   brand/LANDING.md. Interactive bits: the before/after comparison slider;
+   everything else is static or a standalone chart. */
 
 // MODEL
 
 export const Model = S.Struct({
   comparePercent: S.Number,
-  isDark: S.Boolean,
 })
 export type Model = typeof Model.Type
 
 // MESSAGE
 
 export const DraggedCompare = m('DraggedCompare', { value: S.Number })
-export const ClickedThemeToggle = m('ClickedThemeToggle')
-export const CompletedApplyTheme = m('CompletedApplyTheme')
+export const ChangedDemoEmail = m('ChangedDemoEmail')
 export const GotChartMessage = m('GotChartMessage', {
   message: Chart.ChartMessage,
 })
 
 export const Message = S.Union([
   DraggedCompare,
-  ClickedThemeToggle,
-  CompletedApplyTheme,
+  ChangedDemoEmail,
   GotChartMessage,
 ])
 export type Message = typeof Message.Type
 
 // INIT
 
-export const init = (): Model => ({ comparePercent: 50, isDark: false })
-
-// COMMAND
-
-const ApplyTheme = Command.define(
-  'ApplyTheme',
-  { isDark: S.Boolean },
-  CompletedApplyTheme,
-)(({ isDark }) =>
-  Effect.sync(() => {
-    document.documentElement.classList.toggle('dark', isDark)
-    return CompletedApplyTheme()
-  }),
-)
+export const init = (): Model => ({ comparePercent: 50 })
 
 // UPDATE
 
@@ -78,11 +62,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         evo(model, { comparePercent: () => value }),
         [],
       ],
-      ClickedThemeToggle: () => {
-        const isDark = !model.isDark
-        return [evo(model, { isDark: () => isDark }), [ApplyTheme({ isDark })]]
-      },
-      CompletedApplyTheme: () => [model, []],
+      ChangedDemoEmail: () => [model, []],
       GotChartMessage: () => [model, []],
     }),
   )
@@ -178,7 +158,7 @@ const heroCollage = (): Html => {
                   input({
                     id: 'landing-demo-email',
                     value: '',
-                    onInput: () => CompletedApplyTheme(),
+                    onInput: () => ChangedDemoEmail(),
                     label: 'Email',
                     placeholder: 'm@example.com',
                   }),
@@ -499,19 +479,6 @@ const honestSection = (model: Model): Html => {
               h.p(
                 [h.Class('text-muted-foreground text-sm')],
                 ['If that paragraph made you nod, you are home.'],
-              ),
-              h.div(
-                [],
-                [
-                  button({
-                    variant: 'outline',
-                    onClick: ClickedThemeToggle(),
-                    children: [
-                      model.isDark ? 'Switch to light' : 'Switch to dark',
-                      Icon.icon(model.isDark ? 'sun' : 'moon', { class: 'size-4' }),
-                    ],
-                  }),
-                ],
               ),
             ],
           ),

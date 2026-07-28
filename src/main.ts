@@ -20,6 +20,7 @@ import * as ChartsRadial from '@/demo/charts/radial'
 import * as ChartsTooltip from '@/demo/charts/tooltip'
 import * as AccordionDocs from '@/docs/components/accordion'
 import * as ComponentCatalog from '@/docs/components/catalog'
+import * as Icon from '@/lib/icon'
 import {
   AppRoute,
   type ChartSection,
@@ -33,6 +34,7 @@ import { cn } from '@/lib/utils'
 
 export const Model = S.Struct({
   route: AppRoute,
+  isDark: S.Boolean,
   board: Board.Model,
   blocks: Blocks.Model,
   landing: Landing.Model,
@@ -53,6 +55,8 @@ export const CompletedNavigateInternal = m('CompletedNavigateInternal')
 export const CompletedLoadExternal = m('CompletedLoadExternal')
 export const ClickedLink = m('ClickedLink', { request: UrlRequest })
 export const ChangedUrl = m('ChangedUrl', { url: Url })
+export const ClickedThemeToggle = m('ClickedThemeToggle')
+export const CompletedApplyTheme = m('CompletedApplyTheme')
 export const GotBoardMessage = m('GotBoardMessage', { message: Board.Message })
 export const GotLandingMessage = m('GotLandingMessage', {
   message: Landing.Message,
@@ -90,6 +94,8 @@ export const Message = S.Union([
   CompletedLoadExternal,
   ClickedLink,
   ChangedUrl,
+  ClickedThemeToggle,
+  CompletedApplyTheme,
   GotBoardMessage,
   GotBlocksMessage,
   GotLandingMessage,
@@ -111,6 +117,7 @@ export const init: Runtime.RoutingApplicationInit<Model, Message> = (
 ) => [
   {
     route: urlToAppRoute(url),
+    isDark: document.documentElement.classList.contains('dark'),
     board: Board.init(),
     blocks: Blocks.init(),
     landing: Landing.init(),
@@ -140,6 +147,19 @@ const LoadExternal = Command.define(
   CompletedLoadExternal,
 )(({ href }) => load(href).pipe(Effect.as(CompletedLoadExternal())))
 
+const ApplyTheme = Command.define(
+  'ApplyTheme',
+  { isDark: S.Boolean },
+  CompletedApplyTheme,
+)(({ isDark }) =>
+  Effect.sync(() => {
+    document.documentElement.classList.toggle('dark', isDark)
+    document.documentElement.style.colorScheme = isDark ? 'dark' : 'light'
+    localStorage.setItem('creaseui-theme', isDark ? 'dark' : 'light')
+    return CompletedApplyTheme()
+  }),
+)
+
 // UPDATE
 
 type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
@@ -151,6 +171,12 @@ export const update = (model: Model, message: Message): UpdateReturn =>
     M.tagsExhaustive({
       CompletedNavigateInternal: () => [model, []],
       CompletedLoadExternal: () => [model, []],
+      CompletedApplyTheme: () => [model, []],
+
+      ClickedThemeToggle: () => {
+        const isDark = !model.isDark
+        return [evo(model, { isDark: () => isDark }), [ApplyTheme({ isDark })]]
+      },
 
       ClickedLink: ({ request }) =>
         M.value(request).pipe(
@@ -345,6 +371,32 @@ const header = (model: Model): Html => {
             '/blocks/sidebar',
             'Blocks',
             model.route._tag === 'BlocksIndex',
+          ),
+          h.button(
+            [
+              h.Type('button'),
+              h.OnClick(ClickedThemeToggle()),
+              h.AriaLabel(model.isDark ? 'Switch to light mode' : 'Switch to dark mode'),
+              h.Title(model.isDark ? 'Switch to light mode' : 'Switch to dark mode'),
+              h.Class(
+                'group relative ml-auto inline-flex size-10 shrink-0 items-center justify-center rounded-md text-muted-foreground outline-none transition-[color,background-color,transform] duration-200 hover:bg-accent hover:text-accent-foreground focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.96]',
+              ),
+            ],
+            [
+              h.span(
+                [h.Class('relative size-4')],
+                [
+                  Icon.icon('sun', {
+                    class:
+                      'theme-toggle-icon absolute inset-0 size-4 scale-100 opacity-100 blur-0 transition-[scale,opacity,filter] duration-200 ease-[cubic-bezier(0.2,0,0,1)] dark:scale-25 dark:opacity-0 dark:blur-[4px]',
+                  }),
+                  Icon.icon('moon', {
+                    class:
+                      'theme-toggle-icon absolute inset-0 size-4 scale-25 opacity-0 blur-[4px] transition-[scale,opacity,filter] duration-200 ease-[cubic-bezier(0.2,0,0,1)] dark:scale-100 dark:opacity-100 dark:blur-0',
+                  }),
+                ],
+              ),
+            ],
           ),
         ],
       ),
