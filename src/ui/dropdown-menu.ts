@@ -1,4 +1,5 @@
 import { childAttributes, type Html, html } from 'foldkit/html'
+import { Option } from 'effect'
 
 import { Menu as MenuPrimitive } from '@foldkit/ui'
 
@@ -53,6 +54,11 @@ const SHORTCUT_CLASS =
 
 const BACKDROP_CLASS = 'fixed inset-0 z-40'
 
+const OPENED_FROM_POINTER: Message = {
+  _tag: 'Opened',
+  maybeActiveItemIndex: Option.none(),
+}
+
 export type DropdownMenuItemConfig = Readonly<{
   label: Html | string
   icon?: Html
@@ -89,6 +95,7 @@ export type DropdownMenuProps<Item extends string, Msg> = Readonly<{
   align?: DropdownMenuAlign
   side?: DropdownMenuSide
   ariaLabel?: string
+  openOnContextMenu?: boolean
 }>
 
 const contentHtml = <Msg>(content: Html | string): Html => {
@@ -162,6 +169,11 @@ export const dropdownMenu = <Item extends string, Msg>(
         : { buttonClassName: props.triggerClass }),
       buttonAttributes: childAttributes([
         hm.DataAttribute('slot', 'dropdown-menu-trigger'),
+        ...(props.openOnContextMenu === true
+          ? [
+              hm.OnContextMenu(OPENED_FROM_POINTER),
+            ]
+          : []),
       ]),
       itemsClassName: CONTENT_CLASS,
       itemsAttributes: childAttributes([
