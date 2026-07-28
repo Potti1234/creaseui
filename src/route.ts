@@ -49,6 +49,7 @@ export const CreateRoute = r('Create')
 export const ChartsRoute = r('Charts', { section: S.String })
 export const BlocksIndexRoute = r('BlocksIndex')
 export const BlockRoute = r('Block', { blockId: S.String })
+export const ComponentDocsRoute = r('ComponentDocs', { component: S.String })
 export const NotFoundRoute = r('NotFound', { path: S.String })
 
 export const AppRoute = S.Union([
@@ -57,6 +58,7 @@ export const AppRoute = S.Union([
   ChartsRoute,
   BlocksIndexRoute,
   BlockRoute,
+  ComponentDocsRoute,
   NotFoundRoute,
 ])
 
@@ -65,6 +67,7 @@ export type CreateRoute = typeof CreateRoute.Type
 export type ChartsRoute = typeof ChartsRoute.Type
 export type BlocksIndexRoute = typeof BlocksIndexRoute.Type
 export type BlockRoute = typeof BlockRoute.Type
+export type ComponentDocsRoute = typeof ComponentDocsRoute.Type
 export type NotFoundRoute = typeof NotFoundRoute.Type
 export type AppRoute = typeof AppRoute.Type
 
@@ -91,11 +94,19 @@ const blockRouter = pipe(
   Route.mapTo(BlockRoute),
 )
 
+const componentDocsRouter = pipe(
+  literal('docs'),
+  slash(literal('components')),
+  slash(string('component')),
+  Route.mapTo(ComponentDocsRoute),
+)
+
 const routeParser = Route.oneOf(
   createRouter,
   chartsRouter,
   blockRouter,
   blocksIndexRouter,
+  componentDocsRouter,
   homeRouter,
 )
 
@@ -105,3 +116,6 @@ export const urlToAppRoute = Route.parseUrlWithFallback(
 )
 
 export const chartsPath = (section: ChartSection): string => `/charts/${section}`
+
+export const componentDocsPath = (component: string): string =>
+  `/docs/components/${component}`

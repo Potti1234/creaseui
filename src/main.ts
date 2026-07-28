@@ -18,6 +18,7 @@ import * as ChartsPie from '@/demo/charts/pie'
 import * as ChartsRadar from '@/demo/charts/radar'
 import * as ChartsRadial from '@/demo/charts/radial'
 import * as ChartsTooltip from '@/demo/charts/tooltip'
+import * as AccordionDocs from '@/docs/components/accordion'
 import {
   AppRoute,
   type ChartSection,
@@ -41,6 +42,7 @@ export const Model = S.Struct({
   chartsRadar: ChartsRadar.Model,
   chartsRadial: ChartsRadial.Model,
   chartsTooltip: ChartsTooltip.Model,
+  accordionDocs: AccordionDocs.Model,
 })
 export type Model = typeof Model.Type
 
@@ -78,6 +80,9 @@ export const GotChartsRadialMessage = m('GotChartsRadialMessage', {
 export const GotChartsTooltipMessage = m('GotChartsTooltipMessage', {
   message: ChartsTooltip.Message,
 })
+export const GotAccordionDocsMessage = m('GotAccordionDocsMessage', {
+  message: AccordionDocs.Message,
+})
 
 export const Message = S.Union([
   CompletedNavigateInternal,
@@ -94,6 +99,7 @@ export const Message = S.Union([
   GotChartsRadarMessage,
   GotChartsRadialMessage,
   GotChartsTooltipMessage,
+  GotAccordionDocsMessage,
 ])
 export type Message = typeof Message.Type
 
@@ -114,6 +120,7 @@ export const init: Runtime.RoutingApplicationInit<Model, Message> = (
     chartsRadar: ChartsRadar.init(),
     chartsRadial: ChartsRadial.init(),
     chartsTooltip: ChartsTooltip.init(),
+    accordionDocs: AccordionDocs.init(),
   },
   [],
 ]
@@ -264,6 +271,19 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           ),
         ]
       },
+
+      GotAccordionDocsMessage: ({ message: childMessage }) => {
+        const [page, commands] = AccordionDocs.update(
+          model.accordionDocs,
+          childMessage,
+        )
+        return [
+          evo(model, { accordionDocs: () => page }),
+          Command.mapMessages(commands, next =>
+            GotAccordionDocsMessage({ message: next }),
+          ),
+        ]
+      },
     }),
   )
 
@@ -313,6 +333,11 @@ const header = (model: Model): Html => {
             [h.Href('/'), h.Class('text-sm font-semibold')],
             ['crease/ui'],
           ),
+          headerLink(
+            '/docs/components/accordion',
+            'Docs',
+            model.route._tag === 'ComponentDocs',
+          ),
           headerLink('/create', 'Create', model.route._tag === 'Create'),
           headerLink(chartsPath('area'), 'Charts', isCharts),
           headerLink(
@@ -330,6 +355,10 @@ const header = (model: Model): Html => {
    SubmodelViews so h.submodel can embed them with message lifting. */
 const boardView = defineView<Board.Model, Board.Message>(Board.view)
 const landingView = defineView<Landing.Model, Landing.Message>(Landing.view)
+const accordionDocsView = defineView<
+  AccordionDocs.Model,
+  AccordionDocs.Message
+>(AccordionDocs.view)
 const blocksRegistryView = defineView<Blocks.Model, Blocks.Message, string>(
   (blocksModel, blockId) => Blocks.view(blocksModel, blockId),
 )
@@ -517,6 +546,22 @@ const pageView = (model: Model): Html => {
       BlocksIndex: () => keyed('page-blocks-index', BlocksIndexPage.view()),
       Block: ({ blockId }) =>
         keyed(`page-block-${blockId}`, blocksView(model, blockId)),
+      ComponentDocs: ({ component }) =>
+        component === 'accordion'
+          ? keyed(
+              'page-docs-accordion',
+              h.submodel({
+                slotId: 'docs-accordion',
+                model: model.accordionDocs,
+                view: accordionDocsView,
+                toParentMessage: (message: AccordionDocs.Message): Message =>
+                  GotAccordionDocsMessage({ message }),
+              }),
+            )
+          : keyed(
+              'page-not-found',
+              notFoundView(`/docs/components/${component}`),
+            ),
       NotFound: ({ path }) => keyed('page-not-found', notFoundView(path)),
     }),
   )
@@ -527,9 +572,13 @@ export const view = (model: Model): Document => {
   // Block pages are full-viewport layouts (shown inside the index's iframes),
   // so they render without the global header.
   const isFullPage = model.route._tag === 'Block'
+  const title =
+    model.route._tag === 'ComponentDocs' && model.route.component === 'accordion'
+      ? 'Accordion - crease/ui'
+      : 'crease/ui'
 
   return {
-    title: 'crease/ui',
+    title,
     body: isFullPage
       ? h.div([], [pageView(model)])
       : h.div([], [header(model), pageView(model)]),
