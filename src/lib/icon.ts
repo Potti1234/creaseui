@@ -47,7 +47,10 @@ export type IconConfig = Readonly<{
 
 type H<Msg> = ReturnType<typeof html<Msg>>
 
-const iconNodes: Readonly<Record<string, IconNode>> = JSON.parse(iconNodesText)
+const iconNodes: Readonly<Record<string, IconNode>> =
+  typeof iconNodesText === 'string'
+    ? JSON.parse(iconNodesText)
+    : (iconNodesText as Readonly<Record<string, IconNode>>)
 
 const nodeAttributes = <Msg>(
   h: H<Msg>,
