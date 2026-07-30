@@ -1,4 +1,4 @@
-import { Schema as S } from 'effect'
+import { Effect, Schema as S } from 'effect'
 import { Command } from 'foldkit'
 import { type Html, html } from 'foldkit/html'
 import { m } from 'foldkit/message'
@@ -24,7 +24,9 @@ export const GotCalendarMessage = m('GotCalendarMessage', {
   target: Target,
   message: Calendar.Message,
 })
-export const Message = S.Union([GotCalendarMessage])
+export const ClickedCopyCode = m('ClickedCalendarCopyCode', { code: S.String })
+export const CompletedCopyCode = m('CompletedCalendarCopyCode')
+export const Message = S.Union([GotCalendarMessage, ClickedCopyCode, CompletedCopyCode])
 export type Message = typeof Message.Type
 
 const date = (year: number, month: number, day: number) => ({ year, month, day })
@@ -48,7 +50,16 @@ export const init = (): Model => ({
 
 type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
 
+const CopyCode = Command.define(
+  'CopyCalendarCode',
+  { code: S.String },
+  CompletedCopyCode,
+)(({ code }) => Effect.promise(() => navigator.clipboard.writeText(code)).pipe(Effect.as(CompletedCopyCode())))
+
 export const update = (model: Model, message: Message): UpdateReturn => {
+  if (message._tag === 'ClickedCalendarCopyCode') return [model, [CopyCode({ code: message.code })]]
+  if (message._tag === 'CompletedCalendarCopyCode') return [model, []]
+
   const target = message.target
   const [calendar, commands] = Calendar.update(model[target], message.message)
   return [
@@ -79,6 +90,7 @@ export const view = (model: Model): Html => {
         description: 'A standalone calendar with month and year navigation.',
         preview: preview(model.basic, 'basic'),
         code: `Calendar.init({ id: 'calendar', today })`,
+        onCopy: ClickedCopyCode({ code: `Calendar.init({ id: 'calendar', today })` }),
       }),
       example<Message>({
         title: 'Selected Date',
@@ -87,12 +99,14 @@ export const view = (model: Model): Html => {
           Card.cardContent({ class: 'p-0', children: [preview(model.selected, 'selected')] }),
         ] }),
         code: `Calendar.init({\n  id: 'calendar',\n  today,\n  initialSelectedDate: { year: 2026, month: 7, day: 18 },\n})`,
+        onCopy: ClickedCopyCode({ code: `Calendar.init({\n  id: 'calendar',\n  today,\n  initialSelectedDate: { year: 2026, month: 7, day: 18 },\n})` }),
       }),
       example<Message>({
         title: 'Disabled Dates',
         description: 'Weekend dates remain visible while unavailable for selection.',
         preview: h.div([h.Class('rounded-lg border')], [preview(model.disabled, 'disabled')]),
         code: `Calendar.init({\n  id: 'calendar',\n  today,\n  disabledDaysOfWeek: ['Sunday', 'Saturday'],\n})`,
+        onCopy: ClickedCopyCode({ code: `Calendar.init({\n  id: 'calendar',\n  today,\n  disabledDaysOfWeek: ['Sunday', 'Saturday'],\n})` }),
       }),
       example<Message>({
         title: 'Custom Cell Size',
@@ -103,6 +117,7 @@ export const view = (model: Model): Html => {
           class: '[--cell-size:--spacing(10)]',
         }),
         code: `Calendar.calendar({\n  ...props,\n  class: '[--cell-size:--spacing(10)]',\n})`,
+        onCopy: ClickedCopyCode({ code: `Calendar.calendar({\n  ...props,\n  class: '[--cell-size:--spacing(10)]',\n})` }),
       }),
       example<Message>({
         title: 'RTL',
@@ -112,6 +127,7 @@ export const view = (model: Model): Html => {
           children: [preview(model.rtl, 'rtl')],
         }),
         code: `Direction.direction({\n  direction: 'rtl',\n  children: [Calendar.calendar(props)],\n})`,
+        onCopy: ClickedCopyCode({ code: `Direction.direction({\n  direction: 'rtl',\n  children: [Calendar.calendar(props)],\n})` }),
       }),
     ],
     apiHref: 'https://foldkit.dev/ui/calendar',

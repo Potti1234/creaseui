@@ -1,4 +1,4 @@
-import { Schema as S } from 'effect'
+import { Effect, Schema as S } from 'effect'
 import { Command } from 'foldkit'
 import { type Html, html } from 'foldkit/html'
 import { m } from 'foldkit/message'
@@ -30,8 +30,10 @@ export const GotAccordionMessage = m('GotAccordionMessage', {
   target: Target,
   message: Accordion.Message,
 })
+export const ClickedCopyCode = m('ClickedAccordionCopyCode', { code: S.String })
+export const CompletedCopyCode = m('CompletedAccordionCopyCode')
 
-export const Message = S.Union([GotAccordionMessage])
+export const Message = S.Union([GotAccordionMessage, ClickedCopyCode, CompletedCopyCode])
 export type Message = typeof Message.Type
 
 const items = [
@@ -68,7 +70,16 @@ export const init = (): Model => ({
 
 type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
 
+const CopyCode = Command.define(
+  'CopyAccordionCode',
+  { code: S.String },
+  CompletedCopyCode,
+)(({ code }) => Effect.promise(() => navigator.clipboard.writeText(code)).pipe(Effect.as(CompletedCopyCode())))
+
 export const update = (model: Model, message: Message): UpdateReturn => {
+  if (message._tag === 'ClickedAccordionCopyCode') return [model, [CopyCode({ code: message.code })]]
+  if (message._tag === 'CompletedAccordionCopyCode') return [model, []]
+
   const target = message.target
   const current = model[target]
   const [next, commands] = Accordion.update(current, message.message)
@@ -142,6 +153,7 @@ export const view = (model: Model): Html => {
           'A single-open accordion. The first item is open by default.',
         preview: h.div([h.Class(width)], [accordionPreview(model.basic, 'basic')]),
         code: BASIC_CODE,
+        onCopy: ClickedCopyCode({ code: BASIC_CODE }),
       }),
       example<Message>({
         title: 'Multiple',
@@ -152,6 +164,11 @@ export const view = (model: Model): Html => {
   type: 'multiple',
   items: [{ value: 'product', isOpen: true }, { value: 'style', isOpen: true }],
 })`,
+        onCopy: ClickedCopyCode({ code: `Accordion.init({
+  id: 'filters',
+  type: 'multiple',
+  items: [{ value: 'product', isOpen: true }, { value: 'style', isOpen: true }],
+})` }),
       }),
       example<Message>({
         title: 'Disabled',
@@ -161,6 +178,7 @@ export const view = (model: Model): Html => {
           [accordionPreview(model.disabled, 'disabled', { disabledValue: 'style' })],
         ),
         code: `{ value: 'style', trigger: 'Is it styled?', content, isDisabled: true }`,
+        onCopy: ClickedCopyCode({ code: `{ value: 'style', trigger: 'Is it styled?', content, isDisabled: true }` }),
       }),
       example<Message>({
         title: 'Borders',
@@ -173,6 +191,10 @@ export const view = (model: Model): Html => {
   ...props,
   class: 'rounded-lg border px-4',
 })`,
+        onCopy: ClickedCopyCode({ code: `Accordion.accordion({
+  ...props,
+  class: 'rounded-lg border px-4',
+})` }),
       }),
       example<Message>({
         title: 'Card',
@@ -184,6 +206,9 @@ export const view = (model: Model): Html => {
         code: `<div class="rounded-xl bg-card p-5 shadow-sm ring-1 ring-border">
   {accordion}
 </div>`,
+        onCopy: ClickedCopyCode({ code: `<div class="rounded-xl bg-card p-5 shadow-sm ring-1 ring-border">
+  {accordion}
+</div>` }),
       }),
       example<Message>({
         title: 'RTL',
@@ -193,6 +218,7 @@ export const view = (model: Model): Html => {
           [accordionPreview(model.rtl, 'rtl')],
         ),
         code: `<div dir="rtl">{accordion}</div>`,
+        onCopy: ClickedCopyCode({ code: `<div dir="rtl">{accordion}</div>` }),
       }),
     ],
   })

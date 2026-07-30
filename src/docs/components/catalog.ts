@@ -1,4 +1,4 @@
-import { Schema as S } from 'effect'
+import { Effect, Schema as S } from 'effect'
 import { Command, Subscription } from 'foldkit'
 import { type Html, html } from 'foldkit/html'
 import { m } from 'foldkit/message'
@@ -30,7 +30,9 @@ export const GotExampleMessage = m('GotCatalogExampleMessage', {
   index: S.Number,
   message: State.Message,
 })
-export const Message = S.Union([GotExampleMessage])
+export const ClickedCopyCode = m('ClickedCatalogCopyCode', { code: S.String })
+export const CompletedCopyCode = m('CompletedCatalogCopyCode')
+export const Message = S.Union([GotExampleMessage, ClickedCopyCode, CompletedCopyCode])
 export type Message = typeof Message.Type
 
 export const init = (): Model => ({
@@ -41,7 +43,22 @@ export const init = (): Model => ({
 
 type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
 
+const CopyCode = Command.define(
+  'CopyCatalogCode',
+  { code: S.String },
+  CompletedCopyCode,
+)(({ code }) =>
+  Effect.promise(() => navigator.clipboard.writeText(code)).pipe(
+    Effect.as(CompletedCopyCode()),
+  ),
+)
+
 export const update = (model: Model, message: Message): UpdateReturn => {
+  if (message._tag === 'ClickedCatalogCopyCode') {
+    return [model, [CopyCode({ code: message.code })]]
+  }
+  if (message._tag === 'CompletedCatalogCopyCode') return [model, []]
+
   const current = model.examples[message.index]
   if (current === undefined) return [model, []]
 
@@ -153,6 +170,7 @@ export const view = (model: Model, slug: string): Html => {
             GotExampleMessage({ index, message }),
         }),
         code: config.code,
+        onCopy: ClickedCopyCode({ code: config.code }),
         ...(config.previewClass === undefined
           ? {}
           : { previewClass: config.previewClass }),

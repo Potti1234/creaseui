@@ -1,5 +1,6 @@
 import { type Html, html } from 'foldkit/html'
 
+import * as Icon from '@/lib/icon'
 import { cn } from '@/lib/utils'
 import { componentDocsPath } from '@/route'
 
@@ -76,11 +77,12 @@ const toSlug = (name: string): string => name.toLowerCase().replaceAll(' ', '-')
 export const componentTitle = (slug: string): string | undefined =>
   COMPONENTS.find(name => toSlug(name) === slug)
 
-export type ExampleConfig = Readonly<{
+export type ExampleConfig<Msg> = Readonly<{
   title: string
   description?: string
   preview: Html
   code: string
+  onCopy: Msg
   previewClass?: string
 }>
 
@@ -97,7 +99,7 @@ export const codeBlock = <Msg>(code: string): Html => {
   )
 }
 
-export const example = <Msg>(config: ExampleConfig): Html => {
+export const example = <Msg>(config: ExampleConfig<Msg>): Html => {
   const h = html<Msg>()
 
   return h.section(
@@ -121,17 +123,72 @@ export const example = <Msg>(config: ExampleConfig): Html => {
         ],
       ),
       h.div(
+        [h.Class('overflow-hidden rounded-lg border bg-background')],
         [
-          h.Class(
-            cn(
-              'flex min-h-64 items-center justify-center rounded-lg border bg-background p-6 sm:p-10',
-              config.previewClass,
-            ),
+          h.div(
+            [
+              h.Class(
+                cn(
+                  'flex min-h-64 items-center justify-center p-6 sm:p-10',
+                  config.previewClass,
+                ),
+              ),
+            ],
+            [config.preview],
+          ),
+          h.div(
+            [h.Class('relative border-t bg-muted/35')],
+            [
+              h.input([
+                h.Id(`example-code-${toSlug(config.title)}`),
+                h.Type('checkbox'),
+                h.Class('peer sr-only'),
+              ]),
+              h.div(
+                [
+                  h.Class(
+                    'relative max-h-[7.25rem] overflow-hidden pb-11 [mask-image:linear-gradient(to_bottom,black_35%,transparent_100%)] peer-checked:max-h-none peer-checked:[mask-image:none]',
+                  ),
+                ],
+                [
+                  h.pre(
+                    [
+                      h.Class(
+                        'min-w-0 max-w-full overflow-x-auto p-4 pr-14 font-mono text-[13px] leading-6 text-foreground',
+                      ),
+                    ],
+                    [h.code([h.Class('block w-max min-w-full')], [config.code])],
+                  ),
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick(config.onCopy),
+                      h.AriaLabel(`Copy ${config.title} example code`),
+                      h.Title('Copy code'),
+                      h.Class(
+                        'absolute top-2.5 right-2.5 inline-flex size-10 items-center justify-center rounded-md text-muted-foreground outline-none transition-[color,background-color,transform] hover:bg-background hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.96]',
+                      ),
+                    ],
+                    [Icon.icon<Msg>('copy', { class: 'size-4' })],
+                  ),
+                ],
+              ),
+              h.label(
+                [
+                  h.For(`example-code-${toSlug(config.title)}`),
+                  h.Class(
+                    'absolute bottom-2.5 left-1/2 z-10 flex min-h-10 -translate-x-1/2 cursor-pointer items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium text-foreground shadow-xs outline-none transition-[color,background-color,transform] hover:bg-accent active:scale-[0.96] peer-focus-visible:ring-3 peer-focus-visible:ring-ring/50',
+                  ),
+                ],
+                [
+                  Icon.icon<Msg>('code-xml', { class: 'size-4' }),
+                  h.span([], ['View Code']),
+                ],
+              ),
+            ],
           ),
         ],
-        [config.preview],
       ),
-      codeBlock<Msg>(config.code),
     ],
   )
 }
