@@ -83,6 +83,7 @@ export const view = (model: Model): Html => {
     description: 'A date field component that allows users to enter and edit dates.',
     installation: 'npx shadcn@latest add Potti1234/creaseui/calendar',
     usage: `import * as Calendar from '@/ui/calendar'\n\nCalendar.calendar({\n  model: model.calendar,\n  toParentMessage: message => GotCalendarMessage({ message }),\n})`,
+    sidebarScrolled: CompletedCopyCode(),
     composition: 'Calendar.Model\n├── calendar navigation and view mode\n├── focused and selected dates\n└── disabled-date constraints',
     examples: [
       example<Message>({

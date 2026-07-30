@@ -145,6 +145,7 @@ export const view = (model: Model): Html => {
       'A vertically stacked set of interactive headings that each reveal a section of content.',
     installation: INSTALLATION,
     usage: USAGE,
+    sidebarScrolled: CompletedCopyCode(),
     apiHref: 'https://foldkit.dev/ui/disclosure',
     examples: [
       example<Message>({

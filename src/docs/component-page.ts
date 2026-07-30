@@ -1,3 +1,5 @@
+import { Stream } from 'effect'
+import { Subscription } from 'foldkit'
 import { type Html, html } from 'foldkit/html'
 
 import * as Icon from '@/lib/icon'
@@ -194,7 +196,7 @@ export const example = <Msg>(config: ExampleConfig<Msg>): Html => {
   )
 }
 
-export type ComponentPageConfig = Readonly<{
+export type ComponentPageConfig<Msg> = Readonly<{
   name: string
   description: string
   installation: string
@@ -203,9 +205,12 @@ export type ComponentPageConfig = Readonly<{
   apiHref: string
   composition?: string
   apiDescription?: string
+  sidebarScrolled: Msg
 }>
 
-export const componentPage = <Msg>(config: ComponentPageConfig): Html => {
+const SIDEBAR_SCROLL_KEY = 'creaseui-docs-sidebar-scroll'
+
+export const componentPage = <Msg>(config: ComponentPageConfig<Msg>): Html => {
   const h = html<Msg>()
 
   const navItem = (name: string): Html => {
@@ -242,6 +247,25 @@ export const componentPage = <Msg>(config: ComponentPageConfig): Html => {
           h.Class(
             'hidden border-r px-5 py-10 lg:sticky lg:top-14 lg:block lg:h-[calc(100vh-3.5rem)] lg:overflow-y-auto',
           ),
+          h.OnMount({
+            name: 'docs-sidebar-scroll',
+            f: element => {
+              if (!(element instanceof HTMLElement)) return Stream.empty
+
+              const savedScrollTop = Number(sessionStorage.getItem(SIDEBAR_SCROLL_KEY))
+              if (Number.isFinite(savedScrollTop)) element.scrollTop = savedScrollTop
+
+              return Subscription.fromEvent<Event, Msg>({
+                target: element,
+                type: 'scroll',
+                options: { passive: true },
+                toMessage: () => {
+                  sessionStorage.setItem(SIDEBAR_SCROLL_KEY, String(element.scrollTop))
+                  return config.sidebarScrolled
+                },
+              })
+            },
+          }),
         ],
         [
           h.p(

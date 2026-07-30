@@ -149,6 +149,7 @@ export const view = (model: Model, slug: string): Html => {
     description: definition.description,
     installation: `npx shadcn@latest add Potti1234/creaseui/${slug}`,
     usage: usageFor(slug, name),
+    sidebarScrolled: CompletedCopyCode(),
     composition:
       definition.composition ??
       `${name}\n├── Model / init / update\n├── ${primaryExport(slug)} view\n└── Source-owned styles and composition`,
