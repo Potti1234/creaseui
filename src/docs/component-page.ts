@@ -85,6 +85,7 @@ export type ExampleConfig<Msg> = Readonly<{
   preview: Html
   code: string
   onCopy: Msg
+  isCopied: boolean
   previewClass?: string
 }>
 
@@ -165,13 +166,29 @@ export const example = <Msg>(config: ExampleConfig<Msg>): Html => {
                     [
                       h.Type('button'),
                       h.OnClick(config.onCopy),
-                      h.AriaLabel(`Copy ${config.title} example code`),
-                      h.Title('Copy code'),
+                      h.AriaLabel(config.isCopied ? `${config.title} example code copied` : `Copy ${config.title} example code`),
+                      h.Title(config.isCopied ? 'Copied' : 'Copy code'),
                       h.Class(
-                        'absolute top-2.5 right-2.5 inline-flex size-10 items-center justify-center rounded-md text-muted-foreground outline-none transition-[color,background-color,transform] hover:bg-background hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.96]',
+                        cn(
+                          'absolute top-2.5 right-2.5 inline-flex size-10 items-center justify-center rounded-md outline-none transition-[color,background-color,transform] hover:bg-background focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.96]',
+                          config.isCopied ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground hover:text-foreground',
+                        ),
                       ),
                     ],
-                    [Icon.icon<Msg>('copy', { class: 'size-4' })],
+                    [
+                      Icon.icon<Msg>('copy', {
+                        class: cn(
+                          'absolute size-4 transition-[scale,opacity,filter] duration-200 ease-[cubic-bezier(0.2,0,0,1)]',
+                          config.isCopied ? 'scale-25 opacity-0 blur-[4px]' : 'scale-100 opacity-100 blur-0',
+                        ),
+                      }),
+                      Icon.icon<Msg>('check', {
+                        class: cn(
+                          'absolute size-4 transition-[scale,opacity,filter] duration-200 ease-[cubic-bezier(0.2,0,0,1)]',
+                          config.isCopied ? 'scale-100 opacity-100 blur-0' : 'scale-25 opacity-0 blur-[4px]',
+                        ),
+                      }),
+                    ],
                   ),
                 ],
               ),

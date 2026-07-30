@@ -1,10 +1,11 @@
-import { Effect, Schema as S } from 'effect'
+import { Schema as S } from 'effect'
 import { Command } from 'foldkit'
 import { type Html, html } from 'foldkit/html'
 import { m } from 'foldkit/message'
 
 import * as Accordion from '@/ui/accordion'
-import { componentPage, example } from '@/docs/component-page'
+import { componentPage, example, type ExampleConfig } from '@/docs/component-page'
+import * as CopyFeedback from '@/docs/copy-feedback'
 
 const Target = S.Literals([
   'basic',
@@ -23,6 +24,7 @@ export const Model = S.Struct({
   borders: Accordion.Model,
   card: Accordion.Model,
   rtl: Accordion.Model,
+  copiedCode: CopyFeedback.Model,
 })
 export type Model = typeof Model.Type
 
@@ -30,10 +32,7 @@ export const GotAccordionMessage = m('GotAccordionMessage', {
   target: Target,
   message: Accordion.Message,
 })
-export const ClickedCopyCode = m('ClickedAccordionCopyCode', { code: S.String })
-export const CompletedCopyCode = m('CompletedAccordionCopyCode')
-
-export const Message = S.Union([GotAccordionMessage, ClickedCopyCode, CompletedCopyCode])
+export const Message = S.Union([GotAccordionMessage, CopyFeedback.Message])
 export type Message = typeof Message.Type
 
 const items = [
@@ -66,19 +65,16 @@ export const init = (): Model => ({
   borders: makeAccordion('docs-accordion-borders'),
   card: makeAccordion('docs-accordion-card', 'single', ['product']),
   rtl: makeAccordion('docs-accordion-rtl', 'single', ['product']),
+  copiedCode: null,
 })
 
 type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
 
-const CopyCode = Command.define(
-  'CopyAccordionCode',
-  { code: S.String },
-  CompletedCopyCode,
-)(({ code }) => Effect.promise(() => navigator.clipboard.writeText(code)).pipe(Effect.as(CompletedCopyCode())))
-
 export const update = (model: Model, message: Message): UpdateReturn => {
-  if (message._tag === 'ClickedAccordionCopyCode') return [model, [CopyCode({ code: message.code })]]
-  if (message._tag === 'CompletedAccordionCopyCode') return [model, []]
+  if (message._tag !== 'GotAccordionMessage') {
+    const [copiedCode, commands] = CopyFeedback.update(model.copiedCode, message)
+    return [{ ...model, copiedCode }, Command.mapMessages(commands, next => next)]
+  }
 
   const target = message.target
   const current = model[target]
@@ -138,6 +134,8 @@ const USAGE = `import * as Accordion from '@/ui/accordion'
 export const view = (model: Model): Html => {
   const h = html<Message>()
   const width = 'w-full max-w-xl'
+  const docsExample = (config: Omit<ExampleConfig<Message>, 'isCopied'>): Html =>
+    example<Message>({ ...config, isCopied: model.copiedCode === config.code })
 
   return componentPage<Message>({
     name: 'Accordion',
@@ -145,18 +143,18 @@ export const view = (model: Model): Html => {
       'A vertically stacked set of interactive headings that each reveal a section of content.',
     installation: INSTALLATION,
     usage: USAGE,
-    sidebarScrolled: CompletedCopyCode(),
+    sidebarScrolled: CopyFeedback.ObservedSidebarScroll(),
     apiHref: 'https://foldkit.dev/ui/disclosure',
     examples: [
-      example<Message>({
+      docsExample({
         title: 'Basic',
         description:
           'A single-open accordion. The first item is open by default.',
         preview: h.div([h.Class(width)], [accordionPreview(model.basic, 'basic')]),
         code: BASIC_CODE,
-        onCopy: ClickedCopyCode({ code: BASIC_CODE }),
+        onCopy: CopyFeedback.ClickedCopyCode({ code: BASIC_CODE }),
       }),
-      example<Message>({
+      docsExample({
         title: 'Multiple',
         description: 'Use multiple mode when more than one item may stay open.',
         preview: h.div([h.Class(width)], [accordionPreview(model.multiple, 'multiple')]),
@@ -165,13 +163,13 @@ export const view = (model: Model): Html => {
   type: 'multiple',
   items: [{ value: 'product', isOpen: true }, { value: 'style', isOpen: true }],
 })`,
-        onCopy: ClickedCopyCode({ code: `Accordion.init({
+        onCopy: CopyFeedback.ClickedCopyCode({ code: `Accordion.init({
   id: 'filters',
   type: 'multiple',
   items: [{ value: 'product', isOpen: true }, { value: 'style', isOpen: true }],
 })` }),
       }),
-      example<Message>({
+      docsExample({
         title: 'Disabled',
         description: 'Individual items can remain visible while unavailable.',
         preview: h.div(
@@ -179,9 +177,9 @@ export const view = (model: Model): Html => {
           [accordionPreview(model.disabled, 'disabled', { disabledValue: 'style' })],
         ),
         code: `{ value: 'style', trigger: 'Is it styled?', content, isDisabled: true }`,
-        onCopy: ClickedCopyCode({ code: `{ value: 'style', trigger: 'Is it styled?', content, isDisabled: true }` }),
+        onCopy: CopyFeedback.ClickedCopyCode({ code: `{ value: 'style', trigger: 'Is it styled?', content, isDisabled: true }` }),
       }),
-      example<Message>({
+      docsExample({
         title: 'Borders',
         description: 'Wrap the default separators in a contained border.',
         preview: h.div(
@@ -192,12 +190,12 @@ export const view = (model: Model): Html => {
   ...props,
   class: 'rounded-lg border px-4',
 })`,
-        onCopy: ClickedCopyCode({ code: `Accordion.accordion({
+        onCopy: CopyFeedback.ClickedCopyCode({ code: `Accordion.accordion({
   ...props,
   class: 'rounded-lg border px-4',
 })` }),
       }),
-      example<Message>({
+      docsExample({
         title: 'Card',
         description: 'Place the accordion in a card surface for grouped settings or FAQs.',
         preview: h.div(
@@ -207,11 +205,11 @@ export const view = (model: Model): Html => {
         code: `<div class="rounded-xl bg-card p-5 shadow-sm ring-1 ring-border">
   {accordion}
 </div>`,
-        onCopy: ClickedCopyCode({ code: `<div class="rounded-xl bg-card p-5 shadow-sm ring-1 ring-border">
+        onCopy: CopyFeedback.ClickedCopyCode({ code: `<div class="rounded-xl bg-card p-5 shadow-sm ring-1 ring-border">
   {accordion}
 </div>` }),
       }),
-      example<Message>({
+      docsExample({
         title: 'RTL',
         description: 'The component follows the surrounding document direction.',
         preview: h.div(
@@ -219,7 +217,7 @@ export const view = (model: Model): Html => {
           [accordionPreview(model.rtl, 'rtl')],
         ),
         code: `<div dir="rtl">{accordion}</div>`,
-        onCopy: ClickedCopyCode({ code: `<div dir="rtl">{accordion}</div>` }),
+        onCopy: CopyFeedback.ClickedCopyCode({ code: `<div dir="rtl">{accordion}</div>` }),
       }),
     ],
   })

@@ -1,4 +1,4 @@
-import { Effect, Schema as S } from 'effect'
+import { Schema as S } from 'effect'
 import { Command, Subscription } from 'foldkit'
 import { type Html, html } from 'foldkit/html'
 import { m } from 'foldkit/message'
@@ -10,6 +10,7 @@ import {
   example,
 } from '@/docs/component-page'
 import * as State from '@/docs/components/catalog-state'
+import * as CopyFeedback from '@/docs/copy-feedback'
 import { definitions as earlyDefinitions } from '@/docs/components/definitions/a-to-command'
 import { definitions as middleDefinitions } from '@/docs/components/definitions/context-to-pagination'
 import { definitions as lateDefinitions } from '@/docs/components/definitions/popover-to-typography'
@@ -23,41 +24,33 @@ const definitions: PageDefinitions = {
 
 const EXAMPLE_STATE_COUNT = 32
 
-export const Model = S.Struct({ examples: S.Array(State.Model) })
+export const Model = S.Struct({
+  examples: S.Array(State.Model),
+  copiedCode: CopyFeedback.Model,
+})
 export type Model = typeof Model.Type
 
 export const GotExampleMessage = m('GotCatalogExampleMessage', {
   index: S.Number,
   message: State.Message,
 })
-export const ClickedCopyCode = m('ClickedCatalogCopyCode', { code: S.String })
-export const CompletedCopyCode = m('CompletedCatalogCopyCode')
-export const Message = S.Union([GotExampleMessage, ClickedCopyCode, CompletedCopyCode])
+export const Message = S.Union([GotExampleMessage, CopyFeedback.Message])
 export type Message = typeof Message.Type
 
 export const init = (): Model => ({
   examples: Array.from({ length: EXAMPLE_STATE_COUNT }, (_, index) =>
     State.withExampleIds(State.init(), `catalog-example-${String(index)}`),
   ),
+  copiedCode: null,
 })
 
 type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
 
-const CopyCode = Command.define(
-  'CopyCatalogCode',
-  { code: S.String },
-  CompletedCopyCode,
-)(({ code }) =>
-  Effect.promise(() => navigator.clipboard.writeText(code)).pipe(
-    Effect.as(CompletedCopyCode()),
-  ),
-)
-
 export const update = (model: Model, message: Message): UpdateReturn => {
-  if (message._tag === 'ClickedCatalogCopyCode') {
-    return [model, [CopyCode({ code: message.code })]]
+  if (message._tag !== 'GotCatalogExampleMessage') {
+    const [copiedCode, commands] = CopyFeedback.update(model.copiedCode, message)
+    return [{ ...model, copiedCode }, Command.mapMessages(commands, next => next)]
   }
-  if (message._tag === 'CompletedCatalogCopyCode') return [model, []]
 
   const current = model.examples[message.index]
   if (current === undefined) return [model, []]
@@ -68,6 +61,7 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       examples: model.examples.map((candidate, index) =>
         index === message.index ? example : candidate,
       ),
+      copiedCode: model.copiedCode,
     },
     Command.mapMessages(commands, next =>
       GotExampleMessage({ index: message.index, message: next }),
@@ -149,7 +143,7 @@ export const view = (model: Model, slug: string): Html => {
     description: definition.description,
     installation: `npx shadcn@latest add Potti1234/creaseui/${slug}`,
     usage: usageFor(slug, name),
-    sidebarScrolled: CompletedCopyCode(),
+    sidebarScrolled: CopyFeedback.ObservedSidebarScroll(),
     composition:
       definition.composition ??
       `${name}\n├── Model / init / update\n├── ${primaryExport(slug)} view\n└── Source-owned styles and composition`,
@@ -171,7 +165,8 @@ export const view = (model: Model, slug: string): Html => {
             GotExampleMessage({ index, message }),
         }),
         code: config.code,
-        onCopy: ClickedCopyCode({ code: config.code }),
+        onCopy: CopyFeedback.ClickedCopyCode({ code: config.code }),
+        isCopied: model.copiedCode === config.code,
         ...(config.previewClass === undefined
           ? {}
           : { previewClass: config.previewClass }),
