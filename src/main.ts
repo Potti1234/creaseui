@@ -421,11 +421,11 @@ const header = (model: Model): Html => {
                 [
                   Icon.icon('sun', {
                     class:
-                      'theme-toggle-icon absolute inset-0 size-4 scale-100 opacity-100 blur-0 transition-[scale,opacity,filter] duration-200 ease-[cubic-bezier(0.2,0,0,1)] dark:scale-25 dark:opacity-0 dark:blur-[4px]',
+                      'theme-toggle-icon absolute inset-0 size-4 scale-100 opacity-100 transition-[scale,opacity] duration-200 ease-[cubic-bezier(0.2,0,0,1)] dark:scale-25 dark:opacity-0',
                   }),
                   Icon.icon('moon', {
                     class:
-                      'theme-toggle-icon absolute inset-0 size-4 scale-25 opacity-0 blur-[4px] transition-[scale,opacity,filter] duration-200 ease-[cubic-bezier(0.2,0,0,1)] dark:scale-100 dark:opacity-100 dark:blur-0',
+                      'theme-toggle-icon absolute inset-0 size-4 scale-25 opacity-0 transition-[scale,opacity] duration-200 ease-[cubic-bezier(0.2,0,0,1)] dark:scale-100 dark:opacity-100',
                   }),
                 ],
               ),
