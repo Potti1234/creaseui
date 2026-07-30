@@ -177,12 +177,13 @@ export const example = <Msg>(config: ExampleConfig<Msg>): Html => {
                 [
                   h.For(`example-code-${toSlug(config.title)}`),
                   h.Class(
-                    'absolute bottom-2.5 left-1/2 z-10 flex min-h-10 -translate-x-1/2 cursor-pointer items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium text-foreground shadow-xs outline-none transition-[color,background-color,transform] hover:bg-accent active:scale-[0.96] peer-focus-visible:ring-3 peer-focus-visible:ring-ring/50',
+                    'absolute bottom-2.5 left-1/2 z-10 flex min-h-10 -translate-x-1/2 cursor-pointer items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium text-foreground shadow-xs outline-none transition-[color,background-color,transform] hover:bg-accent active:scale-[0.96] peer-checked:[&_.hide-code-label]:inline peer-checked:[&_.view-code-label]:hidden peer-focus-visible:ring-3 peer-focus-visible:ring-ring/50',
                   ),
                 ],
                 [
                   Icon.icon<Msg>('code-xml', { class: 'size-4' }),
-                  h.span([], ['View Code']),
+                  h.span([h.Class('view-code-label')], ['View Code']),
+                  h.span([h.Class('hide-code-label hidden')], ['Hide Code']),
                 ],
               ),
             ],
