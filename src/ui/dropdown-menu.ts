@@ -218,7 +218,7 @@ export const dropdownMenu = <Item extends string, Msg>(props: DropdownMenuProps<
       h.button([h.Type('button'), h.AriaLabel('Close menu'), h.OnClick(props.toParentMessage(Closed())), h.Class('fixed inset-0 z-40 cursor-default')], []),
       h.div([h.Role('menu'), h.AriaLabel(props.ariaLabel ?? 'Menu'), h.Tabindex(0), h.OnKeyDownPreventDefault(keyMessage), h.DataAttribute('slot', 'dropdown-menu-content'),
         ...(anchorX !== undefined && anchorY !== undefined ? [h.Style({ position: 'fixed', left: `${Math.max(4, Math.min(anchorX, window.innerWidth - 164))}px`, top: `${Math.max(4, Math.min(anchorY, window.innerHeight - 48))}px`, maxHeight: 'calc(100vh - 8px)' })] : []),
-        h.Class(cn(CONTENT_CLASS, anchorX !== undefined ? 'fixed overflow-y-auto' : positionClass(props.side ?? 'bottom', props.align ?? 'start')))], grouped),
+        h.Class(cn(CONTENT_CLASS, anchorX !== undefined ? 'fixed' : positionClass(props.side ?? 'bottom', props.align ?? 'start')))], grouped),
     ] : []),
   ])
 }
