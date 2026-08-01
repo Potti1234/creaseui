@@ -74,7 +74,7 @@ export const close = create().close
 export const selectItem = create().selectItem
 
 const CONTENT_CLASS = 'absolute z-50 min-w-[8rem] overflow-visible rounded-md border bg-popover p-1 text-popover-foreground shadow-md'
-const ITEM_CLASS = "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[active]:bg-accent data-[active]:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+const ITEM_CLASS = "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[active=true]:bg-accent data-[active=true]:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
 const SUBMENU_CLASS = 'absolute top-0 left-full ml-1 min-w-[8rem] rounded-md border bg-popover p-1 text-popover-foreground shadow-lg'
 
 export type DropdownMenuItemConfig = Readonly<{
