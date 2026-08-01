@@ -76,10 +76,12 @@ describe('stateful component models', () => {
   })
 
   it('keeps a context menu anchored to the secondary-click coordinates', () => {
-    const [opened] = ContextMenu.update(
+    const [anchored] = ContextMenu.update(
       ContextMenu.init({ id: 'context' }),
-      DropdownMenu.OpenedAt({ x: 144, y: 233 }),
+      DropdownMenu.AnchoredAt({ x: 144, y: 233 }),
     )
+    assert.equal(anchored.isOpen, false)
+    const [opened] = ContextMenu.update(anchored, DropdownMenu.OpenedFromContext())
     assert.equal(opened.isOpen, true)
     assert.equal(Option.getOrUndefined(opened.anchorX), 144)
     assert.equal(Option.getOrUndefined(opened.anchorY), 233)

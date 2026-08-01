@@ -19,6 +19,8 @@ export const Model = S.Struct({
 export type Model = typeof Model.Type
 
 export const Opened = m('Opened')
+export const AnchoredAt = m('AnchoredAt', { x: S.Number, y: S.Number })
+export const OpenedFromContext = m('OpenedFromContext')
 export const OpenedAt = m('OpenedAt', { x: S.Number, y: S.Number })
 export const Closed = m('Closed')
 export const ActivatedItem = m('ActivatedItem', { index: S.Number })
@@ -26,7 +28,7 @@ export const OpenedSubmenu = m('OpenedSubmenu', { index: S.Number })
 export const ActivatedSubmenuItem = m('ActivatedSubmenuItem', { index: S.Number })
 export const ClosedSubmenu = m('ClosedSubmenu')
 export const SelectedItem = m('SelectedItem', { item: S.String, index: S.Number })
-export const Message = S.Union([Opened, OpenedAt, Closed, ActivatedItem, OpenedSubmenu, ActivatedSubmenuItem, ClosedSubmenu, SelectedItem])
+export const Message = S.Union([Opened, AnchoredAt, OpenedFromContext, OpenedAt, Closed, ActivatedItem, OpenedSubmenu, ActivatedSubmenuItem, ClosedSubmenu, SelectedItem])
 export type Message = typeof Message.Type
 
 export const Selected = m('Selected', { value: S.String, index: S.Number })
@@ -49,6 +51,8 @@ type UpdateReturn<Item extends string> = readonly [Model, ReadonlyArray<Command.
 const updateTyped = <Item extends string>(model: Model, message: Message): UpdateReturn<Item> => {
   switch (message._tag) {
     case 'Opened': return [{ ...model, isOpen: true, anchorX: Option.none(), anchorY: Option.none() }, [], Option.none()]
+    case 'AnchoredAt': return [{ ...model, anchorX: Option.some(message.x), anchorY: Option.some(message.y) }, [], Option.none()]
+    case 'OpenedFromContext': return [{ ...model, isOpen: true }, [], Option.none()]
     case 'OpenedAt': return [{ ...model, isOpen: true, anchorX: Option.some(message.x), anchorY: Option.some(message.y) }, [], Option.none()]
     case 'Closed': return [{ ...model, isOpen: false, openSubmenuIndex: Option.none(), anchorX: Option.none(), anchorY: Option.none() }, [], Option.none()]
     case 'ActivatedItem': return [{ ...model, activeIndex: Math.max(0, message.index) }, [], Option.none()]
@@ -205,7 +209,7 @@ export const dropdownMenu = <Item extends string, Msg>(props: DropdownMenuProps<
     h.button([
       h.Type('button'), h.AriaHasPopup('menu'), h.AriaExpanded(props.model.isOpen),
       ...(props.openOnContextMenu === true
-        ? [h.OnContextMenu(props.toParentMessage(ActivatedItem({ index: props.model.activeIndex }))), h.OnPointerDown((_pointerType, button, _screenX, _screenY, _timeStamp, clientX, clientY) => button === 2 ? Option.some(props.toParentMessage(OpenedAt({ x: clientX, y: clientY }))) : Option.none())]
+        ? [h.OnContextMenu(props.toParentMessage(OpenedFromContext())), h.OnPointerDown((_pointerType, button, _screenX, _screenY, _timeStamp, clientX, clientY) => button === 2 ? Option.some(props.toParentMessage(AnchoredAt({ x: clientX, y: clientY }))) : Option.none())]
         : [h.OnClick(props.toParentMessage(props.model.isOpen ? Closed() : Opened()))]),
       h.DataAttribute('slot', 'dropdown-menu-trigger'), ...(props.triggerClass === undefined ? [] : [h.Class(props.triggerClass)]),
       h.OnKeyDownPreventDefault(key => key === 'ArrowDown' || key === 'Enter' || key === ' ' ? Option.some(props.toParentMessage(props.model.isOpen ? (menuKey(props.model, props.items, props.itemToConfig, key) ?? Opened()) : Opened())) : Option.none()),
