@@ -62,12 +62,20 @@ const ANCHOR: ListboxPrimitive.AnchorConfig = {
 
 export type SelectSize = 'sm' | 'default'
 
+export type SelectItemConfig = Readonly<{
+  content?: Html | string
+  searchText?: string
+  class?: string
+  isDisabled?: boolean
+}>
+
 export type SelectProps<Item, Value extends string, Msg> = Readonly<{
   model: Model
   toParentMessage: (message: Message) => Msg
   items: ReadonlyArray<Item>
   itemToValue: (item: Item) => Value
   itemToLabel: (item: Item) => string
+  itemToConfig?: (item: Item) => SelectItemConfig
   placeholder?: string
   triggerClass?: string
   size?: SelectSize
@@ -97,9 +105,21 @@ export const select = <Item, Value extends string, Msg>(
   const viewInputs: ListboxPrimitive.ViewInputs<string> = {
     items: values,
     itemToValue: (value) => value,
-    itemToSearchText: labelForValue,
-    itemToConfig: (value) => ({
-      className: ITEM_CLASS,
+    itemToSearchText: (value) => {
+      const item = itemForValue(value)
+      return item === undefined
+        ? labelForValue(value)
+        : (props.itemToConfig?.(item).searchText ?? labelForValue(value))
+    },
+    isItemDisabled: (value) => {
+      const item = itemForValue(value)
+      return item === undefined ? false : (props.itemToConfig?.(item).isDisabled ?? false)
+    },
+    itemToConfig: (value) => {
+      const item = itemForValue(value)
+      const config = item === undefined ? undefined : props.itemToConfig?.(item)
+      return ({
+      className: cn(ITEM_CLASS, config?.class),
       content: hs.span(
         [hs.DataAttribute('slot', 'select-item'), hs.Class('contents')],
         [
@@ -110,10 +130,10 @@ export const select = <Item, Value extends string, Msg>(
             ],
             [Icon.check<Message>({ class: 'size-4' })],
           ),
-          hs.span([], [labelForValue(value)]),
+          hs.span([], [config?.content ?? labelForValue(value)]),
         ],
       ),
-    }),
+    })},
     buttonContent: hs.span(
       [hs.Class('contents')],
       [

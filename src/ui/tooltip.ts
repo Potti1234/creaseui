@@ -6,9 +6,8 @@ import { cn } from '@/lib/utils'
 
 /* Ported from shadcn/ui tooltip.tsx on top of foldkit Tooltip.
 
-   PORT NOTE: foldkit Tooltip exposes no arrow positioning part or transition
-   lifecycle. The arrow is approximated with a side-aware rotated square, and
-   the panel is removed immediately when hidden rather than leave-animated. */
+   Foldkit's floating anchor may flip a panel to avoid collisions. The arrow is
+   styled from the anchor's runtime data-placement, so it follows that flip. */
 
 export const Model = TooltipPrimitive.Model
 export type Model = typeof Model.Type
@@ -38,14 +37,12 @@ const PLACEMENTS: Readonly<
   left: { start: 'left-start', center: 'left', end: 'left-end' },
 }
 
-const ARROW_CLASS: Readonly<Record<TooltipSide, string>> = {
-  top: 'absolute left-1/2 bottom-0 size-2.5 -translate-x-1/2 translate-y-1/2 rotate-45 rounded-[2px] bg-primary',
-  right:
-    'absolute top-1/2 left-0 size-2.5 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-[2px] bg-primary',
-  bottom:
-    'absolute left-1/2 top-0 size-2.5 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-[2px] bg-primary',
-  left: 'absolute top-1/2 right-0 size-2.5 translate-x-1/2 -translate-y-1/2 rotate-45 rounded-[2px] bg-primary',
-}
+const ARROW_CLASS =
+  'absolute size-2.5 rotate-45 rounded-[2px] bg-primary ' +
+  'group-data-[placement^=top]:left-1/2 group-data-[placement^=top]:bottom-0 group-data-[placement^=top]:-translate-x-1/2 group-data-[placement^=top]:translate-y-1/2 ' +
+  'group-data-[placement^=bottom]:left-1/2 group-data-[placement^=bottom]:top-0 group-data-[placement^=bottom]:-translate-x-1/2 group-data-[placement^=bottom]:-translate-y-1/2 ' +
+  'group-data-[placement^=left]:top-1/2 group-data-[placement^=left]:right-0 group-data-[placement^=left]:translate-x-1/2 group-data-[placement^=left]:-translate-y-1/2 ' +
+  'group-data-[placement^=right]:top-1/2 group-data-[placement^=right]:left-0 group-data-[placement^=right]:-translate-x-1/2 group-data-[placement^=right]:-translate-y-1/2'
 
 export type TooltipProps<Msg> = Readonly<{
   model: Model
@@ -58,6 +55,10 @@ export type TooltipProps<Msg> = Readonly<{
   ariaLabel?: string
   triggerClass?: string
   class?: string
+  showArrow?: boolean
+  gap?: number
+  offset?: number
+  portal?: boolean
 }>
 
 export const tooltip = <Msg>(props: TooltipProps<Msg>): Html => {
@@ -70,7 +71,12 @@ export const tooltip = <Msg>(props: TooltipProps<Msg>): Html => {
     model: props.model,
     view: TooltipPrimitive.view,
     viewInputs: {
-      anchor: { placement, gap: 4 },
+      anchor: {
+        placement,
+        gap: props.gap ?? 4,
+        ...(props.offset === undefined ? {} : { offset: props.offset }),
+        ...(props.portal === undefined ? {} : { portal: props.portal }),
+      },
       ...(props.isDisabled === undefined
         ? {}
         : { isDisabled: props.isDisabled }),
@@ -99,17 +105,18 @@ export const tooltip = <Msg>(props: TooltipProps<Msg>): Html => {
                     [
                       ...panel,
                       ht.DataAttribute('slot', 'tooltip-content'),
-                      ht.Class(cn(CONTENT_CLASS, props.class)),
+                      ht.Class(cn(CONTENT_CLASS, 'group', props.class)),
                     ],
                     [
                       props.content,
-                      ht.span(
+                      ...(props.showArrow === false ? [] : [ht.span(
                         [
                           ht.AriaHidden(true),
-                          ht.Class(ARROW_CLASS[side]),
+                          ht.DataAttribute('slot', 'tooltip-arrow'),
+                          ht.Class(ARROW_CLASS),
                         ],
                         [],
-                      ),
+                      )]),
                     ],
                   ),
                 ]

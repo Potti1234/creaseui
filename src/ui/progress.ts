@@ -3,20 +3,22 @@ import { type Html, html } from 'foldkit/html'
 import { cn } from '@/lib/utils'
 
 export type ProgressProps = Readonly<{
-  value: number
+  /** `null` renders an indeterminate progress indicator. */
+  value: number | null
   class?: string
 }>
 
 export const progress = <Msg>(props: ProgressProps): Html => {
   const h = html<Msg>()
-  const value = Math.min(100, Math.max(0, props.value))
+  const value = props.value === null ? null : Math.min(100, Math.max(0, props.value))
 
   return h.div(
     [
       h.Role('progressbar'),
       h.AriaValuemin(0),
       h.AriaValuemax(100),
-      h.AriaValuenow(value),
+      ...(value === null ? [] : [h.AriaValuenow(value)]),
+      h.DataAttribute('state', value === null ? 'indeterminate' : 'determinate'),
       h.DataAttribute('slot', 'progress'),
       h.Class(
         cn(
@@ -30,7 +32,13 @@ export const progress = <Msg>(props: ProgressProps): Html => {
         [
           h.DataAttribute('slot', 'progress-indicator'),
           h.Class('h-full w-full flex-1 bg-primary transition-all'),
-          h.Style({ transform: `translateX(-${100 - value}%)` }),
+          h.Style({
+            transform:
+              value === null ? 'translateX(-60%)' : `translateX(-${100 - value}%)`,
+          }),
+          ...(value === null
+            ? [h.Class('animate-[progress-indeterminate_1.5s_ease-in-out_infinite]')]
+            : []),
         ],
         [],
       ),

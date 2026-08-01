@@ -81,10 +81,25 @@ export type CommandProps<Item extends string, Msg> = Readonly<{
   groupToHeading?: (groupKey: string) => Html | string | undefined
 }>
 
-const groupHeadingContent = <Msg>(content: Html | string): Html => {
+export const commandGroupHeading = <Msg>(content: Html | string, className?: string): Html => {
   const h = html<Msg>()
 
-  return h.span([h.DataAttribute('slot', 'command-group-heading')], [content])
+  return h.span([h.DataAttribute('slot', 'command-group-heading'), h.Class(cn(className))], [content])
+}
+
+export const commandShortcut = <Msg>(content: Html | string, className?: string): Html => {
+  const h = html<Msg>()
+  return h.span([h.DataAttribute('slot', 'command-shortcut'), h.Class(cn(SHORTCUT_CLASS, className))], [content])
+}
+
+export const commandSeparator = <Msg>(className?: string): Html => {
+  const h = html<Msg>()
+  return h.div([h.Role('separator'), h.DataAttribute('slot', 'command-separator'), h.Class(cn(SEPARATOR_CLASS, className))], [])
+}
+
+export const commandEmpty = <Msg>(content: Html | string = 'No results found.', className?: string): Html => {
+  const h = html<Msg>()
+  return h.div([h.DataAttribute('slot', 'command-empty'), h.Class(cn('py-6 text-center text-sm', className))], [content])
 }
 
 export const command = <Item extends string, Msg>(
@@ -133,13 +148,7 @@ export const command = <Item extends string, Msg>(
               ...(config.shortcut === undefined
                 ? []
                 : [
-                    hc.span(
-                      [
-                        hc.DataAttribute('slot', 'command-shortcut'),
-                        hc.Class(SHORTCUT_CLASS),
-                      ],
-                      [config.shortcut],
-                    ),
+                    commandShortcut<Message>(config.shortcut),
                   ]),
             ],
           ),
@@ -178,7 +187,7 @@ export const command = <Item extends string, Msg>(
               return heading === undefined
                 ? undefined
                 : {
-                    content: groupHeadingContent<Message>(heading),
+                    content: commandGroupHeading<Message>(heading),
                   }
             },
             groupClassName: GROUP_CLASS,

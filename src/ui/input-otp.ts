@@ -13,16 +13,24 @@ export type InputOtpProps<Msg> = Readonly<{
   isInvalid?: boolean
   class?: string
   groupClass?: string
+  /** Pattern accepted by the control. Defaults to ASCII digits. */
+  pattern?: RegExp
+  inputMode?: 'numeric' | 'text' | 'tel' | 'decimal' | 'email' | 'url' | 'search'
+  slotClass?: string
   separator?: (index: number) => Html
 }>
 
-const normalize = (value: string, length: number): string =>
-  value.replace(/\D/g, '').slice(0, length)
+const normalize = (value: string, length: number, pattern: RegExp): string =>
+  Array.from(value).filter(character => {
+    pattern.lastIndex = 0
+    return pattern.test(character)
+  }).slice(0, length).join('')
 
 export const inputOtp = <Msg>(props: InputOtpProps<Msg>): Html => {
   const h = html<Msg>()
   const length = props.length ?? 6
-  const value = normalize(props.value, length)
+  const pattern = props.pattern ?? /[0-9]/
+  const value = normalize(props.value, length, pattern)
 
   return h.div(
     [
@@ -34,8 +42,8 @@ export const inputOtp = <Msg>(props: InputOtpProps<Msg>): Html => {
         h.Id(props.id),
         h.Type('text'),
         h.Value(value),
-        h.InputMode('numeric'),
-        h.Pattern('[0-9]*'),
+        h.InputMode(props.inputMode ?? 'numeric'),
+        h.Pattern(pattern.source),
         h.Maxlength(length),
         h.Autocomplete('one-time-code'),
         h.Spellcheck(false),
@@ -43,7 +51,7 @@ export const inputOtp = <Msg>(props: InputOtpProps<Msg>): Html => {
         h.AriaInvalid(props.isInvalid ?? false),
         h.Disabled(props.isDisabled ?? false),
         ...(props.name === undefined ? [] : [h.Name(props.name)]),
-        h.OnInput(next => props.onInput(normalize(next, length))),
+        h.OnInput(next => props.onInput(normalize(next, length, pattern))),
         h.Class('peer absolute inset-0 z-10 size-full cursor-text opacity-0 disabled:cursor-not-allowed'),
       ]),
       h.div(
@@ -65,6 +73,7 @@ export const inputOtp = <Msg>(props: InputOtpProps<Msg>): Html => {
                   'peer-focus-within:border-ring peer-focus-within:ring-[3px] peer-focus-within:ring-ring/50',
                   'peer-aria-invalid:border-destructive peer-aria-invalid:ring-destructive/20 dark:peer-aria-invalid:ring-destructive/40',
                   'peer-disabled:opacity-50',
+                  props.slotClass,
                 ),
               ),
             ],

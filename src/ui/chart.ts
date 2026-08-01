@@ -2,9 +2,87 @@ import { type Html, html } from 'foldkit/html'
 
 import { cn } from '@/lib/utils'
 
-/* Pure-SVG substitutes for the Recharts-backed charts used by preview-02.
-   They intentionally cover only the bar, area, and radial presentations
-   needed by those cards. */
+/* Framework-native chart composition. The small SVG renderers below remain
+   dependency-free; `chartContainer`, legend, and tooltip provide the shared
+   configuration/composition surface used by richer chart adapters. */
+
+export type ChartSeriesConfig = Readonly<{
+  label?: Html | string
+  color?: string
+  icon?: Html
+}>
+
+export type ChartConfig = Readonly<Record<string, ChartSeriesConfig>>
+
+export type ChartContainerProps = Readonly<{
+  config: ChartConfig
+  children: ReadonlyArray<Html | string>
+  class?: string
+  ariaLabel?: string
+}>
+
+export const chartContainer = <Msg>(props: ChartContainerProps): Html => {
+  const h = html<Msg>()
+  const variables = Object.entries(props.config).reduce<Record<string, string>>(
+    (result, [key, series]) =>
+      series.color === undefined
+        ? result
+        : { ...result, [`--color-${key}`]: series.color },
+    {},
+  )
+  return h.div(
+    [
+      h.DataAttribute('slot', 'chart'),
+      h.Role('img'),
+      h.AriaLabel(props.ariaLabel ?? 'Chart'),
+      h.Class(cn('flex aspect-video justify-center text-xs', props.class)),
+      h.Style(variables),
+    ],
+    props.children,
+  )
+}
+
+export type ChartLegendProps = Readonly<{
+  config: ChartConfig
+  series?: ReadonlyArray<string>
+  class?: string
+}>
+
+export const chartLegend = <Msg>(props: ChartLegendProps): Html => {
+  const h = html<Msg>()
+  return h.div(
+    [h.DataAttribute('slot', 'chart-legend'), h.Class(cn('flex flex-wrap items-center justify-center gap-4', props.class))],
+    (props.series ?? Object.keys(props.config)).flatMap(key => {
+      const series = props.config[key]
+      return series === undefined ? [] : [h.div([h.Class('flex items-center gap-1.5')], [
+        series.icon ?? h.span([h.Class('size-2 shrink-0 rounded-[2px]'), h.Style({ backgroundColor: `var(--color-${key})` })], []),
+        series.label ?? key,
+      ])]
+    }),
+  )
+}
+
+export type ChartTooltipItem = Readonly<{ key: string; value: Html | string }>
+
+export const chartTooltipContent = <Msg>(props: Readonly<{
+  config: ChartConfig
+  label?: Html | string
+  items: ReadonlyArray<ChartTooltipItem>
+  class?: string
+}>): Html => {
+  const h = html<Msg>()
+  return h.div(
+    [h.DataAttribute('slot', 'chart-tooltip'), h.Class(cn('grid min-w-[8rem] gap-1.5 rounded-lg border bg-background px-2.5 py-1.5 text-xs shadow-xl', props.class))],
+    [
+      ...(props.label === undefined ? [] : [h.div([h.Class('font-medium')], [props.label])]),
+      ...props.items.map(item => h.div([h.Class('flex items-center gap-2')], [
+        h.span([h.Class('size-2 shrink-0 rounded-[2px]'), h.Style({ backgroundColor: `var(--color-${item.key})` })], []),
+        h.span([h.Class('text-muted-foreground')], [props.config[item.key]?.label ?? item.key]),
+        h.span([h.Class('ml-auto font-mono font-medium tabular-nums text-foreground')], [item.value]),
+      ])),
+    ],
+  )
+}
 
 const finite = (value: number): number =>
   Number.isFinite(value) ? value : 0

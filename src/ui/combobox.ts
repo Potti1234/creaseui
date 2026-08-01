@@ -65,12 +65,20 @@ const BACKDROP_CLASS = 'fixed inset-0 z-40'
 
 export type ComboboxSize = 'sm' | 'default'
 
+export type ComboboxItemConfig = Readonly<{
+  content?: Html | string
+  searchText?: string
+  class?: string
+  isDisabled?: boolean
+}>
+
 export type ComboboxProps<Item, Value extends string, Msg> = Readonly<{
   model: Model
   toParentMessage: (message: Message) => Msg
   items: ReadonlyArray<Item>
   itemToValue: (item: Item) => Value
   itemToLabel: (item: Item) => string
+  itemToConfig?: (item: Item) => ComboboxItemConfig
   placeholder?: string
   triggerClass?: string
   size?: ComboboxSize
@@ -101,7 +109,8 @@ export const combobox = <Item, Value extends string, Msg>(
       (item) =>
         query === '' ||
         isShowingSelectedLabel ||
-        props.itemToLabel(item).toLocaleLowerCase().includes(query),
+        (props.itemToConfig?.(item).searchText ?? props.itemToLabel(item))
+          .toLocaleLowerCase().includes(query),
     )
     .map(props.itemToValue)
 
@@ -113,19 +122,26 @@ export const combobox = <Item, Value extends string, Msg>(
       items: values,
       itemToValue: (value) => value,
       itemToDisplayText: labelForValue,
-      itemToConfig: (value) => ({
-        className: ITEM_CLASS,
+      isItemDisabled: (value) => {
+        const item = itemForValue(value)
+        return item === undefined ? false : (props.itemToConfig?.(item).isDisabled ?? false)
+      },
+      itemToConfig: (value) => {
+        const item = itemForValue(value)
+        const config = item === undefined ? undefined : props.itemToConfig?.(item)
+        return ({
+        className: cn(ITEM_CLASS, config?.class),
         content: hc.span(
           [hc.DataAttribute('slot', 'command-item'), hc.Class('contents')],
           [
-            hc.span([], [labelForValue(value)]),
+            hc.span([], [config?.content ?? labelForValue(value)]),
             hc.span(
               [hc.Class(INDICATOR_CLASS)],
               [Icon.check<Message>({ class: 'size-4' })],
             ),
           ],
         ),
-      }),
+      })},
       inputClassName: INPUT_CLASS,
       inputAttributes: childAttributes([
         hc.DataAttribute('slot', 'command-input'),
