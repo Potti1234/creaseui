@@ -2,25 +2,28 @@ import { type Html, html } from 'foldkit/html'
 
 import { cn } from '@/lib/utils'
 
-/* CSS-only adaptation of shadcn's scroll-area viewport.
-
-   PORT NOTE: Radix's custom scrollbar tracks, thumbs, and corner are not
-   ported. This version uses the browser's native scrollbars. */
-
 export type ScrollAreaProps = Readonly<{
   class?: string
   children: ReadonlyArray<Html | string>
+  orientation?: 'vertical' | 'horizontal' | 'both'
+  ariaLabel?: string
+  tabIndex?: number
 }>
 
 export const scrollArea = <Msg>(props: ScrollAreaProps): Html => {
   const h = html<Msg>()
+  const orientation = props.orientation ?? 'both'
 
   return h.div(
     [
       h.DataAttribute('slot', 'scroll-area'),
+      h.DataAttribute('orientation', orientation),
+      ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
+      h.Tabindex(props.tabIndex ?? 0),
       h.Class(
         cn(
-          'relative size-full overflow-auto rounded-[inherit] [scrollbar-width:none] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 [&::-webkit-scrollbar]:hidden',
+          'relative size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 [scrollbar-color:var(--border)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:size-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent',
+          orientation === 'vertical' ? 'overflow-y-auto overflow-x-hidden' : orientation === 'horizontal' ? 'overflow-x-auto overflow-y-hidden' : 'overflow-auto',
           props.class,
         ),
       ),

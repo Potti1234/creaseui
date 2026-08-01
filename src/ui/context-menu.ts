@@ -11,6 +11,7 @@ export const init = DropdownMenu.init
 export const create = DropdownMenu.create
 export const update = DropdownMenu.update
 export const open = DropdownMenu.open
+export const openAt = DropdownMenu.openAt
 export const close = DropdownMenu.close
 export const selectItem = DropdownMenu.selectItem
 

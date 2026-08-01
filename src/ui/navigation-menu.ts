@@ -38,6 +38,7 @@ export type NavigationMenuDisclosureProps<Msg> = Readonly<{
   label: string
   content: Html | string
   class?: string
+  ariaLabel?: string
 }>
 
 export const navigationMenuDisclosure = <Msg>(props: NavigationMenuDisclosureProps<Msg>): Html => {
@@ -45,7 +46,7 @@ export const navigationMenuDisclosure = <Msg>(props: NavigationMenuDisclosurePro
   return Popover.popover({
     model: props.model,
     toParentMessage: props.toParentMessage,
-    trigger: h.span([h.Class('flex items-center gap-1')], [props.label, Icon.chevronDown<Msg>({ class: 'relative top-px size-3 transition-transform duration-200' })]),
+    trigger: h.span([h.Class('flex items-center gap-1'), h.AriaLabel(props.ariaLabel ?? props.label)], [props.label, Icon.chevronDown<Msg>({ class: cn('relative top-px size-3 transition-transform duration-200', props.model.isOpen ? 'rotate-180' : undefined) })]),
     triggerClass: cn('group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50', props.class),
     content: props.content,
     class: 'w-auto min-w-64 p-2',

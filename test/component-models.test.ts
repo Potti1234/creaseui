@@ -5,6 +5,7 @@ import { Option } from 'effect'
 
 import * as CatalogState from '../src/docs/components/catalog-state.ts'
 import * as Carousel from '../src/ui/carousel.ts'
+import * as ContextMenu from '../src/ui/context-menu.ts'
 import * as Drawer from '../src/ui/drawer.ts'
 import * as DropdownMenu from '../src/ui/dropdown-menu.ts'
 import * as HoverCard from '../src/ui/hover-card.ts'
@@ -57,6 +58,14 @@ describe('stateful component models', () => {
     assert.equal(Option.isNone(Resizable.update(dragged, Resizable.EndedResize()).drag), true)
   })
 
+  it('resizes adjacent panels without changing the group total', () => {
+    const initial = Resizable.initGroup('group', 3, [25, 50, 25])
+    const started = Resizable.updateGroup(initial, Resizable.StartedGroupResize({ handle: 1, position: 0 }))
+    const dragged = Resizable.updateGroup(started, Resizable.DraggedGroupResize({ position: 200, extent: 1000, minSize: 10 }))
+    assert.deepEqual(dragged.sizes.map(Math.round), [25, 65, 10])
+    assert.equal(Math.round(dragged.sizes.reduce((sum, size) => sum + size, 0)), 100)
+  })
+
   it('emits typed dropdown selections and closes the menu', () => {
     const Menu = DropdownMenu.create<'profile' | 'billing'>()
     const [opened] = Menu.open(DropdownMenu.init({ id: 'account' }))
@@ -64,6 +73,19 @@ describe('stateful component models', () => {
     const [closed, , selection] = Menu.selectItem(active, 'billing', 1)
     assert.equal(closed.isOpen, false)
     assert.deepEqual(Option.getOrUndefined(selection), { _tag: 'Selected', value: 'billing', index: 1 })
+  })
+
+  it('keeps a context menu anchored to the secondary-click coordinates', () => {
+    const [opened] = ContextMenu.update(
+      ContextMenu.init({ id: 'context' }),
+      DropdownMenu.OpenedAt({ x: 144, y: 233 }),
+    )
+    assert.equal(opened.isOpen, true)
+    assert.equal(Option.getOrUndefined(opened.anchorX), 144)
+    assert.equal(Option.getOrUndefined(opened.anchorY), 233)
+    const [closed] = ContextMenu.update(opened, DropdownMenu.Closed())
+    assert.equal(Option.isNone(closed.anchorX), true)
+    assert.equal(Option.isNone(closed.anchorY), true)
   })
 
   it('keeps hover cards open when a stale close delay completes', () => {
