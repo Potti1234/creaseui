@@ -670,8 +670,8 @@
     {
       "name": "input-otp",
       "type": "registry:ui",
-      "title": "Input Otp",
-      "description": "A shadcn-styled Input Otp component for Foldkit.",
+      "title": "Input OTP",
+      "description": "A shadcn-styled Input OTP component for Foldkit.",
       "dependencies": [
         "foldkit@^0.121.0"
       ],

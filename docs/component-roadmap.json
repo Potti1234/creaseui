@@ -1,10 +1,53 @@
 {
   "$schema": "./component-roadmap.schema.json",
+  "verifiedAgainst": {
+    "repository": "https://github.com/shadcn-ui/ui",
+    "commit": "cb2bcd88",
+    "date": "2026-08-01"
+  },
   "documentation": {
-    "complete": ["all catalog components"],
+    "complete": ["all 65 registry components"],
     "next": []
   },
+  "classifications": {
+    "full": "all shared components not listed as adapted",
+    "adapted": [
+      "carousel",
+      "chart",
+      "command",
+      "context-menu",
+      "menubar",
+      "navigation-menu",
+      "resizable",
+      "scroll-area",
+      "slider",
+      "tooltip"
+    ],
+    "recipe": ["data-table", "date-picker", "typography"],
+    "legacy": ["toast"]
+  },
   "fidelity": [],
-  "missing": [
-  ]
+  "intentionalDifferences": [
+    {
+      "component": "chart",
+      "reason": "Uses framework-native SVG and ECharts adapters rather than the React-only Recharts composition engine."
+    },
+    {
+      "component": "carousel",
+      "reason": "Uses a controlled Foldkit model rather than Embla's plugin API."
+    },
+    {
+      "component": "context-menu",
+      "reason": "Captures cursor coordinates from secondary pointer-down because Foldkit OnContextMenu carries only a Message."
+    },
+    {
+      "component": "resizable",
+      "reason": "Receives the measured group extent explicitly because pure Foldkit pointer Messages do not expose currentTarget bounds."
+    },
+    {
+      "component": "scroll-area",
+      "reason": "Uses accessible native scrollbars rather than decorative custom scrollbar parts."
+    }
+  ],
+  "missing": []
 }

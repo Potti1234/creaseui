@@ -1,62 +1,61 @@
 # Component parity
 
-The current showcase contains 49 UI modules. Coverage is broad, but a matching
-name does not promise byte-for-byte or API-level compatibility with the React
-implementation. Parity means comparable appearance and user-facing behavior in
-an idiomatic Foldkit API.
+Verified against [`shadcn-ui/ui@cb2bcd88`](https://github.com/shadcn-ui/ui/tree/cb2bcd88)
+on 2026-08-01.
 
-## Current modules
+Crease UI contains all 61 components in the current `new-york-v4` UI registry.
+It additionally ships four documented compatibility entries:
 
-Accordion, Alert, Alert Dialog, Aspect Ratio, Avatar, Badge, Breadcrumb, Button,
-Button Group, Calendar, Card, Chart, Checkbox, Collapsible, Combobox, Command,
-Date Picker, Dialog, Drawer, Dropdown Menu, Empty, Field, Hover Card, Input,
-Input Group, Item, Kbd, Label, Native Select, Pagination, Popover, Progress,
-Radio Group, Scroll Area, Select, Separator, Sheet, Sidebar, Skeleton, Slider,
-Sonner, Spinner, Switch, Table, Tabs, Textarea, Toggle, Toggle Group, and Tooltip.
+- **Data Table**, **Date Picker**, and **Typography** are Crease recipes built from
+  the component primitives.
+- **Toast** is a legacy compatibility alias for Sonner.
 
-The demo application additionally includes 33 create-board cards, 72 ECharts
-examples, and 16 sidebar blocks. Those examples exercise combinations of the
-modules above; they are not additional primitives.
+All 65 entries have a registry item, source module, install target, documentation
+route, real preview, and component-specific examples. Name coverage is not used
+as a synonym for implementation fidelity; the classifications below make the
+remaining framework adaptations explicit.
 
-## Not yet represented as standalone ports
+## Parity classifications
 
-- Attachment
-- Bubble
-- Carousel
-- Context Menu
-- Direction
-- Form
-- Input OTP
-- Marker
-- Menubar
-- Message and Message Scroller
-- Navigation Menu
-- Resizable
+- **Full** — the Foldkit port provides the same user-facing capability and
+  comparable composition surface.
+- **Adapted** — equivalent use cases are supported through an idiomatic Foldkit
+  API, but the underlying React-specific engine or composition mechanism is not
+  copied.
+- **Recipe** — a documented composition rather than a current upstream registry
+  primitive.
+- **Legacy** — retained for compatibility with an older shadcn API.
 
-Some of these require new behavior rather than styling alone. Carousel and
-Resizable need dedicated interaction engines; Input OTP needs a focused input
-model; Context Menu, Menubar, and Navigation Menu require positioning and
-keyboard interaction work. Form should integrate with Foldkit's validation model
-instead of reproducing React Hook Form.
+The machine-readable classification and remaining intentional differences live
+in [`component-roadmap.json`](component-roadmap.json).
 
-## Intentional differences
+## Adapted components
 
-- Stateful controls expose Foldkit models and messages instead of React hooks,
-  context, or uncontrolled component state.
-- Charts use Apache ECharts because shadcn/ui's Recharts implementation is tied
-  to React.
-- Icons are rendered from Lucide assets through Foldkit HTML rather than React
-  icon components.
-- Radix composition APIs such as `asChild` are replaced with explicit Foldkit
-  view composition.
-- DOM-wide interactions are modeled as subscriptions where Foldkit requires it.
+| Component | Foldkit adaptation |
+| --- | --- |
+| Carousel | Pure controlled model with loop, keyboard, variable-size slides, and multi-slide stepping instead of Embla plugins. |
+| Chart | Framework-native SVG/ECharts composition with config, container, legend, and tooltip helpers instead of Recharts. |
+| Command | Searchable grouped command surface; global shortcut/dialog lifecycle remains application composition. |
+| Context Menu | Dropdown-based menu anchored from secondary pointer coordinates because Foldkit's context-menu event carries no coordinates. |
+| Menubar | Typed Dropdown Menu models with an explicit parent coordination seam for wrapping left/right navigation. |
+| Navigation Menu | Semantic navigation and Popover disclosure rather than Base UI's linked animated viewport. |
+| Resizable | Pure controlled group model with arbitrary panels and explicit measured extent rather than `react-resizable-panels`. |
+| Scroll Area | Visible, focusable native scrollbars with orientation control rather than custom scrollbar/thumb parts. |
+| Slider | Foldkit single-value primitive plus a controlled horizontal/vertical two-thumb range implementation. |
+| Tooltip | Foldkit floating anchor with collision-aware arrow styling rather than a separate Base UI Arrow part. |
 
-Accessibility behavior should come from Foldkit UI's primitives wherever one is
-available. Visual resemblance alone is not sufficient for declaring a component
-complete; keyboard behavior, focus management, labels, and relevant ARIA state
-must also be verified.
+These are intentional implementation choices, not missing components. Any future
+change that removes a listed capability must add an open fidelity item to the
+roadmap instead of leaving the status silently complete.
 
-The actionable, machine-readable backlog lives in
-[`component-roadmap.json`](component-roadmap.json). A component documentation
-page is only marked complete after its live examples pass browser interaction,
-typechecking, production build, and registry validation.
+## Documentation contract
+
+Each component page provides responsive catalog navigation, an on-page table of
+contents, permalink headings, previous/next navigation, CLI and manual install
+guidance, copyable usage/composition snippets, real preview source, component
+source and API links, and an explicit Foldkit-native label. The catalog tests
+guard registry/source alignment, standalone pages, example capacity, concrete
+source snippets, and roadmap structure.
+
+See [`parity-refresh-2026-08.md`](parity-refresh-2026-08.md) for the implementation
+record and verification commands.

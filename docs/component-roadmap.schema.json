@@ -1,8 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
-  "required": ["documentation", "fidelity", "missing"],
+  "required": ["verifiedAgainst", "documentation", "classifications", "fidelity", "intentionalDifferences", "missing"],
   "properties": {
+    "verifiedAgainst": {
+      "type": "object",
+      "required": ["repository", "commit", "date"]
+    },
     "documentation": {
       "type": "object",
       "required": ["complete", "next"],
@@ -11,11 +15,22 @@
         "next": { "type": "array", "items": { "type": "string" } }
       }
     },
+    "classifications": {
+      "type": "object",
+      "required": ["full", "adapted", "recipe", "legacy"]
+    },
     "fidelity": {
       "type": "array",
       "items": {
         "type": "object",
         "required": ["component", "priority", "gap"]
+      }
+    },
+    "intentionalDifferences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["component", "reason"]
       }
     },
     "missing": {

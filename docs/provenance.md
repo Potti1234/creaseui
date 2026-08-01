@@ -10,9 +10,11 @@ projects:
 - [Apache ECharts](https://github.com/apache/echarts) powers chart rendering.
 - [Lucide](https://github.com/lucide-icons/lucide) supplies icons.
 
-The initial prototype was assembled from the then-current public shadcn/ui site
-and registry during July 2026. Its exact upstream commit was not recorded, so the
-repository must not imply commit-exact parity for that import.
+The initial prototype was assembled from the public shadcn/ui site and registry
+during July 2026. The catalog and documentation were subsequently audited and
+refreshed against shadcn/ui commit `cb2bcd88` on 2026-08-01. That reference
+records the comparison baseline; Crease remains an independent Foldkit-native
+implementation rather than a byte-for-byte port.
 
 ## Policy for new and refreshed ports
 
