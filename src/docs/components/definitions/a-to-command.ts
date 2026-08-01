@@ -32,28 +32,31 @@ type Msg = State.Message
 
 const h = html<Msg>()
 const clicked = State.ClickedPreviewAction()
-const code = (component: string, example: string): string =>
-  `import * as ${component} from '@/ui/${component.replaceAll(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()}'\n\n// ${example}`
+const code = (component: string, preview: (model: State.Model) => Html): string =>
+  `import * as ${component} from '@/ui/${component.replaceAll(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()}'\n\nconst preview = ${preview.toString()}`
 
-const basic = (slug: string, component: string) => ({
+const basic = (slug: string, component: string) => {
+  const preview = (model: State.Model) => realPreview(slug, model)
+  return {
   title: 'Basic',
-  preview: (model: State.Model) => realPreview(slug, model),
-  code: code(component, `Basic ${component} example`),
-})
+  preview,
+  code: code(component, preview),
+  }
+}
 
 const staticExample = (
   title: string,
   component: string,
   preview: () => Html,
   description?: string,
-) => ({ title, ...(description === undefined ? {} : { description }), preview, code: code(component, `${title} example`) })
+) => ({ title, ...(description === undefined ? {} : { description }), preview, code: code(component, preview) })
 
 const statefulExample = (
   title: string,
   component: string,
   preview: (model: State.Model) => Html,
   description?: string,
-) => ({ title, ...(description === undefined ? {} : { description }), preview, code: code(component, `${title} example with Foldkit Model / Message wiring`) })
+) => ({ title, ...(description === undefined ? {} : { description }), preview, code: code(component, preview) })
 
 const row = (children: ReadonlyArray<Html | string>, className = ''): Html =>
   h.div([h.Class(`flex flex-wrap items-center justify-center gap-3 ${className}`)], children)

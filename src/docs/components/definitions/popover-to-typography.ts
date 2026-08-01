@@ -201,7 +201,7 @@ const tooltip = (model: State.Model, suffix: string, config: Readonly<{ side?: T
   ...(config.disabled === undefined ? {} : { isDisabled: config.disabled }),
 })
 
-export const definitions: PageDefinitions = {
+const rawDefinitions: PageDefinitions = {
   popover: {
     description: 'Displays rich content in a portal, triggered by a button.',
     composition: 'Popover\n├── PopoverTrigger\n└── PopoverContent',
@@ -456,3 +456,17 @@ export const definitions: PageDefinitions = {
     ],
   },
 }
+
+/** Keep documentation executable: an abbreviated snippet falls back to the
+ * precise Foldkit view function that renders its live preview. */
+export const definitions: PageDefinitions = Object.fromEntries(
+  Object.entries(rawDefinitions).map(([slug, definition]) => [slug, {
+    ...definition,
+    examples: definition.examples.map(example => ({
+      ...example,
+      code: /\.\.\.|<\/?[A-Z]|<(?:div|fieldset|legend)\b/.test(example.code)
+        ? `const preview = ${example.preview.toString()}`
+        : example.code,
+    })),
+  }]),
+)

@@ -316,7 +316,7 @@ const pagination = (iconsOnly = false, rtl = false): Html => Direction.direction
   Pagination.paginationItem({ children: [Pagination.paginationNext({ href: '#', ...(iconsOnly ? { class: '[&_span]:hidden' } : {}) })] }),
 ] })] })] })
 
-export const definitions: PageDefinitions = {
+const rawDefinitions: PageDefinitions = {
   'context-menu': {
     description: 'Displays a menu of actions triggered by a right click.',
     composition: 'Context Menu composes a trigger, menu items, groups, submenus, checkbox and radio items over one Foldkit-owned menu model.',
@@ -624,3 +624,18 @@ export const definitions: PageDefinitions = {
     ],
   },
 }
+
+/** Replace deliberately abbreviated prose snippets with the exact Foldkit view
+ * function used by the live preview. Concise, already-complete snippets remain
+ * hand-authored so their focused teaching value is preserved. */
+export const definitions: PageDefinitions = Object.fromEntries(
+  Object.entries(rawDefinitions).map(([slug, definition]) => [slug, {
+    ...definition,
+    examples: definition.examples.map(example => ({
+      ...example,
+      code: /\.\.\.|<\/?[A-Z]|<(?:div|fieldset|legend)\b/.test(example.code)
+        ? `const preview = ${example.preview.toString()}`
+        : example.code,
+    })),
+  }]),
+)
