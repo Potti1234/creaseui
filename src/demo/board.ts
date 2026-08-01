@@ -1,4 +1,4 @@
-import { Match as M, Schema as S } from 'effect'
+import { Effect, Match as M, Schema as S } from 'effect'
 import { Command, Subscription } from 'foldkit'
 import { type Html, html } from 'foldkit/html'
 import { m } from 'foldkit/message'
@@ -38,6 +38,11 @@ import * as StockPerformance from '@/demo/cards/stock-performance'
 import * as SyncingState from '@/demo/cards/syncing-state'
 import * as TransferFunds from '@/demo/cards/transfer-funds'
 import * as UpcomingPayments from '@/demo/cards/upcoming-payments'
+import * as Preset from '@/demo/create-preset'
+import * as Button from '@/ui/button'
+import * as Popover from '@/ui/popover'
+import * as ScrollArea from '@/ui/scroll-area'
+import * as Icon from '@/lib/icon'
 
 export const Model = S.Struct({
   accountAccess: AccountAccess.Model,
@@ -57,6 +62,16 @@ export const Model = S.Struct({
   stockPerformance: StockPerformance.Model,
   transferFunds: TransferFunds.Model,
   upcomingPayments: UpcomingPayments.Model,
+  preset: Preset.Config,
+  presetInput: S.String,
+  presetError: S.NullOr(S.String),
+  isPresetCopied: S.Boolean,
+  pickerPopovers: S.Struct({
+    style: Popover.Model, baseColor: Popover.Model, theme: Popover.Model,
+    chartColor: Popover.Model, iconLibrary: Popover.Model, font: Popover.Model,
+    fontHeading: Popover.Model, radius: Popover.Model, menuAccent: Popover.Model,
+    menuColor: Popover.Model,
+  }),
 })
 export type Model = typeof Model.Type
 
@@ -113,6 +128,16 @@ export const GotTransferFundsMessage = m('GotTransferFundsMessage', {
 export const GotUpcomingPaymentsMessage = m('GotUpcomingPaymentsMessage', {
   message: UpcomingPayments.Message,
 })
+export const ChangedPresetInput = m('ChangedCreatePresetInput', { value: S.String })
+export const AppliedPresetInput = m('AppliedCreatePresetInput')
+export const ChangedPresetField = m('ChangedCreatePresetField', { field: Preset.Field, value: S.String })
+export const ClickedCopyPreset = m('ClickedCopyCreatePreset')
+export const CompletedCopyPreset = m('CompletedCopyCreatePreset')
+export const ClearedCopyPreset = m('ClearedCopyCreatePreset')
+export const GotPresetPickerMessage = m('GotCreatePresetPickerMessage', {
+  field: Preset.Field,
+  message: Popover.Message,
+})
 
 export const Message = S.Union([
   GotAccountAccessMessage,
@@ -132,6 +157,13 @@ export const Message = S.Union([
   GotStockPerformanceMessage,
   GotTransferFundsMessage,
   GotUpcomingPaymentsMessage,
+  ChangedPresetInput,
+  AppliedPresetInput,
+  ChangedPresetField,
+  ClickedCopyPreset,
+  CompletedCopyPreset,
+  ClearedCopyPreset,
+  GotPresetPickerMessage,
 ])
 export type Message = typeof Message.Type
 
@@ -155,12 +187,65 @@ export const init = (): Model => ({
   stockPerformance: StockPerformance.init(),
   transferFunds: TransferFunds.init(),
   upcomingPayments: UpcomingPayments.init(),
+  preset: Preset.DEFAULT_CONFIG,
+  presetInput: Preset.encodePreset(Preset.DEFAULT_CONFIG),
+  presetError: null,
+  isPresetCopied: false,
+  pickerPopovers: {
+    style: Popover.init({ id: 'create-style-picker', isAnimated: true }),
+    baseColor: Popover.init({ id: 'create-base-color-picker', isAnimated: true }),
+    theme: Popover.init({ id: 'create-theme-picker', isAnimated: true }),
+    chartColor: Popover.init({ id: 'create-chart-color-picker', isAnimated: true }),
+    iconLibrary: Popover.init({ id: 'create-icon-library-picker', isAnimated: true }),
+    font: Popover.init({ id: 'create-font-picker', isAnimated: true }),
+    fontHeading: Popover.init({ id: 'create-heading-picker', isAnimated: true }),
+    radius: Popover.init({ id: 'create-radius-picker', isAnimated: true }),
+    menuAccent: Popover.init({ id: 'create-menu-accent-picker', isAnimated: true }),
+    menuColor: Popover.init({ id: 'create-menu-color-picker', isAnimated: true }),
+  },
 })
+
+const CopyPreset = Command.define('CopyCreatePreset', { code: S.String }, CompletedCopyPreset)(
+  ({ code }) => Effect.promise(() => navigator.clipboard.writeText(code)).pipe(Effect.as(CompletedCopyPreset())),
+)
+const ClearPresetCopy = Command.define('ClearCreatePresetCopy', {}, ClearedCopyPreset)(() =>
+  Effect.sleep('1800 millis').pipe(Effect.as(ClearedCopyPreset())),
+)
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
+      ChangedCreatePresetInput: ({ value }) => [evo(model, { presetInput: () => value, presetError: () => null }), []],
+      AppliedCreatePresetInput: () => {
+        const preset = Preset.parsePresetInput(model.presetInput)
+        return preset === undefined
+          ? [evo(model, { presetError: () => 'Enter a valid shadcn preset code, URL, or --preset flag.' }), []]
+          : [evo(model, { preset: () => preset, presetInput: () => Preset.encodePreset(preset), presetError: () => null }), []]
+      },
+      ChangedCreatePresetField: ({ field, value }) => {
+        const preset = { ...model.preset, [field]: value }
+        const [picker, commands] = Popover.close(model.pickerPopovers[field])
+        return [
+          evo(model, {
+            preset: () => preset,
+            presetInput: () => Preset.encodePreset(preset),
+            presetError: () => null,
+            pickerPopovers: current => ({ ...current, [field]: picker }),
+          }),
+          Command.mapMessages(commands, next => GotPresetPickerMessage({ field, message: next })),
+        ]
+      },
+      ClickedCopyCreatePreset: () => [model, [CopyPreset({ code: Preset.encodePreset(model.preset) })]],
+      CompletedCopyCreatePreset: () => [evo(model, { isPresetCopied: () => true }), [ClearPresetCopy({})]],
+      ClearedCopyCreatePreset: () => [evo(model, { isPresetCopied: () => false }), []],
+      GotCreatePresetPickerMessage: ({ field, message: childMessage }) => {
+        const [picker, commands] = Popover.update(model.pickerPopovers[field], childMessage)
+        return [
+          evo(model, { pickerPopovers: current => ({ ...current, [field]: picker }) }),
+          Command.mapMessages(commands, next => GotPresetPickerMessage({ field, message: next })),
+        ]
+      },
       GotAccountAccessMessage: ({ message: childMessage }) => {
         const [accountAccess, commands] = AccountAccess.update(
           model.accountAccess,
@@ -423,13 +508,108 @@ const upcomingPaymentsView = defineView<
   UpcomingPayments.Message
 >(UpcomingPayments.view)
 
+const titleCase = (value: string): string =>
+  value.split('-').map(part => `${part[0]?.toUpperCase() ?? ''}${part.slice(1)}`).join(' ')
+
+const customizer = (model: Model): Html => {
+  const h = html<Message>()
+  const picker = (label: string, field: Preset.Field, values: readonly string[], marker?: string): Html =>
+    Popover.popover<Message>({
+      model: model.pickerPopovers[field],
+      toParentMessage: message => GotPresetPickerMessage({ field, message }),
+      side: 'right',
+      align: 'start',
+      triggerClass: 'relative flex h-[66px] w-full items-end justify-between rounded-lg border border-white/10 bg-white/[0.035] px-3 pb-2.5 text-left shadow-none outline-none transition-colors hover:bg-white/[0.06] focus-visible:ring-2 focus-visible:ring-white/30',
+      trigger: h.div([h.Class('flex min-w-0 flex-1 items-end justify-between')], [
+        h.span([h.Class('absolute top-2.5 left-3 text-xs font-medium text-muted-foreground')], [label]),
+        h.span([h.Class('truncate text-[15px] font-semibold')], [titleCase(model.preset[field])]),
+        h.span([h.Class('ml-3 flex items-center gap-3 pb-0.5')], [
+          ...(marker === undefined ? [] : [h.span([h.AriaHidden(true), h.Class(`size-3.5 rounded-full ${marker}`)], [])]),
+          Icon.chevronRight({ class: 'size-4 text-white/35' }),
+        ]),
+      ]),
+      class: 'dark w-72 border-white/10 bg-[#3a3a3a] p-2 text-white shadow-xl',
+      content: ScrollArea.scrollArea<Message>({
+        class: 'max-h-80',
+        children: values.map(value => {
+          const isSelected = model.preset[field] === value
+          return h.button(
+            [
+              h.Type('button'),
+              h.OnClick(ChangedPresetField({ field, value })),
+              h.Class(`flex min-h-10 w-full items-center rounded-md px-3 text-left text-sm font-medium outline-none transition-colors hover:bg-white/10 focus-visible:bg-white/10 ${isSelected ? 'bg-white/15' : ''}`),
+            ],
+            [
+              h.span([h.Class('truncate')], [titleCase(value)]),
+              ...(isSelected ? [Icon.check({ class: 'ml-auto size-4' })] : []),
+            ],
+          )
+        }),
+      }),
+    })
+
+  return h.aside(
+    [h.Class('dark fixed top-[76px] bottom-5 left-5 z-30 flex w-[282px] flex-col overflow-hidden rounded-2xl bg-[#282828] text-white shadow-xl ring-1 ring-white/10 max-lg:right-3 max-lg:left-3 max-lg:w-auto')],
+    [
+      h.div([h.Class('border-b border-white/10 p-4')], [
+        h.div([h.Class('flex h-12 items-center justify-between rounded-xl border border-white/10 px-4')], [
+          h.h1([h.Class('text-sm font-semibold')], ['Menu']),
+          Icon.icon('menu', { class: 'size-5 text-white/80' }),
+        ]),
+      ]),
+      ScrollArea.scrollArea<Message>({ class: 'min-h-0 flex-1', children: [h.div([h.Class('space-y-4 p-4')], [
+        h.div([h.Class('space-y-3')], [
+          picker('Style', 'style', Preset.STYLES),
+          picker('Base Color', 'baseColor', Preset.BASE_COLORS, 'bg-zinc-400'),
+          picker('Theme', 'theme', Preset.THEMES, 'bg-primary'),
+          picker('Chart Color', 'chartColor', Preset.THEMES, 'bg-chart-1'),
+        ]),
+        h.div([h.Class('-mx-4 border-t border-white/10')], []),
+        h.div([h.Class('space-y-3')], [
+          picker('Heading', 'fontHeading', Preset.FONT_HEADINGS),
+          picker('Font', 'font', Preset.FONTS),
+          picker('Icons', 'iconLibrary', Preset.ICON_LIBRARIES),
+          picker('Radius', 'radius', Preset.RADII),
+          picker('Menu Color', 'menuColor', Preset.MENU_COLORS),
+          picker('Menu Accent', 'menuAccent', Preset.MENU_ACCENTS),
+        ]),
+      ])] }),
+      h.div([h.Class('space-y-2 border-t border-white/10 p-4')], [
+        h.div([h.Class('truncate rounded-lg border border-white/10 px-3 py-2 font-mono text-xs text-white/80')], [`--preset ${Preset.encodePreset(model.preset)}`]),
+        h.details([h.Class('group')], [
+          h.summary([h.Class('flex h-9 cursor-pointer list-none items-center justify-center rounded-lg border border-white/10 text-sm font-medium hover:bg-white/[0.06] [&::-webkit-details-marker]:hidden')], ['Open Preset']),
+          h.div([h.Class('mt-2 space-y-2')], [
+            h.input([
+              h.Id('create-preset-input'), h.AriaLabel('Open preset'), h.Value(model.presetInput),
+              h.OnInput(value => ChangedPresetInput({ value })),
+              h.Placeholder('Paste code or shadcn URL'),
+              h.Class('h-9 w-full rounded-lg border border-white/10 bg-black/20 px-3 font-mono text-xs text-white outline-none focus-visible:ring-2 focus-visible:ring-white/30'),
+            ]),
+            Button.button({ class: 'w-full border-white/10 bg-transparent text-white hover:bg-white/[0.06] dark:bg-transparent', children: ['Apply Preset'], onClick: AppliedPresetInput(), variant: 'outline' }),
+            ...(model.presetError === null ? [] : [h.p([h.Class('text-xs text-red-400')], [model.presetError])]),
+          ]),
+        ]),
+        Button.button({ class: 'w-full border-white/10 bg-transparent text-white hover:bg-white/[0.06] dark:bg-transparent', children: ['Shuffle'], variant: 'outline' }),
+        Button.button({
+          class: 'relative w-full bg-white text-black hover:bg-white/90',
+          onClick: ClickedCopyPreset(),
+          children: [
+            Icon.icon('copy', { class: model.isPresetCopied ? 'size-4 scale-25 opacity-0 blur-[4px] transition-[scale,opacity,filter]' : 'size-4 transition-[scale,opacity,filter]' }),
+            ...(model.isPresetCopied ? [Icon.check({ class: 'absolute left-[5.2rem] size-4 text-emerald-600' }), 'Copied'] : ['Get Code']),
+          ],
+        }),
+      ]),
+    ],
+  )
+}
+
 export const view = (model: Model): Html => {
   const h = html<Message>()
 
-  return h.div(
+  const preview = h.div(
     [
       h.Class(
-        'overflow-x-auto overflow-y-hidden bg-muted contain-[paint] [--gap:--spacing(4)] 3xl:[--gap:--spacing(12)] md:[--gap:--spacing(10)] dark:bg-background',
+        'overflow-x-auto overflow-y-hidden bg-muted contain-[paint] [--gap:--spacing(4)] 3xl:[--gap:--spacing(12)] md:[--gap:--spacing(10)] lg:pl-[330px] dark:bg-background',
       ),
     ],
     [
@@ -653,6 +833,11 @@ export const view = (model: Model): Html => {
         ],
       ),
     ],
+  )
+
+  return h.div(
+    [h.Class('relative min-h-[calc(100vh-3.5rem)]')],
+    [h.style([], [Preset.presetCss(model.preset)]), preview, customizer(model)],
   )
 }
 

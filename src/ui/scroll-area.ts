@@ -20,7 +20,7 @@ export const scrollArea = <Msg>(props: ScrollAreaProps): Html => {
       h.DataAttribute('slot', 'scroll-area'),
       h.Class(
         cn(
-          'relative size-full overflow-auto rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1',
+          'relative size-full overflow-auto rounded-[inherit] [scrollbar-width:none] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 [&::-webkit-scrollbar]:hidden',
           props.class,
         ),
       ),
