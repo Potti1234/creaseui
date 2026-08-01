@@ -126,7 +126,7 @@ const primaryExport = (slug: string): string =>
 
 const usageFor = (slug: string, name: string): string => {
   const namespace = name.replaceAll(' ', '')
-  return `import * as ${namespace} from '@/ui/${slug}'\n\n${namespace}.${primaryExport(slug)}({\n  // Pass the model, messages, and content required by the source types.\n})`
+  return `import * as ${namespace} from '@/ui/${slug}'\n\n// The installed module is the API. Stateful components expose Model, Message,\n// init, update, and a view helper; stateless components expose view helpers.\n${namespace}.${primaryExport(slug)}({\n  // Use editor completion to supply the typed configuration.\n})`
 }
 
 export const view = (model: Model, slug: string): Html => {
@@ -143,6 +143,9 @@ export const view = (model: Model, slug: string): Html => {
     description: definition.description,
     installation: `npx shadcn@latest add Potti1234/creaseui/${slug}`,
     usage: usageFor(slug, name),
+    copiedCode: model.copiedCode,
+    onCopyCode: code => CopyFeedback.ClickedCopyCode({ code }),
+    exampleTitles: definition.examples.map(example => example.title),
     sidebarScrolled: CopyFeedback.ObservedSidebarScroll(),
     composition:
       definition.composition ??
@@ -173,6 +176,7 @@ export const view = (model: Model, slug: string): Html => {
       })
     }),
     apiHref: definition.apiHref ?? 'https://foldkit.dev/ui/overview',
+    sourceHref: `https://github.com/Potti1234/creaseui/blob/main/src/ui/${slug}.ts`,
     apiDescription:
       definition.apiDescription ??
       `${name} is source-owned after installation. Its public model, messages, update function, and view helpers are documented directly in the installed TypeScript source.`,

@@ -405,6 +405,15 @@ const header = (model: Model): Html => {
             model.route._tag === 'BlocksIndex',
             'hidden sm:inline-flex',
           ),
+          h.details([h.Class('relative ml-auto sm:hidden')], [
+            h.summary([h.AriaLabel('Open site navigation'), h.Class('flex size-10 cursor-pointer list-none items-center justify-center rounded-md hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50')], [Icon.icon('menu', { class: 'size-4' })]),
+            h.nav([h.AriaLabel('Site navigation'), h.Class('absolute top-11 right-0 z-50 grid min-w-44 gap-1 rounded-lg border bg-background p-2 shadow-lg')], [
+              headerLink('/docs/components/accordion', 'Docs', model.route._tag === 'ComponentDocs', 'rounded-md px-3 py-2 hover:bg-accent'),
+              headerLink('/create', 'Create', model.route._tag === 'Create', 'rounded-md px-3 py-2 hover:bg-accent'),
+              headerLink(chartsPath('area'), 'Charts', isCharts, 'rounded-md px-3 py-2 hover:bg-accent'),
+              headerLink('/blocks/sidebar', 'Blocks', model.route._tag === 'BlocksIndex', 'rounded-md px-3 py-2 hover:bg-accent'),
+            ]),
+          ]),
           h.button(
             [
               h.Type('button'),
@@ -412,7 +421,7 @@ const header = (model: Model): Html => {
               h.AriaLabel(model.isDark ? 'Switch to light mode' : 'Switch to dark mode'),
               h.Title(model.isDark ? 'Switch to light mode' : 'Switch to dark mode'),
               h.Class(
-                'group relative ml-auto inline-flex size-10 shrink-0 items-center justify-center rounded-md text-foreground outline-none transition-[color,background-color,transform] duration-200 hover:bg-accent hover:text-accent-foreground focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.96]',
+                'group relative inline-flex size-10 shrink-0 items-center justify-center rounded-md text-foreground outline-none transition-[color,background-color,transform] duration-200 hover:bg-accent hover:text-accent-foreground focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.96] sm:ml-auto',
               ),
             ],
             [

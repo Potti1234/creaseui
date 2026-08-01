@@ -143,8 +143,13 @@ export const view = (model: Model): Html => {
       'A vertically stacked set of interactive headings that each reveal a section of content.',
     installation: INSTALLATION,
     usage: USAGE,
+    composition: `Parent Model\n└── accordion: Accordion.Model\n\nParent Message\n└── GotAccordionMessage(Accordion.Message)\n\nupdate delegates to Accordion.update; view maps child messages back to the parent.`,
+    copiedCode: model.copiedCode,
+    onCopyCode: code => CopyFeedback.ClickedCopyCode({ code }),
+    exampleTitles: ['Basic', 'Multiple', 'Disabled', 'Borders', 'Card', 'RTL'],
     sidebarScrolled: CopyFeedback.ObservedSidebarScroll(),
     apiHref: 'https://foldkit.dev/ui/disclosure',
+    sourceHref: 'https://github.com/Potti1234/creaseui/blob/main/src/ui/accordion.ts',
     examples: [
       docsExample({
         title: 'Basic',

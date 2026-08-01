@@ -73,6 +73,9 @@ const preview = (model: Calendar.Model, target: Target): Html =>
     toParentMessage: message => GotCalendarMessage({ target, message }),
   })
 
+const INSTALLATION = 'npx shadcn@latest add Potti1234/creaseui/calendar'
+const USAGE = `import * as Calendar from '@/ui/calendar'\n\nCalendar.calendar({\n  model: model.calendar,\n  toParentMessage: message => GotCalendarMessage({ message }),\n})`
+
 export const view = (model: Model): Html => {
   const h = html<Message>()
   const docsExample = (config: Omit<ExampleConfig<Message>, 'isCopied'>): Html =>
@@ -80,8 +83,11 @@ export const view = (model: Model): Html => {
   return componentPage<Message>({
     name: 'Calendar',
     description: 'A date field component that allows users to enter and edit dates.',
-    installation: 'npx shadcn@latest add Potti1234/creaseui/calendar',
-    usage: `import * as Calendar from '@/ui/calendar'\n\nCalendar.calendar({\n  model: model.calendar,\n  toParentMessage: message => GotCalendarMessage({ message }),\n})`,
+    installation: INSTALLATION,
+    usage: USAGE,
+    copiedCode: model.copiedCode,
+    onCopyCode: code => CopyFeedback.ClickedCopyCode({ code }),
+    exampleTitles: ['Basic', 'Selected Date', 'Disabled Dates', 'Custom Cell Size', 'RTL'],
     sidebarScrolled: CopyFeedback.ObservedSidebarScroll(),
     composition: 'Calendar.Model\n├── calendar navigation and view mode\n├── focused and selected dates\n└── disabled-date constraints',
     examples: [
@@ -131,6 +137,7 @@ export const view = (model: Model): Html => {
       }),
     ],
     apiHref: 'https://foldkit.dev/ui/calendar',
+    sourceHref: 'https://github.com/Potti1234/creaseui/blob/main/src/ui/calendar.ts',
     apiDescription: 'Calendar delegates focus, keyboard navigation, date selection, and view-mode changes to the Foldkit Calendar state machine.',
   })
 }
