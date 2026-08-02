@@ -123,6 +123,11 @@ describe('stateful component models', () => {
     assert.equal(mobile.isOpen, false)
   })
 
+  it('initializes sidebar state only from explicit configuration', () => {
+    assert.equal(Sidebar.init().isOpen, true)
+    assert.equal(Sidebar.init({ defaultOpen: false }).isOpen, false)
+  })
+
   it('tracks drawer drag distance and resets below the dismissal threshold', () => {
     const model = Drawer.init({ id: 'filters', isAnimated: true })
     const [started] = Drawer.update(model, Drawer.StartedDrag({ position: 20 }))

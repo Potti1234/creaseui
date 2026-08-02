@@ -33,10 +33,11 @@ export type Message = typeof Message.Type
 
 export const init = (config: Readonly<{ defaultOpen?: boolean; storageKey?: string }> = {}): Model => {
   const storageKey = config.storageKey ?? 'sidebar_state'
-  const cookieValue = typeof document === 'undefined'
-    ? undefined
-    : document.cookie.split('; ').find(value => value.startsWith(`${storageKey}=`))?.split('=')[1]
-  return { isOpen: cookieValue === undefined ? (config.defaultOpen ?? true) : cookieValue === 'true', isMobileOpen: false, storageKey }
+  return {
+    isOpen: config.defaultOpen ?? true,
+    isMobileOpen: false,
+    storageKey,
+  }
 }
 
 const Persist = Command.define('SidebarPersist', { key: S.String, isOpen: S.Boolean }, CompletedPersist)(({ key, isOpen }) => Effect.sync(() => { document.cookie = `${key}=${String(isOpen)}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}; samesite=lax` }).pipe(Effect.as(CompletedPersist())))
