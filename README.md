@@ -31,18 +31,18 @@ Before submitting a change, run:
 npm run check
 ```
 
-The initial GitHub registry publishes the Button and Dialog components, their
-shared utilities, and the Crease theme:
+The GitHub registry publishes the component catalog, shared utilities, and the
+Crease theme:
 
 ```sh
-npx shadcn@latest add Potti1234/creaseui/button
-npx shadcn@latest add Potti1234/creaseui/dialog
+npx --yes shadcn@latest add Potti1234/creaseui/button --yes
+npx --yes shadcn@latest add Potti1234/creaseui/dialog --yes
 ```
 
 Registry items copy their source into a Foldkit application so the resulting code
-stays owned and editable by that application. Components not yet in the registry
-can be copied directly from `src/ui` with their local dependencies; publishing
-the remaining modules is ongoing.
+stays owned and editable by that application. The registry does not replace the
+consumer's Foldkit or Effect versions; consult the compatibility matrix before
+installing across a Foldkit API upgrade.
 
 ## Documentation
 
@@ -52,6 +52,8 @@ the remaining modules is ongoing.
   differences from shadcn/ui.
 - [Registry installation](docs/registry.md) documents the required shadcn CLI
   configuration and reproducible installation proof.
+- [Compatibility matrix](compatibility.json) records the framework and tooling
+  versions used by the current validation suite.
 - [Upstream provenance](docs/provenance.md) records the projects this work builds
   on and the policy for future ports.
 - [Contributing](CONTRIBUTING.md) describes the component and commit workflow.
