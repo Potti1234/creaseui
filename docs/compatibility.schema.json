@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "creaseui",
+    "effect",
+    "foldkit",
+    "foldkitUi",
+    "foldkitVitePlugin",
+    "tailwind",
+    "vite"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "creaseui": { "type": "string" },
+    "effect": { "type": "string" },
+    "foldkit": { "type": "string" },
+    "foldkitUi": { "type": "string" },
+    "foldkitVitePlugin": { "type": "string" },
+    "tailwind": { "type": "string" },
+    "vite": { "type": "string" }
+  }
+}

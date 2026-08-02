@@ -29,6 +29,14 @@ const roadmap = JSON.parse(readFileSync('docs/component-roadmap.json', 'utf8')) 
   fidelity: ReadonlyArray<{ component: string; priority: string; gap: string }>
   missing: ReadonlyArray<{ component: string; priority: string; strategy: string }>
 }
+const compatibility = JSON.parse(readFileSync('compatibility.json', 'utf8')) as {
+  effect: string
+  foldkit: string
+  foldkitUi: string
+}
+const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as {
+  dependencies: Readonly<Record<string, string>>
+}
 
 const componentBlock = componentPage.match(/export const COMPONENTS = \[([\s\S]*?)\] as const/)?.[1] ?? ''
 const documentedSlugs = Array.from(componentBlock.matchAll(/'([^']+)'/g), match =>
@@ -72,6 +80,14 @@ describe('component catalog coverage', () => {
     )
 
     assert.deepEqual(pinnedFrameworkDependencies, [])
+  })
+
+  it('publishes the framework versions used to validate Crease UI', () => {
+    assert.equal(packageJson.dependencies.effect, compatibility.effect)
+    assert.match(packageJson.dependencies.foldkit, /0\.121\./)
+    assert.match(packageJson.dependencies['@foldkit/ui'] ?? '', /0\.121\./)
+    assert.equal(compatibility.foldkit, '0.121.x')
+    assert.equal(compatibility.foldkitUi, '0.121.x')
   })
 
   it('contains no documentation placeholder copy', () => {
