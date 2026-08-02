@@ -31,12 +31,12 @@ export type Model = typeof Model.Type;
 export const Toggled = m('Toggled');
 export const ToggledMobile = m('ToggledMobile');
 export const SetMobileOpen = m('SetMobileOpen', { isOpen: S.Boolean });
-export const CompletedPersist = m('CompletedPersist');
+export const CompletedSidebarPersist = m('CompletedSidebarPersist');
 export const Message = S.Union([
   Toggled,
   ToggledMobile,
   SetMobileOpen,
-  CompletedPersist,
+  CompletedSidebarPersist,
 ]);
 export type Message = typeof Message.Type;
 
@@ -53,11 +53,11 @@ export const init = (
 
 const SidebarPersist = Command.define('SidebarPersist', {
   args: { key: S.String, isOpen: S.Boolean },
-  messages: [CompletedPersist],
+  messages: [CompletedSidebarPersist],
   execute: ({ key, isOpen }) =>
     Effect.sync(() => {
       document.cookie = `${key}=${String(isOpen)}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}; samesite=lax`;
-    }).pipe(Effect.as(CompletedPersist())),
+    }).pipe(Effect.as(CompletedSidebarPersist())),
 });
 type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
 export const update = (model: Model, message: Message): UpdateReturn => {
@@ -73,7 +73,7 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       return [{ ...model, isMobileOpen: !model.isMobileOpen }, []];
     case 'SetMobileOpen':
       return [{ ...model, isMobileOpen: message.isOpen }, []];
-    case 'CompletedPersist':
+    case 'CompletedSidebarPersist':
       return [model, []];
   }
 };

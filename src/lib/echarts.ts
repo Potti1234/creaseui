@@ -316,12 +316,12 @@ const applyOption = (
 
 export const ChartMounted = m('ChartMounted', { hostId: S.String });
 export const ChartMountFailed = m('ChartMountFailed', { reason: S.String });
-export const ChartSynced = m('ChartSynced');
+export const CompletedSyncChart = m('CompletedSyncChart');
 
 export const ChartMessage = S.Union([
   ChartMounted,
   ChartMountFailed,
-  ChartSynced,
+  CompletedSyncChart,
 ]);
 export type ChartMessage = typeof ChartMessage.Type;
 
@@ -331,14 +331,14 @@ export type ChartMessage = typeof ChartMessage.Type;
  *  interactive charts' time-range selection). */
 export const SyncChart = Command.define('SyncChart', {
   args: { hostId: S.String, variant: S.String },
-  messages: [ChartSynced],
+  messages: [CompletedSyncChart],
   execute: ({ hostId, variant }) =>
     Effect.sync(() => {
       const chart = chartsByHostId.get(hostId);
       if (chart) {
         applyOption(hostId, chart, variant);
       }
-      return ChartSynced();
+      return CompletedSyncChart();
     }),
 });
 

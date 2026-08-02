@@ -23,8 +23,14 @@ export const Scrolled = m('Scrolled', {
 export const RequestedScroll = m('RequestedScroll', {
   direction: S.Literals(['start', 'end']),
 });
-export const CompletedScroll = m('CompletedScroll');
-export const Message = S.Union([Scrolled, RequestedScroll, CompletedScroll]);
+export const CompletedMessageScrollerScrollTo = m(
+  'CompletedMessageScrollerScrollTo',
+);
+export const Message = S.Union([
+  Scrolled,
+  RequestedScroll,
+  CompletedMessageScrollerScrollTo,
+]);
 export type Message = typeof Message.Type;
 
 export const init = (id: string): Model => ({
@@ -36,7 +42,7 @@ export const init = (id: string): Model => ({
 
 const ScrollTo = Command.define('MessageScrollerScrollTo', {
   args: { id: S.String, direction: S.Literals(['start', 'end']) },
-  messages: [CompletedScroll],
+  messages: [CompletedMessageScrollerScrollTo],
   execute: ({ id, direction }) =>
     Effect.sync(() => {
       const viewport = document.getElementById(`${id}-viewport`);
@@ -46,7 +52,7 @@ const ScrollTo = Command.define('MessageScrollerScrollTo', {
           behavior: 'smooth',
         });
       }
-    }).pipe(Effect.as(CompletedScroll())),
+    }).pipe(Effect.as(CompletedMessageScrollerScrollTo())),
 });
 
 type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
@@ -68,7 +74,7 @@ export const update = (model: Model, message: Message): UpdateReturn => {
         model,
         [ScrollTo({ id: model.id, direction: message.direction })],
       ];
-    case 'CompletedScroll':
+    case 'CompletedMessageScrollerScrollTo':
       return [model, []];
   }
 };

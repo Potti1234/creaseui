@@ -1,49 +1,62 @@
-import { Effect, Schema as S } from 'effect'
-import { Command } from 'foldkit'
-import { m } from 'foldkit/message'
+import { Effect, Schema as S } from 'effect';
+import { Command } from 'foldkit';
+import { m } from 'foldkit/message';
 
-export const Model = S.NullOr(S.String)
-export type Model = typeof Model.Type
+export const Model = S.NullOr(S.String);
+export type Model = typeof Model.Type;
 
-export const ClickedCopyCode = m('ClickedDocsCopyCode', { code: S.String })
-export const CompletedCopyCode = m('CompletedDocsCopyCode', { code: S.String })
-export const ClearedCopyFeedback = m('ClearedDocsCopyFeedback', { code: S.String })
-export const ObservedSidebarScroll = m('ObservedDocsSidebarScroll')
+export const ClickedCopyCode = m('ClickedDocsCopyCode', { code: S.String });
+export const CompletedCopyDocsCode = m('CompletedCopyDocsCode', {
+  code: S.String,
+});
+export const CompletedWaitBeforeClearingDocsCopyFeedback = m(
+  'CompletedWaitBeforeClearingDocsCopyFeedback',
+  { code: S.String },
+);
+export const ObservedSidebarScroll = m('ObservedDocsSidebarScroll');
 export const Message = S.Union([
   ClickedCopyCode,
-  CompletedCopyCode,
-  ClearedCopyFeedback,
+  CompletedCopyDocsCode,
+  CompletedWaitBeforeClearingDocsCopyFeedback,
   ObservedSidebarScroll,
-])
-export type Message = typeof Message.Type
+]);
+export type Message = typeof Message.Type;
 
 const CopyCode = Command.define('CopyDocsCode', {
   args: { code: S.String },
-  messages: [CompletedCopyCode],
+  messages: [CompletedCopyDocsCode],
   execute: ({ code }) =>
     Effect.promise(() => navigator.clipboard.writeText(code)).pipe(
-      Effect.as(CompletedCopyCode({ code })),
+      Effect.as(CompletedCopyDocsCode({ code })),
     ),
-})
+});
 
-const ClearCopyFeedback = Command.define('ClearDocsCopyFeedback', {
-  args: { code: S.String },
-  messages: [ClearedCopyFeedback],
-  execute: ({ code }) =>
-    Effect.sleep('1800 millis').pipe(Effect.as(ClearedCopyFeedback({ code }))),
-})
+const WaitBeforeClearingCopyFeedback = Command.define(
+  'WaitBeforeClearingDocsCopyFeedback',
+  {
+    args: { code: S.String },
+    messages: [CompletedWaitBeforeClearingDocsCopyFeedback],
+    execute: ({ code }) =>
+      Effect.sleep('1800 millis').pipe(
+        Effect.as(CompletedWaitBeforeClearingDocsCopyFeedback({ code })),
+      ),
+  },
+);
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
     case 'ClickedDocsCopyCode':
-      return [model, [CopyCode({ code: message.code })]]
-    case 'CompletedDocsCopyCode':
-      return [message.code, [ClearCopyFeedback({ code: message.code })]]
-    case 'ClearedDocsCopyFeedback':
-      return [model === message.code ? null : model, []]
+      return [model, [CopyCode({ code: message.code })]];
+    case 'CompletedCopyDocsCode':
+      return [
+        message.code,
+        [WaitBeforeClearingCopyFeedback({ code: message.code })],
+      ];
+    case 'CompletedWaitBeforeClearingDocsCopyFeedback':
+      return [model === message.code ? null : model, []];
     case 'ObservedDocsSidebarScroll':
-      return [model, []]
+      return [model, []];
   }
-}
+};

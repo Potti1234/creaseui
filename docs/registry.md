@@ -8,7 +8,7 @@ not install or replace `effect`, `foldkit`, `@foldkit/ui`, or
 `@effect/platform-browser`; the application owns those framework versions.
 This prevents a component install from creating a nested, older Foldkit copy.
 
-Crease UI `0.1.x` is currently validated against the Foldkit `0.136.x` API.
+Crease UI `0.1.x` is currently validated against the Foldkit `0.137.x` API.
 Foldkit 0.128 moved durable selection and checked values to parent models;
 Crease UI components follow that controlled-state architecture.
 

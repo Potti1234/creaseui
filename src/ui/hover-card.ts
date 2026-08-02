@@ -15,10 +15,17 @@ export type Model = typeof Model.Type;
 
 export const Entered = m('Entered');
 export const Left = m('Left');
-export const CompletedCloseDelay = m('CompletedCloseDelay', {
-  version: S.Number,
-});
-export const Message = S.Union([Entered, Left, CompletedCloseDelay]);
+export const CompletedWaitBeforeClosingHoverCard = m(
+  'CompletedWaitBeforeClosingHoverCard',
+  {
+    version: S.Number,
+  },
+);
+export const Message = S.Union([
+  Entered,
+  Left,
+  CompletedWaitBeforeClosingHoverCard,
+]);
 export type Message = typeof Message.Type;
 
 export type InitConfig = Readonly<{
@@ -33,12 +40,12 @@ export const init = (config: InitConfig): Model => ({
   closeDelay: Math.max(0, config.closeDelay ?? 150),
 });
 
-const DelayClose = Command.define('HoverCardDelayClose', {
+const WaitBeforeClosing = Command.define('WaitBeforeClosingHoverCard', {
   args: { version: S.Number, delay: S.Number },
-  messages: [CompletedCloseDelay],
+  messages: [CompletedWaitBeforeClosingHoverCard],
   execute: ({ version, delay }) =>
     Effect.sleep(`${delay} millis`).pipe(
-      Effect.as(CompletedCloseDelay({ version })),
+      Effect.as(CompletedWaitBeforeClosingHoverCard({ version })),
     ),
 });
 
@@ -54,10 +61,10 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       const version = model.closeVersion + 1;
       return [
         { ...model, closeVersion: version },
-        [DelayClose({ version, delay: model.closeDelay })],
+        [WaitBeforeClosing({ version, delay: model.closeDelay })],
       ];
     }
-    case 'CompletedCloseDelay':
+    case 'CompletedWaitBeforeClosingHoverCard':
       return message.version === model.closeVersion
         ? [{ ...model, isOpen: false }, []]
         : [model, []];

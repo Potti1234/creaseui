@@ -142,8 +142,10 @@ export const ChangedPresetField = m('ChangedCreatePresetField', {
   value: S.String,
 });
 export const ClickedCopyPreset = m('ClickedCopyCreatePreset');
-export const CompletedCopyPreset = m('CompletedCopyCreatePreset');
-export const ClearedCopyPreset = m('ClearedCopyCreatePreset');
+export const CompletedCopyCreatePreset = m('CompletedCopyCreatePreset');
+export const CompletedWaitBeforeClearingCreatePresetCopy = m(
+  'CompletedWaitBeforeClearingCreatePresetCopy',
+);
 export const GotPresetPickerMessage = m('GotCreatePresetPickerMessage', {
   field: Preset.Field,
   message: Popover.Message,
@@ -171,8 +173,8 @@ export const Message = S.Union([
   AppliedPresetInput,
   ChangedPresetField,
   ClickedCopyPreset,
-  CompletedCopyPreset,
-  ClearedCopyPreset,
+  CompletedCopyCreatePreset,
+  CompletedWaitBeforeClearingCreatePresetCopy,
   GotPresetPickerMessage,
 ]);
 export type Message = typeof Message.Type;
@@ -235,16 +237,21 @@ export const init = (): Model => ({
 
 const CopyPreset = Command.define('CopyCreatePreset', {
   args: { code: S.String },
-  messages: [CompletedCopyPreset],
+  messages: [CompletedCopyCreatePreset],
   execute: ({ code }) =>
     Effect.promise(() => navigator.clipboard.writeText(code)).pipe(
-      Effect.as(CompletedCopyPreset()),
+      Effect.as(CompletedCopyCreatePreset()),
     ),
 });
-const ClearPresetCopy = Command.define('ClearCreatePresetCopy', {
-  messages: [ClearedCopyPreset],
-  execute: Effect.sleep('1800 millis').pipe(Effect.as(ClearedCopyPreset())),
-});
+const WaitBeforeClearingPresetCopy = Command.define(
+  'WaitBeforeClearingCreatePresetCopy',
+  {
+    messages: [CompletedWaitBeforeClearingCreatePresetCopy],
+    execute: Effect.sleep('1800 millis').pipe(
+      Effect.as(CompletedWaitBeforeClearingCreatePresetCopy()),
+    ),
+  },
+);
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
@@ -294,9 +301,9 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       ],
       CompletedCopyCreatePreset: () => [
         evo(model, { isPresetCopied: () => true }),
-        [ClearPresetCopy()],
+        [WaitBeforeClearingPresetCopy()],
       ],
-      ClearedCopyCreatePreset: () => [
+      CompletedWaitBeforeClearingCreatePresetCopy: () => [
         evo(model, { isPresetCopied: () => false }),
         [],
       ],

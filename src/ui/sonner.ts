@@ -30,8 +30,14 @@ export const Model = S.Struct({
 export type Model = typeof Model.Type;
 
 export const Dismissed = m('Dismissed', { id: S.String });
-export const Expired = m('Expired', { id: S.String });
-export const Message = S.Union([Dismissed, Expired]);
+export const CompletedWaitBeforeDismissingSonner = m(
+  'CompletedWaitBeforeDismissingSonner',
+  { id: S.String },
+);
+export const Message = S.Union([
+  Dismissed,
+  CompletedWaitBeforeDismissingSonner,
+]);
 export type Message = typeof Message.Type;
 export const DismissedToast = m('DismissedToast', { entry: Entry });
 export const OutMessage = S.Union([DismissedToast]);
@@ -43,11 +49,13 @@ export const init = (config: Readonly<{ id: string }>): Model => ({
   entries: [],
 });
 
-const DelayDismiss = Command.define('SonnerDelayDismiss', {
+const WaitBeforeDismissing = Command.define('WaitBeforeDismissingSonner', {
   args: { id: S.String, durationMs: S.Number },
-  messages: [Expired],
+  messages: [CompletedWaitBeforeDismissingSonner],
   execute: ({ id, durationMs }) =>
-    Effect.sleep(`${durationMs} millis`).pipe(Effect.as(Expired({ id }))),
+    Effect.sleep(`${durationMs} millis`).pipe(
+      Effect.as(CompletedWaitBeforeDismissingSonner({ id })),
+    ),
 });
 type UpdateReturn = readonly [
   Model,
@@ -116,7 +124,7 @@ export const show = (model: Model, input: ShowInput): UpdateReturn => {
   };
   return [
     { ...model, nextId: model.nextId + 1, entries: [...model.entries, entry] },
-    entry.sticky ? [] : [DelayDismiss({ id, durationMs })],
+    entry.sticky ? [] : [WaitBeforeDismissing({ id, durationMs })],
     Option.none(),
   ];
 };
