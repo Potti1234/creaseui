@@ -80,3 +80,34 @@ export const button = <Msg>(props: ButtonProps<Msg>): Html => {
       ),
   })
 }
+
+export type ButtonLinkProps = Readonly<{
+  children: ReadonlyArray<Html | string>
+  href: string
+  variant?: ButtonVariants['variant']
+  size?: ButtonVariants['size']
+  class?: string
+  target?: '_blank' | '_self'
+}>
+
+export const buttonLink = <Msg>(props: ButtonLinkProps): Html => {
+  const h = html<Msg>()
+
+  return h.a(
+    [
+      h.Href(props.href),
+      ...(props.target === undefined ? [] : [h.Target(props.target)]),
+      ...(props.target === '_blank' ? [h.Rel('noopener noreferrer')] : []),
+      h.Class(
+        cn(
+          buttonVariants({
+            variant: props.variant ?? 'default',
+            size: props.size ?? 'default',
+          }),
+          props.class,
+        ),
+      ),
+    ],
+    [...props.children],
+  )
+}
