@@ -1,7 +1,7 @@
 import { Array, Match as M } from 'effect'
 import { type Attribute, type Html, html } from 'foldkit/html'
-import iconNodesText from 'lucide-static/icon-nodes.json?raw'
 
+import { iconNodes } from '@/lib/icon-nodes'
 import { cn } from '@/lib/utils'
 
 /* Lucide icons rendered through foldkit's SVG constructors, driven by
@@ -47,11 +47,6 @@ export type IconConfig = Readonly<{
 
 type H<Msg> = ReturnType<typeof html<Msg>>
 
-const iconNodes: Readonly<Record<string, IconNode>> =
-  typeof iconNodesText === 'string'
-    ? JSON.parse(iconNodesText)
-    : (iconNodesText as Readonly<Record<string, IconNode>>)
-
 const nodeAttributes = <Msg>(
   h: H<Msg>,
   attrs: IconAttributes,
@@ -93,7 +88,9 @@ const nodeView = <Msg>(
 
 export const icon = <Msg>(name: string, config: IconConfig = {}): Html => {
   const h = html<Msg>()
-  const node = iconNodes[name] ?? []
+  const node: IconNode = Object.entries(iconNodes).find(
+    ([iconName]) => iconName === name,
+  )?.[1] ?? []
 
   return h.svg(
     [

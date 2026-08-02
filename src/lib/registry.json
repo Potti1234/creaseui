@@ -20,7 +20,6 @@
       "type": "registry:lib",
       "title": "Foldkit Lucide Icons",
       "description": "Lucide icons rendered with Foldkit's native SVG constructors.",
-      "dependencies": ["lucide-static@^0.577.0"],
       "registryDependencies": [
         "Potti1234/creaseui/utils"
       ],
@@ -29,6 +28,11 @@
           "path": "icon.ts",
           "type": "registry:lib",
           "target": "@lib/icon.ts"
+        },
+        {
+          "path": "icon-nodes.ts",
+          "type": "registry:lib",
+          "target": "@lib/icon-nodes.ts"
         }
       ]
     },

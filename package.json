@@ -22,6 +22,7 @@
     "typecheck": "tsc --noEmit",
     "test": "node --test --import tsx --import ./test/setup.ts test/*.test.ts",
     "check": "npm run typecheck && npm test && npm run build",
+    "icons:generate": "node scripts/generate-icon-nodes.mjs",
     "registry:build": "npx --yes shadcn@latest build registry.json --output .registry",
     "registry:generate": "node scripts/generate-ui-registry.mjs",
     "test:registry": "node scripts/verify-registry-install.mjs"
