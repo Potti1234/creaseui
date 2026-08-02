@@ -17,23 +17,21 @@ export const Message = S.Union([
 ])
 export type Message = typeof Message.Type
 
-const CopyCode = Command.define(
-  'CopyDocsCode',
-  { code: S.String },
-  CompletedCopyCode,
-)(({ code }) =>
-  Effect.promise(() => navigator.clipboard.writeText(code)).pipe(
-    Effect.as(CompletedCopyCode({ code })),
-  ),
-)
+const CopyCode = Command.define('CopyDocsCode', {
+  args: { code: S.String },
+  messages: [CompletedCopyCode],
+  execute: ({ code }) =>
+    Effect.promise(() => navigator.clipboard.writeText(code)).pipe(
+      Effect.as(CompletedCopyCode({ code })),
+    ),
+})
 
-const ClearCopyFeedback = Command.define(
-  'ClearDocsCopyFeedback',
-  { code: S.String },
-  ClearedCopyFeedback,
-)(({ code }) =>
-  Effect.sleep('1800 millis').pipe(Effect.as(ClearedCopyFeedback({ code }))),
-)
+const ClearCopyFeedback = Command.define('ClearDocsCopyFeedback', {
+  args: { code: S.String },
+  messages: [ClearedCopyFeedback],
+  execute: ({ code }) =>
+    Effect.sleep('1800 millis').pipe(Effect.as(ClearedCopyFeedback({ code }))),
+})
 
 type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
 

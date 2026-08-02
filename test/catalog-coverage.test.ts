@@ -84,10 +84,10 @@ describe('component catalog coverage', () => {
 
   it('publishes the framework versions used to validate Crease UI', () => {
     assert.equal(packageJson.dependencies.effect, compatibility.effect)
-    assert.match(packageJson.dependencies.foldkit, /0\.135\./)
-    assert.match(packageJson.dependencies['@foldkit/ui'] ?? '', /0\.135\./)
-    assert.equal(compatibility.foldkit, '0.135.x')
-    assert.equal(compatibility.foldkitUi, '0.135.x')
+    assert.match(packageJson.dependencies.foldkit, /0\.136\./)
+    assert.match(packageJson.dependencies['@foldkit/ui'] ?? '', /0\.136\./)
+    assert.equal(compatibility.foldkit, '0.136.x')
+    assert.equal(compatibility.foldkitUi, '0.136.x')
   })
 
   it('contains no documentation placeholder copy', () => {

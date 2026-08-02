@@ -329,19 +329,18 @@ export type ChartMessage = typeof ChartMessage.Type;
 
 /** Re-applies the registered builder with a new variant key (e.g. the
  *  interactive charts' time-range selection). */
-export const SyncChart = Command.define(
-  'SyncChart',
-  { hostId: S.String, variant: S.String },
-  ChartSynced,
-)(({ hostId, variant }) =>
-  Effect.sync(() => {
-    const chart = chartsByHostId.get(hostId);
-    if (chart) {
-      applyOption(hostId, chart, variant);
-    }
-    return ChartSynced();
-  }),
-);
+export const SyncChart = Command.define('SyncChart', {
+  args: { hostId: S.String, variant: S.String },
+  messages: [ChartSynced],
+  execute: ({ hostId, variant }) =>
+    Effect.sync(() => {
+      const chart = chartsByHostId.get(hostId);
+      if (chart) {
+        applyOption(hostId, chart, variant);
+      }
+      return ChartSynced();
+    }),
+});
 
 export const MountChart = Mount.define(
   'MountChart',

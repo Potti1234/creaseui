@@ -43,13 +43,12 @@ export const init = (config: Readonly<{ id: string }>): Model => ({
   entries: [],
 });
 
-const DelayDismiss = Command.define(
-  'SonnerDelayDismiss',
-  { id: S.String, durationMs: S.Number },
-  Expired,
-)(({ id, durationMs }) =>
-  Effect.sleep(`${durationMs} millis`).pipe(Effect.as(Expired({ id }))),
-);
+const DelayDismiss = Command.define('SonnerDelayDismiss', {
+  args: { id: S.String, durationMs: S.Number },
+  messages: [Expired],
+  execute: ({ id, durationMs }) =>
+    Effect.sleep(`${durationMs} millis`).pipe(Effect.as(Expired({ id }))),
+});
 type UpdateReturn = readonly [
   Model,
   ReadonlyArray<Command.Command<Message>>,

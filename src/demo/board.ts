@@ -233,20 +233,18 @@ export const init = (): Model => ({
   },
 });
 
-const CopyPreset = Command.define(
-  'CopyCreatePreset',
-  { code: S.String },
-  CompletedCopyPreset,
-)(({ code }) =>
-  Effect.promise(() => navigator.clipboard.writeText(code)).pipe(
-    Effect.as(CompletedCopyPreset()),
-  ),
-);
-const ClearPresetCopy = Command.define(
-  'ClearCreatePresetCopy',
-  {},
-  ClearedCopyPreset,
-)(() => Effect.sleep('1800 millis').pipe(Effect.as(ClearedCopyPreset())));
+const CopyPreset = Command.define('CopyCreatePreset', {
+  args: { code: S.String },
+  messages: [CompletedCopyPreset],
+  execute: ({ code }) =>
+    Effect.promise(() => navigator.clipboard.writeText(code)).pipe(
+      Effect.as(CompletedCopyPreset()),
+    ),
+});
+const ClearPresetCopy = Command.define('ClearCreatePresetCopy', {
+  messages: [ClearedCopyPreset],
+  execute: Effect.sleep('1800 millis').pipe(Effect.as(ClearedCopyPreset())),
+});
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
@@ -296,7 +294,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       ],
       CompletedCopyCreatePreset: () => [
         evo(model, { isPresetCopied: () => true }),
-        [ClearPresetCopy({})],
+        [ClearPresetCopy()],
       ],
       ClearedCopyCreatePreset: () => [
         evo(model, { isPresetCopied: () => false }),

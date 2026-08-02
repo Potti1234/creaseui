@@ -34,21 +34,20 @@ export const init = (id: string): Model => ({
   clientHeight: 0,
 });
 
-const ScrollTo = Command.define(
-  'MessageScrollerScrollTo',
-  { id: S.String, direction: S.Literals(['start', 'end']) },
-  CompletedScroll,
-)(({ id, direction }) =>
-  Effect.sync(() => {
-    const viewport = document.getElementById(`${id}-viewport`);
-    if (viewport instanceof HTMLElement) {
-      viewport.scrollTo({
-        top: direction === 'start' ? 0 : viewport.scrollHeight,
-        behavior: 'smooth',
-      });
-    }
-  }).pipe(Effect.as(CompletedScroll())),
-);
+const ScrollTo = Command.define('MessageScrollerScrollTo', {
+  args: { id: S.String, direction: S.Literals(['start', 'end']) },
+  messages: [CompletedScroll],
+  execute: ({ id, direction }) =>
+    Effect.sync(() => {
+      const viewport = document.getElementById(`${id}-viewport`);
+      if (viewport instanceof HTMLElement) {
+        viewport.scrollTo({
+          top: direction === 'start' ? 0 : viewport.scrollHeight,
+          behavior: 'smooth',
+        });
+      }
+    }).pipe(Effect.as(CompletedScroll())),
+});
 
 type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
 

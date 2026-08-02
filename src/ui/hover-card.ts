@@ -33,15 +33,14 @@ export const init = (config: InitConfig): Model => ({
   closeDelay: Math.max(0, config.closeDelay ?? 150),
 });
 
-const DelayClose = Command.define(
-  'HoverCardDelayClose',
-  { version: S.Number, delay: S.Number },
-  CompletedCloseDelay,
-)(({ version, delay }) =>
-  Effect.sleep(`${delay} millis`).pipe(
-    Effect.as(CompletedCloseDelay({ version })),
-  ),
-);
+const DelayClose = Command.define('HoverCardDelayClose', {
+  args: { version: S.Number, delay: S.Number },
+  messages: [CompletedCloseDelay],
+  execute: ({ version, delay }) =>
+    Effect.sleep(`${delay} millis`).pipe(
+      Effect.as(CompletedCloseDelay({ version })),
+    ),
+});
 
 type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
 export const update = (model: Model, message: Message): UpdateReturn => {

@@ -51,15 +51,14 @@ export const init = (
   };
 };
 
-const SidebarPersist = Command.define(
-  'SidebarPersist',
-  { key: S.String, isOpen: S.Boolean },
-  CompletedPersist,
-)(({ key, isOpen }) =>
-  Effect.sync(() => {
-    document.cookie = `${key}=${String(isOpen)}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}; samesite=lax`;
-  }).pipe(Effect.as(CompletedPersist())),
-);
+const SidebarPersist = Command.define('SidebarPersist', {
+  args: { key: S.String, isOpen: S.Boolean },
+  messages: [CompletedPersist],
+  execute: ({ key, isOpen }) =>
+    Effect.sync(() => {
+      document.cookie = `${key}=${String(isOpen)}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}; samesite=lax`;
+    }).pipe(Effect.as(CompletedPersist())),
+});
 type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
