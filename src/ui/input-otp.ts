@@ -1,36 +1,42 @@
-import { type Html, html } from 'foldkit/html'
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
 
 export type InputOtpProps<Msg> = Readonly<{
-  id: string
-  value: string
-  onInput: (value: string) => Msg
-  length?: number
-  name?: string
-  ariaLabel?: string
-  isDisabled?: boolean
-  isInvalid?: boolean
-  class?: string
-  groupClass?: string
+  id: string;
+  value: string;
+  onInput: (value: string) => Msg;
+  length?: number;
+  name?: string;
+  ariaLabel?: string;
+  isDisabled?: boolean;
+  isInvalid?: boolean;
+  class?: string;
+  groupClass?: string;
   /** Pattern accepted by the control. Defaults to ASCII digits. */
-  pattern?: RegExp
-  inputMode?: 'numeric' | 'text' | 'tel' | 'decimal' | 'email' | 'url' | 'search'
-  slotClass?: string
-  separator?: (index: number) => Html
-}>
+  pattern?: RegExp;
+  inputMode?:
+    'numeric' | 'text' | 'tel' | 'decimal' | 'email' | 'url' | 'search';
+  slotClass?: string;
+  separator?: (index: number) => Html;
+}>;
 
 const normalize = (value: string, length: number, pattern: RegExp): string =>
-  Array.from(value).filter(character => {
-    pattern.lastIndex = 0
-    return pattern.test(character)
-  }).slice(0, length).join('')
+  Array.from(value)
+    .filter((character) => {
+      pattern.lastIndex = 0;
+      return pattern.test(character);
+    })
+    .slice(0, length)
+    .join('');
 
-export const inputOtp = <Msg>(props: InputOtpProps<Msg>): Html => {
-  const h = html<Msg>()
-  const length = props.length ?? 6
-  const pattern = props.pattern ?? /[0-9]/
-  const value = normalize(props.value, length, pattern)
+export const inputOtp = <Msg>(
+  props: InputOtpProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const length = props.length ?? 6;
+  const pattern = props.pattern ?? /[0-9]/;
+  const value = normalize(props.value, length, pattern);
 
   return h.div(
     [
@@ -51,8 +57,10 @@ export const inputOtp = <Msg>(props: InputOtpProps<Msg>): Html => {
         h.AriaInvalid(props.isInvalid ?? false),
         h.Disabled(props.isDisabled ?? false),
         ...(props.name === undefined ? [] : [h.Name(props.name)]),
-        h.OnInput(next => props.onInput(normalize(next, length, pattern))),
-        h.Class('peer absolute inset-0 z-10 size-full cursor-text opacity-0 disabled:cursor-not-allowed'),
+        h.OnInput((next) => props.onInput(normalize(next, length, pattern))),
+        h.Class(
+          'peer absolute inset-0 z-10 size-full cursor-text opacity-0 disabled:cursor-not-allowed',
+        ),
       ]),
       h.div(
         [
@@ -61,8 +69,8 @@ export const inputOtp = <Msg>(props: InputOtpProps<Msg>): Html => {
           h.Class(cn('flex items-center', props.groupClass)),
         ],
         Array.from({ length }, (_, index) => {
-          const character = value[index]
-          const isActive = value.length === index
+          const character = value[index];
+          const isActive = value.length === index;
           const slot = h.div(
             [
               h.DataAttribute('slot', 'input-otp-slot'),
@@ -80,25 +88,46 @@ export const inputOtp = <Msg>(props: InputOtpProps<Msg>): Html => {
             [
               character ?? '',
               ...(isActive
-                ? [h.div([h.Class('pointer-events-none absolute inset-0 flex items-center justify-center')], [h.div([h.Class('h-4 w-px animate-caret-blink bg-foreground duration-1000')], [])])]
+                ? [
+                    h.div(
+                      [
+                        h.Class(
+                          'pointer-events-none absolute inset-0 flex items-center justify-center',
+                        ),
+                      ],
+                      [
+                        h.div(
+                          [
+                            h.Class(
+                              'h-4 w-px animate-caret-blink bg-foreground duration-1000',
+                            ),
+                          ],
+                          [],
+                        ),
+                      ],
+                    ),
+                  ]
                 : []),
             ],
-          )
+          );
 
-          const separator = props.separator?.(index)
+          const separator = props.separator?.(index);
           return separator === undefined || index === length - 1
             ? slot
-            : h.div([h.Class('contents')], [slot, separator])
+            : h.div([h.Class('contents')], [slot, separator]);
         }),
       ),
     ],
-  )
-}
+  );
+};
 
-export const inputOtpSeparator = <Msg>(): Html => {
-  const h = html<Msg>()
+export const inputOtpSeparator = <Msg>(h: HtmlBuilder<Msg>): Html => {
   return h.div(
-    [h.Role('separator'), h.DataAttribute('slot', 'input-otp-separator'), h.Class('px-2 text-muted-foreground')],
+    [
+      h.Role('separator'),
+      h.DataAttribute('slot', 'input-otp-separator'),
+      h.Class('px-2 text-muted-foreground'),
+    ],
     ['·'],
-  )
-}
+  );
+};

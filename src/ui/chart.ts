@@ -1,35 +1,37 @@
-import { type Html, html } from 'foldkit/html'
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
 
 /* Framework-native chart composition. The small SVG renderers below remain
    dependency-free; `chartContainer`, legend, and tooltip provide the shared
    configuration/composition surface used by richer chart adapters. */
 
 export type ChartSeriesConfig = Readonly<{
-  label?: Html | string
-  color?: string
-  icon?: Html
-}>
+  label?: Html | string;
+  color?: string;
+  icon?: Html;
+}>;
 
-export type ChartConfig = Readonly<Record<string, ChartSeriesConfig>>
+export type ChartConfig = Readonly<Record<string, ChartSeriesConfig>>;
 
 export type ChartContainerProps = Readonly<{
-  config: ChartConfig
-  children: ReadonlyArray<Html | string>
-  class?: string
-  ariaLabel?: string
-}>
+  config: ChartConfig;
+  children: ReadonlyArray<Html | string>;
+  class?: string;
+  ariaLabel?: string;
+}>;
 
-export const chartContainer = <Msg>(props: ChartContainerProps): Html => {
-  const h = html<Msg>()
+export const chartContainer = <Msg>(
+  props: ChartContainerProps,
+  h: HtmlBuilder<Msg>,
+): Html => {
   const variables = Object.entries(props.config).reduce<Record<string, string>>(
     (result, [key, series]) =>
       series.color === undefined
         ? result
         : { ...result, [`--color-${key}`]: series.color },
     {},
-  )
+  );
   return h.div(
     [
       h.DataAttribute('slot', 'chart'),
@@ -39,78 +41,136 @@ export const chartContainer = <Msg>(props: ChartContainerProps): Html => {
       h.Style(variables),
     ],
     props.children,
-  )
-}
+  );
+};
 
 export type ChartLegendProps = Readonly<{
-  config: ChartConfig
-  series?: ReadonlyArray<string>
-  class?: string
-}>
+  config: ChartConfig;
+  series?: ReadonlyArray<string>;
+  class?: string;
+}>;
 
-export const chartLegend = <Msg>(props: ChartLegendProps): Html => {
-  const h = html<Msg>()
+export const chartLegend = <Msg>(
+  props: ChartLegendProps,
+  h: HtmlBuilder<Msg>,
+): Html => {
   return h.div(
-    [h.DataAttribute('slot', 'chart-legend'), h.Class(cn('flex flex-wrap items-center justify-center gap-4', props.class))],
-    (props.series ?? Object.keys(props.config)).flatMap(key => {
-      const series = props.config[key]
-      return series === undefined ? [] : [h.div([h.Class('flex items-center gap-1.5')], [
-        series.icon ?? h.span([h.Class('size-2 shrink-0 rounded-[2px]'), h.Style({ backgroundColor: `var(--color-${key})` })], []),
-        series.label ?? key,
-      ])]
-    }),
-  )
-}
-
-export type ChartTooltipItem = Readonly<{ key: string; value: Html | string }>
-
-export const chartTooltipContent = <Msg>(props: Readonly<{
-  config: ChartConfig
-  label?: Html | string
-  items: ReadonlyArray<ChartTooltipItem>
-  class?: string
-}>): Html => {
-  const h = html<Msg>()
-  return h.div(
-    [h.DataAttribute('slot', 'chart-tooltip'), h.Class(cn('grid min-w-[8rem] gap-1.5 rounded-lg border bg-background px-2.5 py-1.5 text-xs shadow-xl', props.class))],
     [
-      ...(props.label === undefined ? [] : [h.div([h.Class('font-medium')], [props.label])]),
-      ...props.items.map(item => h.div([h.Class('flex items-center gap-2')], [
-        h.span([h.Class('size-2 shrink-0 rounded-[2px]'), h.Style({ backgroundColor: `var(--color-${item.key})` })], []),
-        h.span([h.Class('text-muted-foreground')], [props.config[item.key]?.label ?? item.key]),
-        h.span([h.Class('ml-auto font-mono font-medium tabular-nums text-foreground')], [item.value]),
-      ])),
+      h.DataAttribute('slot', 'chart-legend'),
+      h.Class(
+        cn('flex flex-wrap items-center justify-center gap-4', props.class),
+      ),
     ],
-  )
-}
+    (props.series ?? Object.keys(props.config)).flatMap((key) => {
+      const series = props.config[key];
+      return series === undefined
+        ? []
+        : [
+            h.div(
+              [h.Class('flex items-center gap-1.5')],
+              [
+                series.icon ??
+                  h.span(
+                    [
+                      h.Class('size-2 shrink-0 rounded-[2px]'),
+                      h.Style({ backgroundColor: `var(--color-${key})` }),
+                    ],
+                    [],
+                  ),
+                series.label ?? key,
+              ],
+            ),
+          ];
+    }),
+  );
+};
 
-const finite = (value: number): number =>
-  Number.isFinite(value) ? value : 0
+export type ChartTooltipItem = Readonly<{ key: string; value: Html | string }>;
+
+export const chartTooltipContent = <Msg>(
+  props: Readonly<{
+    config: ChartConfig;
+    label?: Html | string;
+    items: ReadonlyArray<ChartTooltipItem>;
+    class?: string;
+  }>,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  return h.div(
+    [
+      h.DataAttribute('slot', 'chart-tooltip'),
+      h.Class(
+        cn(
+          'grid min-w-[8rem] gap-1.5 rounded-lg border bg-background px-2.5 py-1.5 text-xs shadow-xl',
+          props.class,
+        ),
+      ),
+    ],
+    [
+      ...(props.label === undefined
+        ? []
+        : [h.div([h.Class('font-medium')], [props.label])]),
+      ...props.items.map((item) =>
+        h.div(
+          [h.Class('flex items-center gap-2')],
+          [
+            h.span(
+              [
+                h.Class('size-2 shrink-0 rounded-[2px]'),
+                h.Style({ backgroundColor: `var(--color-${item.key})` }),
+              ],
+              [],
+            ),
+            h.span(
+              [h.Class('text-muted-foreground')],
+              [props.config[item.key]?.label ?? item.key],
+            ),
+            h.span(
+              [
+                h.Class(
+                  'ml-auto font-mono font-medium tabular-nums text-foreground',
+                ),
+              ],
+              [item.value],
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
+};
+
+const finite = (value: number): number => (Number.isFinite(value) ? value : 0);
 
 export type BarChartDatum = Readonly<{
-  label: string
-  value: number
-}>
+  label: string;
+  value: number;
+}>;
 
 export type BarChartProps = Readonly<{
-  data: ReadonlyArray<BarChartDatum>
-  class?: string
-  showXAxisLabels?: boolean
-  isCompact?: boolean
-}>
+  data: ReadonlyArray<BarChartDatum>;
+  class?: string;
+  showXAxisLabels?: boolean;
+  isCompact?: boolean;
+}>;
 
-export const barChart = <Msg>(props: BarChartProps): Html => {
-  const h = html<Msg>()
-  const showXAxisLabels = props.showXAxisLabels ?? true
-  const isCompact = props.isCompact ?? false
-  const chartWidth = isCompact ? 320 : 100
-  const chartHeight = isCompact ? 80 : 60
-  const plotBottom = isCompact ? 58 : showXAxisLabels ? 48 : 56
-  const plotHeight = isCompact ? 48 : plotBottom - 4
-  const count = Math.max(props.data.length, 1)
-  const slotWidth = chartWidth / count
-  const barWidth = Math.max(0.5, Math.min(isCompact ? 16 : 10, slotWidth * 0.64))
-  const maximum = Math.max(0, ...props.data.map(item => finite(item.value)))
+export const barChart = <Msg>(
+  props: BarChartProps,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const showXAxisLabels = props.showXAxisLabels ?? true;
+  const isCompact = props.isCompact ?? false;
+  const chartWidth = isCompact ? 320 : 100;
+  const chartHeight = isCompact ? 80 : 60;
+  const plotBottom = isCompact ? 58 : showXAxisLabels ? 48 : 56;
+  const plotHeight = isCompact ? 48 : plotBottom - 4;
+  const count = Math.max(props.data.length, 1);
+  const slotWidth = chartWidth / count;
+  const barWidth = Math.max(
+    0.5,
+    Math.min(isCompact ? 16 : 10, slotWidth * 0.64),
+  );
+  const maximum = Math.max(0, ...props.data.map((item) => finite(item.value)));
 
   return h.svg(
     [
@@ -123,9 +183,9 @@ export const barChart = <Msg>(props: BarChartProps): Html => {
     ],
     [
       ...props.data.map((item, index) => {
-        const value = Math.max(0, finite(item.value))
-        const height = maximum === 0 ? 0 : (value / maximum) * plotHeight
-        const x = index * slotWidth + (slotWidth - barWidth) / 2
+        const value = Math.max(0, finite(item.value));
+        const height = maximum === 0 ? 0 : (value / maximum) * plotHeight;
+        const x = index * slotWidth + (slotWidth - barWidth) / 2;
 
         return h.rect(
           [
@@ -137,7 +197,7 @@ export const barChart = <Msg>(props: BarChartProps): Html => {
             h.Fill('var(--chart-2)'),
           ],
           [],
-        )
+        );
       }),
       ...(showXAxisLabels
         ? props.data.map((item, index) =>
@@ -154,58 +214,60 @@ export const barChart = <Msg>(props: BarChartProps): Html => {
           )
         : []),
     ],
-  )
-}
+  );
+};
 
 export type AreaChartProps = Readonly<{
-  data: ReadonlyArray<number>
-  class?: string
-}>
+  data: ReadonlyArray<number>;
+  class?: string;
+}>;
 
-type Point = Readonly<{ x: number; y: number }>
+type Point = Readonly<{ x: number; y: number }>;
 
 const areaPoints = (data: ReadonlyArray<number>): ReadonlyArray<Point> => {
-  const values = data.map(finite)
+  const values = data.map(finite);
 
   if (values.length === 0) {
-    return []
+    return [];
   }
 
-  const minimum = Math.min(...values)
-  const maximum = Math.max(...values)
-  const range = maximum - minimum
-  const denominator = Math.max(values.length - 1, 1)
+  const minimum = Math.min(...values);
+  const maximum = Math.max(...values);
+  const range = maximum - minimum;
+  const denominator = Math.max(values.length - 1, 1);
 
   return values.map((value, index) => ({
     x: (index / denominator) * 100,
     y: range === 0 ? 25 : 15 + ((maximum - value) / range) * 20,
-  }))
-}
+  }));
+};
 
 const smoothPath = (points: ReadonlyArray<Point>): string => {
-  const first = points[0]
+  const first = points[0];
 
   if (first === undefined) {
-    return ''
+    return '';
   }
 
   return points.slice(1).reduce((path, point, index) => {
-    const previous = points[index] ?? first
-    const midpoint = (previous.x + point.x) / 2
-    return `${path} C ${midpoint} ${previous.y}, ${midpoint} ${point.y}, ${point.x} ${point.y}`
-  }, `M ${first.x} ${first.y}`)
-}
+    const previous = points[index] ?? first;
+    const midpoint = (previous.x + point.x) / 2;
+    return `${path} C ${midpoint} ${previous.y}, ${midpoint} ${point.y}, ${point.x} ${point.y}`;
+  }, `M ${first.x} ${first.y}`);
+};
 
-export const areaChart = <Msg>(props: AreaChartProps): Html => {
-  const h = html<Msg>()
-  const points = areaPoints(props.data)
-  const linePath = smoothPath(points)
-  const first = points[0]
-  const last = points[points.length - 1]
+export const areaChart = <Msg>(
+  props: AreaChartProps,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const points = areaPoints(props.data);
+  const linePath = smoothPath(points);
+  const first = points[0];
+  const last = points[points.length - 1];
   const fillPath =
     first === undefined || last === undefined
       ? ''
-      : `${linePath} L ${last.x} 50 L ${first.x} 50 Z`
+      : `${linePath} L ${last.x} 50 L ${first.x} 50 Z`;
 
   return h.svg(
     [
@@ -249,7 +311,7 @@ export const areaChart = <Msg>(props: AreaChartProps): Html => {
           ),
         ],
       ),
-      ...[14, 25, 36].map(y =>
+      ...[14, 25, 36].map((y) =>
         h.line(
           [
             h.X1('0'),
@@ -266,10 +328,7 @@ export const areaChart = <Msg>(props: AreaChartProps): Html => {
       ...(fillPath === ''
         ? []
         : [
-            h.path(
-              [h.D(fillPath), h.Fill('url(#foldkit-area-gradient)')],
-              [],
-            ),
+            h.path([h.D(fillPath), h.Fill('url(#foldkit-area-gradient)')], []),
             h.path(
               [
                 h.D(linePath),
@@ -284,26 +343,26 @@ export const areaChart = <Msg>(props: AreaChartProps): Html => {
             ),
           ]),
     ],
-  )
-}
+  );
+};
 
 export type DonutChartProps = Readonly<{
-  value: number
-  max: number
-  label?: string
-  sublabel?: string
-  class?: string
-}>
+  value: number;
+  max: number;
+  label?: string;
+  sublabel?: string;
+  class?: string;
+}>;
 
-export const donutChart = <Msg>(props: DonutChartProps): Html => {
-  const h = html<Msg>()
-  const maximum = finite(props.max)
+export const donutChart = <Msg>(
+  props: DonutChartProps,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const maximum = finite(props.max);
   const ratio =
-    maximum <= 0
-      ? 0
-      : Math.min(1, Math.max(0, finite(props.value) / maximum))
-  const circumference = 2 * Math.PI * 42
-  const dash = ratio * circumference
+    maximum <= 0 ? 0 : Math.min(1, Math.max(0, finite(props.value) / maximum));
+  const circumference = 2 * Math.PI * 42;
+  const dash = ratio * circumference;
 
   return h.svg(
     [
@@ -375,5 +434,5 @@ export const donutChart = <Msg>(props: DonutChartProps): Html => {
             ),
           ]),
     ],
-  )
-}
+  );
+};

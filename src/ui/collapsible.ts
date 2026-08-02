@@ -1,45 +1,43 @@
-import { type Html, html } from 'foldkit/html'
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import { Disclosure as DisclosurePrimitive } from '@foldkit/ui'
+import { Disclosure as DisclosurePrimitive } from '@foldkit/ui';
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
 
 /* shadcn/ui Collapsible is a thin composition over foldkit Disclosure.
    animatePanel keeps the content mounted and smoothly transitions its height. */
 
 export type CollapsibleProps<Msg> = Readonly<{
-  id: string
-  isOpen: boolean
-  onToggle: (isOpen: boolean) => Msg
-  trigger: Html | string
-  content: Html | string
-  isDisabled?: boolean
-  ariaLabel?: string
-  class?: string
-  triggerClass?: string
-  contentClass?: string
-}>
+  id: string;
+  isOpen: boolean;
+  onToggle: (isOpen: boolean) => Msg;
+  trigger: Html | string;
+  content: Html | string;
+  isDisabled?: boolean;
+  ariaLabel?: string;
+  class?: string;
+  triggerClass?: string;
+  contentClass?: string;
+}>;
 
-export const collapsible = <Msg>(props: CollapsibleProps<Msg>): Html => {
-  const h = html<Msg>()
-
-  return DisclosurePrimitive.view({
+export const collapsible = <Msg>(
+  props: CollapsibleProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  return DisclosurePrimitive.view(
+    {
       id: props.id,
       isOpen: props.isOpen,
       onToggle: props.onToggle,
       ...(props.isDisabled === undefined
         ? {}
         : { isDisabled: props.isDisabled }),
-      ...(props.ariaLabel === undefined
-        ? {}
-        : { ariaLabel: props.ariaLabel }),
+      ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
       toView: ({ button, panel, animatePanel }) => {
         return h.div(
           [
             h.DataAttribute('slot', 'collapsible'),
-            ...(props.class === undefined
-              ? []
-              : [h.Class(cn(props.class))]),
+            ...(props.class === undefined ? [] : [h.Class(cn(props.class))]),
           ],
           [
             h.button(
@@ -66,10 +64,12 @@ export const collapsible = <Msg>(props: CollapsibleProps<Msg>): Html => {
               ),
             ),
           ],
-        )
+        );
       },
-  })
-}
+    },
+    h,
+  );
+};
 
 /*
 Minimal wiring:

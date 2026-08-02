@@ -1,35 +1,35 @@
-import { Effect, Match as M, Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
-import { type Document, type Html, html } from 'foldkit/html'
-import { m } from 'foldkit/message'
-import { UrlRequest, load, pushUrl } from 'foldkit/navigation'
-import { Url, toString as urlToString } from 'foldkit/url'
-import { defineView } from 'foldkit/submodel'
-import { evo } from 'foldkit/struct'
+import { Effect, Match as M, Schema as S } from 'effect';
+import { Command, Runtime, Subscription } from 'foldkit';
+import { type Document, type Html, type HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
+import { UrlRequest, load, pushUrl } from 'foldkit/navigation';
+import { Url, toString as urlToString } from 'foldkit/url';
+import { defineView } from 'foldkit/submodel';
+import { evo } from 'foldkit/struct';
 
-import * as BlocksIndexPage from '@/demo/blocks/index-page'
-import * as Blocks from '@/demo/blocks/registry'
-import * as Board from '@/demo/board'
-import * as Landing from '@/demo/landing'
-import * as ChartsArea from '@/demo/charts/area'
-import * as ChartsBar from '@/demo/charts/bar'
-import * as ChartsLine from '@/demo/charts/line'
-import * as ChartsPie from '@/demo/charts/pie'
-import * as ChartsRadar from '@/demo/charts/radar'
-import * as ChartsRadial from '@/demo/charts/radial'
-import * as ChartsTooltip from '@/demo/charts/tooltip'
-import * as AccordionDocs from '@/docs/components/accordion'
-import * as CalendarDocs from '@/docs/components/calendar'
-import * as ComponentCatalog from '@/docs/components/catalog'
-import * as Icon from '@/lib/icon'
+import * as BlocksIndexPage from '@/demo/blocks/index-page';
+import * as Blocks from '@/demo/blocks/registry';
+import * as Board from '@/demo/board';
+import * as Landing from '@/demo/landing';
+import * as ChartsArea from '@/demo/charts/area';
+import * as ChartsBar from '@/demo/charts/bar';
+import * as ChartsLine from '@/demo/charts/line';
+import * as ChartsPie from '@/demo/charts/pie';
+import * as ChartsRadar from '@/demo/charts/radar';
+import * as ChartsRadial from '@/demo/charts/radial';
+import * as ChartsTooltip from '@/demo/charts/tooltip';
+import * as AccordionDocs from '@/docs/components/accordion';
+import * as CalendarDocs from '@/docs/components/calendar';
+import * as ComponentCatalog from '@/docs/components/catalog';
+import * as Icon from '@/lib/icon';
 import {
   AppRoute,
   type ChartSection,
   chartsPath,
   isChartSection,
   urlToAppRoute,
-} from '@/route'
-import { cn } from '@/lib/utils'
+} from '@/route';
+import { cn } from '@/lib/utils';
 
 // MODEL
 
@@ -49,54 +49,54 @@ export const Model = S.Struct({
   accordionDocs: AccordionDocs.Model,
   calendarDocs: CalendarDocs.Model,
   catalogDocs: ComponentCatalog.Model,
-})
-export type Model = typeof Model.Type
+});
+export type Model = typeof Model.Type;
 
 // MESSAGE
 
-export const CompletedNavigateInternal = m('CompletedNavigateInternal')
-export const CompletedLoadExternal = m('CompletedLoadExternal')
-export const ClickedLink = m('ClickedLink', { request: UrlRequest })
-export const ChangedUrl = m('ChangedUrl', { url: Url })
-export const ClickedThemeToggle = m('ClickedThemeToggle')
-export const CompletedApplyTheme = m('CompletedApplyTheme')
-export const GotBoardMessage = m('GotBoardMessage', { message: Board.Message })
+export const CompletedNavigateInternal = m('CompletedNavigateInternal');
+export const CompletedLoadExternal = m('CompletedLoadExternal');
+export const ClickedLink = m('ClickedLink', { request: UrlRequest });
+export const ChangedUrl = m('ChangedUrl', { url: Url });
+export const ClickedThemeToggle = m('ClickedThemeToggle');
+export const CompletedApplyTheme = m('CompletedApplyTheme');
+export const GotBoardMessage = m('GotBoardMessage', { message: Board.Message });
 export const GotLandingMessage = m('GotLandingMessage', {
   message: Landing.Message,
-})
+});
 export const GotBlocksMessage = m('GotBlocksMessage', {
   message: Blocks.Message,
-})
+});
 export const GotChartsAreaMessage = m('GotChartsAreaMessage', {
   message: ChartsArea.Message,
-})
+});
 export const GotChartsBarMessage = m('GotChartsBarMessage', {
   message: ChartsBar.Message,
-})
+});
 export const GotChartsLineMessage = m('GotChartsLineMessage', {
   message: ChartsLine.Message,
-})
+});
 export const GotChartsPieMessage = m('GotChartsPieMessage', {
   message: ChartsPie.Message,
-})
+});
 export const GotChartsRadarMessage = m('GotChartsRadarMessage', {
   message: ChartsRadar.Message,
-})
+});
 export const GotChartsRadialMessage = m('GotChartsRadialMessage', {
   message: ChartsRadial.Message,
-})
+});
 export const GotChartsTooltipMessage = m('GotChartsTooltipMessage', {
   message: ChartsTooltip.Message,
-})
+});
 export const GotAccordionDocsMessage = m('GotAccordionDocsMessage', {
   message: AccordionDocs.Message,
-})
+});
 export const GotCalendarDocsMessage = m('GotCalendarDocsMessage', {
   message: CalendarDocs.Message,
-})
+});
 export const GotCatalogDocsMessage = m('GotCatalogDocsMessage', {
   message: ComponentCatalog.Message,
-})
+});
 
 export const Message = S.Union([
   CompletedNavigateInternal,
@@ -118,8 +118,8 @@ export const Message = S.Union([
   GotAccordionDocsMessage,
   GotCalendarDocsMessage,
   GotCatalogDocsMessage,
-])
-export type Message = typeof Message.Type
+]);
+export type Message = typeof Message.Type;
 
 // INIT
 
@@ -144,7 +144,7 @@ export const init: Runtime.RoutingApplicationInit<Model, Message> = (
     catalogDocs: ComponentCatalog.init(),
   },
   [],
-]
+];
 
 // COMMAND
 
@@ -152,13 +152,13 @@ const NavigateInternal = Command.define(
   'NavigateInternal',
   { url: S.String },
   CompletedNavigateInternal,
-)(({ url }) => pushUrl(url).pipe(Effect.as(CompletedNavigateInternal())))
+)(({ url }) => pushUrl(url).pipe(Effect.as(CompletedNavigateInternal())));
 
 const LoadExternal = Command.define(
   'LoadExternal',
   { href: S.String },
   CompletedLoadExternal,
-)(({ href }) => load(href).pipe(Effect.as(CompletedLoadExternal())))
+)(({ href }) => load(href).pipe(Effect.as(CompletedLoadExternal())));
 
 const ApplyTheme = Command.define(
   'ApplyTheme',
@@ -166,17 +166,17 @@ const ApplyTheme = Command.define(
   CompletedApplyTheme,
 )(({ isDark }) =>
   Effect.sync(() => {
-    document.documentElement.classList.toggle('dark', isDark)
-    document.documentElement.style.colorScheme = isDark ? 'dark' : 'light'
-    localStorage.setItem('creaseui-theme', isDark ? 'dark' : 'light')
-    return CompletedApplyTheme()
+    document.documentElement.classList.toggle('dark', isDark);
+    document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+    localStorage.setItem('creaseui-theme', isDark ? 'dark' : 'light');
+    return CompletedApplyTheme();
   }),
-)
+);
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
-const withUpdateReturn = M.withReturnType<UpdateReturn>()
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+const withUpdateReturn = M.withReturnType<UpdateReturn>();
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
@@ -187,8 +187,8 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       CompletedApplyTheme: () => [model, []],
 
       ClickedThemeToggle: () => {
-        const isDark = !model.isDark
-        return [evo(model, { isDark: () => isDark }), [ApplyTheme({ isDark })]]
+        const isDark = !model.isDark;
+        return [evo(model, { isDark: () => isDark }), [ApplyTheme({ isDark })]];
       },
 
       ClickedLink: ({ request }) =>
@@ -209,156 +209,187 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       ],
 
       GotBoardMessage: ({ message: childMessage }) => {
-        const [board, commands] = Board.update(model.board, childMessage)
+        const [board, commands] = Board.update(model.board, childMessage);
         return [
           evo(model, { board: () => board }),
-          Command.mapMessages(commands, next => GotBoardMessage({ message: next })),
-        ]
+          Command.mapMessages(commands, (next) =>
+            GotBoardMessage({ message: next }),
+          ),
+        ];
       },
 
       GotBlocksMessage: ({ message: childMessage }) => {
-        const [blocks, commands] = Blocks.update(model.blocks, childMessage)
+        const [blocks, commands] = Blocks.update(model.blocks, childMessage);
         return [
           evo(model, { blocks: () => blocks }),
-          Command.mapMessages(commands, next =>
+          Command.mapMessages(commands, (next) =>
             GotBlocksMessage({ message: next }),
           ),
-        ]
+        ];
       },
 
       GotLandingMessage: ({ message: childMessage }) => {
-        const [landing, commands] = Landing.update(model.landing, childMessage)
+        const [landing, commands] = Landing.update(model.landing, childMessage);
         return [
           evo(model, { landing: () => landing }),
-          Command.mapMessages(commands, next =>
+          Command.mapMessages(commands, (next) =>
             GotLandingMessage({ message: next }),
           ),
-        ]
+        ];
       },
 
       GotChartsAreaMessage: ({ message: childMessage }) => {
-        const [page, commands] = ChartsArea.update(model.chartsArea, childMessage)
+        const [page, commands] = ChartsArea.update(
+          model.chartsArea,
+          childMessage,
+        );
         return [
           evo(model, { chartsArea: () => page }),
-          Command.mapMessages(commands, next =>
+          Command.mapMessages(commands, (next) =>
             GotChartsAreaMessage({ message: next }),
           ),
-        ]
+        ];
       },
 
       GotChartsBarMessage: ({ message: childMessage }) => {
-        const [page, commands] = ChartsBar.update(model.chartsBar, childMessage)
+        const [page, commands] = ChartsBar.update(
+          model.chartsBar,
+          childMessage,
+        );
         return [
           evo(model, { chartsBar: () => page }),
-          Command.mapMessages(commands, next =>
+          Command.mapMessages(commands, (next) =>
             GotChartsBarMessage({ message: next }),
           ),
-        ]
+        ];
       },
 
       GotChartsLineMessage: ({ message: childMessage }) => {
-        const [page, commands] = ChartsLine.update(model.chartsLine, childMessage)
+        const [page, commands] = ChartsLine.update(
+          model.chartsLine,
+          childMessage,
+        );
         return [
           evo(model, { chartsLine: () => page }),
-          Command.mapMessages(commands, next =>
+          Command.mapMessages(commands, (next) =>
             GotChartsLineMessage({ message: next }),
           ),
-        ]
+        ];
       },
 
       GotChartsPieMessage: ({ message: childMessage }) => {
-        const [page, commands] = ChartsPie.update(model.chartsPie, childMessage)
+        const [page, commands] = ChartsPie.update(
+          model.chartsPie,
+          childMessage,
+        );
         return [
           evo(model, { chartsPie: () => page }),
-          Command.mapMessages(commands, next =>
+          Command.mapMessages(commands, (next) =>
             GotChartsPieMessage({ message: next }),
           ),
-        ]
+        ];
       },
 
       GotChartsRadarMessage: ({ message: childMessage }) => {
-        const [page, commands] = ChartsRadar.update(model.chartsRadar, childMessage)
+        const [page, commands] = ChartsRadar.update(
+          model.chartsRadar,
+          childMessage,
+        );
         return [
           evo(model, { chartsRadar: () => page }),
-          Command.mapMessages(commands, next =>
+          Command.mapMessages(commands, (next) =>
             GotChartsRadarMessage({ message: next }),
           ),
-        ]
+        ];
       },
 
       GotChartsRadialMessage: ({ message: childMessage }) => {
         const [page, commands] = ChartsRadial.update(
           model.chartsRadial,
           childMessage,
-        )
+        );
         return [
           evo(model, { chartsRadial: () => page }),
-          Command.mapMessages(commands, next =>
+          Command.mapMessages(commands, (next) =>
             GotChartsRadialMessage({ message: next }),
           ),
-        ]
+        ];
       },
 
       GotChartsTooltipMessage: ({ message: childMessage }) => {
         const [page, commands] = ChartsTooltip.update(
           model.chartsTooltip,
           childMessage,
-        )
+        );
         return [
           evo(model, { chartsTooltip: () => page }),
-          Command.mapMessages(commands, next =>
+          Command.mapMessages(commands, (next) =>
             GotChartsTooltipMessage({ message: next }),
           ),
-        ]
+        ];
       },
 
       GotAccordionDocsMessage: ({ message: childMessage }) => {
         const [page, commands] = AccordionDocs.update(
           model.accordionDocs,
           childMessage,
-        )
+        );
         return [
           evo(model, { accordionDocs: () => page }),
-          Command.mapMessages(commands, next =>
+          Command.mapMessages(commands, (next) =>
             GotAccordionDocsMessage({ message: next }),
           ),
-        ]
+        ];
       },
       GotCalendarDocsMessage: ({ message: childMessage }) => {
-        const [page, commands] = CalendarDocs.update(model.calendarDocs, childMessage)
+        const [page, commands] = CalendarDocs.update(
+          model.calendarDocs,
+          childMessage,
+        );
         return [
           evo(model, { calendarDocs: () => page }),
-          Command.mapMessages(commands, next => GotCalendarDocsMessage({ message: next })),
-        ]
+          Command.mapMessages(commands, (next) =>
+            GotCalendarDocsMessage({ message: next }),
+          ),
+        ];
       },
       GotCatalogDocsMessage: ({ message: childMessage }) => {
-        const [catalogDocs, commands] = ComponentCatalog.update(model.catalogDocs, childMessage)
+        const [catalogDocs, commands] = ComponentCatalog.update(
+          model.catalogDocs,
+          childMessage,
+        );
         return [
           evo(model, { catalogDocs: () => catalogDocs }),
-          Command.mapMessages(commands, next => GotCatalogDocsMessage({ message: next })),
-        ]
+          Command.mapMessages(commands, (next) =>
+            GotCatalogDocsMessage({ message: next }),
+          ),
+        ];
       },
     }),
-  )
+  );
 
 // SUBSCRIPTIONS
 
 export const subscriptions = Subscription.aggregate<Model, Message>()(
   Subscription.lift(Board.subscriptions)<Model, Message>({
-    toChildModel: model => model.board,
-    toParentMessage: message => GotBoardMessage({ message }),
+    toChildModel: (model) => model.board,
+    toParentMessage: (message) => GotBoardMessage({ message }),
   }),
   Subscription.lift(ComponentCatalog.subscriptions)<Model, Message>({
-    toChildModel: model => model.catalogDocs,
-    toParentMessage: message => GotCatalogDocsMessage({ message }),
+    toChildModel: (model) => model.catalogDocs,
+    toParentMessage: (message) => GotCatalogDocsMessage({ message }),
   }),
-)
+);
 
 // VIEW
 
-const headerLink = (href: string, label: string, isActive: boolean, className?: string): Html => {
-  const h = html<Message>()
-
+const headerLink = (
+  href: string,
+  label: string,
+  isActive: boolean,
+  className: string,
+  h: HtmlBuilder<Message>,
+): Html => {
   return h.a(
     [
       h.Href(href),
@@ -371,12 +402,11 @@ const headerLink = (href: string, label: string, isActive: boolean, className?: 
       ),
     ],
     [label],
-  )
-}
+  );
+};
 
-const header = (model: Model): Html => {
-  const h = html<Message>()
-  const isCharts = model.route._tag === 'Charts'
+const header = (model: Model, h: HtmlBuilder<Message>): Html => {
+  const isCharts = model.route._tag === 'Charts';
 
   return h.header(
     [h.Class('sticky top-0 z-40 border-b bg-background/95 backdrop-blur')],
@@ -388,38 +418,97 @@ const header = (model: Model): Html => {
           ),
         ],
         [
-          h.a(
-            [h.Href('/'), h.Class('text-sm font-semibold')],
-            ['crease/ui'],
-          ),
+          h.a([h.Href('/'), h.Class('text-sm font-semibold')], ['crease/ui']),
           headerLink(
             '/docs/components/accordion',
             'Docs',
             model.route._tag === 'ComponentDocs',
+            '',
+            h,
           ),
-          headerLink('/create', 'Create', model.route._tag === 'Create', 'hidden sm:inline-flex'),
-          headerLink(chartsPath('area'), 'Charts', isCharts, 'hidden sm:inline-flex'),
+          headerLink(
+            '/create',
+            'Create',
+            model.route._tag === 'Create',
+            'hidden sm:inline-flex',
+            h,
+          ),
+          headerLink(
+            chartsPath('area'),
+            'Charts',
+            isCharts,
+            'hidden sm:inline-flex',
+            h,
+          ),
           headerLink(
             '/blocks/sidebar',
             'Blocks',
             model.route._tag === 'BlocksIndex',
             'hidden sm:inline-flex',
+            h,
           ),
-          h.details([h.Class('relative ml-auto sm:hidden')], [
-            h.summary([h.AriaLabel('Open site navigation'), h.Class('flex size-10 cursor-pointer list-none items-center justify-center rounded-md hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50')], [Icon.icon('menu', { class: 'size-4' })]),
-            h.nav([h.AriaLabel('Site navigation'), h.Class('absolute top-11 right-0 z-50 grid min-w-44 gap-1 rounded-lg border bg-background p-2 shadow-lg')], [
-              headerLink('/docs/components/accordion', 'Docs', model.route._tag === 'ComponentDocs', 'rounded-md px-3 py-2 hover:bg-accent'),
-              headerLink('/create', 'Create', model.route._tag === 'Create', 'rounded-md px-3 py-2 hover:bg-accent'),
-              headerLink(chartsPath('area'), 'Charts', isCharts, 'rounded-md px-3 py-2 hover:bg-accent'),
-              headerLink('/blocks/sidebar', 'Blocks', model.route._tag === 'BlocksIndex', 'rounded-md px-3 py-2 hover:bg-accent'),
-            ]),
-          ]),
+          h.details(
+            [h.Class('relative ml-auto sm:hidden')],
+            [
+              h.summary(
+                [
+                  h.AriaLabel('Open site navigation'),
+                  h.Class(
+                    'flex size-10 cursor-pointer list-none items-center justify-center rounded-md hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50',
+                  ),
+                ],
+                [Icon.icon('menu', { class: 'size-4' }, h)],
+              ),
+              h.nav(
+                [
+                  h.AriaLabel('Site navigation'),
+                  h.Class(
+                    'absolute top-11 right-0 z-50 grid min-w-44 gap-1 rounded-lg border bg-background p-2 shadow-lg',
+                  ),
+                ],
+                [
+                  headerLink(
+                    '/docs/components/accordion',
+                    'Docs',
+                    model.route._tag === 'ComponentDocs',
+                    'rounded-md px-3 py-2 hover:bg-accent',
+                    h,
+                  ),
+                  headerLink(
+                    '/create',
+                    'Create',
+                    model.route._tag === 'Create',
+                    'rounded-md px-3 py-2 hover:bg-accent',
+                    h,
+                  ),
+                  headerLink(
+                    chartsPath('area'),
+                    'Charts',
+                    isCharts,
+                    'rounded-md px-3 py-2 hover:bg-accent',
+                    h,
+                  ),
+                  headerLink(
+                    '/blocks/sidebar',
+                    'Blocks',
+                    model.route._tag === 'BlocksIndex',
+                    'rounded-md px-3 py-2 hover:bg-accent',
+                    h,
+                  ),
+                ],
+              ),
+            ],
+          ),
           h.button(
             [
               h.Type('button'),
               h.OnClick(ClickedThemeToggle()),
-              h.AriaLabel(model.isDark ? 'Switch to light mode' : 'Switch to dark mode'),
-              h.Title(model.isDark ? 'Switch to light mode' : 'Switch to dark mode'),
+              h.AriaLabel(
+                model.isDark ? 'Switch to light mode' : 'Switch to dark mode',
+              ),
+              h.Title(
+                model.isDark ? 'Switch to light mode' : 'Switch to dark mode',
+              ),
               h.Class(
                 'group relative inline-flex size-10 shrink-0 items-center justify-center rounded-md text-foreground outline-none transition-[color,background-color,transform] duration-200 hover:bg-accent hover:text-accent-foreground focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.96] sm:ml-auto',
               ),
@@ -428,14 +517,22 @@ const header = (model: Model): Html => {
               h.span(
                 [h.Class('relative size-4')],
                 [
-                  Icon.icon('sun', {
-                    class:
-                      'theme-toggle-icon absolute inset-0 size-4 scale-100 opacity-100 transition-[scale,opacity] duration-200 ease-[cubic-bezier(0.2,0,0,1)] dark:scale-25 dark:opacity-0',
-                  }),
-                  Icon.icon('moon', {
-                    class:
-                      'theme-toggle-icon absolute inset-0 size-4 scale-25 opacity-0 transition-[scale,opacity] duration-200 ease-[cubic-bezier(0.2,0,0,1)] dark:scale-100 dark:opacity-100',
-                  }),
+                  Icon.icon(
+                    'sun',
+                    {
+                      class:
+                        'theme-toggle-icon absolute inset-0 size-4 scale-100 opacity-100 transition-[scale,opacity] duration-200 ease-[cubic-bezier(0.2,0,0,1)] dark:scale-25 dark:opacity-0',
+                    },
+                    h,
+                  ),
+                  Icon.icon(
+                    'moon',
+                    {
+                      class:
+                        'theme-toggle-icon absolute inset-0 size-4 scale-25 opacity-0 transition-[scale,opacity] duration-200 ease-[cubic-bezier(0.2,0,0,1)] dark:scale-100 dark:opacity-100',
+                    },
+                    h,
+                  ),
                 ],
               ),
             ],
@@ -443,28 +540,34 @@ const header = (model: Model): Html => {
         ],
       ),
     ],
-  )
-}
+  );
+};
 
 /* Page views are plain (model) => Html functions; wrap them once as
    SubmodelViews so h.submodel can embed them with message lifting. */
-const boardView = defineView<Board.Model, Board.Message>(Board.view)
-const landingView = defineView<Landing.Model, Landing.Message>(Landing.view)
+const boardView = defineView<Board.Model, Board.Message>(Board.view);
+const landingView = defineView<Landing.Model, Landing.Message>(Landing.view);
 const accordionDocsView = defineView<
   AccordionDocs.Model,
   AccordionDocs.Message
->(AccordionDocs.view)
-const calendarDocsView = defineView<CalendarDocs.Model, CalendarDocs.Message>(CalendarDocs.view)
-const catalogDocsView = defineView<ComponentCatalog.Model, ComponentCatalog.Message, string>(
-  (catalogModel, slug) => ComponentCatalog.view(catalogModel, slug),
-)
+>(AccordionDocs.view);
+const calendarDocsView = defineView<CalendarDocs.Model, CalendarDocs.Message>(
+  CalendarDocs.view,
+);
+const catalogDocsView = defineView<
+  ComponentCatalog.Model,
+  ComponentCatalog.Message,
+  string
+>((catalogModel, slug, h) => ComponentCatalog.view(catalogModel, slug, h));
 const blocksRegistryView = defineView<Blocks.Model, Blocks.Message, string>(
-  (blocksModel, blockId) => Blocks.view(blocksModel, blockId),
-)
+  (blocksModel, blockId, h) => Blocks.view(blocksModel, blockId, h),
+);
 
-const blocksView = (model: Model, blockId: string): Html => {
-  const h = html<Message>()
-
+const blocksView = (
+  model: Model,
+  blockId: string,
+  h: HtmlBuilder<Message>,
+): Html => {
   return h.submodel({
     slotId: 'sidebar-blocks',
     model: model.blocks,
@@ -472,34 +575,36 @@ const blocksView = (model: Model, blockId: string): Html => {
     viewInputs: blockId,
     toParentMessage: (message: Blocks.Message): Message =>
       GotBlocksMessage({ message }),
-  })
-}
+  });
+};
 const chartsAreaView = defineView<ChartsArea.Model, ChartsArea.Message>(
   ChartsArea.view,
-)
+);
 const chartsBarView = defineView<ChartsBar.Model, ChartsBar.Message>(
   ChartsBar.view,
-)
+);
 const chartsLineView = defineView<ChartsLine.Model, ChartsLine.Message>(
   ChartsLine.view,
-)
+);
 const chartsPieView = defineView<ChartsPie.Model, ChartsPie.Message>(
   ChartsPie.view,
-)
+);
 const chartsRadarView = defineView<ChartsRadar.Model, ChartsRadar.Message>(
   ChartsRadar.view,
-)
+);
 const chartsRadialView = defineView<ChartsRadial.Model, ChartsRadial.Message>(
   ChartsRadial.view,
-)
+);
 const chartsTooltipView = defineView<
   ChartsTooltip.Model,
   ChartsTooltip.Message
->(ChartsTooltip.view)
+>(ChartsTooltip.view);
 
-const chartsSectionView = (model: Model, section: ChartSection): Html => {
-  const h = html<Message>()
-
+const chartsSectionView = (
+  model: Model,
+  section: ChartSection,
+  h: HtmlBuilder<Message>,
+): Html => {
   return M.value(section).pipe(
     M.withReturnType<Html>(),
     M.when('area', () =>
@@ -566,19 +671,14 @@ const chartsSectionView = (model: Model, section: ChartSection): Html => {
       }),
     ),
     M.exhaustive,
-  )
-}
+  );
+};
 
-const homeView = (): Html => {
-  const h = html<Message>()
-
+const homeView = (h: HtmlBuilder<Message>): Html => {
   return h.div(
     [h.Class('mx-auto flex max-w-xl flex-col items-start gap-4 px-8 py-16')],
     [
-      h.h1(
-        [h.Class('text-3xl font-semibold tracking-tight')],
-        ['crease/ui'],
-      ),
+      h.h1([h.Class('text-3xl font-semibold tracking-tight')], ['crease/ui']),
       h.p(
         [h.Class('text-muted-foreground')],
         ['shadcn/ui rebuilt on foldkit UI. Pick a demo:'],
@@ -586,32 +686,48 @@ const homeView = (): Html => {
       h.ul(
         [h.Class('list-disc pl-5 text-sm leading-7')],
         [
-          h.li([], [h.a([h.Href('/create'), h.Class('underline underline-offset-4')], ['/create — the ui.shadcn.com/create preview board'])]),
-          h.li([], [h.a([h.Href(chartsPath('area')), h.Class('underline underline-offset-4')], ['/charts — shadcn charts rendered with Apache ECharts'])]),
+          h.li(
+            [],
+            [
+              h.a(
+                [h.Href('/create'), h.Class('underline underline-offset-4')],
+                ['/create — the ui.shadcn.com/create preview board'],
+              ),
+            ],
+          ),
+          h.li(
+            [],
+            [
+              h.a(
+                [
+                  h.Href(chartsPath('area')),
+                  h.Class('underline underline-offset-4'),
+                ],
+                ['/charts — shadcn charts rendered with Apache ECharts'],
+              ),
+            ],
+          ),
         ],
       ),
     ],
-  )
-}
+  );
+};
 
-const notFoundView = (path: string): Html => {
-  const h = html<Message>()
-
+const notFoundView = (path: string, h: HtmlBuilder<Message>): Html => {
   return h.div(
     [h.Class('mx-auto max-w-xl px-8 py-16')],
     [h.p([h.Class('text-muted-foreground')], [`No page at ${path}.`])],
-  )
-}
+  );
+};
 
 /* Each page subtree is KEYED by route (and by charts section). Without keys,
    snabbdom patches the next page into the previous page's DOM in place; since
    neither submodel's model changed, the submodel boundary skips re-rendering
    and the old page's content stays on screen after navigation. A distinct key
    per page forces a subtree replacement on route change. */
-const pageView = (model: Model): Html => {
-  const h = html<Message>()
+const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
   const keyed = (key: string, content: Html): Html =>
-    h.keyed('div')(key, [], [content])
+    h.keyed('div')(key, [], [content]);
 
   return M.value(model.route).pipe(
     M.withReturnType<Html>(),
@@ -640,11 +756,14 @@ const pageView = (model: Model): Html => {
         ),
       Charts: ({ section }) =>
         isChartSection(section)
-          ? keyed(`page-charts-${section}`, chartsSectionView(model, section))
-          : keyed('page-not-found', notFoundView(`/charts/${section}`)),
-      BlocksIndex: () => keyed('page-blocks-index', BlocksIndexPage.view()),
+          ? keyed(
+              `page-charts-${section}`,
+              chartsSectionView(model, section, h),
+            )
+          : keyed('page-not-found', notFoundView(`/charts/${section}`, h)),
+      BlocksIndex: () => keyed('page-blocks-index', BlocksIndexPage.view(h)),
       Block: ({ blockId }) =>
-        keyed(`page-block-${blockId}`, blocksView(model, blockId)),
+        keyed(`page-block-${blockId}`, blocksView(model, blockId, h)),
       ComponentDocs: ({ component }) =>
         component === 'accordion'
           ? keyed(
@@ -668,41 +787,41 @@ const pageView = (model: Model): Html => {
                     GotCalendarDocsMessage({ message }),
                 }),
               )
-          : ComponentCatalog.hasCatalogPage(component)
-            ? keyed(
-                `page-docs-${component}`,
-                h.submodel({
-                  slotId: `docs-${component}`,
-                  model: model.catalogDocs,
-                  view: catalogDocsView,
-                  viewInputs: component,
-                  toParentMessage: (message: ComponentCatalog.Message): Message =>
-                    GotCatalogDocsMessage({ message }),
-                }),
-              )
-            : keyed(
-                'page-not-found',
-                notFoundView(`/docs/components/${component}`),
-              ),
-      NotFound: ({ path }) => keyed('page-not-found', notFoundView(path)),
+            : ComponentCatalog.hasCatalogPage(component)
+              ? keyed(
+                  `page-docs-${component}`,
+                  h.submodel({
+                    slotId: `docs-${component}`,
+                    model: model.catalogDocs,
+                    view: catalogDocsView,
+                    viewInputs: component,
+                    toParentMessage: (
+                      message: ComponentCatalog.Message,
+                    ): Message => GotCatalogDocsMessage({ message }),
+                  }),
+                )
+              : keyed(
+                  'page-not-found',
+                  notFoundView(`/docs/components/${component}`, h),
+                ),
+      NotFound: ({ path }) => keyed('page-not-found', notFoundView(path, h)),
     }),
-  )
-}
+  );
+};
 
-export const view = (model: Model): Document => {
-  const h = html<Message>()
+export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
   // Block pages are full-viewport layouts (shown inside the index's iframes),
   // so they render without the global header.
-  const isFullPage = model.route._tag === 'Block'
+  const isFullPage = model.route._tag === 'Block';
   const title =
     model.route._tag === 'ComponentDocs'
       ? `${ComponentCatalog.titleFor(model.route.component) ?? 'Not Found'} - crease/ui`
-      : 'crease/ui'
+      : 'crease/ui';
 
   return {
     title,
     body: isFullPage
-      ? h.div([], [pageView(model)])
-      : h.div([], [header(model), pageView(model)]),
-  }
-}
+      ? h.div([], [pageView(model, h)])
+      : h.div([], [header(model, h), pageView(model, h)]),
+  };
+};

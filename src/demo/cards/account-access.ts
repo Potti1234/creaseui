@@ -1,10 +1,10 @@
-import { Match as M, Schema as S } from 'effect'
-import { type Html, html } from 'foldkit/html'
-import { m } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { Match as M, Schema as S } from 'effect';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
+import { evo } from 'foldkit/struct';
 
-import * as Icon from '@/lib/icon'
-import { button } from '@/ui/button'
+import * as Icon from '@/lib/icon';
+import { button } from '@/ui/button';
 import {
   card,
   cardContent,
@@ -12,27 +12,27 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card'
-import { field, fieldGroup, fieldLabel } from '@/ui/field'
-import { input } from '@/ui/input'
+} from '@/ui/card';
+import { field, fieldGroup, fieldLabel } from '@/ui/field';
+import { input } from '@/ui/input';
 import {
   itemContent,
   itemDescription,
   itemMedia,
   itemTitle,
   itemVariants,
-} from '@/ui/item'
+} from '@/ui/item';
 
 export const Model = S.Struct({
   email: S.String,
   password: S.String,
-})
-export type Model = typeof Model.Type
+});
+export type Model = typeof Model.Type;
 
-export const UpdatedEmail = m('UpdatedEmail', { value: S.String })
-export const UpdatedPassword = m('UpdatedPassword', { value: S.String })
-export const Message = S.Union([UpdatedEmail, UpdatedPassword])
-export type Message = typeof Message.Type
+export const UpdatedEmail = m('UpdatedEmail', { value: S.String });
+export const UpdatedPassword = m('UpdatedPassword', { value: S.String });
+export const Message = S.Union([UpdatedEmail, UpdatedPassword]);
+export type Message = typeof Message.Type;
 
 export const update = (
   model: Model,
@@ -41,25 +41,20 @@ export const update = (
   M.value(message).pipe(
     M.withReturnType<readonly [Model, readonly []]>(),
     M.tagsExhaustive({
-      UpdatedEmail: ({ value }) => [
-        evo(model, { email: () => value }),
-        [],
-      ],
+      UpdatedEmail: ({ value }) => [evo(model, { email: () => value }), []],
       UpdatedPassword: ({ value }) => [
         evo(model, { password: () => value }),
         [],
       ],
     }),
-  )
+  );
 
 export const init = (): Model => ({
   email: 'artist@studio.inc',
   password: 'password123',
-})
+});
 
-const dangerZone = (): Html => {
-  const h = html<Message>()
-
+const dangerZone = (h: HtmlBuilder<Message>): Html => {
   // PORT NOTE: src/ui/item.ts does not expose shadcn's asChild behavior,
   // so this local anchor applies the exported Item variant classes directly.
   return h.a(
@@ -71,105 +66,151 @@ const dangerZone = (): Html => {
       h.Class(itemVariants({ variant: 'muted' })),
     ],
     [
-      itemMedia({
-        variant: 'icon',
-        children: [
-          Icon.icon('circle-alert', { class: 'text-destructive' }),
-        ],
-      }),
-      itemContent({
-        children: [
-          itemTitle({ children: ['Danger Zone'] }),
-          itemDescription({
-            class: 'line-clamp-1',
-            children: ['Archive account and remove catalog'],
-          }),
-        ],
-      }),
-      Icon.icon('arrow-right', { class: 'size-4' }),
+      itemMedia(
+        {
+          variant: 'icon',
+          children: [
+            Icon.icon('circle-alert', { class: 'text-destructive' }, h),
+          ],
+        },
+        h,
+      ),
+      itemContent(
+        {
+          children: [
+            itemTitle({ children: ['Danger Zone'] }, h),
+            itemDescription(
+              {
+                class: 'line-clamp-1',
+                children: ['Archive account and remove catalog'],
+              },
+              h,
+            ),
+          ],
+        },
+        h,
+      ),
+      Icon.icon('arrow-right', { class: 'size-4' }, h),
     ],
-  )
-}
+  );
+};
 
-export const view = (model: Model): Html => {
-  const h = html<Message>()
-
-  return card<Message>({
-    children: [
-      cardHeader({
-        children: [
-          cardTitle({ children: ['Account Access'] }),
-          cardDescription({
-            children: ['Update your credentials or re-authenticate.'],
-          }),
-        ],
-      }),
-      cardContent({
-        children: [
-          fieldGroup({
+export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
+  return card<Message>(
+    {
+      children: [
+        cardHeader(
+          {
             children: [
-              field({
-                children: [
-                  fieldLabel({
-                    for: 'account-access-email',
-                    children: ['Email Address'],
-                  }),
-                  input({
-                    id: 'account-access-email',
-                    type: 'email',
-                    value: model.email,
-                    onInput: value => UpdatedEmail({ value }),
-                  }),
-                ],
-              }),
-              field({
-                children: [
-                  h.div(
-                    [h.Class('flex items-center justify-between')],
-                    [
-                      fieldLabel({
-                        for: 'account-access-password',
-                        children: ['Current Password'],
-                      }),
-                      h.a(
-                        [
-                          h.Href('#'),
-                          h.Class(
-                            'text-xs font-medium tracking-wider text-muted-foreground uppercase hover:text-foreground',
+              cardTitle({ children: ['Account Access'] }, h),
+              cardDescription(
+                {
+                  children: ['Update your credentials or re-authenticate.'],
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+        cardContent(
+          {
+            children: [
+              fieldGroup(
+                {
+                  children: [
+                    field(
+                      {
+                        children: [
+                          fieldLabel(
+                            {
+                              for: 'account-access-email',
+                              children: ['Email Address'],
+                            },
+                            h,
+                          ),
+                          input(
+                            {
+                              id: 'account-access-email',
+                              type: 'email',
+                              value: model.email,
+                              onInput: (value) => UpdatedEmail({ value }),
+                            },
+                            h,
                           ),
                         ],
-                        ['Forgot?'],
-                      ),
-                    ],
-                  ),
-                  input({
-                    id: 'account-access-password',
-                    type: 'password',
-                    value: model.password,
-                    onInput: value => UpdatedPassword({ value }),
-                  }),
-                ],
-              }),
+                      },
+                      h,
+                    ),
+                    field(
+                      {
+                        children: [
+                          h.div(
+                            [h.Class('flex items-center justify-between')],
+                            [
+                              fieldLabel(
+                                {
+                                  for: 'account-access-password',
+                                  children: ['Current Password'],
+                                },
+                                h,
+                              ),
+                              h.a(
+                                [
+                                  h.Href('#'),
+                                  h.Class(
+                                    'text-xs font-medium tracking-wider text-muted-foreground uppercase hover:text-foreground',
+                                  ),
+                                ],
+                                ['Forgot?'],
+                              ),
+                            ],
+                          ),
+                          input(
+                            {
+                              id: 'account-access-password',
+                              type: 'password',
+                              value: model.password,
+                              onInput: (value) => UpdatedPassword({ value }),
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
             ],
-          }),
-        ],
-      }),
-      cardFooter({
-        class: 'flex-col gap-4',
-        children: [
-          button({
-            class: 'w-full',
+          },
+          h,
+        ),
+        cardFooter(
+          {
+            class: 'flex-col gap-4',
             children: [
-              Icon.icon('lock-keyhole'),
-              'Update Security',
+              button(
+                {
+                  class: 'w-full',
+                  children: [
+                    Icon.icon('lock-keyhole', {}, h),
+                    'Update Security',
+                  ],
+                },
+                h,
+              ),
+              dangerZone(h),
             ],
-          }),
-          dangerZone(),
-        ],
-      }),
-    ],
-  })
-}
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
+};
 
 /*
 Stateful? yes.

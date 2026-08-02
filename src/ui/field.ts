@@ -1,28 +1,27 @@
-import { type VariantProps, cva } from 'class-variance-authority'
-import { type Html, html } from 'foldkit/html'
+import { type VariantProps, cva } from 'class-variance-authority';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
 
 /* Ported from shadcn/ui field.tsx as structural foldkit view functions.
    Stateful selectors are adapted to foldkit's valueless data-disabled and
    data-checked attributes. */
 
 type Slot = Readonly<{
-  class?: string
-  children: ReadonlyArray<Html | string>
-}>
+  class?: string;
+  children: ReadonlyArray<Html | string>;
+}>;
 
-export type FieldSetProps = Slot & Readonly<{ isDisabled?: boolean }>
+export type FieldSetProps = Slot & Readonly<{ isDisabled?: boolean }>;
 
-export const fieldSet = <Msg>(props: FieldSetProps): Html => {
-  const h = html<Msg>()
-
+export const fieldSet = <Msg>(
+  props: FieldSetProps,
+  h: HtmlBuilder<Msg>,
+): Html => {
   return h.fieldset(
     [
       h.DataAttribute('slot', 'field-set'),
-      ...(props.isDisabled === undefined
-        ? []
-        : [h.Disabled(props.isDisabled)]),
+      ...(props.isDisabled === undefined ? [] : [h.Disabled(props.isDisabled)]),
       h.Class(
         cn(
           'flex flex-col gap-6 has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3',
@@ -31,15 +30,17 @@ export const fieldSet = <Msg>(props: FieldSetProps): Html => {
       ),
     ],
     [...props.children],
-  )
-}
+  );
+};
 
 export type FieldLegendProps = Slot &
-  Readonly<{ variant?: 'legend' | 'label' }>
+  Readonly<{ variant?: 'legend' | 'label' }>;
 
-export const fieldLegend = <Msg>(props: FieldLegendProps): Html => {
-  const h = html<Msg>()
-  const variant = props.variant ?? 'legend'
+export const fieldLegend = <Msg>(
+  props: FieldLegendProps,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const variant = props.variant ?? 'legend';
 
   return h.legend(
     [
@@ -53,15 +54,16 @@ export const fieldLegend = <Msg>(props: FieldLegendProps): Html => {
       ),
     ],
     [...props.children],
-  )
-}
+  );
+};
 
 export type FieldGroupProps = Slot &
-  Readonly<{ variant?: 'default' | 'outline' }>
+  Readonly<{ variant?: 'default' | 'outline' }>;
 
-export const fieldGroup = <Msg>(props: FieldGroupProps): Html => {
-  const h = html<Msg>()
-
+export const fieldGroup = <Msg>(
+  props: FieldGroupProps,
+  h: HtmlBuilder<Msg>,
+): Html => {
   return h.div(
     [
       h.DataAttribute('slot', 'field-group'),
@@ -76,8 +78,8 @@ export const fieldGroup = <Msg>(props: FieldGroupProps): Html => {
       ),
     ],
     [...props.children],
-  )
-}
+  );
+};
 
 export const fieldVariants = cva(
   'group/field flex w-full gap-2 data-[invalid=true]:text-destructive',
@@ -101,41 +103,34 @@ export const fieldVariants = cva(
       orientation: 'vertical',
     },
   },
-)
+);
 
-export type FieldVariants = VariantProps<typeof fieldVariants>
+export type FieldVariants = VariantProps<typeof fieldVariants>;
 
 export type FieldProps = Slot &
   Readonly<{
-    orientation?: FieldVariants['orientation']
-    isInvalid?: boolean
-    isDisabled?: boolean
-  }>
+    orientation?: FieldVariants['orientation'];
+    isInvalid?: boolean;
+    isDisabled?: boolean;
+  }>;
 
-export const field = <Msg>(props: FieldProps): Html => {
-  const h = html<Msg>()
-  const orientation = props.orientation ?? 'vertical'
+export const field = <Msg>(props: FieldProps, h: HtmlBuilder<Msg>): Html => {
+  const orientation = props.orientation ?? 'vertical';
 
   return h.div(
     [
       h.Role('group'),
       h.DataAttribute('slot', 'field'),
       h.DataAttribute('orientation', orientation),
-      ...(props.isInvalid === true
-        ? [h.DataAttribute('invalid', 'true')]
-        : []),
-      ...(props.isDisabled === true
-        ? [h.DataAttribute('disabled', '')]
-        : []),
+      ...(props.isInvalid === true ? [h.DataAttribute('invalid', 'true')] : []),
+      ...(props.isDisabled === true ? [h.DataAttribute('disabled', '')] : []),
       h.Class(cn(fieldVariants({ orientation }), props.class)),
     ],
     [...props.children],
-  )
-}
+  );
+};
 
-export const fieldContent = <Msg>(props: Slot): Html => {
-  const h = html<Msg>()
-
+export const fieldContent = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
   return h.div(
     [
       h.DataAttribute('slot', 'field-content'),
@@ -147,20 +142,21 @@ export const fieldContent = <Msg>(props: Slot): Html => {
       ),
     ],
     [...props.children],
-  )
-}
+  );
+};
 
 /* PORT NOTE: FieldLabel normally composes shadcn's Label component. This batch
    is independent of label.ts, so its verbatim base class string is duplicated
    here before the FieldLabel-specific classes. */
 const LABEL_CLASS =
-  'flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled]:pointer-events-none group-data-[disabled]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50'
+  'flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled]:pointer-events-none group-data-[disabled]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50';
 
-export type FieldLabelProps = Slot & Readonly<{ for?: string }>
+export type FieldLabelProps = Slot & Readonly<{ for?: string }>;
 
-export const fieldLabel = <Msg>(props: FieldLabelProps): Html => {
-  const h = html<Msg>()
-
+export const fieldLabel = <Msg>(
+  props: FieldLabelProps,
+  h: HtmlBuilder<Msg>,
+): Html => {
   return h.label(
     [
       h.DataAttribute('slot', 'field-label'),
@@ -176,12 +172,10 @@ export const fieldLabel = <Msg>(props: FieldLabelProps): Html => {
       ),
     ],
     [...props.children],
-  )
-}
+  );
+};
 
-export const fieldTitle = <Msg>(props: Slot): Html => {
-  const h = html<Msg>()
-
+export const fieldTitle = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
   return h.div(
     [
       h.DataAttribute('slot', 'field-label'),
@@ -193,12 +187,13 @@ export const fieldTitle = <Msg>(props: Slot): Html => {
       ),
     ],
     [...props.children],
-  )
-}
+  );
+};
 
-export const fieldDescription = <Msg>(props: Slot): Html => {
-  const h = html<Msg>()
-
+export const fieldDescription = <Msg>(
+  props: Slot,
+  h: HtmlBuilder<Msg>,
+): Html => {
   return h.p(
     [
       h.DataAttribute('slot', 'field-description'),
@@ -212,17 +207,19 @@ export const fieldDescription = <Msg>(props: Slot): Html => {
       ),
     ],
     [...props.children],
-  )
-}
+  );
+};
 
 export type FieldSeparatorProps = Readonly<{
-  class?: string
-  children?: ReadonlyArray<Html | string>
-}>
+  class?: string;
+  children?: ReadonlyArray<Html | string>;
+}>;
 
-export const fieldSeparator = <Msg>(props: FieldSeparatorProps = {}): Html => {
-  const h = html<Msg>()
-  const hasContent = (props.children?.length ?? 0) > 0
+export const fieldSeparator = <Msg>(
+  props: FieldSeparatorProps = {},
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const hasContent = (props.children?.length ?? 0) > 0;
 
   return h.div(
     [
@@ -261,30 +258,32 @@ export const fieldSeparator = <Msg>(props: FieldSeparatorProps = {}): Html => {
           ]
         : []),
     ],
-  )
-}
+  );
+};
 
-export type FieldError = Readonly<{ message?: string }> | undefined
+export type FieldError = Readonly<{ message?: string }> | undefined;
 
 export type FieldErrorProps = Readonly<{
-  class?: string
-  children?: ReadonlyArray<Html | string>
-  errors?: ReadonlyArray<FieldError>
-}>
+  class?: string;
+  children?: ReadonlyArray<Html | string>;
+  errors?: ReadonlyArray<FieldError>;
+}>;
 
-export const fieldError = <Msg>(props: FieldErrorProps = {}): Html => {
-  const h = html<Msg>()
-  const children = props.children ?? []
+export const fieldError = <Msg>(
+  props: FieldErrorProps = {},
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const children = props.children ?? [];
   const messages = [
     ...new Set(
-      (props.errors ?? []).flatMap(error =>
+      (props.errors ?? []).flatMap((error) =>
         error?.message === undefined ? [] : [error.message],
       ),
     ),
-  ]
+  ];
 
   if (children.length === 0 && messages.length === 0) {
-    return h.empty
+    return h.empty;
   }
 
   const content =
@@ -295,9 +294,9 @@ export const fieldError = <Msg>(props: FieldErrorProps = {}): Html => {
         : [
             h.ul(
               [h.Class('ml-4 flex list-disc flex-col gap-1')],
-              messages.map(message => h.li([], [message])),
+              messages.map((message) => h.li([], [message])),
             ),
-          ]
+          ];
 
   return h.div(
     [
@@ -306,5 +305,5 @@ export const fieldError = <Msg>(props: FieldErrorProps = {}): Html => {
       h.Class(cn('text-sm font-normal text-destructive', props.class)),
     ],
     content,
-  )
-}
+  );
+};

@@ -4,7 +4,7 @@ import {
   PieChart,
   RadarChart,
   ScatterChart,
-} from 'echarts/charts'
+} from 'echarts/charts';
 import {
   DatasetComponent,
   GridComponent,
@@ -12,16 +12,16 @@ import {
   PolarComponent,
   RadarComponent,
   TooltipComponent,
-} from 'echarts/components'
-import * as echarts from 'echarts/core'
-import { CanvasRenderer } from 'echarts/renderers'
-import type { EChartsOption } from 'echarts/types/dist/shared'
-import { Effect, Option, Schema as S } from 'effect'
-import { Command, Mount } from 'foldkit'
-import { type Html, html } from 'foldkit/html'
-import { m } from 'foldkit/message'
+} from 'echarts/components';
+import * as echarts from 'echarts/core';
+import { CanvasRenderer } from 'echarts/renderers';
+import type { EChartsOption } from 'echarts/types/dist/shared';
+import { Effect, Option, Schema as S } from 'effect';
+import { Command, Mount } from 'foldkit';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
 
 /* ECharts embedded in foldkit. Where shadcn wraps recharts (React-only), we render the
    same visual language through Apache ECharts:
@@ -37,7 +37,7 @@ import { cn } from '@/lib/utils'
    - Theme tokens are resolved once at mount (the demo is light-mode; a theme
      switcher would re-mount or re-sync). */
 
-let registered = false
+let registered = false;
 
 const ensureRegistered = (): void => {
   if (!registered) {
@@ -54,26 +54,26 @@ const ensureRegistered = (): void => {
       RadarComponent,
       DatasetComponent,
       CanvasRenderer,
-    ])
-    registered = true
+    ]);
+    registered = true;
   }
-}
+};
 
 // THEME — design tokens resolved from the mount element
 
 export type ChartTheme = Readonly<{
-  chart1: string
-  chart2: string
-  chart3: string
-  chart4: string
-  chart5: string
-  border: string
-  mutedForeground: string
-  foreground: string
-  background: string
-  primary: string
-  fontFamily: string
-}>
+  chart1: string;
+  chart2: string;
+  chart3: string;
+  chart4: string;
+  chart5: string;
+  border: string;
+  mutedForeground: string;
+  foreground: string;
+  background: string;
+  primary: string;
+  fontFamily: string;
+}>;
 
 /* Tokens are authored in oklch(). The browser paints those fine, but ECharts/
    zrender parse color strings THEMSELVES for hover emphasis, highlight lift,
@@ -84,33 +84,33 @@ export type ChartTheme = Readonly<{
    in their own serialization instead of converting to rgb. The one conversion
    the platform guarantees is painting: fill a 1x1 canvas with the color and
    read the pixel back. */
-let probeContext: CanvasRenderingContext2D | null = null
+let probeContext: CanvasRenderingContext2D | null = null;
 
 const resolveToRgb = (cssColor: string): string => {
   if (probeContext === null) {
-    const canvas = document.createElement('canvas')
-    canvas.width = 1
-    canvas.height = 1
-    probeContext = canvas.getContext('2d', { willReadFrequently: true })
+    const canvas = document.createElement('canvas');
+    canvas.width = 1;
+    canvas.height = 1;
+    probeContext = canvas.getContext('2d', { willReadFrequently: true });
   }
   if (probeContext === null) {
-    return cssColor
+    return cssColor;
   }
 
-  probeContext.clearRect(0, 0, 1, 1)
-  probeContext.fillStyle = cssColor
-  probeContext.fillRect(0, 0, 1, 1)
-  const [r, g, b, a] = probeContext.getImageData(0, 0, 1, 1).data
+  probeContext.clearRect(0, 0, 1, 1);
+  probeContext.fillStyle = cssColor;
+  probeContext.fillRect(0, 0, 1, 1);
+  const [r, g, b, a] = probeContext.getImageData(0, 0, 1, 1).data;
 
   return a === 255
     ? `rgb(${r}, ${g}, ${b})`
-    : `rgba(${r}, ${g}, ${b}, ${((a ?? 0) / 255).toFixed(3)})`
-}
+    : `rgba(${r}, ${g}, ${b}, ${((a ?? 0) / 255).toFixed(3)})`;
+};
 
 export const resolveTheme = (element: HTMLElement): ChartTheme => {
-  const style = getComputedStyle(element)
+  const style = getComputedStyle(element);
   const token = (name: string): string =>
-    resolveToRgb(style.getPropertyValue(name).trim())
+    resolveToRgb(style.getPropertyValue(name).trim());
 
   return {
     chart1: token('--chart-1'),
@@ -124,8 +124,8 @@ export const resolveTheme = (element: HTMLElement): ChartTheme => {
     background: token('--background'),
     primary: token('--primary'),
     fontFamily: style.fontFamily,
-  }
-}
+  };
+};
 
 // SHADCN LOOK HELPERS — shared bits builders compose into their options
 
@@ -148,7 +148,7 @@ export const categoryAxis = (
     fontFamily: theme.fontFamily,
     margin: 10,
   },
-})
+});
 
 /** Hidden-by-default value axis with dashed splitlines — shadcn's grid look. */
 export const valueAxis = (
@@ -165,37 +165,42 @@ export const valueAxis = (
     fontFamily: theme.fontFamily,
   },
   splitLine: { lineStyle: { color: theme.border, type: 'dashed' } },
-})
+});
 
 /** Compact plot area matching shadcn's tight ChartContainer margins. */
 export const compactGrid = (
-  config: Readonly<{ left?: number; right?: number; top?: number; bottom?: number }> = {},
+  config: Readonly<{
+    left?: number;
+    right?: number;
+    top?: number;
+    bottom?: number;
+  }> = {},
 ): NonNullable<EChartsOption['grid']> => ({
   left: config.left ?? 12,
   right: config.right ?? 12,
   top: config.top ?? 12,
   bottom: config.bottom ?? 24,
   containLabel: true,
-})
+});
 
 type TooltipRow = Readonly<{
-  marker: string
-  seriesName?: string
-  name?: string
-  value?: number | string | ReadonlyArray<number | string>
-  color?: string
-}>
+  marker: string;
+  seriesName?: string;
+  name?: string;
+  value?: number | string | ReadonlyArray<number | string>;
+  color?: string;
+}>;
 
 const tooltipRowHtml = (row: TooltipRow): string => {
-  const label = row.seriesName || row.name || ''
-  const value = Array.isArray(row.value) ? row.value[1] : row.value
+  const label = row.seriesName || row.name || '';
+  const value = Array.isArray(row.value) ? row.value[1] : row.value;
 
   return `<div style="display:flex;align-items:center;gap:6px;min-width:8rem">
     <span style="width:10px;height:10px;border-radius:2.5px;background:${row.color ?? 'transparent'};flex-shrink:0"></span>
     <span style="color:var(--muted-foreground)">${label}</span>
     <span style="margin-left:auto;font-variant-numeric:tabular-nums;font-weight:500;color:var(--foreground)">${value ?? ''}</span>
-  </div>`
-}
+  </div>`;
+};
 
 /** shadcn ChartTooltipContent look: rounded border bg-background text-xs with
  *  a rounded color chip, muted label, tabular-nums value. The tooltip is DOM,
@@ -218,23 +223,25 @@ export const shadcnTooltip = (
     fontFamily: theme.fontFamily,
   },
   axisPointer: { type: 'none' },
-  formatter: params => {
+  formatter: (params) => {
     const rows: ReadonlyArray<TooltipRow> = Array.isArray(params)
       ? (params as ReadonlyArray<TooltipRow>)
-      : [params as TooltipRow]
+      : [params as TooltipRow];
     const heading = Array.isArray(params)
       ? ((params[0] as { name?: string }).name ?? '')
-      : ''
+      : '';
     const headingHtml = heading
       ? `<div style="font-weight:500;margin-bottom:4px;color:var(--foreground)">${heading}</div>`
-      : ''
+      : '';
 
-    return `${headingHtml}${rows.map(tooltipRowHtml).join('')}`
+    return `${headingHtml}${rows.map(tooltipRowHtml).join('')}`;
   },
-})
+});
 
 /** Bottom legend with muted text and small rounded markers. */
-export const shadcnLegend = (theme: ChartTheme): NonNullable<EChartsOption['legend']> => ({
+export const shadcnLegend = (
+  theme: ChartTheme,
+): NonNullable<EChartsOption['legend']> => ({
   bottom: 0,
   icon: 'roundRect',
   itemWidth: 10,
@@ -245,7 +252,7 @@ export const shadcnLegend = (theme: ChartTheme): NonNullable<EChartsOption['lege
     fontSize: 12,
     fontFamily: theme.fontFamily,
   },
-})
+});
 
 /** Vertical fade used by shadcn's gradient area charts. */
 export const areaGradient = (
@@ -255,7 +262,7 @@ export const areaGradient = (
   new echarts.graphic.LinearGradient(0, 0, 0, 1, [
     { offset: 0, color: colorWithOpacity(color, config.from ?? 0.8) },
     { offset: 1, color: colorWithOpacity(color, config.to ?? 0.1) },
-  ])
+  ]);
 
 /** Applies opacity to a theme color. Theme colors arrive as resolved rgb()/
  *  rgba() strings (see resolveTheme), so this emits plain rgba() — the only
@@ -264,30 +271,33 @@ export const areaGradient = (
 export const colorWithOpacity = (color: string, opacity: number): string => {
   const match = color.match(
     /^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+[\d.]+)?\s*\)$/,
-  )
+  );
 
   return match
     ? `rgba(${match[1]}, ${match[2]}, ${match[3]}, ${opacity})`
-    : `color-mix(in oklab, ${color} ${Math.round(opacity * 100)}%, transparent)`
-}
+    : `color-mix(in oklab, ${color} ${Math.round(opacity * 100)}%, transparent)`;
+};
 
 // OPTION BUILDER REGISTRY — cards register at module load, the Mount applies
 
-export type OptionBuilder = (theme: ChartTheme, variant: string) => EChartsOption
+export type OptionBuilder = (
+  theme: ChartTheme,
+  variant: string,
+) => EChartsOption;
 
-const buildersByHostId = new Map<string, OptionBuilder>()
+const buildersByHostId = new Map<string, OptionBuilder>();
 
 export const registerChart = (hostId: string, builder: OptionBuilder): void => {
-  buildersByHostId.set(hostId, builder)
-}
+  buildersByHostId.set(hostId, builder);
+};
 
 // HOST BRIDGE — live chart instances keyed by host id (sanctioned escape hatch)
 
-const chartsByHostId = new Map<string, echarts.EChartsType>()
+const chartsByHostId = new Map<string, echarts.EChartsType>();
 
 // Dev-only escape hatch for debugging chart instances from the console/tests.
 if (import.meta.env.DEV) {
-  ;(window as unknown as Record<string, unknown>).__charts = chartsByHostId
+  (window as unknown as Record<string, unknown>).__charts = chartsByHostId;
 }
 
 const applyOption = (
@@ -295,21 +305,25 @@ const applyOption = (
   chart: echarts.EChartsType,
   variant: string,
 ): void => {
-  const builder = buildersByHostId.get(hostId)
+  const builder = buildersByHostId.get(hostId);
   if (builder) {
-    const element = chart.getDom()
-    chart.setOption(builder(resolveTheme(element), variant), true)
+    const element = chart.getDom();
+    chart.setOption(builder(resolveTheme(element), variant), true);
   }
-}
+};
 
 // MESSAGES
 
-export const ChartMounted = m('ChartMounted', { hostId: S.String })
-export const ChartMountFailed = m('ChartMountFailed', { reason: S.String })
-export const ChartSynced = m('ChartSynced')
+export const ChartMounted = m('ChartMounted', { hostId: S.String });
+export const ChartMountFailed = m('ChartMountFailed', { reason: S.String });
+export const ChartSynced = m('ChartSynced');
 
-export const ChartMessage = S.Union([ChartMounted, ChartMountFailed, ChartSynced])
-export type ChartMessage = typeof ChartMessage.Type
+export const ChartMessage = S.Union([
+  ChartMounted,
+  ChartMountFailed,
+  ChartSynced,
+]);
+export type ChartMessage = typeof ChartMessage.Type;
 
 // COMMANDS + MOUNT
 
@@ -321,13 +335,13 @@ export const SyncChart = Command.define(
   ChartSynced,
 )(({ hostId, variant }) =>
   Effect.sync(() => {
-    const chart = chartsByHostId.get(hostId)
+    const chart = chartsByHostId.get(hostId);
     if (chart) {
-      applyOption(hostId, chart, variant)
+      applyOption(hostId, chart, variant);
     }
-    return ChartSynced()
+    return ChartSynced();
   }),
-)
+);
 
 export const MountChart = Mount.define(
   'MountChart',
@@ -336,58 +350,61 @@ export const MountChart = Mount.define(
   ChartMountFailed,
 )(
   ({ hostId, variant }) =>
-    element =>
+    (element) =>
       Effect.gen(function* () {
         if (!(element instanceof HTMLElement)) {
-          return ChartMountFailed({ reason: 'Chart host is not an HTMLElement.' })
+          return ChartMountFailed({
+            reason: 'Chart host is not an HTMLElement.',
+          });
         }
 
         return yield* Effect.acquireRelease(
           Effect.try({
             try: () => {
-              ensureRegistered()
+              ensureRegistered();
               const chart = echarts.init(element, undefined, {
                 renderer: 'canvas',
-              })
-              const resizeObserver = new ResizeObserver(() => chart.resize())
-              resizeObserver.observe(element)
-              chartsByHostId.set(hostId, chart)
-              applyOption(hostId, chart, variant)
-              return { chart, resizeObserver }
+              });
+              const resizeObserver = new ResizeObserver(() => chart.resize());
+              resizeObserver.observe(element);
+              chartsByHostId.set(hostId, chart);
+              applyOption(hostId, chart, variant);
+              return { chart, resizeObserver };
             },
-            catch: error =>
+            catch: (error) =>
               error instanceof Error
                 ? error
                 : new Error(`Chart mount failed: ${error}`),
           }),
           ({ chart, resizeObserver }) =>
             Effect.sync(() => {
-              resizeObserver.disconnect()
-              chart.dispose()
-              chartsByHostId.delete(hostId)
+              resizeObserver.disconnect();
+              chart.dispose();
+              chartsByHostId.delete(hostId);
             }),
         ).pipe(
           Effect.map(() => ChartMounted({ hostId })),
-          Effect.catch(error =>
+          Effect.catch((error) =>
             Effect.succeed(ChartMountFailed({ reason: error.message })),
           ),
-        )
+        );
       }),
-)
+);
 
 // VIEW
 
 export type ChartProps<Msg> = Readonly<{
-  hostId: string
-  ariaLabel: string
-  toMessage: (message: ChartMessage) => Msg
-  variant?: string
-  class?: string
-}>
+  hostId: string;
+  ariaLabel: string;
+  toMessage: (message: ChartMessage) => Msg;
+  variant?: string;
+  class?: string;
+}>;
 
-export const chart = <Msg>(props: ChartProps<Msg>): Html => {
-  const h = html<Msg>()
-
+export const chart = <Msg>(
+  props: ChartProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
   return h.div(
     [
       h.Class(cn('aspect-video w-full', props.class)),
@@ -401,5 +418,5 @@ export const chart = <Msg>(props: ChartProps<Msg>): Html => {
       ),
     ],
     [],
-  )
-}
+  );
+};

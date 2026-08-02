@@ -1,15 +1,20 @@
-import { type Html, html } from 'foldkit/html'
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-export type Direction = 'ltr' | 'rtl'
+export type Direction = 'ltr' | 'rtl';
 
-export const direction = <Msg>(props: Readonly<{
-  direction: Direction
-  children: ReadonlyArray<Html | string>
-  class?: string
-}>): Html => {
-  const h = html<Msg>()
+export const direction = <Msg>(
+  props: Readonly<{
+    direction: Direction;
+    children: ReadonlyArray<Html | string>;
+    class?: string;
+  }>,
+  h: HtmlBuilder<Msg>,
+): Html => {
   return h.div(
-    [h.Dir(props.direction), ...(props.class === undefined ? [] : [h.Class(props.class)])],
+    [
+      h.Dir(props.direction),
+      ...(props.class === undefined ? [] : [h.Class(props.class)]),
+    ],
     [...props.children],
-  )
-}
+  );
+};

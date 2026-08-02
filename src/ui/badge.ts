@@ -1,7 +1,7 @@
-import { type VariantProps, cva } from 'class-variance-authority'
-import { type Html, html } from 'foldkit/html'
+import { type VariantProps, cva } from 'class-variance-authority';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
 
 /* Ported from shadcn/ui badge.tsx — cva config verbatim. Pure CSS component,
    no foldkit UI primitive underneath. */
@@ -16,26 +16,25 @@ export const badgeVariants = cva(
           'border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
         destructive:
           'border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
-        outline: 'text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
+        outline:
+          'text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
       },
     },
     defaultVariants: {
       variant: 'default',
     },
   },
-)
+);
 
-export type BadgeVariants = VariantProps<typeof badgeVariants>
+export type BadgeVariants = VariantProps<typeof badgeVariants>;
 
 export type BadgeProps = Readonly<{
-  children: ReadonlyArray<Html | string>
-  variant?: BadgeVariants['variant']
-  class?: string
-}>
+  children: ReadonlyArray<Html | string>;
+  variant?: BadgeVariants['variant'];
+  class?: string;
+}>;
 
-export const badge = <Msg>(props: BadgeProps): Html => {
-  const h = html<Msg>()
-
+export const badge = <Msg>(props: BadgeProps, h: HtmlBuilder<Msg>): Html => {
   return h.span(
     [
       h.Class(
@@ -43,5 +42,5 @@ export const badge = <Msg>(props: BadgeProps): Html => {
       ),
     ],
     [...props.children],
-  )
-}
+  );
+};

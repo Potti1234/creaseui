@@ -1,7 +1,7 @@
-import { type Html, html } from 'foldkit/html'
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import * as Icon from '@/lib/icon'
-import { button } from '@/ui/button'
+import * as Icon from '@/lib/icon';
+import { button } from '@/ui/button';
 import {
   card,
   cardAction,
@@ -9,15 +9,15 @@ import {
   cardDescription,
   cardHeader,
   cardTitle,
-} from '@/ui/card'
-import { barChart } from '@/ui/chart'
+} from '@/ui/card';
+import { barChart } from '@/ui/chart';
 import {
   item,
   itemContent,
   itemDescription,
   itemGroup,
   itemTitle,
-} from '@/ui/item'
+} from '@/ui/item';
 
 const holdings = [
   {
@@ -64,68 +64,99 @@ const holdings = [
       { label: 'Q4', value: 360 },
     ],
   },
-]
+];
 
-export const view = <Msg>(): Html => {
-  const h = html<Msg>()
-
-  return card({
-    children: [
-      cardHeader({
-        children: [
-          cardTitle({ children: ['Q2 Dividend Income'] }),
-          cardDescription({
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
+  return card(
+    {
+      children: [
+        cardHeader(
+          {
             children: [
-              'Quarterly dividend payouts across your portfolio holdings.',
+              cardTitle({ children: ['Q2 Dividend Income'] }, h),
+              cardDescription(
+                {
+                  children: [
+                    'Quarterly dividend payouts across your portfolio holdings.',
+                  ],
+                },
+                h,
+              ),
+              cardAction(
+                {
+                  children: [
+                    button(
+                      {
+                        variant: 'ghost',
+                        size: 'icon',
+                        class: 'size-8 bg-muted',
+                        children: [Icon.icon('x', {}, h)],
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
             ],
-          }),
-          cardAction({
+          },
+          h,
+        ),
+        cardContent(
+          {
             children: [
-              button({
-                variant: 'ghost',
-                size: 'icon',
-                class: 'size-8 bg-muted',
-                children: [Icon.icon('x')],
-              }),
-            ],
-          }),
-        ],
-      }),
-      cardContent({
-        children: [
-          itemGroup({
-            class: 'gap-3',
-            children: holdings.map(holding =>
-              item({
-                variant: 'muted',
-                children: [
-                  itemContent({
-                    children: [
-                      itemTitle({ children: [holding.name] }),
-                      itemDescription({ children: [holding.shares] }),
-                    ],
-                  }),
-                  barChart({
-                    data: holding.data,
-                    showXAxisLabels: false,
-                    class: 'hidden h-8 w-24 md:block',
-                  }),
-                  h.span(
-                    [
-                      h.Class(
-                        'hidden text-sm font-semibold tabular-nums md:block',
-                      ),
-                    ],
-                    [holding.amount],
+              itemGroup(
+                {
+                  class: 'gap-3',
+                  children: holdings.map((holding) =>
+                    item(
+                      {
+                        variant: 'muted',
+                        children: [
+                          itemContent(
+                            {
+                              children: [
+                                itemTitle({ children: [holding.name] }, h),
+                                itemDescription(
+                                  { children: [holding.shares] },
+                                  h,
+                                ),
+                              ],
+                            },
+                            h,
+                          ),
+                          barChart(
+                            {
+                              data: holding.data,
+                              showXAxisLabels: false,
+                              class: 'hidden h-8 w-24 md:block',
+                            },
+                            h,
+                          ),
+                          h.span(
+                            [
+                              h.Class(
+                                'hidden text-sm font-semibold tabular-nums md:block',
+                              ),
+                            ],
+                            [holding.amount],
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
                   ),
-                ],
-              }),
-            ),
-          }),
-        ],
-      }),
-    ],
-  })
-}
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
+};
 
 // Stateful: no. Submodels: none. PORT NOTE: Recharts mini charts use @/ui/chart barChart; icon-sm is matched with a size-8 class.

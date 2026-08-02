@@ -1,9 +1,9 @@
-import { type ChildAttribute, type Html, html } from 'foldkit/html'
+﻿import { type ChildAttribute, type Html, type HtmlBuilder } from 'foldkit/html';
 
-import { Dialog as DialogPrimitive } from '@foldkit/ui'
+import { Dialog as DialogPrimitive } from '@foldkit/ui';
 
-import { cn } from '@/lib/utils'
-import { buttonVariants } from '@/ui/button'
+import { cn } from '@/lib/utils';
+import { buttonVariants } from '@/ui/button';
 
 /* Ported from shadcn/ui alert-dialog.tsx on top of the foldkit Dialog
    submodel. Positioning and animations use the native fullscreen <dialog>
@@ -11,61 +11,63 @@ import { buttonVariants } from '@/ui/button'
    the overlay intentionally omits the primitive backdrop click handler so an
    alert dialog can only be dismissed by an explicit action or Escape. */
 
-export const Model = DialogPrimitive.Model
-export type Model = typeof Model.Type
-export const Message = DialogPrimitive.Message
-export type Message = typeof Message.Type
-export const OutMessage = DialogPrimitive.OutMessage
-export type OutMessage = typeof OutMessage.Type
+export const Model = DialogPrimitive.Model;
+export type Model = typeof Model.Type;
+export const Message = DialogPrimitive.Message;
+export type Message = typeof Message.Type;
+export const OutMessage = DialogPrimitive.OutMessage;
+export type OutMessage = typeof OutMessage.Type;
 
-export const init = DialogPrimitive.init
-export const update = DialogPrimitive.update
-export const open = DialogPrimitive.open
-export const close = DialogPrimitive.close
+export const init = DialogPrimitive.init;
+export const update = DialogPrimitive.update;
+export const open = DialogPrimitive.open;
+export const close = DialogPrimitive.close;
 
-const DIALOG_CLASS = 'bg-transparent p-0 open:flex items-center justify-center'
+const DIALOG_CLASS = 'bg-transparent p-0 open:flex items-center justify-center';
 
 const OVERLAY_CLASS =
-  'fixed inset-0 z-50 bg-black/50 transition duration-200 ease-out data-[closed]:opacity-0'
+  'fixed inset-0 z-50 bg-black/50 transition duration-200 ease-out data-[closed]:opacity-0';
 
 const CONTENT_CLASS =
-  'group/alert-dialog-content relative z-50 grid w-full max-w-[calc(100%-2rem)] gap-4 rounded-lg border bg-background p-6 shadow-lg transition duration-200 ease-out data-[closed]:opacity-0 data-[closed]:scale-95 data-[size=sm]:max-w-xs data-[size=default]:sm:max-w-lg'
+  'group/alert-dialog-content relative z-50 grid w-full max-w-[calc(100%-2rem)] gap-4 rounded-lg border bg-background p-6 shadow-lg transition duration-200 ease-out data-[closed]:opacity-0 data-[closed]:scale-95 data-[size=sm]:max-w-xs data-[size=default]:sm:max-w-lg';
 
 const HEADER_CLASS =
-  'grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center has-data-[slot=alert-dialog-media]:grid-rows-[auto_auto_1fr] has-data-[slot=alert-dialog-media]:gap-x-6 sm:group-data-[size=default]/alert-dialog-content:place-items-start sm:group-data-[size=default]/alert-dialog-content:text-left sm:group-data-[size=default]/alert-dialog-content:has-data-[slot=alert-dialog-media]:grid-rows-[auto_1fr]'
+  'grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center has-data-[slot=alert-dialog-media]:grid-rows-[auto_auto_1fr] has-data-[slot=alert-dialog-media]:gap-x-6 sm:group-data-[size=default]/alert-dialog-content:place-items-start sm:group-data-[size=default]/alert-dialog-content:text-left sm:group-data-[size=default]/alert-dialog-content:has-data-[slot=alert-dialog-media]:grid-rows-[auto_1fr]';
 
 const FOOTER_CLASS =
-  'flex flex-col-reverse gap-2 group-data-[size=sm]/alert-dialog-content:grid group-data-[size=sm]/alert-dialog-content:grid-cols-2 sm:flex-row sm:justify-end'
+  'flex flex-col-reverse gap-2 group-data-[size=sm]/alert-dialog-content:grid group-data-[size=sm]/alert-dialog-content:grid-cols-2 sm:flex-row sm:justify-end';
 
 const TITLE_CLASS =
-  'text-lg font-semibold sm:group-data-[size=default]/alert-dialog-content:group-has-data-[slot=alert-dialog-media]/alert-dialog-content:col-start-2'
+  'text-lg font-semibold sm:group-data-[size=default]/alert-dialog-content:group-has-data-[slot=alert-dialog-media]/alert-dialog-content:col-start-2';
 
-const DESCRIPTION_CLASS = 'text-sm text-muted-foreground'
+const DESCRIPTION_CLASS = 'text-sm text-muted-foreground';
 
 const MEDIA_CLASS =
-  "mb-2 inline-flex size-16 items-center justify-center rounded-md bg-muted sm:group-data-[size=default]/alert-dialog-content:row-span-2 *:[svg:not([class*='size-'])]:size-8"
+  "mb-2 inline-flex size-16 items-center justify-center rounded-md bg-muted sm:group-data-[size=default]/alert-dialog-content:row-span-2 *:[svg:not([class*='size-'])]:size-8";
 
 export type AlertDialogSlots = Readonly<{
-  closeButton: ReadonlyArray<ChildAttribute>
-}>
+  closeButton: ReadonlyArray<ChildAttribute>;
+}>;
 
 export type AlertDialogProps<Msg> = Readonly<{
-  model: Model
-  toParentMessage: (message: Message) => Msg
-  title: string
-  description?: string
-  media?: ReadonlyArray<Html | string>
-  actionLabel: string
-  cancelLabel?: string
-  size?: 'default' | 'sm'
-  actionClass?: string
-  cancelClass?: string
-  class?: string
-}>
+  model: Model;
+  toParentMessage: (message: Message) => Msg;
+  title: string;
+  description?: string;
+  media?: ReadonlyArray<Html | string>;
+  actionLabel: string;
+  cancelLabel?: string;
+  size?: 'default' | 'sm';
+  actionClass?: string;
+  cancelClass?: string;
+  class?: string;
+}>;
 
-export const alertDialog = <Msg>(props: AlertDialogProps<Msg>): Html => {
-  const h = html<Msg>()
-  const size = props.size ?? 'default'
+export const alertDialog = <Msg>(
+  props: AlertDialogProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const size = props.size ?? 'default';
 
   return h.submodel({
     slotId: props.model.id,
@@ -78,8 +80,8 @@ export const alertDialog = <Msg>(props: AlertDialogProps<Msg>): Html => {
         closeButton,
         isVisible,
       }: DialogPrimitive.RenderInfo) => {
-        const hd = html<Message>()
-        const transitionState = props.model.animation.transitionState
+        const hd = h;
+        const transitionState = props.model.animation.transitionState;
         const overlayAnimationAttributes =
           transitionState === 'EnterStart'
             ? [
@@ -103,7 +105,7 @@ export const alertDialog = <Msg>(props: AlertDialogProps<Msg>): Html => {
                       hd.DataAttribute('leave', ''),
                       hd.DataAttribute('transition', ''),
                     ]
-                  : []
+                  : [];
 
         return hd.dialog(
           [
@@ -224,12 +226,12 @@ export const alertDialog = <Msg>(props: AlertDialogProps<Msg>): Html => {
                 ),
               ]
             : [],
-        )
+        );
       },
     },
     toParentMessage: props.toParentMessage,
-  })
-}
+  });
+};
 
 /*
 Minimal wiring:

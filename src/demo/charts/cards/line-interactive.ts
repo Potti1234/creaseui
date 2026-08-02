@@ -1,24 +1,24 @@
-import type { EChartsOption } from 'echarts/types/dist/shared'
-import { type Html, html } from 'foldkit/html'
+import type { EChartsOption } from 'echarts/types/dist/shared';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import * as Chart from '@/lib/echarts'
+import * as Chart from '@/lib/echarts';
 import {
   card,
   cardContent,
   cardDescription,
   cardHeader,
   cardTitle,
-} from '@/ui/card'
+} from '@/ui/card';
 
-export const HOST_ID = 'chart-line-interactive'
+export const HOST_ID = 'chart-line-interactive';
 
-export type ActiveChart = 'desktop' | 'mobile'
+export type ActiveChart = 'desktop' | 'mobile';
 
 type ChartDatum = Readonly<{
-  date: string
-  desktop: number
-  mobile: number
-}>
+  date: string;
+  desktop: number;
+  mobile: number;
+}>;
 
 const CHART_DATA: ReadonlyArray<ChartDatum> = [
   { date: '2024-04-01', desktop: 222, mobile: 150 },
@@ -112,19 +112,19 @@ const CHART_DATA: ReadonlyArray<ChartDatum> = [
   { date: '2024-06-28', desktop: 149, mobile: 200 },
   { date: '2024-06-29', desktop: 103, mobile: 160 },
   { date: '2024-06-30', desktop: 446, mobile: 400 },
-]
+];
 
 const labels: Readonly<Record<ActiveChart, string>> = {
   desktop: 'Desktop',
   mobile: 'Mobile',
-}
+};
 
-const ACTIVE_CHARTS: ReadonlyArray<ActiveChart> = ['desktop', 'mobile']
+const ACTIVE_CHARTS: ReadonlyArray<ActiveChart> = ['desktop', 'mobile'];
 
 const totals: Readonly<Record<ActiveChart, number>> = {
   desktop: CHART_DATA.reduce((total, datum) => total + datum.desktop, 0),
   mobile: CHART_DATA.reduce((total, datum) => total + datum.mobile, 0),
-}
+};
 
 const formatDate = (
   value: string,
@@ -133,134 +133,141 @@ const formatDate = (
   new Date(value).toLocaleDateString('en-US', {
     ...options,
     timeZone: 'UTC',
-  })
+  });
 
-const fullDates = CHART_DATA.map(datum =>
+const fullDates = CHART_DATA.map((datum) =>
   formatDate(datum.date, {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
   }),
-)
+);
 
-Chart.registerChart(
-  HOST_ID,
-  (theme, variant): EChartsOption => {
-    const activeChart: ActiveChart =
-      variant === 'mobile' ? 'mobile' : 'desktop'
-    const color = activeChart === 'desktop' ? theme.chart1 : theme.chart2
+Chart.registerChart(HOST_ID, (theme, variant): EChartsOption => {
+  const activeChart: ActiveChart = variant === 'mobile' ? 'mobile' : 'desktop';
+  const color = activeChart === 'desktop' ? theme.chart1 : theme.chart2;
 
-    return {
-      grid: Chart.compactGrid(),
-      xAxis: {
-        type: 'category',
-        data: [...fullDates],
-        boundaryGap: false,
-        axisLine: { show: false },
-        axisTick: { show: false },
-        axisLabel: {
-          color: theme.mutedForeground,
-          fontSize: 12,
-          fontFamily: theme.fontFamily,
-          margin: 10,
-          hideOverlap: true,
-          formatter: value => value.replace(/, \d{4}$/, ''),
-        },
+  return {
+    grid: Chart.compactGrid(),
+    xAxis: {
+      type: 'category',
+      data: [...fullDates],
+      boundaryGap: false,
+      axisLine: { show: false },
+      axisTick: { show: false },
+      axisLabel: {
+        color: theme.mutedForeground,
+        fontSize: 12,
+        fontFamily: theme.fontFamily,
+        margin: 10,
+        hideOverlap: true,
+        formatter: (value) => value.replace(/, \d{4}$/, ''),
       },
-      yAxis: Chart.valueAxis(theme),
-      tooltip: Chart.shadcnTooltip(theme),
-      series: [
-        {
-          name: 'Page Views',
-          type: 'line',
-          smooth: 0.4,
-          showSymbol: false,
-          lineStyle: { width: 2, color },
-          itemStyle: { color },
-          data: CHART_DATA.map(datum => datum[activeChart]),
-        },
-      ],
-    }
-  },
-)
+    },
+    yAxis: Chart.valueAxis(theme),
+    tooltip: Chart.shadcnTooltip(theme),
+    series: [
+      {
+        name: 'Page Views',
+        type: 'line',
+        smooth: 0.4,
+        showSymbol: false,
+        lineStyle: { width: 2, color },
+        itemStyle: { color },
+        data: CHART_DATA.map((datum) => datum[activeChart]),
+      },
+    ],
+  };
+});
 
 export type ViewProps<Msg> = Readonly<{
-  activeChart: ActiveChart
-  onSelect: (activeChart: ActiveChart) => Msg
-  toMessage: (message: Chart.ChartMessage) => Msg
-}>
+  activeChart: ActiveChart;
+  onSelect: (activeChart: ActiveChart) => Msg;
+  toMessage: (message: Chart.ChartMessage) => Msg;
+}>;
 
-export const view = <Msg>(props: ViewProps<Msg>): Html => {
-  const h = html<Msg>()
-
-  return card({
-    class: 'py-4 sm:py-0',
-    children: [
-      cardHeader({
-        class: 'flex flex-col items-stretch border-b p-0! sm:flex-row',
-        children: [
-          h.div(
-            [
-              h.Class(
-                'flex flex-1 flex-col justify-center gap-1 px-6 pb-3 sm:pb-0',
-              ),
-            ],
-            [
-              cardTitle({ children: ['Line Chart - Interactive'] }),
-              cardDescription({
-                children: ['Showing total visitors for the last 3 months'],
-              }),
-            ],
-          ),
-          h.div(
-            [h.Class('flex')],
-            ACTIVE_CHARTS.map(activeChart =>
-              h.button(
+export const view = <Msg>(props: ViewProps<Msg>, h: HtmlBuilder<Msg>): Html => {
+  return card(
+    {
+      class: 'py-4 sm:py-0',
+      children: [
+        cardHeader(
+          {
+            class: 'flex flex-col items-stretch border-b p-0! sm:flex-row',
+            children: [
+              h.div(
                 [
-                  h.Type('button'),
-                  h.DataAttribute(
-                    'active',
-                    String(props.activeChart === activeChart),
-                  ),
-                  h.OnClick(props.onSelect(activeChart)),
                   h.Class(
-                    'flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-l sm:px-8 sm:py-6',
+                    'flex flex-1 flex-col justify-center gap-1 px-6 pb-3 sm:pb-0',
                   ),
                 ],
                 [
-                  h.span(
-                    [h.Class('text-xs text-muted-foreground')],
-                    [labels[activeChart]],
+                  cardTitle({ children: ['Line Chart - Interactive'] }, h),
+                  cardDescription(
+                    {
+                      children: [
+                        'Showing total visitors for the last 3 months',
+                      ],
+                    },
+                    h,
                   ),
-                  h.span(
+                ],
+              ),
+              h.div(
+                [h.Class('flex')],
+                ACTIVE_CHARTS.map((activeChart) =>
+                  h.button(
                     [
+                      h.Type('button'),
+                      h.DataAttribute(
+                        'active',
+                        String(props.activeChart === activeChart),
+                      ),
+                      h.OnClick(props.onSelect(activeChart)),
                       h.Class(
-                        'text-lg leading-none font-bold sm:text-3xl',
+                        'flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-l sm:px-8 sm:py-6',
                       ),
                     ],
-                    [totals[activeChart].toLocaleString('en-US')],
+                    [
+                      h.span(
+                        [h.Class('text-xs text-muted-foreground')],
+                        [labels[activeChart]],
+                      ),
+                      h.span(
+                        [h.Class('text-lg leading-none font-bold sm:text-3xl')],
+                        [totals[activeChart].toLocaleString('en-US')],
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ],
-      }),
-      cardContent({
-        class: 'px-2 sm:p-6',
-        children: [
-          Chart.chart({
-            hostId: HOST_ID,
-            ariaLabel: `Interactive line chart showing ${labels[props.activeChart].toLowerCase()} visitors for the last 3 months`,
-            variant: props.activeChart,
-            class: 'aspect-auto h-[250px] w-full',
-            toMessage: props.toMessage,
-          }),
-        ],
-      }),
-    ],
-  })
-}
+            ],
+          },
+          h,
+        ),
+        cardContent(
+          {
+            class: 'px-2 sm:p-6',
+            children: [
+              Chart.chart(
+                {
+                  hostId: HOST_ID,
+                  ariaLabel: `Interactive line chart showing ${labels[props.activeChart].toLowerCase()} visitors for the last 3 months`,
+                  variant: props.activeChart,
+                  class: 'aspect-auto h-[250px] w-full',
+                  toMessage: props.toMessage,
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
+};
 
 /* Usage:
    - Store `activeChart: "desktop" | "mobile"` in the parent Model.

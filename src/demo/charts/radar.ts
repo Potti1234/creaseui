@@ -1,25 +1,25 @@
-import { Match as M, Schema as S } from 'effect'
-import { Command } from 'foldkit'
-import { type Html } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { Match as M, Schema as S } from 'effect';
+import { Command } from 'foldkit';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
 
-import * as Chart from '@/lib/echarts'
+import * as Chart from '@/lib/echarts';
 
-import * as RadarDefault from '@/demo/charts/cards/radar-default'
-import * as RadarDots from '@/demo/charts/cards/radar-dots'
-import * as RadarGridCircle from '@/demo/charts/cards/radar-grid-circle'
-import * as RadarGridCircleFill from '@/demo/charts/cards/radar-grid-circle-fill'
-import * as RadarGridCircleNoLines from '@/demo/charts/cards/radar-grid-circle-no-lines'
-import * as RadarGridCustom from '@/demo/charts/cards/radar-grid-custom'
-import * as RadarGridFill from '@/demo/charts/cards/radar-grid-fill'
-import * as RadarGridNone from '@/demo/charts/cards/radar-grid-none'
-import * as RadarIcons from '@/demo/charts/cards/radar-icons'
-import * as RadarLabelCustom from '@/demo/charts/cards/radar-label-custom'
-import * as RadarLegend from '@/demo/charts/cards/radar-legend'
-import * as RadarLinesOnly from '@/demo/charts/cards/radar-lines-only'
-import * as RadarMultiple from '@/demo/charts/cards/radar-multiple'
-import * as RadarRadius from '@/demo/charts/cards/radar-radius'
-import { chartsPageShell } from '@/demo/charts/shell'
+import * as RadarDefault from '@/demo/charts/cards/radar-default';
+import * as RadarDots from '@/demo/charts/cards/radar-dots';
+import * as RadarGridCircle from '@/demo/charts/cards/radar-grid-circle';
+import * as RadarGridCircleFill from '@/demo/charts/cards/radar-grid-circle-fill';
+import * as RadarGridCircleNoLines from '@/demo/charts/cards/radar-grid-circle-no-lines';
+import * as RadarGridCustom from '@/demo/charts/cards/radar-grid-custom';
+import * as RadarGridFill from '@/demo/charts/cards/radar-grid-fill';
+import * as RadarGridNone from '@/demo/charts/cards/radar-grid-none';
+import * as RadarIcons from '@/demo/charts/cards/radar-icons';
+import * as RadarLabelCustom from '@/demo/charts/cards/radar-label-custom';
+import * as RadarLegend from '@/demo/charts/cards/radar-legend';
+import * as RadarLinesOnly from '@/demo/charts/cards/radar-lines-only';
+import * as RadarMultiple from '@/demo/charts/cards/radar-multiple';
+import * as RadarRadius from '@/demo/charts/cards/radar-radius';
+import { chartsPageShell } from '@/demo/charts/shell';
 
 /* /charts/radar — grid of radar chart variants. Chart mounts emit ChartMessage
    (mounted/synced) which this page absorbs; interactive variants add their own
@@ -27,25 +27,25 @@ import { chartsPageShell } from '@/demo/charts/shell'
 
 // MODEL
 
-export const Model = S.Struct({})
-export type Model = typeof Model.Type
+export const Model = S.Struct({});
+export type Model = typeof Model.Type;
 
 // MESSAGE
 
 export const GotChartMessage = m('GotChartMessage', {
   message: Chart.ChartMessage,
-})
+});
 
-export const Message = S.Union([GotChartMessage])
-export type Message = typeof Message.Type
+export const Message = S.Union([GotChartMessage]);
+export type Message = typeof Message.Type;
 
 // INIT
 
-export const init = (): Model => ({})
+export const init = (): Model => ({});
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
@@ -53,28 +53,32 @@ export const update = (model: Model, message: Message): UpdateReturn =>
     M.tagsExhaustive({
       GotChartMessage: () => [model, []],
     }),
-  )
+  );
 
 // VIEW
 
-export const view = (_model: Model): Html => {
+export const view = (_model: Model, h: HtmlBuilder<Message>): Html => {
   const toMessage = (message: Chart.ChartMessage): Message =>
-    GotChartMessage({ message })
+    GotChartMessage({ message });
 
-  return chartsPageShell<Message>('radar', [
-    RadarDefault.view(toMessage),
-    RadarMultiple.view(toMessage),
-    RadarDots.view(toMessage),
-    RadarLinesOnly.view(toMessage),
-    RadarLabelCustom.view(toMessage),
-    RadarRadius.view(toMessage),
-    RadarGridCustom.view(toMessage),
-    RadarGridNone.view(toMessage),
-    RadarGridCircle.view(toMessage),
-    RadarGridCircleNoLines.view(toMessage),
-    RadarGridCircleFill.view(toMessage),
-    RadarGridFill.view(toMessage),
-    RadarLegend.view(toMessage),
-    RadarIcons.view(toMessage),
-  ])
-}
+  return chartsPageShell<Message>(
+    'radar',
+    [
+      RadarDefault.view(toMessage, h),
+      RadarMultiple.view(toMessage, h),
+      RadarDots.view(toMessage, h),
+      RadarLinesOnly.view(toMessage, h),
+      RadarLabelCustom.view(toMessage, h),
+      RadarRadius.view(toMessage, h),
+      RadarGridCustom.view(toMessage, h),
+      RadarGridNone.view(toMessage, h),
+      RadarGridCircle.view(toMessage, h),
+      RadarGridCircleNoLines.view(toMessage, h),
+      RadarGridCircleFill.view(toMessage, h),
+      RadarGridFill.view(toMessage, h),
+      RadarLegend.view(toMessage, h),
+      RadarIcons.view(toMessage, h),
+    ],
+    h,
+  );
+};

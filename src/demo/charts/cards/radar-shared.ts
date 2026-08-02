@@ -1,8 +1,8 @@
-import type { EChartsOption } from 'echarts/types/dist/shared'
-import { type Html, html } from 'foldkit/html'
+import type { EChartsOption } from 'echarts/types/dist/shared';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import * as Chart from '@/lib/echarts'
-import * as Icon from '@/lib/icon'
+import * as Chart from '@/lib/echarts';
+import * as Icon from '@/lib/icon';
 import {
   card,
   cardContent,
@@ -10,34 +10,34 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card'
+} from '@/ui/card';
 
-export const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June']
-export const DESKTOP = [186, 305, 237, 73, 209, 214]
-export const SINGLE = [186, 305, 237, 273, 209, 214]
-export const MOBILE = [80, 200, 120, 190, 130, 140]
+export const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June'];
+export const DESKTOP = [186, 305, 237, 73, 209, 214];
+export const SINGLE = [186, 305, 237, 273, 209, 214];
+export const MOBILE = [80, 200, 120, 190, 130, 140];
 
 export type RadarConfig = Readonly<{
-  desktop?: ReadonlyArray<number>
-  mobile?: ReadonlyArray<number>
-  dots?: boolean
-  linesOnly?: boolean
-  shape?: 'polygon' | 'circle'
-  splitLine?: boolean
-  splitArea?: boolean
-  axisLine?: boolean
-  singleGrid?: boolean
-  radiusLabels?: boolean
-  customLabels?: boolean
-  legend?: boolean
-}>
+  desktop?: ReadonlyArray<number>;
+  mobile?: ReadonlyArray<number>;
+  dots?: boolean;
+  linesOnly?: boolean;
+  shape?: 'polygon' | 'circle';
+  splitLine?: boolean;
+  splitArea?: boolean;
+  axisLine?: boolean;
+  singleGrid?: boolean;
+  radiusLabels?: boolean;
+  customLabels?: boolean;
+  legend?: boolean;
+}>;
 
 export const radarOption = (
   theme: Chart.ChartTheme,
   config: RadarConfig = {},
 ): EChartsOption => {
-  const desktop = config.desktop ?? SINGLE
-  const mobile = config.mobile
+  const desktop = config.desktop ?? SINGLE;
+  const mobile = config.mobile;
   const seriesData = [
     {
       name: 'Desktop',
@@ -77,7 +77,7 @@ export const radarOption = (
             symbolSize: 0,
           },
         ]),
-  ]
+  ];
 
   return {
     tooltip: Chart.shadcnTooltip(theme, { trigger: 'item' }),
@@ -117,70 +117,86 @@ export const radarOption = (
       splitArea: {
         show: config.splitArea ?? false,
         areaStyle: {
-          color: [
-            Chart.colorWithOpacity(theme.chart1, 0.2),
-            'transparent',
-          ],
+          color: [Chart.colorWithOpacity(theme.chart1, 0.2), 'transparent'],
         },
       },
       axisNameGap: 8,
     },
     series: [{ type: 'radar', data: seriesData }],
-  }
-}
+  };
+};
 
 type RadarCardProps<Msg> = Readonly<{
-  hostId: string
-  title: string
-  toMessage: (message: Chart.ChartMessage) => Msg
-  legend?: boolean
-}>
+  hostId: string;
+  title: string;
+  toMessage: (message: Chart.ChartMessage) => Msg;
+  legend?: boolean;
+}>;
 
-export const radarCard = <Msg>(props: RadarCardProps<Msg>): Html => {
-  const h = html<Msg>()
-
-  return card({
-    children: [
-      cardHeader({
-        class: 'items-center pb-4',
-        children: [
-          cardTitle({ children: [props.title] }),
-          cardDescription({
-            children: ['Showing total visitors for the last 6 months'],
-          }),
-        ],
-      }),
-      cardContent({
-        class: 'pb-0',
-        children: [
-          Chart.chart({
-            hostId: props.hostId,
-            ariaLabel: `${props.title} showing total visitors for the last 6 months`,
-            toMessage: props.toMessage,
-            class: `mx-auto aspect-square max-h-[250px]${props.legend === true ? ' pb-8' : ''}`,
-          }),
-        ],
-      }),
-      cardFooter({
-        class: `flex-col gap-2 text-sm${props.legend === true ? ' pt-4' : ''}`,
-        children: [
-          h.div(
-            [h.Class('flex items-center gap-2 leading-none font-medium')],
-            [
-              'Trending up by 5.2% this month',
-              Icon.icon<Msg>('trending-up', { class: 'h-4 w-4' }),
-            ],
-          ),
-          h.div(
-            [
-              h.Class(
-                'flex items-center gap-2 leading-none text-muted-foreground',
+export const radarCard = <Msg>(
+  props: RadarCardProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  return card(
+    {
+      children: [
+        cardHeader(
+          {
+            class: 'items-center pb-4',
+            children: [
+              cardTitle({ children: [props.title] }, h),
+              cardDescription(
+                {
+                  children: ['Showing total visitors for the last 6 months'],
+                },
+                h,
               ),
             ],
-            ['January - June 2024'],
-          ),
-        ],
-      }),
-    ],
-  })
-}
+          },
+          h,
+        ),
+        cardContent(
+          {
+            class: 'pb-0',
+            children: [
+              Chart.chart(
+                {
+                  hostId: props.hostId,
+                  ariaLabel: `${props.title} showing total visitors for the last 6 months`,
+                  toMessage: props.toMessage,
+                  class: `mx-auto aspect-square max-h-[250px]${props.legend === true ? ' pb-8' : ''}`,
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+        cardFooter(
+          {
+            class: `flex-col gap-2 text-sm${props.legend === true ? ' pt-4' : ''}`,
+            children: [
+              h.div(
+                [h.Class('flex items-center gap-2 leading-none font-medium')],
+                [
+                  'Trending up by 5.2% this month',
+                  Icon.icon<Msg>('trending-up', { class: 'h-4 w-4' }, h),
+                ],
+              ),
+              h.div(
+                [
+                  h.Class(
+                    'flex items-center gap-2 leading-none text-muted-foreground',
+                  ),
+                ],
+                ['January - June 2024'],
+              ),
+            ],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
+};

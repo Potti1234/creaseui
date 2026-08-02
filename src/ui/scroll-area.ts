@@ -1,18 +1,20 @@
-import { type Html, html } from 'foldkit/html'
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
 
 export type ScrollAreaProps = Readonly<{
-  class?: string
-  children: ReadonlyArray<Html | string>
-  orientation?: 'vertical' | 'horizontal' | 'both'
-  ariaLabel?: string
-  tabIndex?: number
-}>
+  class?: string;
+  children: ReadonlyArray<Html | string>;
+  orientation?: 'vertical' | 'horizontal' | 'both';
+  ariaLabel?: string;
+  tabIndex?: number;
+}>;
 
-export const scrollArea = <Msg>(props: ScrollAreaProps): Html => {
-  const h = html<Msg>()
-  const orientation = props.orientation ?? 'both'
+export const scrollArea = <Msg>(
+  props: ScrollAreaProps,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const orientation = props.orientation ?? 'both';
 
   return h.div(
     [
@@ -23,11 +25,15 @@ export const scrollArea = <Msg>(props: ScrollAreaProps): Html => {
       h.Class(
         cn(
           'relative size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 [scrollbar-color:var(--border)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:size-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent',
-          orientation === 'vertical' ? 'overflow-y-auto overflow-x-hidden' : orientation === 'horizontal' ? 'overflow-x-auto overflow-y-hidden' : 'overflow-auto',
+          orientation === 'vertical'
+            ? 'overflow-y-auto overflow-x-hidden'
+            : orientation === 'horizontal'
+              ? 'overflow-x-auto overflow-y-hidden'
+              : 'overflow-auto',
           props.class,
         ),
       ),
     ],
     [...props.children],
-  )
-}
+  );
+};

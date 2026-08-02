@@ -1,8 +1,8 @@
-import { type Html } from 'foldkit/html'
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import * as Icon from '@/lib/icon'
-import { button } from '@/ui/button'
-import { card, cardContent } from '@/ui/card'
+import * as Icon from '@/lib/icon';
+import { button } from '@/ui/button';
+import { card, cardContent } from '@/ui/card';
 import {
   empty,
   emptyContent,
@@ -10,38 +10,59 @@ import {
   emptyHeader,
   emptyMedia,
   emptyTitle,
-} from '@/ui/empty'
+} from '@/ui/empty';
 
-export const view = <Msg>(): Html =>
-  card({
-    children: [
-      cardContent({
-        children: [
-          empty({
-            class: 'p-4',
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  card(
+    {
+      children: [
+        cardContent(
+          {
             children: [
-              emptyMedia({
-                variant: 'icon',
-                children: [Icon.icon('plus')],
-              }),
-              emptyHeader({
-                children: [
-                  emptyTitle({ children: ['Distribute Track'] }),
-                  emptyDescription({
-                    children: [
-                      'Upload your first master to start reaching listeners on Spotify, Apple Music, and more.',
-                    ],
-                  }),
-                ],
-              }),
-              emptyContent({
-                children: [button({ children: ['Create Release'] })],
-              }),
+              empty(
+                {
+                  class: 'p-4',
+                  children: [
+                    emptyMedia(
+                      {
+                        variant: 'icon',
+                        children: [Icon.icon('plus', {}, h)],
+                      },
+                      h,
+                    ),
+                    emptyHeader(
+                      {
+                        children: [
+                          emptyTitle({ children: ['Distribute Track'] }, h),
+                          emptyDescription(
+                            {
+                              children: [
+                                'Upload your first master to start reaching listeners on Spotify, Apple Music, and more.',
+                              ],
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                    emptyContent(
+                      {
+                        children: [button({ children: ['Create Release'] }, h)],
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
             ],
-          }),
-        ],
-      }),
-    ],
-  })
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
 
 // Card summary: stateful? no. Submodels wired: none. PORT NOTEs: none.

@@ -1,8 +1,8 @@
-import { type Html } from 'foldkit/html'
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import * as Icon from '@/lib/icon'
-import { button } from '@/ui/button'
-import { card, cardContent } from '@/ui/card'
+import * as Icon from '@/lib/icon';
+import { button } from '@/ui/button';
+import { card, cardContent } from '@/ui/card';
 import {
   empty,
   emptyContent,
@@ -10,38 +10,59 @@ import {
   emptyHeader,
   emptyMedia,
   emptyTitle,
-} from '@/ui/empty'
+} from '@/ui/empty';
 
-export const view = <Msg>(): Html =>
-  card({
-    children: [
-      cardContent({
-        children: [
-          empty({
-            class: 'p-4',
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  card(
+    {
+      children: [
+        cardContent(
+          {
             children: [
-              emptyMedia({
-                variant: 'icon',
-                children: [Icon.icon('credit-card')],
-              }),
-              emptyHeader({
-                children: [
-                  emptyTitle({ children: ['Connect Bank'] }),
-                  emptyDescription({
-                    children: [
-                      'Link your payout method to receive monthly royalty distributions automatically.',
-                    ],
-                  }),
-                ],
-              }),
-              emptyContent({
-                children: [button({ children: ['Set Up Payouts'] })],
-              }),
+              empty(
+                {
+                  class: 'p-4',
+                  children: [
+                    emptyMedia(
+                      {
+                        variant: 'icon',
+                        children: [Icon.icon('credit-card', {}, h)],
+                      },
+                      h,
+                    ),
+                    emptyHeader(
+                      {
+                        children: [
+                          emptyTitle({ children: ['Connect Bank'] }, h),
+                          emptyDescription(
+                            {
+                              children: [
+                                'Link your payout method to receive monthly royalty distributions automatically.',
+                              ],
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                    emptyContent(
+                      {
+                        children: [button({ children: ['Set Up Payouts'] }, h)],
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
             ],
-          }),
-        ],
-      }),
-    ],
-  })
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
 
 // Card summary: stateful? no. Submodels wired: none. PORT NOTEs: none.

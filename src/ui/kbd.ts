@@ -1,18 +1,16 @@
-import { type Html, html } from "foldkit/html";
+﻿import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 type Slot = Readonly<{
   class?: string;
   children: ReadonlyArray<Html | string>;
 }>;
 
-export const kbd = <Msg>(props: Slot): Html => {
-  const h = html<Msg>();
-
+export const kbd = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
   return h.kbd(
     [
-      h.DataAttribute("slot", "kbd"),
+      h.DataAttribute('slot', 'kbd'),
       h.Class(
         cn(
           "pointer-events-none inline-flex h-5 w-fit min-w-5 items-center justify-center gap-1 rounded-sm bg-muted px-1 font-sans text-xs font-medium text-muted-foreground select-none [&_svg:not([class*='size-'])]:size-3 [[data-slot=tooltip-content]_&]:bg-background/20 [[data-slot=tooltip-content]_&]:text-background dark:[[data-slot=tooltip-content]_&]:bg-background/10",
@@ -24,13 +22,11 @@ export const kbd = <Msg>(props: Slot): Html => {
   );
 };
 
-export const kbdGroup = <Msg>(props: Slot): Html => {
-  const h = html<Msg>();
-
+export const kbdGroup = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
   return h.kbd(
     [
-      h.DataAttribute("slot", "kbd-group"),
-      h.Class(cn("inline-flex items-center gap-1", props.class)),
+      h.DataAttribute('slot', 'kbd-group'),
+      h.Class(cn('inline-flex items-center gap-1', props.class)),
     ],
     [...props.children],
   );

@@ -1,9 +1,9 @@
-import { type VariantProps, cva } from 'class-variance-authority'
-import { type Html, html } from 'foldkit/html'
+﻿import { type VariantProps, cva } from 'class-variance-authority';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import { Button as ButtonPrimitive } from '@foldkit/ui'
+import { Button as ButtonPrimitive } from '@foldkit/ui';
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
 
 /* Ported from shadcn/ui button.tsx. The cva config is copied verbatim except:
    - `disabled:` variants became `data-[disabled]:` + `aria-disabled:` because
@@ -22,7 +22,8 @@ export const buttonVariants = cva(
           'border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
         secondary:
           'bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80',
-        ghost: 'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
+        ghost:
+          'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
         link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
@@ -37,62 +38,71 @@ export const buttonVariants = cva(
       size: 'default',
     },
   },
-)
+);
 
-export type ButtonVariants = VariantProps<typeof buttonVariants>
+export type ButtonVariants = VariantProps<typeof buttonVariants>;
 
 export type ButtonProps<Msg> = Readonly<{
-  children: ReadonlyArray<Html | string>
-  onClick?: Msg
-  variant?: ButtonVariants['variant']
-  size?: ButtonVariants['size']
-  isDisabled?: boolean
-  type?: 'button' | 'submit' | 'reset'
-  class?: string
-  slot?: string
-  dataSize?: string
-}>
+  children: ReadonlyArray<Html | string>;
+  onClick?: Msg;
+  variant?: ButtonVariants['variant'];
+  size?: ButtonVariants['size'];
+  isDisabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+  class?: string;
+  slot?: string;
+  dataSize?: string;
+}>;
 
-export const button = <Msg>(props: ButtonProps<Msg>): Html => {
-  const h = html<Msg>()
-
-  return ButtonPrimitive.view<Msg>({
-    ...(props.onClick === undefined ? {} : { onClick: props.onClick }),
-    isDisabled: props.isDisabled ?? false,
-    type: props.type ?? 'button',
-    toView: ({ button: buttonAttributes }) =>
-      h.button(
-        [
-          ...buttonAttributes,
-          ...(props.slot === undefined ? [] : [h.DataAttribute('slot', props.slot)]),
-          ...(props.dataSize === undefined ? [] : [h.DataAttribute('size', props.dataSize)]),
-          h.Class(
-            cn(
-              buttonVariants({
-                variant: props.variant ?? 'default',
-                size: props.size ?? 'default',
-              }),
-              props.class,
+export const button = <Msg>(
+  props: ButtonProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  return ButtonPrimitive.view(
+    {
+      ...(props.onClick === undefined ? {} : { onClick: props.onClick }),
+      isDisabled: props.isDisabled ?? false,
+      type: props.type ?? 'button',
+      toView: ({ button: buttonAttributes }) =>
+        h.button(
+          [
+            ...buttonAttributes,
+            ...(props.slot === undefined
+              ? []
+              : [h.DataAttribute('slot', props.slot)]),
+            ...(props.dataSize === undefined
+              ? []
+              : [h.DataAttribute('size', props.dataSize)]),
+            h.Class(
+              cn(
+                buttonVariants({
+                  variant: props.variant ?? 'default',
+                  size: props.size ?? 'default',
+                }),
+                props.class,
+              ),
             ),
-          ),
-        ],
-        [...props.children],
-      ),
-  })
-}
+          ],
+          [...props.children],
+        ),
+    },
+    h,
+  );
+};
 
 export type ButtonLinkProps = Readonly<{
-  children: ReadonlyArray<Html | string>
-  href: string
-  variant?: ButtonVariants['variant']
-  size?: ButtonVariants['size']
-  class?: string
-  target?: '_blank' | '_self'
-}>
+  children: ReadonlyArray<Html | string>;
+  href: string;
+  variant?: ButtonVariants['variant'];
+  size?: ButtonVariants['size'];
+  class?: string;
+  target?: '_blank' | '_self';
+}>;
 
-export const buttonLink = <Msg>(props: ButtonLinkProps): Html => {
-  const h = html<Msg>()
-
+export const buttonLink = <Msg>(
+  props: ButtonLinkProps,
+  h: HtmlBuilder<Msg>,
+): Html => {
   return h.a(
     [
       h.Href(props.href),
@@ -109,5 +119,5 @@ export const buttonLink = <Msg>(props: ButtonLinkProps): Html => {
       ),
     ],
     [...props.children],
-  )
-}
+  );
+};

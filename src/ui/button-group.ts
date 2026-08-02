@@ -1,7 +1,7 @@
-import { type VariantProps, cva } from 'class-variance-authority'
-import { type Html, html } from 'foldkit/html'
+import { type VariantProps, cva } from 'class-variance-authority';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
 
 export const buttonGroupVariants = cva(
   "flex w-fit items-stretch has-[>[data-slot=button-group]]:gap-2 [&>*]:focus-visible:relative [&>*]:focus-visible:z-10 has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-md [&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>input]:flex-1",
@@ -18,19 +18,21 @@ export const buttonGroupVariants = cva(
       orientation: 'horizontal',
     },
   },
-)
+);
 
-export type ButtonGroupVariants = VariantProps<typeof buttonGroupVariants>
+export type ButtonGroupVariants = VariantProps<typeof buttonGroupVariants>;
 
 export type ButtonGroupProps = Readonly<{
-  children: ReadonlyArray<Html | string>
-  orientation?: ButtonGroupVariants['orientation']
-  class?: string
-}>
+  children: ReadonlyArray<Html | string>;
+  orientation?: ButtonGroupVariants['orientation'];
+  class?: string;
+}>;
 
-export const buttonGroup = <Msg>(props: ButtonGroupProps): Html => {
-  const h = html<Msg>()
-  const orientation = props.orientation ?? 'horizontal'
+export const buttonGroup = <Msg>(
+  props: ButtonGroupProps,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const orientation = props.orientation ?? 'horizontal';
 
   return h.div(
     [
@@ -40,19 +42,19 @@ export const buttonGroup = <Msg>(props: ButtonGroupProps): Html => {
       h.Class(cn(buttonGroupVariants({ orientation }), props.class)),
     ],
     [...props.children],
-  )
-}
+  );
+};
 
 export type ButtonGroupSeparatorProps = Readonly<{
-  orientation?: 'horizontal' | 'vertical'
-  class?: string
-}>
+  orientation?: 'horizontal' | 'vertical';
+  class?: string;
+}>;
 
 export const buttonGroupSeparator = <Msg>(
   props: ButtonGroupSeparatorProps = {},
+  h: HtmlBuilder<Msg>,
 ): Html => {
-  const h = html<Msg>()
-  const orientation = props.orientation ?? 'vertical'
+  const orientation = props.orientation ?? 'vertical';
 
   return h.div(
     [
@@ -68,19 +70,18 @@ export const buttonGroupSeparator = <Msg>(
       ),
     ],
     [],
-  )
-}
+  );
+};
 
 export type ButtonGroupTextProps = Readonly<{
-  children: ReadonlyArray<Html | string>
-  class?: string
-}>
+  children: ReadonlyArray<Html | string>;
+  class?: string;
+}>;
 
 export const buttonGroupText = <Msg>(
   props: ButtonGroupTextProps,
+  h: HtmlBuilder<Msg>,
 ): Html => {
-  const h = html<Msg>()
-
   return h.div(
     [
       h.Class(
@@ -91,5 +92,5 @@ export const buttonGroupText = <Msg>(
       ),
     ],
     [...props.children],
-  )
-}
+  );
+};

@@ -1,21 +1,21 @@
-import { Match as M, Option, Schema as S } from 'effect'
-import { Command } from 'foldkit'
-import { type Html, html } from 'foldkit/html'
-import { m } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { Match as M, Option, Schema as S } from 'effect';
+import { Command } from 'foldkit';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
+import { evo } from 'foldkit/struct';
 
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/lib/icon';
 import {
   breadcrumb,
   breadcrumbItem,
   breadcrumbList,
   breadcrumbPage,
-} from '@/ui/breadcrumb'
-import { buttonVariants } from '@/ui/button'
-import * as Collapsible from '@/ui/collapsible'
-import * as DropdownMenu from '@/ui/dropdown-menu'
-import * as Popover from '@/ui/popover'
-import { separator } from '@/ui/separator'
+} from '@/ui/breadcrumb';
+import { buttonVariants } from '@/ui/button';
+import * as Collapsible from '@/ui/collapsible';
+import * as DropdownMenu from '@/ui/dropdown-menu';
+import * as Popover from '@/ui/popover';
+import { separator } from '@/ui/separator';
 import {
   sidebar,
   sidebarContent,
@@ -34,39 +34,39 @@ import {
   sidebarProvider,
   sidebarRail,
   sidebarTrigger,
-} from '@/ui/sidebar'
+} from '@/ui/sidebar';
 
 type Team = Readonly<{
-  name: string
-  logo: string
-  plan: string
-}>
+  name: string;
+  logo: string;
+  plan: string;
+}>;
 
 type NavItem = Readonly<{
-  title: string
-  url: string
-  icon: string
-  isActive?: boolean
-  badge?: string
-}>
+  title: string;
+  url: string;
+  icon: string;
+  isActive?: boolean;
+  badge?: string;
+}>;
 
 type Favorite = Readonly<{
-  name: string
-  url: string
-  emoji: string
-}>
+  name: string;
+  url: string;
+  emoji: string;
+}>;
 
 type WorkspacePage = Readonly<{
-  name: string
-  url: string
-  emoji: string
-}>
+  name: string;
+  url: string;
+  emoji: string;
+}>;
 
 type Workspace = Readonly<{
-  name: string
-  emoji: string
-  pages: ReadonlyArray<WorkspacePage>
-}>
+  name: string;
+  emoji: string;
+  pages: ReadonlyArray<WorkspacePage>;
+}>;
 
 const data = {
   teams: [
@@ -255,7 +255,7 @@ const data = {
       ],
     },
   ] satisfies ReadonlyArray<Workspace>,
-}
+};
 
 const actionGroups = [
   [
@@ -279,26 +279,26 @@ const actionGroups = [
     { label: 'Import', icon: 'arrow-up' },
     { label: 'Export', icon: 'arrow-down' },
   ],
-] as const
+] as const;
 
-type TeamAction = 'team-0' | 'team-1' | 'team-2' | 'add-team'
-type FavoriteAction = 'remove' | 'copy-link' | 'open-tab' | 'delete'
+type TeamAction = 'team-0' | 'team-1' | 'team-2' | 'add-team';
+type FavoriteAction = 'remove' | 'copy-link' | 'open-tab' | 'delete';
 
 const TEAM_ACTIONS: ReadonlyArray<TeamAction> = [
   'team-0',
   'team-1',
   'team-2',
   'add-team',
-]
+];
 const FAVORITE_ACTIONS: ReadonlyArray<FavoriteAction> = [
   'remove',
   'copy-link',
   'open-tab',
   'delete',
-]
+];
 
-const TeamMenu = DropdownMenu.create<TeamAction>()
-const FavoriteMenu = DropdownMenu.create<FavoriteAction>()
+const TeamMenu = DropdownMenu.create<TeamAction>();
+const FavoriteMenu = DropdownMenu.create<FavoriteAction>();
 
 // MODEL
 
@@ -309,26 +309,26 @@ export const Model = S.Struct({
   favoriteMenus: S.Array(DropdownMenu.Model),
   workspaceOpen: S.Array(S.Boolean),
   actionsPopover: Popover.Model,
-})
-export type Model = typeof Model.Type
+});
+export type Model = typeof Model.Type;
 
 // MESSAGE
 
-export const ToggledSidebar = m('ToggledSidebar')
+export const ToggledSidebar = m('ToggledSidebar');
 export const GotTeamMenuMessage = m('GotTeamMenuMessage', {
   message: DropdownMenu.Message,
-})
+});
 export const GotFavoriteMenuMessage = m('GotFavoriteMenuMessage', {
   index: S.Number,
   message: DropdownMenu.Message,
-})
+});
 export const ToggledWorkspace = m('ToggledWorkspace', {
   index: S.Number,
   isOpen: S.Boolean,
-})
+});
 export const GotActionsPopoverMessage = m('GotActionsPopoverMessage', {
   message: Popover.Message,
-})
+});
 
 export const Message = S.Union([
   ToggledSidebar,
@@ -336,8 +336,8 @@ export const Message = S.Union([
   GotFavoriteMenuMessage,
   ToggledWorkspace,
   GotActionsPopoverMessage,
-])
-export type Message = typeof Message.Type
+]);
+export type Message = typeof Message.Type;
 
 // INIT
 
@@ -359,25 +359,25 @@ export const init = (): Model => ({
     id: 'sidebar-10-actions-popover',
     isAnimated: true,
   }),
-})
+});
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       ToggledSidebar: () => [
-        evo(model, { isSidebarOpen: current => !current }),
+        evo(model, { isSidebarOpen: (current) => !current }),
         [],
       ],
       GotTeamMenuMessage: ({ message: childMessage }) => {
         const [teamMenu, commands, selection] = TeamMenu.update(
           model.teamMenu,
           childMessage,
-        )
+        );
         const activeTeamIndex = Option.match(selection, {
           onNone: () => model.activeTeamIndex,
           onSome: ({ value }) =>
@@ -388,449 +388,569 @@ export const update = (model: Model, message: Message): UpdateReturn =>
                 : value === 'team-2'
                   ? 2
                   : model.activeTeamIndex,
-        })
+        });
 
         return [
           evo(model, {
             teamMenu: () => teamMenu,
             activeTeamIndex: () => activeTeamIndex,
           }),
-          Command.mapMessages(commands, nextMessage =>
+          Command.mapMessages(commands, (nextMessage) =>
             GotTeamMenuMessage({ message: nextMessage }),
           ),
-        ]
+        ];
       },
       GotFavoriteMenuMessage: ({ index, message: childMessage }) => {
-        const current = model.favoriteMenus[index]
+        const current = model.favoriteMenus[index];
 
         if (current === undefined) {
-          return [model, []]
+          return [model, []];
         }
 
-        const [next, commands] = FavoriteMenu.update(
-          current,
-          childMessage,
-        )
+        const [next, commands] = FavoriteMenu.update(current, childMessage);
 
         return [
           evo(model, {
-            favoriteMenus: menus =>
+            favoriteMenus: (menus) =>
               menus.map((menu, menuIndex) =>
                 menuIndex === index ? next : menu,
               ),
           }),
-          Command.mapMessages(commands, nextMessage =>
+          Command.mapMessages(commands, (nextMessage) =>
             GotFavoriteMenuMessage({ index, message: nextMessage }),
           ),
-        ]
+        ];
       },
       ToggledWorkspace: ({ index, isOpen }) => {
         if (model.workspaceOpen[index] === undefined) {
-          return [model, []]
+          return [model, []];
         }
         return [
           evo(model, {
-            workspaceOpen: items =>
+            workspaceOpen: (items) =>
               items.map((open, itemIndex) =>
                 itemIndex === index ? isOpen : open,
               ),
           }),
           [],
-        ]
+        ];
       },
       GotActionsPopoverMessage: ({ message: childMessage }) => {
         const [actionsPopover, commands] = Popover.update(
           model.actionsPopover,
           childMessage,
-        )
+        );
 
         return [
           evo(model, { actionsPopover: () => actionsPopover }),
-          Command.mapMessages(commands, nextMessage =>
+          Command.mapMessages(commands, (nextMessage) =>
             GotActionsPopoverMessage({ message: nextMessage }),
           ),
-        ]
+        ];
       },
     }),
-  )
+  );
 
 // VIEW
 
-const teamSwitcher = (model: Model): Html => {
-  const h = html<Message>()
-  const activeTeam = data.teams[model.activeTeamIndex] ?? data.teams[0]
+const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
+  const activeTeam = data.teams[model.activeTeamIndex] ?? data.teams[0];
 
   if (activeTeam === undefined) {
-    return h.div([], [])
+    return h.div([], []);
   }
 
-  return sidebarMenu({
-    children: [
-      sidebarMenuItem({
-        children: [
-          DropdownMenu.dropdownMenu<TeamAction, Message>({
-            model: model.teamMenu,
-            toParentMessage: message =>
-              GotTeamMenuMessage({ message }),
-            trigger: h.span(
-              [h.Class('contents')],
-              [
-                h.div(
-                  [
-                    h.Class(
-                      'flex aspect-square size-5 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground',
-                    ),
-                  ],
-                  [
-                    Icon.icon(activeTeam.logo, {
-                      class: 'size-3',
-                    }),
-                  ],
-                ),
-                h.span(
-                  [h.Class('truncate font-medium')],
-                  [activeTeam.name],
-                ),
-                Icon.chevronDown({
-                  class: 'size-4 shrink-0 opacity-50',
-                }),
-              ],
-            ),
-            triggerClass: sidebarMenuButtonVariants({
-              class: 'w-fit px-1.5',
-            }),
-            items: TEAM_ACTIONS,
-            itemToConfig: action => {
-              if (action === 'add-team') {
-                return {
-                  label: 'Add team',
-                  icon: h.div(
+  return sidebarMenu(
+    {
+      children: [
+        sidebarMenuItem(
+          {
+            children: [
+              DropdownMenu.dropdownMenu<TeamAction, Message>(
+                {
+                  model: model.teamMenu,
+                  toParentMessage: (message) => GotTeamMenuMessage({ message }),
+                  trigger: h.span(
+                    [h.Class('contents')],
                     [
-                      h.Class(
-                        'flex size-6 items-center justify-center rounded-md border bg-background',
+                      h.div(
+                        [
+                          h.Class(
+                            'flex aspect-square size-5 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground',
+                          ),
+                        ],
+                        [
+                          Icon.icon(
+                            activeTeam.logo,
+                            {
+                              class: 'size-3',
+                            },
+                            h,
+                          ),
+                        ],
+                      ),
+                      h.span(
+                        [h.Class('truncate font-medium')],
+                        [activeTeam.name],
+                      ),
+                      Icon.chevronDown(
+                        {
+                          class: 'size-4 shrink-0 opacity-50',
+                        },
+                        h,
                       ),
                     ],
-                    [Icon.plus({ class: 'size-4' })],
                   ),
-                  group: '',
-                }
-              }
+                  triggerClass: sidebarMenuButtonVariants({
+                    class: 'w-fit px-1.5',
+                  }),
+                  items: TEAM_ACTIONS,
+                  itemToConfig: (action) => {
+                    if (action === 'add-team') {
+                      return {
+                        label: 'Add team',
+                        icon: h.div(
+                          [
+                            h.Class(
+                              'flex size-6 items-center justify-center rounded-md border bg-background',
+                            ),
+                          ],
+                          [Icon.plus({ class: 'size-4' }, h)],
+                        ),
+                        group: '',
+                      };
+                    }
 
-              const index =
-                action === 'team-0' ? 0 : action === 'team-1' ? 1 : 2
-              const team = data.teams[index]
+                    const index =
+                      action === 'team-0' ? 0 : action === 'team-1' ? 1 : 2;
+                    const team = data.teams[index];
 
-              return {
-                label: team?.name ?? '',
-                icon: h.div(
-                  [
-                    h.Class(
-                      'flex size-6 items-center justify-center rounded-xs border',
-                    ),
-                  ],
-                  [
-                    Icon.icon(team?.logo ?? 'command', {
-                      class: 'size-4 shrink-0',
-                    }),
-                  ],
-                ),
-                shortcut: `⌘${index + 1}`,
-                group: 'Teams',
-              }
-            },
-            side: 'bottom',
-            align: 'start',
-            ariaLabel: 'Switch team',
-          }),
-        ],
-      }),
-    ],
-  })
-}
-
-const navMain = (): Html => {
-  const h = html<Message>()
-
-  return sidebarMenu({
-    children: data.navMain.map(item =>
-      sidebarMenuItem({
-        children: [
-          sidebarMenuButton({
-            href: item.url,
-            ...(item.isActive === undefined
-              ? {}
-              : { isActive: item.isActive }),
-            children: [
-              Icon.icon(item.icon),
-              h.span([], [item.title]),
+                    return {
+                      label: team?.name ?? '',
+                      icon: h.div(
+                        [
+                          h.Class(
+                            'flex size-6 items-center justify-center rounded-xs border',
+                          ),
+                        ],
+                        [
+                          Icon.icon(
+                            team?.logo ?? 'command',
+                            {
+                              class: 'size-4 shrink-0',
+                            },
+                            h,
+                          ),
+                        ],
+                      ),
+                      shortcut: `⌘${index + 1}`,
+                      group: 'Teams',
+                    };
+                  },
+                  side: 'bottom',
+                  align: 'start',
+                  ariaLabel: 'Switch team',
+                },
+                h,
+              ),
             ],
-          }),
-        ],
-      }),
-    ),
-  })
-}
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
+};
+
+const navMain = (h: HtmlBuilder<Message>): Html => {
+  return sidebarMenu(
+    {
+      children: data.navMain.map((item) =>
+        sidebarMenuItem(
+          {
+            children: [
+              sidebarMenuButton(
+                {
+                  href: item.url,
+                  ...(item.isActive === undefined
+                    ? {}
+                    : { isActive: item.isActive }),
+                  children: [
+                    Icon.icon(item.icon, {}, h),
+                    h.span([], [item.title]),
+                  ],
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+      ),
+    },
+    h,
+  );
+};
 
 const favoriteActionConfig = (
   action: FavoriteAction,
+  h: HtmlBuilder<Message>,
 ): DropdownMenu.DropdownMenuItemConfig =>
   M.value(action).pipe(
     M.withReturnType<DropdownMenu.DropdownMenuItemConfig>(),
     M.when('remove', () => ({
       label: 'Remove from Favorites',
-      icon: Icon.icon('star-off', {
-        class: 'text-muted-foreground',
-      }),
+      icon: Icon.icon(
+        'star-off',
+        {
+          class: 'text-muted-foreground',
+        },
+        h,
+      ),
       group: 'Favorite',
     })),
     M.when('copy-link', () => ({
       label: 'Copy Link',
-      icon: Icon.icon('link', { class: 'text-muted-foreground' }),
+      icon: Icon.icon('link', { class: 'text-muted-foreground' }, h),
       group: 'Page',
     })),
     M.when('open-tab', () => ({
       label: 'Open in New Tab',
-      icon: Icon.icon('arrow-up-right', {
-        class: 'text-muted-foreground',
-      }),
+      icon: Icon.icon(
+        'arrow-up-right',
+        {
+          class: 'text-muted-foreground',
+        },
+        h,
+      ),
       group: 'Page',
     })),
     M.when('delete', () => ({
       label: 'Delete',
-      icon: Icon.icon('trash-2', {
-        class: 'text-muted-foreground',
-      }),
+      icon: Icon.icon(
+        'trash-2',
+        {
+          class: 'text-muted-foreground',
+        },
+        h,
+      ),
       group: '',
     })),
     M.exhaustive,
-  )
+  );
 
 const ROW_ACTION_CLASS =
-  'absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform peer-hover/menu-button:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 after:absolute after:-inset-2 group-data-[collapsible=icon]:hidden group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[open]:opacity-100 md:opacity-0'
+  'absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform peer-hover/menu-button:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 after:absolute after:-inset-2 group-data-[collapsible=icon]:hidden group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[open]:opacity-100 md:opacity-0';
 
 const navFavorites = (
   models: ReadonlyArray<DropdownMenu.Model>,
+  h: HtmlBuilder<Message>,
 ): Html => {
-  const h = html<Message>()
-
-  return sidebarGroup({
-    class: 'group-data-[collapsible=icon]:hidden',
-    children: [
-      sidebarGroupLabel({ children: ['Favorites'] }),
-      sidebarMenu({
-        children: [
-          ...data.favorites.flatMap((item, index) => {
-            const model = models[index]
-
-            if (model === undefined) {
-              return []
-            }
-
-            return [
-              sidebarMenuItem({
-                children: [
-                  sidebarMenuButton({
-                    href: item.url,
-                    children: [
-                      h.span([], [item.emoji]),
-                      h.span([], [item.name]),
-                    ],
-                  }),
-                  DropdownMenu.dropdownMenu<FavoriteAction, Message>({
-                    model,
-                    toParentMessage: message =>
-                      GotFavoriteMenuMessage({ index, message }),
-                    trigger: h.span(
-                      [h.Class('contents')],
-                      [
-                        Icon.moreHorizontal({ class: 'size-4' }),
-                        h.span([h.Class('sr-only')], ['More']),
-                      ],
-                    ),
-                    triggerClass: ROW_ACTION_CLASS,
-                    items: FAVORITE_ACTIONS,
-                    itemToConfig: favoriteActionConfig,
-                    side: 'right',
-                    align: 'start',
-                    ariaLabel: `${item.name} actions`,
-                  }),
-                ],
-              }),
-            ]
-          }),
-          sidebarMenuItem({
+  return sidebarGroup(
+    {
+      class: 'group-data-[collapsible=icon]:hidden',
+      children: [
+        sidebarGroupLabel({ children: ['Favorites'] }, h),
+        sidebarMenu(
+          {
             children: [
-              sidebarMenuButton({
-                class: 'text-sidebar-foreground/70',
-                children: [
-                  Icon.moreHorizontal(),
-                  h.span([], ['More']),
-                ],
-              }),
-            ],
-          }),
-        ],
-      }),
-    ],
-  })
-}
+              ...data.favorites.flatMap((item, index) => {
+                const model = models[index];
 
-const navWorkspaces = (
-  openStates: ReadonlyArray<boolean>,
-): Html => {
-  const h = html<Message>()
-
-  return sidebarGroup({
-    children: [
-      sidebarGroupLabel({ children: ['Workspaces'] }),
-      sidebarGroupContent({
-        children: [
-          sidebarMenu({
-            children: [
-              ...data.workspaces.flatMap((workspace, index) => {
-                const isOpen = openStates[index]
-
-                if (isOpen === undefined) {
-                  return []
+                if (model === undefined) {
+                  return [];
                 }
 
                 return [
-                  sidebarMenuItem({
-                    children: [
-                      Collapsible.collapsible({
-                        id: `sidebar-10-workspace-${index}`,
-                        isOpen,
-                        onToggle: nextIsOpen => ToggledWorkspace({ index, isOpen: nextIsOpen }),
-                        class: 'group/collapsible',
-                        triggerClass: sidebarMenuButtonVariants(),
-                        trigger: h.span(
-                          [h.Class('contents')],
-                          [
-                            h.span([], [workspace.emoji]),
-                            h.span([], [workspace.name]),
-                            Icon.chevronRight({
-                              class: `ml-auto size-4 shrink-0 transition-transform${
-                                isOpen ? ' rotate-90' : ''
-                              }`,
-                            }),
-                          ],
-                        ),
-                        content: sidebarMenuSub({
-                          children: workspace.pages.map(page =>
-                            sidebarMenuSubItem({
-                              children: [
-                                sidebarMenuSubButton({
-                                  href: page.url,
-                                  children: [
-                                    h.span([], [page.emoji]),
-                                    h.span([], [page.name]),
-                                  ],
-                                }),
-                              ],
-                            }),
-                          ),
-                        }),
-                      }),
-                    ],
-                  }),
-                ]
-              }),
-              sidebarMenuItem({
-                children: [
-                  sidebarMenuButton({
-                    class: 'text-sidebar-foreground/70',
-                    children: [
-                      Icon.moreHorizontal(),
-                      h.span([], ['More']),
-                    ],
-                  }),
-                ],
-              }),
-            ],
-          }),
-        ],
-      }),
-    ],
-  })
-}
-
-const navSecondary = (): Html => {
-  const h = html<Message>()
-
-  return sidebarGroup({
-    class: 'mt-auto',
-    children: [
-      sidebarGroupContent({
-        children: [
-          sidebarMenu({
-            children: data.navSecondary.map(item =>
-              sidebarMenuItem({
-                children: [
-                  sidebarMenuButton({
-                    href: item.url,
-                    children: [
-                      Icon.icon(item.icon),
-                      h.span([], [item.title]),
-                    ],
-                  }),
-                ],
-              }),
-            ),
-          }),
-        ],
-      }),
-    ],
-  })
-}
-
-const actionPopoverContent = (): Html =>
-  sidebar<Message>({
-    collapsible: 'none',
-    class: 'bg-transparent',
-    children: [
-      sidebarContent({
-        children: actionGroups.map(group =>
-          sidebarGroup({
-            class: 'border-b last:border-none',
-            children: [
-              sidebarGroupContent({
-                class: 'gap-0',
-                children: [
-                  sidebarMenu({
-                    children: group.map(item =>
-                      sidebarMenuItem({
-                        children: [
-                          sidebarMenuButton({
+                  sidebarMenuItem(
+                    {
+                      children: [
+                        sidebarMenuButton(
+                          {
+                            href: item.url,
                             children: [
-                              Icon.icon(item.icon),
-                              html<Message>().span([], [item.label]),
+                              h.span([], [item.emoji]),
+                              h.span([], [item.name]),
                             ],
-                          }),
-                        ],
-                      }),
-                    ),
-                  }),
-                ],
+                          },
+                          h,
+                        ),
+                        DropdownMenu.dropdownMenu<FavoriteAction, Message>(
+                          {
+                            model,
+                            toParentMessage: (message) =>
+                              GotFavoriteMenuMessage({ index, message }),
+                            trigger: h.span(
+                              [h.Class('contents')],
+                              [
+                                Icon.moreHorizontal({ class: 'size-4' }, h),
+                                h.span([h.Class('sr-only')], ['More']),
+                              ],
+                            ),
+                            triggerClass: ROW_ACTION_CLASS,
+                            items: FAVORITE_ACTIONS,
+                            itemToConfig: (action) =>
+                              favoriteActionConfig(action, h),
+                            side: 'right',
+                            align: 'start',
+                            ariaLabel: `${item.name} actions`,
+                          },
+                          h,
+                        ),
+                      ],
+                    },
+                    h,
+                  ),
+                ];
               }),
+              sidebarMenuItem(
+                {
+                  children: [
+                    sidebarMenuButton(
+                      {
+                        class: 'text-sidebar-foreground/70',
+                        children: [
+                          Icon.moreHorizontal({}, h),
+                          h.span([], ['More']),
+                        ],
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
             ],
-          }),
+          },
+          h,
         ),
-      }),
-    ],
-  })
+      ],
+    },
+    h,
+  );
+};
 
-const navActions = (model: Popover.Model): Html => {
-  const h = html<Message>()
+const navWorkspaces = (
+  openStates: ReadonlyArray<boolean>,
+  h: HtmlBuilder<Message>,
+): Html => {
+  return sidebarGroup(
+    {
+      children: [
+        sidebarGroupLabel({ children: ['Workspaces'] }, h),
+        sidebarGroupContent(
+          {
+            children: [
+              sidebarMenu(
+                {
+                  children: [
+                    ...data.workspaces.flatMap((workspace, index) => {
+                      const isOpen = openStates[index];
 
+                      if (isOpen === undefined) {
+                        return [];
+                      }
+
+                      return [
+                        sidebarMenuItem(
+                          {
+                            children: [
+                              Collapsible.collapsible(
+                                {
+                                  id: `sidebar-10-workspace-${index}`,
+                                  isOpen,
+                                  onToggle: (nextIsOpen) =>
+                                    ToggledWorkspace({
+                                      index,
+                                      isOpen: nextIsOpen,
+                                    }),
+                                  class: 'group/collapsible',
+                                  triggerClass: sidebarMenuButtonVariants(),
+                                  trigger: h.span(
+                                    [h.Class('contents')],
+                                    [
+                                      h.span([], [workspace.emoji]),
+                                      h.span([], [workspace.name]),
+                                      Icon.chevronRight(
+                                        {
+                                          class: `ml-auto size-4 shrink-0 transition-transform${
+                                            isOpen ? ' rotate-90' : ''
+                                          }`,
+                                        },
+                                        h,
+                                      ),
+                                    ],
+                                  ),
+                                  content: sidebarMenuSub(
+                                    {
+                                      children: workspace.pages.map((page) =>
+                                        sidebarMenuSubItem(
+                                          {
+                                            children: [
+                                              sidebarMenuSubButton(
+                                                {
+                                                  href: page.url,
+                                                  children: [
+                                                    h.span([], [page.emoji]),
+                                                    h.span([], [page.name]),
+                                                  ],
+                                                },
+                                                h,
+                                              ),
+                                            ],
+                                          },
+                                          h,
+                                        ),
+                                      ),
+                                    },
+                                    h,
+                                  ),
+                                },
+                                h,
+                              ),
+                            ],
+                          },
+                          h,
+                        ),
+                      ];
+                    }),
+                    sidebarMenuItem(
+                      {
+                        children: [
+                          sidebarMenuButton(
+                            {
+                              class: 'text-sidebar-foreground/70',
+                              children: [
+                                Icon.moreHorizontal({}, h),
+                                h.span([], ['More']),
+                              ],
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
+};
+
+const navSecondary = (h: HtmlBuilder<Message>): Html => {
+  return sidebarGroup(
+    {
+      class: 'mt-auto',
+      children: [
+        sidebarGroupContent(
+          {
+            children: [
+              sidebarMenu(
+                {
+                  children: data.navSecondary.map((item) =>
+                    sidebarMenuItem(
+                      {
+                        children: [
+                          sidebarMenuButton(
+                            {
+                              href: item.url,
+                              children: [
+                                Icon.icon(item.icon, {}, h),
+                                h.span([], [item.title]),
+                              ],
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                  ),
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
+};
+
+const actionPopoverContent = (h: HtmlBuilder<Message>): Html =>
+  sidebar<Message>(
+    {
+      collapsible: 'none',
+      class: 'bg-transparent',
+      children: [
+        sidebarContent(
+          {
+            children: actionGroups.map((group) =>
+              sidebarGroup(
+                {
+                  class: 'border-b last:border-none',
+                  children: [
+                    sidebarGroupContent(
+                      {
+                        class: 'gap-0',
+                        children: [
+                          sidebarMenu(
+                            {
+                              children: group.map((item) =>
+                                sidebarMenuItem(
+                                  {
+                                    children: [
+                                      sidebarMenuButton(
+                                        {
+                                          children: [
+                                            Icon.icon(item.icon, {}, h),
+                                            h.span([], [item.label]),
+                                          ],
+                                        },
+                                        h,
+                                      ),
+                                    ],
+                                  },
+                                  h,
+                                ),
+                              ),
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
+            ),
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
+
+const navActions = (model: Popover.Model, h: HtmlBuilder<Message>): Html => {
   return h.div(
     [h.Class('flex items-center gap-2 text-sm')],
     [
       h.div(
-        [
-          h.Class(
-            'hidden font-medium text-muted-foreground md:inline-block',
-          ),
-        ],
+        [h.Class('hidden font-medium text-muted-foreground md:inline-block')],
         ['Edit Oct 08'],
       ),
       h.button(
@@ -844,126 +964,146 @@ const navActions = (model: Popover.Model): Html => {
             }),
           ),
         ],
-        [Icon.icon('star')],
+        [Icon.icon('star', {}, h)],
       ),
-      Popover.popover({
-        model,
-        toParentMessage: message =>
-          GotActionsPopoverMessage({ message }),
-        trigger: Icon.moreHorizontal({ class: 'size-4' }),
-        triggerClass: buttonVariants({
-          variant: 'ghost',
-          size: 'icon',
-          class: 'h-7 w-7 data-[open]:bg-accent',
-        }),
-        content: actionPopoverContent(),
-        align: 'end',
-        class: 'w-56 overflow-hidden rounded-lg p-0',
-      }),
+      Popover.popover(
+        {
+          model,
+          toParentMessage: (message) => GotActionsPopoverMessage({ message }),
+          trigger: Icon.moreHorizontal({ class: 'size-4' }, h),
+          triggerClass: buttonVariants({
+            variant: 'ghost',
+            size: 'icon',
+            class: 'h-7 w-7 data-[open]:bg-accent',
+          }),
+          content: actionPopoverContent(h),
+          align: 'end',
+          class: 'w-56 overflow-hidden rounded-lg p-0',
+        },
+        h,
+      ),
     ],
-  )
-}
+  );
+};
 
-const appSidebar = (model: Model): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
+const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
 
-  return sidebar<Message>({
-    state,
-    class: 'border-r-0',
-    children: [
-      sidebarHeader({
-        children: [teamSwitcher(model), navMain()],
-      }),
-      sidebarContent({
-        children: [
-          navFavorites(model.favoriteMenus),
-          navWorkspaces(model.workspaceOpen),
-          navSecondary(),
-        ],
-      }),
-      sidebarRail({ onClick: ToggledSidebar() }),
-    ],
-  })
-}
+  return sidebar<Message>(
+    {
+      state,
+      class: 'border-r-0',
+      children: [
+        sidebarHeader(
+          {
+            children: [teamSwitcher(model, h), navMain(h)],
+          },
+          h,
+        ),
+        sidebarContent(
+          {
+            children: [
+              navFavorites(model.favoriteMenus, h),
+              navWorkspaces(model.workspaceOpen, h),
+              navSecondary(h),
+            ],
+          },
+          h,
+        ),
+        sidebarRail({ onClick: ToggledSidebar() }, h),
+      ],
+    },
+    h,
+  );
+};
 
-const pageContent = (model: Popover.Model): Html => {
-  const h = html<Message>()
-
-  return sidebarInset({
-    children: [
-      h.header(
-        [h.Class('flex h-14 shrink-0 items-center gap-2')],
-        [
-          h.div(
-            [h.Class('flex flex-1 items-center gap-2 px-3')],
-            [
-              sidebarTrigger({ onClick: ToggledSidebar() }),
-              separator({
-                orientation: 'vertical',
-                class: 'mr-2 data-[orientation=vertical]:h-4',
-              }),
-              breadcrumb({
-                children: [
-                  breadcrumbList({
+const pageContent = (model: Popover.Model, h: HtmlBuilder<Message>): Html => {
+  return sidebarInset(
+    {
+      children: [
+        h.header(
+          [h.Class('flex h-14 shrink-0 items-center gap-2')],
+          [
+            h.div(
+              [h.Class('flex flex-1 items-center gap-2 px-3')],
+              [
+                sidebarTrigger({ onClick: ToggledSidebar() }, h),
+                separator(
+                  {
+                    orientation: 'vertical',
+                    class: 'mr-2 data-[orientation=vertical]:h-4',
+                  },
+                  h,
+                ),
+                breadcrumb(
+                  {
                     children: [
-                      breadcrumbItem({
-                        children: [
-                          breadcrumbPage({
-                            class: 'line-clamp-1',
-                            children: [
-                              'Project Management & Task Tracking',
-                            ],
-                          }),
-                        ],
-                      }),
+                      breadcrumbList(
+                        {
+                          children: [
+                            breadcrumbItem(
+                              {
+                                children: [
+                                  breadcrumbPage(
+                                    {
+                                      class: 'line-clamp-1',
+                                      children: [
+                                        'Project Management & Task Tracking',
+                                      ],
+                                    },
+                                    h,
+                                  ),
+                                ],
+                              },
+                              h,
+                            ),
+                          ],
+                        },
+                        h,
+                      ),
                     ],
-                  }),
-                ],
-              }),
-            ],
-          ),
-          h.div(
-            [h.Class('ml-auto px-3')],
-            [navActions(model)],
-          ),
-        ],
-      ),
-      h.div(
-        [h.Class('flex flex-1 flex-col gap-4 px-4 py-10')],
-        [
-          h.div(
-            [
-              h.Class(
-                'mx-auto h-24 w-full max-w-3xl rounded-xl bg-muted/50',
-              ),
-            ],
-            [],
-          ),
-          h.div(
-            [
-              h.Class(
-                'mx-auto h-full w-full max-w-3xl rounded-xl bg-muted/50',
-              ),
-            ],
-            [],
-          ),
-        ],
-      ),
-    ],
-  })
-}
+                  },
+                  h,
+                ),
+              ],
+            ),
+            h.div([h.Class('ml-auto px-3')], [navActions(model, h)]),
+          ],
+        ),
+        h.div(
+          [h.Class('flex flex-1 flex-col gap-4 px-4 py-10')],
+          [
+            h.div(
+              [h.Class('mx-auto h-24 w-full max-w-3xl rounded-xl bg-muted/50')],
+              [],
+            ),
+            h.div(
+              [
+                h.Class(
+                  'mx-auto h-full w-full max-w-3xl rounded-xl bg-muted/50',
+                ),
+              ],
+              [],
+            ),
+          ],
+        ),
+      ],
+    },
+    h,
+  );
+};
 
-export const view = (model: Model): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
+export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
 
-  return sidebarProvider<Message>({
-    state,
-    children: [
-      appSidebar(model),
-      pageContent(model.actionsPopover),
-    ],
-  })
-}
+  return sidebarProvider<Message>(
+    {
+      state,
+      children: [appSidebar(model, h), pageContent(model.actionsPopover, h)],
+    },
+    h,
+  );
+};
 
 // PORT NOTE: The source opens the actions popover from a React mount effect.
 // This port starts it closed so the modal foldkit backdrop does not block the

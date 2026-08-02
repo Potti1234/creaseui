@@ -1,10 +1,10 @@
-import { Match as M, Schema as S } from 'effect'
-import { Command } from 'foldkit'
-import { type Html, html } from 'foldkit/html'
-import { m } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { Match as M, Schema as S } from 'effect';
+import { Command } from 'foldkit';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
+import { evo } from 'foldkit/struct';
 
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/lib/icon';
 import {
   breadcrumb,
   breadcrumbItem,
@@ -12,10 +12,10 @@ import {
   breadcrumbList,
   breadcrumbPage,
   breadcrumbSeparator,
-} from '@/ui/breadcrumb'
-import { buttonVariants } from '@/ui/button'
-import { card, cardContent, cardHeader } from '@/ui/card'
-import * as DropdownMenu from '@/ui/dropdown-menu'
+} from '@/ui/breadcrumb';
+import { buttonVariants } from '@/ui/button';
+import { card, cardContent, cardHeader } from '@/ui/card';
+import * as DropdownMenu from '@/ui/dropdown-menu';
 import {
   itemContent,
   itemDescription,
@@ -23,15 +23,15 @@ import {
   itemMedia,
   itemTitle,
   itemVariants,
-} from '@/ui/item'
+} from '@/ui/item';
 
-type MenuItem = 'profile' | 'statements' | 'documents'
+type MenuItem = 'profile' | 'statements' | 'documents';
 
 const menuItems: ReadonlyArray<MenuItem> = [
   'profile',
   'statements',
   'documents',
-]
+];
 
 const paymentItems = [
   {
@@ -54,57 +54,50 @@ const paymentItems = [
     title: 'Recurring card payments',
     description: 'Manage your repeated card transactions.',
   },
-] as const
+] as const;
 
 export const Model = S.Struct({
   menu: DropdownMenu.Model,
-})
-export type Model = typeof Model.Type
+});
+export type Model = typeof Model.Type;
 
 export const GotMenuMessage = m('GotMenuMessage', {
   message: DropdownMenu.Message,
-})
-export const Message = S.Union([GotMenuMessage])
-export type Message = typeof Message.Type
+});
+export const Message = S.Union([GotMenuMessage]);
+export type Message = typeof Message.Type;
 
-type UpdateReturn = readonly [
-  Model,
-  ReadonlyArray<Command.Command<Message>>,
-]
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotMenuMessage: ({ message: childMessage }) => {
-        const [menu, commands] = DropdownMenu.update(
-          model.menu,
-          childMessage,
-        )
+        const [menu, commands] = DropdownMenu.update(model.menu, childMessage);
         return [
           evo(model, { menu: () => menu }),
-          Command.mapMessages(commands, next =>
+          Command.mapMessages(commands, (next) =>
             GotMenuMessage({ message: next }),
           ),
-        ]
+        ];
       },
     }),
-  )
+  );
 
 export const init = (): Model => ({
   menu: DropdownMenu.init({
     id: 'payments-account-options',
     isAnimated: true,
   }),
-})
+});
 
 const paymentLink = (
   icon: string,
   title: string,
   description: string,
+  h: HtmlBuilder<Message>,
 ): Html => {
-  const h = html<Message>()
-
   // PORT NOTE: src/ui/item.ts does not expose shadcn's asChild behavior,
   // so the link applies the exported Item variant classes directly.
   return h.a(
@@ -116,106 +109,151 @@ const paymentLink = (
       h.Class(itemVariants({ variant: 'muted' })),
     ],
     [
-      itemMedia({
-        variant: 'icon',
-        children: [Icon.icon(icon)],
-      }),
-      itemContent({
-        children: [
-          itemTitle({ children: [title] }),
-          itemDescription({ children: [description] }),
-        ],
-      }),
-      Icon.icon('chevron-right', {
-        class: 'size-4 shrink-0 text-muted-foreground',
-      }),
+      itemMedia(
+        {
+          variant: 'icon',
+          children: [Icon.icon(icon, {}, h)],
+        },
+        h,
+      ),
+      itemContent(
+        {
+          children: [
+            itemTitle({ children: [title] }, h),
+            itemDescription({ children: [description] }, h),
+          ],
+        },
+        h,
+      ),
+      Icon.icon(
+        'chevron-right',
+        {
+          class: 'size-4 shrink-0 text-muted-foreground',
+        },
+        h,
+      ),
     ],
-  )
-}
+  );
+};
 
-export const view = (model: Model): Html => {
-  const h = html<Message>()
+export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   const menuTrigger = h.span(
     [h.Class('contents')],
     [
-      Icon.moreHorizontal(),
+      Icon.moreHorizontal({}, h),
       h.span([h.Class('sr-only')], ['Account options']),
     ],
-  )
+  );
 
-  return card<Message>({
-    children: [
-      cardHeader({
-        class: 'flex flex-col gap-3',
-        children: [
-          breadcrumb({
+  return card<Message>(
+    {
+      children: [
+        cardHeader(
+          {
+            class: 'flex flex-col gap-3',
             children: [
-              breadcrumbList({
-                children: [
-                  breadcrumbItem({
-                    children: [
-                      breadcrumbLink({
-                        href: '#',
-                        children: ['Home'],
-                      }),
-                    ],
-                  }),
-                  breadcrumbSeparator(),
-                  breadcrumbItem({
-                    children: [
-                      DropdownMenu.dropdownMenu<MenuItem, Message>({
-                        model: model.menu,
-                        toParentMessage: message =>
-                          GotMenuMessage({ message }),
-                        trigger: menuTrigger,
-                        triggerClass: `${buttonVariants({
-                          variant: 'ghost',
-                          size: 'icon',
-                        })} size-8`,
-                        items: menuItems,
-                        itemToConfig: item => ({
-                          label:
-                            item === 'profile'
-                              ? 'Profile'
-                              : item === 'statements'
-                                ? 'Statements'
-                                : 'Documents',
-                          group: '',
-                        }),
-                        align: 'start',
-                        ariaLabel: 'Account options',
-                      }),
-                    ],
-                  }),
-                  breadcrumbSeparator(),
-                  breadcrumbItem({
-                    children: [
-                      breadcrumbPage({ children: ['Payments'] }),
-                    ],
-                  }),
-                ],
-              }),
-            ],
-          }),
-        ],
-      }),
-      cardContent({
-        children: [
-          itemGroup({
-            class: 'w-full',
-            children: paymentItems.map(payment =>
-              paymentLink(
-                payment.icon,
-                payment.title,
-                payment.description,
+              breadcrumb(
+                {
+                  children: [
+                    breadcrumbList(
+                      {
+                        children: [
+                          breadcrumbItem(
+                            {
+                              children: [
+                                breadcrumbLink(
+                                  {
+                                    href: '#',
+                                    children: ['Home'],
+                                  },
+                                  h,
+                                ),
+                              ],
+                            },
+                            h,
+                          ),
+                          breadcrumbSeparator({}, h),
+                          breadcrumbItem(
+                            {
+                              children: [
+                                DropdownMenu.dropdownMenu<MenuItem, Message>(
+                                  {
+                                    model: model.menu,
+                                    toParentMessage: (message) =>
+                                      GotMenuMessage({ message }),
+                                    trigger: menuTrigger,
+                                    triggerClass: `${buttonVariants({
+                                      variant: 'ghost',
+                                      size: 'icon',
+                                    })} size-8`,
+                                    items: menuItems,
+                                    itemToConfig: (item) => ({
+                                      label:
+                                        item === 'profile'
+                                          ? 'Profile'
+                                          : item === 'statements'
+                                            ? 'Statements'
+                                            : 'Documents',
+                                      group: '',
+                                    }),
+                                    align: 'start',
+                                    ariaLabel: 'Account options',
+                                  },
+                                  h,
+                                ),
+                              ],
+                            },
+                            h,
+                          ),
+                          breadcrumbSeparator({}, h),
+                          breadcrumbItem(
+                            {
+                              children: [
+                                breadcrumbPage({ children: ['Payments'] }, h),
+                              ],
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
               ),
-            ),
-          }),
-        ],
-      }),
-    ],
-  })
-}
+            ],
+          },
+          h,
+        ),
+        cardContent(
+          {
+            children: [
+              itemGroup(
+                {
+                  class: 'w-full',
+                  children: paymentItems.map(
+                    (payment) =>
+                      paymentLink(
+                        payment.icon,
+                        payment.title,
+                        payment.description,
+                        h,
+                      ),
+                    h,
+                  ),
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
+};
 
 /*
 Stateful? yes.

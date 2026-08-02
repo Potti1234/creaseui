@@ -1,11 +1,11 @@
-import { Match as M, Schema as S } from 'effect'
-import { Command } from 'foldkit'
-import { type Html, html } from 'foldkit/html'
-import { m } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { Match as M, Schema as S } from 'effect';
+import { Command } from 'foldkit';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
+import { evo } from 'foldkit/struct';
 
-import * as Icon from '@/lib/icon'
-import { avatar, avatarFallback } from '@/ui/avatar'
+import * as Icon from '@/lib/icon';
+import { avatar, avatarFallback } from '@/ui/avatar';
 import {
   breadcrumb,
   breadcrumbItem,
@@ -13,10 +13,10 @@ import {
   breadcrumbList,
   breadcrumbPage,
   breadcrumbSeparator,
-} from '@/ui/breadcrumb'
-import * as Collapsible from '@/ui/collapsible'
-import * as DropdownMenu from '@/ui/dropdown-menu'
-import { separator } from '@/ui/separator'
+} from '@/ui/breadcrumb';
+import * as Collapsible from '@/ui/collapsible';
+import * as DropdownMenu from '@/ui/dropdown-menu';
+import { separator } from '@/ui/separator';
 import {
   sidebar,
   sidebarContent,
@@ -35,27 +35,27 @@ import {
   sidebarMenuSubItem,
   sidebarProvider,
   sidebarTrigger,
-} from '@/ui/sidebar'
+} from '@/ui/sidebar';
 
 type MainItem = Readonly<{
-  title: string
-  url: string
-  icon: string
-  isActive?: boolean
-  items: ReadonlyArray<Readonly<{ title: string; url: string }>>
-}>
+  title: string;
+  url: string;
+  icon: string;
+  isActive?: boolean;
+  items: ReadonlyArray<Readonly<{ title: string; url: string }>>;
+}>;
 
 type LinkItem = Readonly<{
-  title: string
-  url: string
-  icon: string
-}>
+  title: string;
+  url: string;
+  icon: string;
+}>;
 
 type Project = Readonly<{
-  name: string
-  url: string
-  icon: string
-}>
+  name: string;
+  url: string;
+  icon: string;
+}>;
 
 const data = {
   user: {
@@ -117,31 +117,27 @@ const data = {
     { name: 'Sales & Marketing', url: '#', icon: 'chart-pie' },
     { name: 'Travel', url: '#', icon: 'map' },
   ] satisfies ReadonlyArray<Project>,
-}
+};
 
-type ProjectAction = 'view' | 'share' | 'delete'
+type ProjectAction = 'view' | 'share' | 'delete';
 type UserAction =
-  | 'upgrade'
-  | 'account'
-  | 'billing'
-  | 'notifications'
-  | 'log-out'
+  'upgrade' | 'account' | 'billing' | 'notifications' | 'log-out';
 
 const PROJECT_ACTIONS: ReadonlyArray<ProjectAction> = [
   'view',
   'share',
   'delete',
-]
+];
 const USER_ACTIONS: ReadonlyArray<UserAction> = [
   'upgrade',
   'account',
   'billing',
   'notifications',
   'log-out',
-]
+];
 
-const ProjectMenu = DropdownMenu.create<ProjectAction>()
-const UserMenu = DropdownMenu.create<UserAction>()
+const ProjectMenu = DropdownMenu.create<ProjectAction>();
+const UserMenu = DropdownMenu.create<UserAction>();
 
 // MODEL
 
@@ -150,37 +146,37 @@ export const Model = S.Struct({
   navMainOpen: S.Array(S.Boolean),
   projectMenus: S.Array(DropdownMenu.Model),
   userMenu: DropdownMenu.Model,
-})
-export type Model = typeof Model.Type
+});
+export type Model = typeof Model.Type;
 
 // MESSAGE
 
-export const ToggledSidebar = m('ToggledSidebar')
+export const ToggledSidebar = m('ToggledSidebar');
 export const ToggledNavMain = m('ToggledNavMain', {
   index: S.Number,
   isOpen: S.Boolean,
-})
+});
 export const GotProjectMenuMessage = m('GotProjectMenuMessage', {
   index: S.Number,
   message: DropdownMenu.Message,
-})
+});
 export const GotUserMenuMessage = m('GotUserMenuMessage', {
   message: DropdownMenu.Message,
-})
+});
 
 export const Message = S.Union([
   ToggledSidebar,
   ToggledNavMain,
   GotProjectMenuMessage,
   GotUserMenuMessage,
-])
-export type Message = typeof Message.Type
+]);
+export type Message = typeof Message.Type;
 
 // INIT
 
 export const init = (): Model => ({
   isSidebarOpen: true,
-  navMainOpen: data.navMain.map(item => item.isActive ?? false),
+  navMainOpen: data.navMain.map((item) => item.isActive ?? false),
   projectMenus: data.projects.map((_, index) =>
     DropdownMenu.init({
       id: `sidebar-08-project-menu-${index}`,
@@ -191,274 +187,339 @@ export const init = (): Model => ({
     id: 'sidebar-08-user-menu',
     isAnimated: true,
   }),
-})
+});
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       ToggledSidebar: () => [
-        evo(model, { isSidebarOpen: current => !current }),
+        evo(model, { isSidebarOpen: (current) => !current }),
         [],
       ],
       ToggledNavMain: ({ index, isOpen }) => {
         if (model.navMainOpen[index] === undefined) {
-          return [model, []]
+          return [model, []];
         }
         return [
           evo(model, {
-            navMainOpen: items =>
+            navMainOpen: (items) =>
               items.map((open, itemIndex) =>
                 itemIndex === index ? isOpen : open,
               ),
           }),
           [],
-        ]
+        ];
       },
       GotProjectMenuMessage: ({ index, message: childMessage }) => {
-        const current = model.projectMenus[index]
+        const current = model.projectMenus[index];
 
         if (current === undefined) {
-          return [model, []]
+          return [model, []];
         }
 
-        const [next, commands] = ProjectMenu.update(
-          current,
-          childMessage,
-        )
+        const [next, commands] = ProjectMenu.update(current, childMessage);
 
         return [
           evo(model, {
-            projectMenus: menus =>
+            projectMenus: (menus) =>
               menus.map((menu, menuIndex) =>
                 menuIndex === index ? next : menu,
               ),
           }),
-          Command.mapMessages(commands, nextMessage =>
+          Command.mapMessages(commands, (nextMessage) =>
             GotProjectMenuMessage({ index, message: nextMessage }),
           ),
-        ]
+        ];
       },
       GotUserMenuMessage: ({ message: childMessage }) => {
         const [userMenu, commands] = UserMenu.update(
           model.userMenu,
           childMessage,
-        )
+        );
 
         return [
           evo(model, { userMenu: () => userMenu }),
-          Command.mapMessages(commands, nextMessage =>
+          Command.mapMessages(commands, (nextMessage) =>
             GotUserMenuMessage({ message: nextMessage }),
           ),
-        ]
+        ];
       },
     }),
-  )
+  );
 
 // VIEW
 
-const navMain = (openStates: ReadonlyArray<boolean>): Html =>
-  sidebarGroup<Message>({
-    children: [
-      sidebarGroupLabel({ children: ['Platform'] }),
-      sidebarMenu({
-        children: data.navMain.flatMap((item, index) => {
-          const isOpen = openStates[index]
+const navMain = (
+  openStates: ReadonlyArray<boolean>,
+  h: HtmlBuilder<Message>,
+): Html =>
+  sidebarGroup<Message>(
+    {
+      children: [
+        sidebarGroupLabel({ children: ['Platform'] }, h),
+        sidebarMenu(
+          {
+            children: data.navMain.flatMap((item, index) => {
+              const isOpen = openStates[index];
 
-          if (isOpen === undefined) {
-            return []
-          }
-
-          const h = html<Message>()
-
-          return [
-            sidebarMenuItem({
-              children: [
-                Collapsible.collapsible({
-                  id: `sidebar-08-nav-main-${index}`,
-                  isOpen,
-                  onToggle: nextIsOpen => ToggledNavMain({ index, isOpen: nextIsOpen }),
-                  class: 'group/collapsible',
-                  triggerClass: sidebarMenuButtonVariants(),
-                  trigger: h.span(
-                    [h.Class('contents')],
-                    [
-                      Icon.icon(item.icon, {
-                        class: 'size-4 shrink-0',
-                      }),
-                      h.span([], [item.title]),
-                      Icon.chevronRight({
-                        class: `ml-auto size-4 shrink-0 transition-transform${
-                          isOpen ? ' rotate-90' : ''
-                        }`,
-                      }),
-                      h.span([h.Class('sr-only')], ['Toggle']),
-                    ],
-                  ),
-                  content: sidebarMenuSub({
-                    children: item.items.map(subItem =>
-                      sidebarMenuSubItem({
-                        children: [
-                          sidebarMenuSubButton({
-                            href: subItem.url,
-                            children: [
-                              h.span([], [subItem.title]),
+              if (isOpen === undefined) {
+                return [];
+              }
+              return [
+                sidebarMenuItem(
+                  {
+                    children: [
+                      Collapsible.collapsible(
+                        {
+                          id: `sidebar-08-nav-main-${index}`,
+                          isOpen,
+                          onToggle: (nextIsOpen) =>
+                            ToggledNavMain({ index, isOpen: nextIsOpen }),
+                          class: 'group/collapsible',
+                          triggerClass: sidebarMenuButtonVariants(),
+                          trigger: h.span(
+                            [h.Class('contents')],
+                            [
+                              Icon.icon(
+                                item.icon,
+                                {
+                                  class: 'size-4 shrink-0',
+                                },
+                                h,
+                              ),
+                              h.span([], [item.title]),
+                              Icon.chevronRight(
+                                {
+                                  class: `ml-auto size-4 shrink-0 transition-transform${
+                                    isOpen ? ' rotate-90' : ''
+                                  }`,
+                                },
+                                h,
+                              ),
+                              h.span([h.Class('sr-only')], ['Toggle']),
                             ],
-                          }),
-                        ],
-                      }),
-                    ),
-                  }),
-                }),
-              ],
+                          ),
+                          content: sidebarMenuSub(
+                            {
+                              children: item.items.map((subItem) =>
+                                sidebarMenuSubItem(
+                                  {
+                                    children: [
+                                      sidebarMenuSubButton(
+                                        {
+                                          href: subItem.url,
+                                          children: [
+                                            h.span([], [subItem.title]),
+                                          ],
+                                        },
+                                        h,
+                                      ),
+                                    ],
+                                  },
+                                  h,
+                                ),
+                              ),
+                            },
+                            h,
+                          ),
+                        },
+                        h,
+                      ),
+                    ],
+                  },
+                  h,
+                ),
+              ];
             }),
-          ]
-        }),
-      }),
-    ],
-  })
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
 
 const projectActionConfig = (
   action: ProjectAction,
+  h: HtmlBuilder<Message>,
 ): DropdownMenu.DropdownMenuItemConfig =>
   M.value(action).pipe(
     M.withReturnType<DropdownMenu.DropdownMenuItemConfig>(),
     M.when('view', () => ({
       label: 'View Project',
-      icon: Icon.icon('folder', { class: 'text-muted-foreground' }),
+      icon: Icon.icon('folder', { class: 'text-muted-foreground' }, h),
       group: 'Project',
     })),
     M.when('share', () => ({
       label: 'Share Project',
-      icon: Icon.icon('share', { class: 'text-muted-foreground' }),
+      icon: Icon.icon('share', { class: 'text-muted-foreground' }, h),
       group: 'Project',
     })),
     M.when('delete', () => ({
       label: 'Delete Project',
-      icon: Icon.icon('trash-2', { class: 'text-muted-foreground' }),
+      icon: Icon.icon('trash-2', { class: 'text-muted-foreground' }, h),
       group: '',
     })),
     M.exhaustive,
-  )
+  );
 
 const PROJECT_ACTION_CLASS =
-  'absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform peer-hover/menu-button:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 after:absolute after:-inset-2 group-data-[collapsible=icon]:hidden group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[open]:opacity-100 md:opacity-0'
+  'absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform peer-hover/menu-button:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 after:absolute after:-inset-2 group-data-[collapsible=icon]:hidden group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[open]:opacity-100 md:opacity-0';
 
 const navProjects = (
   models: ReadonlyArray<DropdownMenu.Model>,
+  h: HtmlBuilder<Message>,
 ): Html => {
-  const h = html<Message>()
-
-  return sidebarGroup({
-    class: 'group-data-[collapsible=icon]:hidden',
-    children: [
-      sidebarGroupLabel({ children: ['Projects'] }),
-      sidebarMenu({
-        children: [
-          ...data.projects.flatMap((project, index) => {
-            const model = models[index]
-
-            if (model === undefined) {
-              return []
-            }
-
-            return [
-              sidebarMenuItem({
-                children: [
-                  sidebarMenuButton({
-                    href: project.url,
-                    children: [
-                      Icon.icon(project.icon),
-                      h.span([], [project.name]),
-                    ],
-                  }),
-                  DropdownMenu.dropdownMenu<ProjectAction, Message>({
-                    model,
-                    toParentMessage: message =>
-                      GotProjectMenuMessage({ index, message }),
-                    trigger: h.span(
-                      [h.Class('contents')],
-                      [
-                        Icon.moreHorizontal({ class: 'size-4' }),
-                        h.span([h.Class('sr-only')], ['More']),
-                      ],
-                    ),
-                    triggerClass: PROJECT_ACTION_CLASS,
-                    items: PROJECT_ACTIONS,
-                    itemToConfig: projectActionConfig,
-                    side: 'right',
-                    align: 'start',
-                    ariaLabel: `${project.name} actions`,
-                  }),
-                ],
-              }),
-            ]
-          }),
-          sidebarMenuItem({
+  return sidebarGroup(
+    {
+      class: 'group-data-[collapsible=icon]:hidden',
+      children: [
+        sidebarGroupLabel({ children: ['Projects'] }, h),
+        sidebarMenu(
+          {
             children: [
-              sidebarMenuButton({
-                children: [
-                  Icon.moreHorizontal(),
-                  h.span([], ['More']),
-                ],
+              ...data.projects.flatMap((project, index) => {
+                const model = models[index];
+
+                if (model === undefined) {
+                  return [];
+                }
+
+                return [
+                  sidebarMenuItem(
+                    {
+                      children: [
+                        sidebarMenuButton(
+                          {
+                            href: project.url,
+                            children: [
+                              Icon.icon(project.icon, {}, h),
+                              h.span([], [project.name]),
+                            ],
+                          },
+                          h,
+                        ),
+                        DropdownMenu.dropdownMenu<ProjectAction, Message>(
+                          {
+                            model,
+                            toParentMessage: (message) =>
+                              GotProjectMenuMessage({ index, message }),
+                            trigger: h.span(
+                              [h.Class('contents')],
+                              [
+                                Icon.moreHorizontal({ class: 'size-4' }, h),
+                                h.span([h.Class('sr-only')], ['More']),
+                              ],
+                            ),
+                            triggerClass: PROJECT_ACTION_CLASS,
+                            items: PROJECT_ACTIONS,
+                            itemToConfig: (action) =>
+                              projectActionConfig(action, h),
+                            side: 'right',
+                            align: 'start',
+                            ariaLabel: `${project.name} actions`,
+                          },
+                          h,
+                        ),
+                      ],
+                    },
+                    h,
+                  ),
+                ];
               }),
+              sidebarMenuItem(
+                {
+                  children: [
+                    sidebarMenuButton(
+                      {
+                        children: [
+                          Icon.moreHorizontal({}, h),
+                          h.span([], ['More']),
+                        ],
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
             ],
-          }),
-        ],
-      }),
-    ],
-  })
-}
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
+};
 
-const navSecondary = (): Html => {
-  const h = html<Message>()
+const navSecondary = (h: HtmlBuilder<Message>): Html => {
+  return sidebarGroup(
+    {
+      class: 'mt-auto',
+      children: [
+        sidebarGroupContent(
+          {
+            children: [
+              sidebarMenu(
+                {
+                  children: data.navSecondary.map((item) =>
+                    sidebarMenuItem(
+                      {
+                        children: [
+                          sidebarMenuButton(
+                            {
+                              href: item.url,
+                              size: 'sm',
+                              children: [
+                                Icon.icon(item.icon, {}, h),
+                                h.span([], [item.title]),
+                              ],
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                  ),
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
+};
 
-  return sidebarGroup({
-    class: 'mt-auto',
-    children: [
-      sidebarGroupContent({
-        children: [
-          sidebarMenu({
-            children: data.navSecondary.map(item =>
-              sidebarMenuItem({
-                children: [
-                  sidebarMenuButton({
-                    href: item.url,
-                    size: 'sm',
-                    children: [
-                      Icon.icon(item.icon),
-                      h.span([], [item.title]),
-                    ],
-                  }),
-                ],
-              }),
-            ),
-          }),
-        ],
-      }),
-    ],
-  })
-}
-
-const userSummary = (): Html => {
-  const h = html<Message>()
-
+const userSummary = (h: HtmlBuilder<Message>): Html => {
   return h.span(
     [h.Class('contents')],
     [
-      avatar({
-        class: 'h-8 w-8 rounded-lg',
-        children: [
-          avatarFallback({
-            class: 'rounded-lg',
-            children: ['CN'],
-          }),
-        ],
-      }),
+      avatar(
+        {
+          class: 'h-8 w-8 rounded-lg',
+          children: [
+            avatarFallback(
+              {
+                class: 'rounded-lg',
+                children: ['CN'],
+              },
+              h,
+            ),
+          ],
+        },
+        h,
+      ),
       h.div(
         [h.Class('grid flex-1 text-left text-sm leading-tight')],
         [
@@ -467,234 +528,289 @@ const userSummary = (): Html => {
         ],
       ),
     ],
-  )
-}
+  );
+};
 
 const userActionConfig = (
   action: UserAction,
+  h: HtmlBuilder<Message>,
 ): DropdownMenu.DropdownMenuItemConfig =>
   M.value(action).pipe(
     M.withReturnType<DropdownMenu.DropdownMenuItemConfig>(),
     M.when('upgrade', () => ({
       label: 'Upgrade to Pro',
-      icon: Icon.icon('sparkles'),
+      icon: Icon.icon('sparkles', {}, h),
       group: 'shadcn · m@example.com',
     })),
     M.when('account', () => ({
       label: 'Account',
-      icon: Icon.icon('badge-check'),
+      icon: Icon.icon('badge-check', {}, h),
       group: 'Account',
     })),
     M.when('billing', () => ({
       label: 'Billing',
-      icon: Icon.icon('credit-card'),
+      icon: Icon.icon('credit-card', {}, h),
       group: 'Account',
     })),
     M.when('notifications', () => ({
       label: 'Notifications',
-      icon: Icon.icon('bell'),
+      icon: Icon.icon('bell', {}, h),
       group: 'Account',
     })),
     M.when('log-out', () => ({
       label: 'Log out',
-      icon: Icon.icon('log-out'),
+      icon: Icon.icon('log-out', {}, h),
       group: '',
     })),
     M.exhaustive,
-  )
+  );
 
-const navUser = (model: DropdownMenu.Model): Html => {
-  const h = html<Message>()
+const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
+  return sidebarMenu(
+    {
+      children: [
+        sidebarMenuItem(
+          {
+            children: [
+              DropdownMenu.dropdownMenu<UserAction, Message>(
+                {
+                  model,
+                  toParentMessage: (message) => GotUserMenuMessage({ message }),
+                  trigger: h.span(
+                    [h.Class('contents')],
+                    [
+                      userSummary(h),
+                      Icon.chevronsUpDown(
+                        {
+                          class: 'ml-auto size-4 shrink-0',
+                        },
+                        h,
+                      ),
+                    ],
+                  ),
+                  triggerClass: sidebarMenuButtonVariants({
+                    size: 'lg',
+                    class:
+                      'data-[open]:bg-sidebar-accent data-[open]:text-sidebar-accent-foreground',
+                  }),
+                  items: USER_ACTIONS,
+                  itemToConfig: (action) => userActionConfig(action, h),
+                  side: 'right',
+                  align: 'end',
+                  ariaLabel: 'User menu',
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
+};
 
-  return sidebarMenu({
-    children: [
-      sidebarMenuItem({
-        children: [
-          DropdownMenu.dropdownMenu<UserAction, Message>({
-            model,
-            toParentMessage: message =>
-              GotUserMenuMessage({ message }),
-            trigger: h.span(
-              [h.Class('contents')],
+const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+
+  return sidebar(
+    {
+      state,
+      variant: 'inset',
+      children: [
+        sidebarHeader(
+          {
+            children: [
+              sidebarMenu(
+                {
+                  children: [
+                    sidebarMenuItem(
+                      {
+                        children: [
+                          sidebarMenuButton(
+                            {
+                              size: 'lg',
+                              href: '#',
+                              children: [
+                                h.div(
+                                  [
+                                    h.Class(
+                                      'flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground',
+                                    ),
+                                  ],
+                                  [
+                                    Icon.icon(
+                                      'command',
+                                      { class: 'size-4' },
+                                      h,
+                                    ),
+                                  ],
+                                ),
+                                h.div(
+                                  [
+                                    h.Class(
+                                      'grid flex-1 text-left text-sm leading-tight',
+                                    ),
+                                  ],
+                                  [
+                                    h.span(
+                                      [h.Class('truncate font-medium')],
+                                      ['Acme Inc'],
+                                    ),
+                                    h.span(
+                                      [h.Class('truncate text-xs')],
+                                      ['Enterprise'],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+        sidebarContent(
+          {
+            children: [
+              navMain(model.navMainOpen, h),
+              navProjects(model.projectMenus, h),
+              navSecondary(h),
+            ],
+          },
+          h,
+        ),
+        sidebarFooter({ children: [navUser(model.userMenu, h)] }, h),
+      ],
+    },
+    h,
+  );
+};
+
+const pageContent = (h: HtmlBuilder<Message>): Html => {
+  return sidebarInset(
+    {
+      children: [
+        h.header(
+          [h.Class('flex h-16 shrink-0 items-center gap-2')],
+          [
+            h.div(
+              [h.Class('flex items-center gap-2 px-4')],
               [
-                userSummary(),
-                Icon.chevronsUpDown({
-                  class: 'ml-auto size-4 shrink-0',
-                }),
+                sidebarTrigger(
+                  {
+                    onClick: ToggledSidebar(),
+                    class: '-ml-1',
+                  },
+                  h,
+                ),
+                separator(
+                  {
+                    orientation: 'vertical',
+                    class: 'mr-2 data-[orientation=vertical]:h-4',
+                  },
+                  h,
+                ),
+                breadcrumb(
+                  {
+                    children: [
+                      breadcrumbList(
+                        {
+                          children: [
+                            breadcrumbItem(
+                              {
+                                class: 'hidden md:block',
+                                children: [
+                                  breadcrumbLink(
+                                    {
+                                      href: '#',
+                                      children: ['Build Your Application'],
+                                    },
+                                    h,
+                                  ),
+                                ],
+                              },
+                              h,
+                            ),
+                            breadcrumbSeparator(
+                              {
+                                class: 'hidden md:block',
+                              },
+                              h,
+                            ),
+                            breadcrumbItem(
+                              {
+                                children: [
+                                  breadcrumbPage(
+                                    {
+                                      children: ['Data Fetching'],
+                                    },
+                                    h,
+                                  ),
+                                ],
+                              },
+                              h,
+                            ),
+                          ],
+                        },
+                        h,
+                      ),
+                    ],
+                  },
+                  h,
+                ),
               ],
             ),
-            triggerClass: sidebarMenuButtonVariants({
-              size: 'lg',
-              class:
-                'data-[open]:bg-sidebar-accent data-[open]:text-sidebar-accent-foreground',
-            }),
-            items: USER_ACTIONS,
-            itemToConfig: userActionConfig,
-            side: 'right',
-            align: 'end',
-            ariaLabel: 'User menu',
-          }),
-        ],
-      }),
-    ],
-  })
-}
+          ],
+        ),
+        h.div(
+          [h.Class('flex flex-1 flex-col gap-4 p-4 pt-0')],
+          [
+            h.div(
+              [h.Class('grid auto-rows-min gap-4 md:grid-cols-3')],
+              [
+                h.div([h.Class('aspect-video rounded-xl bg-muted/50')], []),
+                h.div([h.Class('aspect-video rounded-xl bg-muted/50')], []),
+                h.div([h.Class('aspect-video rounded-xl bg-muted/50')], []),
+              ],
+            ),
+            h.div(
+              [
+                h.Class(
+                  'min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min',
+                ),
+              ],
+              [],
+            ),
+          ],
+        ),
+      ],
+    },
+    h,
+  );
+};
 
-const appSidebar = (model: Model): Html => {
-  const h = html<Message>()
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
+export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
 
-  return sidebar({
-    state,
-    variant: 'inset',
-    children: [
-      sidebarHeader({
-        children: [
-          sidebarMenu({
-            children: [
-              sidebarMenuItem({
-                children: [
-                  sidebarMenuButton({
-                    size: 'lg',
-                    href: '#',
-                    children: [
-                      h.div(
-                        [
-                          h.Class(
-                            'flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground',
-                          ),
-                        ],
-                        [Icon.icon('command', { class: 'size-4' })],
-                      ),
-                      h.div(
-                        [
-                          h.Class(
-                            'grid flex-1 text-left text-sm leading-tight',
-                          ),
-                        ],
-                        [
-                          h.span(
-                            [h.Class('truncate font-medium')],
-                            ['Acme Inc'],
-                          ),
-                          h.span(
-                            [h.Class('truncate text-xs')],
-                            ['Enterprise'],
-                          ),
-                        ],
-                      ),
-                    ],
-                  }),
-                ],
-              }),
-            ],
-          }),
-        ],
-      }),
-      sidebarContent({
-        children: [
-          navMain(model.navMainOpen),
-          navProjects(model.projectMenus),
-          navSecondary(),
-        ],
-      }),
-      sidebarFooter({ children: [navUser(model.userMenu)] }),
-    ],
-  })
-}
-
-const pageContent = (): Html => {
-  const h = html<Message>()
-
-  return sidebarInset({
-    children: [
-      h.header(
-        [h.Class('flex h-16 shrink-0 items-center gap-2')],
-        [
-          h.div(
-            [h.Class('flex items-center gap-2 px-4')],
-            [
-              sidebarTrigger({
-                onClick: ToggledSidebar(),
-                class: '-ml-1',
-              }),
-              separator({
-                orientation: 'vertical',
-                class: 'mr-2 data-[orientation=vertical]:h-4',
-              }),
-              breadcrumb({
-                children: [
-                  breadcrumbList({
-                    children: [
-                      breadcrumbItem({
-                        class: 'hidden md:block',
-                        children: [
-                          breadcrumbLink({
-                            href: '#',
-                            children: ['Build Your Application'],
-                          }),
-                        ],
-                      }),
-                      breadcrumbSeparator({
-                        class: 'hidden md:block',
-                      }),
-                      breadcrumbItem({
-                        children: [
-                          breadcrumbPage({
-                            children: ['Data Fetching'],
-                          }),
-                        ],
-                      }),
-                    ],
-                  }),
-                ],
-              }),
-            ],
-          ),
-        ],
-      ),
-      h.div(
-        [h.Class('flex flex-1 flex-col gap-4 p-4 pt-0')],
-        [
-          h.div(
-            [h.Class('grid auto-rows-min gap-4 md:grid-cols-3')],
-            [
-              h.div(
-                [h.Class('aspect-video rounded-xl bg-muted/50')],
-                [],
-              ),
-              h.div(
-                [h.Class('aspect-video rounded-xl bg-muted/50')],
-                [],
-              ),
-              h.div(
-                [h.Class('aspect-video rounded-xl bg-muted/50')],
-                [],
-              ),
-            ],
-          ),
-          h.div(
-            [
-              h.Class(
-                'min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min',
-              ),
-            ],
-            [],
-          ),
-        ],
-      ),
-    ],
-  })
-}
-
-export const view = (model: Model): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
-
-  return sidebarProvider<Message>({
-    state,
-    children: [appSidebar(model), pageContent()],
-  })
-}
+  return sidebarProvider<Message>(
+    {
+      state,
+      children: [appSidebar(model, h), pageContent(h)],
+    },
+    h,
+  );
+};
 
 // PORT NOTE: Avatar files are not bundled, so the source image is represented
 // by its CN fallback. The foldkit Disclosure exposes one trigger, so the main

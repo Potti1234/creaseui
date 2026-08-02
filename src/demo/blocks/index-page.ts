@@ -1,6 +1,6 @@
-import { type Html, html } from 'foldkit/html'
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import { SIDEBAR_BLOCK_IDS } from '@/route'
+import { SIDEBAR_BLOCK_IDS } from '@/route';
 
 /* /blocks/sidebar — index of all sidebar blocks, mirroring
    ui.shadcn.com/blocks/sidebar: each block previewed in a framed, same-origin
@@ -23,13 +23,15 @@ const BLOCK_DESCRIPTIONS: Readonly<Record<string, string>> = {
   '14': 'A sidebar on the right.',
   '15': 'A left and right sidebar.',
   '16': 'A sidebar with a sticky site header.',
-}
+};
 
-export const view = <Msg>(): Html => {
-  const h = html<Msg>()
-
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
   return h.div(
-    [h.Class('mx-auto flex w-full max-w-[1400px] flex-col gap-10 px-4 py-8 md:px-8')],
+    [
+      h.Class(
+        'mx-auto flex w-full max-w-[1400px] flex-col gap-10 px-4 py-8 md:px-8',
+      ),
+    ],
     [
       h.div(
         [h.Class('flex flex-col items-start gap-4')],
@@ -43,14 +45,18 @@ export const view = <Msg>(): Html => {
             ['Sidebar Blocks'],
           ),
           h.p(
-            [h.Class('max-w-4xl text-base text-balance text-foreground sm:text-lg')],
+            [
+              h.Class(
+                'max-w-4xl text-base text-balance text-foreground sm:text-lg',
+              ),
+            ],
             [
               'The shadcn/ui sidebar blocks rebuilt on foldkit. Each preview is the real page — click Open to view it full screen.',
             ],
           ),
         ],
       ),
-      ...SIDEBAR_BLOCK_IDS.map(id =>
+      ...SIDEBAR_BLOCK_IDS.map((id) =>
         h.div(
           [h.Class('flex flex-col gap-3')],
           [
@@ -92,5 +98,5 @@ export const view = <Msg>(): Html => {
         ),
       ),
     ],
-  )
-}
+  );
+};

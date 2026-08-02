@@ -1,10 +1,10 @@
-import { Match as M, Schema as S } from 'effect'
-import { Command } from 'foldkit'
-import { type Html, html } from 'foldkit/html'
-import { m } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { Match as M, Schema as S } from 'effect';
+import { Command } from 'foldkit';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
+import { evo } from 'foldkit/struct';
 
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/lib/icon';
 import {
   breadcrumb,
   breadcrumbItem,
@@ -12,9 +12,9 @@ import {
   breadcrumbList,
   breadcrumbPage,
   breadcrumbSeparator,
-} from '@/ui/breadcrumb'
-import * as Collapsible from '@/ui/collapsible'
-import { separator } from '@/ui/separator'
+} from '@/ui/breadcrumb';
+import * as Collapsible from '@/ui/collapsible';
+import { separator } from '@/ui/separator';
 import {
   sidebar,
   sidebarContent,
@@ -33,19 +33,19 @@ import {
   sidebarProvider,
   sidebarRail,
   sidebarTrigger,
-} from '@/ui/sidebar'
+} from '@/ui/sidebar';
 
 type NavGroup = Readonly<{
-  title: string
-  url: string
+  title: string;
+  url: string;
   items: ReadonlyArray<
     Readonly<{
-      title: string
-      url: string
-      isActive?: boolean
+      title: string;
+      url: string;
+      isActive?: boolean;
     }>
-  >
-}>
+  >;
+}>;
 
 // This is sample data copied from the source block.
 const data = {
@@ -105,268 +105,342 @@ const data = {
       items: [{ title: 'Contribution Guide', url: '#' }],
     },
   ] satisfies ReadonlyArray<NavGroup>,
-}
+};
 
 // MODEL
 
 export const Model = S.Struct({
   isSidebarOpen: S.Boolean,
   navMainOpen: S.Array(S.Boolean),
-})
-export type Model = typeof Model.Type
+});
+export type Model = typeof Model.Type;
 
 // MESSAGE
 
-export const ToggledSidebar = m('ToggledSidebar')
+export const ToggledSidebar = m('ToggledSidebar');
 export const ToggledNavMain = m('ToggledNavMain', {
   index: S.Number,
   isOpen: S.Boolean,
-})
+});
 
-export const Message = S.Union([ToggledSidebar, ToggledNavMain])
-export type Message = typeof Message.Type
+export const Message = S.Union([ToggledSidebar, ToggledNavMain]);
+export type Message = typeof Message.Type;
 
 // INIT
 
 export const init = (): Model => ({
   isSidebarOpen: true,
   navMainOpen: data.navMain.map((_, index) => index === 1),
-})
+});
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       ToggledSidebar: () => [
-        evo(model, { isSidebarOpen: current => !current }),
+        evo(model, { isSidebarOpen: (current) => !current }),
         [],
       ],
       ToggledNavMain: ({ index, isOpen }) => {
         if (model.navMainOpen[index] === undefined) {
-          return [model, []]
+          return [model, []];
         }
         return [
           evo(model, {
-            navMainOpen: groups =>
+            navMainOpen: (groups) =>
               groups.map((open, groupIndex) =>
                 groupIndex === index ? isOpen : open,
               ),
           }),
           [],
-        ]
+        ];
       },
     }),
-  )
+  );
 
 // VIEW
 
-const brand = (): Html => {
-  const h = html<Message>()
-
-  return sidebarMenu({
-    children: [
-      sidebarMenuItem({
-        children: [
-          sidebarMenuButton({
-            size: 'lg',
-            href: '#',
+const brand = (h: HtmlBuilder<Message>): Html => {
+  return sidebarMenu(
+    {
+      children: [
+        sidebarMenuItem(
+          {
             children: [
-              h.div(
-                [
-                  h.Class(
-                    'flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground',
-                  ),
-                ],
-                [Icon.icon('gallery-vertical-end', { class: 'size-4' })],
-              ),
-              h.div(
-                [h.Class('flex flex-col gap-0.5 leading-none')],
-                [
-                  h.span([h.Class('font-medium')], ['Documentation']),
-                  h.span([], ['v1.0.0']),
-                ],
+              sidebarMenuButton(
+                {
+                  size: 'lg',
+                  href: '#',
+                  children: [
+                    h.div(
+                      [
+                        h.Class(
+                          'flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground',
+                        ),
+                      ],
+                      [
+                        Icon.icon(
+                          'gallery-vertical-end',
+                          { class: 'size-4' },
+                          h,
+                        ),
+                      ],
+                    ),
+                    h.div(
+                      [h.Class('flex flex-col gap-0.5 leading-none')],
+                      [
+                        h.span([h.Class('font-medium')], ['Documentation']),
+                        h.span([], ['v1.0.0']),
+                      ],
+                    ),
+                  ],
+                },
+                h,
               ),
             ],
-          }),
-        ],
-      }),
-    ],
-  })
-}
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
+};
 
-const searchForm = (): Html => {
-  const h = html<Message>()
-
+const searchForm = (h: HtmlBuilder<Message>): Html => {
   return h.form(
     [],
     [
-      sidebarGroup({
-        class: 'py-0',
-        children: [
-          sidebarGroupContent({
-            class: 'relative',
-            children: [
-              h.label(
-                [h.For('sidebar-05-search'), h.Class('sr-only')],
-                ['Search'],
-              ),
-              sidebarInput({
-                id: 'sidebar-05-search',
-                placeholder: 'Search the docs...',
-                class: 'pl-8',
-              }),
-              Icon.search({
-                class:
-                  'pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none',
-              }),
-            ],
-          }),
-        ],
-      }),
-    ],
-  )
-}
-
-const navMain = (openStates: ReadonlyArray<boolean>): Html =>
-  sidebarGroup<Message>({
-    children: [
-      sidebarMenu({
-        children: data.navMain.flatMap((group, index) => {
-          const isOpen = openStates[index]
-
-          if (isOpen === undefined) {
-            return []
-          }
-
-          const h = html<Message>()
-          const trigger = h.span(
-            [h.Class('contents')],
-            [
-              group.title,
-              isOpen
-                ? Icon.minus({ class: 'ml-auto size-4' })
-                : Icon.plus({ class: 'ml-auto size-4' }),
-            ],
-          )
-          const content = sidebarMenuSub<Message>({
-            children: group.items.map(item =>
-              sidebarMenuSubItem({
+      sidebarGroup(
+        {
+          class: 'py-0',
+          children: [
+            sidebarGroupContent(
+              {
+                class: 'relative',
                 children: [
-                  sidebarMenuSubButton({
-                    href: item.url,
-                    isActive: item.isActive ?? false,
-                    children: [item.title],
-                  }),
+                  h.label(
+                    [h.For('sidebar-05-search'), h.Class('sr-only')],
+                    ['Search'],
+                  ),
+                  sidebarInput(
+                    {
+                      id: 'sidebar-05-search',
+                      placeholder: 'Search the docs...',
+                      class: 'pl-8',
+                    },
+                    h,
+                  ),
+                  Icon.search(
+                    {
+                      class:
+                        'pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none',
+                    },
+                    h,
+                  ),
                 ],
-              }),
+              },
+              h,
             ),
-          })
-
-          return [
-            sidebarMenuItem({
-              children: [
-                Collapsible.collapsible({
-                  id: `sidebar-05-nav-main-${index}`,
-                  isOpen,
-                  onToggle: nextIsOpen => ToggledNavMain({ index, isOpen: nextIsOpen }),
-                  class: 'group/collapsible',
-                  trigger,
-                  triggerClass: sidebarMenuButtonVariants(),
-                  content,
-                }),
-              ],
-            }),
-          ]
-        }),
-      }),
+          ],
+        },
+        h,
+      ),
     ],
-  })
+  );
+};
 
-const appSidebar = (model: Model): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
+const navMain = (
+  openStates: ReadonlyArray<boolean>,
+  h: HtmlBuilder<Message>,
+): Html =>
+  sidebarGroup<Message>(
+    {
+      children: [
+        sidebarMenu(
+          {
+            children: data.navMain.flatMap((group, index) => {
+              const isOpen = openStates[index];
 
-  return sidebar<Message>({
-    state,
-    children: [
-      sidebarHeader({ children: [brand(), searchForm()] }),
-      sidebarContent({ children: [navMain(model.navMainOpen)] }),
-      sidebarRail({ onClick: ToggledSidebar() }),
-    ],
-  })
-}
-
-const pageContent = (): Html => {
-  const h = html<Message>()
-
-  return sidebarInset({
-    children: [
-      h.header(
-        [h.Class('flex h-16 shrink-0 items-center gap-2 border-b px-4')],
-        [
-          sidebarTrigger({ onClick: ToggledSidebar(), class: '-ml-1' }),
-          separator({
-            orientation: 'vertical',
-            class: 'mr-2 data-[orientation=vertical]:h-4',
-          }),
-          breadcrumb({
-            children: [
-              breadcrumbList({
-                children: [
-                  breadcrumbItem({
-                    class: 'hidden md:block',
-                    children: [
-                      breadcrumbLink({
-                        href: '#',
-                        children: ['Build Your Application'],
-                      }),
-                    ],
-                  }),
-                  breadcrumbSeparator({ class: 'hidden md:block' }),
-                  breadcrumbItem({
-                    children: [
-                      breadcrumbPage({ children: ['Data Fetching'] }),
-                    ],
-                  }),
+              if (isOpen === undefined) {
+                return [];
+              }
+              const trigger = h.span(
+                [h.Class('contents')],
+                [
+                  group.title,
+                  isOpen
+                    ? Icon.minus({ class: 'ml-auto size-4' }, h)
+                    : Icon.plus({ class: 'ml-auto size-4' }, h),
                 ],
-              }),
-            ],
-          }),
-        ],
-      ),
-      h.div(
-        [h.Class('flex flex-1 flex-col gap-4 p-4')],
-        [
-          h.div(
-            [h.Class('grid auto-rows-min gap-4 md:grid-cols-3')],
-            [
-              h.div([h.Class('aspect-video rounded-xl bg-muted/50')], []),
-              h.div([h.Class('aspect-video rounded-xl bg-muted/50')], []),
-              h.div([h.Class('aspect-video rounded-xl bg-muted/50')], []),
-            ],
-          ),
-          h.div(
-            [
-              h.Class(
-                'min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min',
-              ),
-            ],
-            [],
-          ),
-        ],
-      ),
-    ],
-  })
-}
+              );
+              const content = sidebarMenuSub<Message>(
+                {
+                  children: group.items.map((item) =>
+                    sidebarMenuSubItem(
+                      {
+                        children: [
+                          sidebarMenuSubButton(
+                            {
+                              href: item.url,
+                              isActive: item.isActive ?? false,
+                              children: [item.title],
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                  ),
+                },
+                h,
+              );
 
-export const view = (model: Model): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
+              return [
+                sidebarMenuItem(
+                  {
+                    children: [
+                      Collapsible.collapsible(
+                        {
+                          id: `sidebar-05-nav-main-${index}`,
+                          isOpen,
+                          onToggle: (nextIsOpen) =>
+                            ToggledNavMain({ index, isOpen: nextIsOpen }),
+                          class: 'group/collapsible',
+                          trigger,
+                          triggerClass: sidebarMenuButtonVariants(),
+                          content,
+                        },
+                        h,
+                      ),
+                    ],
+                  },
+                  h,
+                ),
+              ];
+            }),
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
 
-  return sidebarProvider<Message>({
-    state,
-    children: [appSidebar(model), pageContent()],
-  })
-}
+const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+
+  return sidebar<Message>(
+    {
+      state,
+      children: [
+        sidebarHeader({ children: [brand(h), searchForm(h)] }, h),
+        sidebarContent({ children: [navMain(model.navMainOpen, h)] }, h),
+        sidebarRail({ onClick: ToggledSidebar() }, h),
+      ],
+    },
+    h,
+  );
+};
+
+const pageContent = (h: HtmlBuilder<Message>): Html => {
+  return sidebarInset(
+    {
+      children: [
+        h.header(
+          [h.Class('flex h-16 shrink-0 items-center gap-2 border-b px-4')],
+          [
+            sidebarTrigger({ onClick: ToggledSidebar(), class: '-ml-1' }, h),
+            separator(
+              {
+                orientation: 'vertical',
+                class: 'mr-2 data-[orientation=vertical]:h-4',
+              },
+              h,
+            ),
+            breadcrumb(
+              {
+                children: [
+                  breadcrumbList(
+                    {
+                      children: [
+                        breadcrumbItem(
+                          {
+                            class: 'hidden md:block',
+                            children: [
+                              breadcrumbLink(
+                                {
+                                  href: '#',
+                                  children: ['Build Your Application'],
+                                },
+                                h,
+                              ),
+                            ],
+                          },
+                          h,
+                        ),
+                        breadcrumbSeparator({ class: 'hidden md:block' }, h),
+                        breadcrumbItem(
+                          {
+                            children: [
+                              breadcrumbPage(
+                                { children: ['Data Fetching'] },
+                                h,
+                              ),
+                            ],
+                          },
+                          h,
+                        ),
+                      ],
+                    },
+                    h,
+                  ),
+                ],
+              },
+              h,
+            ),
+          ],
+        ),
+        h.div(
+          [h.Class('flex flex-1 flex-col gap-4 p-4')],
+          [
+            h.div(
+              [h.Class('grid auto-rows-min gap-4 md:grid-cols-3')],
+              [
+                h.div([h.Class('aspect-video rounded-xl bg-muted/50')], []),
+                h.div([h.Class('aspect-video rounded-xl bg-muted/50')], []),
+                h.div([h.Class('aspect-video rounded-xl bg-muted/50')], []),
+              ],
+            ),
+            h.div(
+              [
+                h.Class(
+                  'min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min',
+                ),
+              ],
+              [],
+            ),
+          ],
+        ),
+      ],
+    },
+    h,
+  );
+};
+
+export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+
+  return sidebarProvider<Message>(
+    {
+      state,
+      children: [appSidebar(model, h), pageContent(h)],
+    },
+    h,
+  );
+};

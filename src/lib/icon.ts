@@ -1,8 +1,8 @@
-import { Array, Match as M } from 'effect'
-import { type Attribute, type Html, html } from 'foldkit/html'
+import { Array, Match as M } from 'effect';
+import { type Attribute, type Html, type HtmlBuilder } from 'foldkit/html';
 
-import { iconNodes } from '@/lib/icon-nodes'
-import { cn } from '@/lib/utils'
+import { iconNodes } from '@/lib/icon-nodes';
+import { cn } from '@/lib/utils';
 
 /* Lucide icons rendered through foldkit's SVG constructors, driven by
    lucide-static's icon-nodes data (same icon set shadcn uses). Use the named
@@ -17,35 +17,35 @@ type IconTag =
   | 'path'
   | 'polygon'
   | 'polyline'
-  | 'rect'
+  | 'rect';
 
 type IconAttributes = Readonly<{
-  cx?: string
-  cy?: string
-  d?: string
-  fill?: string
-  height?: string
-  points?: string
-  r?: string
-  rx?: string
-  ry?: string
-  width?: string
-  x?: string
-  x1?: string
-  x2?: string
-  y?: string
-  y1?: string
-  y2?: string
-}>
+  cx?: string;
+  cy?: string;
+  d?: string;
+  fill?: string;
+  height?: string;
+  points?: string;
+  r?: string;
+  rx?: string;
+  ry?: string;
+  width?: string;
+  x?: string;
+  x1?: string;
+  x2?: string;
+  y?: string;
+  y1?: string;
+  y2?: string;
+}>;
 
-export type IconNode = ReadonlyArray<readonly [IconTag, IconAttributes]>
+export type IconNode = ReadonlyArray<readonly [IconTag, IconAttributes]>;
 
 export type IconConfig = Readonly<{
-  class?: string
-  ariaLabel?: string
-}>
+  class?: string;
+  ariaLabel?: string;
+}>;
 
-type H<Msg> = ReturnType<typeof html<Msg>>
+type H<Msg> = HtmlBuilder<Msg>;
 
 const nodeAttributes = <Msg>(
   h: H<Msg>,
@@ -67,7 +67,7 @@ const nodeAttributes = <Msg>(
   ...(attrs.y === undefined ? [] : [h.Y(attrs.y)]),
   ...(attrs.y1 === undefined ? [] : [h.Y1(attrs.y1)]),
   ...(attrs.y2 === undefined ? [] : [h.Y2(attrs.y2)]),
-]
+];
 
 const nodeView = <Msg>(
   h: H<Msg>,
@@ -84,13 +84,16 @@ const nodeView = <Msg>(
     M.when('polyline', () => h.polyline(nodeAttributes(h, node[1]), [])),
     M.when('rect', () => h.rect(nodeAttributes(h, node[1]), [])),
     M.exhaustive,
-  )
+  );
 
-export const icon = <Msg>(name: string, config: IconConfig = {}): Html => {
-  const h = html<Msg>()
-  const node: IconNode = Object.entries(iconNodes).find(
-    ([iconName]) => iconName === name,
-  )?.[1] ?? []
+export const icon = <Msg>(
+  name: string,
+  config: IconConfig,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const node: IconNode =
+    Object.entries(iconNodes).find(([iconName]) => iconName === name)?.[1] ??
+    [];
 
   return h.svg(
     [
@@ -106,35 +109,35 @@ export const icon = <Msg>(name: string, config: IconConfig = {}): Html => {
         ? [h.AriaHidden(true)]
         : [h.Role('img'), h.AriaLabel(config.ariaLabel)]),
     ],
-    Array.map(node, child => nodeView(h, child)),
-  )
-}
+    Array.map(node, (child) => nodeView(h, child)),
+  );
+};
 
 const named =
   (name: string) =>
-  <Msg>(config?: IconConfig): Html =>
-    icon<Msg>(name, config)
+  <Msg>(config: IconConfig, h: HtmlBuilder<Msg>): Html =>
+    icon<Msg>(name, config, h);
 
-export const arrowLeft = named('arrow-left')
-export const arrowRight = named('arrow-right')
-export const arrowDown = named('arrow-down')
-export const calendarIcon = named('calendar')
-export const check = named('check')
-export const chevronDown = named('chevron-down')
-export const chevronLeft = named('chevron-left')
-export const chevronRight = named('chevron-right')
-export const chevronUp = named('chevron-up')
-export const chevronsUpDown = named('chevrons-up-down')
-export const circleCheck = named('circle-check')
-export const circleIcon = named('circle')
-export const gripVertical = named('grip-vertical')
-export const info = named('info')
-export const loaderCircle = named('loader-circle')
-export const minus = named('minus')
-export const moreHorizontal = named('ellipsis')
-export const octagonX = named('octagon-x')
-export const panelLeft = named('panel-left')
-export const plus = named('plus')
-export const search = named('search')
-export const triangleAlert = named('triangle-alert')
-export const x = named('x')
+export const arrowLeft = named('arrow-left');
+export const arrowRight = named('arrow-right');
+export const arrowDown = named('arrow-down');
+export const calendarIcon = named('calendar');
+export const check = named('check');
+export const chevronDown = named('chevron-down');
+export const chevronLeft = named('chevron-left');
+export const chevronRight = named('chevron-right');
+export const chevronUp = named('chevron-up');
+export const chevronsUpDown = named('chevrons-up-down');
+export const circleCheck = named('circle-check');
+export const circleIcon = named('circle');
+export const gripVertical = named('grip-vertical');
+export const info = named('info');
+export const loaderCircle = named('loader-circle');
+export const minus = named('minus');
+export const moreHorizontal = named('ellipsis');
+export const octagonX = named('octagon-x');
+export const panelLeft = named('panel-left');
+export const plus = named('plus');
+export const search = named('search');
+export const triangleAlert = named('triangle-alert');
+export const x = named('x');

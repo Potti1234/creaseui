@@ -8,7 +8,7 @@ not install or replace `effect`, `foldkit`, `@foldkit/ui`, or
 `@effect/platform-browser`; the application owns those framework versions.
 This prevents a component install from creating a nested, older Foldkit copy.
 
-Crease UI `0.1.x` is currently validated against the Foldkit `0.133.x` API.
+Crease UI `0.1.x` is currently validated against the Foldkit `0.134.x` API.
 Foldkit 0.128 moved durable selection and checked values to parent models;
 Crease UI components follow that controlled-state architecture.
 
@@ -65,15 +65,15 @@ does not automatically carry into a separately configured Vitest project.
 
 ```ts
 // vite.config.ts (and vitest.config.ts when it is separate)
-import { defineConfig } from 'vite'
+import { defineConfig } from "vite";
 
 export default defineConfig({
   resolve: {
     alias: {
-      '@': '/src',
+      "@": "/src",
     },
   },
-})
+});
 ```
 
 The application stylesheet must contain `@import "tailwindcss";`, and Vite

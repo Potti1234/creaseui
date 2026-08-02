@@ -1,10 +1,10 @@
-import { Match as M, Option, Schema as S } from 'effect'
-import { Command } from 'foldkit'
-import { type Html, html } from 'foldkit/html'
-import { m } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { Match as M, Option, Schema as S } from 'effect';
+import { Command } from 'foldkit';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
+import { evo } from 'foldkit/struct';
 
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/lib/icon';
 import {
   breadcrumb,
   breadcrumbItem,
@@ -12,10 +12,10 @@ import {
   breadcrumbList,
   breadcrumbPage,
   breadcrumbSeparator,
-} from '@/ui/breadcrumb'
-import * as Collapsible from '@/ui/collapsible'
-import * as DropdownMenu from '@/ui/dropdown-menu'
-import { separator } from '@/ui/separator'
+} from '@/ui/breadcrumb';
+import * as Collapsible from '@/ui/collapsible';
+import * as DropdownMenu from '@/ui/dropdown-menu';
+import { separator } from '@/ui/separator';
 import {
   sidebar,
   sidebarContent,
@@ -31,25 +31,29 @@ import {
   sidebarProvider,
   sidebarRail,
   sidebarTrigger,
-} from '@/ui/sidebar'
+} from '@/ui/sidebar';
 
-type Version = '1.0.1' | '1.1.0-alpha' | '2.0.0-beta1'
+type Version = '1.0.1' | '1.1.0-alpha' | '2.0.0-beta1';
 
 type NavItem = Readonly<{
-  title: string
-  url: string
-  isActive?: boolean
-}>
+  title: string;
+  url: string;
+  isActive?: boolean;
+}>;
 
 type NavGroup = Readonly<{
-  title: string
-  url: string
-  items: ReadonlyArray<NavItem>
-}>
+  title: string;
+  url: string;
+  items: ReadonlyArray<NavItem>;
+}>;
 
 // This is sample data copied from the source block.
 const data = {
-  versions: ['1.0.1', '1.1.0-alpha', '2.0.0-beta1'] satisfies ReadonlyArray<Version>,
+  versions: [
+    '1.0.1',
+    '1.1.0-alpha',
+    '2.0.0-beta1',
+  ] satisfies ReadonlyArray<Version>,
   navMain: [
     {
       title: 'Getting Started',
@@ -106,9 +110,9 @@ const data = {
       items: [{ title: 'Contribution Guide', url: '#' }],
     },
   ] satisfies ReadonlyArray<NavGroup>,
-}
+};
 
-const VersionMenu = DropdownMenu.create<Version>()
+const VersionMenu = DropdownMenu.create<Version>();
 
 // MODEL
 
@@ -117,26 +121,26 @@ export const Model = S.Struct({
   selectedVersion: S.String,
   versionMenu: DropdownMenu.Model,
   navMainOpen: S.Array(S.Boolean),
-})
-export type Model = typeof Model.Type
+});
+export type Model = typeof Model.Type;
 
 // MESSAGE
 
-export const ToggledSidebar = m('ToggledSidebar')
+export const ToggledSidebar = m('ToggledSidebar');
 export const GotVersionMenuMessage = m('GotVersionMenuMessage', {
   message: DropdownMenu.Message,
-})
+});
 export const ToggledNavMain = m('ToggledNavMain', {
   index: S.Number,
   isOpen: S.Boolean,
-})
+});
 
 export const Message = S.Union([
   ToggledSidebar,
   GotVersionMenuMessage,
   ToggledNavMain,
-])
-export type Message = typeof Message.Type
+]);
+export type Message = typeof Message.Type;
 
 // INIT
 
@@ -148,61 +152,60 @@ export const init = (): Model => ({
     isAnimated: true,
   }),
   navMainOpen: data.navMain.map(() => true),
-})
+});
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       ToggledSidebar: () => [
-        evo(model, { isSidebarOpen: current => !current }),
+        evo(model, { isSidebarOpen: (current) => !current }),
         [],
       ],
       GotVersionMenuMessage: ({ message: childMessage }) => {
         const [versionMenu, commands, maybeSelection] = VersionMenu.update(
           model.versionMenu,
           childMessage,
-        )
+        );
 
         return [
           evo(model, {
             versionMenu: () => versionMenu,
-            selectedVersion: current =>
+            selectedVersion: (current) =>
               Option.match(maybeSelection, {
                 onNone: () => current,
                 onSome: ({ value }) => value,
               }),
           }),
-          Command.mapMessages(commands, nextMessage =>
+          Command.mapMessages(commands, (nextMessage) =>
             GotVersionMenuMessage({ message: nextMessage }),
           ),
-        ]
+        ];
       },
       ToggledNavMain: ({ index, isOpen }) => {
         if (model.navMainOpen[index] === undefined) {
-          return [model, []]
+          return [model, []];
         }
         return [
           evo(model, {
-            navMainOpen: groups =>
+            navMainOpen: (groups) =>
               groups.map((open, groupIndex) =>
                 groupIndex === index ? isOpen : open,
               ),
           }),
           [],
-        ]
+        ];
       },
     }),
-  )
+  );
 
 // VIEW
 
-const versionSwitcher = (model: Model): Html => {
-  const h = html<Message>()
+const versionSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
   const trigger = h.span(
     [h.Class('contents')],
     [
@@ -212,7 +215,7 @@ const versionSwitcher = (model: Model): Html => {
             'flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground',
           ),
         ],
-        [Icon.icon('gallery-vertical-end', { class: 'size-4' })],
+        [Icon.icon('gallery-vertical-end', { class: 'size-4' }, h)],
       ),
       h.div(
         [h.Class('flex flex-col gap-0.5 leading-none')],
@@ -221,213 +224,287 @@ const versionSwitcher = (model: Model): Html => {
           h.span([], [`v${model.selectedVersion}`]),
         ],
       ),
-      Icon.chevronsUpDown({ class: 'ml-auto size-4' }),
+      Icon.chevronsUpDown({ class: 'ml-auto size-4' }, h),
     ],
-  )
+  );
 
-  return sidebarMenu({
-    children: [
-      sidebarMenuItem({
-        children: [
-          DropdownMenu.dropdownMenu<Version, Message>({
-            model: model.versionMenu,
-            toParentMessage: message => GotVersionMenuMessage({ message }),
-            trigger,
-            triggerClass: sidebarMenuButtonVariants({
-              size: 'lg',
-              class:
-                'data-[open]:bg-sidebar-accent data-[open]:text-sidebar-accent-foreground',
-            }),
-            items: data.versions,
-            itemToConfig: version => ({
-              label: h.span(
-                [h.Class('contents')],
-                [
-                  `v${version}`,
-                  ...(version === model.selectedVersion
-                    ? [Icon.check({ class: 'ml-auto size-4' })]
-                    : []),
-                ],
+  return sidebarMenu(
+    {
+      children: [
+        sidebarMenuItem(
+          {
+            children: [
+              DropdownMenu.dropdownMenu<Version, Message>(
+                {
+                  model: model.versionMenu,
+                  toParentMessage: (message) =>
+                    GotVersionMenuMessage({ message }),
+                  trigger,
+                  triggerClass: sidebarMenuButtonVariants({
+                    size: 'lg',
+                    class:
+                      'data-[open]:bg-sidebar-accent data-[open]:text-sidebar-accent-foreground',
+                  }),
+                  items: data.versions,
+                  itemToConfig: (version) => ({
+                    label: h.span(
+                      [h.Class('contents')],
+                      [
+                        `v${version}`,
+                        ...(version === model.selectedVersion
+                          ? [Icon.check({ class: 'ml-auto size-4' }, h)]
+                          : []),
+                      ],
+                    ),
+                  }),
+                  align: 'start',
+                  ariaLabel: 'Select documentation version',
+                },
+                h,
               ),
-            }),
-            align: 'start',
-            ariaLabel: 'Select documentation version',
-          }),
-        ],
-      }),
-    ],
-  })
-}
+            ],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
+};
 
-const searchForm = (): Html => {
-  const h = html<Message>()
-
+const searchForm = (h: HtmlBuilder<Message>): Html => {
   return h.form(
     [],
     [
-      sidebarGroup({
-        class: 'py-0',
-        children: [
-          sidebarGroupContent({
-            class: 'relative',
-            children: [
-              h.label(
-                [h.For('sidebar-02-search'), h.Class('sr-only')],
-                ['Search'],
-              ),
-              sidebarInput({
-                id: 'sidebar-02-search',
-                placeholder: 'Search the docs...',
-                class: 'pl-8',
-              }),
-              Icon.search({
-                class:
-                  'pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none',
-              }),
-            ],
-          }),
-        ],
-      }),
+      sidebarGroup(
+        {
+          class: 'py-0',
+          children: [
+            sidebarGroupContent(
+              {
+                class: 'relative',
+                children: [
+                  h.label(
+                    [h.For('sidebar-02-search'), h.Class('sr-only')],
+                    ['Search'],
+                  ),
+                  sidebarInput(
+                    {
+                      id: 'sidebar-02-search',
+                      placeholder: 'Search the docs...',
+                      class: 'pl-8',
+                    },
+                    h,
+                  ),
+                  Icon.search(
+                    {
+                      class:
+                        'pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none',
+                    },
+                    h,
+                  ),
+                ],
+              },
+              h,
+            ),
+          ],
+        },
+        h,
+      ),
     ],
-  )
-}
+  );
+};
 
 const GROUP_LABEL_CLASS =
-  'flex h-8 shrink-0 items-center rounded-md px-2 font-medium ring-sidebar-ring outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0 group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+  'flex h-8 shrink-0 items-center rounded-md px-2 font-medium ring-sidebar-ring outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0 group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground';
 
-const navMain = (openStates: ReadonlyArray<boolean>): Html =>
-  sidebarContent<Message>({
-    class: 'gap-0',
-    children: data.navMain.flatMap((group, index) => {
-      const isOpen = openStates[index]
+const navMain = (
+  openStates: ReadonlyArray<boolean>,
+  h: HtmlBuilder<Message>,
+): Html =>
+  sidebarContent<Message>(
+    {
+      class: 'gap-0',
+      children: data.navMain.flatMap((group, index) => {
+        const isOpen = openStates[index];
 
-      if (isOpen === undefined) {
-        return []
-      }
-
-      const h = html<Message>()
-      const trigger = h.span(
-        [h.Class('contents')],
-        [
-          group.title,
-          Icon.chevronRight({
-            class: `ml-auto size-4 transition-transform${
-              isOpen ? ' rotate-90' : ''
-            }`,
-          }),
-        ],
-      )
-      const content = sidebarGroupContent<Message>({
-        children: [
-          sidebarMenu({
-            children: group.items.map(item =>
-              sidebarMenuItem({
-                children: [
-                  sidebarMenuButton({
-                    href: item.url,
-                    isActive: item.isActive ?? false,
-                    children: [item.title],
-                  }),
-                ],
-              }),
+        if (isOpen === undefined) {
+          return [];
+        }
+        const trigger = h.span(
+          [h.Class('contents')],
+          [
+            group.title,
+            Icon.chevronRight(
+              {
+                class: `ml-auto size-4 transition-transform${
+                  isOpen ? ' rotate-90' : ''
+                }`,
+              },
+              h,
             ),
-          }),
-        ],
-      })
-
-      return [
-        sidebarGroup({
-          children: [
-            Collapsible.collapsible({
-              id: `sidebar-02-nav-main-${index}`,
-              isOpen,
-              onToggle: nextIsOpen => ToggledNavMain({ index, isOpen: nextIsOpen }),
-              class: 'group/collapsible',
-              trigger,
-              triggerClass: GROUP_LABEL_CLASS,
-              content,
-            }),
           ],
-        }),
-      ]
-    }),
-  })
-
-const appSidebar = (model: Model): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
-
-  return sidebar<Message>({
-    state,
-    children: [
-      sidebarHeader({
-        children: [versionSwitcher(model), searchForm()],
-      }),
-      navMain(model.navMainOpen),
-      sidebarRail({ onClick: ToggledSidebar() }),
-    ],
-  })
-}
-
-const pageContent = (): Html => {
-  const h = html<Message>()
-
-  return sidebarInset({
-    children: [
-      h.header(
-        [
-          h.Class(
-            'sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4',
-          ),
-        ],
-        [
-          sidebarTrigger({ onClick: ToggledSidebar(), class: '-ml-1' }),
-          separator({ orientation: 'vertical', class: 'mr-2 h-4' }),
-          breadcrumb({
+        );
+        const content = sidebarGroupContent<Message>(
+          {
             children: [
-              breadcrumbList({
-                children: [
-                  breadcrumbItem({
-                    class: 'hidden md:block',
-                    children: [
-                      breadcrumbLink({
-                        href: '#',
-                        children: ['Build Your Application'],
-                      }),
-                    ],
-                  }),
-                  breadcrumbSeparator({ class: 'hidden md:block' }),
-                  breadcrumbItem({
-                    children: [
-                      breadcrumbPage({ children: ['Data Fetching'] }),
-                    ],
-                  }),
-                ],
-              }),
+              sidebarMenu(
+                {
+                  children: group.items.map((item) =>
+                    sidebarMenuItem(
+                      {
+                        children: [
+                          sidebarMenuButton(
+                            {
+                              href: item.url,
+                              isActive: item.isActive ?? false,
+                              children: [item.title],
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                  ),
+                },
+                h,
+              ),
             ],
-          }),
-        ],
-      ),
-      h.div(
-        [h.Class('flex flex-1 flex-col gap-4 p-4')],
-        Array.from({ length: 24 }, () =>
-          h.div(
-            [h.Class('aspect-video h-12 w-full rounded-lg bg-muted/50')],
-            [],
+          },
+          h,
+        );
+
+        return [
+          sidebarGroup(
+            {
+              children: [
+                Collapsible.collapsible(
+                  {
+                    id: `sidebar-02-nav-main-${index}`,
+                    isOpen,
+                    onToggle: (nextIsOpen) =>
+                      ToggledNavMain({ index, isOpen: nextIsOpen }),
+                    class: 'group/collapsible',
+                    trigger,
+                    triggerClass: GROUP_LABEL_CLASS,
+                    content,
+                  },
+                  h,
+                ),
+              ],
+            },
+            h,
+          ),
+        ];
+      }),
+    },
+    h,
+  );
+
+const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+
+  return sidebar<Message>(
+    {
+      state,
+      children: [
+        sidebarHeader(
+          {
+            children: [versionSwitcher(model, h), searchForm(h)],
+          },
+          h,
+        ),
+        navMain(model.navMainOpen, h),
+        sidebarRail({ onClick: ToggledSidebar() }, h),
+      ],
+    },
+    h,
+  );
+};
+
+const pageContent = (h: HtmlBuilder<Message>): Html => {
+  return sidebarInset(
+    {
+      children: [
+        h.header(
+          [
+            h.Class(
+              'sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4',
+            ),
+          ],
+          [
+            sidebarTrigger({ onClick: ToggledSidebar(), class: '-ml-1' }, h),
+            separator({ orientation: 'vertical', class: 'mr-2 h-4' }, h),
+            breadcrumb(
+              {
+                children: [
+                  breadcrumbList(
+                    {
+                      children: [
+                        breadcrumbItem(
+                          {
+                            class: 'hidden md:block',
+                            children: [
+                              breadcrumbLink(
+                                {
+                                  href: '#',
+                                  children: ['Build Your Application'],
+                                },
+                                h,
+                              ),
+                            ],
+                          },
+                          h,
+                        ),
+                        breadcrumbSeparator({ class: 'hidden md:block' }, h),
+                        breadcrumbItem(
+                          {
+                            children: [
+                              breadcrumbPage(
+                                { children: ['Data Fetching'] },
+                                h,
+                              ),
+                            ],
+                          },
+                          h,
+                        ),
+                      ],
+                    },
+                    h,
+                  ),
+                ],
+              },
+              h,
+            ),
+          ],
+        ),
+        h.div(
+          [h.Class('flex flex-1 flex-col gap-4 p-4')],
+          Array.from({ length: 24 }, () =>
+            h.div(
+              [h.Class('aspect-video h-12 w-full rounded-lg bg-muted/50')],
+              [],
+            ),
           ),
         ),
-      ),
-    ],
-  })
-}
+      ],
+    },
+    h,
+  );
+};
 
-export const view = (model: Model): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
+export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
 
-  return sidebarProvider<Message>({
-    state,
-    children: [appSidebar(model), pageContent()],
-  })
-}
+  return sidebarProvider<Message>(
+    {
+      state,
+      children: [appSidebar(model, h), pageContent(h)],
+    },
+    h,
+  );
+};
 
 // PORT NOTE: foldkit Menu owns panel width through anchor positioning, so the
 // source's Radix-only trigger-width CSS variable is not available.

@@ -1,17 +1,18 @@
-import { type VariantProps, cva } from 'class-variance-authority'
-import { type Html, html } from 'foldkit/html'
+import { type VariantProps, cva } from 'class-variance-authority';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import { type ButtonProps, button } from '@/ui/button'
-import { cn } from '@/lib/utils'
+import { type ButtonProps, button } from '@/ui/button';
+import { cn } from '@/lib/utils';
 
 type SlotProps = Readonly<{
-  children: ReadonlyArray<Html | string>
-  class?: string
-}>
+  children: ReadonlyArray<Html | string>;
+  class?: string;
+}>;
 
-export const inputGroup = <Msg>(props: SlotProps): Html => {
-  const h = html<Msg>()
-
+export const inputGroup = <Msg>(
+  props: SlotProps,
+  h: HtmlBuilder<Msg>,
+): Html => {
   return h.div(
     [
       h.DataAttribute('slot', 'input-group'),
@@ -31,8 +32,8 @@ export const inputGroup = <Msg>(props: SlotProps): Html => {
       ),
     ],
     [...props.children],
-  )
-}
+  );
+};
 
 export const inputGroupAddonVariants = cva(
   "flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium text-muted-foreground select-none group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-4",
@@ -53,24 +54,24 @@ export const inputGroupAddonVariants = cva(
       align: 'inline-start',
     },
   },
-)
+);
 
 export type InputGroupAddonVariants = VariantProps<
   typeof inputGroupAddonVariants
->
+>;
 
 export type InputGroupAddonProps<Msg = never> = SlotProps &
   Readonly<{
-    align?: InputGroupAddonVariants['align']
-    focusControlId?: string
-    onFocus?: Msg
-  }>
+    align?: InputGroupAddonVariants['align'];
+    focusControlId?: string;
+    onFocus?: Msg;
+  }>;
 
 export const inputGroupAddon = <Msg>(
   props: InputGroupAddonProps<Msg>,
+  h: HtmlBuilder<Msg>,
 ): Html => {
-  const h = html<Msg>()
-  const align = props.align ?? 'inline-start'
+  const align = props.align ?? 'inline-start';
 
   return h.div(
     [
@@ -83,8 +84,8 @@ export const inputGroupAddon = <Msg>(
       h.Class(cn(inputGroupAddonVariants({ align }), props.class)),
     ],
     [...props.children],
-  )
-}
+  );
+};
 
 export const inputGroupButtonVariants = cva(
   'flex items-center gap-2 text-sm shadow-none',
@@ -94,7 +95,7 @@ export const inputGroupButtonVariants = cva(
         xs: "h-6 gap-1 rounded-[calc(var(--radius)-5px)] px-2 has-[>svg]:px-2 [&>svg:not([class*='size-'])]:size-3.5",
         sm: 'h-8 gap-1.5 rounded-md px-2.5 has-[>svg]:px-2.5',
         'icon-xs':
-          "size-6 rounded-[calc(var(--radius)-5px)] p-0 has-[>svg]:p-0",
+          'size-6 rounded-[calc(var(--radius)-5px)] p-0 has-[>svg]:p-0',
         'icon-sm': 'size-8 p-0 has-[>svg]:p-0',
       },
     },
@@ -102,45 +103,50 @@ export const inputGroupButtonVariants = cva(
       size: 'xs',
     },
   },
-)
+);
 
 export type InputGroupButtonVariants = VariantProps<
   typeof inputGroupButtonVariants
->
+>;
 
 export type InputGroupButtonProps<Msg> = Omit<
   ButtonProps<Msg>,
   'size' | 'class'
 > &
   Readonly<{
-    size?: InputGroupButtonVariants['size']
-    class?: string
-  }>
+    size?: InputGroupButtonVariants['size'];
+    class?: string;
+  }>;
 
 export const inputGroupButton = <Msg>(
   props: InputGroupButtonProps<Msg>,
+  h: HtmlBuilder<Msg>,
 ): Html => {
-  return button<Msg>({
-    children: props.children,
-    variant: props.variant ?? 'ghost',
-    type: props.type ?? 'button',
-    size: 'default',
-    slot: 'input-group-button',
-    dataSize: props.size ?? 'xs',
-    ...(props.onClick === undefined ? {} : { onClick: props.onClick }),
-    ...(props.isDisabled === undefined
-      ? {}
-      : { isDisabled: props.isDisabled }),
-    class: cn(
-      inputGroupButtonVariants({ size: props.size ?? 'xs' }),
-      props.class,
-    ),
-  })
-}
+  return button<Msg>(
+    {
+      children: props.children,
+      variant: props.variant ?? 'ghost',
+      type: props.type ?? 'button',
+      size: 'default',
+      slot: 'input-group-button',
+      dataSize: props.size ?? 'xs',
+      ...(props.onClick === undefined ? {} : { onClick: props.onClick }),
+      ...(props.isDisabled === undefined
+        ? {}
+        : { isDisabled: props.isDisabled }),
+      class: cn(
+        inputGroupButtonVariants({ size: props.size ?? 'xs' }),
+        props.class,
+      ),
+    },
+    h,
+  );
+};
 
-export const inputGroupText = <Msg>(props: SlotProps): Html => {
-  const h = html<Msg>()
-
+export const inputGroupText = <Msg>(
+  props: SlotProps,
+  h: HtmlBuilder<Msg>,
+): Html => {
   return h.span(
     [
       h.DataAttribute('slot', 'input-group-text'),
@@ -152,32 +158,31 @@ export const inputGroupText = <Msg>(props: SlotProps): Html => {
       ),
     ],
     [...props.children],
-  )
-}
+  );
+};
 
 const INPUT_CLASS =
-  'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-8 w-full min-w-0 rounded-md border bg-transparent px-2.5 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive'
+  'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-8 w-full min-w-0 rounded-md border bg-transparent px-2.5 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive';
 
 const INPUT_GROUP_CONTROL_CLASS =
-  'flex-1 rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent'
+  'flex-1 rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent';
 
 export type InputGroupInputProps<Msg> = Readonly<{
-  id: string
-  value: string
-  onInput: (value: string) => Msg
-  placeholder?: string
-  type?: string
-  name?: string
-  isDisabled?: boolean
-  isInvalid?: boolean
-  class?: string
-}>
+  id: string;
+  value: string;
+  onInput: (value: string) => Msg;
+  placeholder?: string;
+  type?: string;
+  name?: string;
+  isDisabled?: boolean;
+  isInvalid?: boolean;
+  class?: string;
+}>;
 
 export const inputGroupInput = <Msg>(
   props: InputGroupInputProps<Msg>,
+  h: HtmlBuilder<Msg>,
 ): Html => {
-  const h = html<Msg>()
-
   // PORT NOTE: src/ui/input.ts cannot accept the data-slot attribute required
   // by InputGroup's focus/error selectors, so this renders the same styled
   // native input directly.
@@ -194,5 +199,5 @@ export const inputGroupInput = <Msg>(
     ...((props.isInvalid ?? false) ? [h.AriaInvalid(true)] : []),
     h.DataAttribute('slot', 'input-group-control'),
     h.Class(cn(INPUT_CLASS, INPUT_GROUP_CONTROL_CLASS, props.class)),
-  ])
-}
+  ]);
+};

@@ -1,7 +1,7 @@
-import { type Html, html } from 'foldkit/html'
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import * as Icon from '@/lib/icon'
-import { card } from '@/ui/card'
+import * as Icon from '@/lib/icon';
+import { card } from '@/ui/card';
 import {
   sidebar,
   sidebarContent,
@@ -13,18 +13,18 @@ import {
   sidebarMenuItem,
   sidebarProvider,
   sidebarSeparator,
-} from '@/ui/sidebar'
+} from '@/ui/sidebar';
 
 type NavItem = Readonly<{
-  label: string
-  icon: string
-  isActive?: boolean
-}>
+  label: string;
+  icon: string;
+  isActive?: boolean;
+}>;
 
 type NavGroup = Readonly<{
-  label: string
-  items: ReadonlyArray<NavItem>
-}>
+  label: string;
+  items: ReadonlyArray<NavItem>;
+}>;
 
 const OVERVIEW: ReadonlyArray<NavGroup> = [
   {
@@ -46,7 +46,7 @@ const OVERVIEW: ReadonlyArray<NavGroup> = [
       { label: 'Documents', icon: 'file-text' },
     ],
   },
-]
+];
 
 const ACCOUNT: ReadonlyArray<NavGroup> = [
   {
@@ -68,69 +68,101 @@ const ACCOUNT: ReadonlyArray<NavGroup> = [
       { label: 'Status', icon: 'activity' },
     ],
   },
-]
+];
 
-const navGroup = <Msg>(group: NavGroup, index: number): Html =>
-  sidebarGroup({
-    class: index === 0 ? 'pb-1' : 'pt-1',
-    children: [
-      sidebarGroupLabel({ children: [group.label] }),
-      sidebarGroupContent({
-        children: [
-          sidebarMenu({
-            children: group.items.map(item =>
-              sidebarMenuItem({
-                children: [
-                  sidebarMenuButton({
-                    isActive: item.isActive ?? false,
-                    children: [
-                      Icon.icon(item.icon),
-                      item.label,
-                    ],
-                  }),
-                ],
-              }),
-            ),
-          }),
-        ],
-      }),
-    ],
-  })
-
-const navCard = <Msg>(groups: ReadonlyArray<NavGroup>): Html =>
-  card({
-    class: 'overflow-hidden py-0',
-    children: [
-      sidebarProvider({
-        class: 'min-h-0',
-        children: [
-          sidebar({
-            collapsible: 'none',
-            class: 'w-full bg-transparent',
+const navGroup = <Msg>(
+  group: NavGroup,
+  index: number,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  sidebarGroup(
+    {
+      class: index === 0 ? 'pb-1' : 'pt-1',
+      children: [
+        sidebarGroupLabel({ children: [group.label] }, h),
+        sidebarGroupContent(
+          {
             children: [
-              sidebarContent({
-                class: 'gap-0',
-                children: groups.flatMap((group, index) => [
-                  ...(index === 0
-                    ? []
-                    : [sidebarSeparator({ class: 'w-auto!' })]),
-                  navGroup(group, index),
-                ]),
-              }),
+              sidebarMenu(
+                {
+                  children: group.items.map((item) =>
+                    sidebarMenuItem(
+                      {
+                        children: [
+                          sidebarMenuButton(
+                            {
+                              isActive: item.isActive ?? false,
+                              children: [
+                                Icon.icon(item.icon, {}, h),
+                                item.label,
+                              ],
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                  ),
+                },
+                h,
+              ),
             ],
-          }),
-        ],
-      }),
-    ],
-  })
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
 
-export const view = <Msg>(): Html => {
-  const h = html<Msg>()
+const navCard = <Msg>(
+  groups: ReadonlyArray<NavGroup>,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  card(
+    {
+      class: 'overflow-hidden py-0',
+      children: [
+        sidebarProvider(
+          {
+            class: 'min-h-0',
+            children: [
+              sidebar(
+                {
+                  collapsible: 'none',
+                  class: 'w-full bg-transparent',
+                  children: [
+                    sidebarContent(
+                      {
+                        class: 'gap-0',
+                        children: groups.flatMap((group, index) => [
+                          ...(index === 0
+                            ? []
+                            : [sidebarSeparator({ class: 'w-auto!' }, h)]),
+                          navGroup(group, index, h),
+                        ]),
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
 
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
   return h.div(
     [h.Class('grid grid-cols-2 items-start gap-6')],
-    [navCard(OVERVIEW), navCard(ACCOUNT)],
-  )
-}
+    [navCard(OVERVIEW, h), navCard(ACCOUNT, h)],
+  );
+};
 
 // Card summary: stateful? no. Submodels wired: none. PORT NOTEs: none.

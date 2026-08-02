@@ -1,10 +1,10 @@
-import { Option } from 'effect'
-import { childAttributes, type Html, html } from 'foldkit/html'
+﻿import { Option } from 'effect';
+import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html';
 
-import { Listbox as ListboxPrimitive } from '@foldkit/ui'
+import { Listbox as ListboxPrimitive } from '@foldkit/ui';
 
-import * as Icon from '@/lib/icon'
-import { cn } from '@/lib/utils'
+import * as Icon from '@/lib/icon';
+import { cn } from '@/lib/utils';
 
 /* Ported from shadcn/ui select.tsx on top of foldkit's single-select
    config-driven Listbox submodel.
@@ -23,119 +23,123 @@ import { cn } from '@/lib/utils'
    than the primitive's outer role=option element. Arbitrary consumer items are
    projected through itemToValue, so their values must be unique. */
 
-export const Model = ListboxPrimitive.Model
-export type Model = typeof Model.Type
-export const Message = ListboxPrimitive.Message
-export type Message = typeof Message.Type
-export const OutMessage = ListboxPrimitive.OutMessage
+export const Model = ListboxPrimitive.Model;
+export type Model = typeof Model.Type;
+export const Message = ListboxPrimitive.Message;
+export type Message = typeof Message.Type;
+export const OutMessage = ListboxPrimitive.OutMessage;
 export type OutMessage<Value extends string = string> =
-  ListboxPrimitive.OutMessage<Value>
+  ListboxPrimitive.OutMessage<Value>;
 
-export const init = ListboxPrimitive.init
-export const create = ListboxPrimitive.create
-export const update = ListboxPrimitive.create().update
+export const init = ListboxPrimitive.init;
+export const create = ListboxPrimitive.create;
+export const update = ListboxPrimitive.create().update;
 
 const TRIGGER_CLASS =
-  "flex w-fit items-center justify-between gap-2 rounded-md border border-input bg-transparent px-2.5 py-1.5 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground data-[size=default]:h-8 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
+  "flex w-fit items-center justify-between gap-2 rounded-md border border-input bg-transparent px-2.5 py-1.5 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground data-[size=default]:h-8 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground";
 
 const CONTENT_CLASS =
-  'relative z-50 w-(--button-width) min-w-[8rem] overflow-x-hidden overflow-y-auto rounded-md border bg-popover text-popover-foreground shadow-md transition duration-200 ease-out data-[closed]:opacity-0 data-[closed]:scale-95'
+  'relative z-50 w-(--button-width) min-w-[8rem] overflow-x-hidden overflow-y-auto rounded-md border bg-popover text-popover-foreground shadow-md transition duration-200 ease-out data-[closed]:opacity-0 data-[closed]:scale-95';
 
-const VIEWPORT_CLASS = 'w-full scroll-my-1 p-1'
+const VIEWPORT_CLASS = 'w-full scroll-my-1 p-1';
 
 const ITEM_CLASS =
-  "group relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[active]:bg-accent data-[active]:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2"
+  "group relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[active]:bg-accent data-[active]:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2";
 
 const INDICATOR_CLASS =
-  'absolute right-2 flex size-3.5 items-center justify-center opacity-0 group-data-[selected]:opacity-100'
+  'absolute right-2 flex size-3.5 items-center justify-center opacity-0 group-data-[selected]:opacity-100';
 
-const LABEL_CLASS = 'px-2 py-1.5 text-xs text-muted-foreground'
+const LABEL_CLASS = 'px-2 py-1.5 text-xs text-muted-foreground';
 
-const SEPARATOR_CLASS = 'pointer-events-none -mx-1 my-1 h-px bg-border'
+const SEPARATOR_CLASS = 'pointer-events-none -mx-1 my-1 h-px bg-border';
 
-const BACKDROP_CLASS = 'fixed inset-0 z-40'
+const BACKDROP_CLASS = 'fixed inset-0 z-40';
 
 const ANCHOR: ListboxPrimitive.AnchorConfig = {
   placement: 'bottom-start',
   gap: 4,
-}
+};
 
-export type SelectSize = 'sm' | 'default'
+export type SelectSize = 'sm' | 'default';
 
 export type SelectItemConfig = Readonly<{
-  content?: Html | string
-  searchText?: string
-  class?: string
-  isDisabled?: boolean
-}>
+  content?: Html | string;
+  searchText?: string;
+  class?: string;
+  isDisabled?: boolean;
+}>;
 
 export type SelectProps<Item, Value extends string, Msg> = Readonly<{
-  model: Model
-  maybeSelectedValue: Option.Option<Value>
-  toParentMessage: (message: Message) => Msg
-  items: ReadonlyArray<Item>
-  itemToValue: (item: Item) => Value
-  itemToLabel: (item: Item) => string
-  itemToConfig?: (item: Item) => SelectItemConfig
-  placeholder?: string
-  triggerClass?: string
-  size?: SelectSize
-  ariaLabel?: string
-  itemGroupKey?: (item: Item, index: number) => string
-  groupToHeading?: (groupKey: string) => string | undefined
-}>
+  model: Model;
+  maybeSelectedValue: Option.Option<Value>;
+  toParentMessage: (message: Message) => Msg;
+  items: ReadonlyArray<Item>;
+  itemToValue: (item: Item) => Value;
+  itemToLabel: (item: Item) => string;
+  itemToConfig?: (item: Item) => SelectItemConfig;
+  placeholder?: string;
+  triggerClass?: string;
+  size?: SelectSize;
+  ariaLabel?: string;
+  itemGroupKey?: (item: Item, index: number) => string;
+  groupToHeading?: (groupKey: string) => string | undefined;
+}>;
 
 export const select = <Item, Value extends string, Msg>(
   props: SelectProps<Item, Value, Msg>,
+  h: HtmlBuilder<Msg>,
 ): Html => {
-  const h = html<Msg>()
-  const hs = html<Message>()
-  const listbox = ListboxPrimitive.create()
-  const values = props.items.map(props.itemToValue)
+  const hs = h;
+  const listbox = ListboxPrimitive.create();
+  const values = props.items.map(props.itemToValue);
   const itemForValue = (value: string): Item | undefined =>
-    props.items.find((item) => props.itemToValue(item) === value)
+    props.items.find((item) => props.itemToValue(item) === value);
   const labelForValue = (value: string): string => {
-    const item = itemForValue(value)
-    return item === undefined ? value : props.itemToLabel(item)
-  }
+    const item = itemForValue(value);
+    return item === undefined ? value : props.itemToLabel(item);
+  };
   const selectedLabel = Option.match(props.maybeSelectedValue, {
     onNone: () => undefined,
     onSome: labelForValue,
-  })
+  });
 
   const viewInputs: ListboxPrimitive.ViewInputs<string> = {
     maybeSelectedValue: props.maybeSelectedValue,
     items: values,
     itemToValue: (value) => value,
     itemToSearchText: (value) => {
-      const item = itemForValue(value)
+      const item = itemForValue(value);
       return item === undefined
         ? labelForValue(value)
-        : (props.itemToConfig?.(item).searchText ?? labelForValue(value))
+        : (props.itemToConfig?.(item).searchText ?? labelForValue(value));
     },
     isItemDisabled: (value) => {
-      const item = itemForValue(value)
-      return item === undefined ? false : (props.itemToConfig?.(item).isDisabled ?? false)
+      const item = itemForValue(value);
+      return item === undefined
+        ? false
+        : (props.itemToConfig?.(item).isDisabled ?? false);
     },
     itemToConfig: (value) => {
-      const item = itemForValue(value)
-      const config = item === undefined ? undefined : props.itemToConfig?.(item)
-      return ({
-      className: cn(ITEM_CLASS, config?.class),
-      content: hs.span(
-        [hs.DataAttribute('slot', 'select-item'), hs.Class('contents')],
-        [
-          hs.span(
-            [
-              hs.DataAttribute('slot', 'select-item-indicator'),
-              hs.Class(INDICATOR_CLASS),
-            ],
-            [Icon.check<Message>({ class: 'size-4' })],
-          ),
-          hs.span([], [config?.content ?? labelForValue(value)]),
-        ],
-      ),
-    })},
+      const item = itemForValue(value);
+      const config =
+        item === undefined ? undefined : props.itemToConfig?.(item);
+      return {
+        className: cn(ITEM_CLASS, config?.class),
+        content: hs.span(
+          [hs.DataAttribute('slot', 'select-item'), hs.Class('contents')],
+          [
+            hs.span(
+              [
+                hs.DataAttribute('slot', 'select-item-indicator'),
+                hs.Class(INDICATOR_CLASS),
+              ],
+              [Icon.check({ class: 'size-4' }, h)],
+            ),
+            hs.span([], [config?.content ?? labelForValue(value)]),
+          ],
+        ),
+      };
+    },
     buttonContent: hs.span(
       [hs.Class('contents')],
       [
@@ -143,7 +147,7 @@ export const select = <Item, Value extends string, Msg>(
           [hs.DataAttribute('slot', 'select-value')],
           [selectedLabel ?? props.placeholder ?? ''],
         ),
-        Icon.chevronDown<Message>({ class: 'size-4 opacity-50' }),
+        Icon.chevronDown({ class: 'size-4 opacity-50' }, h),
       ],
     ),
     buttonClassName: cn(TRIGGER_CLASS, props.triggerClass),
@@ -166,13 +170,13 @@ export const select = <Item, Value extends string, Msg>(
       ? {}
       : {
           itemGroupKey: (value: string, index: number): string => {
-            const item = itemForValue(value)
+            const item = itemForValue(value);
             return item === undefined
               ? ''
-              : (props.itemGroupKey?.(item, index) ?? '')
+              : (props.itemGroupKey?.(item, index) ?? '');
           },
           groupToHeading: (groupKey: string) => {
-            const heading = props.groupToHeading?.(groupKey)
+            const heading = props.groupToHeading?.(groupKey);
             return heading === undefined
               ? undefined
               : {
@@ -181,7 +185,7 @@ export const select = <Item, Value extends string, Msg>(
                     [heading],
                   ),
                   className: LABEL_CLASS,
-                }
+                };
           },
           groupAttributes: childAttributes([
             hs.DataAttribute('slot', 'select-group'),
@@ -192,7 +196,7 @@ export const select = <Item, Value extends string, Msg>(
           ]),
         }),
     ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
-  }
+  };
 
   return h.submodel<typeof listbox.view>({
     slotId: props.model.id,
@@ -200,8 +204,8 @@ export const select = <Item, Value extends string, Msg>(
     view: listbox.view,
     viewInputs,
     toParentMessage: props.toParentMessage,
-  })
-}
+  });
+};
 
 /*
    Minimal wiring:

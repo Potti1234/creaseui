@@ -1,8 +1,8 @@
-import type { EChartsOption } from 'echarts/types/dist/shared'
-import { type Html, html } from 'foldkit/html'
+import type { EChartsOption } from 'echarts/types/dist/shared';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import * as Chart from '@/lib/echarts'
-import * as Icon from '@/lib/icon'
+import * as Chart from '@/lib/echarts';
+import * as Icon from '@/lib/icon';
 import {
   card,
   cardContent,
@@ -10,92 +10,117 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card'
+} from '@/ui/card';
 
-const HOST_ID = 'chart-area-step'
+const HOST_ID = 'chart-area-step';
 
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June']
-const DESKTOP = [186, 305, 237, 73, 209, 214]
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June'];
+const DESKTOP = [186, 305, 237, 73, 209, 214];
 
-Chart.registerChart(
-  HOST_ID,
-  (theme): EChartsOption => ({
-    grid: Chart.compactGrid(),
-    xAxis: Chart.categoryAxis(theme, MONTHS.map(month => month.slice(0, 3))),
-    yAxis: Chart.valueAxis(theme),
-    tooltip: Chart.shadcnTooltip(theme),
-    series: [
-      {
-        name: 'Desktop',
-        type: 'line',
-        step: 'middle',
-        showSymbol: false,
-        lineStyle: { width: 2, color: theme.chart1 },
-        itemStyle: { color: theme.chart1 },
-        areaStyle: { color: Chart.colorWithOpacity(theme.chart1, 0.4) },
-        data: [...DESKTOP],
-      },
-    ],
-  }),
-)
+Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
+  grid: Chart.compactGrid(),
+  xAxis: Chart.categoryAxis(
+    theme,
+    MONTHS.map((month) => month.slice(0, 3)),
+  ),
+  yAxis: Chart.valueAxis(theme),
+  tooltip: Chart.shadcnTooltip(theme),
+  series: [
+    {
+      name: 'Desktop',
+      type: 'line',
+      step: 'middle',
+      showSymbol: false,
+      lineStyle: { width: 2, color: theme.chart1 },
+      itemStyle: { color: theme.chart1 },
+      areaStyle: { color: Chart.colorWithOpacity(theme.chart1, 0.4) },
+      data: [...DESKTOP],
+    },
+  ],
+}));
 
 export const view = <Msg>(
   toMessage: (message: Chart.ChartMessage) => Msg,
+  h: HtmlBuilder<Msg>,
 ): Html => {
-  const h = html<Msg>()
-
-  return card({
-    children: [
-      cardHeader({
-        children: [
-          cardTitle({ children: ['Area Chart - Step'] }),
-          cardDescription({
-            children: ['Showing total visitors for the last 6 months'],
-          }),
-        ],
-      }),
-      cardContent({
-        children: [
-          Chart.chart({
-            hostId: HOST_ID,
-            ariaLabel:
-              'Step area chart showing total visitors for the last 6 months',
-            toMessage,
-          }),
-        ],
-      }),
-      cardFooter({
-        children: [
-          h.div(
-            [h.Class('flex w-full items-start gap-2 text-sm')],
-            [
+  return card(
+    {
+      children: [
+        cardHeader(
+          {
+            children: [
+              cardTitle({ children: ['Area Chart - Step'] }, h),
+              cardDescription(
+                {
+                  children: ['Showing total visitors for the last 6 months'],
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+        cardContent(
+          {
+            children: [
+              Chart.chart(
+                {
+                  hostId: HOST_ID,
+                  ariaLabel:
+                    'Step area chart showing total visitors for the last 6 months',
+                  toMessage,
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+        cardFooter(
+          {
+            children: [
               h.div(
-                [h.Class('grid gap-2')],
+                [h.Class('flex w-full items-start gap-2 text-sm')],
                 [
                   h.div(
-                    [h.Class('flex items-center gap-2 leading-none font-medium')],
+                    [h.Class('grid gap-2')],
                     [
-                      'Trending up by 5.2% this month',
-                      Icon.icon<Msg>('trending-up', { class: 'h-4 w-4' }),
-                    ],
-                  ),
-                  h.div(
-                    [
-                      h.Class(
-                        'flex items-center gap-2 leading-none text-muted-foreground',
+                      h.div(
+                        [
+                          h.Class(
+                            'flex items-center gap-2 leading-none font-medium',
+                          ),
+                        ],
+                        [
+                          'Trending up by 5.2% this month',
+                          Icon.icon<Msg>(
+                            'trending-up',
+                            { class: 'h-4 w-4' },
+                            h,
+                          ),
+                        ],
+                      ),
+                      h.div(
+                        [
+                          h.Class(
+                            'flex items-center gap-2 leading-none text-muted-foreground',
+                          ),
+                        ],
+                        ['January - June 2024'],
                       ),
                     ],
-                    ['January - June 2024'],
                   ),
                 ],
               ),
             ],
-          ),
-        ],
-      }),
-    ],
-  })
-}
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
+};
 
 // PORT NOTE: shadcn renders an Activity icon inside tooltip rows. The shared
 // ECharts tooltip renders color indicators instead.

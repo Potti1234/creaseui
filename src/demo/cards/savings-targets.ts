@@ -1,10 +1,10 @@
-import { Match as M, Schema as S } from 'effect'
-import { Command } from 'foldkit'
-import { type Html, html } from 'foldkit/html'
-import { m } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { Match as M, Schema as S } from 'effect';
+import { Command } from 'foldkit';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
+import { evo } from 'foldkit/struct';
 
-import { button } from '@/ui/button'
+import { button } from '@/ui/button';
 import {
   card,
   cardAction,
@@ -13,272 +13,343 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card'
-import {
-  field,
-  fieldDescription,
-  fieldGroup,
-  fieldLabel,
-} from '@/ui/field'
+} from '@/ui/card';
+import { field, fieldDescription, fieldGroup, fieldLabel } from '@/ui/field';
 import {
   inputGroup,
   inputGroupAddon,
   inputGroupInput,
   inputGroupText,
-} from '@/ui/input-group'
+} from '@/ui/input-group';
 import {
   item,
   itemContent,
   itemDescription,
   itemFooter,
   itemGroup,
-} from '@/ui/item'
-import { nativeSelect } from '@/ui/native-select'
-import { progress } from '@/ui/progress'
+} from '@/ui/item';
+import { nativeSelect } from '@/ui/native-select';
+import { progress } from '@/ui/progress';
 
 export const Model = S.Struct({
   amount: S.String,
   orderType: S.String,
-})
-export type Model = typeof Model.Type
+});
+export type Model = typeof Model.Type;
 
-export const UpdatedAmount = m('UpdatedAmount', { value: S.String })
-export const UpdatedOrderType = m('UpdatedOrderType', { value: S.String })
+export const UpdatedAmount = m('UpdatedAmount', { value: S.String });
+export const UpdatedOrderType = m('UpdatedOrderType', { value: S.String });
 
-export const Message = S.Union([UpdatedAmount, UpdatedOrderType])
-export type Message = typeof Message.Type
+export const Message = S.Union([UpdatedAmount, UpdatedOrderType]);
+export type Message = typeof Message.Type;
 
-type UpdateReturn = readonly [
-  Model,
-  ReadonlyArray<Command.Command<Message>>,
-]
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
 
 export const init = (): Model => ({
   amount: '1,000.00',
   orderType: 'market',
-})
+});
 
-export const update = (
-  model: Model,
-  message: Message,
-): UpdateReturn =>
+export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      UpdatedAmount: ({ value }) => [
-        evo(model, { amount: () => value }),
-        [],
-      ],
+      UpdatedAmount: ({ value }) => [evo(model, { amount: () => value }), []],
       UpdatedOrderType: ({ value }) => [
         evo(model, { orderType: () => value }),
         [],
       ],
     }),
-  )
+  );
 
 const target = (
   title: string,
   amount: string,
   percentage: number,
   saved: string,
+  h: HtmlBuilder<Message>,
 ): Html => {
-  const h = html<Message>()
+  return item<Message>(
+    {
+      variant: 'muted',
+      class: 'flex-col items-stretch',
+      children: [
+        itemContent(
+          {
+            class: 'gap-3',
+            children: [
+              itemDescription(
+                {
+                  class:
+                    'text-xs font-medium tracking-wider text-muted-foreground uppercase',
+                  children: [title],
+                },
+                h,
+              ),
+              h.span(
+                [h.Class('text-3xl font-semibold tabular-nums')],
+                [amount],
+              ),
+              progress({ value: percentage }, h),
+            ],
+          },
+          h,
+        ),
+        itemFooter(
+          {
+            children: [
+              h.span(
+                [h.Class('text-sm text-muted-foreground')],
+                [`${String(percentage)}% achieved`],
+              ),
+              h.span([h.Class('text-sm font-medium tabular-nums')], [saved]),
+            ],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
+};
 
-  return item<Message>({
-    variant: 'muted',
-    class: 'flex-col items-stretch',
-    children: [
-      itemContent({
-        class: 'gap-3',
-        children: [
-          itemDescription({
-            class:
-              'text-xs font-medium tracking-wider text-muted-foreground uppercase',
-            children: [title],
-          }),
-          h.span(
-            [h.Class('text-3xl font-semibold tabular-nums')],
-            [amount],
-          ),
-          progress({ value: percentage }),
-        ],
-      }),
-      itemFooter({
-        children: [
-          h.span(
-            [h.Class('text-sm text-muted-foreground')],
-            [`${String(percentage)}% achieved`],
-          ),
-          h.span(
-            [h.Class('text-sm font-medium tabular-nums')],
-            [saved],
-          ),
-        ],
-      }),
-    ],
-  })
-}
-
-export const view = (model: Model): Html => {
-  const h = html<Message>()
-
+export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   return h.div(
     [h.Class('grid grid-cols-2 gap-(--gap)')],
     [
-      card({
-        children: [
-          cardHeader({
-            children: [
-              cardTitle({ children: ['Savings Targets'] }),
-              cardDescription({ children: ['Active milestones for 2024'] }),
-              cardAction({
+      card(
+        {
+          children: [
+            cardHeader(
+              {
                 children: [
-                  button({
-                    variant: 'outline',
-                    size: 'sm',
-                    children: ['New Goal'],
-                  }),
-                ],
-              }),
-            ],
-          }),
-          cardContent({
-            children: [
-              itemGroup({
-                class: 'gap-3',
-                children: [
-                  target('Retirement', '$420,000', 65, '$273,000'),
-                  target('Real Estate', '$85,000', 32, '$27,200'),
-                ],
-              }),
-            ],
-          }),
-          cardFooter({
-            children: [
-              cardDescription({
-                class: 'text-center',
-                children: ['You have not met your targets for this year.'],
-              }),
-            ],
-          }),
-        ],
-      }),
-      card({
-        children: [
-          cardHeader({
-            children: [cardTitle({ children: ['Buy Investment'] })],
-          }),
-          cardContent({
-            class: 'flex flex-1 flex-col gap-3',
-            children: [
-              fieldGroup({
-                class: 'flex-1',
-                children: [
-                  field({
-                    children: [
-                      fieldLabel({
-                        for: 'savings-targets-invest-amount',
-                        children: ['Amount to Invest'],
-                      }),
-                      inputGroup({
-                        children: [
-                          inputGroupAddon({
-                            children: [
-                              inputGroupText({ children: ['$'] }),
-                            ],
-                          }),
-                          inputGroupInput({
-                            id: 'savings-targets-invest-amount',
-                            value: model.amount,
-                            onInput: value => UpdatedAmount({ value }),
-                          }),
-                        ],
-                      }),
-                    ],
-                  }),
-                  field({
-                    children: [
-                      fieldLabel({
-                        for: 'savings-targets-invest-type',
-                        children: ['Order Type'],
-                      }),
-                      nativeSelect({
-                        id: 'savings-targets-invest-type',
-                        value: model.orderType,
-                        onChange: value => UpdatedOrderType({ value }),
-                        options: [
-                          { value: 'market', label: 'Market Order' },
-                          { value: 'limit', label: 'Limit Order' },
-                          { value: 'stop', label: 'Stop Order' },
-                        ],
-                      }),
-                      fieldDescription({
-                        children: [
-                          'Market orders execute at the current price.',
-                        ],
-                      }),
-                    ],
-                  }),
-                  h.div(
-                    [h.Class('flex flex-col gap-2')],
-                    [
-                      h.div(
-                        [h.Class('flex items-center justify-between')],
-                        [
-                          h.span(
-                            [h.Class('text-sm text-muted-foreground')],
-                            ['Estimated Shares'],
-                          ),
-                          h.span(
-                            [
-                              h.Class(
-                                'text-sm font-semibold tabular-nums',
-                              ),
-                            ],
-                            ['1.95'],
-                          ),
-                        ],
-                      ),
-                      h.div(
-                        [h.Class('flex items-center justify-between')],
-                        [
-                          h.span(
-                            [h.Class('text-sm text-muted-foreground')],
-                            ['Buying Power'],
-                          ),
-                          h.span(
-                            [
-                              h.Class(
-                                'text-sm font-semibold tabular-nums',
-                              ),
-                            ],
-                            ['$12,450.00'],
-                          ),
-                        ],
-                      ),
-                    ],
+                  cardTitle({ children: ['Savings Targets'] }, h),
+                  cardDescription(
+                    { children: ['Active milestones for 2024'] },
+                    h,
+                  ),
+                  cardAction(
+                    {
+                      children: [
+                        button(
+                          {
+                            variant: 'outline',
+                            size: 'sm',
+                            children: ['New Goal'],
+                          },
+                          h,
+                        ),
+                      ],
+                    },
+                    h,
                   ),
                 ],
-              }),
-            ],
-          }),
-          cardFooter({
-            class: 'flex-col gap-3',
-            children: [
-              button({ class: 'w-full', children: ['Review Order'] }),
-              cardDescription({
-                class: 'text-center',
+              },
+              h,
+            ),
+            cardContent(
+              {
                 children: [
-                  'Trades are typically executed within minutes during market hours.',
+                  itemGroup(
+                    {
+                      class: 'gap-3',
+                      children: [
+                        target('Retirement', '$420,000', 65, '$273,000', h),
+                        target('Real Estate', '$85,000', 32, '$27,200', h),
+                      ],
+                    },
+                    h,
+                  ),
                 ],
-              }),
-            ],
-          }),
-        ],
-      }),
+              },
+              h,
+            ),
+            cardFooter(
+              {
+                children: [
+                  cardDescription(
+                    {
+                      class: 'text-center',
+                      children: [
+                        'You have not met your targets for this year.',
+                      ],
+                    },
+                    h,
+                  ),
+                ],
+              },
+              h,
+            ),
+          ],
+        },
+        h,
+      ),
+      card(
+        {
+          children: [
+            cardHeader(
+              {
+                children: [cardTitle({ children: ['Buy Investment'] }, h)],
+              },
+              h,
+            ),
+            cardContent(
+              {
+                class: 'flex flex-1 flex-col gap-3',
+                children: [
+                  fieldGroup(
+                    {
+                      class: 'flex-1',
+                      children: [
+                        field(
+                          {
+                            children: [
+                              fieldLabel(
+                                {
+                                  for: 'savings-targets-invest-amount',
+                                  children: ['Amount to Invest'],
+                                },
+                                h,
+                              ),
+                              inputGroup(
+                                {
+                                  children: [
+                                    inputGroupAddon(
+                                      {
+                                        children: [
+                                          inputGroupText(
+                                            { children: ['$'] },
+                                            h,
+                                          ),
+                                        ],
+                                      },
+                                      h,
+                                    ),
+                                    inputGroupInput(
+                                      {
+                                        id: 'savings-targets-invest-amount',
+                                        value: model.amount,
+                                        onInput: (value) =>
+                                          UpdatedAmount({ value }),
+                                      },
+                                      h,
+                                    ),
+                                  ],
+                                },
+                                h,
+                              ),
+                            ],
+                          },
+                          h,
+                        ),
+                        field(
+                          {
+                            children: [
+                              fieldLabel(
+                                {
+                                  for: 'savings-targets-invest-type',
+                                  children: ['Order Type'],
+                                },
+                                h,
+                              ),
+                              nativeSelect(
+                                {
+                                  id: 'savings-targets-invest-type',
+                                  value: model.orderType,
+                                  onChange: (value) =>
+                                    UpdatedOrderType({ value }),
+                                  options: [
+                                    { value: 'market', label: 'Market Order' },
+                                    { value: 'limit', label: 'Limit Order' },
+                                    { value: 'stop', label: 'Stop Order' },
+                                  ],
+                                },
+                                h,
+                              ),
+                              fieldDescription(
+                                {
+                                  children: [
+                                    'Market orders execute at the current price.',
+                                  ],
+                                },
+                                h,
+                              ),
+                            ],
+                          },
+                          h,
+                        ),
+                        h.div(
+                          [h.Class('flex flex-col gap-2')],
+                          [
+                            h.div(
+                              [h.Class('flex items-center justify-between')],
+                              [
+                                h.span(
+                                  [h.Class('text-sm text-muted-foreground')],
+                                  ['Estimated Shares'],
+                                ),
+                                h.span(
+                                  [
+                                    h.Class(
+                                      'text-sm font-semibold tabular-nums',
+                                    ),
+                                  ],
+                                  ['1.95'],
+                                ),
+                              ],
+                            ),
+                            h.div(
+                              [h.Class('flex items-center justify-between')],
+                              [
+                                h.span(
+                                  [h.Class('text-sm text-muted-foreground')],
+                                  ['Buying Power'],
+                                ),
+                                h.span(
+                                  [
+                                    h.Class(
+                                      'text-sm font-semibold tabular-nums',
+                                    ),
+                                  ],
+                                  ['$12,450.00'],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    },
+                    h,
+                  ),
+                ],
+              },
+              h,
+            ),
+            cardFooter(
+              {
+                class: 'flex-col gap-3',
+                children: [
+                  button({ class: 'w-full', children: ['Review Order'] }, h),
+                  cardDescription(
+                    {
+                      class: 'text-center',
+                      children: [
+                        'Trades are typically executed within minutes during market hours.',
+                      ],
+                    },
+                    h,
+                  ),
+                ],
+              },
+              h,
+            ),
+          ],
+        },
+        h,
+      ),
     ],
-  )
-}
+  );
+};
 
 /*
   Parent wiring: nest Model from init(), wrap Message in the parent message,

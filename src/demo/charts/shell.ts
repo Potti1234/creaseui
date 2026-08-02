@@ -1,8 +1,8 @@
-import { type Html, html } from 'foldkit/html'
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import { CHART_SECTIONS, type ChartSection, chartsPath } from '@/route'
+import { CHART_SECTIONS, type ChartSection, chartsPath } from '@/route';
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
 
 /* Shared chrome for the /charts/<section> pages, mirroring ui.shadcn.com/charts:
    hero heading + lead, pill subnav across the sections, then the section's grid
@@ -17,16 +17,19 @@ const SECTION_LABELS: Readonly<Record<ChartSection, string>> = {
   radar: 'Radar Charts',
   radial: 'Radial Charts',
   tooltip: 'Tooltip',
-}
+};
 
 export const chartsPageShell = <Msg>(
   activeSection: ChartSection,
   cards: ReadonlyArray<Html>,
+  h: HtmlBuilder<Msg>,
 ): Html => {
-  const h = html<Msg>()
-
   return h.div(
-    [h.Class('mx-auto flex w-full max-w-[1400px] flex-col gap-8 px-4 py-8 md:px-8')],
+    [
+      h.Class(
+        'mx-auto flex w-full max-w-[1400px] flex-col gap-8 px-4 py-8 md:px-8',
+      ),
+    ],
     [
       h.div(
         [h.Class('flex flex-col items-start gap-4')],
@@ -40,7 +43,11 @@ export const chartsPageShell = <Msg>(
             ['Beautiful Charts & Graphs'],
           ),
           h.p(
-            [h.Class('max-w-4xl text-base text-balance text-foreground sm:text-lg')],
+            [
+              h.Class(
+                'max-w-4xl text-base text-balance text-foreground sm:text-lg',
+              ),
+            ],
             [
               'A collection of ready-to-use chart components built with Apache ECharts and foldkit, styled like shadcn/ui. From basic charts to rich data displays.',
             ],
@@ -49,7 +56,7 @@ export const chartsPageShell = <Msg>(
       ),
       h.div(
         [h.Class('flex flex-wrap items-center gap-1 border-b pb-2')],
-        CHART_SECTIONS.map(section =>
+        CHART_SECTIONS.map((section) =>
           h.a(
             [
               h.Href(chartsPath(section)),
@@ -75,5 +82,5 @@ export const chartsPageShell = <Msg>(
         [...cards],
       ),
     ],
-  )
-}
+  );
+};

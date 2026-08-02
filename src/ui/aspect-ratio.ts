@@ -1,6 +1,6 @@
-import { type Html, html } from "foldkit/html";
+﻿import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 export type AspectRatioProps = Readonly<{
   ratio: number;
@@ -8,13 +8,14 @@ export type AspectRatioProps = Readonly<{
   children: ReadonlyArray<Html | string>;
 }>;
 
-export const aspectRatio = <Msg>(props: AspectRatioProps): Html => {
-  const h = html<Msg>();
-
+export const aspectRatio = <Msg>(
+  props: AspectRatioProps,
+  h: HtmlBuilder<Msg>,
+): Html => {
   return h.div(
     [
-      h.DataAttribute("slot", "aspect-ratio"),
-      h.Class(cn("relative w-full", props.class)),
+      h.DataAttribute('slot', 'aspect-ratio'),
+      h.Class(cn('relative w-full', props.class)),
       h.Style({ aspectRatio: String(props.ratio) }),
     ],
     [...props.children],

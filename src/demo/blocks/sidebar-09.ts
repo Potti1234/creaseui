@@ -1,11 +1,11 @@
-import { Match as M, Schema as S } from 'effect'
-import { Command } from 'foldkit'
-import { type Html, html } from 'foldkit/html'
-import { m } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { Match as M, Schema as S } from 'effect';
+import { Command } from 'foldkit';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
+import { evo } from 'foldkit/struct';
 
-import * as Icon from '@/lib/icon'
-import { avatar, avatarFallback } from '@/ui/avatar'
+import * as Icon from '@/lib/icon';
+import { avatar, avatarFallback } from '@/ui/avatar';
 import {
   breadcrumb,
   breadcrumbItem,
@@ -13,9 +13,9 @@ import {
   breadcrumbList,
   breadcrumbPage,
   breadcrumbSeparator,
-} from '@/ui/breadcrumb'
-import * as DropdownMenu from '@/ui/dropdown-menu'
-import { separator } from '@/ui/separator'
+} from '@/ui/breadcrumb';
+import * as DropdownMenu from '@/ui/dropdown-menu';
+import { separator } from '@/ui/separator';
 import {
   sidebar,
   sidebarContent,
@@ -30,23 +30,23 @@ import {
   sidebarMenuButtonVariants,
   sidebarMenuItem,
   sidebarTrigger,
-} from '@/ui/sidebar'
-import * as Switch from '@/ui/switch'
+} from '@/ui/sidebar';
+import * as Switch from '@/ui/switch';
 
 type NavItem = Readonly<{
-  title: string
-  url: string
-  icon: string
-  isActive: boolean
-}>
+  title: string;
+  url: string;
+  icon: string;
+  isActive: boolean;
+}>;
 
 type Mail = Readonly<{
-  name: string
-  email: string
-  subject: string
-  date: string
-  teaser: string
-}>
+  name: string;
+  email: string;
+  subject: string;
+  date: string;
+  teaser: string;
+}>;
 
 const data = {
   user: {
@@ -168,14 +168,10 @@ const data = {
         "To celebrate our recent project success, I'd like to organize a team dinner.\nAre you available next Friday evening? Please let me know your preferences.",
     },
   ] satisfies ReadonlyArray<Mail>,
-}
+};
 
 type UserAction =
-  | 'upgrade'
-  | 'account'
-  | 'billing'
-  | 'notifications'
-  | 'log-out'
+  'upgrade' | 'account' | 'billing' | 'notifications' | 'log-out';
 
 const USER_ACTIONS: ReadonlyArray<UserAction> = [
   'upgrade',
@@ -183,9 +179,9 @@ const USER_ACTIONS: ReadonlyArray<UserAction> = [
   'billing',
   'notifications',
   'log-out',
-]
+];
 
-const UserMenu = DropdownMenu.create<UserAction>()
+const UserMenu = DropdownMenu.create<UserAction>();
 
 // MODEL
 
@@ -194,27 +190,27 @@ export const Model = S.Struct({
   activeNavIndex: S.Number,
   unreadOnly: S.Boolean,
   userMenu: DropdownMenu.Model,
-})
-export type Model = typeof Model.Type
+});
+export type Model = typeof Model.Type;
 
 // MESSAGE
 
-export const ToggledSidebar = m('ToggledSidebar')
+export const ToggledSidebar = m('ToggledSidebar');
 export const SelectedNavItem = m('SelectedNavItem', {
   index: S.Number,
-})
-export const ToggledUnread = m('ToggledUnread', { isChecked: S.Boolean })
+});
+export const ToggledUnread = m('ToggledUnread', { isChecked: S.Boolean });
 export const GotUserMenuMessage = m('GotUserMenuMessage', {
   message: DropdownMenu.Message,
-})
+});
 
 export const Message = S.Union([
   ToggledSidebar,
   SelectedNavItem,
   ToggledUnread,
   GotUserMenuMessage,
-])
-export type Message = typeof Message.Type
+]);
+export type Message = typeof Message.Type;
 
 // INIT
 
@@ -226,18 +222,18 @@ export const init = (): Model => ({
     id: 'sidebar-09-user-menu',
     isAnimated: true,
   }),
-})
+});
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       ToggledSidebar: () => [
-        evo(model, { isSidebarOpen: current => !current }),
+        evo(model, { isSidebarOpen: (current) => !current }),
         [],
       ],
       SelectedNavItem: ({ index }) => [
@@ -247,40 +243,47 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         }),
         [],
       ],
-      ToggledUnread: ({ isChecked }) => [{ ...model, unreadOnly: isChecked }, []],
+      ToggledUnread: ({ isChecked }) => [
+        { ...model, unreadOnly: isChecked },
+        [],
+      ],
       GotUserMenuMessage: ({ message: childMessage }) => {
         const [userMenu, commands] = UserMenu.update(
           model.userMenu,
           childMessage,
-        )
+        );
 
         return [
           evo(model, { userMenu: () => userMenu }),
-          Command.mapMessages(commands, nextMessage =>
+          Command.mapMessages(commands, (nextMessage) =>
             GotUserMenuMessage({ message: nextMessage }),
           ),
-        ]
+        ];
       },
     }),
-  )
+  );
 
 // VIEW
 
-const userSummary = (): Html => {
-  const h = html<Message>()
-
+const userSummary = (h: HtmlBuilder<Message>): Html => {
   return h.span(
     [h.Class('contents')],
     [
-      avatar({
-        class: 'h-8 w-8 rounded-lg',
-        children: [
-          avatarFallback({
-            class: 'rounded-lg',
-            children: ['CN'],
-          }),
-        ],
-      }),
+      avatar(
+        {
+          class: 'h-8 w-8 rounded-lg',
+          children: [
+            avatarFallback(
+              {
+                class: 'rounded-lg',
+                children: ['CN'],
+              },
+              h,
+            ),
+          ],
+        },
+        h,
+      ),
       h.div(
         [h.Class('grid flex-1 text-left text-sm leading-tight')],
         [
@@ -289,171 +292,215 @@ const userSummary = (): Html => {
         ],
       ),
     ],
-  )
-}
+  );
+};
 
 const userActionConfig = (
   action: UserAction,
+  h: HtmlBuilder<Message>,
 ): DropdownMenu.DropdownMenuItemConfig =>
   M.value(action).pipe(
     M.withReturnType<DropdownMenu.DropdownMenuItemConfig>(),
     M.when('upgrade', () => ({
       label: 'Upgrade to Pro',
-      icon: Icon.icon('sparkles'),
+      icon: Icon.icon('sparkles', {}, h),
       group: 'shadcn · m@example.com',
     })),
     M.when('account', () => ({
       label: 'Account',
-      icon: Icon.icon('badge-check'),
+      icon: Icon.icon('badge-check', {}, h),
       group: 'Account',
     })),
     M.when('billing', () => ({
       label: 'Billing',
-      icon: Icon.icon('credit-card'),
+      icon: Icon.icon('credit-card', {}, h),
       group: 'Account',
     })),
     M.when('notifications', () => ({
       label: 'Notifications',
-      icon: Icon.icon('bell'),
+      icon: Icon.icon('bell', {}, h),
       group: 'Account',
     })),
     M.when('log-out', () => ({
       label: 'Log out',
-      icon: Icon.icon('log-out'),
+      icon: Icon.icon('log-out', {}, h),
       group: '',
     })),
     M.exhaustive,
-  )
+  );
 
-const navUser = (model: DropdownMenu.Model): Html => {
-  const h = html<Message>()
-
-  return sidebarMenu({
-    children: [
-      sidebarMenuItem({
-        children: [
-          DropdownMenu.dropdownMenu<UserAction, Message>({
-            model,
-            toParentMessage: message =>
-              GotUserMenuMessage({ message }),
-            trigger: h.span(
-              [h.Class('contents')],
-              [
-                userSummary(),
-                Icon.chevronsUpDown({
-                  class: 'ml-auto size-4 shrink-0',
-                }),
-              ],
-            ),
-            triggerClass: sidebarMenuButtonVariants({
-              size: 'lg',
-              class:
-                'data-[open]:bg-sidebar-accent data-[open]:text-sidebar-accent-foreground md:h-8 md:p-0',
-            }),
-            items: USER_ACTIONS,
-            itemToConfig: userActionConfig,
-            side: 'right',
-            align: 'end',
-            ariaLabel: 'User menu',
-          }),
-        ],
-      }),
-    ],
-  })
-}
-
-const iconSidebar = (model: Model): Html => {
-  const h = html<Message>()
-
-  return sidebar({
-    collapsible: 'none',
-    class:
-      'w-[calc(var(--sidebar-width-icon)+1px)]! border-r',
-    children: [
-      sidebarHeader({
-        children: [
-          sidebarMenu({
+const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
+  return sidebarMenu(
+    {
+      children: [
+        sidebarMenuItem(
+          {
             children: [
-              sidebarMenuItem({
-                children: [
-                  sidebarMenuButton({
-                    size: 'lg',
-                    href: '#',
-                    class: 'md:h-8 md:p-0',
-                    children: [
-                      h.div(
-                        [
-                          h.Class(
-                            'flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground',
-                          ),
-                        ],
-                        [Icon.icon('command', { class: 'size-4' })],
-                      ),
-                      h.div(
-                        [
-                          h.Class(
-                            'grid flex-1 text-left text-sm leading-tight',
-                          ),
-                        ],
-                        [
-                          h.span(
-                            [h.Class('truncate font-medium')],
-                            ['Acme Inc'],
-                          ),
-                          h.span(
-                            [h.Class('truncate text-xs')],
-                            ['Enterprise'],
-                          ),
-                        ],
+              DropdownMenu.dropdownMenu<UserAction, Message>(
+                {
+                  model,
+                  toParentMessage: (message) => GotUserMenuMessage({ message }),
+                  trigger: h.span(
+                    [h.Class('contents')],
+                    [
+                      userSummary(h),
+                      Icon.chevronsUpDown(
+                        {
+                          class: 'ml-auto size-4 shrink-0',
+                        },
+                        h,
                       ),
                     ],
+                  ),
+                  triggerClass: sidebarMenuButtonVariants({
+                    size: 'lg',
+                    class:
+                      'data-[open]:bg-sidebar-accent data-[open]:text-sidebar-accent-foreground md:h-8 md:p-0',
                   }),
-                ],
-              }),
+                  items: USER_ACTIONS,
+                  itemToConfig: (action) => userActionConfig(action, h),
+                  side: 'right',
+                  align: 'end',
+                  ariaLabel: 'User menu',
+                },
+                h,
+              ),
             ],
-          }),
-        ],
-      }),
-      sidebarContent({
-        children: [
-          sidebarGroup({
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
+};
+
+const iconSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
+  return sidebar(
+    {
+      collapsible: 'none',
+      class: 'w-[calc(var(--sidebar-width-icon)+1px)]! border-r',
+      children: [
+        sidebarHeader(
+          {
             children: [
-              sidebarGroupContent({
-                class: 'px-1.5 md:px-0',
-                children: [
-                  sidebarMenu({
-                    children: data.navMain.map((item, index) =>
-                      sidebarMenuItem({
+              sidebarMenu(
+                {
+                  children: [
+                    sidebarMenuItem(
+                      {
                         children: [
-                          sidebarMenuButton({
-                            onClick: SelectedNavItem({ index }),
-                            isActive:
-                              model.activeNavIndex === index,
-                            tooltip: item.title,
-                            class: 'px-2.5 md:px-2',
-                            children: [
-                              Icon.icon(item.icon),
-                              h.span([], [item.title]),
-                            ],
-                          }),
+                          sidebarMenuButton(
+                            {
+                              size: 'lg',
+                              href: '#',
+                              class: 'md:h-8 md:p-0',
+                              children: [
+                                h.div(
+                                  [
+                                    h.Class(
+                                      'flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground',
+                                    ),
+                                  ],
+                                  [
+                                    Icon.icon(
+                                      'command',
+                                      { class: 'size-4' },
+                                      h,
+                                    ),
+                                  ],
+                                ),
+                                h.div(
+                                  [
+                                    h.Class(
+                                      'grid flex-1 text-left text-sm leading-tight',
+                                    ),
+                                  ],
+                                  [
+                                    h.span(
+                                      [h.Class('truncate font-medium')],
+                                      ['Acme Inc'],
+                                    ),
+                                    h.span(
+                                      [h.Class('truncate text-xs')],
+                                      ['Enterprise'],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            },
+                            h,
+                          ),
                         ],
-                      }),
+                      },
+                      h,
                     ),
-                  }),
-                ],
-              }),
+                  ],
+                },
+                h,
+              ),
             ],
-          }),
-        ],
-      }),
-      sidebarFooter({ children: [navUser(model.userMenu)] }),
-    ],
-  })
-}
+          },
+          h,
+        ),
+        sidebarContent(
+          {
+            children: [
+              sidebarGroup(
+                {
+                  children: [
+                    sidebarGroupContent(
+                      {
+                        class: 'px-1.5 md:px-0',
+                        children: [
+                          sidebarMenu(
+                            {
+                              children: data.navMain.map((item, index) =>
+                                sidebarMenuItem(
+                                  {
+                                    children: [
+                                      sidebarMenuButton(
+                                        {
+                                          onClick: SelectedNavItem({ index }),
+                                          isActive:
+                                            model.activeNavIndex === index,
+                                          tooltip: item.title,
+                                          class: 'px-2.5 md:px-2',
+                                          children: [
+                                            Icon.icon(item.icon, {}, h),
+                                            h.span([], [item.title]),
+                                          ],
+                                        },
+                                        h,
+                                      ),
+                                    ],
+                                  },
+                                  h,
+                                ),
+                              ),
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+        sidebarFooter({ children: [navUser(model.userMenu, h)] }, h),
+      ],
+    },
+    h,
+  );
+};
 
-const mailView = (mail: Mail): Html => {
-  const h = html<Message>()
-
+const mailView = (mail: Mail, h: HtmlBuilder<Message>): Html => {
   return h.a(
     [
       h.Href('#'),
@@ -471,157 +518,191 @@ const mailView = (mail: Mail): Html => {
       ),
       h.span([h.Class('font-medium')], [mail.subject]),
       h.span(
-        [
-          h.Class(
-            'line-clamp-2 w-[260px] text-xs whitespace-break-spaces',
-          ),
-        ],
+        [h.Class('line-clamp-2 w-[260px] text-xs whitespace-break-spaces')],
         [mail.teaser],
       ),
     ],
-  )
-}
+  );
+};
 
-const mailSidebar = (model: Model): Html => {
-  const h = html<Message>()
-  const activeItem =
-    data.navMain[model.activeNavIndex] ?? data.navMain[0]
+const mailSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
+  const activeItem = data.navMain[model.activeNavIndex] ?? data.navMain[0];
 
-  return sidebar({
-    collapsible: 'none',
-    class: 'hidden flex-1 md:flex',
-    children: [
-      sidebarHeader({
-        class: 'gap-3.5 border-b p-4',
-        children: [
-          h.div(
-            [h.Class('flex w-full items-center justify-between')],
-            [
+  return sidebar(
+    {
+      collapsible: 'none',
+      class: 'hidden flex-1 md:flex',
+      children: [
+        sidebarHeader(
+          {
+            class: 'gap-3.5 border-b p-4',
+            children: [
               h.div(
-                [h.Class('text-base font-medium text-foreground')],
-                [activeItem?.title ?? 'Inbox'],
-              ),
-              h.div(
+                [h.Class('flex w-full items-center justify-between')],
                 [
-                  h.Class(
-                    'flex items-center gap-2 text-sm [&_[data-slot=switch]+div]:sr-only',
+                  h.div(
+                    [h.Class('text-base font-medium text-foreground')],
+                    [activeItem?.title ?? 'Inbox'],
+                  ),
+                  h.div(
+                    [
+                      h.Class(
+                        'flex items-center gap-2 text-sm [&_[data-slot=switch]+div]:sr-only',
+                      ),
+                    ],
+                    [
+                      h.span([], ['Unreads']),
+                      Switch.switch(
+                        {
+                          id: 'sidebar-09-unread-switch',
+                          isChecked: model.unreadOnly,
+                          onToggle: (isChecked) => ToggledUnread({ isChecked }),
+                          label: 'Toggle unread mail',
+                          class: 'shadow-none',
+                        },
+                        h,
+                      ),
+                    ],
                   ),
                 ],
-                [
-                  h.span([], ['Unreads']),
-                  Switch.switch({
-                    id: 'sidebar-09-unread-switch',
-                    isChecked: model.unreadOnly,
-                    onToggle: isChecked => ToggledUnread({ isChecked }),
-                    label: 'Toggle unread mail',
-                    class: 'shadow-none',
-                  }),
-                ],
+              ),
+              sidebarInput(
+                {
+                  id: 'sidebar-09-mail-search',
+                  placeholder: 'Type to search...',
+                },
+                h,
               ),
             ],
-          ),
-          sidebarInput({
-            id: 'sidebar-09-mail-search',
-            placeholder: 'Type to search...',
-          }),
-        ],
-      }),
-      sidebarContent({
-        children: [
-          sidebarGroup({
-            class: 'px-0',
+          },
+          h,
+        ),
+        sidebarContent(
+          {
             children: [
-              sidebarGroupContent({
-                children: data.mails.map(mailView),
-              }),
+              sidebarGroup(
+                {
+                  class: 'px-0',
+                  children: [
+                    sidebarGroupContent(
+                      {
+                        children: data.mails.map((mail) => mailView(mail, h)),
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
             ],
-          }),
-        ],
-      }),
-    ],
-  })
-}
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
+};
 
-const appSidebar = (model: Model): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
+const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
 
-  return sidebar<Message>({
-    state,
-    collapsible: 'icon',
-    class:
-      'overflow-hidden *:data-[sidebar=sidebar]:flex-row',
-    children: [iconSidebar(model), mailSidebar(model)],
-  })
-}
+  return sidebar<Message>(
+    {
+      state,
+      collapsible: 'icon',
+      class: 'overflow-hidden *:data-[sidebar=sidebar]:flex-row',
+      children: [iconSidebar(model, h), mailSidebar(model, h)],
+    },
+    h,
+  );
+};
 
-const pageContent = (): Html => {
-  const h = html<Message>()
-
-  return sidebarInset({
-    children: [
-      h.header(
-        [
-          h.Class(
-            'sticky top-0 flex shrink-0 items-center gap-2 border-b bg-background p-4',
-          ),
-        ],
-        [
-          sidebarTrigger({
-            onClick: ToggledSidebar(),
-            class: '-ml-1',
-          }),
-          separator({
-            orientation: 'vertical',
-            class: 'mr-2 data-[orientation=vertical]:h-4',
-          }),
-          breadcrumb({
-            children: [
-              breadcrumbList({
+const pageContent = (h: HtmlBuilder<Message>): Html => {
+  return sidebarInset(
+    {
+      children: [
+        h.header(
+          [
+            h.Class(
+              'sticky top-0 flex shrink-0 items-center gap-2 border-b bg-background p-4',
+            ),
+          ],
+          [
+            sidebarTrigger(
+              {
+                onClick: ToggledSidebar(),
+                class: '-ml-1',
+              },
+              h,
+            ),
+            separator(
+              {
+                orientation: 'vertical',
+                class: 'mr-2 data-[orientation=vertical]:h-4',
+              },
+              h,
+            ),
+            breadcrumb(
+              {
                 children: [
-                  breadcrumbItem({
-                    class: 'hidden md:block',
-                    children: [
-                      breadcrumbLink({
-                        href: '#',
-                        children: ['All Inboxes'],
-                      }),
-                    ],
-                  }),
-                  breadcrumbSeparator({ class: 'hidden md:block' }),
-                  breadcrumbItem({
-                    children: [
-                      breadcrumbPage({ children: ['Inbox'] }),
-                    ],
-                  }),
+                  breadcrumbList(
+                    {
+                      children: [
+                        breadcrumbItem(
+                          {
+                            class: 'hidden md:block',
+                            children: [
+                              breadcrumbLink(
+                                {
+                                  href: '#',
+                                  children: ['All Inboxes'],
+                                },
+                                h,
+                              ),
+                            ],
+                          },
+                          h,
+                        ),
+                        breadcrumbSeparator({ class: 'hidden md:block' }, h),
+                        breadcrumbItem(
+                          {
+                            children: [
+                              breadcrumbPage({ children: ['Inbox'] }, h),
+                            ],
+                          },
+                          h,
+                        ),
+                      ],
+                    },
+                    h,
+                  ),
                 ],
-              }),
-            ],
-          }),
-        ],
-      ),
-      h.div(
-        [h.Class('flex flex-1 flex-col gap-4 p-4')],
-        Array.from({ length: 24 }, () =>
-          h.div(
-            [
-              h.Class(
-                'aspect-video h-12 w-full rounded-lg bg-muted/50',
-              ),
-            ],
-            [],
+              },
+              h,
+            ),
+          ],
+        ),
+        h.div(
+          [h.Class('flex flex-1 flex-col gap-4 p-4')],
+          Array.from({ length: 24 }, () =>
+            h.div(
+              [h.Class('aspect-video h-12 w-full rounded-lg bg-muted/50')],
+              [],
+            ),
           ),
         ),
-      ),
-    ],
-  })
-}
+      ],
+    },
+    h,
+  );
+};
 
 const blockSidebarProvider = (
   state: 'expanded' | 'collapsed',
   children: ReadonlyArray<Html>,
+  h: HtmlBuilder<Message>,
 ): Html => {
-  const h = html<Message>()
-
   return h.div(
     [
       h.DataAttribute('slot', 'sidebar-wrapper'),
@@ -635,17 +716,14 @@ const blockSidebarProvider = (
       ),
     ],
     [...children],
-  )
-}
+  );
+};
 
-export const view = (model: Model): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
+export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
 
-  return blockSidebarProvider(state, [
-    appSidebar(model),
-    pageContent(),
-  ])
-}
+  return blockSidebarProvider(state, [appSidebar(model, h), pageContent(h)], h);
+};
 
 // PORT NOTE: The shared sidebarProvider fixes --sidebar-width at 16rem, so
 // this block reproduces its wrapper locally to preserve the source's 350px

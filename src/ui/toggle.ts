@@ -1,9 +1,9 @@
-import { type VariantProps, cva } from 'class-variance-authority'
-import { type Html, html } from 'foldkit/html'
+import { type VariantProps, cva } from 'class-variance-authority';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import { Button as ButtonPrimitive } from '@foldkit/ui'
+import { Button as ButtonPrimitive } from '@foldkit/ui';
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
 
 export const toggleVariants = cva(
   "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 aria-[pressed=true]:bg-accent aria-[pressed=true]:text-accent-foreground dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
@@ -25,44 +25,48 @@ export const toggleVariants = cva(
       size: 'default',
     },
   },
-)
+);
 
-export type ToggleVariants = VariantProps<typeof toggleVariants>
+export type ToggleVariants = VariantProps<typeof toggleVariants>;
 
 export type ToggleProps<Msg> = Readonly<{
-  isPressed: boolean
-  onToggle: Msg
-  variant?: ToggleVariants['variant']
-  size?: ToggleVariants['size']
-  children: ReadonlyArray<Html | string>
-  isDisabled?: boolean
-  class?: string
-}>
+  isPressed: boolean;
+  onToggle: Msg;
+  variant?: ToggleVariants['variant'];
+  size?: ToggleVariants['size'];
+  children: ReadonlyArray<Html | string>;
+  isDisabled?: boolean;
+  class?: string;
+}>;
 
-export const toggle = <Msg>(props: ToggleProps<Msg>): Html => {
-  const h = html<Msg>()
-
-  return ButtonPrimitive.view({
-    onClick: props.onToggle,
-    isDisabled: props.isDisabled ?? false,
-    type: 'button',
-    toView: ({ button }) =>
-      h.button(
-        [
-          ...button,
-          h.DataAttribute('slot', 'toggle'),
-          h.AriaPressed(props.isPressed ? 'true' : 'false'),
-          h.Class(
-            cn(
-              toggleVariants({
-                variant: props.variant ?? 'default',
-                size: props.size ?? 'default',
-              }),
-              props.class,
+export const toggle = <Msg>(
+  props: ToggleProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  return ButtonPrimitive.view(
+    {
+      onClick: props.onToggle,
+      isDisabled: props.isDisabled ?? false,
+      type: 'button',
+      toView: ({ button }) =>
+        h.button(
+          [
+            ...button,
+            h.DataAttribute('slot', 'toggle'),
+            h.AriaPressed(props.isPressed ? 'true' : 'false'),
+            h.Class(
+              cn(
+                toggleVariants({
+                  variant: props.variant ?? 'default',
+                  size: props.size ?? 'default',
+                }),
+                props.class,
+              ),
             ),
-          ),
-        ],
-        [...props.children],
-      ),
-  })
-}
+          ],
+          [...props.children],
+        ),
+    },
+    h,
+  );
+};

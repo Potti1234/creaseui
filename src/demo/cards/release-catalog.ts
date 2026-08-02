@@ -1,16 +1,12 @@
-import { Match as M, Schema as S } from 'effect'
-import { Command } from 'foldkit'
-import { type Html, html } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { Match as M, Schema as S } from 'effect';
+import { Command } from 'foldkit';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
 
-import * as Icon from '@/lib/icon'
-import { badge } from '@/ui/badge'
-import { card, cardContent, cardHeader } from '@/ui/card'
-import {
-  inputGroup,
-  inputGroupAddon,
-  inputGroupInput,
-} from '@/ui/input-group'
+import * as Icon from '@/lib/icon';
+import { badge } from '@/ui/badge';
+import { card, cardContent, cardHeader } from '@/ui/card';
+import { inputGroup, inputGroupAddon, inputGroupInput } from '@/ui/input-group';
 import {
   item,
   itemContent,
@@ -18,8 +14,8 @@ import {
   itemGroup,
   itemMedia,
   itemTitle,
-} from '@/ui/item'
-import { toggleGroup } from '@/ui/toggle-group'
+} from '@/ui/item';
+import { toggleGroup } from '@/ui/toggle-group';
 
 const HOLDINGS = [
   {
@@ -54,154 +50,185 @@ const HOLDINGS = [
     shares: '320',
     value: '$15,136.59',
   },
-] as const
+] as const;
 
 export const Model = S.Struct({
   search: S.String,
   category: S.String,
-})
-export type Model = typeof Model.Type
+});
+export type Model = typeof Model.Type;
 
-export const UpdatedSearch = m('UpdatedSearch', { value: S.String })
-export const SelectedCategory = m('SelectedCategory', { value: S.String })
-export const Message = S.Union([UpdatedSearch, SelectedCategory])
-export type Message = typeof Message.Type
+export const UpdatedSearch = m('UpdatedSearch', { value: S.String });
+export const SelectedCategory = m('SelectedCategory', { value: S.String });
+export const Message = S.Union([UpdatedSearch, SelectedCategory]);
+export type Message = typeof Message.Type;
 
-type UpdateReturn = readonly [
-  Model,
-  ReadonlyArray<Command.Command<Message>>,
-]
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
 
-export const init = (): Model => ({ search: '', category: 'etfs' })
+export const init = (): Model => ({ search: '', category: 'etfs' });
 
-export const update = (
-  model: Model,
-  message: Message,
-): UpdateReturn =>
+export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       UpdatedSearch: ({ value }) => [{ ...model, search: value }, []],
       SelectedCategory: ({ value }) => [{ ...model, category: value }, []],
     }),
-  )
+  );
 
-export const view = (model: Model): Html => {
-  const h = html<Message>()
-
-  return card({
-    children: [
-      cardHeader({
-        children: [
-          h.div(
-            [h.Class('flex items-center justify-between gap-3')],
-            [
-              inputGroup({
-                class: 'max-w-sm',
-                children: [
-                  inputGroupAddon({
-                    children: [Icon.icon('search')],
-                  }),
-                  inputGroupInput({
-                    id: 'release-catalog-search',
-                    value: model.search,
-                    onInput: value => UpdatedSearch({ value }),
-                    placeholder: 'Search holdings or tickers...',
-                  }),
-                ],
-              }),
-              toggleGroup({
-                value: model.category,
-                onToggle: value => SelectedCategory({ value }),
-                variant: 'outline',
-                class: 'gap-1',
-                items: [
-                  {
-                    value: 'stocks',
-                    class: 'rounded-md border-l',
-                    children: ['Stocks'],
-                  },
-                  {
-                    value: 'etfs',
-                    class: 'rounded-md border-l',
-                    children: ['ETFs'],
-                  },
-                  {
-                    value: 'reits',
-                    class: 'rounded-md border-l',
-                    children: ['REITs'],
-                  },
-                ],
-              }),
-            ],
-          ),
-        ],
-      }),
-      cardContent({
-        children: [
-          itemGroup({
-            children: HOLDINGS.map(holding =>
-              item({
-                variant: 'muted',
-                children: [
-                  itemMedia({
-                    children: [
-                      h.div(
-                        [
-                          h.Class(
-                            'flex size-10 items-center justify-center rounded-lg border bg-transparent text-xs font-medium',
-                          ),
-                        ],
-                        [holding.ticker],
-                      ),
-                    ],
-                  }),
-                  itemContent({
-                    children: [
-                      itemTitle({ children: [holding.name] }),
-                      itemDescription({
-                        class: 'text-xs tracking-wider uppercase',
-                        children: [
-                          `${holding.shares} Shares · ${holding.added}`,
-                        ],
-                      }),
-                    ],
-                  }),
-                  h.div(
-                    [h.Class('flex shrink-0 items-center gap-6')],
-                    [
-                      badge({
-                        variant: 'outline',
-                        children: [holding.type],
-                      }),
-                      h.div(
-                        [h.Class('flex flex-col items-end gap-0.5')],
-                        [
-                          h.span(
-                            [
-                              h.Class(
-                                'text-xs tracking-wider text-muted-foreground uppercase',
-                              ),
-                            ],
-                            ['Value'],
-                          ),
-                          h.span(
-                            [h.Class('font-medium tabular-nums')],
-                            [holding.value],
-                          ),
-                        ],
-                      ),
-                    ],
+export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
+  return card(
+    {
+      children: [
+        cardHeader(
+          {
+            children: [
+              h.div(
+                [h.Class('flex items-center justify-between gap-3')],
+                [
+                  inputGroup(
+                    {
+                      class: 'max-w-sm',
+                      children: [
+                        inputGroupAddon(
+                          {
+                            children: [Icon.icon('search', {}, h)],
+                          },
+                          h,
+                        ),
+                        inputGroupInput(
+                          {
+                            id: 'release-catalog-search',
+                            value: model.search,
+                            onInput: (value) => UpdatedSearch({ value }),
+                            placeholder: 'Search holdings or tickers...',
+                          },
+                          h,
+                        ),
+                      ],
+                    },
+                    h,
+                  ),
+                  toggleGroup(
+                    {
+                      value: model.category,
+                      onToggle: (value) => SelectedCategory({ value }),
+                      variant: 'outline',
+                      class: 'gap-1',
+                      items: [
+                        {
+                          value: 'stocks',
+                          class: 'rounded-md border-l',
+                          children: ['Stocks'],
+                        },
+                        {
+                          value: 'etfs',
+                          class: 'rounded-md border-l',
+                          children: ['ETFs'],
+                        },
+                        {
+                          value: 'reits',
+                          class: 'rounded-md border-l',
+                          children: ['REITs'],
+                        },
+                      ],
+                    },
+                    h,
                   ),
                 ],
-              }),
-            ),
-          }),
-        ],
-      }),
-    ],
-  })
-}
+              ),
+            ],
+          },
+          h,
+        ),
+        cardContent(
+          {
+            children: [
+              itemGroup(
+                {
+                  children: HOLDINGS.map((holding) =>
+                    item(
+                      {
+                        variant: 'muted',
+                        children: [
+                          itemMedia(
+                            {
+                              children: [
+                                h.div(
+                                  [
+                                    h.Class(
+                                      'flex size-10 items-center justify-center rounded-lg border bg-transparent text-xs font-medium',
+                                    ),
+                                  ],
+                                  [holding.ticker],
+                                ),
+                              ],
+                            },
+                            h,
+                          ),
+                          itemContent(
+                            {
+                              children: [
+                                itemTitle({ children: [holding.name] }, h),
+                                itemDescription(
+                                  {
+                                    class: 'text-xs tracking-wider uppercase',
+                                    children: [
+                                      `${holding.shares} Shares · ${holding.added}`,
+                                    ],
+                                  },
+                                  h,
+                                ),
+                              ],
+                            },
+                            h,
+                          ),
+                          h.div(
+                            [h.Class('flex shrink-0 items-center gap-6')],
+                            [
+                              badge(
+                                {
+                                  variant: 'outline',
+                                  children: [holding.type],
+                                },
+                                h,
+                              ),
+                              h.div(
+                                [h.Class('flex flex-col items-end gap-0.5')],
+                                [
+                                  h.span(
+                                    [
+                                      h.Class(
+                                        'text-xs tracking-wider text-muted-foreground uppercase',
+                                      ),
+                                    ],
+                                    ['Value'],
+                                  ),
+                                  h.span(
+                                    [h.Class('font-medium tabular-nums')],
+                                    [holding.value],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                  ),
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
+};
 
 /*
 Minimal wiring:

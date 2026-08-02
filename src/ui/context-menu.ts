@@ -1,42 +1,47 @@
-import { type Html } from 'foldkit/html'
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import * as DropdownMenu from '@/ui/dropdown-menu'
+import * as DropdownMenu from '@/ui/dropdown-menu';
 
-export const Model = DropdownMenu.Model
-export type Model = DropdownMenu.Model
-export const Message = DropdownMenu.Message
-export type Message = DropdownMenu.Message
-export type OutMessage<Item extends string = string> = DropdownMenu.OutMessage<Item>
-export const init = DropdownMenu.init
-export const create = DropdownMenu.create
-export const update = DropdownMenu.update
-export const open = DropdownMenu.open
-export const openAt = DropdownMenu.openAt
-export const close = DropdownMenu.close
-export const selectItem = DropdownMenu.selectItem
+export const Model = DropdownMenu.Model;
+export type Model = DropdownMenu.Model;
+export const Message = DropdownMenu.Message;
+export type Message = DropdownMenu.Message;
+export type OutMessage<Item extends string = string> =
+  DropdownMenu.OutMessage<Item>;
+export const init = DropdownMenu.init;
+export const create = DropdownMenu.create;
+export const update = DropdownMenu.update;
+export const open = DropdownMenu.open;
+export const openAt = DropdownMenu.openAt;
+export const close = DropdownMenu.close;
+export const selectItem = DropdownMenu.selectItem;
 
-export type ContextMenuItemConfig = DropdownMenu.DropdownMenuItemConfig
+export type ContextMenuItemConfig = DropdownMenu.DropdownMenuItemConfig;
 
 export type ContextMenuProps<Item extends string, Msg> = Readonly<{
-  model: Model
-  toParentMessage: (message: Message) => Msg
-  trigger: Html | string
-  items: ReadonlyArray<Item>
-  itemToConfig: (item: Item) => ContextMenuItemConfig
-  ariaLabel?: string
-  class?: string
-}>
+  model: Model;
+  toParentMessage: (message: Message) => Msg;
+  trigger: Html | string;
+  items: ReadonlyArray<Item>;
+  itemToConfig: (item: Item) => ContextMenuItemConfig;
+  ariaLabel?: string;
+  class?: string;
+}>;
 
 export const contextMenu = <Item extends string, Msg>(
   props: ContextMenuProps<Item, Msg>,
+  h: HtmlBuilder<Msg>,
 ): Html =>
-  DropdownMenu.dropdownMenu<Item, Msg>({
-    model: props.model,
-    toParentMessage: props.toParentMessage,
-    trigger: props.trigger,
-    items: props.items,
-    itemToConfig: props.itemToConfig,
-    openOnContextMenu: true,
-    ...(props.class === undefined ? {} : { triggerClass: props.class }),
-    ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
-  })
+  DropdownMenu.dropdownMenu<Item, Msg>(
+    {
+      model: props.model,
+      toParentMessage: props.toParentMessage,
+      trigger: props.trigger,
+      items: props.items,
+      itemToConfig: props.itemToConfig,
+      openOnContextMenu: true,
+      ...(props.class === undefined ? {} : { triggerClass: props.class }),
+      ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
+    },
+    h,
+  );

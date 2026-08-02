@@ -1,10 +1,10 @@
-import { Match as M, Schema as S } from 'effect'
-import { Command } from 'foldkit'
-import { type Html, html } from 'foldkit/html'
-import { m } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { Match as M, Schema as S } from 'effect';
+import { Command } from 'foldkit';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
+import { evo } from 'foldkit/struct';
 
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/lib/icon';
 import {
   breadcrumb,
   breadcrumbItem,
@@ -12,9 +12,9 @@ import {
   breadcrumbList,
   breadcrumbPage,
   breadcrumbSeparator,
-} from '@/ui/breadcrumb'
-import { button } from '@/ui/button'
-import * as Dialog from '@/ui/dialog'
+} from '@/ui/breadcrumb';
+import { button } from '@/ui/button';
+import * as Dialog from '@/ui/dialog';
 import {
   sidebar,
   sidebarContent,
@@ -24,7 +24,7 @@ import {
   sidebarMenuButton,
   sidebarMenuItem,
   sidebarProvider,
-} from '@/ui/sidebar'
+} from '@/ui/sidebar';
 
 const data = {
   nav: [
@@ -41,25 +41,25 @@ const data = {
     { name: 'Privacy & visibility', icon: 'lock' },
     { name: 'Advanced', icon: 'settings' },
   ],
-}
+};
 
 export const Model = S.Struct({
   isSidebarOpen: S.Boolean,
   dialog: Dialog.Model,
-})
-export type Model = typeof Model.Type
+});
+export type Model = typeof Model.Type;
 
-export const ToggledSidebar = m('ToggledSidebar')
-export const OpenedSettings = m('OpenedSettings')
+export const ToggledSidebar = m('ToggledSidebar');
+export const OpenedSettings = m('OpenedSettings');
 export const GotDialogMessage = m('GotDialogMessage', {
   message: Dialog.Message,
-})
+});
 export const Message = S.Union([
   ToggledSidebar,
   OpenedSettings,
   GotDialogMessage,
-])
-export type Message = typeof Message.Type
+]);
+export type Message = typeof Message.Type;
 
 export const init = (): Model => ({
   isSidebarOpen: true,
@@ -68,78 +68,99 @@ export const init = (): Model => ({
     isOpen: true,
     isAnimated: true,
   }),
-})
+});
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       ToggledSidebar: () => [
-        evo(model, { isSidebarOpen: current => !current }),
+        evo(model, { isSidebarOpen: (current) => !current }),
         [],
       ],
       OpenedSettings: () => {
-        const [dialog, commands] = Dialog.open(model.dialog)
+        const [dialog, commands] = Dialog.open(model.dialog);
         return [
           evo(model, { dialog: () => dialog }),
-          Command.mapMessages(commands, next =>
+          Command.mapMessages(commands, (next) =>
             GotDialogMessage({ message: next }),
           ),
-        ]
+        ];
       },
       GotDialogMessage: ({ message: childMessage }) => {
-        const [dialog, commands] = Dialog.update(model.dialog, childMessage)
+        const [dialog, commands] = Dialog.update(model.dialog, childMessage);
         return [
           evo(model, { dialog: () => dialog }),
-          Command.mapMessages(commands, next =>
+          Command.mapMessages(commands, (next) =>
             GotDialogMessage({ message: next }),
           ),
-        ]
+        ];
       },
     }),
-  )
+  );
 
-const settingsSidebar = (): Html =>
-  sidebar<Dialog.Message>({
-    state: 'expanded',
-    collapsible: 'none',
-    class: 'hidden md:flex',
-    children: [
-      sidebarContent({
-        children: [
-          sidebarGroup({
+const settingsSidebar = (h: HtmlBuilder<Message>): Html =>
+  sidebar(
+    {
+      state: 'expanded',
+      collapsible: 'none',
+      class: 'hidden md:flex',
+      children: [
+        sidebarContent(
+          {
             children: [
-              sidebarGroupContent({
-                children: [
-                  sidebarMenu({
-                    children: data.nav.map(item =>
-                      sidebarMenuItem({
+              sidebarGroup(
+                {
+                  children: [
+                    sidebarGroupContent(
+                      {
                         children: [
-                          sidebarMenuButton({
-                            href: '#',
-                            isActive: item.name === 'Messages & media',
-                            children: [
-                              Icon.icon<Dialog.Message>(item.icon),
-                              item.name,
-                            ],
-                          }),
+                          sidebarMenu(
+                            {
+                              children: data.nav.map((item) =>
+                                sidebarMenuItem(
+                                  {
+                                    children: [
+                                      sidebarMenuButton(
+                                        {
+                                          href: '#',
+                                          isActive:
+                                            item.name === 'Messages & media',
+                                          children: [
+                                            Icon.icon(item.icon, {}, h),
+                                            item.name,
+                                          ],
+                                        },
+                                        h,
+                                      ),
+                                    ],
+                                  },
+                                  h,
+                                ),
+                              ),
+                            },
+                            h,
+                          ),
                         ],
-                      }),
+                      },
+                      h,
                     ),
-                  }),
-                ],
-              }),
+                  ],
+                },
+                h,
+              ),
             ],
-          }),
-        ],
-      }),
-    ],
-  })
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
 
-const settingsMain = (): Html => {
-  const h = html<Dialog.Message>()
+const settingsMain = (h: HtmlBuilder<Message>): Html => {
   return h.main(
     [h.Class('flex h-[480px] flex-1 flex-col overflow-hidden')],
     [
@@ -153,84 +174,103 @@ const settingsMain = (): Html => {
           h.div(
             [h.Class('flex items-center gap-2 px-4')],
             [
-              breadcrumb({
-                children: [
-                  breadcrumbList({
-                    children: [
-                      breadcrumbItem({
-                        class: 'hidden md:block',
+              breadcrumb(
+                {
+                  children: [
+                    breadcrumbList(
+                      {
                         children: [
-                          breadcrumbLink({
-                            href: '#',
-                            children: ['Settings'],
-                          }),
+                          breadcrumbItem(
+                            {
+                              class: 'hidden md:block',
+                              children: [
+                                breadcrumbLink(
+                                  {
+                                    href: '#',
+                                    children: ['Settings'],
+                                  },
+                                  h,
+                                ),
+                              ],
+                            },
+                            h,
+                          ),
+                          breadcrumbSeparator({ class: 'hidden md:block' }, h),
+                          breadcrumbItem(
+                            {
+                              children: [
+                                breadcrumbPage(
+                                  {
+                                    children: ['Messages & media'],
+                                  },
+                                  h,
+                                ),
+                              ],
+                            },
+                            h,
+                          ),
                         ],
-                      }),
-                      breadcrumbSeparator({ class: 'hidden md:block' }),
-                      breadcrumbItem({
-                        children: [
-                          breadcrumbPage({
-                            children: ['Messages & media'],
-                          }),
-                        ],
-                      }),
-                    ],
-                  }),
-                ],
-              }),
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
             ],
           ),
         ],
       ),
       h.div(
-        [
-          h.Class(
-            'flex flex-1 flex-col gap-4 overflow-y-auto p-4 pt-0',
-          ),
-        ],
+        [h.Class('flex flex-1 flex-col gap-4 overflow-y-auto p-4 pt-0')],
         Array.from({ length: 10 }, () =>
-          h.div(
-            [h.Class('aspect-video max-w-3xl rounded-xl bg-muted/50')],
-            [],
-          ),
+          h.div([h.Class('aspect-video max-w-3xl rounded-xl bg-muted/50')], []),
         ),
       ),
     ],
-  )
-}
+  );
+};
 
-const settingsDialog = (model: Dialog.Model): Html =>
-  Dialog.dialog<Message>({
-    model,
-    toParentMessage: message => GotDialogMessage({ message }),
-    title: 'Settings',
-    description: 'Customize your settings here.',
-    showCloseButton: true,
-    class:
-      'overflow-hidden p-0 md:max-h-[500px] md:max-w-[700px] lg:max-w-[800px]',
-    content: () => [
-      sidebarProvider<Dialog.Message>({
-        state: 'expanded',
-        class: 'items-start min-h-0',
-        children: [settingsSidebar(), settingsMain()],
-      }),
-    ],
-  })
+const settingsDialog = (model: Dialog.Model, h: HtmlBuilder<Message>): Html =>
+  Dialog.dialog<Message>(
+    {
+      model,
+      toParentMessage: (message) => GotDialogMessage({ message }),
+      title: 'Settings',
+      description: 'Customize your settings here.',
+      showCloseButton: true,
+      class:
+        'overflow-hidden p-0 md:max-h-[500px] md:max-w-[700px] lg:max-w-[800px]',
+      content: () => [
+        sidebarProvider(
+          {
+            state: 'expanded',
+            class: 'items-start min-h-0',
+            children: [settingsSidebar(h), settingsMain(h)],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
 
-export const view = (model: Model): Html => {
-  const h = html<Message>()
+export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   return h.div(
     [h.Class('flex h-svh items-center justify-center')],
     [
-      button({
-        size: 'sm',
-        onClick: OpenedSettings(),
-        children: ['Open Dialog'],
-      }),
-      settingsDialog(model.dialog),
+      button(
+        {
+          size: 'sm',
+          onClick: OpenedSettings(),
+          children: ['Open Dialog'],
+        },
+        h,
+      ),
+      settingsDialog(model.dialog, h),
     ],
-  )
-}
+  );
+};
 
 // PORT NOTE: The dialog wrapper supplies the native dialog framing and
 // accessible title/description. Unlike the source's visually hidden heading,

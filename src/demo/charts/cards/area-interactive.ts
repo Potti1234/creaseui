@@ -1,20 +1,20 @@
-import type { EChartsOption } from 'echarts/types/dist/shared'
-import { Option } from 'effect'
-import { type Html, html } from 'foldkit/html'
+import type { EChartsOption } from 'echarts/types/dist/shared';
+import { Option } from 'effect';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
 
-import * as Chart from '@/lib/echarts'
-import * as Select from '@/ui/select'
+import * as Chart from '@/lib/echarts';
+import * as Select from '@/ui/select';
 import {
   card,
   cardContent,
   cardDescription,
   cardHeader,
   cardTitle,
-} from '@/ui/card'
+} from '@/ui/card';
 
-export const HOST_ID = 'chart-area-interactive'
+export const HOST_ID = 'chart-area-interactive';
 
-export type TimeRange = '90d' | '30d' | '7d'
+export type TimeRange = '90d' | '30d' | '7d';
 
 const TIME_RANGES: ReadonlyArray<
   Readonly<{ value: TimeRange; label: string }>
@@ -22,7 +22,7 @@ const TIME_RANGES: ReadonlyArray<
   { value: '90d', label: 'Last 3 months' },
   { value: '30d', label: 'Last 30 days' },
   { value: '7d', label: 'Last 7 days' },
-]
+];
 
 const DATA = [
   ['2024-04-01', 222, 150],
@@ -116,130 +116,147 @@ const DATA = [
   ['2024-06-28', 149, 200],
   ['2024-06-29', 103, 160],
   ['2024-06-30', 446, 400],
-] as const
+] as const;
 
 const firstDate: Readonly<Record<TimeRange, string>> = {
   '90d': '2024-04-01',
   '30d': '2024-05-31',
   '7d': '2024-06-23',
-}
+};
 
 const formatDate = (date: string): string =>
   new Date(`${date}T00:00:00Z`).toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
     timeZone: 'UTC',
-  })
+  });
 
 const isTimeRange = (value: string): value is TimeRange =>
-  value === '90d' || value === '30d' || value === '7d'
+  value === '90d' || value === '30d' || value === '7d';
 
-Chart.registerChart(
-  HOST_ID,
-  (theme, variant): EChartsOption => {
-    const timeRange = isTimeRange(variant) ? variant : '90d'
-    const filtered = DATA.filter(([date]) => date >= firstDate[timeRange])
+Chart.registerChart(HOST_ID, (theme, variant): EChartsOption => {
+  const timeRange = isTimeRange(variant) ? variant : '90d';
+  const filtered = DATA.filter(([date]) => date >= firstDate[timeRange]);
 
-    return {
-      grid: Chart.compactGrid({ bottom: 44 }),
-      xAxis: {
-        ...Chart.categoryAxis(
-          theme,
-          filtered.map(([date]) => formatDate(date)),
-        ),
-        axisLabel: {
-          color: theme.mutedForeground,
-          fontSize: 12,
-          fontFamily: theme.fontFamily,
-          margin: 10,
-          hideOverlap: true,
-        },
+  return {
+    grid: Chart.compactGrid({ bottom: 44 }),
+    xAxis: {
+      ...Chart.categoryAxis(
+        theme,
+        filtered.map(([date]) => formatDate(date)),
+      ),
+      axisLabel: {
+        color: theme.mutedForeground,
+        fontSize: 12,
+        fontFamily: theme.fontFamily,
+        margin: 10,
+        hideOverlap: true,
       },
-      yAxis: Chart.valueAxis(theme),
-      tooltip: Chart.shadcnTooltip(theme),
-      legend: Chart.shadcnLegend(theme),
-      series: [
-        {
-          name: 'Mobile',
-          type: 'line',
-          smooth: 0.4,
-          stack: 'total',
-          showSymbol: false,
-          lineStyle: { width: 2, color: theme.chart2 },
-          itemStyle: { color: theme.chart2 },
-          areaStyle: { color: Chart.areaGradient(theme.chart2) },
-          data: filtered.map(([, , mobile]) => mobile),
-        },
-        {
-          name: 'Desktop',
-          type: 'line',
-          smooth: 0.4,
-          stack: 'total',
-          showSymbol: false,
-          lineStyle: { width: 2, color: theme.chart1 },
-          itemStyle: { color: theme.chart1 },
-          areaStyle: { color: Chart.areaGradient(theme.chart1) },
-          data: filtered.map(([, desktop]) => desktop),
-        },
-      ],
-    }
-  },
-)
+    },
+    yAxis: Chart.valueAxis(theme),
+    tooltip: Chart.shadcnTooltip(theme),
+    legend: Chart.shadcnLegend(theme),
+    series: [
+      {
+        name: 'Mobile',
+        type: 'line',
+        smooth: 0.4,
+        stack: 'total',
+        showSymbol: false,
+        lineStyle: { width: 2, color: theme.chart2 },
+        itemStyle: { color: theme.chart2 },
+        areaStyle: { color: Chart.areaGradient(theme.chart2) },
+        data: filtered.map(([, , mobile]) => mobile),
+      },
+      {
+        name: 'Desktop',
+        type: 'line',
+        smooth: 0.4,
+        stack: 'total',
+        showSymbol: false,
+        lineStyle: { width: 2, color: theme.chart1 },
+        itemStyle: { color: theme.chart1 },
+        areaStyle: { color: Chart.areaGradient(theme.chart1) },
+        data: filtered.map(([, desktop]) => desktop),
+      },
+    ],
+  };
+});
 
 export type ViewProps<Msg> = Readonly<{
-  timeRange: TimeRange
-  selectedTimeRange: TimeRange
-  selectModel: Select.Model
-  toChartMessage: (message: Chart.ChartMessage) => Msg
-  toSelectMessage: (message: Select.Message) => Msg
-}>
+  timeRange: TimeRange;
+  selectedTimeRange: TimeRange;
+  selectModel: Select.Model;
+  toChartMessage: (message: Chart.ChartMessage) => Msg;
+  toSelectMessage: (message: Select.Message) => Msg;
+}>;
 
-export const view = <Msg>(props: ViewProps<Msg>): Html => {
-  const h = html<Msg>()
-
-  return card({
-    class: 'pt-0',
-    children: [
-      cardHeader({
-        class: 'flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row',
-        children: [
-          h.div(
-            [h.Class('grid flex-1 gap-1')],
-            [
-              cardTitle({ children: ['Area Chart - Interactive'] }),
-              cardDescription({
-                children: ['Showing total visitors for the last 3 months'],
-              }),
+export const view = <Msg>(props: ViewProps<Msg>, h: HtmlBuilder<Msg>): Html => {
+  return card(
+    {
+      class: 'pt-0',
+      children: [
+        cardHeader(
+          {
+            class:
+              'flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row',
+            children: [
+              h.div(
+                [h.Class('grid flex-1 gap-1')],
+                [
+                  cardTitle({ children: ['Area Chart - Interactive'] }, h),
+                  cardDescription(
+                    {
+                      children: [
+                        'Showing total visitors for the last 3 months',
+                      ],
+                    },
+                    h,
+                  ),
+                ],
+              ),
+              Select.select(
+                {
+                  model: props.selectModel,
+                  maybeSelectedValue: Option.some(props.selectedTimeRange),
+                  toParentMessage: props.toSelectMessage,
+                  items: TIME_RANGES,
+                  itemToValue: (range) => range.value,
+                  itemToLabel: (range) => range.label,
+                  triggerClass:
+                    'hidden w-[160px] rounded-lg sm:ml-auto sm:flex',
+                  ariaLabel: 'Select a value',
+                },
+                h,
+              ),
             ],
-          ),
-          Select.select({
-            model: props.selectModel,
-            maybeSelectedValue: Option.some(props.selectedTimeRange),
-            toParentMessage: props.toSelectMessage,
-            items: TIME_RANGES,
-            itemToValue: range => range.value,
-            itemToLabel: range => range.label,
-            triggerClass: 'hidden w-[160px] rounded-lg sm:ml-auto sm:flex',
-            ariaLabel: 'Select a value',
-          }),
-        ],
-      }),
-      cardContent({
-        class: 'px-2 pt-4 sm:px-6 sm:pt-6',
-        children: [
-          Chart.chart({
-            hostId: HOST_ID,
-            variant: props.timeRange,
-            ariaLabel:
-              'Interactive area chart showing desktop and mobile visitors for the selected time range',
-            toMessage: props.toChartMessage,
-            class: 'aspect-auto h-[250px] w-full',
-          }),
-        ],
-      }),
-    ],
-  })
-}
+          },
+          h,
+        ),
+        cardContent(
+          {
+            class: 'px-2 pt-4 sm:px-6 sm:pt-6',
+            children: [
+              Chart.chart(
+                {
+                  hostId: HOST_ID,
+                  variant: props.timeRange,
+                  ariaLabel:
+                    'Interactive area chart showing desktop and mobile visitors for the selected time range',
+                  toMessage: props.toChartMessage,
+                  class: 'aspect-auto h-[250px] w-full',
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
+};
 
 /*
   Minimal wiring:

@@ -1,13 +1,13 @@
-import { Match as M, Schema as S } from 'effect'
-import { Command } from 'foldkit'
-import { type Html, html } from 'foldkit/html'
-import { m } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { Match as M, Schema as S } from 'effect';
+import { Command } from 'foldkit';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
+import { evo } from 'foldkit/struct';
 
-import * as Chart from '@/lib/echarts'
-import * as Icon from '@/lib/icon'
-import { badge } from '@/ui/badge'
-import { button } from '@/ui/button'
+import * as Chart from '@/lib/echarts';
+import * as Icon from '@/lib/icon';
+import { badge } from '@/ui/badge';
+import { button } from '@/ui/button';
 import {
   card,
   cardContent,
@@ -15,10 +15,10 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card'
-import { input } from '@/ui/input'
-import { kbd } from '@/ui/kbd'
-import { separator } from '@/ui/separator'
+} from '@/ui/card';
+import { input } from '@/ui/input';
+import { kbd } from '@/ui/kbd';
+import { separator } from '@/ui/separator';
 
 /* The crease/ui landing page (route: /). Copy and structure follow
    brand/LANDING.md. Interactive bits: the before/after comparison slider;
@@ -28,31 +28,31 @@ import { separator } from '@/ui/separator'
 
 export const Model = S.Struct({
   comparePercent: S.Number,
-})
-export type Model = typeof Model.Type
+});
+export type Model = typeof Model.Type;
 
 // MESSAGE
 
-export const DraggedCompare = m('DraggedCompare', { value: S.Number })
-export const ChangedDemoEmail = m('ChangedDemoEmail')
+export const DraggedCompare = m('DraggedCompare', { value: S.Number });
+export const ChangedDemoEmail = m('ChangedDemoEmail');
 export const GotChartMessage = m('GotChartMessage', {
   message: Chart.ChartMessage,
-})
+});
 
 export const Message = S.Union([
   DraggedCompare,
   ChangedDemoEmail,
   GotChartMessage,
-])
-export type Message = typeof Message.Type
+]);
+export type Message = typeof Message.Type;
 
 // INIT
 
-export const init = (): Model => ({ comparePercent: 50 })
+export const init = (): Model => ({ comparePercent: 50 });
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
@@ -65,15 +65,15 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       ChangedDemoEmail: () => [model, []],
       GotChartMessage: () => [model, []],
     }),
-  )
+  );
 
 // HERO CHART — standalone ECharts card in the collage
 
-const HERO_CHART_ID = 'landing-hero-chart'
-const HERO_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
-const HERO_DATA = [186, 305, 237, 173, 209, 274]
+const HERO_CHART_ID = 'landing-hero-chart';
+const HERO_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+const HERO_DATA = [186, 305, 237, 173, 209, 274];
 
-Chart.registerChart(HERO_CHART_ID, theme => ({
+Chart.registerChart(HERO_CHART_ID, (theme) => ({
   grid: Chart.compactGrid({ bottom: 4, top: 8 }),
   xAxis: { ...Chart.categoryAxis(theme, HERO_MONTHS), show: false },
   yAxis: { ...Chart.valueAxis(theme), show: false },
@@ -90,111 +90,150 @@ Chart.registerChart(HERO_CHART_ID, theme => ({
       data: [...HERO_DATA],
     },
   ],
-}))
+}));
 
 // VIEW HELPERS
 
 const toChart = (message: Chart.ChartMessage): Message =>
-  GotChartMessage({ message })
+  GotChartMessage({ message });
 
-const sectionHeading = (title: string, copy: string): Html => {
-  const h = html<Message>()
-
+const sectionHeading = (
+  title: string,
+  copy: string,
+  h: HtmlBuilder<Message>,
+): Html => {
   return h.div(
     [h.Class('flex max-w-2xl flex-col gap-3')],
     [
       h.h2(
-        [h.Class('text-2xl font-semibold tracking-tight text-balance sm:text-3xl')],
+        [
+          h.Class(
+            'text-2xl font-semibold tracking-tight text-balance sm:text-3xl',
+          ),
+        ],
         [title],
       ),
       h.p([h.Class('text-muted-foreground text-balance')], [copy]),
     ],
-  )
-}
+  );
+};
 
-const heroCollage = (): Html => {
-  const h = html<Message>()
-
+const heroCollage = (h: HtmlBuilder<Message>): Html => {
   return h.div(
     [h.Class('grid w-full max-w-xl gap-4')],
     [
-      card({
-        class: 'gap-3',
-        children: [
-          cardHeader({
-            children: [
-              cardTitle({ children: ['Revenue'] }),
-              cardDescription({ children: ['+18.2% from last quarter'] }),
-            ],
-          }),
-          cardContent({
-            children: [
-              Chart.chart({
-                hostId: HERO_CHART_ID,
-                ariaLabel: 'Revenue trend for the last 6 months',
-                toMessage: toChart,
-                class: 'h-32 w-full',
-              }),
-            ],
-          }),
-        ],
-      }),
+      card(
+        {
+          class: 'gap-3',
+          children: [
+            cardHeader(
+              {
+                children: [
+                  cardTitle({ children: ['Revenue'] }, h),
+                  cardDescription(
+                    { children: ['+18.2% from last quarter'] },
+                    h,
+                  ),
+                ],
+              },
+              h,
+            ),
+            cardContent(
+              {
+                children: [
+                  Chart.chart(
+                    {
+                      hostId: HERO_CHART_ID,
+                      ariaLabel: 'Revenue trend for the last 6 months',
+                      toMessage: toChart,
+                      class: 'h-32 w-full',
+                    },
+                    h,
+                  ),
+                ],
+              },
+              h,
+            ),
+          ],
+        },
+        h,
+      ),
       h.div(
         [h.Class('grid grid-cols-[1fr_auto] items-start gap-4')],
         [
-          card({
-            class: 'gap-3',
-            children: [
-              cardHeader({
-                children: [
-                  cardTitle({ children: ['Create account'] }),
-                  cardDescription({
-                    children: ['Same card. Different framework.'],
-                  }),
-                ],
-              }),
-              cardContent({
-                children: [
-                  input({
-                    id: 'landing-demo-email',
-                    value: '',
-                    onInput: () => ChangedDemoEmail(),
-                    label: 'Email',
-                    placeholder: 'm@example.com',
-                  }),
-                ],
-              }),
-              cardFooter({
-                class: 'justify-end gap-2',
-                children: [
-                  button({ variant: 'outline', children: ['Cancel'] }),
-                  button({ children: ['Continue'] }),
-                ],
-              }),
-            ],
-          }),
+          card(
+            {
+              class: 'gap-3',
+              children: [
+                cardHeader(
+                  {
+                    children: [
+                      cardTitle({ children: ['Create account'] }, h),
+                      cardDescription(
+                        {
+                          children: ['Same card. Different framework.'],
+                        },
+                        h,
+                      ),
+                    ],
+                  },
+                  h,
+                ),
+                cardContent(
+                  {
+                    children: [
+                      input(
+                        {
+                          id: 'landing-demo-email',
+                          value: '',
+                          onInput: () => ChangedDemoEmail(),
+                          label: 'Email',
+                          placeholder: 'm@example.com',
+                        },
+                        h,
+                      ),
+                    ],
+                  },
+                  h,
+                ),
+                cardFooter(
+                  {
+                    class: 'justify-end gap-2',
+                    children: [
+                      button({ variant: 'outline', children: ['Cancel'] }, h),
+                      button({ children: ['Continue'] }, h),
+                    ],
+                  },
+                  h,
+                ),
+              ],
+            },
+            h,
+          ),
           h.div(
             [h.Class('flex flex-col items-start gap-2')],
             [
-              badge({ children: ['New'] }),
-              badge({ variant: 'secondary', children: ['Beta'] }),
-              badge({ variant: 'outline', children: ['MIT'] }),
-              badge({ variant: 'destructive', children: ['Deprecated'] }),
+              badge({ children: ['New'] }, h),
+              badge({ variant: 'secondary', children: ['Beta'] }, h),
+              badge({ variant: 'outline', children: ['MIT'] }, h),
+              badge({ variant: 'destructive', children: ['Deprecated'] }, h),
               h.div(
-                [h.Class('text-muted-foreground mt-2 flex items-center gap-1 text-xs')],
-                [kbd({ children: ['⌘'] }), kbd({ children: ['B'] })],
+                [
+                  h.Class(
+                    'text-muted-foreground mt-2 flex items-center gap-1 text-xs',
+                  ),
+                ],
+                [kbd({ children: ['⌘'] }, h), kbd({ children: ['B'] }, h)],
               ),
             ],
           ),
         ],
       ),
     ],
-  )
-}
+  );
+};
 
-const hero = (): Html => {
-  const h = html<Message>()
-
+const hero = (h: HtmlBuilder<Message>): Html => {
   return h.section(
     [
       h.Class(
@@ -215,7 +254,11 @@ const hero = (): Html => {
               ]),
               h.span(
                 [h.Class('text-lg font-semibold tracking-tight')],
-                ['crease', h.span([h.Class('text-[oklch(0.62_0.15_145)]')], ['/']), 'ui'],
+                [
+                  'crease',
+                  h.span([h.Class('text-[oklch(0.62_0.15_145)]')], ['/']),
+                  'ui',
+                ],
               ),
             ],
           ),
@@ -238,35 +281,46 @@ const hero = (): Html => {
             [
               h.a(
                 [h.Href('/create')],
-                [button({ children: ['Get Started'] })],
+                [button({ children: ['Get Started'] }, h)],
               ),
               h.a(
                 [h.Href('/charts/area')],
-                [button({ variant: 'outline', children: ['Browse Components'] })],
+                [
+                  button(
+                    { variant: 'outline', children: ['Browse Components'] },
+                    h,
+                  ),
+                ],
               ),
             ],
           ),
           h.p(
             [h.Class('text-muted-foreground text-xs')],
-            ['MIT licensed · Built on foldkit UI · Works with any shadcn theme'],
+            [
+              'MIT licensed · Built on foldkit UI · Works with any shadcn theme',
+            ],
           ),
         ],
       ),
-      heroCollage(),
+      heroCollage(h),
     ],
-  )
-}
+  );
+};
 
-const comparisonSlider = (model: Model): Html => {
-  const h = html<Message>()
-  const percent = Math.min(100, Math.max(0, model.comparePercent))
+const comparisonSlider = (model: Model, h: HtmlBuilder<Message>): Html => {
+  const percent = Math.min(100, Math.max(0, model.comparePercent));
 
   return h.section(
-    [h.Class('mx-auto flex w-full max-w-[1200px] flex-col gap-8 px-4 py-16 md:px-8')],
+    [
+      h.Class(
+        'mx-auto flex w-full max-w-[1200px] flex-col gap-8 px-4 py-16 md:px-8',
+      ),
+    ],
     [
       sectionHeading(
         'Spot the difference.',
         'We rebuilt the ui.shadcn.com/create preview board — all 33 cards — on foldkit. Every card within a few pixels of the original. Drag to compare.',
+        h,
       ),
       h.div(
         [
@@ -297,7 +351,9 @@ const comparisonSlider = (model: Model): Html => {
           ),
           h.div(
             [
-              h.Class('bg-foreground/60 pointer-events-none absolute inset-y-0 w-px'),
+              h.Class(
+                'bg-foreground/60 pointer-events-none absolute inset-y-0 w-px',
+              ),
               h.Style({ left: `${percent}%` }),
             ],
             [],
@@ -323,18 +379,19 @@ const comparisonSlider = (model: Model): Html => {
             h.Min('0'),
             h.Max('100'),
             h.Value(String(percent)),
-            h.OnInput(value => DraggedCompare({ value: Number(value) || 0 })),
+            h.OnInput((value) => DraggedCompare({ value: Number(value) || 0 })),
             h.AriaLabel('Comparison slider between crease/ui and shadcn/ui'),
-            h.Class('absolute inset-0 h-full w-full cursor-ew-resize opacity-0'),
+            h.Class(
+              'absolute inset-0 h-full w-full cursor-ew-resize opacity-0',
+            ),
           ]),
         ],
       ),
     ],
-  )
-}
+  );
+};
 
-const howItWorks = (): Html => {
-  const h = html<Message>()
+const howItWorks = (h: HtmlBuilder<Message>): Html => {
   const layer = (name: string, role: string): Html =>
     h.div(
       [h.Class('flex flex-col gap-1 rounded-xl border p-4')],
@@ -342,7 +399,7 @@ const howItWorks = (): Html => {
         h.span([h.Class('text-sm font-semibold')], [name]),
         h.span([h.Class('text-muted-foreground text-sm')], [role]),
       ],
-    )
+    );
 
   return h.section(
     [h.Class('bg-muted/40 border-y')],
@@ -360,13 +417,23 @@ const howItWorks = (): Html => {
               sectionHeading(
                 'Three layers, no magic.',
                 'foldkit UI provides behavior and accessibility. crease/ui is the styled layer you copy into your project. Your app owns all of it.',
+                h,
               ),
               h.div(
                 [h.Class('grid gap-2')],
                 [
-                  layer('foldkit UI', 'Headless primitives — behavior, ARIA, focus.'),
-                  layer('crease/ui', 'The visible layer — class strings you already know.'),
-                  layer('Your app', 'Model, update, view. No hidden state anywhere.'),
+                  layer(
+                    'foldkit UI',
+                    'Headless primitives — behavior, ARIA, focus.',
+                  ),
+                  layer(
+                    'crease/ui',
+                    'The visible layer — class strings you already know.',
+                  ),
+                  layer(
+                    'Your app',
+                    'Model, update, view. No hidden state anywhere.',
+                  ),
                 ],
               ),
             ],
@@ -375,7 +442,11 @@ const howItWorks = (): Html => {
             [h.Class('flex flex-col gap-4')],
             [
               h.div(
-                [h.Class('bg-background flex flex-col gap-3 rounded-xl border p-4 shadow-sm')],
+                [
+                  h.Class(
+                    'bg-background flex flex-col gap-3 rounded-xl border p-4 shadow-sm',
+                  ),
+                ],
                 [
                   h.div(
                     [h.Class('flex items-center justify-between gap-2')],
@@ -384,10 +455,16 @@ const howItWorks = (): Html => {
                         [h.Class('font-mono text-sm')],
                         ['npx shadcn add @crease/button'],
                       ),
-                      badge({ variant: 'secondary', children: ['registry — coming soon'] }),
+                      badge(
+                        {
+                          variant: 'secondary',
+                          children: ['registry — coming soon'],
+                        },
+                        h,
+                      ),
                     ],
                   ),
-                  separator({}),
+                  separator({}, h),
                   h.p(
                     [h.Class('text-muted-foreground text-sm')],
                     [
@@ -401,15 +478,24 @@ const howItWorks = (): Html => {
                 [
                   h.li(
                     [h.Class('flex items-center gap-2')],
-                    [Icon.check({ class: 'size-4' }), 'You own the code — no dependency to babysit.'],
+                    [
+                      Icon.check({ class: 'size-4' }, h),
+                      'You own the code — no dependency to babysit.',
+                    ],
                   ),
                   h.li(
                     [h.Class('flex items-center gap-2')],
-                    [Icon.check({ class: 'size-4' }), 'shadcn-compatible tokens — your theme drops in.'],
+                    [
+                      Icon.check({ class: 'size-4' }, h),
+                      'shadcn-compatible tokens — your theme drops in.',
+                    ],
                   ),
                   h.li(
                     [h.Class('flex items-center gap-2')],
-                    [Icon.check({ class: 'size-4' }), 'Every component is a plain foldkit view function.'],
+                    [
+                      Icon.check({ class: 'size-4' }, h),
+                      'Every component is a plain foldkit view function.',
+                    ],
                   ),
                 ],
               ),
@@ -418,11 +504,10 @@ const howItWorks = (): Html => {
         ],
       ),
     ],
-  )
-}
+  );
+};
 
-const numbers = (): Html => {
-  const h = html<Message>()
+const numbers = (h: HtmlBuilder<Message>): Html => {
   const stat = (value: string, label: string, href: string): Html =>
     h.a(
       [
@@ -435,30 +520,41 @@ const numbers = (): Html => {
         h.span([h.Class('text-3xl font-semibold tracking-tight')], [value]),
         h.span([h.Class('text-muted-foreground text-sm')], [label]),
       ],
-    )
+    );
 
   return h.section(
-    [h.Class('mx-auto flex w-full max-w-[1200px] flex-col gap-8 px-4 py-16 md:px-8')],
+    [
+      h.Class(
+        'mx-auto flex w-full max-w-[1200px] flex-col gap-8 px-4 py-16 md:px-8',
+      ),
+    ],
     [
       sectionHeading(
         'Every component you expect.',
         'Ported from shadcn/ui with the class strings you already know — plus the whole chart collection rebuilt on Apache ECharts, because Recharts is React-only.',
+        h,
       ),
       h.div(
         [h.Class('grid gap-4 sm:grid-cols-3')],
         [
           stat('49', 'components — buttons to dialogs to tables', '/create'),
-          stat('70', 'charts on Apache ECharts, canvas-rendered', '/charts/area'),
-          stat('16', 'application blocks — full sidebar shells', '/blocks/sidebar'),
+          stat(
+            '70',
+            'charts on Apache ECharts, canvas-rendered',
+            '/charts/area',
+          ),
+          stat(
+            '16',
+            'application blocks — full sidebar shells',
+            '/blocks/sidebar',
+          ),
         ],
       ),
     ],
-  )
-}
+  );
+};
 
-const honestSection = (model: Model): Html => {
-  const h = html<Message>()
-
+const honestSection = (model: Model, h: HtmlBuilder<Message>): Html => {
   return h.section(
     [h.Class('bg-muted/40 border-y')],
     [
@@ -475,6 +571,7 @@ const honestSection = (model: Model): Html => {
               sectionHeading(
                 'No hidden state. Really, none.',
                 'foldkit is an Elm-architecture framework: every dialog, dropdown and slider lives in your Model, changes through your update, renders from your view. You wire it explicitly — that is the cost. In exchange: state you can see, replay, and test.',
+                h,
               ),
               h.p(
                 [h.Class('text-muted-foreground text-sm')],
@@ -494,7 +591,7 @@ const honestSection = (model: Model): Html => {
                 [
                   [
                     '// the dialog is in YOUR model',
-                    'dialog: Dialog.init({ id: \'confirm\', isAnimated: true })',
+                    "dialog: Dialog.init({ id: 'confirm', isAnimated: true })",
                     '',
                     '// opening it is YOUR update arm',
                     'ClickedDelete: () =>',
@@ -503,7 +600,7 @@ const honestSection = (model: Model): Html => {
                     '// rendering it is YOUR view call',
                     'Dialog.dialog({',
                     '  model: model.dialog,',
-                    '  title: \'Are you absolutely sure?\',',
+                    "  title: 'Are you absolutely sure?',",
                     '  footer: slots => [...],',
                     '})',
                   ].join('\n'),
@@ -514,11 +611,10 @@ const honestSection = (model: Model): Html => {
         ],
       ),
     ],
-  )
-}
+  );
+};
 
-const faq = (): Html => {
-  const h = html<Message>()
+const faq = (h: HtmlBuilder<Message>): Html => {
   const item = (question: string, answer: string): Html =>
     h.div(
       [h.Class('flex flex-col gap-1.5')],
@@ -526,12 +622,16 @@ const faq = (): Html => {
         h.h3([h.Class('text-sm font-semibold')], [question]),
         h.p([h.Class('text-muted-foreground text-sm')], [answer]),
       ],
-    )
+    );
 
   return h.section(
-    [h.Class('mx-auto flex w-full max-w-[1200px] flex-col gap-8 px-4 py-16 md:px-8')],
     [
-      sectionHeading('Questions, answered.', ''),
+      h.Class(
+        'mx-auto flex w-full max-w-[1200px] flex-col gap-8 px-4 py-16 md:px-8',
+      ),
+    ],
+    [
+      sectionHeading('Questions, answered.', '', h),
       h.div(
         [h.Class('grid gap-8 md:grid-cols-2')],
         [
@@ -554,12 +654,10 @@ const faq = (): Html => {
         ],
       ),
     ],
-  )
-}
+  );
+};
 
-const footer = (): Html => {
-  const h = html<Message>()
-
+const footer = (h: HtmlBuilder<Message>): Html => {
   return h.footer(
     [h.Class('border-t')],
     [
@@ -575,34 +673,38 @@ const footer = (): Html => {
             [h.Class('flex items-center gap-4')],
             [
               h.a(
-                [h.Href('https://foldkit.dev'), h.Class('hover:text-foreground')],
+                [
+                  h.Href('https://foldkit.dev'),
+                  h.Class('hover:text-foreground'),
+                ],
                 ['foldkit.dev'],
               ),
               h.span([], ['MIT']),
-              h.span([], ['Credits: shadcn/ui · foldkit UI · Apache ECharts · Lucide']),
+              h.span(
+                [],
+                ['Credits: shadcn/ui · foldkit UI · Apache ECharts · Lucide'],
+              ),
             ],
           ),
         ],
       ),
     ],
-  )
-}
+  );
+};
 
 // VIEW
 
-export const view = (model: Model): Html => {
-  const h = html<Message>()
-
+export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   return h.div(
     [],
     [
-      hero(),
-      comparisonSlider(model),
-      howItWorks(),
-      numbers(),
-      honestSection(model),
-      faq(),
-      footer(),
+      hero(h),
+      comparisonSlider(model, h),
+      howItWorks(h),
+      numbers(h),
+      honestSection(model, h),
+      faq(h),
+      footer(h),
     ],
-  )
-}
+  );
+};

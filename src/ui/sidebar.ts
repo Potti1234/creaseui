@@ -1,13 +1,13 @@
-import { type VariantProps, cva } from 'class-variance-authority'
-import { Effect, Option, Schema as S, Stream } from 'effect'
-import { Command } from 'foldkit'
-import { type Html, html } from 'foldkit/html'
-import { m } from 'foldkit/message'
-import * as Subscription from 'foldkit/subscription'
+import { type VariantProps, cva } from 'class-variance-authority';
+import { Effect, Option, Schema as S, Stream } from 'effect';
+import { Command } from 'foldkit';
+import { type Html, type HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
+import * as Subscription from 'foldkit/subscription';
 
-import * as Icon from '@/lib/icon'
-import { cn } from '@/lib/utils'
-import { buttonVariants } from '@/ui/button'
+import * as Icon from '@/lib/icon';
+import { cn } from '@/lib/utils';
+import { buttonVariants } from '@/ui/button';
 
 /* Ported from shadcn/ui sidebar.tsx as a Foldkit view system.
 
@@ -18,27 +18,38 @@ import { buttonVariants } from '@/ui/button'
    Pages may keep owning the boolean directly, or use the Model/update and
    subscriptions helpers below for persistence and cmd/ctrl+b behavior. */
 
-const SIDEBAR_WIDTH = '16rem'
-const SIDEBAR_WIDTH_ICON = '3rem'
-const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
+const SIDEBAR_WIDTH = '16rem';
+const SIDEBAR_WIDTH_ICON = '3rem';
+const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 
-export const Model = S.Struct({ isOpen: S.Boolean, isMobileOpen: S.Boolean, storageKey: S.String })
-export type Model = typeof Model.Type
-export const Toggled = m('Toggled')
-export const ToggledMobile = m('ToggledMobile')
-export const SetMobileOpen = m('SetMobileOpen', { isOpen: S.Boolean })
-export const CompletedPersist = m('CompletedPersist')
-export const Message = S.Union([Toggled, ToggledMobile, SetMobileOpen, CompletedPersist])
-export type Message = typeof Message.Type
+export const Model = S.Struct({
+  isOpen: S.Boolean,
+  isMobileOpen: S.Boolean,
+  storageKey: S.String,
+});
+export type Model = typeof Model.Type;
+export const Toggled = m('Toggled');
+export const ToggledMobile = m('ToggledMobile');
+export const SetMobileOpen = m('SetMobileOpen', { isOpen: S.Boolean });
+export const CompletedPersist = m('CompletedPersist');
+export const Message = S.Union([
+  Toggled,
+  ToggledMobile,
+  SetMobileOpen,
+  CompletedPersist,
+]);
+export type Message = typeof Message.Type;
 
-export const init = (config: Readonly<{ defaultOpen?: boolean; storageKey?: string }> = {}): Model => {
-  const storageKey = config.storageKey ?? 'sidebar_state'
+export const init = (
+  config: Readonly<{ defaultOpen?: boolean; storageKey?: string }> = {},
+): Model => {
+  const storageKey = config.storageKey ?? 'sidebar_state';
   return {
     isOpen: config.defaultOpen ?? true,
     isMobileOpen: false,
     storageKey,
-  }
-}
+  };
+};
 
 const SidebarPersist = Command.define(
   'SidebarPersist',
@@ -46,48 +57,55 @@ const SidebarPersist = Command.define(
   CompletedPersist,
 )(({ key, isOpen }) =>
   Effect.sync(() => {
-    document.cookie = `${key}=${String(isOpen)}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}; samesite=lax`
+    document.cookie = `${key}=${String(isOpen)}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}; samesite=lax`;
   }).pipe(Effect.as(CompletedPersist())),
-)
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
+);
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
     case 'Toggled': {
-      const isOpen = !model.isOpen
-      return [{ ...model, isOpen }, [SidebarPersist({ key: model.storageKey, isOpen })]]
+      const isOpen = !model.isOpen;
+      return [
+        { ...model, isOpen },
+        [SidebarPersist({ key: model.storageKey, isOpen })],
+      ];
     }
-    case 'ToggledMobile': return [{ ...model, isMobileOpen: !model.isMobileOpen }, []]
-    case 'SetMobileOpen': return [{ ...model, isMobileOpen: message.isOpen }, []]
-    case 'CompletedPersist': return [model, []]
+    case 'ToggledMobile':
+      return [{ ...model, isMobileOpen: !model.isMobileOpen }, []];
+    case 'SetMobileOpen':
+      return [{ ...model, isMobileOpen: message.isOpen }, []];
+    case 'CompletedPersist':
+      return [model, []];
   }
-}
+};
 
-export const shortcut = <Msg>(toMessage: (message: Message) => Msg): Stream.Stream<Msg> =>
+export const shortcut = <Msg>(
+  toMessage: (message: Message) => Msg,
+): Stream.Stream<Msg> =>
   Subscription.fromEventFilterMap<KeyboardEvent, Msg>({
     target: document,
     type: 'keydown',
-    toMessage: event => {
-      if (event.key.toLowerCase() !== 'b' || (!event.metaKey && !event.ctrlKey)) return Option.none()
-      event.preventDefault()
-      return Option.some(toMessage(Toggled()))
+    toMessage: (event) => {
+      if (event.key.toLowerCase() !== 'b' || (!event.metaKey && !event.ctrlKey))
+        return Option.none();
+      event.preventDefault();
+      return Option.some(toMessage(Toggled()));
     },
-  })
+  });
 
-export type SidebarState = 'expanded' | 'collapsed'
-export type SidebarSide = 'left' | 'right'
-export type SidebarVariant = 'sidebar' | 'floating' | 'inset'
-export type SidebarCollapsible = 'offcanvas' | 'icon' | 'none'
+export type SidebarState = 'expanded' | 'collapsed';
+export type SidebarSide = 'left' | 'right';
+export type SidebarVariant = 'sidebar' | 'floating' | 'inset';
+export type SidebarCollapsible = 'offcanvas' | 'icon' | 'none';
 
 type Slot = Readonly<{
-  children: ReadonlyArray<Html | string>
-  class?: string
-}>
+  children: ReadonlyArray<Html | string>;
+  class?: string;
+}>;
 
 const slotDiv =
   (slot: string, sidebarPart: string, baseClass: string) =>
-  <Msg>(props: Slot): Html => {
-    const h = html<Msg>()
-
+  <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
     return h.div(
       [
         h.DataAttribute('slot', slot),
@@ -95,19 +113,18 @@ const slotDiv =
         h.Class(cn(baseClass, props.class)),
       ],
       [...props.children],
-    )
-  }
+    );
+  };
 
 export type SidebarProviderProps = Slot &
   Readonly<{
-    state?: SidebarState
-  }>
+    state?: SidebarState;
+  }>;
 
 export const sidebarProvider = <Msg>(
   props: SidebarProviderProps,
+  h: HtmlBuilder<Msg>,
 ): Html => {
-  const h = html<Msg>()
-
   return h.div(
     [
       h.DataAttribute('slot', 'sidebar-wrapper'),
@@ -124,25 +141,27 @@ export const sidebarProvider = <Msg>(
       ),
     ],
     [...props.children],
-  )
-}
+  );
+};
 
 export type SidebarProps<Msg> = Slot &
   Readonly<{
-    state?: SidebarState
-    side?: SidebarSide
-    variant?: SidebarVariant
-    collapsible?: SidebarCollapsible
-    isMobileOpen?: boolean
-    onMobileDismiss?: Msg
-  }>
+    state?: SidebarState;
+    side?: SidebarSide;
+    variant?: SidebarVariant;
+    collapsible?: SidebarCollapsible;
+    isMobileOpen?: boolean;
+    onMobileDismiss?: Msg;
+  }>;
 
-export const sidebar = <Msg>(props: SidebarProps<Msg>): Html => {
-  const h = html<Msg>()
-  const state = props.state ?? 'expanded'
-  const side = props.side ?? 'left'
-  const variant = props.variant ?? 'sidebar'
-  const collapsible = props.collapsible ?? 'offcanvas'
+export const sidebar = <Msg>(
+  props: SidebarProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const state = props.state ?? 'expanded';
+  const side = props.side ?? 'left';
+  const variant = props.variant ?? 'sidebar';
+  const collapsible = props.collapsible ?? 'offcanvas';
 
   if (collapsible === 'none') {
     return h.div(
@@ -156,16 +175,13 @@ export const sidebar = <Msg>(props: SidebarProps<Msg>): Html => {
         ),
       ],
       [...props.children],
-    )
+    );
   }
 
   return h.div(
     [
       h.DataAttribute('state', state),
-      h.DataAttribute(
-        'collapsible',
-        state === 'collapsed' ? collapsible : '',
-      ),
+      h.DataAttribute('collapsible', state === 'collapsed' ? collapsible : ''),
       h.DataAttribute('variant', variant),
       h.DataAttribute('side', side),
       h.DataAttribute('slot', 'sidebar'),
@@ -175,11 +191,28 @@ export const sidebar = <Msg>(props: SidebarProps<Msg>): Html => {
       ...((props.isMobileOpen ?? false)
         ? [
             h.button(
-              [h.Type('button'), h.AriaLabel('Close sidebar'), ...(props.onMobileDismiss === undefined ? [] : [h.OnClick(props.onMobileDismiss)]), h.Class('fixed inset-0 z-40 bg-black/50 md:hidden')],
+              [
+                h.Type('button'),
+                h.AriaLabel('Close sidebar'),
+                ...(props.onMobileDismiss === undefined
+                  ? []
+                  : [h.OnClick(props.onMobileDismiss)]),
+                h.Class('fixed inset-0 z-40 bg-black/50 md:hidden'),
+              ],
               [],
             ),
             h.aside(
-              [h.DataAttribute('slot', 'sidebar-mobile'), h.AriaLabel('Sidebar'), h.Class(cn('fixed inset-y-0 z-50 flex w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground shadow-xl md:hidden', side === 'left' ? 'left-0 border-r' : 'right-0 border-l', props.class))],
+              [
+                h.DataAttribute('slot', 'sidebar-mobile'),
+                h.AriaLabel('Sidebar'),
+                h.Class(
+                  cn(
+                    'fixed inset-y-0 z-50 flex w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground shadow-xl md:hidden',
+                    side === 'left' ? 'left-0 border-r' : 'right-0 border-l',
+                    props.class,
+                  ),
+                ),
+              ],
               [...props.children],
             ),
           ]
@@ -230,19 +263,18 @@ export const sidebar = <Msg>(props: SidebarProps<Msg>): Html => {
         ],
       ),
     ],
-  )
-}
+  );
+};
 
 export type SidebarTriggerProps<Msg> = Readonly<{
-  onClick: Msg
-  class?: string
-}>
+  onClick: Msg;
+  class?: string;
+}>;
 
 export const sidebarTrigger = <Msg>(
   props: SidebarTriggerProps<Msg>,
+  h: HtmlBuilder<Msg>,
 ): Html => {
-  const h = html<Msg>()
-
   return h.button(
     [
       h.DataAttribute('sidebar', 'trigger'),
@@ -258,19 +290,20 @@ export const sidebarTrigger = <Msg>(
       ),
     ],
     [
-      Icon.panelLeft<Msg>(),
+      Icon.panelLeft<Msg>({}, h),
       h.span([h.Class('sr-only')], ['Toggle Sidebar']),
     ],
-  )
-}
+  );
+};
 
 export type SidebarRailProps<Msg> = Readonly<{
-  onClick: Msg
-}>
+  onClick: Msg;
+}>;
 
-export const sidebarRail = <Msg>(props: SidebarRailProps<Msg>): Html => {
-  const h = html<Msg>()
-
+export const sidebarRail = <Msg>(
+  props: SidebarRailProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
   return h.button(
     [
       h.DataAttribute('sidebar', 'rail'),
@@ -292,12 +325,10 @@ export const sidebarRail = <Msg>(props: SidebarRailProps<Msg>): Html => {
       ),
     ],
     [],
-  )
-}
+  );
+};
 
-export const sidebarInset = <Msg>(props: Slot): Html => {
-  const h = html<Msg>()
-
+export const sidebarInset = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
   return h.main(
     [
       h.DataAttribute('slot', 'sidebar-inset'),
@@ -310,27 +341,28 @@ export const sidebarInset = <Msg>(props: Slot): Html => {
       ),
     ],
     [...props.children],
-  )
-}
+  );
+};
 
 const INPUT_CLASS =
-  'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-8 w-full min-w-0 rounded-md border bg-transparent px-2.5 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive'
+  'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-8 w-full min-w-0 rounded-md border bg-transparent px-2.5 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive';
 
 export type SidebarInputProps<Msg> = Readonly<{
-  id?: string
-  value?: string
-  onInput?: (value: string) => Msg
-  placeholder?: string
-  type?: string
-  name?: string
-  isDisabled?: boolean
-  isInvalid?: boolean
-  class?: string
-}>
+  id?: string;
+  value?: string;
+  onInput?: (value: string) => Msg;
+  placeholder?: string;
+  type?: string;
+  name?: string;
+  isDisabled?: boolean;
+  isInvalid?: boolean;
+  class?: string;
+}>;
 
-export const sidebarInput = <Msg>(props: SidebarInputProps<Msg>): Html => {
-  const h = html<Msg>()
-
+export const sidebarInput = <Msg>(
+  props: SidebarInputProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
   return h.input([
     h.DataAttribute('slot', 'sidebar-input'),
     h.DataAttribute('sidebar', 'input'),
@@ -345,32 +377,27 @@ export const sidebarInput = <Msg>(props: SidebarInputProps<Msg>): Html => {
     h.Disabled(props.isDisabled ?? false),
     h.AriaInvalid(props.isInvalid ?? false),
     h.Class(
-      cn(
-        INPUT_CLASS,
-        'h-8 w-full bg-background shadow-none',
-        props.class,
-      ),
+      cn(INPUT_CLASS, 'h-8 w-full bg-background shadow-none', props.class),
     ),
-  ])
-}
+  ]);
+};
 
 export const sidebarHeader = slotDiv(
   'sidebar-header',
   'header',
   'flex flex-col gap-2 p-2',
-)
+);
 
 export const sidebarFooter = slotDiv(
   'sidebar-footer',
   'footer',
   'flex flex-col gap-2 p-2',
-)
+);
 
 export const sidebarSeparator = <Msg>(
   props: Readonly<{ class?: string }> = {},
+  h: HtmlBuilder<Msg>,
 ): Html => {
-  const h = html<Msg>()
-
   return h.div(
     [
       h.DataAttribute('slot', 'sidebar-separator'),
@@ -386,37 +413,36 @@ export const sidebarSeparator = <Msg>(
       ),
     ],
     [],
-  )
-}
+  );
+};
 
 export const sidebarContent = slotDiv(
   'sidebar-content',
   'content',
   'flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden',
-)
+);
 
 export const sidebarGroup = slotDiv(
   'sidebar-group',
   'group',
   'relative flex w-full min-w-0 flex-col p-2',
-)
+);
 
 export const sidebarGroupLabel = slotDiv(
   'sidebar-group-label',
   'group-label',
   'flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70 ring-sidebar-ring outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0',
-)
+);
 
 export type SidebarActionProps<Msg> = Slot &
   Readonly<{
-    onClick?: Msg
-  }>
+    onClick?: Msg;
+  }>;
 
 export const sidebarGroupAction = <Msg>(
   props: SidebarActionProps<Msg>,
+  h: HtmlBuilder<Msg>,
 ): Html => {
-  const h = html<Msg>()
-
   return h.button(
     [
       h.DataAttribute('slot', 'sidebar-group-action'),
@@ -433,18 +459,16 @@ export const sidebarGroupAction = <Msg>(
       ),
     ],
     [...props.children],
-  )
-}
+  );
+};
 
 export const sidebarGroupContent = slotDiv(
   'sidebar-group-content',
   'group-content',
   'w-full text-sm',
-)
+);
 
-export const sidebarMenu = <Msg>(props: Slot): Html => {
-  const h = html<Msg>()
-
+export const sidebarMenu = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
   return h.ul(
     [
       h.DataAttribute('slot', 'sidebar-menu'),
@@ -452,12 +476,13 @@ export const sidebarMenu = <Msg>(props: Slot): Html => {
       h.Class(cn('flex w-full min-w-0 flex-col gap-1', props.class)),
     ],
     [...props.children],
-  )
-}
+  );
+};
 
-export const sidebarMenuItem = <Msg>(props: Slot): Html => {
-  const h = html<Msg>()
-
+export const sidebarMenuItem = <Msg>(
+  props: Slot,
+  h: HtmlBuilder<Msg>,
+): Html => {
   return h.li(
     [
       h.DataAttribute('slot', 'sidebar-menu-item'),
@@ -465,16 +490,15 @@ export const sidebarMenuItem = <Msg>(props: Slot): Html => {
       h.Class(cn('group/menu-item relative', props.class)),
     ],
     [...props.children],
-  )
-}
+  );
+};
 
 export const sidebarMenuButtonVariants = cva(
-  "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active]:bg-sidebar-accent data-[active]:font-medium data-[active]:text-sidebar-accent-foreground data-[open]:hover:bg-sidebar-accent data-[open]:hover:text-sidebar-accent-foreground [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+  'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active]:bg-sidebar-accent data-[active]:font-medium data-[active]:text-sidebar-accent-foreground data-[open]:hover:bg-sidebar-accent data-[open]:hover:text-sidebar-accent-foreground [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
   {
     variants: {
       variant: {
-        default:
-          'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+        default: 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
         outline:
           'bg-background shadow-[0_0_0_1px_var(--sidebar-border)] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_var(--sidebar-accent)]',
       },
@@ -489,35 +513,33 @@ export const sidebarMenuButtonVariants = cva(
       size: 'default',
     },
   },
-)
+);
 
 export type SidebarMenuButtonVariants = VariantProps<
   typeof sidebarMenuButtonVariants
->
+>;
 
 export type SidebarMenuButtonProps<Msg> = Readonly<{
-  children: ReadonlyArray<Html | string>
-  onClick?: Msg
-  href?: string
-  isActive?: boolean
-  variant?: SidebarMenuButtonVariants['variant']
-  size?: SidebarMenuButtonVariants['size']
-  tooltip?: string
-  class?: string
-}>
+  children: ReadonlyArray<Html | string>;
+  onClick?: Msg;
+  href?: string;
+  isActive?: boolean;
+  variant?: SidebarMenuButtonVariants['variant'];
+  size?: SidebarMenuButtonVariants['size'];
+  tooltip?: string;
+  class?: string;
+}>;
 
 export const sidebarMenuButton = <Msg>(
   props: SidebarMenuButtonProps<Msg>,
+  h: HtmlBuilder<Msg>,
 ): Html => {
-  const h = html<Msg>()
-  const size = props.size ?? 'default'
+  const size = props.size ?? 'default';
   const attributes = [
     h.DataAttribute('slot', 'sidebar-menu-button'),
     h.DataAttribute('sidebar', 'menu-button'),
     h.DataAttribute('size', size),
-    ...((props.isActive ?? false)
-      ? [h.DataAttribute('active', '')]
-      : []),
+    ...((props.isActive ?? false) ? [h.DataAttribute('active', '')] : []),
     ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
     h.Class(
       cn(
@@ -528,7 +550,7 @@ export const sidebarMenuButton = <Msg>(
         props.class,
       ),
     ),
-  ]
+  ];
 
   const children = [
     ...props.children,
@@ -536,27 +558,49 @@ export const sidebarMenuButton = <Msg>(
       ? []
       : [
           h.span(
-            [h.Role('tooltip'), h.Class('pointer-events-none fixed left-[calc(var(--sidebar-width-icon)+0.5rem)] z-50 hidden whitespace-nowrap rounded-md bg-primary px-2 py-1 text-xs text-primary-foreground opacity-0 shadow-md transition-opacity group-data-[collapsible=icon]:peer-hover/menu-button:block group-data-[collapsible=icon]:peer-hover/menu-button:opacity-100 group-data-[collapsible=icon]:peer-focus-visible/menu-button:block group-data-[collapsible=icon]:peer-focus-visible/menu-button:opacity-100')],
+            [
+              h.Role('tooltip'),
+              h.Class(
+                'pointer-events-none fixed left-[calc(var(--sidebar-width-icon)+0.5rem)] z-50 hidden whitespace-nowrap rounded-md bg-primary px-2 py-1 text-xs text-primary-foreground opacity-0 shadow-md transition-opacity group-data-[collapsible=icon]:peer-hover/menu-button:block group-data-[collapsible=icon]:peer-hover/menu-button:opacity-100 group-data-[collapsible=icon]:peer-focus-visible/menu-button:block group-data-[collapsible=icon]:peer-focus-visible/menu-button:opacity-100',
+              ),
+            ],
             [props.tooltip],
           ),
         ]),
-  ]
+  ];
 
   return props.href === undefined
-    ? h.button([...attributes, h.Type('button'), ...(props.tooltip === undefined ? [] : [h.Title(props.tooltip), h.AriaLabel(props.tooltip)])], children)
-    : h.a([h.Href(props.href), ...attributes, ...(props.tooltip === undefined ? [] : [h.Title(props.tooltip), h.AriaLabel(props.tooltip)])], children)
-}
+    ? h.button(
+        [
+          ...attributes,
+          h.Type('button'),
+          ...(props.tooltip === undefined
+            ? []
+            : [h.Title(props.tooltip), h.AriaLabel(props.tooltip)]),
+        ],
+        children,
+      )
+    : h.a(
+        [
+          h.Href(props.href),
+          ...attributes,
+          ...(props.tooltip === undefined
+            ? []
+            : [h.Title(props.tooltip), h.AriaLabel(props.tooltip)]),
+        ],
+        children,
+      );
+};
 
 export type SidebarMenuActionProps<Msg> = SidebarActionProps<Msg> &
   Readonly<{
-    showOnHover?: boolean
-  }>
+    showOnHover?: boolean;
+  }>;
 
 export const sidebarMenuAction = <Msg>(
   props: SidebarMenuActionProps<Msg>,
+  h: HtmlBuilder<Msg>,
 ): Html => {
-  const h = html<Msg>()
-
   return h.button(
     [
       h.DataAttribute('slot', 'sidebar-menu-action'),
@@ -578,37 +622,32 @@ export const sidebarMenuAction = <Msg>(
       ),
     ],
     [...props.children],
-  )
-}
+  );
+};
 
 export const sidebarMenuBadge = slotDiv(
   'sidebar-menu-badge',
   'menu-badge',
   'pointer-events-none absolute right-1 flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-xs font-medium text-sidebar-foreground tabular-nums select-none peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[active]/menu-button:text-sidebar-accent-foreground peer-data-[size=sm]/menu-button:top-1 peer-data-[size=default]/menu-button:top-1.5 peer-data-[size=lg]/menu-button:top-2.5 group-data-[collapsible=icon]:hidden',
-)
+);
 
 export type SidebarMenuSkeletonProps = Readonly<{
-  showIcon?: boolean
-  widthPercent?: number
-  class?: string
-}>
+  showIcon?: boolean;
+  widthPercent?: number;
+  class?: string;
+}>;
 
 export const sidebarMenuSkeleton = <Msg>(
   props: SidebarMenuSkeletonProps = {},
+  h: HtmlBuilder<Msg>,
 ): Html => {
-  const h = html<Msg>()
-  const widthPercent = Math.min(
-    90,
-    Math.max(50, props.widthPercent ?? 70),
-  )
+  const widthPercent = Math.min(90, Math.max(50, props.widthPercent ?? 70));
 
   return h.div(
     [
       h.DataAttribute('slot', 'sidebar-menu-skeleton'),
       h.DataAttribute('sidebar', 'menu-skeleton'),
-      h.Class(
-        cn('flex h-8 items-center gap-2 rounded-md px-2', props.class),
-      ),
+      h.Class(cn('flex h-8 items-center gap-2 rounded-md px-2', props.class)),
     ],
     [
       ...((props.showIcon ?? false)
@@ -635,12 +674,10 @@ export const sidebarMenuSkeleton = <Msg>(
         [],
       ),
     ],
-  )
-}
+  );
+};
 
-export const sidebarMenuSub = <Msg>(props: Slot): Html => {
-  const h = html<Msg>()
-
+export const sidebarMenuSub = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
   return h.ul(
     [
       h.DataAttribute('slot', 'sidebar-menu-sub'),
@@ -654,12 +691,13 @@ export const sidebarMenuSub = <Msg>(props: Slot): Html => {
       ),
     ],
     [...props.children],
-  )
-}
+  );
+};
 
-export const sidebarMenuSubItem = <Msg>(props: Slot): Html => {
-  const h = html<Msg>()
-
+export const sidebarMenuSubItem = <Msg>(
+  props: Slot,
+  h: HtmlBuilder<Msg>,
+): Html => {
   return h.li(
     [
       h.DataAttribute('slot', 'sidebar-menu-sub-item'),
@@ -667,32 +705,30 @@ export const sidebarMenuSubItem = <Msg>(props: Slot): Html => {
       h.Class(cn('group/menu-sub-item relative', props.class)),
     ],
     [...props.children],
-  )
-}
+  );
+};
 
 export type SidebarMenuSubButtonProps<Msg> = Readonly<{
-  children: ReadonlyArray<Html | string>
-  href?: string
-  onClick?: Msg
-  size?: 'sm' | 'md'
-  isActive?: boolean
-  class?: string
-}>
+  children: ReadonlyArray<Html | string>;
+  href?: string;
+  onClick?: Msg;
+  size?: 'sm' | 'md';
+  isActive?: boolean;
+  class?: string;
+}>;
 
 export const sidebarMenuSubButton = <Msg>(
   props: SidebarMenuSubButtonProps<Msg>,
+  h: HtmlBuilder<Msg>,
 ): Html => {
-  const h = html<Msg>()
-  const size = props.size ?? 'md'
+  const size = props.size ?? 'md';
 
   return h.a(
     [
       h.DataAttribute('slot', 'sidebar-menu-sub-button'),
       h.DataAttribute('sidebar', 'menu-sub-button'),
       h.DataAttribute('size', size),
-      ...((props.isActive ?? false)
-        ? [h.DataAttribute('active', '')]
-        : []),
+      ...((props.isActive ?? false) ? [h.DataAttribute('active', '')] : []),
       ...(props.href === undefined ? [] : [h.Href(props.href)]),
       ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
       h.Class(
@@ -707,8 +743,8 @@ export const sidebarMenuSubButton = <Msg>(
       ),
     ],
     [...props.children],
-  )
-}
+  );
+};
 
 /* Minimal page-owned state wiring:
 

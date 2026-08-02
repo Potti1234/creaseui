@@ -29,18 +29,18 @@
   },
   "dependencies": {
     "@effect/platform-browser": "4.0.0-beta.102",
-    "@foldkit/ui": "0.133.0",
+    "@foldkit/ui": "0.134.0",
     "@tailwindcss/vite": "^4.3.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "echarts": "^6.1.0",
     "effect": "4.0.0-beta.102",
-    "foldkit": "0.133.0",
+    "foldkit": "0.134.0",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.3.1"
   },
   "devDependencies": {
-    "@foldkit/vite-plugin": "0.11.2",
+    "@foldkit/vite-plugin": "0.11.3",
     "lucide-static": "^0.577.0",
     "tsx": "^4.23.1",
     "typescript": "^6.0.3",
