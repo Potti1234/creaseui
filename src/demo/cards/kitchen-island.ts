@@ -1,4 +1,4 @@
-import { Match as M, Schema as S } from 'effect'
+import { Match as M, Option, Schema as S } from 'effect'
 import { Command, Subscription } from 'foldkit'
 import { type Html, html } from 'foldkit/html'
 import { m } from 'foldkit/message'
@@ -47,18 +47,20 @@ const scenePreset = (scene: string): ScenePreset | undefined => {
 }
 
 export const Model = S.Struct({
-  enabled: Switch.Model,
+  isEnabled: S.Boolean,
   scene: S.String,
   brightness: Slider.Model,
+  brightnessValue: S.Number,
   colorTemp: Slider.Model,
+  colorTempValue: S.Number,
   volume: Slider.Model,
+  volumeValue: S.Number,
   fade: Slider.Model,
+  fadeValue: S.Number,
 })
 export type Model = typeof Model.Type
 
-export const GotSwitchMessage = m('GotSwitchMessage', {
-  message: Switch.Message,
-})
+export const ToggledEnabled = m('ToggledEnabled', { isChecked: S.Boolean })
 export const SelectedScene = m('SelectedScene', { value: S.String })
 export const GotBrightnessMessage = m('GotBrightnessMessage', {
   message: Slider.Message,
@@ -74,7 +76,7 @@ export const GotFadeMessage = m('GotFadeMessage', {
 })
 
 export const Message = S.Union([
-  GotSwitchMessage,
+  ToggledEnabled,
   SelectedScene,
   GotBrightnessMessage,
   GotColorTempMessage,
@@ -89,36 +91,36 @@ type UpdateReturn = readonly [
 ]
 
 export const init = (): Model => ({
-  enabled: Switch.init({ id: 'kitchen-island-enabled', isChecked: true }),
+  isEnabled: true,
   scene: 'cooking',
   brightness: Slider.init({
     id: 'kitchen-island-brightness',
     min: 0,
     max: 100,
     step: 1,
-    initialValue: 90,
   }),
+  brightnessValue: 90,
   colorTemp: Slider.init({
     id: 'kitchen-island-color-temp',
     min: 0,
     max: 100,
     step: 1,
-    initialValue: 70,
   }),
+  colorTempValue: 70,
   volume: Slider.init({
     id: 'kitchen-island-volume',
     min: 0,
     max: 100,
     step: 1,
-    initialValue: 30,
   }),
+  volumeValue: 30,
   fade: Slider.init({
     id: 'kitchen-island-fade',
     min: 0,
     max: 100,
     step: 1,
-    initialValue: 0,
   }),
+  fadeValue: 0,
 })
 
 export const update = (
@@ -128,18 +130,7 @@ export const update = (
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      GotSwitchMessage: ({ message: childMessage }) => {
-        const [enabled, commands] = Switch.update(
-          model.enabled,
-          childMessage,
-        )
-        return [
-          { ...model, enabled },
-          Command.mapMessages(commands, next =>
-            GotSwitchMessage({ message: next }),
-          ),
-        ]
-      },
+      ToggledEnabled: ({ isChecked }) => [{ ...model, isEnabled: isChecked }, []],
       SelectedScene: ({ value }) => {
         const preset = scenePreset(value)
         return preset === undefined
@@ -148,57 +139,51 @@ export const update = (
               {
                 ...model,
                 scene: value,
-                brightness: Slider.reflectValue(
-                  model.brightness,
-                  preset.brightness,
-                ),
-                colorTemp: Slider.reflectValue(
-                  model.colorTemp,
-                  preset.colorTemp,
-                ),
-                volume: Slider.reflectValue(model.volume, preset.volume),
-                fade: Slider.reflectValue(model.fade, preset.fade),
+                brightnessValue: preset.brightness,
+                colorTempValue: preset.colorTemp,
+                volumeValue: preset.volume,
+                fadeValue: preset.fade,
               },
               [],
             ]
       },
       GotBrightnessMessage: ({ message: childMessage }) => {
-        const [brightness, commands] = Slider.update(
+        const [brightness, commands, maybeChange] = Slider.update(
           model.brightness,
           childMessage,
         )
         return [
-          { ...model, brightness },
+          { ...model, brightness, brightnessValue: Option.match(maybeChange, { onNone: () => model.brightnessValue, onSome: change => change.value }) },
           Command.mapMessages(commands, next =>
             GotBrightnessMessage({ message: next }),
           ),
         ]
       },
       GotColorTempMessage: ({ message: childMessage }) => {
-        const [colorTemp, commands] = Slider.update(
+        const [colorTemp, commands, maybeChange] = Slider.update(
           model.colorTemp,
           childMessage,
         )
         return [
-          { ...model, colorTemp },
+          { ...model, colorTemp, colorTempValue: Option.match(maybeChange, { onNone: () => model.colorTempValue, onSome: change => change.value }) },
           Command.mapMessages(commands, next =>
             GotColorTempMessage({ message: next }),
           ),
         ]
       },
       GotVolumeMessage: ({ message: childMessage }) => {
-        const [volume, commands] = Slider.update(model.volume, childMessage)
+        const [volume, commands, maybeChange] = Slider.update(model.volume, childMessage)
         return [
-          { ...model, volume },
+          { ...model, volume, volumeValue: Option.match(maybeChange, { onNone: () => model.volumeValue, onSome: change => change.value }) },
           Command.mapMessages(commands, next =>
             GotVolumeMessage({ message: next }),
           ),
         ]
       },
       GotFadeMessage: ({ message: childMessage }) => {
-        const [fade, commands] = Slider.update(model.fade, childMessage)
+        const [fade, commands, maybeChange] = Slider.update(model.fade, childMessage)
         return [
-          { ...model, fade },
+          { ...model, fade, fadeValue: Option.match(maybeChange, { onNone: () => model.fadeValue, onSome: change => change.value }) },
           Command.mapMessages(commands, next =>
             GotFadeMessage({ message: next }),
           ),
@@ -236,7 +221,7 @@ const setting = (
 
 export const view = (model: Model): Html => {
   const h = html<Message>()
-  const isDisabled = !model.enabled.isChecked
+  const isDisabled = !model.isEnabled
 
   return card({
     children: [
@@ -251,8 +236,9 @@ export const view = (model: Model): Html => {
             class: '[&>div>div]:sr-only',
             children: [
               Switch.switch({
-                model: model.enabled,
-                toParentMessage: message => GotSwitchMessage({ message }),
+                id: 'kitchen-island-enabled',
+                isChecked: model.isEnabled,
+                onToggle: isChecked => ToggledEnabled({ isChecked }),
                 label: 'Kitchen Island enabled',
               }),
             ],
@@ -308,6 +294,7 @@ export const view = (model: Model): Html => {
                 'Brightness',
                 Slider.slider({
                   model: model.brightness,
+                  value: model.brightnessValue,
                   toParentMessage: message =>
                     GotBrightnessMessage({ message }),
                   ariaLabel: 'Brightness',
@@ -320,6 +307,7 @@ export const view = (model: Model): Html => {
                 'Color Temp',
                 Slider.slider({
                   model: model.colorTemp,
+                  value: model.colorTempValue,
                   toParentMessage: message =>
                     GotColorTempMessage({ message }),
                   ariaLabel: 'Color Temp',
@@ -331,6 +319,7 @@ export const view = (model: Model): Html => {
                 'Volume',
                 Slider.slider({
                   model: model.volume,
+                  value: model.volumeValue,
                   toParentMessage: message =>
                     GotVolumeMessage({ message }),
                   ariaLabel: 'Volume',
@@ -342,6 +331,7 @@ export const view = (model: Model): Html => {
                 'Fade',
                 Slider.slider({
                   model: model.fade,
+                  value: model.fadeValue,
                   toParentMessage: message => GotFadeMessage({ message }),
                   ariaLabel: 'Fade',
                   isDisabled,

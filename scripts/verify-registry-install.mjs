@@ -2,7 +2,8 @@ import assert from 'node:assert/strict'
 import { cpSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { spawnSync } from 'node:child_process'
+import { spawn } from 'node:child_process'
+import { createServer } from 'node:http'
 
 const root = process.cwd()
 const fixture = mkdtempSync(join(tmpdir(), 'creaseui-registry-'))
@@ -18,17 +19,47 @@ const frameworkVersions = {
   foldkit: process.env.CREASEUI_FOLDKIT_VERSION ?? sourcePackage.dependencies.foldkit,
 }
 
-const run = (command, args) => {
-  const result = spawnSync(command, args, {
-    cwd: fixture,
-    stdio: 'inherit',
-    shell: process.platform === 'win32',
-  })
-
-  if (result.status !== 0) {
-    process.exit(result.status ?? 1)
+const registryOutput = join(root, '.registry')
+const server = createServer((request, response) => {
+  const name = request.url?.match(/^\/([a-z0-9-]+)\.json$/)?.[1]
+  if (name === undefined) {
+    response.writeHead(404).end()
+    return
   }
-}
+
+  try {
+    const item = JSON.parse(readFileSync(join(registryOutput, `${name}.json`), 'utf8'))
+    item.registryDependencies = (item.registryDependencies ?? []).map(dependency => {
+      const dependencyName = dependency.match(/\/([^/]+)$/)?.[1]
+      return dependencyName === undefined
+        ? dependency
+        : `http://127.0.0.1:${server.address().port}/${dependencyName}.json`
+    })
+    response.writeHead(200, { 'content-type': 'application/json' })
+    response.end(JSON.stringify(item))
+  } catch {
+    response.writeHead(404).end()
+  }
+})
+
+await new Promise(resolve => server.listen(0, '127.0.0.1', resolve))
+const address = server.address()
+assert.notEqual(address, null)
+assert.equal(typeof address, 'object')
+const registryBaseUrl = `http://127.0.0.1:${address.port}`
+
+const run = (command, args) =>
+  new Promise((resolve, reject) => {
+    const child = spawn(command, args, {
+      cwd: fixture,
+      stdio: 'inherit',
+      shell: process.platform === 'win32',
+    })
+    child.once('error', reject)
+    child.once('exit', code => code === 0
+      ? resolve()
+      : reject(new Error(`${command} exited with code ${code ?? 'unknown'}`)))
+  })
 
 for (const file of ['tsconfig.json', 'vite.config.ts', 'index.html']) {
   cpSync(join(root, file), join(fixture, file))
@@ -92,13 +123,14 @@ writeFileSync(
     .join(', ')}]\n`,
 )
 
-run(npx, [
-  '--yes',
-  'shadcn@latest',
-  'add',
-  ...componentNames.map(name => `Potti1234/creaseui/${name}`),
-  '--yes',
-])
+try {
+  await run(npx, [
+    '--yes',
+    'shadcn@latest',
+    'add',
+    ...componentNames.map(name => `${registryBaseUrl}/${name}.json`),
+    '--yes',
+  ])
 const installedPackage = JSON.parse(
   readFileSync(join(fixture, 'package.json'), 'utf8'),
 )
@@ -109,8 +141,11 @@ for (const [packageName, expectedVersion] of Object.entries(frameworkVersions)) 
     `${packageName} was changed during registry installation`,
   )
 }
-run(npm, ['install'])
-run(npm, ['run', 'typecheck'])
-run(npm, ['run', 'build'])
+  await run(npm, ['install'])
+  await run(npm, ['run', 'typecheck'])
+  await run(npm, ['run', 'build'])
 
-console.log(`Registry installation verified in ${fixture}`)
+  console.log(`Registry installation verified in ${fixture}`)
+} finally {
+  server.close()
+}

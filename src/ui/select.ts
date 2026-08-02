@@ -71,6 +71,7 @@ export type SelectItemConfig = Readonly<{
 
 export type SelectProps<Item, Value extends string, Msg> = Readonly<{
   model: Model
+  maybeSelectedValue: Option.Option<Value>
   toParentMessage: (message: Message) => Msg
   items: ReadonlyArray<Item>
   itemToValue: (item: Item) => Value
@@ -97,12 +98,13 @@ export const select = <Item, Value extends string, Msg>(
     const item = itemForValue(value)
     return item === undefined ? value : props.itemToLabel(item)
   }
-  const selectedLabel = Option.match(props.model.maybeSelectedItem, {
+  const selectedLabel = Option.match(props.maybeSelectedValue, {
     onNone: () => undefined,
     onSome: labelForValue,
   })
 
   const viewInputs: ListboxPrimitive.ViewInputs<string> = {
+    maybeSelectedValue: props.maybeSelectedValue,
     items: values,
     itemToValue: (value) => value,
     itemToSearchText: (value) => {

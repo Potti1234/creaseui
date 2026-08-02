@@ -147,7 +147,7 @@ const UserMenu = DropdownMenu.create<UserAction>()
 
 export const Model = S.Struct({
   isSidebarOpen: S.Boolean,
-  navMain: S.Array(Collapsible.Model),
+  navMainOpen: S.Array(S.Boolean),
   projectMenus: S.Array(DropdownMenu.Model),
   userMenu: DropdownMenu.Model,
 })
@@ -156,9 +156,9 @@ export type Model = typeof Model.Type
 // MESSAGE
 
 export const ToggledSidebar = m('ToggledSidebar')
-export const GotNavMainMessage = m('GotNavMainMessage', {
+export const ToggledNavMain = m('ToggledNavMain', {
   index: S.Number,
-  message: Collapsible.Message,
+  isOpen: S.Boolean,
 })
 export const GotProjectMenuMessage = m('GotProjectMenuMessage', {
   index: S.Number,
@@ -170,7 +170,7 @@ export const GotUserMenuMessage = m('GotUserMenuMessage', {
 
 export const Message = S.Union([
   ToggledSidebar,
-  GotNavMainMessage,
+  ToggledNavMain,
   GotProjectMenuMessage,
   GotUserMenuMessage,
 ])
@@ -180,12 +180,7 @@ export type Message = typeof Message.Type
 
 export const init = (): Model => ({
   isSidebarOpen: true,
-  navMain: data.navMain.map((item, index) =>
-    Collapsible.init({
-      id: `sidebar-08-nav-main-${index}`,
-      isOpen: item.isActive ?? false,
-    }),
-  ),
+  navMainOpen: data.navMain.map(item => item.isActive ?? false),
   projectMenus: data.projects.map((_, index) =>
     DropdownMenu.init({
       id: `sidebar-08-project-menu-${index}`,
@@ -210,28 +205,18 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         evo(model, { isSidebarOpen: current => !current }),
         [],
       ],
-      GotNavMainMessage: ({ index, message: childMessage }) => {
-        const current = model.navMain[index]
-
-        if (current === undefined) {
+      ToggledNavMain: ({ index, isOpen }) => {
+        if (model.navMainOpen[index] === undefined) {
           return [model, []]
         }
-
-        const [next, commands] = Collapsible.update(
-          current,
-          childMessage,
-        )
-
         return [
           evo(model, {
-            navMain: items =>
-              items.map((item, itemIndex) =>
-                itemIndex === index ? next : item,
+            navMainOpen: items =>
+              items.map((open, itemIndex) =>
+                itemIndex === index ? isOpen : open,
               ),
           }),
-          Command.mapMessages(commands, nextMessage =>
-            GotNavMainMessage({ index, message: nextMessage }),
-          ),
+          [],
         ]
       },
       GotProjectMenuMessage: ({ index, message: childMessage }) => {
@@ -276,15 +261,15 @@ export const update = (model: Model, message: Message): UpdateReturn =>
 
 // VIEW
 
-const navMain = (models: ReadonlyArray<Collapsible.Model>): Html =>
+const navMain = (openStates: ReadonlyArray<boolean>): Html =>
   sidebarGroup<Message>({
     children: [
       sidebarGroupLabel({ children: ['Platform'] }),
       sidebarMenu({
         children: data.navMain.flatMap((item, index) => {
-          const model = models[index]
+          const isOpen = openStates[index]
 
-          if (model === undefined) {
+          if (isOpen === undefined) {
             return []
           }
 
@@ -294,9 +279,9 @@ const navMain = (models: ReadonlyArray<Collapsible.Model>): Html =>
             sidebarMenuItem({
               children: [
                 Collapsible.collapsible({
-                  model,
-                  toParentMessage: message =>
-                    GotNavMainMessage({ index, message }),
+                  id: `sidebar-08-nav-main-${index}`,
+                  isOpen,
+                  onToggle: nextIsOpen => ToggledNavMain({ index, isOpen: nextIsOpen }),
                   class: 'group/collapsible',
                   triggerClass: sidebarMenuButtonVariants(),
                   trigger: h.span(
@@ -308,7 +293,7 @@ const navMain = (models: ReadonlyArray<Collapsible.Model>): Html =>
                       h.span([], [item.title]),
                       Icon.chevronRight({
                         class: `ml-auto size-4 shrink-0 transition-transform${
-                          model.isOpen ? ' rotate-90' : ''
+                          isOpen ? ' rotate-90' : ''
                         }`,
                       }),
                       h.span([h.Class('sr-only')], ['Toggle']),
@@ -608,7 +593,7 @@ const appSidebar = (model: Model): Html => {
       }),
       sidebarContent({
         children: [
-          navMain(model.navMain),
+          navMain(model.navMainOpen),
           navProjects(model.projectMenus),
           navSecondary(),
         ],

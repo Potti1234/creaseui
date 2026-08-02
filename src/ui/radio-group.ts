@@ -1,24 +1,10 @@
+import { Option } from 'effect'
 import { type Html, html } from 'foldkit/html'
 
 import { RadioGroup as RadioGroupPrimitive } from '@foldkit/ui'
 
 import * as Icon from '@/lib/icon'
 import { cn } from '@/lib/utils'
-
-export const Model = RadioGroupPrimitive.Model
-export type Model = typeof Model.Type
-export const Message = RadioGroupPrimitive.Message
-export type Message = typeof Message.Type
-export const OutMessage = RadioGroupPrimitive.OutMessage
-export type OutMessage = typeof OutMessage.Type
-
-export const init = RadioGroupPrimitive.init
-
-const StringRadioGroup = RadioGroupPrimitive.create<string>()
-
-export const update = StringRadioGroup.update
-export const select = StringRadioGroup.select
-export const reflectSelectedValue = StringRadioGroup.reflectSelectedValue
 
 const GROUP_CLASS = 'grid gap-3'
 
@@ -39,8 +25,9 @@ export type RadioGroupOption = Readonly<{
 }>
 
 export type RadioGroupProps<Msg> = Readonly<{
-  model: Model
-  toParentMessage: (message: Message) => Msg
+  id: string
+  selectedValue: Option.Option<string>
+  onSelect: (value: string) => Msg
   ariaLabel: string
   options: ReadonlyArray<RadioGroupOption>
   isDisabled?: boolean
@@ -52,11 +39,10 @@ export type RadioGroupProps<Msg> = Readonly<{
 export const radioGroup = <Msg>(props: RadioGroupProps<Msg>): Html => {
   const h = html<Msg>()
 
-  return h.submodel({
-    slotId: props.model.id,
-    model: props.model,
-    view: StringRadioGroup.view,
-    viewInputs: {
+  return RadioGroupPrimitive.view({
+      id: props.id,
+      selectedValue: props.selectedValue,
+      onSelect: props.onSelect,
       options: props.options.map(option => option.value),
       ariaLabel: props.ariaLabel,
       isDisabled: props.isDisabled ?? false,
@@ -65,43 +51,41 @@ export const radioGroup = <Msg>(props: RadioGroupProps<Msg>): Html => {
         ? {}
         : { orientation: props.orientation }),
       toView: ({ group, options, hiddenInput }) => {
-        const hr = html<Message>()
-
-        return hr.div(
+        return h.div(
           [
             ...group,
-            hr.DataAttribute('slot', 'radio-group'),
-            hr.Class(cn(GROUP_CLASS, props.class)),
+            h.DataAttribute('slot', 'radio-group'),
+            h.Class(cn(GROUP_CLASS, props.class)),
           ],
           [
             ...options.map(option => {
               const content = props.options[option.index]
 
               if (content === undefined) {
-                return hr.span([], [])
+                return h.span([], [])
               }
 
-              return hr.div(
-                [hr.Class('flex items-start gap-2')],
+              return h.div(
+                [h.Class('flex items-start gap-2')],
                 [
-                  hr.button(
+                  h.button(
                     [
                       ...option.option,
-                      hr.Type('button'),
-                      hr.DataAttribute('slot', 'radio-group-item'),
-                      hr.Class(ITEM_CLASS),
+                      h.Type('button'),
+                      h.DataAttribute('slot', 'radio-group-item'),
+                      h.Class(ITEM_CLASS),
                     ],
                     [
-                      hr.span(
+                      h.span(
                         [
-                          hr.DataAttribute(
+                          h.DataAttribute(
                             'slot',
                             'radio-group-indicator',
                           ),
-                          hr.Class(INDICATOR_CLASS),
+                          h.Class(INDICATOR_CLASS),
                         ],
                         [
-                          Icon.circleIcon<Message>({
+                          Icon.circleIcon<Msg>({
                             class:
                               'absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 fill-primary',
                           }),
@@ -109,20 +93,20 @@ export const radioGroup = <Msg>(props: RadioGroupProps<Msg>): Html => {
                       ),
                     ],
                   ),
-                  hr.div(
-                    [hr.Class('grid gap-1.5')],
+                  h.div(
+                    [h.Class('grid gap-1.5')],
                     [
-                      hr.label(
-                        [...option.label, hr.Class(LABEL_CLASS)],
+                      h.label(
+                        [...option.label, h.Class(LABEL_CLASS)],
                         [content.label],
                       ),
                       ...(content.description === undefined
                         ? []
                         : [
-                            hr.p(
+                            h.p(
                               [
                                 ...option.description,
-                                hr.Class(DESCRIPTION_CLASS),
+                                h.Class(DESCRIPTION_CLASS),
                               ],
                               [content.description],
                             ),
@@ -132,17 +116,15 @@ export const radioGroup = <Msg>(props: RadioGroupProps<Msg>): Html => {
                 ],
               )
             }),
-            ...(props.name === undefined ? [] : [hr.input([...hiddenInput])]),
+            ...(props.name === undefined ? [] : [h.input([...hiddenInput])]),
           ],
         )
       },
-    },
-    toParentMessage: props.toParentMessage,
   })
 }
 
 /*
-Model: { plan: RadioGroup.init({ id: 'plan', selectedValue: 'basic' }) }
-Update: RadioGroup.update(model.plan, message)
+Model: { selectedPlan: 'basic' }
+Update: store the value emitted by onSelect in selectedPlan
 View: RadioGroup.radioGroup({ model: model.plan, toParentMessage: GotRadioMessage, ariaLabel: 'Plan', options: [{ value: 'basic', label: 'Basic' }] })
 */

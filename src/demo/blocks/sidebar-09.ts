@@ -192,7 +192,7 @@ const UserMenu = DropdownMenu.create<UserAction>()
 export const Model = S.Struct({
   isSidebarOpen: S.Boolean,
   activeNavIndex: S.Number,
-  unreadOnly: Switch.Model,
+  unreadOnly: S.Boolean,
   userMenu: DropdownMenu.Model,
 })
 export type Model = typeof Model.Type
@@ -203,9 +203,7 @@ export const ToggledSidebar = m('ToggledSidebar')
 export const SelectedNavItem = m('SelectedNavItem', {
   index: S.Number,
 })
-export const GotUnreadMessage = m('GotUnreadMessage', {
-  message: Switch.Message,
-})
+export const ToggledUnread = m('ToggledUnread', { isChecked: S.Boolean })
 export const GotUserMenuMessage = m('GotUserMenuMessage', {
   message: DropdownMenu.Message,
 })
@@ -213,7 +211,7 @@ export const GotUserMenuMessage = m('GotUserMenuMessage', {
 export const Message = S.Union([
   ToggledSidebar,
   SelectedNavItem,
-  GotUnreadMessage,
+  ToggledUnread,
   GotUserMenuMessage,
 ])
 export type Message = typeof Message.Type
@@ -223,10 +221,7 @@ export type Message = typeof Message.Type
 export const init = (): Model => ({
   isSidebarOpen: true,
   activeNavIndex: 0,
-  unreadOnly: Switch.init({
-    id: 'sidebar-09-unread-switch',
-    isChecked: false,
-  }),
+  unreadOnly: false,
   userMenu: DropdownMenu.init({
     id: 'sidebar-09-user-menu',
     isAnimated: true,
@@ -252,19 +247,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         }),
         [],
       ],
-      GotUnreadMessage: ({ message: childMessage }) => {
-        const [unreadOnly, commands] = Switch.update(
-          model.unreadOnly,
-          childMessage,
-        )
-
-        return [
-          evo(model, { unreadOnly: () => unreadOnly }),
-          Command.mapMessages(commands, nextMessage =>
-            GotUnreadMessage({ message: nextMessage }),
-          ),
-        ]
-      },
+      ToggledUnread: ({ isChecked }) => [{ ...model, unreadOnly: isChecked }, []],
       GotUserMenuMessage: ({ message: childMessage }) => {
         const [userMenu, commands] = UserMenu.update(
           model.userMenu,
@@ -527,9 +510,9 @@ const mailSidebar = (model: Model): Html => {
                 [
                   h.span([], ['Unreads']),
                   Switch.switch({
-                    model: model.unreadOnly,
-                    toParentMessage: message =>
-                      GotUnreadMessage({ message }),
+                    id: 'sidebar-09-unread-switch',
+                    isChecked: model.unreadOnly,
+                    onToggle: isChecked => ToggledUnread({ isChecked }),
                     label: 'Toggle unread mail',
                     class: 'shadow-none',
                   }),

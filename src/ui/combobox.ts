@@ -74,6 +74,8 @@ export type ComboboxItemConfig = Readonly<{
 
 export type ComboboxProps<Item, Value extends string, Msg> = Readonly<{
   model: Model
+  maybeSelectedValue: Option.Option<Value>
+  restingInputValue: string
   toParentMessage: (message: Message) => Msg
   items: ReadonlyArray<Item>
   itemToValue: (item: Item) => Value
@@ -100,10 +102,7 @@ export const combobox = <Item, Value extends string, Msg>(
     return item === undefined ? value : props.itemToLabel(item)
   }
   const query = props.model.inputValue.trim().toLocaleLowerCase()
-  const isShowingSelectedLabel = Option.exists(
-    props.model.maybeSelectedDisplayText,
-    (displayText) => displayText === props.model.inputValue,
-  )
+  const isShowingSelectedLabel = props.restingInputValue === props.model.inputValue
   const values = props.items
     .filter(
       (item) =>
@@ -119,6 +118,8 @@ export const combobox = <Item, Value extends string, Msg>(
     model: props.model,
     view: comboboxPrimitive.view,
     viewInputs: {
+      maybeSelectedValue: props.maybeSelectedValue,
+      restingInputValue: props.restingInputValue,
       items: values,
       itemToValue: (value) => value,
       itemToDisplayText: labelForValue,

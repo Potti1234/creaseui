@@ -29,7 +29,7 @@ export const open = DatePickerPrimitive.open
 export const close = DatePickerPrimitive.close
 export const selectDate = DatePickerPrimitive.selectDate
 export const clear = DatePickerPrimitive.clear
-export const reflectSelectedDate = DatePickerPrimitive.reflectSelectedDate
+export const focusDate = DatePickerPrimitive.focusDate
 export const reflectMinDate = DatePickerPrimitive.reflectMinDate
 export const reflectMaxDate = DatePickerPrimitive.reflectMaxDate
 export const reflectDisabledDates = DatePickerPrimitive.reflectDisabledDates
@@ -47,6 +47,7 @@ const BACKDROP_CLASS = 'fixed inset-0 z-40'
 
 export type DatePickerProps<Msg> = Readonly<{
   model: Model
+  maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>
   toParentMessage: (message: Message) => Msg
   placeholder?: string
   formatDate?: (date: FoldkitCalendar.CalendarDate) => string
@@ -63,7 +64,7 @@ export type DatePickerProps<Msg> = Readonly<{
 export const datePicker = <Msg>(props: DatePickerProps<Msg>): Html => {
   const h = html<Msg>()
   const hd = html<Message>()
-  const isEmpty = Option.isNone(props.model.maybeSelectedDate)
+  const isEmpty = Option.isNone(props.maybeSelectedDate)
   const formatDate =
     props.formatDate ??
     ((date: FoldkitCalendar.CalendarDate): string =>
@@ -74,6 +75,7 @@ export const datePicker = <Msg>(props: DatePickerProps<Msg>): Html => {
     model: props.model,
     view: DatePickerPrimitive.view,
     viewInputs: {
+      maybeSelectedDate: props.maybeSelectedDate,
       anchor: { placement: 'bottom-start', gap: 4 },
       triggerContent: maybeDate =>
         hd.span(

@@ -1,5 +1,6 @@
-import { Schema as S } from 'effect'
+import { Option, Schema as S } from 'effect'
 import { Command, Subscription } from 'foldkit'
+import * as FoldkitCalendar from 'foldkit/calendar'
 import { m } from 'foldkit/message'
 
 import * as AlertDialog from '@/ui/alert-dialog'
@@ -56,19 +57,24 @@ export const Model = S.Struct({
   togglePressed: S.Boolean,
   toggleGroupValue: S.String,
   carousel: Carousel.Model,
-  checkbox: Checkbox.Model,
-  collapsible: Collapsible.Model,
+  isCheckboxChecked: S.Boolean,
+  isCollapsibleOpen: S.Boolean,
   dataTable: DataTable.Model,
-  radioGroup: RadioGroup.Model,
+  selectedRadioValue: S.String,
   resizable: Resizable.Model,
   slider: Slider.Model,
-  switchControl: Switch.Model,
+  sliderValue: S.Number,
+  isSwitchChecked: S.Boolean,
   tabs: Tabs.Model,
+  selectedTabValue: S.String,
   alertDialog: AlertDialog.Model,
   combobox: Combobox.Model,
+  selectedComboboxValue: S.Option(S.String),
   command: CommandMenu.Model,
+  selectedCommandValue: S.Option(S.String),
   contextMenu: ContextMenu.Model,
   datePicker: DatePicker.Model,
+  selectedDate: S.Option(FoldkitCalendar.CalendarDate),
   dialog: Dialog.Model,
   drawer: Drawer.Model,
   dropdownMenu: DropdownMenu.Model,
@@ -79,6 +85,7 @@ export const Model = S.Struct({
   menubarView: DropdownMenu.Model,
   popover: Popover.Model,
   select: Select.Model,
+  selectedSelectValue: S.Option(S.String),
   sheet: Sheet.Model,
   sonner: Sonner.Model,
   toast: Sonner.Model,
@@ -98,13 +105,13 @@ export const OverlayTarget = S.Literals(['alertDialog', 'dialog', 'drawer', 'she
 export type OverlayTarget = typeof OverlayTarget.Type
 export const OpenedOverlay = m('OpenedCatalogOverlay', { target: OverlayTarget })
 export const GotCarouselMessage = m('GotCatalogCarouselMessage', { message: Carousel.Message })
-export const GotCheckboxMessage = m('GotCatalogCheckboxMessage', { message: Checkbox.Message })
-export const GotCollapsibleMessage = m('GotCatalogCollapsibleMessage', { message: Collapsible.Message })
+export const ToggledCheckbox = m('ToggledCatalogCheckbox', { isChecked: S.Boolean })
+export const ToggledCollapsible = m('ToggledCatalogCollapsible', { isOpen: S.Boolean })
 export const GotDataTableMessage = m('GotCatalogDataTableMessage', { message: DataTable.Message })
-export const GotRadioGroupMessage = m('GotCatalogRadioGroupMessage', { message: RadioGroup.Message })
+export const SelectedRadioValue = m('SelectedCatalogRadioValue', { value: S.String })
 export const GotResizableMessage = m('GotCatalogResizableMessage', { message: Resizable.Message })
 export const GotSliderMessage = m('GotCatalogSliderMessage', { message: Slider.Message })
-export const GotSwitchMessage = m('GotCatalogSwitchMessage', { message: Switch.Message })
+export const ToggledSwitch = m('ToggledCatalogSwitch', { isChecked: S.Boolean })
 export const GotTabsMessage = m('GotCatalogTabsMessage', { message: Tabs.Message })
 export const GotAlertDialogMessage = m('GotCatalogAlertDialogMessage', { message: AlertDialog.Message })
 export const GotComboboxMessage = m('GotCatalogComboboxMessage', { message: Combobox.Message })
@@ -134,13 +141,13 @@ export const Message = S.Union([
   ChangedToggleGroup,
   OpenedOverlay,
   GotCarouselMessage,
-  GotCheckboxMessage,
-  GotCollapsibleMessage,
+  ToggledCheckbox,
+  ToggledCollapsible,
   GotDataTableMessage,
-  GotRadioGroupMessage,
+  SelectedRadioValue,
   GotResizableMessage,
   GotSliderMessage,
-  GotSwitchMessage,
+  ToggledSwitch,
   GotTabsMessage,
   GotAlertDialogMessage,
   GotComboboxMessage,
@@ -177,19 +184,24 @@ export const init = (): Model => ({
   togglePressed: true,
   toggleGroupValue: 'center',
   carousel: Carousel.init('docs-carousel', 3),
-  checkbox: Checkbox.init({ id: 'docs-checkbox', isChecked: true }),
-  collapsible: Collapsible.init({ id: 'docs-collapsible', isOpen: true }),
+  isCheckboxChecked: true,
+  isCollapsibleOpen: true,
   dataTable: DataTable.init(5),
-  radioGroup: RadioGroup.init({ id: 'docs-radio', selectedValue: 'comfortable' }),
+  selectedRadioValue: 'comfortable',
   resizable: Resizable.init('docs-resizable', 50),
-  slider: Slider.init({ id: 'docs-slider', min: 0, max: 100, step: 1, initialValue: 50 }),
-  switchControl: Switch.init({ id: 'docs-switch', isChecked: true }),
-  tabs: Tabs.init({ id: 'docs-tabs', activeIndex: 0 }),
+  slider: Slider.init({ id: 'docs-slider', min: 0, max: 100, step: 1 }),
+  sliderValue: 50,
+  isSwitchChecked: true,
+  tabs: Tabs.init({ id: 'docs-tabs' }),
+  selectedTabValue: 'account',
   alertDialog: AlertDialog.init({ id: 'docs-alert-dialog', isAnimated: true }),
   combobox: Combobox.init({ id: 'docs-combobox', isAnimated: true }),
+  selectedComboboxValue: Option.none(),
   command: CommandMenu.init({ id: 'docs-command', isAnimated: true }),
+  selectedCommandValue: Option.none(),
   contextMenu: ContextMenu.init({ id: 'docs-context-menu' }),
-  datePicker: DatePicker.init({ id: 'docs-date-picker', today: { year: 2026, month: 7, day: 28 }, initialSelectedDate: { year: 2026, month: 7, day: 18 }, isAnimated: true }),
+  datePicker: DatePicker.init({ id: 'docs-date-picker', today: { year: 2026, month: 7, day: 28 }, initialViewDate: { year: 2026, month: 7, day: 18 }, isAnimated: true }),
+  selectedDate: Option.some({ year: 2026, month: 7, day: 18 }),
   dialog: Dialog.init({ id: 'docs-dialog', isAnimated: true }),
   drawer: Drawer.init({ id: 'docs-drawer', isAnimated: true }),
   dropdownMenu: DropdownMenu.init({ id: 'docs-dropdown' }),
@@ -199,7 +211,8 @@ export const init = (): Model => ({
   menubarEdit: DropdownMenu.init({ id: 'docs-menubar-edit' }),
   menubarView: DropdownMenu.init({ id: 'docs-menubar-view' }),
   popover: Popover.init({ id: 'docs-popover', isAnimated: true }),
-  select: Select.init({ id: 'docs-select', selectedItem: 'apple' }),
+  select: Select.init({ id: 'docs-select' }),
+  selectedSelectValue: Option.some('apple'),
   sheet: Sheet.init({ id: 'docs-sheet', isAnimated: true }),
   sonner: Sonner.show(Sonner.init({ id: 'docs-sonner' }), Sonner.success({ title: 'Event has been created', description: 'Sunday, December 03, 2023 at 9:00 AM', sticky: true }))[0],
   toast: Sonner.show(Sonner.init({ id: 'docs-toast' }), Sonner.info({ title: 'Scheduled: Catch up', description: 'Friday, February 10, 2023 at 5:57 PM', sticky: true }))[0],
@@ -221,12 +234,8 @@ export const withExampleIds = (model: Model, suffix: string): Model => {
   return {
     ...model,
     carousel: { ...model.carousel, id: id(model.carousel.id) },
-    checkbox: { ...model.checkbox, id: id(model.checkbox.id) },
-    collapsible: { ...model.collapsible, id: id(model.collapsible.id) },
-    radioGroup: { ...model.radioGroup, id: id(model.radioGroup.id) },
     resizable: { ...model.resizable, id: id(model.resizable.id) },
     slider: { ...model.slider, id: id(model.slider.id) },
-    switchControl: { ...model.switchControl, id: id(model.switchControl.id) },
     tabs: { ...model.tabs, id: id(model.tabs.id) },
     alertDialog: {
       ...model.alertDialog,
@@ -309,53 +318,67 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       return [{ ...model, [message.target]: message.value }, []]
     case 'GotCatalogCarouselMessage':
       return [{ ...model, carousel: Carousel.update(model.carousel, message.message) }, []]
-    case 'GotCatalogCheckboxMessage': {
-      const [checkbox, commands] = Checkbox.update(model.checkbox, message.message)
-      return [{ ...model, checkbox }, Command.mapMessages(commands, next => GotCheckboxMessage({ message: next }))]
-    }
-    case 'GotCatalogCollapsibleMessage': {
-      const [collapsible, commands] = Collapsible.update(model.collapsible, message.message)
-      return [{ ...model, collapsible }, Command.mapMessages(commands, next => GotCollapsibleMessage({ message: next }))]
-    }
+    case 'ToggledCatalogCheckbox':
+      return [{ ...model, isCheckboxChecked: message.isChecked }, []]
+    case 'ToggledCatalogCollapsible':
+      return [{ ...model, isCollapsibleOpen: message.isOpen }, []]
     case 'GotCatalogDataTableMessage':
       return [{ ...model, dataTable: DataTable.update(model.dataTable, message.message) }, []]
-    case 'GotCatalogRadioGroupMessage': {
-      const [radioGroup, commands] = RadioGroup.update(model.radioGroup, message.message)
-      return [{ ...model, radioGroup }, Command.mapMessages(commands, next => GotRadioGroupMessage({ message: next }))]
-    }
+    case 'SelectedCatalogRadioValue':
+      return [{ ...model, selectedRadioValue: message.value }, []]
     case 'GotCatalogResizableMessage':
       return [{ ...model, resizable: Resizable.update(model.resizable, message.message) }, []]
     case 'GotCatalogSliderMessage': {
-      const [slider, commands] = Slider.update(model.slider, message.message)
-      return [{ ...model, slider }, Command.mapMessages(commands, next => GotSliderMessage({ message: next }))]
+      const [slider, commands, maybeChange] = Slider.update(model.slider, message.message)
+      return [{ ...model, slider, sliderValue: Option.match(maybeChange, { onNone: () => model.sliderValue, onSome: change => change.value }) }, Command.mapMessages(commands, next => GotSliderMessage({ message: next }))]
     }
-    case 'GotCatalogSwitchMessage': {
-      const [switchControl, commands] = Switch.update(model.switchControl, message.message)
-      return [{ ...model, switchControl }, Command.mapMessages(commands, next => GotSwitchMessage({ message: next }))]
-    }
+    case 'ToggledCatalogSwitch':
+      return [{ ...model, isSwitchChecked: message.isChecked }, []]
     case 'GotCatalogTabsMessage': {
-      const [tabs, commands] = Tabs.update(model.tabs, message.message)
-      return [{ ...model, tabs }, Command.mapMessages(commands, next => GotTabsMessage({ message: next }))]
+      const [tabs, commands, maybeSelection] = Tabs.update(model.tabs, message.message)
+      return [
+        {
+          ...model,
+          tabs,
+          selectedTabValue: Option.match(maybeSelection, {
+            onNone: () => model.selectedTabValue,
+            onSome: selection => selection.value,
+          }),
+        },
+        Command.mapMessages(commands, next => GotTabsMessage({ message: next })),
+      ]
     }
     case 'GotCatalogAlertDialogMessage': {
       const [alertDialog, commands] = AlertDialog.update(model.alertDialog, message.message)
       return [{ ...model, alertDialog }, Command.mapMessages(commands, next => GotAlertDialogMessage({ message: next }))]
     }
     case 'GotCatalogComboboxMessage': {
-      const [combobox, commands] = Combobox.update(model.combobox, message.message)
-      return [{ ...model, combobox }, Command.mapMessages(commands, next => GotComboboxMessage({ message: next }))]
+      const [combobox, commands, maybeSelection] = Combobox.update(model.combobox, message.message)
+      const selectedComboboxValue = Option.match(maybeSelection, { onNone: () => model.selectedComboboxValue, onSome: selection => selection._tag === 'Selected' ? Option.some(selection.value) : Option.none() })
+      return [{ ...model, combobox, selectedComboboxValue }, Command.mapMessages(commands, next => GotComboboxMessage({ message: next }))]
     }
     case 'GotCatalogCommandMessage': {
-      const [command, commands] = CommandMenu.update(model.command, message.message)
-      return [{ ...model, command }, Command.mapMessages(commands, next => GotCommandMessage({ message: next }))]
+      const [command, commands, maybeSelection] = CommandMenu.update(model.command, message.message)
+      return [
+        {
+          ...model,
+          command,
+          selectedCommandValue: Option.match(maybeSelection, {
+            onNone: () => model.selectedCommandValue,
+            onSome: selection => selection._tag === 'Selected' ? Option.some(selection.value) : Option.none(),
+          }),
+        },
+        Command.mapMessages(commands, next => GotCommandMessage({ message: next })),
+      ]
     }
     case 'GotCatalogContextMenuMessage': {
       const [contextMenu, commands] = ContextMenu.update(model.contextMenu, message.message)
       return [{ ...model, contextMenu }, Command.mapMessages(commands, next => GotContextMenuMessage({ message: next }))]
     }
     case 'GotCatalogDatePickerMessage': {
-      const [datePicker, commands] = DatePicker.update(model.datePicker, message.message)
-      return [{ ...model, datePicker }, Command.mapMessages(commands, next => GotDatePickerMessage({ message: next }))]
+      const [datePicker, commands, maybeSelection] = DatePicker.update(model.datePicker, message.message)
+      const selectedDate = Option.match(maybeSelection, { onNone: () => model.selectedDate, onSome: selection => selection._tag === 'SelectedDate' ? Option.some(selection.date) : selection._tag === 'ClearedDate' ? Option.none() : model.selectedDate })
+      return [{ ...model, datePicker, selectedDate }, Command.mapMessages(commands, next => GotDatePickerMessage({ message: next }))]
     }
     case 'GotCatalogDialogMessage': {
       const [dialog, commands] = Dialog.update(model.dialog, message.message)
@@ -387,8 +410,9 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       return [{ ...model, popover }, Command.mapMessages(commands, next => GotPopoverMessage({ message: next }))]
     }
     case 'GotCatalogSelectMessage': {
-      const [select, commands] = Select.update(model.select, message.message)
-      return [{ ...model, select }, Command.mapMessages(commands, next => GotSelectMessage({ message: next }))]
+      const [select, commands, maybeSelection] = Select.update(model.select, message.message)
+      const selectedSelectValue = Option.match(maybeSelection, { onNone: () => model.selectedSelectValue, onSome: selection => selection._tag === 'Selected' ? Option.some(selection.value) : Option.none() })
+      return [{ ...model, select, selectedSelectValue }, Command.mapMessages(commands, next => GotSelectMessage({ message: next }))]
     }
     case 'GotCatalogSheetMessage': {
       const [sheet, commands] = Sheet.update(model.sheet, message.message)

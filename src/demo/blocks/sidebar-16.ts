@@ -119,16 +119,16 @@ const UserMenu = DropdownMenu.create<UserItem>()
 export const Model = S.Struct({
   isSidebarOpen: S.Boolean,
   search: S.String,
-  navMain: S.Array(Collapsible.Model),
+  navMainOpen: S.Array(S.Boolean),
   userMenu: DropdownMenu.Model,
 })
 export type Model = typeof Model.Type
 
 export const ToggledSidebar = m('ToggledSidebar')
 export const ChangedSearch = m('ChangedSearch', { value: S.String })
-export const GotNavMainMessage = m('GotNavMainMessage', {
+export const ToggledNavMain = m('ToggledNavMain', {
   index: S.Number,
-  message: Collapsible.Message,
+  isOpen: S.Boolean,
 })
 export const GotUserMenuMessage = m('GotUserMenuMessage', {
   message: DropdownMenu.Message,
@@ -136,7 +136,7 @@ export const GotUserMenuMessage = m('GotUserMenuMessage', {
 export const Message = S.Union([
   ToggledSidebar,
   ChangedSearch,
-  GotNavMainMessage,
+  ToggledNavMain,
   GotUserMenuMessage,
 ])
 export type Message = typeof Message.Type
@@ -144,12 +144,7 @@ export type Message = typeof Message.Type
 export const init = (): Model => ({
   isSidebarOpen: true,
   search: '',
-  navMain: data.navMain.map((item, index) =>
-    Collapsible.init({
-      id: `sidebar-16-nav-main-${index}`,
-      isOpen: item.isActive ?? false,
-    }),
-  ),
+  navMainOpen: data.navMain.map(item => item.isActive ?? false),
   userMenu: DropdownMenu.init({
     id: 'sidebar-16-user-menu',
     isAnimated: true,
@@ -169,20 +164,16 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         evo(model, { search: () => value }),
         [],
       ],
-      GotNavMainMessage: ({ index, message: childMessage }) => {
-        const current = model.navMain[index]
-        if (current === undefined) return [model, []]
-        const [next, commands] = Collapsible.update(current, childMessage)
+      ToggledNavMain: ({ index, isOpen }) => {
+        if (model.navMainOpen[index] === undefined) return [model, []]
         return [
           evo(model, {
-            navMain: items =>
-              items.map((item, itemIndex) =>
-                itemIndex === index ? next : item,
+            navMainOpen: items =>
+              items.map((open, itemIndex) =>
+                itemIndex === index ? isOpen : open,
               ),
           }),
-          Command.mapMessages(commands, nextMessage =>
-            GotNavMainMessage({ index, message: nextMessage }),
-          ),
+          [],
         ]
       },
       GotUserMenuMessage: ({ message: childMessage }) => {
@@ -200,28 +191,28 @@ export const update = (model: Model, message: Message): UpdateReturn =>
     }),
   )
 
-const navMain = (models: ReadonlyArray<Collapsible.Model>): Html =>
+const navMain = (openStates: ReadonlyArray<boolean>): Html =>
   sidebarGroup<Message>({
     children: [
       sidebarGroupLabel({ children: ['Platform'] }),
       sidebarMenu({
         children: data.navMain.flatMap((item, index) => {
-          const model = models[index]
-          if (model === undefined) return []
+          const isOpen = openStates[index]
+          if (isOpen === undefined) return []
           return [
             sidebarMenuItem({
               children: [
                 Collapsible.collapsible({
-                  model,
-                  toParentMessage: message =>
-                    GotNavMainMessage({ index, message }),
+                  id: `sidebar-16-nav-main-${index}`,
+                  isOpen,
+                  onToggle: nextIsOpen => ToggledNavMain({ index, isOpen: nextIsOpen }),
                   trigger: html<Message>().span(
                     [html<Message>().Class('contents')],
                     [
                       Icon.icon(item.icon, { class: 'size-4 shrink-0' }),
                       html<Message>().span([], [item.title]),
                       Icon.chevronRight({
-                        class: model.isOpen
+                        class: isOpen
                           ? 'ml-auto size-4 rotate-90 transition-transform'
                           : 'ml-auto size-4 transition-transform',
                       }),
@@ -449,7 +440,7 @@ const appSidebar = (model: Model): Html => {
       }),
       sidebarContent({
         children: [
-          navMain(model.navMain),
+          navMain(model.navMainOpen),
           navProjects(),
           navSecondary(),
         ],

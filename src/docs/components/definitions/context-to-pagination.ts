@@ -139,6 +139,7 @@ const datePicker = (model: State.Model, options: Readonly<{ placeholder?: string
       id: `${model.datePicker.calendar.id}-${options.instance ?? 'default'}`,
     },
   },
+  maybeSelectedDate: model.selectedDate,
   toParentMessage: message => State.GotDatePickerMessage({ message }),
   ...options,
 })

@@ -22,8 +22,6 @@ export const create = TabsPrimitive.create
 const StringTabs = TabsPrimitive.create<string>()
 
 export const update = StringTabs.update
-export const selectTab = StringTabs.selectTab
-export const reflectSelectedTab = StringTabs.reflectSelectedTab
 
 const TABS_CLASS =
   'group/tabs flex gap-2 data-[orientation=horizontal]:flex-col'
@@ -61,6 +59,7 @@ export type TabConfig = Readonly<{
 
 export type TabsProps<Msg> = Readonly<{
   model: Model
+  selectedValue: string
   toParentMessage: (message: Message) => Msg
   tabs: ReadonlyArray<TabConfig>
   ariaLabel?: string
@@ -84,6 +83,7 @@ export const tabs = <Msg>(props: TabsProps<Msg>): Html => {
     view: StringTabs.view,
     viewInputs: {
       tabs: props.tabs.map(tab => tab.value),
+      selectedValue: props.selectedValue,
       ariaLabel: props.ariaLabel ?? 'Tabs',
       orientation:
         orientation === 'horizontal' ? 'Horizontal' : 'Vertical',
@@ -151,7 +151,7 @@ export const tabs = <Msg>(props: TabsProps<Msg>): Html => {
 
 /*
 Minimal wiring:
-const model = init({ id: 'account-tabs', activeIndex: 0 })
+const model = init({ id: 'account-tabs' })
 const [nextModel, commands, maybeSelection] = update(model, message)
 tabs({
   model,

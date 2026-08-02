@@ -1,4 +1,5 @@
-import { Match as M } from 'effect'
+import { Match as M, Option } from 'effect'
+import * as FoldkitCalendar from 'foldkit/calendar'
 import { type ChildAttribute, type Html, html } from 'foldkit/html'
 
 import { Calendar as CalendarPrimitive } from '@foldkit/ui'
@@ -26,7 +27,7 @@ export type OutMessage = typeof OutMessage.Type
 export const init = CalendarPrimitive.init
 export const update = CalendarPrimitive.update
 export const selectDate = CalendarPrimitive.selectDate
-export const reflectSelectedDate = CalendarPrimitive.reflectSelectedDate
+export const focusDate = CalendarPrimitive.focusDate
 export const reflectMinDate = CalendarPrimitive.reflectMinDate
 export const reflectMaxDate = CalendarPrimitive.reflectMaxDate
 export const reflectDisabledDates = CalendarPrimitive.reflectDisabledDates
@@ -302,6 +303,7 @@ export const calendarView = (
 
 export type CalendarProps<Msg> = Readonly<{
   model: Model
+  maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>
   toParentMessage: (message: Message) => Msg
   class?: string
   previousMonthLabel?: string
@@ -320,6 +322,7 @@ export const calendar = <Msg>(props: CalendarProps<Msg>): Html => {
     model: props.model,
     view: CalendarPrimitive.view,
     viewInputs: {
+      maybeSelectedDate: props.maybeSelectedDate,
       toView: attributes =>
         calendarView(
           attributes,

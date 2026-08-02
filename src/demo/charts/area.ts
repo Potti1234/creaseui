@@ -55,7 +55,6 @@ export const init = (): Model => ({
   timeRange: '90d',
   timeRangeSelect: Select.init({
     id: 'chart-area-interactive-range',
-    selectedItem: '90d',
     isAnimated: true,
   }),
 })
@@ -74,8 +73,9 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           Select.update(model.timeRangeSelect, childMessage)
         const timeRange = Option.match(maybeOutMessage, {
           onNone: () => model.timeRange,
-          onSome: ({ value }) =>
-            value === '30d' || value === '7d' ? value : '90d',
+          onSome: selection => selection._tag === 'Selected'
+            ? selection.value === '30d' || selection.value === '7d' ? selection.value : '90d'
+            : model.timeRange,
         })
         const chartCommands = Option.isSome(maybeOutMessage)
           ? [
@@ -123,6 +123,7 @@ export const view = (model: Model): Html => {
     AreaIcons.view(toMessage),
     AreaInteractive.view({
       timeRange: model.timeRange,
+      selectedTimeRange: model.timeRange,
       selectModel: model.timeRangeSelect,
       toChartMessage: toMessage,
       toSelectMessage: message => GotTimeRangeSelectMessage({ message }),

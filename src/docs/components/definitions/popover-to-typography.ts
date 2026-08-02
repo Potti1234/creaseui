@@ -1,3 +1,4 @@
+import { Option } from 'effect'
 import { type Html, html } from 'foldkit/html'
 
 import { type PageDefinitions } from '@/docs/components/page-definition'
@@ -62,8 +63,9 @@ const popover = (model: State.Model, suffix: string, align: Popover.PopoverAlign
 
 const radio = (model: State.Model, suffix: string, options: ReadonlyArray<RadioGroup.RadioGroupOption>, config: Readonly<{ disabled?: boolean; class?: string }> = {}) =>
   RadioGroup.radioGroup({
-    model: { ...model.radioGroup, id: `docs-radio-${suffix}` },
-    toParentMessage: message => State.GotRadioGroupMessage({ message }),
+    id: `docs-radio-${suffix}`,
+    selectedValue: Option.some(model.selectedRadioValue),
+    onSelect: value => State.SelectedRadioValue({ value }),
     ariaLabel: 'Notification preference',
     options,
     ...(config.disabled === undefined ? {} : { isDisabled: config.disabled }),
@@ -91,6 +93,7 @@ const fruits: ReadonlyArray<Fruit> = [
 const select = (model: State.Model, suffix: string, items: ReadonlyArray<Fruit> = fruits, grouped = false) =>
   Select.select({
     model: { ...model.select, id: `docs-select-${suffix}` },
+    maybeSelectedValue: model.selectedSelectValue,
     toParentMessage: message => State.GotSelectMessage({ message }),
     items,
     itemToValue: item => item.value,
@@ -122,6 +125,7 @@ const skeletonLines = (): Html => stack(
 const slider = (model: State.Model, suffix: string, config: Readonly<{ disabled?: boolean; class?: string; label?: string }> = {}) =>
   Slider.slider({
     model: { ...model.slider, id: `docs-slider-${suffix}` },
+    value: model.sliderValue,
     toParentMessage: message => State.GotSliderMessage({ message }),
     ariaLabel: config.label ?? 'Volume',
     ...(config.disabled === undefined ? {} : { isDisabled: config.disabled }),
@@ -130,8 +134,9 @@ const slider = (model: State.Model, suffix: string, config: Readonly<{ disabled?
 
 const switchControl = (model: State.Model, suffix: string, config: Readonly<{ description?: string; disabled?: boolean; size?: Switch.SwitchSize }> = {}) =>
   Switch.switchControl({
-    model: { ...model.switchControl, id: `docs-switch-${suffix}` },
-    toParentMessage: message => State.GotSwitchMessage({ message }),
+    id: `docs-switch-${suffix}`,
+    isChecked: model.isSwitchChecked,
+    onToggle: isChecked => State.ToggledSwitch({ isChecked }),
     label: 'Airplane Mode',
     ...(config.description === undefined ? {} : { description: config.description }),
     ...(config.disabled === undefined ? {} : { isDisabled: config.disabled }),
@@ -156,6 +161,7 @@ const invoiceTable = (footer = false, actions = false): Html => Table.table({ ch
 
 const tabSet = (model: State.Model, suffix: string, config: Readonly<{ variant?: 'default' | 'line'; orientation?: 'horizontal' | 'vertical'; disabled?: boolean; icons?: boolean }> = {}) => Tabs.tabs({
   model: { ...model.tabs, id: `docs-tabs-${suffix}` },
+  selectedValue: model.selectedTabValue,
   toParentMessage: message => State.GotTabsMessage({ message }),
   ...(config.variant === undefined ? {} : { variant: config.variant }),
   ...(config.orientation === undefined ? {} : { orientation: config.orientation }),
@@ -317,7 +323,7 @@ const rawDefinitions: PageDefinitions = {
       { title: 'Range', preview: model => slider(model, 'range', { label: 'Price range' }), code: `Slider.slider({ model: rangeModel, ariaLabel: 'Price range' })` },
       { title: 'Multiple Thumbs', preview: model => slider(model, 'multiple', { label: 'Range' }), code: `Slider.slider({ model: multipleThumbModel, … })` },
       { title: 'Vertical', preview: model => h.div([h.Class('flex h-48 items-center')], [slider(model, 'vertical', { class: 'w-48 -rotate-90' })]), code: `Slider.slider({ class: '-rotate-90', … })` },
-      { title: 'Controlled', preview: model => stack(slider(model, 'controlled'), h.p([h.Class('text-sm text-muted-foreground')], [`Value: ${Math.round(model.slider.value)}`])), code: `const value = model.slider.value` },
+      { title: 'Controlled', preview: model => stack(slider(model, 'controlled'), h.p([h.Class('text-sm text-muted-foreground')], [`Value: ${Math.round(model.sliderValue)}`])), code: `const value = model.sliderValue` },
       { title: 'Disabled', preview: model => slider(model, 'disabled', { disabled: true }), code: `Slider.slider({ isDisabled: true, … })` },
       { title: 'RTL', preview: model => rtl(slider(model, 'rtl')), code: `<Direction direction="rtl">…</Direction>` },
     ],

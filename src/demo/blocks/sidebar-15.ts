@@ -1,5 +1,6 @@
 import { Match as M, Option, Schema as S } from 'effect'
 import { Command } from 'foldkit'
+import * as FoldkitCalendar from 'foldkit/calendar'
 import { type Html, html } from 'foldkit/html'
 import { m } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -217,9 +218,10 @@ export const Model = S.Struct({
   activeTeamIndex: S.Number,
   teamMenu: DropdownMenu.Model,
   userMenu: DropdownMenu.Model,
-  workspaces: S.Array(Collapsible.Model),
+  workspaceOpen: S.Array(S.Boolean),
   calendar: Calendar.Model,
-  calendarGroups: S.Array(Collapsible.Model),
+  selectedDate: S.Option(FoldkitCalendar.CalendarDate),
+  calendarGroupsOpen: S.Array(S.Boolean),
 })
 export type Model = typeof Model.Type
 
@@ -230,24 +232,24 @@ export const GotTeamMenuMessage = m('GotTeamMenuMessage', {
 export const GotUserMenuMessage = m('GotUserMenuMessage', {
   message: DropdownMenu.Message,
 })
-export const GotWorkspaceMessage = m('GotWorkspaceMessage', {
+export const ToggledWorkspace = m('ToggledWorkspace', {
   index: S.Number,
-  message: Collapsible.Message,
+  isOpen: S.Boolean,
 })
 export const GotCalendarMessage = m('GotCalendarMessage', {
   message: Calendar.Message,
 })
-export const GotCalendarGroupMessage = m('GotCalendarGroupMessage', {
+export const ToggledCalendarGroup = m('ToggledCalendarGroup', {
   index: S.Number,
-  message: Collapsible.Message,
+  isOpen: S.Boolean,
 })
 export const Message = S.Union([
   ToggledSidebar,
   GotTeamMenuMessage,
   GotUserMenuMessage,
-  GotWorkspaceMessage,
+  ToggledWorkspace,
   GotCalendarMessage,
-  GotCalendarGroupMessage,
+  ToggledCalendarGroup,
 ])
 export type Message = typeof Message.Type
 
@@ -263,22 +265,13 @@ export const init = (): Model => ({
     id: 'sidebar-15-right-user-menu',
     isAnimated: true,
   }),
-  workspaces: leftData.workspaces.map((_, index) =>
-    Collapsible.init({
-      id: `sidebar-15-left-workspace-${index}`,
-      isOpen: false,
-    }),
-  ),
+  workspaceOpen: leftData.workspaces.map(() => false),
   calendar: Calendar.init({
     id: 'sidebar-15-right-calendar',
     today: { year: 2024, month: 10, day: 15 },
   }),
-  calendarGroups: rightData.calendars.map((_, index) =>
-    Collapsible.init({
-      id: `sidebar-15-right-calendar-group-${index}`,
-      isOpen: index === 0,
-    }),
-  ),
+  selectedDate: Option.none(),
+  calendarGroupsOpen: rightData.calendars.map((_, index) => index === 0),
 })
 
 type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
@@ -328,48 +321,40 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           ),
         ]
       },
-      GotWorkspaceMessage: ({ index, message: childMessage }) => {
-        const current = model.workspaces[index]
-        if (current === undefined) return [model, []]
-        const [next, commands] = Collapsible.update(current, childMessage)
+      ToggledWorkspace: ({ index, isOpen }) => {
+        if (model.workspaceOpen[index] === undefined) return [model, []]
         return [
           evo(model, {
-            workspaces: items =>
-              items.map((item, itemIndex) =>
-                itemIndex === index ? next : item,
+            workspaceOpen: items =>
+              items.map((open, itemIndex) =>
+                itemIndex === index ? isOpen : open,
               ),
           }),
-          Command.mapMessages(commands, nextMessage =>
-            GotWorkspaceMessage({ index, message: nextMessage }),
-          ),
+          [],
         ]
       },
       GotCalendarMessage: ({ message: childMessage }) => {
-        const [calendar, commands] = Calendar.update(
+        const [calendar, commands, maybeSelection] = Calendar.update(
           model.calendar,
           childMessage,
         )
         return [
-          evo(model, { calendar: () => calendar }),
+          evo(model, { calendar: () => calendar, selectedDate: current => Option.match(maybeSelection, { onNone: () => current, onSome: selection => selection._tag === 'SelectedDate' ? Option.some(selection.date) : current }) }),
           Command.mapMessages(commands, next =>
             GotCalendarMessage({ message: next }),
           ),
         ]
       },
-      GotCalendarGroupMessage: ({ index, message: childMessage }) => {
-        const current = model.calendarGroups[index]
-        if (current === undefined) return [model, []]
-        const [next, commands] = Collapsible.update(current, childMessage)
+      ToggledCalendarGroup: ({ index, isOpen }) => {
+        if (model.calendarGroupsOpen[index] === undefined) return [model, []]
         return [
           evo(model, {
-            calendarGroups: groups =>
-              groups.map((group, groupIndex) =>
-                groupIndex === index ? next : group,
+            calendarGroupsOpen: groups =>
+              groups.map((open, groupIndex) =>
+                groupIndex === index ? isOpen : open,
               ),
           }),
-          Command.mapMessages(commands, nextMessage =>
-            GotCalendarGroupMessage({ index, message: nextMessage }),
-          ),
+          [],
         ]
       },
     }),
@@ -493,7 +478,7 @@ const navFavorites = (): Html => {
 }
 
 const navWorkspaces = (
-  models: ReadonlyArray<Collapsible.Model>,
+  openStates: ReadonlyArray<boolean>,
 ): Html => {
   const h = html<Message>()
   return sidebarGroup({
@@ -504,22 +489,22 @@ const navWorkspaces = (
           sidebarMenu({
             children: [
               ...leftData.workspaces.flatMap((workspace, index) => {
-                const model = models[index]
-                if (model === undefined) return []
+                const isOpen = openStates[index]
+                if (isOpen === undefined) return []
                 return [
                   sidebarMenuItem({
                     children: [
                       Collapsible.collapsible({
-                        model,
-                        toParentMessage: message =>
-                          GotWorkspaceMessage({ index, message }),
+                        id: `sidebar-15-left-workspace-${index}`,
+                        isOpen,
+                        onToggle: nextIsOpen => ToggledWorkspace({ index, isOpen: nextIsOpen }),
                         trigger: h.span(
                           [h.Class('contents')],
                           [
                             h.span([], [workspace.emoji]),
                             h.span([], [workspace.name]),
                             Icon.chevronRight({
-                              class: model.isOpen
+                              class: isOpen
                                 ? 'ml-auto size-4 rotate-90 transition-transform'
                                 : 'ml-auto size-4 transition-transform',
                             }),
@@ -597,7 +582,7 @@ const sidebarLeft = (model: Model): Html => {
       sidebarContent({
         children: [
           navFavorites(),
-          navWorkspaces(model.workspaces),
+          navWorkspaces(model.workspaceOpen),
           navSecondary(),
         ],
       }),
@@ -691,27 +676,27 @@ const navUser = (model: DropdownMenu.Model): Html => {
 }
 
 const rightCalendars = (
-  models: ReadonlyArray<Collapsible.Model>,
+  openStates: ReadonlyArray<boolean>,
 ): ReadonlyArray<Html> => {
   const h = html<Message>()
   return rightData.calendars.flatMap((calendar, index) => {
-    const model = models[index]
-    if (model === undefined) return []
+    const isOpen = openStates[index]
+    if (isOpen === undefined) return []
     return [
       sidebarGroup({
         class: 'py-0',
         children: [
           Collapsible.collapsible({
-            model,
-            toParentMessage: message =>
-              GotCalendarGroupMessage({ index, message }),
+            id: `sidebar-15-right-calendar-group-${index}`,
+            isOpen,
+            onToggle: nextIsOpen => ToggledCalendarGroup({ index, isOpen: nextIsOpen }),
             class: 'group/collapsible',
             trigger: h.span(
               [h.Class('contents')],
               [
                 calendar.name,
                 Icon.chevronRight({
-                  class: model.isOpen
+                  class: isOpen
                     ? 'ml-auto size-4 shrink-0 rotate-90 transition-transform'
                     : 'ml-auto size-4 shrink-0 transition-transform',
                 }),
@@ -780,6 +765,7 @@ const sidebarRight = (model: Model): Html =>
                 children: [
                   Calendar.calendar({
                     model: model.calendar,
+                    maybeSelectedDate: model.selectedDate,
                     toParentMessage: message =>
                       GotCalendarMessage({ message }),
                     class:
@@ -790,7 +776,7 @@ const sidebarRight = (model: Model): Html =>
             ],
           }),
           sidebarSeparator({ class: 'mx-0' }),
-          ...rightCalendars(model.calendarGroups),
+          ...rightCalendars(model.calendarGroupsOpen),
         ],
       }),
       sidebarFooter({

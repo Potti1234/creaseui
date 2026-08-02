@@ -1,4 +1,4 @@
-import { Match as M, Schema as S } from 'effect'
+import { Match as M, Option, Schema as S } from 'effect'
 import { Command } from 'foldkit'
 import { type Html } from 'foldkit/html'
 import { m } from 'foldkit/message'
@@ -61,6 +61,7 @@ const GOALS_QUESTIONS: ReadonlyArray<Question> = [
 
 export const Model = S.Struct({
   tabs: Tabs.Model,
+  selectedTab: S.String,
   general: Accordion.Model,
   billing: Accordion.Model,
   goals: Accordion.Model,
@@ -101,10 +102,10 @@ export const update = (
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotTabsMessage: ({ message: tabsMessage }) => {
-        const [tabs, commands] = Tabs.update(model.tabs, tabsMessage)
+        const [tabs, commands, maybeSelection] = Tabs.update(model.tabs, tabsMessage)
 
         return [
-          evo(model, { tabs: () => tabs }),
+          evo(model, { tabs: () => tabs, selectedTab: current => Option.match(maybeSelection, { onNone: () => current, onSome: selection => selection.value }) }),
           Command.mapMessages(commands, nextMessage =>
             GotTabsMessage({ message: nextMessage }),
           ),
@@ -164,7 +165,8 @@ const accordionInit = (id: string): Accordion.Model =>
   })
 
 export const init = (): Model => ({
-  tabs: Tabs.init({ id: 'faq-tabs', activeIndex: 0 }),
+  tabs: Tabs.init({ id: 'faq-tabs' }),
+  selectedTab: 'general',
   general: accordionInit('faq-general'),
   billing: accordionInit('faq-billing'),
   goals: accordionInit('faq-goals'),
@@ -192,6 +194,7 @@ export const view = (model: Model): Html =>
         children: [
           Tabs.tabs<Message>({
             model: model.tabs,
+            selectedValue: model.selectedTab,
             toParentMessage: message => GotTabsMessage({ message }),
             listClass: 'w-full',
             triggerClass: 'flex-1',

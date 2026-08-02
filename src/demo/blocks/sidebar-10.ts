@@ -307,7 +307,7 @@ export const Model = S.Struct({
   activeTeamIndex: S.Number,
   teamMenu: DropdownMenu.Model,
   favoriteMenus: S.Array(DropdownMenu.Model),
-  workspaces: S.Array(Collapsible.Model),
+  workspaceOpen: S.Array(S.Boolean),
   actionsPopover: Popover.Model,
 })
 export type Model = typeof Model.Type
@@ -322,9 +322,9 @@ export const GotFavoriteMenuMessage = m('GotFavoriteMenuMessage', {
   index: S.Number,
   message: DropdownMenu.Message,
 })
-export const GotWorkspaceMessage = m('GotWorkspaceMessage', {
+export const ToggledWorkspace = m('ToggledWorkspace', {
   index: S.Number,
-  message: Collapsible.Message,
+  isOpen: S.Boolean,
 })
 export const GotActionsPopoverMessage = m('GotActionsPopoverMessage', {
   message: Popover.Message,
@@ -334,7 +334,7 @@ export const Message = S.Union([
   ToggledSidebar,
   GotTeamMenuMessage,
   GotFavoriteMenuMessage,
-  GotWorkspaceMessage,
+  ToggledWorkspace,
   GotActionsPopoverMessage,
 ])
 export type Message = typeof Message.Type
@@ -354,12 +354,7 @@ export const init = (): Model => ({
       isAnimated: true,
     }),
   ),
-  workspaces: data.workspaces.map((_, index) =>
-    Collapsible.init({
-      id: `sidebar-10-workspace-${index}`,
-      isOpen: false,
-    }),
-  ),
+  workspaceOpen: data.workspaces.map(() => false),
   actionsPopover: Popover.init({
     id: 'sidebar-10-actions-popover',
     isAnimated: true,
@@ -429,28 +424,18 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           ),
         ]
       },
-      GotWorkspaceMessage: ({ index, message: childMessage }) => {
-        const current = model.workspaces[index]
-
-        if (current === undefined) {
+      ToggledWorkspace: ({ index, isOpen }) => {
+        if (model.workspaceOpen[index] === undefined) {
           return [model, []]
         }
-
-        const [next, commands] = Collapsible.update(
-          current,
-          childMessage,
-        )
-
         return [
           evo(model, {
-            workspaces: items =>
-              items.map((item, itemIndex) =>
-                itemIndex === index ? next : item,
+            workspaceOpen: items =>
+              items.map((open, itemIndex) =>
+                itemIndex === index ? isOpen : open,
               ),
           }),
-          Command.mapMessages(commands, nextMessage =>
-            GotWorkspaceMessage({ index, message: nextMessage }),
-          ),
+          [],
         ]
       },
       GotActionsPopoverMessage: ({ message: childMessage }) => {
@@ -691,7 +676,7 @@ const navFavorites = (
 }
 
 const navWorkspaces = (
-  models: ReadonlyArray<Collapsible.Model>,
+  openStates: ReadonlyArray<boolean>,
 ): Html => {
   const h = html<Message>()
 
@@ -703,9 +688,9 @@ const navWorkspaces = (
           sidebarMenu({
             children: [
               ...data.workspaces.flatMap((workspace, index) => {
-                const model = models[index]
+                const isOpen = openStates[index]
 
-                if (model === undefined) {
+                if (isOpen === undefined) {
                   return []
                 }
 
@@ -713,9 +698,9 @@ const navWorkspaces = (
                   sidebarMenuItem({
                     children: [
                       Collapsible.collapsible({
-                        model,
-                        toParentMessage: message =>
-                          GotWorkspaceMessage({ index, message }),
+                        id: `sidebar-10-workspace-${index}`,
+                        isOpen,
+                        onToggle: nextIsOpen => ToggledWorkspace({ index, isOpen: nextIsOpen }),
                         class: 'group/collapsible',
                         triggerClass: sidebarMenuButtonVariants(),
                         trigger: h.span(
@@ -725,7 +710,7 @@ const navWorkspaces = (
                             h.span([], [workspace.name]),
                             Icon.chevronRight({
                               class: `ml-auto size-4 shrink-0 transition-transform${
-                                model.isOpen ? ' rotate-90' : ''
+                                isOpen ? ' rotate-90' : ''
                               }`,
                             }),
                           ],
@@ -892,7 +877,7 @@ const appSidebar = (model: Model): Html => {
       sidebarContent({
         children: [
           navFavorites(model.favoriteMenus),
-          navWorkspaces(model.workspaces),
+          navWorkspaces(model.workspaceOpen),
           navSecondary(),
         ],
       }),

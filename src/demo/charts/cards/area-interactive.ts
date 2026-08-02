@@ -1,4 +1,5 @@
 import type { EChartsOption } from 'echarts/types/dist/shared'
+import { Option } from 'effect'
 import { type Html, html } from 'foldkit/html'
 
 import * as Chart from '@/lib/echarts'
@@ -187,6 +188,7 @@ Chart.registerChart(
 
 export type ViewProps<Msg> = Readonly<{
   timeRange: TimeRange
+  selectedTimeRange: TimeRange
   selectModel: Select.Model
   toChartMessage: (message: Chart.ChartMessage) => Msg
   toSelectMessage: (message: Select.Message) => Msg
@@ -212,6 +214,7 @@ export const view = <Msg>(props: ViewProps<Msg>): Html => {
           ),
           Select.select({
             model: props.selectModel,
+            maybeSelectedValue: Option.some(props.selectedTimeRange),
             toParentMessage: props.toSelectMessage,
             items: TIME_RANGES,
             itemToValue: range => range.value,
@@ -240,7 +243,7 @@ export const view = <Msg>(props: ViewProps<Msg>): Html => {
 
 /*
   Minimal wiring:
-  - Model: { timeRange: '90d', timeRangeSelect: Select.init({ id, selectedItem:
+  - Model: { timeRange: '90d', timeRangeSelect: Select.init({ id,
     '90d', isAnimated: true }) }.
   - Delegate Select.Message through Select.update; when its Selected OutMessage
     arrives, update timeRange and return Chart.SyncChart({ hostId: HOST_ID,

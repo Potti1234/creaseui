@@ -71,6 +71,8 @@ export type CommandItemConfig = Readonly<{
 
 export type CommandProps<Item extends string, Msg> = Readonly<{
   model: Model
+  maybeSelectedValue: Option.Option<Item>
+  restingInputValue: string
   toParentMessage: (message: Message) => Msg
   items: ReadonlyArray<Item>
   itemToConfig: (item: Item) => CommandItemConfig
@@ -116,10 +118,7 @@ export const command = <Item extends string, Msg>(
     )
   }
   const query = props.model.inputValue.trim().toLocaleLowerCase()
-  const isShowingSelectedLabel = Option.exists(
-    props.model.maybeSelectedDisplayText,
-    (displayText) => displayText === props.model.inputValue,
-  )
+  const isShowingSelectedLabel = props.restingInputValue === props.model.inputValue
   const visibleItems = props.items.filter(
     (item) =>
       query === '' ||
@@ -132,6 +131,8 @@ export const command = <Item extends string, Msg>(
     model: props.model,
     view: commandPrimitive.view,
     viewInputs: {
+      maybeSelectedValue: props.maybeSelectedValue,
+      restingInputValue: props.restingInputValue,
       items: visibleItems,
       itemToValue: (item) => item,
       itemToDisplayText: itemToSearchText,

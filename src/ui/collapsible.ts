@@ -7,22 +7,10 @@ import { cn } from '@/lib/utils'
 /* shadcn/ui Collapsible is a thin composition over foldkit Disclosure.
    animatePanel keeps the content mounted and smoothly transitions its height. */
 
-export const Model = DisclosurePrimitive.Model
-export type Model = typeof Model.Type
-export const Message = DisclosurePrimitive.Message
-export type Message = typeof Message.Type
-export const OutMessage = DisclosurePrimitive.OutMessage
-export type OutMessage = typeof OutMessage.Type
-
-export const init = DisclosurePrimitive.init
-export const update = DisclosurePrimitive.update
-export const toggle = DisclosurePrimitive.toggle
-export const close = DisclosurePrimitive.close
-export const reflectOpenState = DisclosurePrimitive.reflectOpenState
-
 export type CollapsibleProps<Msg> = Readonly<{
-  model: Model
-  toParentMessage: (message: Message) => Msg
+  id: string
+  isOpen: boolean
+  onToggle: (isOpen: boolean) => Msg
   trigger: Html | string
   content: Html | string
   isDisabled?: boolean
@@ -35,11 +23,10 @@ export type CollapsibleProps<Msg> = Readonly<{
 export const collapsible = <Msg>(props: CollapsibleProps<Msg>): Html => {
   const h = html<Msg>()
 
-  return h.submodel({
-    slotId: props.model.id,
-    model: props.model,
-    view: DisclosurePrimitive.view,
-    viewInputs: {
+  return DisclosurePrimitive.view({
+      id: props.id,
+      isOpen: props.isOpen,
+      onToggle: props.onToggle,
       ...(props.isDisabled === undefined
         ? {}
         : { isDisabled: props.isDisabled }),
@@ -47,35 +34,33 @@ export const collapsible = <Msg>(props: CollapsibleProps<Msg>): Html => {
         ? {}
         : { ariaLabel: props.ariaLabel }),
       toView: ({ button, panel, animatePanel }) => {
-        const hc = html<Message>()
-
-        return hc.div(
+        return h.div(
           [
-            hc.DataAttribute('slot', 'collapsible'),
+            h.DataAttribute('slot', 'collapsible'),
             ...(props.class === undefined
               ? []
-              : [hc.Class(cn(props.class))]),
+              : [h.Class(cn(props.class))]),
           ],
           [
-            hc.button(
+            h.button(
               [
                 ...button,
-                hc.Type('button'),
-                hc.DataAttribute('slot', 'collapsible-trigger'),
+                h.Type('button'),
+                h.DataAttribute('slot', 'collapsible-trigger'),
                 ...(props.triggerClass === undefined
                   ? []
-                  : [hc.Class(cn(props.triggerClass))]),
+                  : [h.Class(cn(props.triggerClass))]),
               ],
               [props.trigger],
             ),
             animatePanel(
-              hc.div(
+              h.div(
                 [
                   ...panel,
-                  hc.DataAttribute('slot', 'collapsible-content'),
+                  h.DataAttribute('slot', 'collapsible-content'),
                   ...(props.contentClass === undefined
                     ? []
-                    : [hc.Class(cn(props.contentClass))]),
+                    : [h.Class(cn(props.contentClass))]),
                 ],
                 [props.content],
               ),
@@ -83,8 +68,6 @@ export const collapsible = <Msg>(props: CollapsibleProps<Msg>): Html => {
           ],
         )
       },
-    },
-    toParentMessage: props.toParentMessage,
   })
 }
 

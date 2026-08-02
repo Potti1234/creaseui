@@ -19,13 +19,13 @@ export const Model = S.Struct({
   id: S.String,
   type: AccordionType,
   itemIds: S.Array(S.String),
-  items: S.Array(DisclosurePrimitive.Model),
+  openStates: S.Array(S.Boolean),
 })
 export type Model = typeof Model.Type
 
 export const GotDisclosureMessage = m('GotDisclosureMessage', {
   index: S.Number,
-  message: DisclosurePrimitive.Message,
+  isOpen: S.Boolean,
 })
 
 export const Message = S.Union([GotDisclosureMessage])
@@ -59,7 +59,7 @@ export const init = (config: InitConfig): Model => {
     id: config.id,
     type,
     itemIds: config.items.map(item => item.value),
-    items: config.items.map((item, index) => {
+    openStates: config.items.map(item => {
       const isOpen =
         item.isOpen === true &&
         (type === 'multiple' || hasOpenItem === false)
@@ -68,10 +68,7 @@ export const init = (config: InitConfig): Model => {
         hasOpenItem = true
       }
 
-      return DisclosurePrimitive.init({
-        id: `${config.id}-item-${index}`,
-        isOpen,
-      })
+      return isOpen
     }),
   }
 }
@@ -86,38 +83,27 @@ export const update = (
   model: Model,
   message: Message,
 ): UpdateReturn => {
-  const item = model.items[message.index]
+  const item = model.openStates[message.index]
   const value = model.itemIds[message.index]
 
   if (item === undefined || value === undefined) {
     return [model, [], Option.none()]
   }
 
-  const [nextItem, commands, maybeOutMessage] =
-    DisclosurePrimitive.update(item, message.message)
-
-  const items = model.items.map((current, index) => {
+  const openStates = model.openStates.map((current, index) => {
     if (index === message.index) {
-      return nextItem
+      return message.isOpen
     }
 
-    return model.type === 'single' && nextItem.isOpen
-      ? DisclosurePrimitive.reflectOpenState(current, false)
+    return model.type === 'single' && message.isOpen
+      ? false
       : current
   })
 
   return [
-    { ...model, items },
-    Command.mapMessages(commands, childMessage =>
-      GotDisclosureMessage({ index: message.index, message: childMessage }),
-    ),
-    Option.map(maybeOutMessage, toggled =>
-      ToggledItem({
-        value,
-        index: message.index,
-        isOpen: toggled.isOpen,
-      }),
-    ),
+    { ...model, openStates },
+    [],
+    Option.some(ToggledItem({ value, index: message.index, isOpen: message.isOpen })),
   ]
 }
 
@@ -157,7 +143,7 @@ export const accordion = <Msg>(props: AccordionProps<Msg>): Html => {
       h.DataAttribute('slot', 'accordion'),
       ...(props.class === undefined ? [] : [h.Class(cn(props.class))]),
     ],
-    props.model.items.flatMap((itemModel, index) => {
+    props.model.openStates.flatMap((isOpen, index) => {
       const config = props.items[index]
 
       if (
@@ -168,38 +154,37 @@ export const accordion = <Msg>(props: AccordionProps<Msg>): Html => {
       }
 
       return [
-        h.submodel({
-          slotId: itemModel.id,
-          model: itemModel,
-          view: DisclosurePrimitive.view,
-          viewInputs: {
+        DisclosurePrimitive.view({
+            id: `${props.model.id}-item-${index}`,
+            isOpen,
+            onToggle: nextIsOpen => props.toParentMessage(
+              GotDisclosureMessage({ index, isOpen: nextIsOpen }),
+            ),
             ...(config.isDisabled === undefined
               ? {}
               : { isDisabled: config.isDisabled }),
             toView: ({ button, panel, animatePanel }) => {
-              const ha = html<DisclosurePrimitive.Message>()
-
-              return ha.div(
+              return h.div(
                 [
-                  ha.DataAttribute('slot', 'accordion-item'),
-                  ha.Class(cn(ITEM_CLASS, props.itemClass)),
+                  h.DataAttribute('slot', 'accordion-item'),
+                  h.Class(cn(ITEM_CLASS, props.itemClass)),
                 ],
                 [
-                  ha.h3(
-                    [ha.Class('flex')],
+                  h.h3(
+                    [h.Class('flex')],
                     [
-                      ha.button(
+                      h.button(
                         [
                           ...button,
-                          ha.Type('button'),
-                          ha.DataAttribute('slot', 'accordion-trigger'),
-                          ha.Class(
+                          h.Type('button'),
+                          h.DataAttribute('slot', 'accordion-trigger'),
+                          h.Class(
                             cn(TRIGGER_CLASS, props.triggerClass),
                           ),
                         ],
                         [
                           config.trigger,
-                          Icon.chevronDown<DisclosurePrimitive.Message>({
+                          Icon.chevronDown<Msg>({
                             class: ICON_CLASS,
                           }),
                         ],
@@ -207,16 +192,16 @@ export const accordion = <Msg>(props: AccordionProps<Msg>): Html => {
                     ],
                   ),
                   animatePanel(
-                    ha.div(
+                    h.div(
                       [
                         ...panel,
-                        ha.DataAttribute('slot', 'accordion-content'),
-                        ha.Class(PANEL_CLASS),
+                        h.DataAttribute('slot', 'accordion-content'),
+                        h.Class(PANEL_CLASS),
                       ],
                       [
-                        ha.div(
+                        h.div(
                           [
-                            ha.Class(
+                            h.Class(
                               cn(CONTENT_CLASS, props.contentClass),
                             ),
                           ],
@@ -228,11 +213,6 @@ export const accordion = <Msg>(props: AccordionProps<Msg>): Html => {
                 ],
               )
             },
-          },
-          toParentMessage: childMessage =>
-            props.toParentMessage(
-              GotDisclosureMessage({ index, message: childMessage }),
-            ),
         }),
       ]
     }),

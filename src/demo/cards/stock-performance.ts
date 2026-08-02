@@ -90,7 +90,6 @@ export const init = (): Model => ({
   tickerSelect: Select.init({
     id: 'stock-performance-ticker',
     isAnimated: true,
-    selectedItem: 'VOO',
   }),
 })
 
@@ -106,7 +105,7 @@ export const update = (
           TickerSelect.update(model.tickerSelect, selectMessage)
         const ticker = Option.match(maybeOutMessage, {
           onNone: () => model.ticker,
-          onSome: outMessage => outMessage.value,
+          onSome: outMessage => outMessage._tag === 'Selected' ? outMessage.value : model.ticker,
         })
 
         return [
@@ -147,6 +146,7 @@ export const view = (model: Model): Html => {
                   }),
                   Select.select<Ticker, Ticker, Message>({
                     model: model.tickerSelect,
+                    maybeSelectedValue: Option.some(model.ticker as Ticker),
                     toParentMessage: childMessage =>
                       GotTickerSelectMessage({
                         message: childMessage,

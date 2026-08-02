@@ -1,5 +1,6 @@
-import { Match as M, Schema as S } from 'effect'
+import { Match as M, Option, Schema as S } from 'effect'
 import { Command } from 'foldkit'
+import * as FoldkitCalendar from 'foldkit/calendar'
 import { type Html, html } from 'foldkit/html'
 import { m } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -66,7 +67,8 @@ const UserMenu = DropdownMenu.create<UserMenuItem>()
 export const Model = S.Struct({
   isSidebarOpen: S.Boolean,
   calendar: Calendar.Model,
-  calendarGroups: S.Array(Collapsible.Model),
+  selectedDate: S.Option(FoldkitCalendar.CalendarDate),
+  calendarGroupsOpen: S.Array(S.Boolean),
   userMenu: DropdownMenu.Model,
 })
 export type Model = typeof Model.Type
@@ -75,9 +77,9 @@ export const ToggledSidebar = m('ToggledSidebar')
 export const GotCalendarMessage = m('GotCalendarMessage', {
   message: Calendar.Message,
 })
-export const GotCalendarGroupMessage = m('GotCalendarGroupMessage', {
+export const ToggledCalendarGroup = m('ToggledCalendarGroup', {
   index: S.Number,
-  message: Collapsible.Message,
+  isOpen: S.Boolean,
 })
 export const GotUserMenuMessage = m('GotUserMenuMessage', {
   message: DropdownMenu.Message,
@@ -85,7 +87,7 @@ export const GotUserMenuMessage = m('GotUserMenuMessage', {
 export const Message = S.Union([
   ToggledSidebar,
   GotCalendarMessage,
-  GotCalendarGroupMessage,
+  ToggledCalendarGroup,
   GotUserMenuMessage,
 ])
 export type Message = typeof Message.Type
@@ -96,12 +98,8 @@ export const init = (): Model => ({
     id: 'sidebar-12-calendar',
     today: { year: 2024, month: 10, day: 15 },
   }),
-  calendarGroups: data.calendars.map((_, index) =>
-    Collapsible.init({
-      id: `sidebar-12-calendar-group-${index}`,
-      isOpen: index === 0,
-    }),
-  ),
+  selectedDate: Option.none(),
+  calendarGroupsOpen: data.calendars.map((_, index) => index === 0),
   userMenu: DropdownMenu.init({
     id: 'sidebar-12-user-menu',
     isAnimated: true,
@@ -119,31 +117,27 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         [],
       ],
       GotCalendarMessage: ({ message: childMessage }) => {
-        const [calendar, commands] = Calendar.update(
+        const [calendar, commands, maybeSelection] = Calendar.update(
           model.calendar,
           childMessage,
         )
         return [
-          evo(model, { calendar: () => calendar }),
+          evo(model, { calendar: () => calendar, selectedDate: current => Option.match(maybeSelection, { onNone: () => current, onSome: selection => selection._tag === 'SelectedDate' ? Option.some(selection.date) : current }) }),
           Command.mapMessages(commands, next =>
             GotCalendarMessage({ message: next }),
           ),
         ]
       },
-      GotCalendarGroupMessage: ({ index, message: childMessage }) => {
-        const current = model.calendarGroups[index]
-        if (current === undefined) return [model, []]
-        const [next, commands] = Collapsible.update(current, childMessage)
+      ToggledCalendarGroup: ({ index, isOpen }) => {
+        if (model.calendarGroupsOpen[index] === undefined) return [model, []]
         return [
           evo(model, {
-            calendarGroups: groups =>
-              groups.map((group, groupIndex) =>
-                groupIndex === index ? next : group,
+            calendarGroupsOpen: groups =>
+              groups.map((open, groupIndex) =>
+                groupIndex === index ? isOpen : open,
               ),
           }),
-          Command.mapMessages(commands, nextMessage =>
-            GotCalendarGroupMessage({ index, message: nextMessage }),
-          ),
+          [],
         ]
       },
       GotUserMenuMessage: ({ message: childMessage }) => {
@@ -245,7 +239,7 @@ const navUser = (model: DropdownMenu.Model): Html => {
   })
 }
 
-const datePicker = (model: Calendar.Model): Html =>
+const datePicker = (model: Calendar.Model, maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>): Html =>
   sidebarGroup<Message>({
     class: 'px-0',
     children: [
@@ -253,6 +247,7 @@ const datePicker = (model: Calendar.Model): Html =>
         children: [
           Calendar.calendar({
             model,
+            maybeSelectedDate,
             toParentMessage: message => GotCalendarMessage({ message }),
             class:
               '[&_[role=gridcell]]:w-[33px] [&_[role=gridcell].bg-accent]:bg-sidebar-primary [&_[role=gridcell].bg-accent]:text-sidebar-primary-foreground',
@@ -263,27 +258,27 @@ const datePicker = (model: Calendar.Model): Html =>
   })
 
 const calendars = (
-  models: ReadonlyArray<Collapsible.Model>,
+  openStates: ReadonlyArray<boolean>,
 ): ReadonlyArray<Html> => {
   const h = html<Message>()
   return data.calendars.flatMap((calendar, index) => {
-    const model = models[index]
-    if (model === undefined) return []
+    const isOpen = openStates[index]
+    if (isOpen === undefined) return []
     return [
       sidebarGroup({
         class: 'py-0',
         children: [
           Collapsible.collapsible({
-            model,
-            toParentMessage: message =>
-              GotCalendarGroupMessage({ index, message }),
+            id: `sidebar-12-calendar-group-${index}`,
+            isOpen,
+            onToggle: nextIsOpen => ToggledCalendarGroup({ index, isOpen: nextIsOpen }),
             class: 'group/collapsible',
             trigger: h.span(
               [h.Class('contents')],
               [
                 calendar.name,
                 Icon.chevronRight({
-                  class: model.isOpen
+                  class: isOpen
                     ? 'ml-auto size-4 shrink-0 rotate-90 transition-transform'
                     : 'ml-auto size-4 shrink-0 transition-transform',
                 }),
@@ -343,9 +338,9 @@ const appSidebar = (model: Model): Html => {
       }),
       sidebarContent({
         children: [
-          datePicker(model.calendar),
+          datePicker(model.calendar, model.selectedDate),
           sidebarSeparator({ class: 'mx-0' }),
-          ...calendars(model.calendarGroups),
+          ...calendars(model.calendarGroupsOpen),
         ],
       }),
       sidebarFooter({

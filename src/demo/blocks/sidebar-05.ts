@@ -111,31 +111,26 @@ const data = {
 
 export const Model = S.Struct({
   isSidebarOpen: S.Boolean,
-  navMain: S.Array(Collapsible.Model),
+  navMainOpen: S.Array(S.Boolean),
 })
 export type Model = typeof Model.Type
 
 // MESSAGE
 
 export const ToggledSidebar = m('ToggledSidebar')
-export const GotNavMainMessage = m('GotNavMainMessage', {
+export const ToggledNavMain = m('ToggledNavMain', {
   index: S.Number,
-  message: Collapsible.Message,
+  isOpen: S.Boolean,
 })
 
-export const Message = S.Union([ToggledSidebar, GotNavMainMessage])
+export const Message = S.Union([ToggledSidebar, ToggledNavMain])
 export type Message = typeof Message.Type
 
 // INIT
 
 export const init = (): Model => ({
   isSidebarOpen: true,
-  navMain: data.navMain.map((_, index) =>
-    Collapsible.init({
-      id: `sidebar-05-nav-main-${index}`,
-      isOpen: index === 1,
-    }),
-  ),
+  navMainOpen: data.navMain.map((_, index) => index === 1),
 })
 
 // UPDATE
@@ -150,25 +145,18 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         evo(model, { isSidebarOpen: current => !current }),
         [],
       ],
-      GotNavMainMessage: ({ index, message: childMessage }) => {
-        const current = model.navMain[index]
-
-        if (current === undefined) {
+      ToggledNavMain: ({ index, isOpen }) => {
+        if (model.navMainOpen[index] === undefined) {
           return [model, []]
         }
-
-        const [next, commands] = Collapsible.update(current, childMessage)
-
         return [
           evo(model, {
-            navMain: groups =>
-              groups.map((group, groupIndex) =>
-                groupIndex === index ? next : group,
+            navMainOpen: groups =>
+              groups.map((open, groupIndex) =>
+                groupIndex === index ? isOpen : open,
               ),
           }),
-          Command.mapMessages(commands, nextMessage =>
-            GotNavMainMessage({ index, message: nextMessage }),
-          ),
+          [],
         ]
       },
     }),
@@ -243,14 +231,14 @@ const searchForm = (): Html => {
   )
 }
 
-const navMain = (models: ReadonlyArray<Collapsible.Model>): Html =>
+const navMain = (openStates: ReadonlyArray<boolean>): Html =>
   sidebarGroup<Message>({
     children: [
       sidebarMenu({
         children: data.navMain.flatMap((group, index) => {
-          const model = models[index]
+          const isOpen = openStates[index]
 
-          if (model === undefined) {
+          if (isOpen === undefined) {
             return []
           }
 
@@ -259,7 +247,7 @@ const navMain = (models: ReadonlyArray<Collapsible.Model>): Html =>
             [h.Class('contents')],
             [
               group.title,
-              model.isOpen
+              isOpen
                 ? Icon.minus({ class: 'ml-auto size-4' })
                 : Icon.plus({ class: 'ml-auto size-4' }),
             ],
@@ -282,9 +270,9 @@ const navMain = (models: ReadonlyArray<Collapsible.Model>): Html =>
             sidebarMenuItem({
               children: [
                 Collapsible.collapsible({
-                  model,
-                  toParentMessage: message =>
-                    GotNavMainMessage({ index, message }),
+                  id: `sidebar-05-nav-main-${index}`,
+                  isOpen,
+                  onToggle: nextIsOpen => ToggledNavMain({ index, isOpen: nextIsOpen }),
                   class: 'group/collapsible',
                   trigger,
                   triggerClass: sidebarMenuButtonVariants(),
@@ -305,7 +293,7 @@ const appSidebar = (model: Model): Html => {
     state,
     children: [
       sidebarHeader({ children: [brand(), searchForm()] }),
-      sidebarContent({ children: [navMain(model.navMain)] }),
+      sidebarContent({ children: [navMain(model.navMainOpen)] }),
       sidebarRail({ onClick: ToggledSidebar() }),
     ],
   })

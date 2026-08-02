@@ -1,4 +1,4 @@
-import { Match as M, Schema as S } from 'effect'
+import { Match as M, Option, Schema as S } from 'effect'
 import { Command } from 'foldkit'
 import { type Html } from 'foldkit/html'
 import { m } from 'foldkit/message'
@@ -33,26 +33,21 @@ const currencies = [
 
 export const Model = S.Struct({
   currency: Select.Model,
-  publicStatistics: Switch.Model,
-  emailNotifications: Switch.Model,
+  selectedCurrency: S.String,
+  publicStatistics: S.Boolean,
+  emailNotifications: S.Boolean,
 })
 export type Model = typeof Model.Type
 
 export const GotCurrencyMessage = m('GotCurrencyMessage', {
   message: Select.Message,
 })
-export const GotPublicStatisticsMessage = m(
-  'GotPublicStatisticsMessage',
-  { message: Switch.Message },
-)
-export const GotEmailNotificationsMessage = m(
-  'GotEmailNotificationsMessage',
-  { message: Switch.Message },
-)
+export const ToggledPublicStatistics = m('ToggledPublicStatistics', { isChecked: S.Boolean })
+export const ToggledEmailNotifications = m('ToggledEmailNotifications', { isChecked: S.Boolean })
 export const Message = S.Union([
   GotCurrencyMessage,
-  GotPublicStatisticsMessage,
-  GotEmailNotificationsMessage,
+  ToggledPublicStatistics,
+  ToggledEmailNotifications,
 ])
 export type Message = typeof Message.Type
 
@@ -66,58 +61,36 @@ export const update = (model: Model, message: Message): UpdateReturn =>
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotCurrencyMessage: ({ message: childMessage }) => {
-        const [currency, commands] = Select.update(
+        const [currency, commands, maybeSelection] = Select.update(
           model.currency,
           childMessage,
         )
         return [
-          evo(model, { currency: () => currency }),
+          evo(model, {
+            currency: () => currency,
+            selectedCurrency: current => Option.match(maybeSelection, {
+              onNone: () => current,
+              onSome: selection => selection._tag === 'Selected' ? selection.value : current,
+            }),
+          }),
           Command.mapMessages(commands, next =>
             GotCurrencyMessage({ message: next }),
           ),
         ]
       },
-      GotPublicStatisticsMessage: ({ message: childMessage }) => {
-        const [publicStatistics, commands] = Switch.update(
-          model.publicStatistics,
-          childMessage,
-        )
-        return [
-          evo(model, { publicStatistics: () => publicStatistics }),
-          Command.mapMessages(commands, next =>
-            GotPublicStatisticsMessage({ message: next }),
-          ),
-        ]
-      },
-      GotEmailNotificationsMessage: ({ message: childMessage }) => {
-        const [emailNotifications, commands] = Switch.update(
-          model.emailNotifications,
-          childMessage,
-        )
-        return [
-          evo(model, { emailNotifications: () => emailNotifications }),
-          Command.mapMessages(commands, next =>
-            GotEmailNotificationsMessage({ message: next }),
-          ),
-        ]
-      },
+      ToggledPublicStatistics: ({ isChecked }) => [{ ...model, publicStatistics: isChecked }, []],
+      ToggledEmailNotifications: ({ isChecked }) => [{ ...model, emailNotifications: isChecked }, []],
     }),
   )
 
 export const init = (): Model => ({
   currency: Select.init({
     id: 'preferences-currency',
-    selectedItem: 'usd',
     isAnimated: true,
   }),
-  publicStatistics: Switch.init({
-    id: 'preferences-public-statistics',
-    isChecked: true,
-  }),
-  emailNotifications: Switch.init({
-    id: 'preferences-email-notifications',
-    isChecked: true,
-  }),
+  selectedCurrency: 'usd',
+  publicStatistics: true,
+  emailNotifications: true,
 })
 
 export const view = (model: Model): Html =>
@@ -156,6 +129,7 @@ export const view = (model: Model): Html =>
                   }),
                   Select.select({
                     model: model.currency,
+                    maybeSelectedValue: Option.some(model.selectedCurrency),
                     toParentMessage: message =>
                       GotCurrencyMessage({ message }),
                     items: currencies,
@@ -167,9 +141,9 @@ export const view = (model: Model): Html =>
               }),
               fieldSeparator({ class: '-my-4' }),
               Switch.switch({
-                model: model.publicStatistics,
-                toParentMessage: message =>
-                  GotPublicStatisticsMessage({ message }),
+                id: 'preferences-public-statistics',
+                isChecked: model.publicStatistics,
+                onToggle: isChecked => ToggledPublicStatistics({ isChecked }),
                 label: 'Public Statistics',
                 description:
                   'Allow others to see your total stream count and listening activity',
@@ -177,9 +151,9 @@ export const view = (model: Model): Html =>
               }),
               fieldSeparator({ class: '-my-4' }),
               Switch.switch({
-                model: model.emailNotifications,
-                toParentMessage: message =>
-                  GotEmailNotificationsMessage({ message }),
+                id: 'preferences-email-notifications',
+                isChecked: model.emailNotifications,
+                onToggle: isChecked => ToggledEmailNotifications({ isChecked }),
                 label: 'Email Notifications',
                 description:
                   'Monthly royalty reports and distribution updates',

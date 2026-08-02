@@ -171,7 +171,7 @@ const UserMenu = DropdownMenu.create<UserMenuItem>()
 export const Model = S.Struct({
   isSidebarOpen: S.Boolean,
   activeTeamIndex: S.Number,
-  navMain: S.Array(Collapsible.Model),
+  navMainOpen: S.Array(S.Boolean),
   teamMenu: DropdownMenu.Model,
   userMenu: DropdownMenu.Model,
 })
@@ -180,9 +180,9 @@ export type Model = typeof Model.Type
 // MESSAGE
 
 export const ToggledSidebar = m('ToggledSidebar')
-export const GotNavMainMessage = m('GotNavMainMessage', {
+export const ToggledNavMain = m('ToggledNavMain', {
   index: S.Number,
-  message: Collapsible.Message,
+  isOpen: S.Boolean,
 })
 export const GotTeamMenuMessage = m('GotTeamMenuMessage', {
   message: DropdownMenu.Message,
@@ -193,7 +193,7 @@ export const GotUserMenuMessage = m('GotUserMenuMessage', {
 
 export const Message = S.Union([
   ToggledSidebar,
-  GotNavMainMessage,
+  ToggledNavMain,
   GotTeamMenuMessage,
   GotUserMenuMessage,
 ])
@@ -204,12 +204,7 @@ export type Message = typeof Message.Type
 export const init = (): Model => ({
   isSidebarOpen: true,
   activeTeamIndex: 0,
-  navMain: data.navMain.map((item, index) =>
-    Collapsible.init({
-      id: `sidebar-07-nav-main-${index}`,
-      isOpen: item.isActive ?? false,
-    }),
-  ),
+  navMainOpen: data.navMain.map(item => item.isActive ?? false),
   teamMenu: DropdownMenu.init({
     id: 'sidebar-07-team-switcher',
     isAnimated: true,
@@ -232,25 +227,18 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         evo(model, { isSidebarOpen: current => !current }),
         [],
       ],
-      GotNavMainMessage: ({ index, message: childMessage }) => {
-        const current = model.navMain[index]
-
-        if (current === undefined) {
+      ToggledNavMain: ({ index, isOpen }) => {
+        if (model.navMainOpen[index] === undefined) {
           return [model, []]
         }
-
-        const [next, commands] = Collapsible.update(current, childMessage)
-
         return [
           evo(model, {
-            navMain: items =>
-              items.map((item, itemIndex) =>
-                itemIndex === index ? next : item,
+            navMainOpen: items =>
+              items.map((open, itemIndex) =>
+                itemIndex === index ? isOpen : open,
               ),
           }),
-          Command.mapMessages(commands, nextMessage =>
-            GotNavMainMessage({ index, message: nextMessage }),
-          ),
+          [],
         ]
       },
       GotTeamMenuMessage: ({ message: childMessage }) => {
@@ -396,15 +384,15 @@ const teamSwitcher = (model: Model): Html => {
   })
 }
 
-const navMain = (models: ReadonlyArray<Collapsible.Model>): Html =>
+const navMain = (openStates: ReadonlyArray<boolean>): Html =>
   sidebarGroup<Message>({
     children: [
       sidebarGroupLabel({ children: ['Platform'] }),
       sidebarMenu({
         children: data.navMain.flatMap((item, index) => {
-          const model = models[index]
+          const isOpen = openStates[index]
 
-          if (model === undefined) {
+          if (isOpen === undefined) {
             return []
           }
 
@@ -415,7 +403,7 @@ const navMain = (models: ReadonlyArray<Collapsible.Model>): Html =>
               html<Message>().span([], [item.title]),
               Icon.chevronRight({
                 class: `ml-auto size-4 shrink-0 transition-transform duration-200${
-                  model.isOpen ? ' rotate-90' : ''
+                  isOpen ? ' rotate-90' : ''
                 }`,
               }),
             ],
@@ -440,9 +428,9 @@ const navMain = (models: ReadonlyArray<Collapsible.Model>): Html =>
             sidebarMenuItem({
               children: [
                 Collapsible.collapsible<Message>({
-                  model,
-                  toParentMessage: message =>
-                    GotNavMainMessage({ index, message }),
+                  id: `sidebar-07-nav-main-${index}`,
+                  isOpen,
+                  onToggle: nextIsOpen => ToggledNavMain({ index, isOpen: nextIsOpen }),
                   class: 'group/collapsible',
                   trigger,
                   triggerClass: sidebarMenuButtonVariants(),
@@ -600,7 +588,7 @@ const appSidebar = (model: Model): Html => {
     children: [
       sidebarHeader({ children: [teamSwitcher(model)] }),
       sidebarContent({
-        children: [navMain(model.navMain), navProjects()],
+        children: [navMain(model.navMainOpen), navProjects()],
       }),
       sidebarFooter({ children: [navUser(model.userMenu)] }),
       sidebarRail({ onClick: ToggledSidebar() }),

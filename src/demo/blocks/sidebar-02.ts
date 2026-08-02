@@ -116,7 +116,7 @@ export const Model = S.Struct({
   isSidebarOpen: S.Boolean,
   selectedVersion: S.String,
   versionMenu: DropdownMenu.Model,
-  navMain: S.Array(Collapsible.Model),
+  navMainOpen: S.Array(S.Boolean),
 })
 export type Model = typeof Model.Type
 
@@ -126,15 +126,15 @@ export const ToggledSidebar = m('ToggledSidebar')
 export const GotVersionMenuMessage = m('GotVersionMenuMessage', {
   message: DropdownMenu.Message,
 })
-export const GotNavMainMessage = m('GotNavMainMessage', {
+export const ToggledNavMain = m('ToggledNavMain', {
   index: S.Number,
-  message: Collapsible.Message,
+  isOpen: S.Boolean,
 })
 
 export const Message = S.Union([
   ToggledSidebar,
   GotVersionMenuMessage,
-  GotNavMainMessage,
+  ToggledNavMain,
 ])
 export type Message = typeof Message.Type
 
@@ -147,12 +147,7 @@ export const init = (): Model => ({
     id: 'sidebar-02-version-switcher',
     isAnimated: true,
   }),
-  navMain: data.navMain.map((_, index) =>
-    Collapsible.init({
-      id: `sidebar-02-nav-main-${index}`,
-      isOpen: true,
-    }),
-  ),
+  navMainOpen: data.navMain.map(() => true),
 })
 
 // UPDATE
@@ -187,25 +182,18 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           ),
         ]
       },
-      GotNavMainMessage: ({ index, message: childMessage }) => {
-        const current = model.navMain[index]
-
-        if (current === undefined) {
+      ToggledNavMain: ({ index, isOpen }) => {
+        if (model.navMainOpen[index] === undefined) {
           return [model, []]
         }
-
-        const [next, commands] = Collapsible.update(current, childMessage)
-
         return [
           evo(model, {
-            navMain: groups =>
-              groups.map((group, groupIndex) =>
-                groupIndex === index ? next : group,
+            navMainOpen: groups =>
+              groups.map((open, groupIndex) =>
+                groupIndex === index ? isOpen : open,
               ),
           }),
-          Command.mapMessages(commands, nextMessage =>
-            GotNavMainMessage({ index, message: nextMessage }),
-          ),
+          [],
         ]
       },
     }),
@@ -307,13 +295,13 @@ const searchForm = (): Html => {
 const GROUP_LABEL_CLASS =
   'flex h-8 shrink-0 items-center rounded-md px-2 font-medium ring-sidebar-ring outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0 group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
 
-const navMain = (models: ReadonlyArray<Collapsible.Model>): Html =>
+const navMain = (openStates: ReadonlyArray<boolean>): Html =>
   sidebarContent<Message>({
     class: 'gap-0',
     children: data.navMain.flatMap((group, index) => {
-      const model = models[index]
+      const isOpen = openStates[index]
 
-      if (model === undefined) {
+      if (isOpen === undefined) {
         return []
       }
 
@@ -324,7 +312,7 @@ const navMain = (models: ReadonlyArray<Collapsible.Model>): Html =>
           group.title,
           Icon.chevronRight({
             class: `ml-auto size-4 transition-transform${
-              model.isOpen ? ' rotate-90' : ''
+              isOpen ? ' rotate-90' : ''
             }`,
           }),
         ],
@@ -351,9 +339,9 @@ const navMain = (models: ReadonlyArray<Collapsible.Model>): Html =>
         sidebarGroup({
           children: [
             Collapsible.collapsible({
-              model,
-              toParentMessage: message =>
-                GotNavMainMessage({ index, message }),
+              id: `sidebar-02-nav-main-${index}`,
+              isOpen,
+              onToggle: nextIsOpen => ToggledNavMain({ index, isOpen: nextIsOpen }),
               class: 'group/collapsible',
               trigger,
               triggerClass: GROUP_LABEL_CLASS,
@@ -374,7 +362,7 @@ const appSidebar = (model: Model): Html => {
       sidebarHeader({
         children: [versionSwitcher(model), searchForm()],
       }),
-      navMain(model.navMain),
+      navMain(model.navMainOpen),
       sidebarRail({ onClick: ToggledSidebar() }),
     ],
   })

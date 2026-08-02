@@ -1,4 +1,4 @@
-import { Match as M, Schema as S } from 'effect'
+import { Match as M, Option, Schema as S } from 'effect'
 import { Command, Subscription } from 'foldkit'
 import { type Html, html } from 'foldkit/html'
 import { m } from 'foldkit/message'
@@ -16,6 +16,7 @@ import { toggleGroup } from '@/ui/toggle-group'
 
 export const Model = S.Struct({
   position: Slider.Model,
+  positionValue: S.Number,
 })
 export type Model = typeof Model.Type
 
@@ -37,8 +38,8 @@ export const init = (): Model => ({
     min: 0,
     max: 100,
     step: 1,
-    initialValue: 50,
   }),
+  positionValue: 50,
 })
 
 export const update = (
@@ -49,12 +50,12 @@ export const update = (
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotPositionMessage: ({ message: childMessage }) => {
-        const [position, commands] = Slider.update(
+        const [position, commands, maybeChange] = Slider.update(
           model.position,
           childMessage,
         )
         return [
-          { ...model, position },
+          { ...model, position, positionValue: Option.match(maybeChange, { onNone: () => model.positionValue, onSome: change => change.value }) },
           Command.mapMessages(commands, next =>
             GotPositionMessage({ message: next }),
           ),
@@ -75,7 +76,7 @@ export const update = (
           : [
               {
                 ...model,
-                position: Slider.reflectValue(model.position, position),
+                positionValue: position,
               },
               [],
             ]
@@ -86,9 +87,9 @@ export const update = (
 export const view = (model: Model): Html => {
   const h = html<Message>()
   const preset =
-    model.position.value <= 10
+    model.positionValue <= 10
       ? 'open'
-      : model.position.value >= 90
+      : model.positionValue >= 90
         ? 'closed'
         : 'half'
 
@@ -115,7 +116,7 @@ export const view = (model: Model): Html => {
                   h.Class(
                     'bg-muted-foreground transition-all duration-300',
                   ),
-                  h.Style({ height: `${model.position.value}%` }),
+                  h.Style({ height: `${model.positionValue}%` }),
                 ],
                 [],
               ),
@@ -134,6 +135,7 @@ export const view = (model: Model): Html => {
               ),
               Slider.slider({
                 model: model.position,
+                value: model.positionValue,
                 toParentMessage: message =>
                   GotPositionMessage({ message }),
                 ariaLabel: 'Shade position',

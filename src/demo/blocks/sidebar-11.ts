@@ -109,21 +109,21 @@ const folderEntries = (
 
 export const Model = S.Struct({
   isSidebarOpen: S.Boolean,
-  folders: S.Record(S.String, Collapsible.Model),
+  folders: S.Record(S.String, S.Boolean),
 })
 export type Model = typeof Model.Type
 
 // MESSAGE
 
 export const ToggledSidebar = m('ToggledSidebar')
-export const GotFolderMessage = m('GotFolderMessage', {
+export const ToggledFolder = m('ToggledFolder', {
   path: S.String,
-  message: Collapsible.Message,
+  isOpen: S.Boolean,
 })
 
 export const Message = S.Union([
   ToggledSidebar,
-  GotFolderMessage,
+  ToggledFolder,
 ])
 export type Message = typeof Message.Type
 
@@ -132,14 +132,11 @@ export type Message = typeof Message.Type
 export const init = (): Model => ({
   isSidebarOpen: true,
   folders: folderEntries(data.tree).reduce<
-    Readonly<Record<string, Collapsible.Model>>
+    Readonly<Record<string, boolean>>
   >(
     (models, entry) => ({
       ...models,
-      [entry.path]: Collapsible.init({
-        id: `sidebar-11-tree-${entry.path.replace(/[/.]/g, '-')}`,
-        isOpen: entry.isOpen,
-      }),
+      [entry.path]: entry.isOpen,
     }),
     {},
   ),
@@ -157,28 +154,18 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         evo(model, { isSidebarOpen: current => !current }),
         [],
       ],
-      GotFolderMessage: ({ path, message: childMessage }) => {
-        const current = model.folders[path]
-
-        if (current === undefined) {
+      ToggledFolder: ({ path, isOpen }) => {
+        if (model.folders[path] === undefined) {
           return [model, []]
         }
-
-        const [next, commands] = Collapsible.update(
-          current,
-          childMessage,
-        )
-
         return [
           evo(model, {
             folders: folders => ({
               ...folders,
-              [path]: next,
+              [path]: isOpen,
             }),
           }),
-          Command.mapMessages(commands, nextMessage =>
-            GotFolderMessage({ path, message: nextMessage }),
-          ),
+          [],
         ]
       },
     }),
@@ -189,7 +176,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
 const treeItem = (
   item: TreeItem,
   parentPath: string,
-  folders: Readonly<Record<string, Collapsible.Model>>,
+  folders: Readonly<Record<string, boolean>>,
 ): Html => {
   const h = html<Message>()
   const parts = typeof item === 'string' ? [item] : item
@@ -208,18 +195,18 @@ const treeItem = (
   }
 
   const path = parentPath === '' ? name : `${parentPath}/${name}`
-  const model = folders[path]
+  const isOpen = folders[path]
 
-  if (model === undefined) {
+  if (isOpen === undefined) {
     return h.div([], [])
   }
 
   return sidebarMenuItem({
     children: [
       Collapsible.collapsible({
-        model,
-        toParentMessage: message =>
-          GotFolderMessage({ path, message }),
+        id: `sidebar-11-tree-${path.replace(/[/.]/g, '-')}`,
+        isOpen,
+        onToggle: nextIsOpen => ToggledFolder({ path, isOpen: nextIsOpen }),
         class: 'group/collapsible',
         triggerClass: sidebarMenuButtonVariants(),
         trigger: h.span(
@@ -227,7 +214,7 @@ const treeItem = (
           [
             Icon.chevronRight({
               class: `size-4 shrink-0 transition-transform${
-                model.isOpen ? ' rotate-90' : ''
+                isOpen ? ' rotate-90' : ''
               }`,
             }),
             Icon.icon('folder', { class: 'size-4 shrink-0' }),
@@ -271,7 +258,7 @@ const changes = (): Html => {
 }
 
 const files = (
-  folders: Readonly<Record<string, Collapsible.Model>>,
+  folders: Readonly<Record<string, boolean>>,
 ): Html =>
   sidebarGroup<Message>({
     children: [

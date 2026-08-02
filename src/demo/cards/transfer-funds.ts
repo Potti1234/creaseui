@@ -1,4 +1,4 @@
-import { Match as M, Schema as S } from 'effect'
+import { Match as M, Option, Schema as S } from 'effect'
 import { Command } from 'foldkit'
 import { type Html, html } from 'foldkit/html'
 import { m } from 'foldkit/message'
@@ -51,7 +51,9 @@ const toAccounts = [
 export const Model = S.Struct({
   amount: S.String,
   fromAccount: Select.Model,
+  selectedFromAccount: S.String,
   toAccount: Select.Model,
+  selectedToAccount: S.String,
 })
 export type Model = typeof Model.Type
 
@@ -83,24 +85,24 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         [],
       ],
       GotFromAccountMessage: ({ message: childMessage }) => {
-        const [fromAccount, commands] = Select.update(
+        const [fromAccount, commands, maybeSelection] = Select.update(
           model.fromAccount,
           childMessage,
         )
         return [
-          evo(model, { fromAccount: () => fromAccount }),
+          evo(model, { fromAccount: () => fromAccount, selectedFromAccount: current => Option.match(maybeSelection, { onNone: () => current, onSome: selection => selection._tag === 'Selected' ? selection.value : current }) }),
           Command.mapMessages(commands, next =>
             GotFromAccountMessage({ message: next }),
           ),
         ]
       },
       GotToAccountMessage: ({ message: childMessage }) => {
-        const [toAccount, commands] = Select.update(
+        const [toAccount, commands, maybeSelection] = Select.update(
           model.toAccount,
           childMessage,
         )
         return [
-          evo(model, { toAccount: () => toAccount }),
+          evo(model, { toAccount: () => toAccount, selectedToAccount: current => Option.match(maybeSelection, { onNone: () => current, onSome: selection => selection._tag === 'Selected' ? selection.value : current }) }),
           Command.mapMessages(commands, next =>
             GotToAccountMessage({ message: next }),
           ),
@@ -113,14 +115,14 @@ export const init = (): Model => ({
   amount: '1,200.00',
   fromAccount: Select.init({
     id: 'transfer-funds-from-account',
-    selectedItem: 'checking',
     isAnimated: true,
   }),
+  selectedFromAccount: 'checking',
   toAccount: Select.init({
     id: 'transfer-funds-to-account',
-    selectedItem: 'savings',
     isAnimated: true,
   }),
+  selectedToAccount: 'savings',
 })
 
 const summaryRow = (
@@ -213,6 +215,7 @@ export const view = (model: Model): Html =>
                   }),
                   Select.select({
                     model: model.fromAccount,
+                    maybeSelectedValue: Option.some(model.selectedFromAccount),
                     toParentMessage: message =>
                       GotFromAccountMessage({ message }),
                     items: fromAccounts,
@@ -230,6 +233,7 @@ export const view = (model: Model): Html =>
                   }),
                   Select.select({
                     model: model.toAccount,
+                    maybeSelectedValue: Option.some(model.selectedToAccount),
                     toParentMessage: message =>
                       GotToAccountMessage({ message }),
                     items: toAccounts,

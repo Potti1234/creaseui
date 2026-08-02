@@ -4,18 +4,6 @@ import { Switch as SwitchPrimitive } from '@foldkit/ui'
 
 import { cn } from '@/lib/utils'
 
-export const Model = SwitchPrimitive.Model
-export type Model = typeof Model.Type
-export const Message = SwitchPrimitive.Message
-export type Message = typeof Message.Type
-export const OutMessage = SwitchPrimitive.OutMessage
-export type OutMessage = typeof OutMessage.Type
-
-export const init = SwitchPrimitive.init
-export const update = SwitchPrimitive.update
-export const setChecked = SwitchPrimitive.setChecked
-export const reflectChecked = SwitchPrimitive.reflectChecked
-
 export type SwitchSize = 'sm' | 'default'
 
 const SWITCH_CLASS =
@@ -30,8 +18,9 @@ const LABEL_CLASS =
 const DESCRIPTION_CLASS = 'text-muted-foreground text-sm'
 
 export type SwitchProps<Msg> = Readonly<{
-  model: Model
-  toParentMessage: (message: Message) => Msg
+  id: string
+  isChecked: boolean
+  onToggle: (isChecked: boolean) => Msg
   label: string
   description?: string
   size?: SwitchSize
@@ -45,65 +34,60 @@ export const switchControl = <Msg>(props: SwitchProps<Msg>): Html => {
   const h = html<Msg>()
   const size = props.size ?? 'default'
 
-  return h.submodel({
-    slotId: props.model.id,
-    model: props.model,
-    view: SwitchPrimitive.view,
-    viewInputs: {
+  return SwitchPrimitive.view({
+      id: props.id,
+      isChecked: props.isChecked,
+      onToggle: props.onToggle,
       isDisabled: props.isDisabled ?? false,
       ...(props.name === undefined ? {} : { name: props.name }),
       ...(props.value === undefined ? {} : { value: props.value }),
       toView: ({ button, label, description, hiddenInput }) => {
-        const hs = html<Message>()
-
-        return hs.div(
-          [hs.Class('flex items-start gap-2')],
+        return h.div(
+          [h.Class('flex items-start gap-2')],
           [
-            hs.button(
+            h.button(
               [
                 ...button,
-                hs.Type('button'),
-                hs.DataAttribute('slot', 'switch'),
-                hs.DataAttribute('size', size),
-                hs.Class(cn(SWITCH_CLASS, props.class)),
+                h.Type('button'),
+                h.DataAttribute('slot', 'switch'),
+                h.DataAttribute('size', size),
+                h.Class(cn(SWITCH_CLASS, props.class)),
               ],
               [
-                hs.span(
+                h.span(
                   [
-                    hs.DataAttribute('slot', 'switch-thumb'),
-                    hs.Class(THUMB_CLASS),
+                    h.DataAttribute('slot', 'switch-thumb'),
+                    h.Class(THUMB_CLASS),
                   ],
                   [],
                 ),
               ],
             ),
-            hs.div(
-              [hs.Class('grid gap-1.5')],
+            h.div(
+              [h.Class('grid gap-1.5')],
               [
-                hs.label([...label, hs.Class(LABEL_CLASS)], [props.label]),
+                h.label([...label, h.Class(LABEL_CLASS)], [props.label]),
                 ...(props.description === undefined
                   ? []
                   : [
-                      hs.p(
-                        [...description, hs.Class(DESCRIPTION_CLASS)],
+                      h.p(
+                        [...description, h.Class(DESCRIPTION_CLASS)],
                         [props.description],
                       ),
                     ]),
               ],
             ),
-            ...(props.name === undefined ? [] : [hs.input([...hiddenInput])]),
+            ...(props.name === undefined ? [] : [h.input([...hiddenInput])]),
           ],
         )
       },
-    },
-    toParentMessage: props.toParentMessage,
   })
 }
 
 export { switchControl as switch }
 
 /*
-Model: { notifications: Switch.init({ id: 'notifications' }) }
-Update: Switch.update(model.notifications, message)
-View: Switch.switch({ model: model.notifications, toParentMessage: GotSwitchMessage, label: 'Notifications' })
+Model: { notificationsEnabled: S.Boolean }
+Update: ToggledNotifications: ({ isChecked }) => [evo(model, { notificationsEnabled: () => isChecked }), []]
+View: Switch.switch({ id: 'notifications', isChecked: model.notificationsEnabled, onToggle: isChecked => ToggledNotifications({ isChecked }), label: 'Notifications' })
 */

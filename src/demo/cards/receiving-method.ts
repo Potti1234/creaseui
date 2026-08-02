@@ -1,4 +1,4 @@
-import { Match as M, Schema as S } from 'effect'
+import { Match as M, Option, Schema as S } from 'effect'
 import { Command } from 'foldkit'
 import { type Html } from 'foldkit/html'
 import { m } from 'foldkit/message'
@@ -27,7 +27,7 @@ import * as RadioGroup from '@/ui/radio-group'
 
 export const Model = S.Struct({
   accountHolder: S.String,
-  receivingMethod: RadioGroup.Model,
+  receivingMethod: S.String,
   iban: S.String,
 })
 export type Model = typeof Model.Type
@@ -35,14 +35,11 @@ export type Model = typeof Model.Type
 export const UpdatedAccountHolder = m('UpdatedAccountHolder', {
   value: S.String,
 })
-export const GotReceivingMethodMessage = m(
-  'GotReceivingMethodMessage',
-  { message: RadioGroup.Message },
-)
+export const SelectedReceivingMethod = m('SelectedReceivingMethod', { value: S.String })
 export const UpdatedIban = m('UpdatedIban', { value: S.String })
 export const Message = S.Union([
   UpdatedAccountHolder,
-  GotReceivingMethodMessage,
+  SelectedReceivingMethod,
   UpdatedIban,
 ])
 export type Message = typeof Message.Type
@@ -60,18 +57,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         evo(model, { accountHolder: () => value }),
         [],
       ],
-      GotReceivingMethodMessage: ({ message: childMessage }) => {
-        const [receivingMethod, commands] = RadioGroup.update(
-          model.receivingMethod,
-          childMessage,
-        )
-        return [
-          evo(model, { receivingMethod: () => receivingMethod }),
-          Command.mapMessages(commands, next =>
-            GotReceivingMethodMessage({ message: next }),
-          ),
-        ]
-      },
+      SelectedReceivingMethod: ({ value }) => [{ ...model, receivingMethod: value }, []],
       UpdatedIban: ({ value }) => [
         evo(model, { iban: () => value }),
         [],
@@ -81,10 +67,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
 
 export const init = (): Model => ({
   accountHolder: 'Synthetic Horizons Music LLC',
-  receivingMethod: RadioGroup.init({
-    id: 'receiving-method-choice',
-    selectedValue: 'bank',
-  }),
+  receivingMethod: 'bank',
   iban: '',
 })
 
@@ -131,9 +114,9 @@ export const view = (model: Model): Html =>
                     children: ['Receiving Method'],
                   }),
                   RadioGroup.radioGroup({
-                    model: model.receivingMethod,
-                    toParentMessage: message =>
-                      GotReceivingMethodMessage({ message }),
+                    id: 'receiving-method-choice',
+                    selectedValue: Option.some(model.receivingMethod),
+                    onSelect: value => SelectedReceivingMethod({ value }),
                     ariaLabel: 'Receiving Method',
                     options: [
                       {

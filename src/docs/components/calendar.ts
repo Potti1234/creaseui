@@ -1,5 +1,6 @@
-import { Schema as S } from 'effect'
+import { Option, Schema as S } from 'effect'
 import { Command } from 'foldkit'
+import * as FoldkitCalendar from 'foldkit/calendar'
 import { type Html, html } from 'foldkit/html'
 import { m } from 'foldkit/message'
 
@@ -15,6 +16,7 @@ export const Model = S.Struct({
   disabled: Calendar.Model,
   customSize: Calendar.Model,
   rtl: Calendar.Model,
+  selectedDates: S.Record(S.String, S.Option(FoldkitCalendar.CalendarDate)),
   copiedCode: CopyFeedback.Model,
 })
 export type Model = typeof Model.Type
@@ -36,16 +38,23 @@ export const init = (): Model => ({
   selected: Calendar.init({
     id: 'docs-calendar-selected',
     today: date(2026, 7, 28),
-    initialSelectedDate: date(2026, 7, 18),
+    initialViewDate: date(2026, 7, 18),
   }),
   disabled: Calendar.init({
     id: 'docs-calendar-disabled',
     today: date(2026, 7, 28),
-    initialSelectedDate: date(2026, 7, 18),
+    initialViewDate: date(2026, 7, 18),
     disabledDaysOfWeek: ['Sunday', 'Saturday'],
   }),
   customSize: Calendar.init({ id: 'docs-calendar-custom-size', today: date(2026, 7, 28) }),
-  rtl: Calendar.init({ id: 'docs-calendar-rtl', today: date(2026, 7, 28), initialSelectedDate: date(2026, 7, 18) }),
+  rtl: Calendar.init({ id: 'docs-calendar-rtl', today: date(2026, 7, 28), initialViewDate: date(2026, 7, 18) }),
+  selectedDates: {
+    basic: Option.none(),
+    selected: Option.some(date(2026, 7, 18)),
+    disabled: Option.some(date(2026, 7, 18)),
+    customSize: Option.none(),
+    rtl: Option.some(date(2026, 7, 18)),
+  },
   copiedCode: null,
 })
 
@@ -58,18 +67,24 @@ export const update = (model: Model, message: Message): UpdateReturn => {
   }
 
   const target = message.target
-  const [calendar, commands] = Calendar.update(model[target], message.message)
+  const [calendar, commands, maybeSelection] = Calendar.update(model[target], message.message)
+  const currentSelection = model.selectedDates[target] ?? Option.none()
+  const selectedDate = Option.match(maybeSelection, {
+    onNone: () => currentSelection,
+    onSome: selection => selection._tag === 'SelectedDate' ? Option.some(selection.date) : currentSelection,
+  })
   return [
-    { ...model, [target]: calendar },
+    { ...model, [target]: calendar, selectedDates: { ...model.selectedDates, [target]: selectedDate } },
     Command.mapMessages(commands, next =>
       GotCalendarMessage({ target, message: next }),
     ),
   ]
 }
 
-const preview = (model: Calendar.Model, target: Target): Html =>
+const preview = (model: Calendar.Model, target: Target, maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>): Html =>
   Calendar.calendar<Message>({
     model,
+    maybeSelectedDate,
     toParentMessage: message => GotCalendarMessage({ target, message }),
   })
 
@@ -94,7 +109,7 @@ export const view = (model: Model): Html => {
       docsExample({
         title: 'Basic',
         description: 'A standalone calendar with month and year navigation.',
-        preview: preview(model.basic, 'basic'),
+        preview: preview(model.basic, 'basic', model.selectedDates.basic ?? Option.none()),
         code: `Calendar.init({ id: 'calendar', today })`,
         onCopy: CopyFeedback.ClickedCopyCode({ code: `Calendar.init({ id: 'calendar', today })` }),
       }),
@@ -102,15 +117,15 @@ export const view = (model: Model): Html => {
         title: 'Selected Date',
         description: 'Initialize the calendar with a selected date.',
         preview: Card.card({ children: [
-          Card.cardContent({ class: 'p-0', children: [preview(model.selected, 'selected')] }),
+          Card.cardContent({ class: 'p-0', children: [preview(model.selected, 'selected', model.selectedDates.selected ?? Option.none())] }),
         ] }),
-        code: `Calendar.init({\n  id: 'calendar',\n  today,\n  initialSelectedDate: { year: 2026, month: 7, day: 18 },\n})`,
-        onCopy: CopyFeedback.ClickedCopyCode({ code: `Calendar.init({\n  id: 'calendar',\n  today,\n  initialSelectedDate: { year: 2026, month: 7, day: 18 },\n})` }),
+        code: `// Parent Model owns selectedDate\nCalendar.init({\n  id: 'calendar',\n  today,\n  initialViewDate: selectedDate,\n})\n\nCalendar.calendar({ model: model.calendar, maybeSelectedDate: model.selectedDate, ... })`,
+        onCopy: CopyFeedback.ClickedCopyCode({ code: `// Parent Model owns selectedDate\nCalendar.init({\n  id: 'calendar',\n  today,\n  initialViewDate: selectedDate,\n})\n\nCalendar.calendar({ model: model.calendar, maybeSelectedDate: model.selectedDate, ... })` }),
       }),
       docsExample({
         title: 'Disabled Dates',
         description: 'Weekend dates remain visible while unavailable for selection.',
-        preview: h.div([h.Class('rounded-lg border')], [preview(model.disabled, 'disabled')]),
+        preview: h.div([h.Class('rounded-lg border')], [preview(model.disabled, 'disabled', model.selectedDates.disabled ?? Option.none())]),
         code: `Calendar.init({\n  id: 'calendar',\n  today,\n  disabledDaysOfWeek: ['Sunday', 'Saturday'],\n})`,
         onCopy: CopyFeedback.ClickedCopyCode({ code: `Calendar.init({\n  id: 'calendar',\n  today,\n  disabledDaysOfWeek: ['Sunday', 'Saturday'],\n})` }),
       }),
@@ -119,6 +134,7 @@ export const view = (model: Model): Html => {
         description: 'Override the calendar cell token to create a roomier picker without changing its behavior.',
         preview: Calendar.calendar({
           model: model.customSize,
+          maybeSelectedDate: model.selectedDates.customSize ?? Option.none(),
           toParentMessage: message => GotCalendarMessage({ target: 'customSize', message }),
           class: '[--cell-size:--spacing(10)]',
         }),
@@ -130,7 +146,7 @@ export const view = (model: Model): Html => {
         description: 'Calendar navigation, headings, and grid interaction follow the surrounding text direction.',
         preview: Direction.direction({
           direction: 'rtl',
-          children: [preview(model.rtl, 'rtl')],
+          children: [preview(model.rtl, 'rtl', model.selectedDates.rtl ?? Option.none())],
         }),
         code: `Direction.direction({\n  direction: 'rtl',\n  children: [Calendar.calendar(props)],\n})`,
         onCopy: CopyFeedback.ClickedCopyCode({ code: `Direction.direction({\n  direction: 'rtl',\n  children: [Calendar.calendar(props)],\n})` }),

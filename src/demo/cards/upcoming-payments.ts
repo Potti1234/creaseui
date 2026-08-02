@@ -1,5 +1,6 @@
-import { Match as M, Schema as S } from 'effect'
+import { Match as M, Option, Schema as S } from 'effect'
 import { Command } from 'foldkit'
+import * as FoldkitCalendar from 'foldkit/calendar'
 import { type Html } from 'foldkit/html'
 import { m } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -41,6 +42,7 @@ const payments = [
 
 export const Model = S.Struct({
   calendar: Calendar.Model,
+  selectedDate: S.Option(FoldkitCalendar.CalendarDate),
 })
 export type Model = typeof Model.Type
 
@@ -60,12 +62,12 @@ export const update = (model: Model, message: Message): UpdateReturn =>
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotCalendarMessage: ({ message: childMessage }) => {
-        const [calendar, commands] = Calendar.update(
+        const [calendar, commands, maybeSelection] = Calendar.update(
           model.calendar,
           childMessage,
         )
         return [
-          evo(model, { calendar: () => calendar }),
+          evo(model, { calendar: () => calendar, selectedDate: current => Option.match(maybeSelection, { onNone: () => current, onSome: selection => selection._tag === 'SelectedDate' ? Option.some(selection.date) : current }) }),
           Command.mapMessages(commands, next =>
             GotCalendarMessage({ message: next }),
           ),
@@ -86,8 +88,9 @@ export const init = (): Model => {
     calendar: Calendar.init({
       id: 'upcoming-payments-calendar',
       today,
-      initialSelectedDate: today,
+      initialViewDate: today,
     }),
+    selectedDate: Option.some(today),
   }
 }
 
@@ -111,6 +114,7 @@ export const view = (model: Model): Html =>
             children: [
               Calendar.calendar({
                 model: model.calendar,
+                maybeSelectedDate: model.selectedDate,
                 toParentMessage: message =>
                   GotCalendarMessage({ message }),
                 class:

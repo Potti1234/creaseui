@@ -14,7 +14,7 @@ export type OutMessage = typeof OutMessage.Type
 export const init = SliderPrimitive.init
 export const update = SliderPrimitive.update
 export const reflectRange = SliderPrimitive.reflectRange
-export const reflectValue = SliderPrimitive.reflectValue
+export const snapAndClamp = SliderPrimitive.snapAndClamp
 export const subscriptions = SliderPrimitive.subscriptions
 export const subscriptionsForRoot = SliderPrimitive.subscriptionsForRoot
 export const fractionOfValue = SliderPrimitive.fractionOfValue
@@ -38,6 +38,7 @@ const LABEL_CLASS = 'text-sm leading-none font-medium select-none'
 
 export type SliderProps<Msg> = Readonly<{
   model: Model
+  value: number
   toParentMessage: (message: Message) => Msg
   label?: string
   ariaLabel?: string
@@ -99,6 +100,7 @@ export const slider = <Msg>(props: SliderProps<Msg>): Html => {
     model: props.model,
     view: SliderPrimitive.view,
     viewInputs: {
+      value: props.value,
       isDisabled: props.isDisabled ?? false,
       ...(props.ariaLabel === undefined
         ? {}
@@ -161,8 +163,8 @@ export const slider = <Msg>(props: SliderProps<Msg>): Html => {
 }
 
 /*
-Model: { volume: Slider.init({ id: 'volume', min: 0, max: 100, step: 1, initialValue: 50 }) }
+Model: { volume: Slider.init({ id: 'volume', min: 0, max: 100, step: 1 }), volumeValue: S.Number }
 Update: Slider.update(model.volume, message)
 Subscriptions: Slider.subscriptions
-View: Slider.slider({ model: model.volume, toParentMessage: GotSliderMessage, ariaLabel: 'Volume' })
+View: Slider.slider({ model: model.volume, value: model.volumeValue, toParentMessage: GotSliderMessage, ariaLabel: 'Volume' })
 */

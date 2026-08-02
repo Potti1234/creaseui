@@ -1,4 +1,4 @@
-import { Match as M, Schema as S } from 'effect'
+import { Match as M, Option, Schema as S } from 'effect'
 import { Command, Subscription } from 'foldkit'
 import { type Html, html } from 'foldkit/html'
 import { m } from 'foldkit/message'
@@ -34,7 +34,9 @@ const currencies = [
 
 export const Model = S.Struct({
   currency: Select.Model,
+  selectedCurrency: S.String,
   amount: Slider.Model,
+  amountValue: S.Number,
   notes: S.String,
 })
 export type Model = typeof Model.Type
@@ -63,21 +65,21 @@ export const update = (model: Model, message: Message): UpdateReturn =>
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotCurrencyMessage: ({ message: childMessage }) => {
-        const [currency, commands] = Select.update(
+        const [currency, commands, maybeSelection] = Select.update(
           model.currency,
           childMessage,
         )
         return [
-          evo(model, { currency: () => currency }),
+          evo(model, { currency: () => currency, selectedCurrency: current => Option.match(maybeSelection, { onNone: () => current, onSome: selection => selection._tag === 'Selected' ? selection.value : current }) }),
           Command.mapMessages(commands, next =>
             GotCurrencyMessage({ message: next }),
           ),
         ]
       },
       GotAmountMessage: ({ message: childMessage }) => {
-        const [amount, commands] = Slider.update(model.amount, childMessage)
+        const [amount, commands, maybeChange] = Slider.update(model.amount, childMessage)
         return [
-          evo(model, { amount: () => amount }),
+          evo(model, { amount: () => amount, amountValue: current => Option.match(maybeChange, { onNone: () => current, onSome: change => change.value }) }),
           Command.mapMessages(commands, next =>
             GotAmountMessage({ message: next }),
           ),
@@ -93,16 +95,16 @@ export const update = (model: Model, message: Message): UpdateReturn =>
 export const init = (): Model => ({
   currency: Select.init({
     id: 'payout-threshold-currency',
-    selectedItem: 'usd',
     isAnimated: true,
   }),
+  selectedCurrency: 'usd',
   amount: Slider.init({
     id: 'payout-threshold-amount',
     min: 50,
     max: 10000,
     step: 50,
-    initialValue: 2500,
   }),
+  amountValue: 2500,
   notes: '',
 })
 
@@ -143,6 +145,7 @@ export const view = (model: Model): Html => {
                   }),
                   Select.select({
                     model: model.currency,
+                    maybeSelectedValue: Option.some(model.selectedCurrency),
                     toParentMessage: message =>
                       GotCurrencyMessage({ message }),
                     items: currencies,
@@ -167,12 +170,13 @@ export const view = (model: Model): Html => {
                             'text-2xl font-semibold tabular-nums',
                           ),
                         ],
-                        [`$${model.amount.value.toFixed(2)}`],
+                        [`$${model.amountValue.toFixed(2)}`],
                       ),
                     ],
                   ),
                   Slider.slider({
                     model: model.amount,
+                    value: model.amountValue,
                     toParentMessage: message =>
                       GotAmountMessage({ message }),
                     ariaLabel: 'Minimum Payout Amount',

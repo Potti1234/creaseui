@@ -1,3 +1,4 @@
+import { Option } from 'effect'
 import { type Html, html } from 'foldkit/html'
 
 import { type PageDefinitions } from '@/docs/components/page-definition'
@@ -151,8 +152,9 @@ const carouselPreview = (model: State.Model, options: Readonly<{ orientation?: '
 
 const checkboxPreview = (model: State.Model, options: Readonly<{ description?: boolean; disabled?: boolean; invalid?: boolean; label?: string; instance?: string }> = {}): Html =>
   Checkbox.checkbox({
-    model: { ...model.checkbox, id: `${model.checkbox.id}-${options.instance ?? 'default'}` },
-    toParentMessage: message => State.GotCheckboxMessage({ message }),
+    id: `docs-checkbox-${options.instance ?? 'default'}`,
+    isChecked: model.isCheckboxChecked,
+    onToggle: isChecked => State.ToggledCheckbox({ isChecked }),
     label: options.label ?? 'Accept terms and conditions',
     ...(options.description ? { description: 'You agree to our Terms of Service and Privacy Policy.' } : {}),
     ...(options.disabled ? { isDisabled: true } : {}),
@@ -161,8 +163,9 @@ const checkboxPreview = (model: State.Model, options: Readonly<{ description?: b
 
 const collapsiblePreview = (model: State.Model, kind: 'basic' | 'settings' | 'tree' = 'basic'): Html =>
   Collapsible.collapsible({
-    model: model.collapsible,
-    toParentMessage: message => State.GotCollapsibleMessage({ message }),
+    id: `docs-collapsible-${kind}`,
+    isOpen: model.isCollapsibleOpen,
+    onToggle: isOpen => State.ToggledCollapsible({ isOpen }),
     class: 'w-full max-w-sm space-y-2',
     triggerClass: 'flex w-full items-center justify-between rounded-md border px-4 py-2 text-left text-sm font-semibold',
     trigger: kind === 'settings' ? 'Notification settings' : kind === 'tree' ? 'src' : '@peduarte starred 3 repositories',
@@ -182,6 +185,8 @@ const frameworks: ReadonlyArray<Readonly<{ value: Framework; label: string; grou
 const comboboxPreview = (model: State.Model, options: Readonly<{ disabled?: boolean; groups?: boolean; clear?: boolean; popup?: boolean }> = {}): Html =>
   Combobox.combobox<(typeof frameworks)[number], Framework, Msg>({
     model: model.combobox,
+    maybeSelectedValue: model.selectedComboboxValue as Option.Option<Framework>,
+    restingInputValue: Option.match(model.selectedComboboxValue, { onNone: () => '', onSome: value => frameworks.find(item => item.value === value)?.label ?? value }),
     toParentMessage: message => State.GotComboboxMessage({ message }),
     items: frameworks,
     itemToValue: item => item.value,
@@ -197,6 +202,8 @@ const commandPreview = (model: State.Model, options: Readonly<{ shortcuts?: bool
   h.div([...(options.rtl ? [h.Dir('rtl')] : []), h.Class(options.scrollable ? 'max-h-56 w-full max-w-md overflow-y-auto' : 'w-full max-w-md')], [
     CommandMenu.command({
       model: model.command,
+      maybeSelectedValue: model.selectedCommandValue,
+      restingInputValue: Option.match(model.selectedCommandValue, { onNone: () => '', onSome: value => value[0]?.toUpperCase() + value.slice(1) }),
       toParentMessage: message => State.GotCommandMessage({ message }),
       class: 'border shadow-md',
       items: commandItems,
@@ -323,7 +330,7 @@ export const definitions: PageDefinitions = {
       statefulExample('Input', 'ButtonGroup', model => ButtonGroup.buttonGroup({ class: 'w-full max-w-sm', children: [ButtonGroup.buttonGroupText({ children: ['@'] }), Input.input({ id: 'button-group-input', value: model.inputGroup, onInput: value => State.ChangedText({ target: 'inputGroup', value }), placeholder: 'username' })] })),
       statefulExample('Input Group', 'ButtonGroup', model => ButtonGroup.buttonGroup({ class: 'w-full max-w-sm', children: [InputGroup.inputGroup({ children: [InputGroup.inputGroupAddon({ children: [InputGroup.inputGroupText({ children: ['https://'] })] }), InputGroup.inputGroupInput({ id: 'button-group-url', value: model.inputGroup, onInput: value => State.ChangedText({ target: 'inputGroup', value }), placeholder: 'example.com' })] }), Button.button({ onClick: clicked, children: ['Go'] })] })),
       statefulExample('Dropdown Menu', 'ButtonGroup', model => ButtonGroup.buttonGroup({ children: [buttonPreview('outline', 'Save'), DropdownMenu.dropdownMenu({ model: model.dropdownMenu, toParentMessage: message => State.GotDropdownMenuMessage({ message }), trigger: '⌄', triggerClass: 'rounded-md border px-3', items: ['save-as', 'export'], itemToConfig: item => ({ label: item === 'save-as' ? 'Save as…' : 'Export' }) })] })),
-      statefulExample('Select', 'ButtonGroup', model => ButtonGroup.buttonGroup({ children: [ButtonGroup.buttonGroupText({ children: ['Framework'] }), Select.select({ model: model.select, toParentMessage: message => State.GotSelectMessage({ message }), items: [{ value: 'apple', label: 'Next.js' }, { value: 'banana', label: 'SvelteKit' }], itemToValue: item => item.value, itemToLabel: item => item.label })] })),
+      statefulExample('Select', 'ButtonGroup', model => ButtonGroup.buttonGroup({ children: [ButtonGroup.buttonGroupText({ children: ['Framework'] }), Select.select({ model: model.select, maybeSelectedValue: model.selectedSelectValue, toParentMessage: message => State.GotSelectMessage({ message }), items: [{ value: 'apple', label: 'Next.js' }, { value: 'banana', label: 'SvelteKit' }], itemToValue: item => item.value, itemToLabel: item => item.label })] })),
       statefulExample('Popover', 'ButtonGroup', model => ButtonGroup.buttonGroup({ children: [buttonPreview('outline', 'Share'), Popover.popover({ model: model.popover, toParentMessage: message => State.GotPopoverMessage({ message }), trigger: 'Options', triggerClass: 'rounded-md border px-3 text-sm', content: 'Anyone with the link can view.' })] })),
       staticExample('RTL', 'ButtonGroup', () => h.div([h.Dir('rtl')], [ButtonGroup.buttonGroup({ children: [buttonPreview('outline', 'السابق'), buttonPreview('outline', 'التالي')] })])),
     ],
@@ -338,7 +345,7 @@ export const definitions: PageDefinitions = {
       staticExample('Bubble Group', 'Bubble', () => Bubble.bubbleGroup({ children: [bubblePreview('default', 'start', 'First message'), bubblePreview('default', 'start', 'A related follow-up'), bubblePreview('tinted', 'end', 'Thanks!')] })),
       staticExample('Links and Buttons', 'Bubble', () => Bubble.bubble({ children: [Bubble.bubbleContent({ children: ['Read the guide ', Button.button({ variant: 'link', size: 'sm', onClick: clicked, children: ['Documentation'] })] })] })),
       staticExample('Reactions', 'Bubble', () => Bubble.bubble({ children: [Bubble.bubbleContent({ children: ['Was this helpful?'] }), Bubble.bubbleReactions({ children: [Button.button({ variant: 'outline', size: 'sm', onClick: clicked, children: ['👍 12'] }), Button.button({ variant: 'outline', size: 'sm', onClick: clicked, children: ['👎'] })] })] })),
-      statefulExample('Show More / Collapsible', 'Bubble', model => Bubble.bubble({ children: [Bubble.bubbleContent({ children: [Collapsible.collapsible({ model: model.collapsible, toParentMessage: message => State.GotCollapsibleMessage({ message }), trigger: 'Show more', triggerClass: 'font-medium underline underline-offset-4', content: 'Here is the rest of this longer conversational response.', contentClass: 'mt-2' })] })] })),
+      statefulExample('Show More / Collapsible', 'Bubble', model => Bubble.bubble({ children: [Bubble.bubbleContent({ children: [Collapsible.collapsible({ id: 'docs-bubble-collapsible', isOpen: model.isCollapsibleOpen, onToggle: isOpen => State.ToggledCollapsible({ isOpen }), trigger: 'Show more', triggerClass: 'font-medium underline underline-offset-4', content: 'Here is the rest of this longer conversational response.', contentClass: 'mt-2' })] })] })),
       statefulExample('Tooltip', 'Bubble', model => Bubble.bubble({ children: [Bubble.bubbleContent({ children: ['Hover over the reaction.'] }), Bubble.bubbleReactions({ children: [Tooltip.tooltip({ model: model.tooltip, toParentMessage: message => State.GotTooltipMessage({ message }), trigger: '👍', triggerClass: 'rounded-md border px-2 py-1', content: 'Helpful' })] })] })),
       statefulExample('Popover', 'Bubble', model => Bubble.bubble({ children: [Bubble.bubbleContent({ children: ['Open message actions.'] }), Bubble.bubbleReactions({ children: [Popover.popover({ model: model.popover, toParentMessage: message => State.GotPopoverMessage({ message }), trigger: '•••', triggerClass: 'rounded-md border px-2 py-1', content: 'Copy · Reply · Delete' })] })] })),
     ],
