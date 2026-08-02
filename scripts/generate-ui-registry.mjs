@@ -29,6 +29,12 @@ const libraryItems = {
   '@/lib/icon': 'icons',
   '@/lib/echarts': 'echarts-adapter',
 }
+const consumerFrameworkPackages = new Set([
+  '@effect/platform-browser',
+  '@foldkit/ui',
+  'effect',
+  'foldkit',
+])
 
 const files = readdirSync(uiDirectory)
   .filter(file => file.endsWith('.ts') && file !== 'registry.json')
@@ -59,7 +65,11 @@ const items = files.map(file => {
       continue
     }
 
-    npmPackages.add(packageName(specifier))
+    const dependency = packageName(specifier)
+
+    if (!consumerFrameworkPackages.has(dependency)) {
+      npmPackages.add(dependency)
+    }
   }
 
   const dependencies = Array.from(npmPackages)

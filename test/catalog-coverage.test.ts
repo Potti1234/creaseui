@@ -18,6 +18,7 @@ const registry = JSON.parse(readFileSync('src/ui/registry.json', 'utf8')) as {
     type: string
     title: string
     description: string
+    dependencies?: ReadonlyArray<string>
     files: ReadonlyArray<{ path: string; target: string }>
   }>
 }
@@ -58,6 +59,19 @@ describe('component catalog coverage', () => {
         )
       }
     }
+  })
+
+  it('does not replace framework versions in consumer applications', () => {
+    const frameworkPackages = ['@effect/platform-browser', '@foldkit/ui', 'effect', 'foldkit']
+    const pinnedFrameworkDependencies = registry.items.flatMap(item =>
+      (item.dependencies ?? []).filter(dependency =>
+        frameworkPackages.some(packageName =>
+          dependency === packageName || dependency.startsWith(`${packageName}@`),
+        ),
+      ),
+    )
+
+    assert.deepEqual(pinnedFrameworkDependencies, [])
   })
 
   it('contains no documentation placeholder copy', () => {

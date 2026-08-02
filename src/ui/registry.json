@@ -6,11 +6,6 @@
       "type": "registry:ui",
       "title": "Accordion",
       "description": "A shadcn-styled Accordion component for Foldkit.",
-      "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "effect@4.0.0-beta.88",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -29,10 +24,6 @@
       "type": "registry:ui",
       "title": "Alert Dialog",
       "description": "A shadcn-styled Alert Dialog component for Foldkit.",
-      "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
@@ -52,8 +43,7 @@
       "title": "Alert",
       "description": "A shadcn-styled Alert component for Foldkit.",
       "dependencies": [
-        "class-variance-authority@^0.7.1",
-        "foldkit@^0.121.0"
+        "class-variance-authority@^0.7.1"
       ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
@@ -72,9 +62,6 @@
       "type": "registry:ui",
       "title": "Aspect Ratio",
       "description": "A shadcn-styled Aspect Ratio component for Foldkit.",
-      "dependencies": [
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -93,8 +80,7 @@
       "title": "Attachment",
       "description": "A shadcn-styled Attachment component for Foldkit.",
       "dependencies": [
-        "class-variance-authority@^0.7.1",
-        "foldkit@^0.121.0"
+        "class-variance-authority@^0.7.1"
       ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
@@ -113,10 +99,6 @@
       "type": "registry:ui",
       "title": "Avatar",
       "description": "A shadcn-styled Avatar component for Foldkit.",
-      "dependencies": [
-        "effect@4.0.0-beta.88",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -135,8 +117,7 @@
       "title": "Badge",
       "description": "A shadcn-styled Badge component for Foldkit.",
       "dependencies": [
-        "class-variance-authority@^0.7.1",
-        "foldkit@^0.121.0"
+        "class-variance-authority@^0.7.1"
       ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
@@ -155,9 +136,6 @@
       "type": "registry:ui",
       "title": "Breadcrumb",
       "description": "A shadcn-styled Breadcrumb component for Foldkit.",
-      "dependencies": [
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -177,8 +155,7 @@
       "title": "Bubble",
       "description": "A shadcn-styled Bubble component for Foldkit.",
       "dependencies": [
-        "class-variance-authority@^0.7.1",
-        "foldkit@^0.121.0"
+        "class-variance-authority@^0.7.1"
       ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
@@ -198,8 +175,7 @@
       "title": "Button Group",
       "description": "A shadcn-styled Button Group component for Foldkit.",
       "dependencies": [
-        "class-variance-authority@^0.7.1",
-        "foldkit@^0.121.0"
+        "class-variance-authority@^0.7.1"
       ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
@@ -219,9 +195,7 @@
       "title": "Button",
       "description": "A shadcn-styled Button component for Foldkit.",
       "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "class-variance-authority@^0.7.1",
-        "foldkit@^0.121.0"
+        "class-variance-authority@^0.7.1"
       ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
@@ -240,11 +214,6 @@
       "type": "registry:ui",
       "title": "Calendar",
       "description": "A shadcn-styled Calendar component for Foldkit.",
-      "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "effect@4.0.0-beta.88",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
@@ -264,9 +233,6 @@
       "type": "registry:ui",
       "title": "Card",
       "description": "A shadcn-styled Card component for Foldkit.",
-      "dependencies": [
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -284,10 +250,6 @@
       "type": "registry:ui",
       "title": "Carousel",
       "description": "A shadcn-styled Carousel component for Foldkit.",
-      "dependencies": [
-        "effect@4.0.0-beta.88",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -306,9 +268,6 @@
       "type": "registry:ui",
       "title": "Chart",
       "description": "A shadcn-styled Chart component for Foldkit.",
-      "dependencies": [
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -326,10 +285,6 @@
       "type": "registry:ui",
       "title": "Checkbox",
       "description": "A shadcn-styled Checkbox component for Foldkit.",
-      "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -348,10 +303,6 @@
       "type": "registry:ui",
       "title": "Collapsible",
       "description": "A shadcn-styled Collapsible component for Foldkit.",
-      "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -369,11 +320,6 @@
       "type": "registry:ui",
       "title": "Combobox",
       "description": "A shadcn-styled Combobox component for Foldkit.",
-      "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "effect@4.0.0-beta.88",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -392,11 +338,6 @@
       "type": "registry:ui",
       "title": "Command",
       "description": "A shadcn-styled Command component for Foldkit.",
-      "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "effect@4.0.0-beta.88",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -415,9 +356,6 @@
       "type": "registry:ui",
       "title": "Context Menu",
       "description": "A shadcn-styled Context Menu component for Foldkit.",
-      "dependencies": [
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/dropdown-menu"
@@ -435,10 +373,6 @@
       "type": "registry:ui",
       "title": "Data Table",
       "description": "A shadcn-styled Data Table component for Foldkit.",
-      "dependencies": [
-        "effect@4.0.0-beta.88",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -457,11 +391,6 @@
       "type": "registry:ui",
       "title": "Date Picker",
       "description": "A shadcn-styled Date Picker component for Foldkit.",
-      "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "effect@4.0.0-beta.88",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/calendar",
@@ -482,10 +411,6 @@
       "type": "registry:ui",
       "title": "Dialog",
       "description": "A shadcn-styled Dialog component for Foldkit.",
-      "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -503,9 +428,6 @@
       "type": "registry:ui",
       "title": "Direction",
       "description": "A shadcn-styled Direction component for Foldkit.",
-      "dependencies": [
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme"
       ],
@@ -522,11 +444,6 @@
       "type": "registry:ui",
       "title": "Drawer",
       "description": "A shadcn-styled Drawer component for Foldkit.",
-      "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "effect@4.0.0-beta.88",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -544,10 +461,6 @@
       "type": "registry:ui",
       "title": "Dropdown Menu",
       "description": "A shadcn-styled Dropdown Menu component for Foldkit.",
-      "dependencies": [
-        "effect@4.0.0-beta.88",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -567,8 +480,7 @@
       "title": "Empty",
       "description": "A shadcn-styled Empty component for Foldkit.",
       "dependencies": [
-        "class-variance-authority@^0.7.1",
-        "foldkit@^0.121.0"
+        "class-variance-authority@^0.7.1"
       ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
@@ -588,8 +500,7 @@
       "title": "Field",
       "description": "A shadcn-styled Field component for Foldkit.",
       "dependencies": [
-        "class-variance-authority@^0.7.1",
-        "foldkit@^0.121.0"
+        "class-variance-authority@^0.7.1"
       ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
@@ -608,9 +519,6 @@
       "type": "registry:ui",
       "title": "Form",
       "description": "A shadcn-styled Form component for Foldkit.",
-      "dependencies": [
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/field",
@@ -629,10 +537,6 @@
       "type": "registry:ui",
       "title": "Hover Card",
       "description": "A shadcn-styled Hover Card component for Foldkit.",
-      "dependencies": [
-        "effect@4.0.0-beta.88",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -651,8 +555,7 @@
       "title": "Input Group",
       "description": "A shadcn-styled Input Group component for Foldkit.",
       "dependencies": [
-        "class-variance-authority@^0.7.1",
-        "foldkit@^0.121.0"
+        "class-variance-authority@^0.7.1"
       ],
       "registryDependencies": [
         "Potti1234/creaseui/button",
@@ -670,11 +573,8 @@
     {
       "name": "input-otp",
       "type": "registry:ui",
-      "title": "Input OTP",
-      "description": "A shadcn-styled Input OTP component for Foldkit.",
-      "dependencies": [
-        "foldkit@^0.121.0"
-      ],
+      "title": "Input Otp",
+      "description": "A shadcn-styled Input Otp component for Foldkit.",
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -692,10 +592,6 @@
       "type": "registry:ui",
       "title": "Input",
       "description": "A shadcn-styled Input component for Foldkit.",
-      "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -714,8 +610,7 @@
       "title": "Item",
       "description": "A shadcn-styled Item component for Foldkit.",
       "dependencies": [
-        "class-variance-authority@^0.7.1",
-        "foldkit@^0.121.0"
+        "class-variance-authority@^0.7.1"
       ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
@@ -734,9 +629,6 @@
       "type": "registry:ui",
       "title": "Kbd",
       "description": "A shadcn-styled Kbd component for Foldkit.",
-      "dependencies": [
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -754,9 +646,6 @@
       "type": "registry:ui",
       "title": "Label",
       "description": "A shadcn-styled Label component for Foldkit.",
-      "dependencies": [
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -775,8 +664,7 @@
       "title": "Marker",
       "description": "A shadcn-styled Marker component for Foldkit.",
       "dependencies": [
-        "class-variance-authority@^0.7.1",
-        "foldkit@^0.121.0"
+        "class-variance-authority@^0.7.1"
       ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
@@ -795,9 +683,6 @@
       "type": "registry:ui",
       "title": "Menubar",
       "description": "A shadcn-styled Menubar component for Foldkit.",
-      "dependencies": [
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/dropdown-menu",
@@ -816,10 +701,6 @@
       "type": "registry:ui",
       "title": "Message Scroller",
       "description": "A shadcn-styled Message Scroller component for Foldkit.",
-      "dependencies": [
-        "effect@4.0.0-beta.88",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -838,9 +719,6 @@
       "type": "registry:ui",
       "title": "Message",
       "description": "A shadcn-styled Message component for Foldkit.",
-      "dependencies": [
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -858,10 +736,6 @@
       "type": "registry:ui",
       "title": "Native Select",
       "description": "A shadcn-styled Native Select component for Foldkit.",
-      "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -880,9 +754,6 @@
       "type": "registry:ui",
       "title": "Navigation Menu",
       "description": "A shadcn-styled Navigation Menu component for Foldkit.",
-      "dependencies": [
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -902,9 +773,6 @@
       "type": "registry:ui",
       "title": "Pagination",
       "description": "A shadcn-styled Pagination component for Foldkit.",
-      "dependencies": [
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
@@ -924,10 +792,6 @@
       "type": "registry:ui",
       "title": "Popover",
       "description": "A shadcn-styled Popover component for Foldkit.",
-      "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -945,9 +809,6 @@
       "type": "registry:ui",
       "title": "Progress",
       "description": "A shadcn-styled Progress component for Foldkit.",
-      "dependencies": [
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -965,10 +826,6 @@
       "type": "registry:ui",
       "title": "Radio Group",
       "description": "A shadcn-styled Radio Group component for Foldkit.",
-      "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -987,10 +844,6 @@
       "type": "registry:ui",
       "title": "Resizable",
       "description": "A shadcn-styled Resizable component for Foldkit.",
-      "dependencies": [
-        "effect@4.0.0-beta.88",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -1009,9 +862,6 @@
       "type": "registry:ui",
       "title": "Scroll Area",
       "description": "A shadcn-styled Scroll Area component for Foldkit.",
-      "dependencies": [
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -1029,11 +879,6 @@
       "type": "registry:ui",
       "title": "Select",
       "description": "A shadcn-styled Select component for Foldkit.",
-      "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "effect@4.0.0-beta.88",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -1052,9 +897,6 @@
       "type": "registry:ui",
       "title": "Separator",
       "description": "A shadcn-styled Separator component for Foldkit.",
-      "dependencies": [
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -1072,10 +914,6 @@
       "type": "registry:ui",
       "title": "Sheet",
       "description": "A shadcn-styled Sheet component for Foldkit.",
-      "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -1095,9 +933,7 @@
       "title": "Sidebar",
       "description": "A shadcn-styled Sidebar component for Foldkit.",
       "dependencies": [
-        "class-variance-authority@^0.7.1",
-        "effect@4.0.0-beta.88",
-        "foldkit@^0.121.0"
+        "class-variance-authority@^0.7.1"
       ],
       "registryDependencies": [
         "Potti1234/creaseui/button",
@@ -1118,9 +954,6 @@
       "type": "registry:ui",
       "title": "Skeleton",
       "description": "A shadcn-styled Skeleton component for Foldkit.",
-      "dependencies": [
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -1138,10 +971,6 @@
       "type": "registry:ui",
       "title": "Slider",
       "description": "A shadcn-styled Slider component for Foldkit.",
-      "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -1159,10 +988,6 @@
       "type": "registry:ui",
       "title": "Sonner",
       "description": "A shadcn-styled Sonner component for Foldkit.",
-      "dependencies": [
-        "effect@4.0.0-beta.88",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -1181,9 +1006,6 @@
       "type": "registry:ui",
       "title": "Spinner",
       "description": "A shadcn-styled Spinner component for Foldkit.",
-      "dependencies": [
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -1202,10 +1024,6 @@
       "type": "registry:ui",
       "title": "Switch",
       "description": "A shadcn-styled Switch component for Foldkit.",
-      "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -1223,9 +1041,6 @@
       "type": "registry:ui",
       "title": "Table",
       "description": "A shadcn-styled Table component for Foldkit.",
-      "dependencies": [
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -1244,9 +1059,7 @@
       "title": "Tabs",
       "description": "A shadcn-styled Tabs component for Foldkit.",
       "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "class-variance-authority@^0.7.1",
-        "foldkit@^0.121.0"
+        "class-variance-authority@^0.7.1"
       ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
@@ -1265,10 +1078,6 @@
       "type": "registry:ui",
       "title": "Textarea",
       "description": "A shadcn-styled Textarea component for Foldkit.",
-      "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -1303,10 +1112,6 @@
       "type": "registry:ui",
       "title": "Toggle Group",
       "description": "A shadcn-styled Toggle Group component for Foldkit.",
-      "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/toggle",
@@ -1326,9 +1131,7 @@
       "title": "Toggle",
       "description": "A shadcn-styled Toggle component for Foldkit.",
       "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "class-variance-authority@^0.7.1",
-        "foldkit@^0.121.0"
+        "class-variance-authority@^0.7.1"
       ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
@@ -1347,10 +1150,6 @@
       "type": "registry:ui",
       "title": "Tooltip",
       "description": "A shadcn-styled Tooltip component for Foldkit.",
-      "dependencies": [
-        "@foldkit/ui@^0.121.0",
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -1368,9 +1167,6 @@
       "type": "registry:ui",
       "title": "Typography",
       "description": "A shadcn-styled Typography component for Foldkit.",
-      "dependencies": [
-        "foldkit@^0.121.0"
-      ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"

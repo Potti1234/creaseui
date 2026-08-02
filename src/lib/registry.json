@@ -20,11 +20,7 @@
       "type": "registry:lib",
       "title": "Foldkit Lucide Icons",
       "description": "Lucide icons rendered with Foldkit's native SVG constructors.",
-      "dependencies": [
-        "effect@4.0.0-beta.88",
-        "foldkit@^0.121.0",
-        "lucide-static@^0.577.0"
-      ],
+      "dependencies": ["lucide-static@^0.577.0"],
       "registryDependencies": [
         "Potti1234/creaseui/utils"
       ],
@@ -42,9 +38,7 @@
       "title": "Foldkit ECharts Adapter",
       "description": "The Foldkit lifecycle and message bridge used by Crease UI charts.",
       "dependencies": [
-        "echarts@^6.1.0",
-        "effect@4.0.0-beta.88",
-        "foldkit@^0.121.0"
+        "echarts@^6.1.0"
       ],
       "registryDependencies": [
         "Potti1234/creaseui/utils"
