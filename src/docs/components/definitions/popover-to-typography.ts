@@ -74,12 +74,17 @@ const popover = (
   model: State.Model,
   suffix: string,
   align: Popover.PopoverAlign = 'center',
+  variantIndex: number | undefined,
   h: HtmlBuilder<Message>,
 ) =>
   Popover.popover(
     {
-      model: { ...model.popover, id: `docs-popover-${suffix}` },
-      toParentMessage: (message) => State.GotPopoverMessage({ message }),
+      model: variantIndex === undefined
+        ? { ...model.popover, id: `docs-popover-${suffix}` }
+        : model.popoverVariants[variantIndex] ?? model.popover,
+      toParentMessage: (message) => variantIndex === undefined
+        ? State.GotPopoverMessage({ message })
+        : State.GotPopoverVariantMessage({ index: variantIndex, message }),
       trigger: 'Open popover',
       triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium',
       align,
@@ -179,6 +184,7 @@ const sheet = (
   suffix: string,
   side: Sheet.SheetSide = 'right',
   showCloseButton = true,
+  variantIndex: number | undefined,
   h: HtmlBuilder<Message>,
 ) =>
   h.div(
@@ -187,14 +193,20 @@ const sheet = (
       Button.button(
         {
           children: [`Open ${side} sheet`],
-          onClick: State.OpenedOverlay({ target: 'sheet' }),
+          onClick: variantIndex === undefined
+            ? State.OpenedOverlay({ target: 'sheet' })
+            : State.OpenedSheetVariant({ index: variantIndex }),
         },
         h,
       ),
       Sheet.sheet(
         {
-          model: { ...model.sheet, id: `docs-sheet-${suffix}` },
-          toParentMessage: (message) => State.GotSheetMessage({ message }),
+          model: variantIndex === undefined
+            ? { ...model.sheet, id: `docs-sheet-${suffix}` }
+            : model.sheetVariants[variantIndex] ?? model.sheet,
+          toParentMessage: (message) => variantIndex === undefined
+            ? State.GotSheetMessage({ message })
+            : State.GotSheetVariantMessage({ index: variantIndex, message }),
           title: 'Edit profile',
           description:
             'Make changes to your profile here. Click save when you are done.',
@@ -506,12 +518,17 @@ const tooltip = (
     content?: string;
     disabled?: boolean;
   }> = {},
+  variantIndex: number | undefined,
   h: HtmlBuilder<Message>,
 ) =>
   Tooltip.tooltip(
     {
-      model: { ...model.tooltip, id: `docs-tooltip-${suffix}` },
-      toParentMessage: (message) => State.GotTooltipMessage({ message }),
+      model: variantIndex === undefined
+        ? { ...model.tooltip, id: `docs-tooltip-${suffix}` }
+        : model.tooltipVariants[variantIndex] ?? model.tooltip,
+      toParentMessage: (message) => variantIndex === undefined
+        ? State.GotTooltipMessage({ message })
+        : State.GotTooltipVariantMessage({ index: variantIndex, message }),
       trigger: config.disabled ? 'Disabled' : 'Hover me',
       triggerClass: 'rounded-md border px-3 py-2 text-sm',
       content: config.content ?? 'Add to library',
@@ -534,9 +551,9 @@ const rawDefinitions: PageDefinitions = {
         title: 'Align',
         preview: (model, h: HtmlBuilder<Message>) =>
           row(
-            popover(model, 'start', 'start', h),
-            popover(model, 'center', undefined, h),
-            popover(model, 'end', 'end', h),
+            popover(model, 'start', 'start', 0, h),
+            popover(model, 'center', undefined, 1, h),
+            popover(model, 'end', 'end', 2, h),
             h,
           ),
         code: `Popover.popover({ ...props, align: 'start' })`,
@@ -584,7 +601,7 @@ const rawDefinitions: PageDefinitions = {
       {
         title: 'RTL',
         preview: (model, h: HtmlBuilder<Message>) =>
-          rtl(popover(model, 'rtl', 'end', h), h),
+          rtl(popover(model, 'rtl', 'end', undefined, h), h),
         code: `<Direction direction="rtl">â€¦</Direction>`,
       },
     ],
@@ -983,8 +1000,8 @@ const rawDefinitions: PageDefinitions = {
         title: 'Side',
         preview: (model, h: HtmlBuilder<Message>) =>
           row(
-            (['top', 'right', 'bottom', 'left'] as const).map((side) =>
-              sheet(model, side, side, undefined, h),
+            (['top', 'right', 'bottom', 'left'] as const).map((side, index) =>
+              sheet(model, side, side, undefined, index, h),
             ),
             h,
           ),
@@ -993,13 +1010,13 @@ const rawDefinitions: PageDefinitions = {
       {
         title: 'No Close Button',
         preview: (model, h: HtmlBuilder<Message>) =>
-          sheet(model, 'no-close', 'right', false, h),
+          sheet(model, 'no-close', 'right', false, undefined, h),
         code: `Sheet.sheet({ showCloseButton: false, â€¦ })`,
       },
       {
         title: 'RTL',
         preview: (model, h: HtmlBuilder<Message>) =>
-          rtl(sheet(model, 'rtl', 'right', true, h), h),
+          rtl(sheet(model, 'rtl', 'right', true, undefined, h), h),
         code: `<Direction direction="rtl">â€¦</Direction>`,
       },
     ],
@@ -1770,8 +1787,8 @@ const rawDefinitions: PageDefinitions = {
         title: 'Side',
         preview: (model, h: HtmlBuilder<Message>) =>
           row(
-            (['top', 'right', 'bottom', 'left'] as const).map((side) =>
-              tooltip(model, side, { side }, h),
+            (['top', 'right', 'bottom', 'left'] as const).map((side, index) =>
+              tooltip(model, side, { side }, index, h),
             ),
             h,
           ),
@@ -1784,6 +1801,7 @@ const rawDefinitions: PageDefinitions = {
             model,
             'keyboard',
             { content: 'Open command menu  âŒ˜ K' },
+            undefined,
             h,
           ),
         code: `Tooltip.tooltip({ content: 'Open command menu  âŒ˜ K', â€¦ })`,
@@ -1795,6 +1813,7 @@ const rawDefinitions: PageDefinitions = {
             model,
             'disabled',
             { content: 'This action is unavailable', disabled: false },
+            undefined,
             h,
           ),
         code: `Tooltip.tooltip({ trigger: disabledButton, â€¦ })`,
@@ -1802,7 +1821,7 @@ const rawDefinitions: PageDefinitions = {
       {
         title: 'RTL',
         preview: (model, h: HtmlBuilder<Message>) =>
-          rtl(tooltip(model, 'rtl', {}, h), h),
+          rtl(tooltip(model, 'rtl', {}, undefined, h), h),
         code: `<Direction direction="rtl">â€¦</Direction>`,
       },
     ],

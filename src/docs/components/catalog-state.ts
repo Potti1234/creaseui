@@ -84,12 +84,15 @@ export const Model = S.Struct({
   menubarEdit: DropdownMenu.Model,
   menubarView: DropdownMenu.Model,
   popover: Popover.Model,
+  popoverVariants: S.Array(Popover.Model),
   select: Select.Model,
   selectedSelectValue: S.Option(S.String),
   sheet: Sheet.Model,
+  sheetVariants: S.Array(Sheet.Model),
   sonner: Sonner.Model,
   toast: Sonner.Model,
   tooltip: Tooltip.Model,
+  tooltipVariants: S.Array(Tooltip.Model),
 })
 export type Model = typeof Model.Type
 
@@ -104,6 +107,7 @@ export const ChangedToggleGroup = m('ChangedCatalogToggleGroup', { value: S.Stri
 export const OverlayTarget = S.Literals(['alertDialog', 'dialog', 'drawer', 'sheet'])
 export type OverlayTarget = typeof OverlayTarget.Type
 export const OpenedOverlay = m('OpenedCatalogOverlay', { target: OverlayTarget })
+export const OpenedSheetVariant = m('OpenedCatalogSheetVariant', { index: S.Number })
 export const GotCarouselMessage = m('GotCatalogCarouselMessage', { message: Carousel.Message })
 export const ToggledCheckbox = m('ToggledCatalogCheckbox', { isChecked: S.Boolean })
 export const ToggledCollapsible = m('ToggledCatalogCollapsible', { isOpen: S.Boolean })
@@ -127,11 +131,14 @@ export const MenubarTarget = S.Literals(['file', 'edit', 'view'])
 export type MenubarTarget = typeof MenubarTarget.Type
 export const GotMenubarMessage = m('GotCatalogMenubarMessage', { target: MenubarTarget, message: DropdownMenu.Message })
 export const GotPopoverMessage = m('GotCatalogPopoverMessage', { message: Popover.Message })
+export const GotPopoverVariantMessage = m('GotCatalogPopoverVariantMessage', { index: S.Number, message: Popover.Message })
 export const GotSelectMessage = m('GotCatalogSelectMessage', { message: Select.Message })
 export const GotSheetMessage = m('GotCatalogSheetMessage', { message: Sheet.Message })
+export const GotSheetVariantMessage = m('GotCatalogSheetVariantMessage', { index: S.Number, message: Sheet.Message })
 export const GotSonnerMessage = m('GotCatalogSonnerMessage', { message: Sonner.Message })
 export const GotToastMessage = m('GotCatalogToastMessage', { message: Sonner.Message })
 export const GotTooltipMessage = m('GotCatalogTooltipMessage', { message: Tooltip.Message })
+export const GotTooltipVariantMessage = m('GotCatalogTooltipVariantMessage', { index: S.Number, message: Tooltip.Message })
 
 export const Message = S.Union([
   ChangedText,
@@ -140,6 +147,7 @@ export const Message = S.Union([
   ToggledPreview,
   ChangedToggleGroup,
   OpenedOverlay,
+  OpenedSheetVariant,
   GotCarouselMessage,
   ToggledCheckbox,
   ToggledCollapsible,
@@ -161,11 +169,14 @@ export const Message = S.Union([
   GotMessageScrollerMessage,
   GotMenubarMessage,
   GotPopoverMessage,
+  GotPopoverVariantMessage,
   GotSelectMessage,
   GotSheetMessage,
+  GotSheetVariantMessage,
   GotSonnerMessage,
   GotToastMessage,
   GotTooltipMessage,
+  GotTooltipVariantMessage,
 ])
 export type Message = typeof Message.Type
 
@@ -211,12 +222,15 @@ export const init = (): Model => ({
   menubarEdit: DropdownMenu.init({ id: 'docs-menubar-edit' }),
   menubarView: DropdownMenu.init({ id: 'docs-menubar-view' }),
   popover: Popover.init({ id: 'docs-popover', isAnimated: true }),
+  popoverVariants: Array.from({ length: 3 }, (_, index) => Popover.init({ id: `docs-popover-variant-${String(index)}`, isAnimated: true })),
   select: Select.init({ id: 'docs-select' }),
   selectedSelectValue: Option.some('apple'),
   sheet: Sheet.init({ id: 'docs-sheet', isAnimated: true }),
+  sheetVariants: Array.from({ length: 4 }, (_, index) => Sheet.init({ id: `docs-sheet-variant-${String(index)}`, isAnimated: true })),
   sonner: Sonner.show(Sonner.init({ id: 'docs-sonner' }), Sonner.success({ title: 'Event has been created', description: 'Sunday, December 03, 2023 at 9:00 AM', sticky: true }))[0],
   toast: Sonner.show(Sonner.init({ id: 'docs-toast' }), Sonner.info({ title: 'Scheduled: Catch up', description: 'Friday, February 10, 2023 at 5:57 PM', sticky: true }))[0],
   tooltip: Tooltip.init({ id: 'docs-tooltip', showDelay: 0 }),
+  tooltipVariants: Array.from({ length: 4 }, (_, index) => Tooltip.init({ id: `docs-tooltip-variant-${String(index)}`, showDelay: 0 })),
 })
 
 /**
@@ -270,15 +284,21 @@ export const withExampleIds = (model: Model, suffix: string): Model => {
     menubarEdit: { ...model.menubarEdit, id: id(model.menubarEdit.id) },
     menubarView: { ...model.menubarView, id: id(model.menubarView.id) },
     popover: { ...model.popover, id: id(model.popover.id) },
+    popoverVariants: model.popoverVariants.map((popover) => ({ ...popover, id: id(popover.id) })),
     select: { ...model.select, id: id(model.select.id) },
     sheet: {
       ...model.sheet,
       id: sheetId,
       animation: { ...model.sheet.animation, id: `${sheetId}-panel` },
     },
+    sheetVariants: model.sheetVariants.map((sheet) => {
+      const variantId = id(sheet.id)
+      return { ...sheet, id: variantId, animation: { ...sheet.animation, id: `${variantId}-panel` } }
+    }),
     sonner: { ...model.sonner, id: id(model.sonner.id) },
     toast: { ...model.toast, id: id(model.toast.id) },
     tooltip: { ...model.tooltip, id: id(model.tooltip.id) },
+    tooltipVariants: model.tooltipVariants.map((tooltip) => ({ ...tooltip, id: id(tooltip.id) })),
   }
 }
 
@@ -313,6 +333,15 @@ export const update = (model: Model, message: Message): UpdateReturn => {
           return [{ ...model, sheet }, Command.mapMessages(commands, next => GotSheetMessage({ message: next }))]
         }
       }
+    }
+    case 'OpenedCatalogSheetVariant': {
+      const current = model.sheetVariants[message.index]
+      if (current === undefined) return [model, []]
+      const [sheet, commands] = Sheet.open(current)
+      return [
+        { ...model, sheetVariants: model.sheetVariants.map((candidate, index) => index === message.index ? sheet : candidate) },
+        Command.mapMessages(commands, next => GotSheetVariantMessage({ index: message.index, message: next })),
+      ]
     }
     case 'ChangedCatalogPreviewText':
       return [{ ...model, [message.target]: message.value }, []]
@@ -409,6 +438,15 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       const [popover, commands] = Popover.update(model.popover, message.message)
       return [{ ...model, popover }, Command.mapMessages(commands, next => GotPopoverMessage({ message: next }))]
     }
+    case 'GotCatalogPopoverVariantMessage': {
+      const current = model.popoverVariants[message.index]
+      if (current === undefined) return [model, []]
+      const [popover, commands] = Popover.update(current, message.message)
+      return [
+        { ...model, popoverVariants: model.popoverVariants.map((candidate, index) => index === message.index ? popover : candidate) },
+        Command.mapMessages(commands, next => GotPopoverVariantMessage({ index: message.index, message: next })),
+      ]
+    }
     case 'GotCatalogSelectMessage': {
       const [select, commands, maybeSelection] = Select.update(model.select, message.message)
       const selectedSelectValue = Option.match(maybeSelection, { onNone: () => model.selectedSelectValue, onSome: selection => selection._tag === 'Selected' ? Option.some(selection.value) : Option.none() })
@@ -417,6 +455,15 @@ export const update = (model: Model, message: Message): UpdateReturn => {
     case 'GotCatalogSheetMessage': {
       const [sheet, commands] = Sheet.update(model.sheet, message.message)
       return [{ ...model, sheet }, Command.mapMessages(commands, next => GotSheetMessage({ message: next }))]
+    }
+    case 'GotCatalogSheetVariantMessage': {
+      const current = model.sheetVariants[message.index]
+      if (current === undefined) return [model, []]
+      const [sheet, commands] = Sheet.update(current, message.message)
+      return [
+        { ...model, sheetVariants: model.sheetVariants.map((candidate, index) => index === message.index ? sheet : candidate) },
+        Command.mapMessages(commands, next => GotSheetVariantMessage({ index: message.index, message: next })),
+      ]
     }
     case 'GotCatalogSonnerMessage': {
       const [sonner, commands] = Sonner.update(model.sonner, message.message)
@@ -429,6 +476,15 @@ export const update = (model: Model, message: Message): UpdateReturn => {
     case 'GotCatalogTooltipMessage': {
       const [tooltip, commands] = Tooltip.update(model.tooltip, message.message)
       return [{ ...model, tooltip }, Command.mapMessages(commands, next => GotTooltipMessage({ message: next }))]
+    }
+    case 'GotCatalogTooltipVariantMessage': {
+      const current = model.tooltipVariants[message.index]
+      if (current === undefined) return [model, []]
+      const [tooltip, commands] = Tooltip.update(current, message.message)
+      return [
+        { ...model, tooltipVariants: model.tooltipVariants.map((candidate, index) => index === message.index ? tooltip : candidate) },
+        Command.mapMessages(commands, next => GotTooltipVariantMessage({ index: message.index, message: next })),
+      ]
     }
   }
 }
