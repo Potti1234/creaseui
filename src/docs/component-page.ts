@@ -290,7 +290,7 @@ export const example = <Msg>(
                   ),
                 ],
                 [
-                  Icon.icon<Msg>('code-xml', { class: 'size-4' }, h),
+                  Icon.codeXml<Msg>({ class: 'size-4' }, h),
                   h.span([h.Class('view-code-label')], ['View Code']),
                   h.span([h.Class('hide-code-label hidden')], ['Hide Code']),
                 ],

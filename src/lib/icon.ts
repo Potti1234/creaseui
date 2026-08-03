@@ -130,6 +130,7 @@ export const chevronUp = named('chevron-up');
 export const chevronsUpDown = named('chevrons-up-down');
 export const circleCheck = named('circle-check');
 export const circleIcon = named('circle');
+export const codeXml = named('code-xml');
 export const gripVertical = named('grip-vertical');
 export const info = named('info');
 export const loaderCircle = named('loader-circle');

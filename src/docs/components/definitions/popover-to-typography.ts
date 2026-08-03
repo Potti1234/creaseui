@@ -8,6 +8,7 @@ import * as Badge from '@/ui/badge';
 import * as Button from '@/ui/button';
 import * as Card from '@/ui/card';
 import * as Input from '@/ui/input';
+import * as Kbd from '@/ui/kbd';
 import * as Popover from '@/ui/popover';
 import * as Progress from '@/ui/progress';
 import * as RadioGroup from '@/ui/radio-group';
@@ -515,8 +516,9 @@ const tooltip = (
   suffix: string,
   config: Readonly<{
     side?: Tooltip.TooltipSide;
-    content?: string;
+    content?: Html | string;
     disabled?: boolean;
+    showArrow?: boolean;
   }> = {},
   variantIndex: number | undefined,
   h: HtmlBuilder<Message>,
@@ -534,6 +536,7 @@ const tooltip = (
       content: config.content ?? 'Add to library',
       ...(config.side === undefined ? {} : { side: config.side }),
       ...(config.disabled === undefined ? {} : { isDisabled: config.disabled }),
+      ...(config.showArrow === undefined ? {} : { showArrow: config.showArrow }),
     },
     h,
   );
@@ -1800,11 +1803,31 @@ const rawDefinitions: PageDefinitions = {
           tooltip(
             model,
             'keyboard',
-            { content: 'Open command menu  âŒ˜ K' },
+            {
+              showArrow: false,
+              content: h.span(
+                [h.Class('flex items-center gap-2')],
+                [
+                  'Open command menu',
+                  Kbd.kbdGroup(
+                    {
+                      children: [
+                        Kbd.kbd({ children: ['⌘'] }, h),
+                        Kbd.kbd({ children: ['K'] }, h),
+                      ],
+                    },
+                    h,
+                  ),
+                ],
+              ),
+            },
             undefined,
             h,
           ),
-        code: `Tooltip.tooltip({ content: 'Open command menu  âŒ˜ K', â€¦ })`,
+        code: `Tooltip.tooltip({
+  content: Kbd.kbdGroup({ children: ['⌘', 'K'] }),
+  …
+})`,
       },
       {
         title: 'Disabled Button',

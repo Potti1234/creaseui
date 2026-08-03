@@ -20,11 +20,15 @@ const catalog = JSON.parse(
     'utf8',
   ),
 )
+// Keep icons referenced through named wrappers. The broad literal scan below
+// can miss a literal when comments or template strings sit between quotes.
+const requiredIconNames = ['code-xml']
 const names = Array.from(
   new Set(
-    Array.from(source.matchAll(/['"]([^'"]+)['"]/g), match => match[1]).filter(
-      name => catalog[name] !== undefined,
-    ),
+    [
+      ...requiredIconNames,
+      ...Array.from(source.matchAll(/['"]([^'"]+)['"]/g), match => match[1]),
+    ].filter(name => catalog[name] !== undefined),
   ),
 ).sort()
 const selectedNodes = Object.fromEntries(

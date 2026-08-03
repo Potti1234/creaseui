@@ -21,7 +21,7 @@ export const update = TooltipPrimitive.update;
 export const reflectShowDelay = TooltipPrimitive.reflectShowDelay;
 
 const CONTENT_CLASS =
-  'relative z-50 w-fit rounded-md bg-primary px-3 py-1.5 text-xs text-balance text-primary-foreground';
+  'relative z-50 w-fit !overflow-y-visible rounded-md bg-primary px-3 py-1.5 text-xs text-balance text-primary-foreground';
 
 export type TooltipSide = 'top' | 'right' | 'bottom' | 'left';
 export type TooltipAlign = 'start' | 'center' | 'end';
