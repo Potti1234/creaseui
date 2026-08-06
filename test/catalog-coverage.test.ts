@@ -19,7 +19,19 @@ const registry = JSON.parse(readFileSync('src/ui/registry.json', 'utf8')) as {
     title: string
     description: string
     dependencies?: ReadonlyArray<string>
+    registryDependencies?: ReadonlyArray<string>
     files: ReadonlyArray<{ path: string; target: string }>
+  }>
+}
+const rootRegistry = JSON.parse(readFileSync('registry.json', 'utf8')) as {
+  include: ReadonlyArray<string>
+}
+const presetRegistry = JSON.parse(
+  readFileSync('registry/presets/registry.json', 'utf8'),
+) as {
+  items: ReadonlyArray<{
+    name: string
+    registryDependencies: ReadonlyArray<string>
   }>
 }
 const componentPage = readFileSync('src/docs/component-page.ts', 'utf8')
@@ -80,6 +92,18 @@ describe('component catalog coverage', () => {
     )
 
     assert.deepEqual(pinnedFrameworkDependencies, [])
+  })
+
+  it('installs the complete theme with every component and the core preset', () => {
+    assert.ok(
+      registry.items.every(item =>
+        item.registryDependencies?.includes('Potti1234/creaseui/crease-theme'),
+      ),
+    )
+    assert.ok(rootRegistry.include.includes('registry/presets/registry.json'))
+    const core = presetRegistry.items.find(item => item.name === 'crease-core')
+    assert.ok(core?.registryDependencies.includes('Potti1234/creaseui/utils'))
+    assert.ok(core?.registryDependencies.includes('Potti1234/creaseui/button'))
   })
 
   it('publishes complete item list semantics and closed semantic element choices', () => {

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "crease-core",
+      "type": "registry:item",
+      "title": "Crease UI Core",
+      "description": "The Crease theme, utility, and production-tested core controls and structures.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/alert",
+        "Potti1234/creaseui/badge",
+        "Potti1234/creaseui/button",
+        "Potti1234/creaseui/card",
+        "Potti1234/creaseui/empty",
+        "Potti1234/creaseui/input",
+        "Potti1234/creaseui/item",
+        "Potti1234/creaseui/separator",
+        "Potti1234/creaseui/textarea"
+      ]
+    }
+  ]
+}

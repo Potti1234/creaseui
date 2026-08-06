@@ -55,6 +55,21 @@ npx --yes shadcn@latest add Potti1234/creaseui/accordion --yes
 npx --yes shadcn@latest add Potti1234/creaseui/dialog --yes
 ```
 
+Every UI item declares `crease-theme` as a registry dependency. Installing a
+component therefore also installs the complete background, card, popover,
+control, chart, sidebar, and radius token contract into the configured Tailwind
+stylesheet. To install the shared utility plus the production-tested Alert,
+Badge, Button, Card, Empty, Input, Item, Separator, and Textarea set at once:
+
+```sh
+npx --yes shadcn@latest add Potti1234/creaseui/crease-core --yes
+```
+
+After installation, inspect the stylesheet selected by `tailwind.css` in
+`components.json`. It should contain Crease values for `--popover`,
+`--sidebar`, and `--radius`; their presence is a quick validation that the theme
+dependency reached the intended stylesheet.
+
 ### Pinning a compatible snapshot
 
 GitHub registry addresses accept a branch, tag, or full commit SHA after `#`.

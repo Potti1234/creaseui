@@ -4,6 +4,7 @@
   "homepage": "https://github.com/Potti1234/creaseui",
   "include": [
     "registry/theme/registry.json",
+    "registry/presets/registry.json",
     "src/lib/registry.json",
     "src/ui/registry.json"
   ]
