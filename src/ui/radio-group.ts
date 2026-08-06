@@ -1,5 +1,5 @@
-import { Option } from 'effect';
-import { type Html, type HtmlBuilder } from 'foldkit/html';
+import type { Option } from 'effect';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import { RadioGroup as RadioGroupPrimitive } from '@foldkit/ui';
 

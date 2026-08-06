@@ -1,6 +1,6 @@
 import type { EChartsOption } from 'echarts/types/dist/shared';
 import { Option } from 'effect';
-import { type Html, type HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import * as Chart from '@/lib/echarts';
 import * as Select from '@/ui/select';

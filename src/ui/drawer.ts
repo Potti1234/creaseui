@@ -1,6 +1,6 @@
 ﻿import { Option, Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import { type ChildAttribute, type Html, type HtmlBuilder } from 'foldkit/html';
+import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import { Dialog as DialogPrimitive } from '@foldkit/ui';

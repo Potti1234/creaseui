@@ -1,6 +1,6 @@
-import { type Html, type HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 
-import * as State from '@/docs/components/catalog-state';
+import type * as State from '@/docs/components/catalog-state';
 
 export type DocsExample = Readonly<{
   title: string;

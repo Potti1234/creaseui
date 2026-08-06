@@ -1,5 +1,5 @@
 import { Array, Match as M } from 'effect';
-import { type Attribute, type Html, type HtmlBuilder } from 'foldkit/html';
+import type { Attribute, Html, HtmlBuilder } from 'foldkit/html';
 
 import { iconNodes } from '@/lib/icon-nodes';
 import { cn } from '@/lib/utils';

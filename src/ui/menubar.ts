@@ -1,5 +1,5 @@
 import { Option } from 'effect';
-import { type Html, type HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import * as DropdownMenu from '@/ui/dropdown-menu';
 import { cn } from '@/lib/utils';

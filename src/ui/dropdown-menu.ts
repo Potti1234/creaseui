@@ -1,6 +1,6 @@
 import { Option, Schema as S } from 'effect';
-import { Command } from 'foldkit';
-import { type Html, type HtmlBuilder } from 'foldkit/html';
+import type { Command } from 'foldkit';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import * as Icon from '@/lib/icon';

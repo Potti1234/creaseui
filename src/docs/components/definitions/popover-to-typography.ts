@@ -1,7 +1,7 @@
 ﻿import { Option } from 'effect';
-import { type Html, type HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 
-import { type PageDefinitions } from '@/docs/components/page-definition';
+import type { PageDefinitions } from '@/docs/components/page-definition';
 import { realPreview } from '@/docs/components/real-previews';
 import * as State from '@/docs/components/catalog-state';
 import * as Badge from '@/ui/badge';

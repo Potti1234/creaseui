@@ -1,6 +1,6 @@
 import { Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import { type Html, type HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 import { evo } from 'foldkit/struct';
 

@@ -1,6 +1,6 @@
 import { Effect, Schema as S, Stream } from 'effect';
 import { Command } from 'foldkit';
-import { type Html, type HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 import * as Subscription from 'foldkit/subscription';
 

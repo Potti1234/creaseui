@@ -1,5 +1,5 @@
 import type { EChartsOption } from 'echarts/types/dist/shared';
-import { type Html, type HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import * as Chart from '@/lib/echarts';
 import * as Icon from '@/lib/icon';

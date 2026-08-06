@@ -1,5 +1,5 @@
 ﻿import { Option } from 'effect';
-import { type Html, type HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import * as State from '@/docs/components/catalog-state';
 

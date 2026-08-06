@@ -1,5 +1,5 @@
 import type { HtmlBuilder } from 'foldkit/html';
-import { type Html } from 'foldkit/html';
+import type { Html } from 'foldkit/html';
 
 import * as Icon from '@/lib/icon';
 import { cn } from '@/lib/utils';

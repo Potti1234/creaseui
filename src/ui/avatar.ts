@@ -1,5 +1,5 @@
 ﻿import { Schema as S } from 'effect';
-import { type Html, type HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import { cn } from '@/lib/utils';

@@ -1,4 +1,4 @@
-﻿import { type ChildAttribute, type Html, type HtmlBuilder } from 'foldkit/html';
+﻿import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html';
 
 import { Dialog as DialogPrimitive } from '@foldkit/ui';
 

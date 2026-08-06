@@ -1,5 +1,5 @@
 import type { HtmlBuilder } from 'foldkit/html';
-import * as Chart from '@/lib/echarts';
+import type * as Chart from '@/lib/echarts';
 import {
   registerTooltipCard,
   tooltipCardView,

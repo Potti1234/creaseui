@@ -1,7 +1,7 @@
 import { Option, Schema as S } from 'effect';
 import { Command } from 'foldkit';
 import * as FoldkitCalendar from 'foldkit/calendar';
-import { type Html, type HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import {

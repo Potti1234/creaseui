@@ -1,6 +1,6 @@
 import { Schema as S } from 'effect';
 import { Command, Subscription } from 'foldkit';
-import { type Html, type HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 import { defineView } from 'foldkit/submodel';
 
@@ -10,7 +10,7 @@ import * as CopyFeedback from '@/docs/copy-feedback';
 import { definitions as earlyDefinitions } from '@/docs/components/definitions/a-to-command';
 import { definitions as middleDefinitions } from '@/docs/components/definitions/context-to-pagination';
 import { definitions as lateDefinitions } from '@/docs/components/definitions/popover-to-typography';
-import { type PageDefinitions } from '@/docs/components/page-definition';
+import type { PageDefinitions } from '@/docs/components/page-definition';
 import { completeExample } from '@/docs/components/complete-example';
 
 const definitions: PageDefinitions = {

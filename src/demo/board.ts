@@ -1,6 +1,6 @@
 import { Effect, Match as M, Schema as S } from 'effect';
 import { Command, Subscription } from 'foldkit';
-import { type Html, type HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 import { defineView } from 'foldkit/submodel';
 import { evo } from 'foldkit/struct';

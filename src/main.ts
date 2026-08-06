@@ -1,6 +1,7 @@
 import { Effect, Match as M, Schema as S } from 'effect';
-import { Command, Runtime, Subscription } from 'foldkit';
-import { type Document, type Html, type HtmlBuilder } from 'foldkit/html';
+import type { Runtime} from 'foldkit';
+import { Command, Subscription } from 'foldkit';
+import type { Document, Html, HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 import { UrlRequest, load, pushUrl } from 'foldkit/navigation';
 import { Url, toString as urlToString } from 'foldkit/url';

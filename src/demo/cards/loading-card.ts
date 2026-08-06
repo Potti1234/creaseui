@@ -1,4 +1,4 @@
-import { type Html, type HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import { card, cardContent, cardHeader } from '@/ui/card';
 import { skeleton } from '@/ui/skeleton';

@@ -1,4 +1,4 @@
-﻿import { Option } from 'effect';
+﻿import type { Option } from 'effect';
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html';
 
 import { Combobox as ComboboxPrimitive } from '@foldkit/ui';

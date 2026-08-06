@@ -1,4 +1,4 @@
-﻿import { type Html, type HtmlBuilder } from 'foldkit/html';
+﻿import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import { Tooltip as TooltipPrimitive } from '@foldkit/ui';
 

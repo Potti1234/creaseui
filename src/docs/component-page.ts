@@ -1,6 +1,6 @@
 import { Stream } from 'effect';
 import { Subscription } from 'foldkit';
-import { type Html, type HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import * as Icon from '@/lib/icon';
 import { cn } from '@/lib/utils';

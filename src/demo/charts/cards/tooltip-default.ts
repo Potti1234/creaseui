@@ -1,6 +1,6 @@
 import type { EChartsOption } from 'echarts/types/dist/shared';
 import type { TooltipComponentFormatterCallbackParams } from 'echarts/types/src/export/option.js';
-import { type Html, type HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import * as Chart from '@/lib/echarts';
 import {
