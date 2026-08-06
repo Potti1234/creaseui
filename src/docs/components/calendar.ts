@@ -10,6 +10,7 @@ import {
   type ExampleConfig,
 } from '@/docs/component-page';
 import * as CopyFeedback from '@/docs/copy-feedback';
+import { completeExample } from '@/docs/components/complete-example';
 import * as Calendar from '@/ui/calendar';
 import * as Card from '@/ui/card';
 import * as Direction from '@/ui/direction';
@@ -139,11 +140,23 @@ const USAGE = `import * as Calendar from '@/ui/calendar'\n\nCalendar.calendar({\
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   const docsExample = (
     config: Omit<ExampleConfig<Message>, 'isCopied'>,
-  ): Html =>
-    example<Message>(
-      { ...config, isCopied: model.copiedCode === config.code },
+  ): Html => {
+    const code = completeExample({
+      componentName: 'Calendar',
+      componentSlug: 'calendar',
+      exampleName: config.title,
+      viewCode: config.code,
+    });
+    return example<Message>(
+      {
+        ...config,
+        code,
+        onCopy: CopyFeedback.ClickedCopyCode({ code }),
+        isCopied: model.copiedCode === code,
+      },
       h,
     );
+  };
   return componentPage<Message>(
     {
       name: 'Calendar',

@@ -11,6 +11,7 @@ import { definitions as earlyDefinitions } from '@/docs/components/definitions/a
 import { definitions as middleDefinitions } from '@/docs/components/definitions/context-to-pagination';
 import { definitions as lateDefinitions } from '@/docs/components/definitions/popover-to-typography';
 import { type PageDefinitions } from '@/docs/components/page-definition';
+import { completeExample } from '@/docs/components/complete-example';
 
 const definitions: PageDefinitions = {
   ...earlyDefinitions,
@@ -155,6 +156,12 @@ export const view = (
         definition.composition ??
         `${name}\n├── Model / init / update\n├── ${primaryExport(slug)} view\n└── Source-owned styles and composition`,
       examples: definition.examples.map((config, index) => {
+        const completeCode = completeExample({
+          componentName: name.replaceAll(' ', ''),
+          componentSlug: slug,
+          exampleName: config.title,
+          viewCode: config.code,
+        });
         const previewView = defineView<State.Model, State.Message>(
           (exampleModel, h) => config.preview(exampleModel, h),
         );
@@ -172,9 +179,9 @@ export const view = (
               toParentMessage: (message: State.Message): Message =>
                 GotExampleMessage({ index, message }),
             }),
-            code: config.code,
-            onCopy: CopyFeedback.ClickedCopyCode({ code: config.code }),
-            isCopied: model.copiedCode === config.code,
+            code: completeCode,
+            onCopy: CopyFeedback.ClickedCopyCode({ code: completeCode }),
+            isCopied: model.copiedCode === completeCode,
             ...(config.previewClass === undefined
               ? {}
               : { previewClass: config.previewClass }),
