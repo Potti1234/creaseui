@@ -64,6 +64,17 @@ describe('component catalog coverage', () => {
     assert.deepEqual(documentedSlugs, registrySlugs)
   })
 
+  it('publishes generated discovery metadata for every registry UI item', () => {
+    const generatedCatalog = readFileSync('docs/component-catalog.md', 'utf8')
+
+    for (const item of registry.items) {
+      assert.match(generatedCatalog, new RegExp(`Potti1234/creaseui/${item.name}\\x60`))
+    }
+    assert.match(generatedCatalog, /\| Category \| State \| Additional requirements \|/)
+    assert.match(generatedCatalog, /\| Stateful \|/)
+    assert.match(generatedCatalog, /\| Stateless \|/)
+  })
+
   it('points every registry item at an existing source file and matching target', () => {
     for (const item of registry.items) {
       assert.ok(item.title.trim(), `${item.name} is missing a title`)

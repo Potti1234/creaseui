@@ -58,6 +58,8 @@ The registry guide also documents tag- and commit-pinned installs.
   onto Foldkit UI.
 - [Component parity](docs/component-parity.md) records coverage and intentional
   differences from shadcn/ui.
+- [Component catalog](docs/component-catalog.md) lists every installable module,
+  its category, state ownership, dependencies, and registry address.
 - [Registry installation](docs/registry.md) documents the required shadcn CLI
   configuration and reproducible installation proof.
 - [Compatibility matrix](compatibility.json) records the framework and tooling
