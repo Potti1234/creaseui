@@ -55,6 +55,35 @@ npx --yes shadcn@latest add Potti1234/creaseui/accordion --yes
 npx --yes shadcn@latest add Potti1234/creaseui/dialog --yes
 ```
 
+### Pinning a compatible snapshot
+
+GitHub registry addresses accept a branch, tag, or full commit SHA after `#`.
+Pin the item itself when an application cannot move to the framework baseline of
+the current `main` branch:
+
+```sh
+npx --yes shadcn@latest add Potti1234/creaseui/button#v0.1.0 --yes
+npx --yes shadcn@latest add Potti1234/creaseui/button#0123456789abcdef0123456789abcdef01234567 --yes
+```
+
+Prefer a full commit SHA for a reproducible installation. The selected ref also
+applies while the CLI resolves Crease items referenced by that item.
+
+### Installing from a local checkout
+
+To develop Crease UI and an application side by side, build and install one or
+more registry items directly from this checkout:
+
+```sh
+npm run registry:install-local -- ../fractal button card item
+```
+
+The consumer path may be absolute or relative to the Crease UI checkout. The
+script builds `.registry`, serves it on an ephemeral loopback port, rewrites
+Crease-to-Crease dependencies to that server, and runs the shadcn installer in
+the consumer. The consumer must already contain `components.json`; no public
+GitHub state is read for the requested Crease items.
+
 The first `--yes` makes package execution non-interactive; the second accepts
 the shadcn file-install prompt. Both are useful in scripts and CI.
 

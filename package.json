@@ -25,6 +25,7 @@
     "icons:generate": "node scripts/generate-icon-nodes.mjs",
     "registry:build": "npx --yes shadcn@latest build registry.json --output .registry",
     "registry:generate": "node scripts/generate-ui-registry.mjs",
+    "registry:install-local": "node scripts/install-local-registry.mjs",
     "test:registry": "node scripts/verify-registry-install.mjs"
   },
   "dependencies": {

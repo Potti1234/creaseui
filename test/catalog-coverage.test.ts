@@ -99,6 +99,16 @@ describe('component catalog coverage', () => {
     assert.equal(compatibility.foldkitUi, '0.137.x')
   })
 
+  it('documents reproducible and local-checkout registry installation', () => {
+    const registryGuide = readFileSync('docs/registry.md', 'utf8')
+    const localInstaller = readFileSync('scripts/install-local-registry.mjs', 'utf8')
+
+    assert.match(registryGuide, /button#v0\.1\.0/)
+    assert.match(registryGuide, /registry:install-local/)
+    assert.match(localInstaller, /shadcn@latest', 'build'/)
+    assert.match(localInstaller, /127\.0\.0\.1/)
+  })
+
   it('contains no documentation placeholder copy', () => {
     assert.doesNotMatch(catalog, /being verified|representative .* composition/i)
   })

@@ -44,6 +44,14 @@ stays owned and editable by that application. The registry does not replace the
 consumer's Foldkit or Effect versions; consult the compatibility matrix before
 installing across a Foldkit API upgrade.
 
+For side-by-side development, install from this checkout without pushing first:
+
+```sh
+npm run registry:install-local -- ../consumer button card item
+```
+
+The registry guide also documents tag- and commit-pinned installs.
+
 ## Documentation
 
 - [Architecture](docs/architecture.md) explains how shadcn-style components map
