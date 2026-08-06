@@ -82,6 +82,15 @@ describe('component catalog coverage', () => {
     assert.deepEqual(pinnedFrameworkDependencies, [])
   })
 
+  it('publishes complete item list semantics and closed semantic element choices', () => {
+    const item = readFileSync('src/ui/item.ts', 'utf8')
+    const card = readFileSync('src/ui/card.ts', 'utf8')
+
+    assert.match(item, /h\.Role\('listitem'\)/)
+    assert.match(item, /element\?: 'div' \| 'li' \| 'article'/)
+    assert.match(card, /element\?: 'div' \| 'section' \| 'article'/)
+  })
+
   it('publishes the framework versions used to validate Crease UI', () => {
     assert.equal(packageJson.dependencies.effect, compatibility.effect)
     assert.match(packageJson.dependencies.foldkit, /0\.137\./)

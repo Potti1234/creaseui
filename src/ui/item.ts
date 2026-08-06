@@ -44,21 +44,30 @@ export type ItemProps = SlotProps &
   Readonly<{
     variant?: ItemVariants['variant'];
     size?: ItemVariants['size'];
+    element?: 'div' | 'li' | 'article';
   }>;
 
 export const item = <Msg>(props: ItemProps, h: HtmlBuilder<Msg>): Html => {
   const variant = props.variant ?? 'default';
   const size = props.size ?? 'default';
 
-  return h.div(
-    [
-      h.DataAttribute('slot', 'item'),
-      h.DataAttribute('variant', variant),
-      h.DataAttribute('size', size),
-      h.Class(cn(itemVariants({ variant, size }), props.class)),
-    ],
-    [...props.children],
-  );
+  const attributes = [
+    h.Role('listitem'),
+    h.DataAttribute('slot', 'item'),
+    h.DataAttribute('variant', variant),
+    h.DataAttribute('size', size),
+    h.Class(cn(itemVariants({ variant, size }), props.class)),
+  ];
+  const children = [...props.children];
+
+  switch (props.element ?? 'div') {
+    case 'li':
+      return h.li(attributes, children);
+    case 'article':
+      return h.article(attributes, children);
+    default:
+      return h.div(attributes, children);
+  }
 };
 
 export const itemMediaVariants = cva(

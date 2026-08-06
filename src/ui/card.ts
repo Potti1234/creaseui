@@ -12,6 +12,11 @@ type Slot = Readonly<{
   children: ReadonlyArray<Html | string>;
 }>;
 
+export type CardProps = Slot &
+  Readonly<{
+    element?: 'div' | 'section' | 'article';
+  }>;
+
 const slotDiv =
   (slot: string, baseClass: string) =>
   <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
@@ -21,10 +26,27 @@ const slotDiv =
     );
   };
 
-export const card = slotDiv(
-  'card',
-  'bg-card text-card-foreground flex flex-col gap-4 rounded-xl border py-4 shadow-sm',
-);
+export const card = <Msg>(props: CardProps, h: HtmlBuilder<Msg>): Html => {
+  const attributes = [
+    h.DataAttribute('slot', 'card'),
+    h.Class(
+      cn(
+        'bg-card text-card-foreground flex flex-col gap-4 rounded-xl border py-4 shadow-sm',
+        props.class,
+      ),
+    ),
+  ];
+  const children = [...props.children];
+
+  switch (props.element ?? 'div') {
+    case 'section':
+      return h.section(attributes, children);
+    case 'article':
+      return h.article(attributes, children);
+    default:
+      return h.div(attributes, children);
+  }
+};
 
 export const cardHeader = slotDiv(
   'card-header',
