@@ -34,8 +34,8 @@ export const GotExampleMessage = m('GotCatalogExampleMessage', {
 export const Message = S.Union([GotExampleMessage, CopyFeedback.Message]);
 export type Message = typeof Message.Type;
 
-export const init = (): Model => ({
-  examples: Array.from({ length: EXAMPLE_STATE_COUNT }, (_, index) =>
+export const init = (slug?: string): Model => ({
+  examples: Array.from({ length: definitions[slug ?? '']?.examples.length ?? 0 }, (_, index) =>
     State.withExampleIds(State.init(), `catalog-example-${String(index)}`),
   ),
   copiedCode: null,

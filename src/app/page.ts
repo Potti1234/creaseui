@@ -77,7 +77,7 @@ export const init = (route: AppRoute): Page =>
           : component === 'calendar'
             ? CalendarDocs({ docs: CalendarDocsFeature.init() })
             : ComponentCatalog.hasCatalogPage(component)
-              ? CatalogDocs({ docs: ComponentCatalog.init() })
+              ? CatalogDocs({ docs: ComponentCatalog.init(component) })
               : NotFound(),
       NotFound: () => NotFound(),
     }),
