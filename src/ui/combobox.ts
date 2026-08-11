@@ -40,7 +40,7 @@ const ROOT_CLASS =
   'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground';
 
 const INPUT_WRAPPER_CLASS =
-  "relative flex h-9 items-center gap-2 border-b px-3 before:shrink-0 before:text-sm before:text-muted-foreground before:content-['âŒ•'] data-[size=sm]:h-8";
+  "relative flex h-9 items-center gap-2 border-b px-3 before:shrink-0 before:text-sm before:text-muted-foreground before:content-['⌕'] data-[size=sm]:h-8";
 
 const INPUT_CLASS =
   'flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden placeholder:text-muted-foreground data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50';

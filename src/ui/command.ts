@@ -261,7 +261,7 @@ export const commandPalette = command;
    //   items: ['profile', 'settings'],
    //   itemToConfig: item => ({
    //     content: item === 'profile' ? 'Profile' : 'Settings',
-   //     shortcut: item === 'profile' ? 'âŒ˜P' : 'âŒ˜,',
+   //     shortcut: item === 'profile' ? '⌘P' : '⌘,',
    //   }),
    //   placeholder: 'Type a command or search...',
    // })

@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils';
      animate-in/fade-in-0/zoom-in-95 become CSS transitions driven by
      data-[closed]:. Pass isAnimated: true to init for the transition to run.
 
-   State (Model/Message/update) is the foldkit Dialog's own â€” re-exported here
+   State (Model/Message/update) is the foldkit Dialog's own — re-exported here
    so consumers import everything from this module, shadcn-style. */
 
 export const Model = DialogPrimitive.Model;
@@ -54,6 +54,69 @@ const CLOSE_CLASS =
  *  can close the dialog without a parent message (spread onto your button). */
 export type DialogSlots = Readonly<{
   closeButton: ReadonlyArray<ChildAttribute>;
+  initialFocusAttributes: () => ReadonlyArray<ChildAttribute>;
+}>;
+
+export type DialogPartProps = Readonly<{
+  children: ReadonlyArray<Html | string>;
+  class?: string;
+}>;
+
+export type DialogTextPartProps = DialogPartProps &
+  Readonly<{ attributes: ReadonlyArray<ChildAttribute> }>;
+
+export type DialogCloseProps = Readonly<{
+  children?: ReadonlyArray<Html | string>;
+  class?: string;
+  ariaLabel?: string;
+}>;
+
+export const dialogHeader = <Msg>(
+  props: DialogPartProps,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  h.div([h.DataAttribute('slot', 'dialog-header'), h.Class(cn(HEADER_CLASS, props.class))], [
+    ...props.children,
+  ]);
+
+export const dialogTitle = <Msg>(
+  props: DialogTextPartProps,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  h.h2(
+    [...props.attributes, h.DataAttribute('slot', 'dialog-title'), h.Class(cn(TITLE_CLASS, props.class))],
+    [...props.children],
+  );
+
+export const dialogDescription = <Msg>(
+  props: DialogTextPartProps,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  h.p(
+    [
+      ...props.attributes,
+      h.DataAttribute('slot', 'dialog-description'),
+      h.Class(cn(DESCRIPTION_CLASS, props.class)),
+    ],
+    [...props.children],
+  );
+
+export const dialogFooter = <Msg>(
+  props: DialogPartProps,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  h.div([h.DataAttribute('slot', 'dialog-footer'), h.Class(cn(FOOTER_CLASS, props.class))], [
+    ...props.children,
+  ]);
+
+export type DialogParts<Msg> = Readonly<{
+  header: (props: DialogPartProps) => Html;
+  title: (props: Omit<DialogTextPartProps, 'attributes'>) => Html;
+  description: (props: Omit<DialogTextPartProps, 'attributes'>) => Html;
+  footer: (props: DialogPartProps) => Html;
+  close: (props?: DialogCloseProps) => Html;
+  closeButtonAttributes: ReadonlyArray<ChildAttribute>;
+  initialFocusAttributes: () => ReadonlyArray<ChildAttribute>;
 }>;
 
 export type DialogProps<Msg> = Readonly<{
@@ -63,6 +126,9 @@ export type DialogProps<Msg> = Readonly<{
   description?: string;
   content?: (slots: DialogSlots) => ReadonlyArray<Html>;
   footer?: (slots: DialogSlots) => ReadonlyArray<Html>;
+  /** Replaces the default header/content/footer layout with shadcn-like,
+   *  bound part builders while the Foldkit model still owns behavior. */
+  layout?: (parts: DialogParts<Msg>) => ReadonlyArray<Html>;
   showCloseButton?: boolean;
   class?: string;
 }>;
@@ -97,11 +163,61 @@ export const dialog = <Msg>(
         dialog: dialogAttributes,
         backdrop,
         panel,
+        title,
+        description,
+        initialFocus,
         closeButton,
         isVisible,
       }: DialogPrimitive.RenderInfo) => {
         const hd = h;
-        const slots: DialogSlots = { closeButton };
+        let initialFocusClaimed = false;
+        const initialFocusAttributes = (): ReadonlyArray<ChildAttribute> => {
+          initialFocusClaimed = true;
+          return initialFocus;
+        };
+        const slots: DialogSlots = { closeButton, initialFocusAttributes };
+        const parts: DialogParts<Msg> = {
+          header: (partProps) => dialogHeader(partProps, hd),
+          title: (partProps) =>
+            dialogTitle({ ...partProps, attributes: title }, hd),
+          description: (partProps) =>
+            dialogDescription({ ...partProps, attributes: description }, hd),
+          footer: (partProps) => dialogFooter(partProps, hd),
+          close: (partProps = {}) =>
+            hd.button(
+              [
+                ...closeButton,
+                ...(initialFocusClaimed ? [] : initialFocusAttributes()),
+                hd.Type('button'),
+                hd.DataAttribute('slot', 'dialog-close'),
+                hd.AriaLabel(partProps.ariaLabel ?? 'Close'),
+                hd.Class(cn(CLOSE_CLASS, partProps.class)),
+              ],
+              [
+                ...(partProps.children ?? [xIcon(h)]),
+              ],
+            ),
+          closeButtonAttributes: closeButton,
+          initialFocusAttributes,
+        };
+        const content = props.layout?.(parts) ?? [
+          parts.header({
+            children: [
+              parts.title({ children: [props.title] }),
+              ...(props.description === undefined
+                ? []
+                : [parts.description({ children: [props.description] })]),
+            ],
+          }),
+          ...(props.content === undefined ? [] : props.content(slots)),
+          ...(props.footer === undefined
+            ? []
+            : [parts.footer({ children: props.footer(slots) })]),
+          ...((props.showCloseButton ?? true) ? [parts.close()] : []),
+        ];
+        const panelFocusAttributes = initialFocusClaimed
+          ? []
+          : [...initialFocus, hd.Attribute('tabindex', '-1')];
 
         return hd.dialog(
           [...dialogAttributes, hd.Class(DIALOG_CLASS)],
@@ -109,58 +225,13 @@ export const dialog = <Msg>(
             ? [
                 hd.div([...backdrop, hd.Class(OVERLAY_CLASS)], []),
                 hd.div(
-                  [...panel, hd.Class(cn(CONTENT_CLASS, props.class))],
                   [
-                    hd.div(
-                      [hd.Class(HEADER_CLASS)],
-                      [
-                        hd.h2(
-                          [
-                            hd.Id(DialogPrimitive.titleId(props.model)),
-                            hd.Class(TITLE_CLASS),
-                          ],
-                          [props.title],
-                        ),
-                        ...(props.description === undefined
-                          ? []
-                          : [
-                              hd.p(
-                                [
-                                  hd.Id(
-                                    DialogPrimitive.descriptionId(props.model),
-                                  ),
-                                  hd.Class(DESCRIPTION_CLASS),
-                                ],
-                                [props.description],
-                              ),
-                            ]),
-                      ],
-                    ),
-                    ...(props.content === undefined
-                      ? []
-                      : props.content(slots)),
-                    ...(props.footer === undefined
-                      ? []
-                      : [
-                          hd.div(
-                            [hd.Class(FOOTER_CLASS)],
-                            [...props.footer(slots)],
-                          ),
-                        ]),
-                    ...((props.showCloseButton ?? true)
-                      ? [
-                          hd.button(
-                            [
-                              ...closeButton,
-                              hd.Type('button'),
-                              hd.AriaLabel('Close'),
-                              hd.Class(CLOSE_CLASS),
-                            ],
-                            [xIcon(h)],
-                          ),
-                        ]
-                      : []),
+                    ...panel,
+                    ...panelFocusAttributes,
+                    hd.DataAttribute('slot', 'dialog-content'),
+                    hd.Class(cn(CONTENT_CLASS, props.class)),
                   ],
+                  content,
                 ),
               ]
             : [],

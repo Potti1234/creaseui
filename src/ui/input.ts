@@ -4,7 +4,7 @@ import { Input as InputPrimitive } from '@foldkit/ui';
 
 import { cn } from '@/lib/utils';
 
-/* Ported from shadcn/ui input.tsx + label.tsx. Class strings verbatim â€” the
+/* Ported from shadcn/ui input.tsx + label.tsx. Class strings verbatim — the
    foldkit Input primitive sets the native disabled attribute as well as
    data-disabled, so shadcn's `disabled:` variants work unchanged. The primitive
    also wires label/description ids for free via its attribute groups. */

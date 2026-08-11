@@ -81,6 +81,7 @@ export type SelectProps<Item, Value extends string, Msg> = Readonly<{
   triggerClass?: string;
   size?: SelectSize;
   ariaLabel?: string;
+  isDisabled?: boolean;
   itemGroupKey?: (item: Item, index: number) => string;
   groupToHeading?: (groupKey: string) => string | undefined;
 }>;
@@ -151,6 +152,7 @@ export const select = <Item, Value extends string, Msg>(
       ],
     ),
     buttonClassName: cn(TRIGGER_CLASS, props.triggerClass),
+    isDisabled: props.isDisabled ?? false,
     buttonAttributes: childAttributes([
       hs.DataAttribute('slot', 'select-trigger'),
       hs.DataAttribute('size', props.size ?? 'default'),

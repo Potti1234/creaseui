@@ -23,7 +23,7 @@ const ROOT_CLASS =
   'relative flex w-full touch-none items-center select-none data-[disabled]:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col';
 
 /* The foldkit Slider primitive is horizontal-only and sets data-orientation on
-   the ROOT part, not on track/range as Radix does â€” so shadcn's
+   the ROOT part, not on track/range as Radix does — so shadcn's
    data-[orientation=horizontal]: variants never match there. Horizontal styles
    are applied directly instead. */
 const TRACK_CLASS =

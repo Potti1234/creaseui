@@ -17,6 +17,34 @@ embeds them as Foldkit submodels and maps their messages through its root update
 Their state is explicit, replayable, and testable; it is not hidden in a closure
 or DOM node.
 
+## Compound composition
+
+Where shadcn exposes named compound parts, Crease can bind equivalent part
+builders to the active Foldkit primitive. Dialog and Sheet expose an additive
+`layout` callback whose `parts` value builds header, title, description, footer,
+and close regions with the correct slot, ARIA, focus, and close attributes.
+
+```ts
+Dialog.dialog({
+  model,
+  toParentMessage,
+  title: 'Edit profile',
+  layout: parts => [
+    parts.header({ children: [
+      parts.title({ children: ['Edit profile'] }),
+      parts.description({ children: ['Update your profile.'] }),
+    ] }),
+    form,
+    parts.footer({ children: [parts.close({ children: ['Cancel'] }), save] }),
+    parts.close(),
+  ],
+}, h)
+```
+
+The builders only describe view structure. The component's `Model`, `Message`,
+`update`, commands, and parent message mapping remain explicit. Existing
+title/content/footer configuration remains supported for concise cases.
+
 ## Styling contract
 
 Components use Tailwind CSS and shadcn/ui-compatible semantic tokens, including

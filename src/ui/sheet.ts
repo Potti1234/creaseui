@@ -54,6 +54,65 @@ const CLOSE_CLASS =
 
 export type SheetSlots = Readonly<{
   closeButton: ReadonlyArray<ChildAttribute>;
+  initialFocusAttributes: () => ReadonlyArray<ChildAttribute>;
+}>;
+export type SheetPartProps = Readonly<{
+  children: ReadonlyArray<Html | string>;
+  class?: string;
+}>;
+export type SheetTextPartProps = SheetPartProps &
+  Readonly<{ attributes: ReadonlyArray<ChildAttribute> }>;
+export type SheetCloseProps = Readonly<{
+  children?: ReadonlyArray<Html | string>;
+  class?: string;
+  ariaLabel?: string;
+}>;
+
+export const sheetHeader = <Msg>(
+  props: SheetPartProps,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  h.div(
+    [h.DataAttribute('slot', 'sheet-header'), h.Class(cn(HEADER_CLASS, props.class))],
+    [...props.children],
+  );
+export const sheetTitle = <Msg>(
+  props: SheetTextPartProps,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  h.h2(
+    [...props.attributes, h.DataAttribute('slot', 'sheet-title'), h.Class(cn(TITLE_CLASS, props.class))],
+    [...props.children],
+  );
+export const sheetDescription = <Msg>(
+  props: SheetTextPartProps,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  h.p(
+    [
+      ...props.attributes,
+      h.DataAttribute('slot', 'sheet-description'),
+      h.Class(cn(DESCRIPTION_CLASS, props.class)),
+    ],
+    [...props.children],
+  );
+export const sheetFooter = <Msg>(
+  props: SheetPartProps,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  h.div(
+    [h.DataAttribute('slot', 'sheet-footer'), h.Class(cn(FOOTER_CLASS, props.class))],
+    [...props.children],
+  );
+
+export type SheetParts<Msg> = Readonly<{
+  header: (props: SheetPartProps) => Html;
+  title: (props: Omit<SheetTextPartProps, 'attributes'>) => Html;
+  description: (props: Omit<SheetTextPartProps, 'attributes'>) => Html;
+  footer: (props: SheetPartProps) => Html;
+  close: (props?: SheetCloseProps) => Html;
+  closeButtonAttributes: ReadonlyArray<ChildAttribute>;
+  initialFocusAttributes: () => ReadonlyArray<ChildAttribute>;
 }>;
 
 export type SheetProps<Msg> = Readonly<{
@@ -63,6 +122,7 @@ export type SheetProps<Msg> = Readonly<{
   description?: string;
   content?: (slots: SheetSlots) => ReadonlyArray<Html>;
   footer?: (slots: SheetSlots) => ReadonlyArray<Html>;
+  layout?: (parts: SheetParts<Msg>) => ReadonlyArray<Html>;
   side?: SheetSide;
   showCloseButton?: boolean;
   class?: string;
@@ -83,11 +143,58 @@ export const sheet = <Msg>(
         dialog: dialogAttributes,
         backdrop,
         panel,
+        title,
+        description,
+        initialFocus,
         closeButton,
         isVisible,
       }: DialogPrimitive.RenderInfo) => {
         const hd = h;
-        const slots: SheetSlots = { closeButton };
+        let initialFocusClaimed = false;
+        const initialFocusAttributes = (): ReadonlyArray<ChildAttribute> => {
+          initialFocusClaimed = true;
+          return initialFocus;
+        };
+        const slots: SheetSlots = { closeButton, initialFocusAttributes };
+        const parts: SheetParts<Msg> = {
+          header: (partProps) => sheetHeader(partProps, hd),
+          title: (partProps) => sheetTitle({ ...partProps, attributes: title }, hd),
+          description: (partProps) =>
+            sheetDescription({ ...partProps, attributes: description }, hd),
+          footer: (partProps) => sheetFooter(partProps, hd),
+          close: (partProps = {}) =>
+            hd.button(
+              [
+                ...closeButton,
+                ...(initialFocusClaimed ? [] : initialFocusAttributes()),
+                hd.Type('button'),
+                hd.DataAttribute('slot', 'sheet-close'),
+                hd.AriaLabel(partProps.ariaLabel ?? 'Close'),
+                hd.Class(cn(CLOSE_CLASS, partProps.class)),
+              ],
+              [...(partProps.children ?? [Icon.x({ class: 'size-4' }, h)])],
+            ),
+          closeButtonAttributes: closeButton,
+          initialFocusAttributes,
+        };
+        const content = props.layout?.(parts) ?? [
+          parts.header({
+            children: [
+              parts.title({ children: [props.title] }),
+              ...(props.description === undefined
+                ? []
+                : [parts.description({ children: [props.description] })]),
+            ],
+          }),
+          ...(props.content?.(slots) ?? []),
+          ...(props.footer === undefined
+            ? []
+            : [parts.footer({ children: props.footer(slots) })]),
+          ...((props.showCloseButton ?? true) ? [parts.close()] : []),
+        ];
+        const panelFocusAttributes = initialFocusClaimed
+          ? []
+          : [...initialFocus, hd.Attribute('tabindex', '-1')];
 
         return hd.dialog(
           [
@@ -108,69 +215,11 @@ export const sheet = <Msg>(
                 hd.div(
                   [
                     ...panel,
+                    ...panelFocusAttributes,
                     hd.DataAttribute('slot', 'sheet-content'),
                     hd.Class(cn(CONTENT_CLASS, SIDE_CLASS[side], props.class)),
                   ],
-                  [
-                    hd.div(
-                      [
-                        hd.DataAttribute('slot', 'sheet-header'),
-                        hd.Class(HEADER_CLASS),
-                      ],
-                      [
-                        hd.h2(
-                          [
-                            hd.Id(DialogPrimitive.titleId(props.model)),
-                            hd.DataAttribute('slot', 'sheet-title'),
-                            hd.Class(TITLE_CLASS),
-                          ],
-                          [props.title],
-                        ),
-                        ...(props.description === undefined
-                          ? []
-                          : [
-                              hd.p(
-                                [
-                                  hd.Id(
-                                    DialogPrimitive.descriptionId(props.model),
-                                  ),
-                                  hd.DataAttribute('slot', 'sheet-description'),
-                                  hd.Class(DESCRIPTION_CLASS),
-                                ],
-                                [props.description],
-                              ),
-                            ]),
-                      ],
-                    ),
-                    ...(props.content === undefined
-                      ? []
-                      : props.content(slots)),
-                    ...(props.footer === undefined
-                      ? []
-                      : [
-                          hd.div(
-                            [
-                              hd.DataAttribute('slot', 'sheet-footer'),
-                              hd.Class(FOOTER_CLASS),
-                            ],
-                            [...props.footer(slots)],
-                          ),
-                        ]),
-                    ...((props.showCloseButton ?? true)
-                      ? [
-                          hd.button(
-                            [
-                              ...closeButton,
-                              hd.Type('button'),
-                              hd.DataAttribute('slot', 'sheet-close'),
-                              hd.AriaLabel('Close'),
-                              hd.Class(CLOSE_CLASS),
-                            ],
-                            [Icon.x({ class: 'size-4' }, h)],
-                          ),
-                        ]
-                      : []),
-                  ],
+                  content,
                 ),
               ]
             : [],
