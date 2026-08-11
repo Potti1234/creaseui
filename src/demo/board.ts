@@ -1,4 +1,4 @@
-import { Effect, Match as M, Schema as S } from 'effect';
+import { Effect, Match as M, Option, Schema as S } from 'effect';
 import { Command, Subscription } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
@@ -263,22 +263,23 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       ],
       AppliedCreatePresetInput: () => {
         const preset = Preset.parsePresetInput(model.presetInput);
-        return preset === undefined
-          ? [
+        return Option.match(preset, {
+          onNone: () => [
               evo(model, {
                 presetError: () =>
                   'Enter a valid shadcn preset code, URL, or --preset flag.',
               }),
               [],
-            ]
-          : [
+            ],
+          onSome: decoded => [
               evo(model, {
-                preset: () => preset,
-                presetInput: () => Preset.encodePreset(preset),
+                preset: () => decoded,
+                presetInput: () => Preset.encodePreset(decoded),
                 presetError: () => null,
               }),
               [],
-            ];
+            ],
+        });
       },
       ChangedCreatePresetField: ({ field, value }) => {
         const preset = { ...model.preset, [field]: value };

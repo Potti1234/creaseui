@@ -1,4 +1,4 @@
-import { Schema as S } from 'effect'
+import { Option, Schema as S } from 'effect'
 
 export const STYLES = ['nova', 'vega', 'maia', 'lyra', 'mira', 'luma', 'sera', 'rhea'] as const
 export const BASE_COLORS = ['neutral', 'stone', 'zinc', 'gray', 'mauve', 'olive', 'mist', 'taupe'] as const
@@ -46,54 +46,58 @@ const FIELDS = [
 const V2_FIELDS = [...FIELDS, { key: 'chartColor', values: THEMES, bits: 6 }, { key: 'fontHeading', values: FONT_HEADINGS, bits: 5 }] as const
 const BASE62 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 
-const toBase62 = (value: number): string => {
-  if (value === 0) return '0'
-  let result = ''
-  for (let current = value; current > 0; current = Math.floor(current / 62)) result = BASE62[current % 62] + result
-  return result
-}
+const toBase62 = (value: number): string => value === 0
+  ? '0'
+  : Array.from(
+      { length: Math.floor(Math.log(value) / Math.log(62)) + 1 },
+      (_, index) => Math.floor(value / 62 ** index) % 62,
+    )
+      .reverse()
+      .map(index => BASE62[index])
+      .join('')
 
-const fromBase62 = (value: string): number => {
-  let result = 0
-  for (const character of value) {
-    const index = BASE62.indexOf(character)
-    if (index === -1) return -1
-    result = result * 62 + index
-  }
-  return result
-}
+const fromBase62 = (value: string): Option.Option<number> => value
+  .split('')
+  .reduce<Option.Option<number>>(
+    (result, character) => Option.flatMap(result, current => {
+      const index = BASE62.indexOf(character)
+      return index < 0 ? Option.none() : Option.some(current * 62 + index)
+    }),
+    Option.some(0),
+  )
 
 export const encodePreset = (config: Config): string => {
-  let packed = 0
-  let offset = 0
-  for (const field of V2_FIELDS) {
-    const index = (field.values as readonly string[]).indexOf(config[field.key])
-    packed += Math.max(0, index) * 2 ** offset
-    offset += field.bits
-  }
+  const { packed } = V2_FIELDS.reduce(
+    (state, field) => ({
+      packed: state.packed + Math.max(0, (field.values as readonly string[]).indexOf(config[field.key])) * 2 ** state.offset,
+      offset: state.offset + field.bits,
+    }),
+    { packed: 0, offset: 0 },
+  )
   return `b${toBase62(packed)}`
 }
 
-export const decodePreset = (code: string): Config | undefined => {
-  if (!/^[ab][0-9A-Za-z]{1,9}$/.test(code)) return undefined
+export const decodePreset = (code: string): Option.Option<Config> => {
+  if (!/^[ab][0-9A-Za-z]{1,9}$/.test(code)) return Option.none()
   const fields = code[0] === 'a' ? FIELDS : V2_FIELDS
-  const packed = fromBase62(code.slice(1))
-  if (packed < 0) return undefined
-  const result: Record<string, string> = {}
-  let offset = 0
-  for (const field of fields) {
-    const index = Math.floor(packed / 2 ** offset) % 2 ** field.bits
-    result[field.key] = field.values[index] ?? field.values[0]
-    offset += field.bits
-  }
-  if (code[0] === 'a') {
-    result.chartColor = result.theme ?? 'neutral'
-    result.fontHeading = 'inherit'
-  }
-  return result as Config
+  return Option.map(fromBase62(code.slice(1)), packed => {
+    const decoded = fields.reduce(
+      (state, field) => {
+        const index = Math.floor(packed / 2 ** state.offset) % 2 ** field.bits
+        return {
+          values: { ...state.values, [field.key]: field.values[index] ?? field.values[0] },
+          offset: state.offset + field.bits,
+        }
+      },
+      { values: {} as Record<string, string>, offset: 0 },
+    ).values
+    return (code[0] === 'a'
+      ? { ...decoded, chartColor: decoded.theme ?? 'neutral', fontHeading: 'inherit' }
+      : decoded) as Config
+  })
 }
 
-export const parsePresetInput = (value: string): Config | undefined => {
+export const parsePresetInput = (value: string): Option.Option<Config> => {
   const input = value.trim()
   const flagValue = input.match(/^--preset\s+(.+)$/i)?.[1]?.trim()
   let candidate = flagValue ?? input
