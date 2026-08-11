@@ -25,17 +25,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint
-        run: npm run lint
-
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Test
-        run: npm test
-
-      - name: Build
-        run: npm run build
+      - name: Check generated artifacts, parity, source, types, tests, and build
+        run: npm run check
 
       - name: Validate registry
         run: npm run registry:build

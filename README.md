@@ -10,9 +10,9 @@ does not require React or JSX.
 
 The repository currently contains:
 
-- 49 UI modules, from buttons and fields to dialogs, calendars, and sidebars
+- 65 UI modules, from buttons and fields to dialogs, calendars, and sidebars
 - 33 component cards reproducing the shadcn/ui create-board showcase
-- 72 Apache ECharts examples styled in the same design language
+- 70 Apache ECharts examples styled in the same design language
 - 16 complete sidebar block examples
 - a Vite-powered documentation and showcase application
 
@@ -63,6 +63,8 @@ The registry guide also documents tag- and commit-pinned installs.
 
 ## Documentation
 
+- [Getting started](docs/getting-started.md) covers first installation,
+  stateless rendering, stateful composition, and validation.
 - [Architecture](docs/architecture.md) explains how shadcn-style components map
   onto Foldkit UI.
 - [Component authoring](docs/component-authoring.md) defines completion,
@@ -71,21 +73,30 @@ The registry guide also documents tag- and commit-pinned installs.
   differences from shadcn/ui.
 - [Component catalog](docs/component-catalog.md) lists every installable module,
   its category, state ownership, dependencies, and registry address.
+- [Component API inventory](docs/api-reference.md) lists the exported functions,
+  values, schemas, and types generated from every component source file.
 - [Registry installation](docs/registry.md) documents the required shadcn CLI
   configuration and reproducible installation proof.
+- [Create presets](docs/create-presets.md) documents generated style artifacts
+  and the five real Foldkit icon adapters.
 - [Compatibility matrix](compatibility.json) records the framework and tooling
   versions used by the current validation suite.
 - [Upstream provenance](docs/provenance.md) records the projects this work builds
   on and the policy for future ports.
 - [Contributing](CONTRIBUTING.md) describes the component and commit workflow.
 - [Changelog](CHANGELOG.md) records user-visible changes and migration notes.
-- [`llms.txt`](public/llms.txt) gives coding agents a compact, canonical map of
-  the project and its Foldkit conventions.
+- [Maintenance](docs/maintenance.md), [releasing](docs/releasing.md), and
+  [security](SECURITY.md) define project ownership and support policy.
+
+Tooling and language models can discover the same material through
+[`/docs-index.json`](public/docs-index.json), [`/llms.txt`](public/llms.txt), and
+[`/llms-full.txt`](public/llms-full.txt).
 
 ## Credits
 
 crease/ui builds on [Foldkit](https://foldkit.dev/),
 [shadcn/ui](https://ui.shadcn.com/), [Apache ECharts](https://echarts.apache.org/),
-and [Lucide](https://lucide.dev/). It is not affiliated with shadcn/ui.
+and the icon projects credited in the preset guide. It is not affiliated with
+shadcn/ui.
 
 Released under the [MIT License](LICENSE).

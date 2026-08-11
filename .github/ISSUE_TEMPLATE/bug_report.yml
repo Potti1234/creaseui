@@ -1,0 +1,41 @@
+name: Bug report
+description: Report a reproducible behavior, accessibility, visual, documentation, or registry problem.
+title: "[bug]: "
+labels: [bug]
+body:
+  - type: dropdown
+    id: dimension
+    attributes:
+      label: Quality dimension
+      options: [Behavior, Accessibility, Visual, Composition, Documentation, Registry]
+    validations:
+      required: true
+  - type: input
+    id: component
+    attributes:
+      label: Component and Crease revision
+      placeholder: dialog at v0.1.0 or full commit SHA
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Foldkit, Effect, browser, and operating system
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction and steps
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual result
+    validations:
+      required: true
+  - type: input
+    id: reference
+    attributes:
+      label: shadcn/ui reference URL, if applicable

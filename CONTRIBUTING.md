@@ -39,6 +39,20 @@ Read [docs/architecture.md](docs/architecture.md) and the
 [component authoring contract](docs/component-authoring.md) before porting an
 interactive component.
 
+## Required gates
+
+- UI, docs layout, focus, keyboard, or responsive changes: `npm run test:browser`
+- Registry, dependency, preset, icon, or target changes: `npm run registry:build`
+  and `npm run test:registry`
+- Generated docs, parity, or icon data: run the owning `*:generate` command and
+  commit its inputs and outputs together
+
+Pull requests should complete the repository template and identify both the
+upstream shadcn reference and the Foldkit primitive used. Security reports must
+follow [`SECURITY.md`](SECURITY.md), not the public issue tracker. Release and
+long-term maintenance rules live in [`docs/releasing.md`](docs/releasing.md) and
+[`docs/maintenance.md`](docs/maintenance.md).
+
 ## Scope and naming
 
 Use lowercase kebab-case filenames and keep the public name aligned with the

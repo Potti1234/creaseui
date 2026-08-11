@@ -1,0 +1,32 @@
+name: Component or parity request
+description: Propose a missing component, state, example, or fidelity improvement.
+title: "[component]: "
+labels: [enhancement]
+body:
+  - type: input
+    id: component
+    attributes:
+      label: Component or pattern
+    validations:
+      required: true
+  - type: input
+    id: upstream
+    attributes:
+      label: Upstream shadcn/ui source
+    validations:
+      required: true
+  - type: textarea
+    id: primitive
+    attributes:
+      label: Closest Foldkit primitive and proposed state ownership
+    validations:
+      required: true
+  - type: checkboxes
+    id: dimensions
+    attributes:
+      label: Required evidence
+      options:
+        - label: Visual states and responsive behavior
+        - label: Keyboard and accessibility behavior
+        - label: Foldkit model, message, update, and composition API
+        - label: Runnable docs and registry installation

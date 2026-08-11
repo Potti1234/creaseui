@@ -1,31 +1,59 @@
-name: Release artifacts
+name: Release verification
 
 on:
   push:
-    tags: ['v*']
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  build:
+  release-artifacts:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
-      - run: npm run check
-      - run: npm run registry:build
-      - uses: actions/upload-artifact@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run deterministic release checks
+        run: npm run check
+
+      - name: Run browser and accessibility checks
+        run: npx playwright test
+
+      - name: Build registry
+        run: npm run registry:build
+
+      - name: Verify a clean registry consumer and every icon adapter
+        run: npm run test:registry
+
+      - name: Upload release proof
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: creaseui-${{ github.ref_name }}
+          name: creaseui-release-proof-${{ github.ref_name }}
           path: |
-            dist
-            .registry
+            dist/
+            .registry/
+            playwright-report/
+            test-results/
             registry.json
             compatibility.json
+            docs/component-parity.json
+            docs/upstream-shadcn.json
+          retention-days: 30
