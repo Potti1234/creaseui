@@ -672,8 +672,14 @@ const faq = (h: HtmlBuilder<Message>): Html => {
 };
 
 const footer = (h: HtmlBuilder<Message>): Html => {
-  const shortRevision = __CREASEUI_BUILD_SHA__.slice(0, 7);
-  const revisionLabel = `${shortRevision}${__CREASEUI_BUILD_DIRTY__ ? '+dirty' : ''}`;
+  const buildSha = typeof __CREASEUI_BUILD_SHA__ === 'undefined'
+    ? 'development'
+    : __CREASEUI_BUILD_SHA__;
+  const isBuildDirty = typeof __CREASEUI_BUILD_DIRTY__ === 'undefined'
+    ? true
+    : __CREASEUI_BUILD_DIRTY__;
+  const shortRevision = buildSha.slice(0, 7);
+  const revisionLabel = `${shortRevision}${isBuildDirty ? '+dirty' : ''}`;
 
   return h.footer(
     [h.Class('border-t')],
@@ -702,7 +708,7 @@ const footer = (h: HtmlBuilder<Message>): Html => {
                     h.a(
                       [
                         h.Href(
-                          `https://github.com/Potti1234/creaseui/commit/${__CREASEUI_BUILD_SHA__}`,
+                          `https://github.com/Potti1234/creaseui/commit/${buildSha}`,
                         ),
                         h.Class('font-mono hover:text-foreground'),
                         h.AriaLabel(`Source revision ${revisionLabel}`),
