@@ -5,6 +5,10 @@ preview. Its shadcn-compatible preset code round-trips the selected style,
 base color, theme, chart palette, icon library, body and heading fonts, radius,
 menu accent, and menu color.
 
+The live board uses the same generated Lucide, Hugeicons, Tabler, Phosphor, and
+Remix Icon shapes, so changing the Icons control updates the preview before the
+preset is installed.
+
 ## Generated artifact
 
 `Copy Registry JSON` copies a complete `registry:style` item. The item:

@@ -43,6 +43,7 @@ import * as Button from '@/ui/button';
 import * as Popover from '@/ui/popover';
 import * as ScrollArea from '@/ui/scroll-area';
 import * as Icon from '@/lib/icon';
+import * as PreviewIcon from '@/demo/icon-preview';
 
 export const Model = S.Struct({
   accountAccess: AccountAccess.Model,
@@ -874,6 +875,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
               h.DataAttribute('slot', 'capture-target'),
             ],
             [
+              PreviewIcon.spriteDefinitions(h),
               h.div(
                 [
                   h.Class(

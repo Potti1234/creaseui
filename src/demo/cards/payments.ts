@@ -4,7 +4,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 import { evo } from 'foldkit/struct';
 
-import * as Icon from '@/lib/icon';
+import * as Icon from '@/demo/icon-preview';
 import {
   breadcrumb,
   breadcrumbItem,

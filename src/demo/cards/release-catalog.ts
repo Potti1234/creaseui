@@ -3,7 +3,7 @@ import type { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
-import * as Icon from '@/lib/icon';
+import * as Icon from '@/demo/icon-preview';
 import { badge } from '@/ui/badge';
 import { card, cardContent, cardHeader } from '@/ui/card';
 import { inputGroup, inputGroupAddon, inputGroupInput } from '@/ui/input-group';

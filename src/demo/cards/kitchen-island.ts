@@ -3,7 +3,7 @@ import { Command, Subscription } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
-import * as Icon from '@/lib/icon';
+import * as Icon from '@/demo/icon-preview';
 import {
   card,
   cardAction,

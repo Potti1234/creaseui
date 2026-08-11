@@ -152,3 +152,15 @@
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
 }
+
+.crease-preview-icon > svg {
+  display: none;
+}
+
+.create-board-theme[data-icon-library='lucide'] .crease-preview-icon-lucide,
+.create-board-theme[data-icon-library='hugeicons'] .crease-preview-icon-hugeicons,
+.create-board-theme[data-icon-library='tabler'] .crease-preview-icon-tabler,
+.create-board-theme[data-icon-library='phosphor'] .crease-preview-icon-phosphor,
+.create-board-theme[data-icon-library='remixicon'] .crease-preview-icon-remixicon {
+  display: block;
+}

@@ -1,6 +1,6 @@
 import type { Html, HtmlBuilder } from 'foldkit/html';
 
-import * as Icon from '@/lib/icon';
+import * as Icon from '@/demo/icon-preview';
 import { buttonVariants } from '@/ui/button';
 import { card, cardContent, cardDescription, cardFooter } from '@/ui/card';
 import { item } from '@/ui/item';

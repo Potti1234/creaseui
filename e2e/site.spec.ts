@@ -107,6 +107,23 @@ test('create preset shuffle updates executable output', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Copy Registry JSON' })).toBeVisible()
 })
 
+test('create icon selection changes the live preview shapes', async ({ page }) => {
+  await page.goto('/create')
+  const board = page.locator('[data-slot="capture-target"]')
+  const firstPreviewIcon = board.locator('.crease-preview-icon').first()
+
+  await expect(board).toHaveAttribute('data-icon-library', 'lucide')
+  await expect(firstPreviewIcon.locator('.crease-preview-icon-lucide')).toBeVisible()
+  await expect(firstPreviewIcon.locator('.crease-preview-icon-tabler')).toBeHidden()
+
+  await page.getByRole('button', { name: /Icons\s+Lucide/u }).click()
+  await page.getByRole('button', { name: 'Tabler', exact: true }).click({ force: true })
+
+  await expect(board).toHaveAttribute('data-icon-library', 'tabler')
+  await expect(firstPreviewIcon.locator('.crease-preview-icon-lucide')).toBeHidden()
+  await expect(firstPreviewIcon.locator('.crease-preview-icon-tabler')).toBeVisible()
+})
+
 test('dialog traps focus, closes with Escape, and restores its trigger', async ({ page }) => {
   await page.goto('/docs/components/dialog')
   const example = page.locator('#custom-close-button')
