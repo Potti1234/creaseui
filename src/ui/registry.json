@@ -9,6 +9,7 @@
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/sidebar-state",
         "Potti1234/creaseui/utils"
       ],
       "files": [
@@ -946,11 +947,6 @@
           "path": "sidebar.ts",
           "type": "registry:ui",
           "target": "@ui/sidebar.ts"
-        },
-        {
-          "path": "../lib/sidebar-state.ts",
-          "type": "registry:lib",
-          "target": "@lib/sidebar-state.ts"
         }
       ]
     },

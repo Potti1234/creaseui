@@ -54,6 +54,19 @@
           "target": "@lib/echarts.ts"
         }
       ]
+    },
+    {
+      "name": "sidebar-state",
+      "type": "registry:lib",
+      "title": "Foldkit Sidebar State",
+      "description": "The state, persistence command, and keyboard subscription used by the Crease UI sidebar.",
+      "files": [
+        {
+          "path": "sidebar-state.ts",
+          "type": "registry:lib",
+          "target": "@lib/sidebar-state.ts"
+        }
+      ]
     }
   ]
 }
