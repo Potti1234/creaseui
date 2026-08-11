@@ -65,6 +65,11 @@ Badge, Button, Card, Empty, Input, Item, Separator, and Textarea set at once:
 npx --yes shadcn@latest add Potti1234/creaseui/crease-core --yes
 ```
 
+The `/create` compiler can pair that core with generated design tokens and a
+real Lucide, Hugeicons, Tabler, Phosphor, or Remix Icon adapter. See
+[`create-presets.md`](create-presets.md) for the artifact format and local
+materialization command.
+
 After installation, inspect the stylesheet selected by `tailwind.css` in
 `components.json`. It should contain Crease values for `--popover`,
 `--sidebar`, and `--radius`; their presence is a quick validation that the theme

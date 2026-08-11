@@ -1,0 +1,534 @@
+{
+  "arrow-right": {
+    "lucide": "arrow-right",
+    "tabler": "arrow-right",
+    "hugeicons": "arrow-right-01",
+    "phosphor": "arrow-right",
+    "remixicon": "arrow-right-line"
+  },
+  "audio-waveform": {
+    "lucide": "audio-waveform",
+    "tabler": "wave-sine",
+    "hugeicons": "audio-wave-01",
+    "phosphor": "waveform",
+    "remixicon": "pulse-line"
+  },
+  "blocks": {
+    "lucide": "blocks",
+    "tabler": "blocks",
+    "hugeicons": "cube",
+    "phosphor": "cube",
+    "remixicon": "box-3-line"
+  },
+  "bold": {
+    "lucide": "bold",
+    "tabler": "bold",
+    "hugeicons": "text-bold",
+    "phosphor": "text-b",
+    "remixicon": "bold"
+  },
+  "book-open": {
+    "lucide": "book-open",
+    "tabler": "book",
+    "hugeicons": "book-open-02",
+    "phosphor": "book-open",
+    "remixicon": "book-open-line"
+  },
+  "bot": {
+    "lucide": "bot",
+    "tabler": "robot",
+    "hugeicons": "bot",
+    "phosphor": "robot",
+    "remixicon": "robot-line"
+  },
+  "calendar": {
+    "lucide": "calendar",
+    "tabler": "calendar",
+    "hugeicons": "calendar-03",
+    "phosphor": "calendar",
+    "remixicon": "calendar-line"
+  },
+  "car": {
+    "lucide": "car",
+    "tabler": "car",
+    "hugeicons": "car-01",
+    "phosphor": "car",
+    "remixicon": "car-line"
+  },
+  "chart-pie": {
+    "lucide": "chart-pie",
+    "tabler": "chart-pie",
+    "hugeicons": "chart-03",
+    "phosphor": "chart-pie",
+    "remixicon": "pie-chart-line"
+  },
+  "circle-alert": {
+    "lucide": "circle-alert",
+    "tabler": "exclamation-circle",
+    "hugeicons": "alert-circle",
+    "phosphor": "warning-circle",
+    "remixicon": "error-warning-line"
+  },
+  "code-xml": {
+    "lucide": "code-xml",
+    "tabler": "code",
+    "hugeicons": "code",
+    "phosphor": "code",
+    "remixicon": "code-s-slash-line"
+  },
+  "coffee": {
+    "lucide": "coffee",
+    "tabler": "coffee",
+    "hugeicons": "coffee-01",
+    "phosphor": "coffee",
+    "remixicon": "cup-line"
+  },
+  "command": {
+    "lucide": "command",
+    "tabler": "command",
+    "hugeicons": "command",
+    "phosphor": "command",
+    "remixicon": "command-line"
+  },
+  "delete": {
+    "lucide": "delete",
+    "tabler": "trash",
+    "hugeicons": "delete-02",
+    "phosphor": "trash",
+    "remixicon": "delete-bin-2-line"
+  },
+  "file": {
+    "lucide": "file",
+    "tabler": "file",
+    "hugeicons": "file-01",
+    "phosphor": "file",
+    "remixicon": "file-line"
+  },
+  "focus": {
+    "lucide": "focus",
+    "tabler": "focus",
+    "hugeicons": "center-focus",
+    "phosphor": "crosshair",
+    "remixicon": "focus-2-line"
+  },
+  "frame": {
+    "lucide": "frame",
+    "tabler": "frame",
+    "hugeicons": "crop",
+    "phosphor": "crop",
+    "remixicon": "crop-line"
+  },
+  "gallery-vertical-end": {
+    "lucide": "gallery-vertical-end",
+    "tabler": "layout-rows",
+    "hugeicons": "layout-bottom",
+    "phosphor": "rows",
+    "remixicon": "gallery-line"
+  },
+  "gauge": {
+    "lucide": "gauge",
+    "tabler": "gauge",
+    "hugeicons": "settings-01",
+    "phosphor": "gauge",
+    "remixicon": "dashboard-line"
+  },
+  "ghost": {
+    "lucide": "ghost",
+    "tabler": "ghost",
+    "hugeicons": "monster",
+    "phosphor": "ghost",
+    "remixicon": "ghost-line"
+  },
+  "group": {
+    "lucide": "group",
+    "tabler": "users-group",
+    "hugeicons": "group",
+    "phosphor": "users-three",
+    "remixicon": "group-line"
+  },
+  "house": {
+    "lucide": "house",
+    "tabler": "home",
+    "hugeicons": "house-01",
+    "phosphor": "house",
+    "remixicon": "home-line"
+  },
+  "image": {
+    "lucide": "image",
+    "tabler": "photo",
+    "hugeicons": "image-01",
+    "phosphor": "image",
+    "remixicon": "image-line"
+  },
+  "inbox": {
+    "lucide": "inbox",
+    "tabler": "inbox",
+    "hugeicons": "inbox",
+    "phosphor": "tray",
+    "remixicon": "inbox-line"
+  },
+  "life-buoy": {
+    "lucide": "life-buoy",
+    "tabler": "lifebuoy",
+    "hugeicons": "chart-ring",
+    "phosphor": "lifebuoy",
+    "remixicon": "lifebuoy-line"
+  },
+  "link": {
+    "lucide": "link",
+    "tabler": "link",
+    "hugeicons": "link-01",
+    "phosphor": "link",
+    "remixicon": "link"
+  },
+  "list": {
+    "lucide": "list",
+    "tabler": "list",
+    "hugeicons": "menu-01",
+    "phosphor": "list",
+    "remixicon": "list-unordered"
+  },
+  "lock": {
+    "lucide": "lock",
+    "tabler": "lock",
+    "hugeicons": "lock",
+    "phosphor": "lock",
+    "remixicon": "lock-line"
+  },
+  "lock-keyhole": {
+    "lucide": "lock-keyhole",
+    "tabler": "lock",
+    "hugeicons": "square-lock-02",
+    "phosphor": "lock-key",
+    "remixicon": "lock-line"
+  },
+  "log-out": {
+    "lucide": "log-out",
+    "tabler": "logout",
+    "hugeicons": "logout-01",
+    "phosphor": "sign-out",
+    "remixicon": "logout-box-line"
+  },
+  "map": {
+    "lucide": "map",
+    "tabler": "map",
+    "hugeicons": "maps",
+    "phosphor": "map-trifold",
+    "remixicon": "map-line"
+  },
+  "radar": {
+    "lucide": "radar",
+    "tabler": "radar",
+    "hugeicons": "radar-01",
+    "phosphor": "broadcast",
+    "remixicon": "radar-line"
+  },
+  "radio": {
+    "lucide": "radio",
+    "tabler": "radio",
+    "hugeicons": "radio",
+    "phosphor": "radio",
+    "remixicon": "record-circle-line"
+  },
+  "radius": {
+    "lucide": "radius",
+    "tabler": "border-radius",
+    "hugeicons": "radius",
+    "phosphor": "circles-four",
+    "remixicon": "rounded-corner"
+  },
+  "refresh-cw": {
+    "lucide": "refresh-cw",
+    "tabler": "refresh",
+    "hugeicons": "repeat",
+    "phosphor": "arrows-clockwise",
+    "remixicon": "refresh-line"
+  },
+  "repeat": {
+    "lucide": "repeat",
+    "tabler": "repeat",
+    "hugeicons": "repeat",
+    "phosphor": "repeat",
+    "remixicon": "repeat-line"
+  },
+  "rose": {
+    "lucide": "rose",
+    "tabler": "flower",
+    "hugeicons": "rose",
+    "phosphor": "flower",
+    "remixicon": "flower-line"
+  },
+  "search": {
+    "lucide": "search",
+    "tabler": "search",
+    "hugeicons": "search-01",
+    "phosphor": "magnifying-glass",
+    "remixicon": "search-line"
+  },
+  "send": {
+    "lucide": "send",
+    "tabler": "send",
+    "hugeicons": "sent",
+    "phosphor": "paper-plane-tilt",
+    "remixicon": "send-plane-line"
+  },
+  "settings-2": {
+    "lucide": "settings-2",
+    "tabler": "settings-2",
+    "hugeicons": "settings-05",
+    "phosphor": "gear",
+    "remixicon": "settings-line"
+  },
+  "share": {
+    "lucide": "share",
+    "tabler": "share",
+    "hugeicons": "share-01",
+    "phosphor": "share",
+    "remixicon": "share-line"
+  },
+  "shopping-cart": {
+    "lucide": "shopping-cart",
+    "tabler": "shopping-cart",
+    "hugeicons": "shopping-cart-01",
+    "phosphor": "shopping-cart",
+    "remixicon": "shopping-cart-line"
+  },
+  "sparkles": {
+    "lucide": "sparkles",
+    "tabler": "sparkles",
+    "hugeicons": "sparkles",
+    "phosphor": "sparkle",
+    "remixicon": "sparkling-line"
+  },
+  "square-terminal": {
+    "lucide": "square-terminal",
+    "tabler": "terminal-2",
+    "hugeicons": "computer-terminal-01",
+    "phosphor": "terminal-window",
+    "remixicon": "terminal-box-line"
+  },
+  "stone": {
+    "lucide": "stone",
+    "tabler": "mountain",
+    "hugeicons": "mountain",
+    "phosphor": "mountains",
+    "remixicon": "landscape-line"
+  },
+  "sun": {
+    "lucide": "sun",
+    "tabler": "sun",
+    "hugeicons": "sun-03",
+    "phosphor": "sun",
+    "remixicon": "sun-line"
+  },
+  "table": {
+    "lucide": "table",
+    "tabler": "table",
+    "hugeicons": "table",
+    "phosphor": "table",
+    "remixicon": "table-line"
+  },
+  "thermometer": {
+    "lucide": "thermometer",
+    "tabler": "thermometer",
+    "hugeicons": "thermometer",
+    "phosphor": "thermometer",
+    "remixicon": "thermometer-line"
+  },
+  "timer": {
+    "lucide": "timer",
+    "tabler": "clock",
+    "hugeicons": "clock-03",
+    "phosphor": "timer",
+    "remixicon": "timer-line"
+  },
+  "trash-2": {
+    "lucide": "trash-2",
+    "tabler": "trash",
+    "hugeicons": "delete-02",
+    "phosphor": "trash",
+    "remixicon": "delete-bin-line"
+  },
+  "trending-up": {
+    "lucide": "trending-up",
+    "tabler": "trending-up",
+    "hugeicons": "chart-up",
+    "phosphor": "trend-up",
+    "remixicon": "arrow-up-line"
+  },
+  "tv": {
+    "lucide": "tv",
+    "tabler": "device-tv",
+    "hugeicons": "tv-01",
+    "phosphor": "television",
+    "remixicon": "tv-line"
+  },
+  "view": {
+    "lucide": "view",
+    "tabler": "eye",
+    "hugeicons": "view",
+    "phosphor": "eye",
+    "remixicon": "eye-line"
+  },
+  "volume": {
+    "lucide": "volume",
+    "tabler": "volume",
+    "hugeicons": "volume-high",
+    "phosphor": "speaker-high",
+    "remixicon": "volume-up-line"
+  },
+  "volume-2": {
+    "lucide": "volume-2",
+    "tabler": "volume-2",
+    "hugeicons": "volume-high",
+    "phosphor": "speaker-high",
+    "remixicon": "volume-up-line"
+  },
+  "wallet": {
+    "lucide": "wallet",
+    "tabler": "wallet",
+    "hugeicons": "wallet-01",
+    "phosphor": "wallet",
+    "remixicon": "wallet-line"
+  },
+  "x": {
+    "lucide": "x",
+    "tabler": "x",
+    "hugeicons": "cancel-01",
+    "phosphor": "x",
+    "remixicon": "close-line"
+  },
+  "arrow-left": {
+    "lucide": "arrow-left",
+    "tabler": "arrow-left",
+    "hugeicons": "arrow-left-02",
+    "phosphor": "arrow-left",
+    "remixicon": "arrow-left-line"
+  },
+  "arrow-down": {
+    "lucide": "arrow-down",
+    "tabler": "arrow-down",
+    "hugeicons": "arrow-down-01",
+    "phosphor": "arrow-down",
+    "remixicon": "arrow-down-line"
+  },
+  "check": {
+    "lucide": "check",
+    "tabler": "check",
+    "hugeicons": "tick-02",
+    "phosphor": "check",
+    "remixicon": "check-line"
+  },
+  "chevron-down": {
+    "lucide": "chevron-down",
+    "tabler": "chevron-down",
+    "hugeicons": "arrow-down-01",
+    "phosphor": "caret-down",
+    "remixicon": "arrow-down-s-line"
+  },
+  "chevron-left": {
+    "lucide": "chevron-left",
+    "tabler": "chevron-left",
+    "hugeicons": "arrow-left-01",
+    "phosphor": "caret-left",
+    "remixicon": "arrow-left-s-line"
+  },
+  "chevron-right": {
+    "lucide": "chevron-right",
+    "tabler": "chevron-right",
+    "hugeicons": "arrow-right-01",
+    "phosphor": "caret-right",
+    "remixicon": "arrow-right-s-line"
+  },
+  "chevron-up": {
+    "lucide": "chevron-up",
+    "tabler": "chevron-up",
+    "hugeicons": "arrow-up-01",
+    "phosphor": "caret-up",
+    "remixicon": "arrow-up-s-line"
+  },
+  "chevrons-up-down": {
+    "lucide": "chevrons-up-down",
+    "tabler": "selector",
+    "hugeicons": "unfold-more",
+    "phosphor": "caret-up-down",
+    "remixicon": "arrow-up-down-line"
+  },
+  "circle-check": {
+    "lucide": "circle-check",
+    "tabler": "circle-check",
+    "hugeicons": "checkmark-circle-01",
+    "phosphor": "check-circle",
+    "remixicon": "checkbox-circle-fill"
+  },
+  "circle": {
+    "lucide": "circle",
+    "tabler": "circle",
+    "hugeicons": "circle",
+    "phosphor": "circle",
+    "remixicon": "checkbox-blank-circle-line"
+  },
+  "grip-vertical": {
+    "lucide": "grip-vertical",
+    "tabler": "grip-vertical",
+    "hugeicons": "drag-drop-vertical",
+    "phosphor": "dots-six-vertical",
+    "remixicon": "draggable"
+  },
+  "info": {
+    "lucide": "info",
+    "tabler": "info-circle",
+    "hugeicons": "alert-circle",
+    "phosphor": "info",
+    "remixicon": "information-line"
+  },
+  "loader-circle": {
+    "lucide": "loader-circle",
+    "tabler": "loader-2",
+    "hugeicons": "loader-pinwheel",
+    "phosphor": "spinner",
+    "remixicon": "loader-4-line"
+  },
+  "minus": {
+    "lucide": "minus",
+    "tabler": "minus",
+    "hugeicons": "minus-sign",
+    "phosphor": "minus",
+    "remixicon": "subtract-line"
+  },
+  "ellipsis": {
+    "lucide": "ellipsis",
+    "tabler": "dots",
+    "hugeicons": "more-horizontal-circle-01",
+    "phosphor": "dots-three",
+    "remixicon": "more-line"
+  },
+  "octagon-x": {
+    "lucide": "octagon-x",
+    "tabler": "alert-octagon",
+    "hugeicons": "octagon-x",
+    "phosphor": "x-circle",
+    "remixicon": "close-circle-line"
+  },
+  "panel-left": {
+    "lucide": "panel-left",
+    "tabler": "layout-sidebar",
+    "hugeicons": "panel-left",
+    "phosphor": "sidebar",
+    "remixicon": "layout-left-line"
+  },
+  "plus": {
+    "lucide": "plus",
+    "tabler": "plus",
+    "hugeicons": "add-01",
+    "phosphor": "plus",
+    "remixicon": "add-line"
+  },
+  "triangle-alert": {
+    "lucide": "triangle-alert",
+    "tabler": "alert-triangle",
+    "hugeicons": "alert-02",
+    "phosphor": "warning",
+    "remixicon": "error-warning-line"
+  }
+}

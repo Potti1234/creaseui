@@ -1,0 +1,110 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "icons-lucide",
+      "type": "registry:lib",
+      "title": "Lucide adapter for Foldkit",
+      "description": "Lucide icons rendered with Foldkit native SVG constructors.",
+      "registryDependencies": [
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "lucide/icon.ts",
+          "type": "registry:lib",
+          "target": "@lib/icon.ts"
+        },
+        {
+          "path": "lucide/icon-nodes.ts",
+          "type": "registry:lib",
+          "target": "@lib/icon-nodes.ts"
+        }
+      ]
+    },
+    {
+      "name": "icons-hugeicons",
+      "type": "registry:lib",
+      "title": "Hugeicons adapter for Foldkit",
+      "description": "Hugeicons icons rendered with Foldkit native SVG constructors.",
+      "registryDependencies": [
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "hugeicons/icon.ts",
+          "type": "registry:lib",
+          "target": "@lib/icon.ts"
+        },
+        {
+          "path": "hugeicons/icon-nodes.ts",
+          "type": "registry:lib",
+          "target": "@lib/icon-nodes.ts"
+        }
+      ]
+    },
+    {
+      "name": "icons-tabler",
+      "type": "registry:lib",
+      "title": "Tabler Icons adapter for Foldkit",
+      "description": "Tabler Icons icons rendered with Foldkit native SVG constructors.",
+      "registryDependencies": [
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "tabler/icon.ts",
+          "type": "registry:lib",
+          "target": "@lib/icon.ts"
+        },
+        {
+          "path": "tabler/icon-nodes.ts",
+          "type": "registry:lib",
+          "target": "@lib/icon-nodes.ts"
+        }
+      ]
+    },
+    {
+      "name": "icons-phosphor",
+      "type": "registry:lib",
+      "title": "Phosphor Icons adapter for Foldkit",
+      "description": "Phosphor Icons icons rendered with Foldkit native SVG constructors.",
+      "registryDependencies": [
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "phosphor/icon.ts",
+          "type": "registry:lib",
+          "target": "@lib/icon.ts"
+        },
+        {
+          "path": "phosphor/icon-nodes.ts",
+          "type": "registry:lib",
+          "target": "@lib/icon-nodes.ts"
+        }
+      ]
+    },
+    {
+      "name": "icons-remixicon",
+      "type": "registry:lib",
+      "title": "Remix Icon adapter for Foldkit",
+      "description": "Remix Icon icons rendered with Foldkit native SVG constructors.",
+      "registryDependencies": [
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "remixicon/icon.ts",
+          "type": "registry:lib",
+          "target": "@lib/icon.ts"
+        },
+        {
+          "path": "remixicon/icon-nodes.ts",
+          "type": "registry:lib",
+          "target": "@lib/icon-nodes.ts"
+        }
+      ]
+    }
+  ]
+}

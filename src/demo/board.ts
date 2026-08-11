@@ -142,6 +142,7 @@ export const ChangedPresetField = m('ChangedCreatePresetField', {
   value: S.String,
 });
 export const ClickedCopyPreset = m('ClickedCopyCreatePreset');
+export const ClickedShufflePreset = m('ClickedShuffleCreatePreset');
 export const CompletedCopyCreatePreset = m('CompletedCopyCreatePreset');
 export const CompletedWaitBeforeClearingCreatePresetCopy = m(
   'CompletedWaitBeforeClearingCreatePresetCopy',
@@ -173,6 +174,7 @@ export const Message = S.Union([
   AppliedPresetInput,
   ChangedPresetField,
   ClickedCopyPreset,
+  ClickedShufflePreset,
   CompletedCopyCreatePreset,
   CompletedWaitBeforeClearingCreatePresetCopy,
   GotPresetPickerMessage,
@@ -298,8 +300,19 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       },
       ClickedCopyCreatePreset: () => [
         model,
-        [CopyPreset({ code: Preset.encodePreset(model.preset) })],
+        [CopyPreset({ code: Preset.presetRegistryJson(model.preset) })],
       ],
+      ClickedShuffleCreatePreset: () => {
+        const preset = Preset.shufflePreset(model.preset);
+        return [
+          evo(model, {
+            preset: () => preset,
+            presetInput: () => Preset.encodePreset(preset),
+            presetError: () => null,
+          }),
+          [],
+        ];
+      },
       CompletedCopyCreatePreset: () => [
         evo(model, { isPresetCopied: () => true }),
         [WaitBeforeClearingPresetCopy()],
@@ -740,6 +753,8 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
         [
           h.div(
             [
+              h.DataAttribute('crease-style', model.preset.style),
+              h.DataAttribute('icon-library', model.preset.iconLibrary),
               h.Class(
                 'truncate rounded-lg border border-white/10 px-3 py-2 font-mono text-xs text-white/80',
               ),
@@ -797,6 +812,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
               class:
                 'w-full border-white/10 bg-transparent text-white hover:bg-white/[0.06] dark:bg-transparent',
               children: ['Shuffle'],
+              onClick: ClickedShufflePreset(),
               variant: 'outline',
             },
             h,
@@ -826,7 +842,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
                       ),
                       'Copied',
                     ]
-                  : ['Get Code']),
+                  : ['Copy Registry JSON']),
               ],
             },
             h,
@@ -853,6 +869,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
               h.Class(
                 'create-board-theme grid w-[2400px] grid-cols-7 items-start gap-(--gap) bg-muted p-(--gap) md:w-[3000px] dark:bg-background *:[div]:gap-(--gap)',
               ),
+              h.DataAttribute('crease-style', model.preset.style),
+              h.DataAttribute('icon-library', model.preset.iconLibrary),
               h.DataAttribute('slot', 'capture-target'),
             ],
             [

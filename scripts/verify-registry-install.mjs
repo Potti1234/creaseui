@@ -142,6 +142,28 @@ for (const [packageName, expectedVersion] of Object.entries(frameworkVersions)) 
   )
 }
   await run(npm, ['install'])
+  for (const iconLibrary of [
+    'lucide',
+    'hugeicons',
+    'tabler',
+    'phosphor',
+    'remixicon',
+  ]) {
+    await run(npx, [
+      '--yes',
+      'shadcn@latest',
+      'add',
+      `${registryBaseUrl}/icons-${iconLibrary}.json`,
+      '--yes',
+      '--overwrite',
+    ])
+    assert.match(
+      readFileSync(join(fixture, 'src', 'lib', 'icon.ts'), 'utf8'),
+      new RegExp(`crease-icon-${iconLibrary}`),
+      `${iconLibrary} adapter did not replace the consumer icon module`,
+    )
+    await run(npm, ['run', 'typecheck'])
+  }
   await run(npm, ['run', 'typecheck'])
   await run(npm, ['run', 'build'])
 
