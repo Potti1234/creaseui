@@ -104,6 +104,7 @@ export const codeBlock = <Msg>(
     [
       h.pre(
         [
+          h.Attribute('tabindex', '0'),
           h.Class(
             'overflow-x-auto p-4 pr-14 font-mono text-[13px] leading-6 text-foreground',
           ),
@@ -223,6 +224,7 @@ export const example = <Msg>(
                 [
                   h.pre(
                     [
+                      h.Attribute('tabindex', '0'),
                       h.Class(
                         'min-w-0 max-w-full overflow-x-auto p-4 pr-14 font-mono text-[13px] leading-6 text-foreground',
                       ),

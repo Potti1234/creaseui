@@ -582,6 +582,7 @@ const honestSection = (model: Model, h: HtmlBuilder<Message>): Html => {
           ),
           h.pre(
             [
+              h.Attribute('tabindex', '0'),
               h.Class(
                 'bg-background overflow-x-auto rounded-xl border p-4 font-mono text-xs leading-relaxed shadow-sm',
               ),

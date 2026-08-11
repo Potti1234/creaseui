@@ -4,3 +4,5 @@ dist/
 *.local
 .playwright-cli/
 .registry/
+playwright-report/
+test-results/

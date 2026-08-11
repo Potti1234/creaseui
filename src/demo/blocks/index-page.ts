@@ -1,6 +1,6 @@
 import type { Html, HtmlBuilder } from 'foldkit/html';
 
-import { SIDEBAR_BLOCK_IDS } from '@/route';
+import { blockPath, SIDEBAR_BLOCK_IDS } from '@/route';
 
 /* /blocks/sidebar — index of all sidebar blocks, mirroring
    ui.shadcn.com/blocks/sidebar: each block previewed in a framed, same-origin
@@ -75,7 +75,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
                 ),
                 h.a(
                   [
-                    h.Href(`/blocks/sidebar/${id}`),
+                    h.Href(blockPath(id)),
                     h.Class(
                       'inline-flex h-8 shrink-0 items-center justify-center rounded-md border bg-background px-3 text-sm font-medium shadow-xs transition-all hover:bg-accent hover:text-accent-foreground',
                     ),
@@ -86,7 +86,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
             ),
             h.iframe(
               [
-                h.Src(`/blocks/sidebar/${id}`),
+                h.Src(blockPath(id)),
                 h.Attribute('loading', 'lazy'),
                 h.Class(
                   'h-[800px] w-full rounded-xl border bg-background shadow-sm',
