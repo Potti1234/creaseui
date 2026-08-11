@@ -35,8 +35,9 @@ formatting, or unrelated refactors into a component commit.
 - Preserve primitive-owned positioning styles.
 - Respect strict TypeScript settings, including `exactOptionalPropertyTypes`.
 
-Read [docs/architecture.md](docs/architecture.md) before porting an interactive
-component.
+Read [docs/architecture.md](docs/architecture.md) and the
+[component authoring contract](docs/component-authoring.md) before porting an
+interactive component.
 
 ## Scope and naming
 

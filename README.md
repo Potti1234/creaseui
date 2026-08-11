@@ -65,6 +65,8 @@ The registry guide also documents tag- and commit-pinned installs.
 
 - [Architecture](docs/architecture.md) explains how shadcn-style components map
   onto Foldkit UI.
+- [Component authoring](docs/component-authoring.md) defines completion,
+  optionality, testing, and generated-file boundaries.
 - [Component parity](docs/component-parity.md) records coverage and intentional
   differences from shadcn/ui.
 - [Component catalog](docs/component-catalog.md) lists every installable module,

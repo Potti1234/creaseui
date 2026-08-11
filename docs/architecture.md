@@ -50,3 +50,6 @@ Match the interaction to the closest Foldkit UI primitive first, then adapt the
 shadcn/ui visual treatment. A port is not a transliteration of React or Radix
 code. If Foldkit lacks the required behavior, document the gap and implement it
 as an explicit Foldkit model rather than introducing React interop.
+
+The artifact-level completion rules, optionality policy, and generated-file
+boundaries are defined in [component-authoring.md](component-authoring.md).
