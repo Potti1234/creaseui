@@ -82,7 +82,7 @@ export const icon = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => h.span(
   [
-    h.Class(cn('crease-preview-icon inline-flex shrink-0', config.class)),
+    h.Class(cn('crease-preview-icon inline-flex size-4 shrink-0', config.class)),
     ...(config.ariaLabel === undefined
       ? [h.AriaHidden(true)]
       : [h.Role('img'), h.AriaLabel(config.ariaLabel)]),

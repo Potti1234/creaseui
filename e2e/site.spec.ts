@@ -113,6 +113,8 @@ test('create icon selection changes the live preview shapes', async ({ page }) =
   const firstPreviewIcon = board.locator('.crease-preview-icon').first()
 
   await expect(board).toHaveAttribute('data-icon-library', 'lucide')
+  await expect(firstPreviewIcon).toHaveCSS('width', '16px')
+  await expect(firstPreviewIcon).toHaveCSS('height', '16px')
   await expect(firstPreviewIcon.locator('.crease-preview-icon-lucide')).toBeVisible()
   await expect(firstPreviewIcon.locator('.crease-preview-icon-tabler')).toBeHidden()
 
