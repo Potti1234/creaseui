@@ -22,6 +22,7 @@ import * as ChartsTooltip from '@/demo/charts/tooltip';
 import * as AccordionDocs from '@/docs/components/accordion';
 import * as CalendarDocs from '@/docs/components/calendar';
 import * as ComponentCatalog from '@/docs/components/catalog';
+import * as Page from '@/app/page';
 import * as Icon from '@/lib/icon';
 import {
   AppRoute,
@@ -41,19 +42,7 @@ import { cn } from '@/lib/utils';
 export const Model = S.Struct({
   route: AppRoute,
   isDark: S.Boolean,
-  board: Board.Model,
-  blocks: Blocks.Model,
-  landing: Landing.Model,
-  chartsArea: ChartsArea.Model,
-  chartsBar: ChartsBar.Model,
-  chartsLine: ChartsLine.Model,
-  chartsPie: ChartsPie.Model,
-  chartsRadar: ChartsRadar.Model,
-  chartsRadial: ChartsRadial.Model,
-  chartsTooltip: ChartsTooltip.Model,
-  accordionDocs: AccordionDocs.Model,
-  calendarDocs: CalendarDocs.Model,
-  catalogDocs: ComponentCatalog.Model,
+  page: Page.Page,
 });
 export type Model = typeof Model.Type;
 
@@ -142,26 +131,10 @@ export type Message = typeof Message.Type;
 export const init: Runtime.RoutingApplicationInit<Model, Message, Flags> = (
   flags,
   url: Url,
-) => [
-  {
-    route: urlToAppRoute(url),
-    isDark: flags.isDark,
-    board: Board.init(),
-    blocks: Blocks.init(),
-    landing: Landing.init(),
-    chartsArea: ChartsArea.init(),
-    chartsBar: ChartsBar.init(),
-    chartsLine: ChartsLine.init(),
-    chartsPie: ChartsPie.init(),
-    chartsRadar: ChartsRadar.init(),
-    chartsRadial: ChartsRadial.init(),
-    chartsTooltip: ChartsTooltip.init(),
-    accordionDocs: AccordionDocs.init(),
-    calendarDocs: CalendarDocs.init(),
-    catalogDocs: ComponentCatalog.init(),
-  },
-  [],
-];
+) => {
+  const route = urlToAppRoute(url);
+  return [{ route, isDark: flags.isDark, page: Page.init(route) }, []];
+};
 
 // COMMAND
 
@@ -220,14 +193,21 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         ),
 
       ChangedUrl: ({ url }) => [
-        evo(model, { route: () => urlToAppRoute(url) }),
+        evo(model, {
+          route: () => urlToAppRoute(url),
+          page: () => Page.init(urlToAppRoute(url)),
+        }),
         [],
       ],
 
       GotBoardMessage: ({ message: childMessage }) => {
-        const [board, commands] = Board.update(model.board, childMessage);
+        if (model.page._tag !== 'CreatePage') return [model, []];
+        const currentPage = model.page;
+        const [board, commands] = Board.update(currentPage.board, childMessage);
         return [
-          evo(model, { board: () => board }),
+          evo(model, {
+            page: () => evo(currentPage, { board: () => board }),
+          }),
           Command.mapMessages(commands, (next) =>
             GotBoardMessage({ message: next }),
           ),
@@ -235,9 +215,13 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       },
 
       GotBlocksMessage: ({ message: childMessage }) => {
-        const [blocks, commands] = Blocks.update(model.blocks, childMessage);
+        if (model.page._tag !== 'BlockPage') return [model, []];
+        const currentPage = model.page;
+        const [blocks, commands] = Blocks.update(currentPage.blocks, childMessage);
         return [
-          evo(model, { blocks: () => blocks }),
+          evo(model, {
+            page: () => evo(currentPage, { blocks: () => blocks }),
+          }),
           Command.mapMessages(commands, (next) =>
             GotBlocksMessage({ message: next }),
           ),
@@ -245,9 +229,16 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       },
 
       GotLandingMessage: ({ message: childMessage }) => {
-        const [landing, commands] = Landing.update(model.landing, childMessage);
+        if (model.page._tag !== 'LandingPage') return [model, []];
+        const currentPage = model.page;
+        const [landing, commands] = Landing.update(
+          currentPage.landing,
+          childMessage,
+        );
         return [
-          evo(model, { landing: () => landing }),
+          evo(model, {
+            page: () => evo(currentPage, { landing: () => landing }),
+          }),
           Command.mapMessages(commands, (next) =>
             GotLandingMessage({ message: next }),
           ),
@@ -255,12 +246,16 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       },
 
       GotChartsAreaMessage: ({ message: childMessage }) => {
+        if (model.page._tag !== 'ChartsPage') return [model, []];
+        const currentPage = model.page;
         const [page, commands] = ChartsArea.update(
-          model.chartsArea,
+          currentPage.area,
           childMessage,
         );
         return [
-          evo(model, { chartsArea: () => page }),
+          evo(model, {
+            page: () => evo(currentPage, { area: () => page }),
+          }),
           Command.mapMessages(commands, (next) =>
             GotChartsAreaMessage({ message: next }),
           ),
@@ -268,12 +263,16 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       },
 
       GotChartsBarMessage: ({ message: childMessage }) => {
+        if (model.page._tag !== 'ChartsPage') return [model, []];
+        const currentPage = model.page;
         const [page, commands] = ChartsBar.update(
-          model.chartsBar,
+          currentPage.bar,
           childMessage,
         );
         return [
-          evo(model, { chartsBar: () => page }),
+          evo(model, {
+            page: () => evo(currentPage, { bar: () => page }),
+          }),
           Command.mapMessages(commands, (next) =>
             GotChartsBarMessage({ message: next }),
           ),
@@ -281,12 +280,16 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       },
 
       GotChartsLineMessage: ({ message: childMessage }) => {
+        if (model.page._tag !== 'ChartsPage') return [model, []];
+        const currentPage = model.page;
         const [page, commands] = ChartsLine.update(
-          model.chartsLine,
+          currentPage.line,
           childMessage,
         );
         return [
-          evo(model, { chartsLine: () => page }),
+          evo(model, {
+            page: () => evo(currentPage, { line: () => page }),
+          }),
           Command.mapMessages(commands, (next) =>
             GotChartsLineMessage({ message: next }),
           ),
@@ -294,12 +297,16 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       },
 
       GotChartsPieMessage: ({ message: childMessage }) => {
+        if (model.page._tag !== 'ChartsPage') return [model, []];
+        const currentPage = model.page;
         const [page, commands] = ChartsPie.update(
-          model.chartsPie,
+          currentPage.pie,
           childMessage,
         );
         return [
-          evo(model, { chartsPie: () => page }),
+          evo(model, {
+            page: () => evo(currentPage, { pie: () => page }),
+          }),
           Command.mapMessages(commands, (next) =>
             GotChartsPieMessage({ message: next }),
           ),
@@ -307,12 +314,16 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       },
 
       GotChartsRadarMessage: ({ message: childMessage }) => {
+        if (model.page._tag !== 'ChartsPage') return [model, []];
+        const currentPage = model.page;
         const [page, commands] = ChartsRadar.update(
-          model.chartsRadar,
+          currentPage.radar,
           childMessage,
         );
         return [
-          evo(model, { chartsRadar: () => page }),
+          evo(model, {
+            page: () => evo(currentPage, { radar: () => page }),
+          }),
           Command.mapMessages(commands, (next) =>
             GotChartsRadarMessage({ message: next }),
           ),
@@ -320,12 +331,16 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       },
 
       GotChartsRadialMessage: ({ message: childMessage }) => {
+        if (model.page._tag !== 'ChartsPage') return [model, []];
+        const currentPage = model.page;
         const [page, commands] = ChartsRadial.update(
-          model.chartsRadial,
+          currentPage.radial,
           childMessage,
         );
         return [
-          evo(model, { chartsRadial: () => page }),
+          evo(model, {
+            page: () => evo(currentPage, { radial: () => page }),
+          }),
           Command.mapMessages(commands, (next) =>
             GotChartsRadialMessage({ message: next }),
           ),
@@ -333,12 +348,16 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       },
 
       GotChartsTooltipMessage: ({ message: childMessage }) => {
+        if (model.page._tag !== 'ChartsPage') return [model, []];
+        const currentPage = model.page;
         const [page, commands] = ChartsTooltip.update(
-          model.chartsTooltip,
+          currentPage.tooltip,
           childMessage,
         );
         return [
-          evo(model, { chartsTooltip: () => page }),
+          evo(model, {
+            page: () => evo(currentPage, { tooltip: () => page }),
+          }),
           Command.mapMessages(commands, (next) =>
             GotChartsTooltipMessage({ message: next }),
           ),
@@ -346,36 +365,48 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       },
 
       GotAccordionDocsMessage: ({ message: childMessage }) => {
+        if (model.page._tag !== 'AccordionDocsPage') return [model, []];
+        const currentPage = model.page;
         const [page, commands] = AccordionDocs.update(
-          model.accordionDocs,
+          currentPage.docs,
           childMessage,
         );
         return [
-          evo(model, { accordionDocs: () => page }),
+          evo(model, {
+            page: () => evo(currentPage, { docs: () => page }),
+          }),
           Command.mapMessages(commands, (next) =>
             GotAccordionDocsMessage({ message: next }),
           ),
         ];
       },
       GotCalendarDocsMessage: ({ message: childMessage }) => {
+        if (model.page._tag !== 'CalendarDocsPage') return [model, []];
+        const currentPage = model.page;
         const [page, commands] = CalendarDocs.update(
-          model.calendarDocs,
+          currentPage.docs,
           childMessage,
         );
         return [
-          evo(model, { calendarDocs: () => page }),
+          evo(model, {
+            page: () => evo(currentPage, { docs: () => page }),
+          }),
           Command.mapMessages(commands, (next) =>
             GotCalendarDocsMessage({ message: next }),
           ),
         ];
       },
       GotCatalogDocsMessage: ({ message: childMessage }) => {
+        if (model.page._tag !== 'CatalogDocsPage') return [model, []];
+        const currentPage = model.page;
         const [catalogDocs, commands] = ComponentCatalog.update(
-          model.catalogDocs,
+          currentPage.docs,
           childMessage,
         );
         return [
-          evo(model, { catalogDocs: () => catalogDocs }),
+          evo(model, {
+            page: () => evo(currentPage, { docs: () => catalogDocs }),
+          }),
           Command.mapMessages(commands, (next) =>
             GotCatalogDocsMessage({ message: next }),
           ),
@@ -386,13 +417,20 @@ export const update = (model: Model, message: Message): UpdateReturn =>
 
 // SUBSCRIPTIONS
 
+const inactiveBoard = Board.init();
+const inactiveCatalogDocs = ComponentCatalog.init();
+
 export const subscriptions = Subscription.aggregate<Model, Message>()(
   Subscription.lift(Board.subscriptions)<Model, Message>({
-    toChildModel: (model) => model.board,
+    toChildModel: (model) =>
+      model.page._tag === 'CreatePage' ? model.page.board : inactiveBoard,
     toParentMessage: (message) => GotBoardMessage({ message }),
   }),
   Subscription.lift(ComponentCatalog.subscriptions)<Model, Message>({
-    toChildModel: (model) => model.catalogDocs,
+    toChildModel: (model) =>
+      model.page._tag === 'CatalogDocsPage'
+        ? model.page.docs
+        : inactiveCatalogDocs,
     toParentMessage: (message) => GotCatalogDocsMessage({ message }),
   }),
 );
@@ -587,9 +625,10 @@ const blocksView = (
   blockId: string,
   h: HtmlBuilder<Message>,
 ): Html => {
+  if (model.page._tag !== 'BlockPage') return h.empty;
   return h.submodel({
     slotId: 'sidebar-blocks',
-    model: model.blocks,
+    model: model.page.blocks,
     view: blocksRegistryView,
     viewInputs: blockId,
     toParentMessage: (message: Blocks.Message): Message =>
@@ -624,12 +663,14 @@ const chartsSectionView = (
   section: ChartSection,
   h: HtmlBuilder<Message>,
 ): Html => {
+  if (model.page._tag !== 'ChartsPage') return h.empty;
+  const page = model.page;
   return M.value(section).pipe(
     M.withReturnType<Html>(),
     M.when('area', () =>
       h.submodel({
         slotId: 'charts-area',
-        model: model.chartsArea,
+        model: page.area,
         view: chartsAreaView,
         toParentMessage: (message: ChartsArea.Message): Message =>
           GotChartsAreaMessage({ message }),
@@ -638,7 +679,7 @@ const chartsSectionView = (
     M.when('bar', () =>
       h.submodel({
         slotId: 'charts-bar',
-        model: model.chartsBar,
+        model: page.bar,
         view: chartsBarView,
         toParentMessage: (message: ChartsBar.Message): Message =>
           GotChartsBarMessage({ message }),
@@ -647,7 +688,7 @@ const chartsSectionView = (
     M.when('line', () =>
       h.submodel({
         slotId: 'charts-line',
-        model: model.chartsLine,
+        model: page.line,
         view: chartsLineView,
         toParentMessage: (message: ChartsLine.Message): Message =>
           GotChartsLineMessage({ message }),
@@ -656,7 +697,7 @@ const chartsSectionView = (
     M.when('pie', () =>
       h.submodel({
         slotId: 'charts-pie',
-        model: model.chartsPie,
+        model: page.pie,
         view: chartsPieView,
         toParentMessage: (message: ChartsPie.Message): Message =>
           GotChartsPieMessage({ message }),
@@ -665,7 +706,7 @@ const chartsSectionView = (
     M.when('radar', () =>
       h.submodel({
         slotId: 'charts-radar',
-        model: model.chartsRadar,
+        model: page.radar,
         view: chartsRadarView,
         toParentMessage: (message: ChartsRadar.Message): Message =>
           GotChartsRadarMessage({ message }),
@@ -674,7 +715,7 @@ const chartsSectionView = (
     M.when('radial', () =>
       h.submodel({
         slotId: 'charts-radial',
-        model: model.chartsRadial,
+        model: page.radial,
         view: chartsRadialView,
         toParentMessage: (message: ChartsRadial.Message): Message =>
           GotChartsRadialMessage({ message }),
@@ -683,7 +724,7 @@ const chartsSectionView = (
     M.when('tooltip', () =>
       h.submodel({
         slotId: 'charts-tooltip',
-        model: model.chartsTooltip,
+        model: page.tooltip,
         view: chartsTooltipView,
         toParentMessage: (message: ChartsTooltip.Message): Message =>
           GotChartsTooltipMessage({ message }),
@@ -755,27 +796,31 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
     M.withReturnType<Html>(),
     M.tagsExhaustive({
       Home: () =>
-        keyed(
-          'page-home',
-          h.submodel({
-            slotId: 'landing',
-            model: model.landing,
-            view: landingView,
-            toParentMessage: (message: Landing.Message): Message =>
-              GotLandingMessage({ message }),
-          }),
-        ),
+        model.page._tag === 'LandingPage'
+          ? keyed(
+              'page-home',
+              h.submodel({
+                slotId: 'landing',
+                model: model.page.landing,
+                view: landingView,
+                toParentMessage: (message: Landing.Message): Message =>
+                  GotLandingMessage({ message }),
+              }),
+            )
+          : keyed('page-not-found', notFoundView('/', h)),
       Create: () =>
-        keyed(
-          'page-create',
-          h.submodel({
-            slotId: 'create-board',
-            model: model.board,
-            view: boardView,
-            toParentMessage: (message: Board.Message): Message =>
-              GotBoardMessage({ message }),
-          }),
-        ),
+        model.page._tag === 'CreatePage'
+          ? keyed(
+              'page-create',
+              h.submodel({
+                slotId: 'create-board',
+                model: model.page.board,
+                view: boardView,
+                toParentMessage: (message: Board.Message): Message =>
+                  GotBoardMessage({ message }),
+              }),
+            )
+          : keyed('page-not-found', notFoundView(createPath(), h)),
       Charts: ({ section }) =>
         isChartSection(section)
           ? keyed(
@@ -787,34 +832,35 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
       Block: ({ blockId }) =>
         keyed(`page-block-${blockId}`, blocksView(model, blockId, h)),
       ComponentDocs: ({ component }) =>
-        component === 'accordion'
+        component === 'accordion' && model.page._tag === 'AccordionDocsPage'
           ? keyed(
               'page-docs-accordion',
               h.submodel({
                 slotId: 'docs-accordion',
-                model: model.accordionDocs,
+                model: model.page.docs,
                 view: accordionDocsView,
                 toParentMessage: (message: AccordionDocs.Message): Message =>
                   GotAccordionDocsMessage({ message }),
               }),
             )
-          : component === 'calendar'
+          : component === 'calendar' && model.page._tag === 'CalendarDocsPage'
             ? keyed(
                 'page-docs-calendar',
                 h.submodel({
                   slotId: 'docs-calendar',
-                  model: model.calendarDocs,
+                  model: model.page.docs,
                   view: calendarDocsView,
                   toParentMessage: (message: CalendarDocs.Message): Message =>
                     GotCalendarDocsMessage({ message }),
                 }),
               )
-            : ComponentCatalog.hasCatalogPage(component)
+            : ComponentCatalog.hasCatalogPage(component) &&
+                model.page._tag === 'CatalogDocsPage'
               ? keyed(
                   `page-docs-${component}`,
                   h.submodel({
                     slotId: `docs-${component}`,
-                    model: model.catalogDocs,
+                    model: model.page.docs,
                     view: catalogDocsView,
                     viewInputs: component,
                     toParentMessage: (
