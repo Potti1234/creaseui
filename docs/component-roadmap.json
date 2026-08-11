@@ -26,7 +26,58 @@
     "recipe": ["data-table", "date-picker", "typography"],
     "legacy": ["toast"]
   },
-  "fidelity": [],
+  "fidelity": [
+    {
+      "component": "carousel",
+      "priority": "P1",
+      "gap": "Add browser contracts for keyboard navigation, loop boundaries, multi-slide stepping, and focus retention."
+    },
+    {
+      "component": "chart",
+      "priority": "P1",
+      "gap": "Add visual regression coverage for token resolution, responsive resize, tooltip content, and dark mode."
+    },
+    {
+      "component": "command",
+      "priority": "P1",
+      "gap": "Add browser contracts for filtering, grouped results, empty state, active descendant, and selection."
+    },
+    {
+      "component": "context-menu",
+      "priority": "P1",
+      "gap": "Add pointer-coordinate, keyboard fallback, focus return, submenu, and viewport-collision browser contracts."
+    },
+    {
+      "component": "menubar",
+      "priority": "P1",
+      "gap": "Add browser contracts for left/right wrapping, submenu navigation, Escape, and focus restoration."
+    },
+    {
+      "component": "navigation-menu",
+      "priority": "P2",
+      "gap": "Add browser contracts for disclosure semantics, keyboard traversal, focus restoration, and responsive layout."
+    },
+    {
+      "component": "resizable",
+      "priority": "P1",
+      "gap": "Add pointer and keyboard resizing contracts with minimum-size and total-width invariants."
+    },
+    {
+      "component": "scroll-area",
+      "priority": "P2",
+      "gap": "Add cross-browser keyboard and high-contrast coverage for native scrollbars."
+    },
+    {
+      "component": "slider",
+      "priority": "P1",
+      "gap": "Add browser contracts for keyboard steps, range thumb constraints, orientation, and ARIA values."
+    },
+    {
+      "component": "tooltip",
+      "priority": "P1",
+      "gap": "Add hover, focus, touch dismissal, delay cancellation, collision, and accessible-description contracts."
+    }
+  ],
   "intentionalDifferences": [
     {
       "component": "chart",

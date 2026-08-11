@@ -9,10 +9,14 @@ styling and interaction reference.
 1. Create a focused branch and identify the upstream shadcn/ui source and commit.
 2. Find the closest Foldkit UI primitive or canonical Foldkit example before
    designing an API.
-3. Implement one coherent component or component family, including a small demo.
-4. Record intentional differences in `docs/component-parity.md`.
-5. Run `npm run typecheck` and `npm run build`.
-6. Verify keyboard, focus, accessible naming, light/dark tokens, and the relevant
+3. Scaffold a new primitive with `npm run component:create -- component-name`
+   when applicable, then implement one coherent component or component family.
+4. Add its real preview, component-specific examples, registry metadata, and a
+   capability entry in `docs/component-roadmap.json`.
+5. Add model tests plus Scene or browser tests for every stateful interaction.
+6. Record intentional differences in `docs/component-parity.md`.
+7. Run `npm run check:full`.
+8. Verify keyboard, focus, accessible naming, light/dark tokens, and the relevant
    responsive states in a browser.
 
 Keep commits small and dependency ordered. A foundation or utility should land

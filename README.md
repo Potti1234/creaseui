@@ -31,8 +31,17 @@ Before submitting a change, run:
 npm run check
 ```
 
-The GitHub registry publishes the component catalog, shared utilities, and the
-Crease theme:
+The registry publishes the component catalog, shared utilities, and the Crease
+theme. The dedicated CLI keeps the common workflow concise:
+
+```sh
+npx creaseui doctor
+npx creaseui init
+npx creaseui add button dialog
+npx creaseui diff dialog
+```
+
+The underlying shadcn CLI remains available directly:
 
 ```sh
 npx --yes shadcn@latest add Potti1234/creaseui/button --yes
@@ -67,6 +76,9 @@ The registry guide also documents tag- and commit-pinned installs.
 - [Upstream provenance](docs/provenance.md) records the projects this work builds
   on and the policy for future ports.
 - [Contributing](CONTRIBUTING.md) describes the component and commit workflow.
+- [Changelog](CHANGELOG.md) records user-visible changes and migration notes.
+- [`llms.txt`](public/llms.txt) gives coding agents a compact, canonical map of
+  the project and its Foldkit conventions.
 
 ## Credits
 

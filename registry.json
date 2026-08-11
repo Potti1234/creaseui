@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "creaseui",
-  "homepage": "https://github.com/Potti1234/creaseui",
+  "homepage": "https://creaseui.com",
   "include": [
     "registry/theme/registry.json",
     "registry/presets/registry.json",

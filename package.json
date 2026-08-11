@@ -10,7 +10,10 @@
   "bugs": {
     "url": "https://github.com/Potti1234/creaseui/issues"
   },
-  "homepage": "https://github.com/Potti1234/creaseui#readme",
+  "homepage": "https://creaseui.com",
+  "bin": {
+    "crease": "scripts/crease.mjs"
+  },
   "engines": {
     "node": ">=22.6.0"
   },
@@ -31,7 +34,9 @@
     "registry:build": "npx --yes shadcn@latest build registry.json --output .registry",
     "registry:generate": "node scripts/generate-ui-registry.mjs",
     "registry:install-local": "node scripts/install-local-registry.mjs",
-    "test:registry": "node scripts/verify-registry-install.mjs"
+    "test:registry": "node scripts/verify-registry-install.mjs",
+    "parity:check": "node scripts/check-upstream-parity.mjs",
+    "component:create": "node scripts/create-component.mjs"
   },
   "dependencies": {
     "@effect/platform-browser": "4.0.0-beta.102",

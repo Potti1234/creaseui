@@ -1,0 +1,28 @@
+# crease/ui
+
+crease/ui is an MIT-licensed, source-owned component distribution for Foldkit.
+It ports the shadcn/ui visual language and CSS token contract while keeping
+Foldkit's Elm-style architecture authoritative for state and behavior.
+
+Canonical resources:
+- Documentation: https://creaseui.com/
+- Repository: https://github.com/Potti1234/creaseui
+- Architecture: https://github.com/Potti1234/creaseui/blob/main/docs/architecture.md
+- Component catalog: https://github.com/Potti1234/creaseui/blob/main/docs/component-catalog.md
+- Parity ledger: https://github.com/Potti1234/creaseui/blob/main/docs/component-parity.md
+- Registry guide: https://github.com/Potti1234/creaseui/blob/main/docs/registry.md
+
+Installation:
+- `npx creaseui init`
+- `npx creaseui add button dialog`
+- `npx creaseui diff dialog`
+
+Rules for generated code:
+- Stateful Foldkit UI primitives keep Model, Message, update, and OutMessage.
+- Embed stateful children with `h.submodel` and wrap messages with `Got*`.
+- Stateless helpers are direct view functions and do not become submodels.
+- Model, update, init, and view stay pure; side effects use Commands, Flags,
+  Subscriptions, Mounts, or ManagedResources according to their cause.
+- Use the semantic theme tokens rather than hard-coded component colors.
+- Use one effective `h.Class` attribute per element and merge classes with `cn`.
+- Prefer the crease/ui registry source over recreating raw accessible widgets.
