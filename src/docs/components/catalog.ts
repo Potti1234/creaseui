@@ -11,7 +11,8 @@ import { definitions as earlyDefinitions } from '@/docs/components/definitions/a
 import { definitions as middleDefinitions } from '@/docs/components/definitions/context-to-pagination';
 import { definitions as lateDefinitions } from '@/docs/components/definitions/popover-to-typography';
 import type { PageDefinitions } from '@/docs/components/page-definition';
-import { completeExample } from '@/docs/components/complete-example';
+import { generatedExampleSources } from '@/docs/components/generated-example-sources';
+import { componentApi } from '@/docs/generated-component-api';
 
 const definitions: PageDefinitions = {
   ...earlyDefinitions,
@@ -156,12 +157,8 @@ export const view = (
         definition.composition ??
         `${name}\n├── Model / init / update\n├── ${primaryExport(slug)} view\n└── Source-owned styles and composition`,
       examples: definition.examples.map((config, index) => {
-        const completeCode = completeExample({
-          componentName: name.replaceAll(' ', ''),
-          componentSlug: slug,
-          exampleName: config.title,
-          viewCode: config.code,
-        });
+        const exampleCode =
+          generatedExampleSources[`${slug}/${config.title}`] ?? config.code;
         const previewView = defineView<State.Model, State.Message>(
           (exampleModel, h) => config.preview(exampleModel, h),
         );
@@ -179,9 +176,9 @@ export const view = (
               toParentMessage: (message: State.Message): Message =>
                 GotExampleMessage({ index, message }),
             }),
-            code: completeCode,
-            onCopy: CopyFeedback.ClickedCopyCode({ code: completeCode }),
-            isCopied: model.copiedCode === completeCode,
+            code: exampleCode,
+            onCopy: CopyFeedback.ClickedCopyCode({ code: exampleCode }),
+            isCopied: model.copiedCode === exampleCode,
             ...(config.previewClass === undefined
               ? {}
               : { previewClass: config.previewClass }),
@@ -194,6 +191,7 @@ export const view = (
       apiDescription:
         definition.apiDescription ??
         `${name} is source-owned after installation. Its public model, messages, update function, and view helpers are documented directly in the installed TypeScript source.`,
+      apiEntries: componentApi[slug] ?? [],
     },
     h,
   );

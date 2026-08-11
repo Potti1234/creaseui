@@ -1,0 +1,1351 @@
+# crease/ui
+
+> The shadcn/ui design language rebuilt as source-owned Foldkit components. No React or JSX.
+
+## Primary documentation
+
+- Architecture: /docs/architecture.md
+- Registry installation: /docs/registry.md
+- Create presets: /docs/create-presets.md
+- Component parity: /docs/component-parity.md
+- Machine-readable component index: /docs-index.json
+- Complete API inventory: /llms-full.txt
+
+## Components
+
+- Accordion: /docs/components/accordion — install with `npx shadcn@latest add Potti1234/creaseui/accordion`
+- Alert Dialog: /docs/components/alert-dialog — install with `npx shadcn@latest add Potti1234/creaseui/alert-dialog`
+- Alert: /docs/components/alert — install with `npx shadcn@latest add Potti1234/creaseui/alert`
+- Aspect Ratio: /docs/components/aspect-ratio — install with `npx shadcn@latest add Potti1234/creaseui/aspect-ratio`
+- Attachment: /docs/components/attachment — install with `npx shadcn@latest add Potti1234/creaseui/attachment`
+- Avatar: /docs/components/avatar — install with `npx shadcn@latest add Potti1234/creaseui/avatar`
+- Badge: /docs/components/badge — install with `npx shadcn@latest add Potti1234/creaseui/badge`
+- Breadcrumb: /docs/components/breadcrumb — install with `npx shadcn@latest add Potti1234/creaseui/breadcrumb`
+- Bubble: /docs/components/bubble — install with `npx shadcn@latest add Potti1234/creaseui/bubble`
+- Button Group: /docs/components/button-group — install with `npx shadcn@latest add Potti1234/creaseui/button-group`
+- Button: /docs/components/button — install with `npx shadcn@latest add Potti1234/creaseui/button`
+- Calendar: /docs/components/calendar — install with `npx shadcn@latest add Potti1234/creaseui/calendar`
+- Card: /docs/components/card — install with `npx shadcn@latest add Potti1234/creaseui/card`
+- Carousel: /docs/components/carousel — install with `npx shadcn@latest add Potti1234/creaseui/carousel`
+- Chart: /docs/components/chart — install with `npx shadcn@latest add Potti1234/creaseui/chart`
+- Checkbox: /docs/components/checkbox — install with `npx shadcn@latest add Potti1234/creaseui/checkbox`
+- Collapsible: /docs/components/collapsible — install with `npx shadcn@latest add Potti1234/creaseui/collapsible`
+- Combobox: /docs/components/combobox — install with `npx shadcn@latest add Potti1234/creaseui/combobox`
+- Command: /docs/components/command — install with `npx shadcn@latest add Potti1234/creaseui/command`
+- Context Menu: /docs/components/context-menu — install with `npx shadcn@latest add Potti1234/creaseui/context-menu`
+- Data Table: /docs/components/data-table — install with `npx shadcn@latest add Potti1234/creaseui/data-table`
+- Date Picker: /docs/components/date-picker — install with `npx shadcn@latest add Potti1234/creaseui/date-picker`
+- Dialog: /docs/components/dialog — install with `npx shadcn@latest add Potti1234/creaseui/dialog`
+- Direction: /docs/components/direction — install with `npx shadcn@latest add Potti1234/creaseui/direction`
+- Drawer: /docs/components/drawer — install with `npx shadcn@latest add Potti1234/creaseui/drawer`
+- Dropdown Menu: /docs/components/dropdown-menu — install with `npx shadcn@latest add Potti1234/creaseui/dropdown-menu`
+- Empty: /docs/components/empty — install with `npx shadcn@latest add Potti1234/creaseui/empty`
+- Field: /docs/components/field — install with `npx shadcn@latest add Potti1234/creaseui/field`
+- Form: /docs/components/form — install with `npx shadcn@latest add Potti1234/creaseui/form`
+- Hover Card: /docs/components/hover-card — install with `npx shadcn@latest add Potti1234/creaseui/hover-card`
+- Input Group: /docs/components/input-group — install with `npx shadcn@latest add Potti1234/creaseui/input-group`
+- Input Otp: /docs/components/input-otp — install with `npx shadcn@latest add Potti1234/creaseui/input-otp`
+- Input: /docs/components/input — install with `npx shadcn@latest add Potti1234/creaseui/input`
+- Item: /docs/components/item — install with `npx shadcn@latest add Potti1234/creaseui/item`
+- Kbd: /docs/components/kbd — install with `npx shadcn@latest add Potti1234/creaseui/kbd`
+- Label: /docs/components/label — install with `npx shadcn@latest add Potti1234/creaseui/label`
+- Marker: /docs/components/marker — install with `npx shadcn@latest add Potti1234/creaseui/marker`
+- Menubar: /docs/components/menubar — install with `npx shadcn@latest add Potti1234/creaseui/menubar`
+- Message Scroller: /docs/components/message-scroller — install with `npx shadcn@latest add Potti1234/creaseui/message-scroller`
+- Message: /docs/components/message — install with `npx shadcn@latest add Potti1234/creaseui/message`
+- Native Select: /docs/components/native-select — install with `npx shadcn@latest add Potti1234/creaseui/native-select`
+- Navigation Menu: /docs/components/navigation-menu — install with `npx shadcn@latest add Potti1234/creaseui/navigation-menu`
+- Pagination: /docs/components/pagination — install with `npx shadcn@latest add Potti1234/creaseui/pagination`
+- Popover: /docs/components/popover — install with `npx shadcn@latest add Potti1234/creaseui/popover`
+- Progress: /docs/components/progress — install with `npx shadcn@latest add Potti1234/creaseui/progress`
+- Radio Group: /docs/components/radio-group — install with `npx shadcn@latest add Potti1234/creaseui/radio-group`
+- Resizable: /docs/components/resizable — install with `npx shadcn@latest add Potti1234/creaseui/resizable`
+- Scroll Area: /docs/components/scroll-area — install with `npx shadcn@latest add Potti1234/creaseui/scroll-area`
+- Select: /docs/components/select — install with `npx shadcn@latest add Potti1234/creaseui/select`
+- Separator: /docs/components/separator — install with `npx shadcn@latest add Potti1234/creaseui/separator`
+- Sheet: /docs/components/sheet — install with `npx shadcn@latest add Potti1234/creaseui/sheet`
+- Sidebar: /docs/components/sidebar — install with `npx shadcn@latest add Potti1234/creaseui/sidebar`
+- Skeleton: /docs/components/skeleton — install with `npx shadcn@latest add Potti1234/creaseui/skeleton`
+- Slider: /docs/components/slider — install with `npx shadcn@latest add Potti1234/creaseui/slider`
+- Sonner: /docs/components/sonner — install with `npx shadcn@latest add Potti1234/creaseui/sonner`
+- Spinner: /docs/components/spinner — install with `npx shadcn@latest add Potti1234/creaseui/spinner`
+- Switch: /docs/components/switch — install with `npx shadcn@latest add Potti1234/creaseui/switch`
+- Table: /docs/components/table — install with `npx shadcn@latest add Potti1234/creaseui/table`
+- Tabs: /docs/components/tabs — install with `npx shadcn@latest add Potti1234/creaseui/tabs`
+- Textarea: /docs/components/textarea — install with `npx shadcn@latest add Potti1234/creaseui/textarea`
+- Toast: /docs/components/toast — install with `npx shadcn@latest add Potti1234/creaseui/toast`
+- Toggle Group: /docs/components/toggle-group — install with `npx shadcn@latest add Potti1234/creaseui/toggle-group`
+- Toggle: /docs/components/toggle — install with `npx shadcn@latest add Potti1234/creaseui/toggle`
+- Tooltip: /docs/components/tooltip — install with `npx shadcn@latest add Potti1234/creaseui/tooltip`
+- Typography: /docs/components/typography — install with `npx shadcn@latest add Potti1234/creaseui/typography`
+
+## API inventory
+
+### Accordion
+
+A shadcn-styled Accordion component for Foldkit.
+
+Source: `src/ui/accordion.ts`
+
+Examples: Basic, Multiple, Disabled, Borders, Card, RTL
+
+- `AccordionType: value` (value)
+- `AccordionType = typeof AccordionType.Type` (type)
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `GotDisclosureMessage: value` (value)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `ToggledItem: value` (value)
+- `OutMessage: value` (value)
+- `OutMessage = typeof OutMessage.Type` (type)
+- `AccordionInitItem = Readonly<{ value: string; isOpen?: boolean; }>` (type)
+- `InitConfig = Readonly<{ id: string; type?: AccordionType; items: ReadonlyArray<AccordionInitItem>; }>` (type)
+- `init(config: InitConfig): Model` (function)
+- `update(model: Model, message: Message): UpdateReturn` (function)
+- `AccordionItem = Readonly<{ value: string; trigger: Html | string; content: Html | string; isDisabled?: boolean; }>` (type)
+- `AccordionProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<AccordionItem>; class?: string; itemClass?: string; triggerClass?: string; contentClass?: string; }>` (type)
+- `accordion<Msg>(props: AccordionProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Alert Dialog
+
+A shadcn-styled Alert Dialog component for Foldkit.
+
+Source: `src/ui/alert-dialog.ts`
+
+Examples: Basic, Small, Media, Small with Media, Destructive, RTL
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `OutMessage: value` (value)
+- `OutMessage = typeof OutMessage.Type` (type)
+- `init: value` (value)
+- `update: value` (value)
+- `open: value` (value)
+- `close: value` (value)
+- `AlertDialogSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; }>` (type)
+- `AlertDialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; media?: ReadonlyArray<Html | string>; actionLabel: string; cancelLabel?: string; size?: 'default' | 'sm'; actionClass?: string; c…` (type)
+- `alertDialog<Msg>(props: AlertDialogProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Alert
+
+A shadcn-styled Alert component for Foldkit.
+
+Source: `src/ui/alert.ts`
+
+Examples: Basic, Destructive, Action, Custom Colors, RTL
+
+- `alertVariants: value` (value)
+- `AlertVariants = VariantProps<typeof alertVariants>` (type)
+- `AlertProps = Slot & Readonly<{ variant?: AlertVariants['variant']; }>` (type)
+- `alert<Msg>(props: AlertProps, h: HtmlBuilder<Msg>): Html` (function)
+- `alertTitle<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
+- `alertDescription<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
+
+### Aspect Ratio
+
+A shadcn-styled Aspect Ratio component for Foldkit.
+
+Source: `src/ui/aspect-ratio.ts`
+
+Examples: Basic, Square, Portrait, RTL
+
+- `AspectRatioProps = Readonly<{ ratio: number; class?: string; children: ReadonlyArray<Html | string>; }>` (type)
+- `aspectRatio<Msg>(props: AspectRatioProps, h: HtmlBuilder<Msg>): Html` (function)
+
+### Attachment
+
+A shadcn-styled Attachment component for Foldkit.
+
+Source: `src/ui/attachment.ts`
+
+Examples: Basic, Image, States, Sizes, Group, Trigger
+
+- `attachmentVariants: value` (value)
+- `AttachmentState = 'idle' | 'uploading' | 'processing' | 'error' | 'done'` (type)
+- `attachment<Msg>(props: ChildrenProps & Readonly<{ state?: AttachmentState; size?: VariantProps<typeof attachmentVariants>['size']; orientation?: VariantProps<typeof attachmentVariants>['orientation']; }>, h: HtmlBuilder<Msg>): Html` (function)
+- `attachmentMedia<Msg>(props: ChildrenProps & Readonly<{ variant?: 'icon' | 'image' }>, h: HtmlBuilder<Msg>): Html` (function)
+- `attachmentContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+- `attachmentActions<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+- `attachmentGroup<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+- `attachmentTitle<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+- `attachmentDescription<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+- `attachmentTrigger<Msg>(props: Readonly<{ onClick: Msg; label: string; class?: string }>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Avatar
+
+A shadcn-styled Avatar component for Foldkit.
+
+Source: `src/ui/avatar.ts`
+
+Examples: Basic, Badge, Badge with Icon, Avatar Group, Avatar Group Count, Avatar Group with Icon, Sizes, Dropdown, RTL
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Loaded: value` (value)
+- `Failed: value` (value)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `init(): Model` (function)
+- `update(_model: Model, message: Message): Model` (function)
+- `AvatarProps = Readonly<{ size?: 'default' | 'sm' | 'lg'; class?: string; children: ReadonlyArray<Html | string>; }>` (type)
+- `avatar<Msg>(props: AvatarProps, h: HtmlBuilder<Msg>): Html` (function)
+- `AvatarImageProps = Readonly<{ src: string; alt: string; class?: string; model?: Model; }>` (type)
+- `avatarImage<Msg>(props: AvatarImageProps & Readonly<{ toParentMessage?: (message: Message) => Msg }>, h: HtmlBuilder<Msg>): Html` (function)
+- `AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; model?: Model; }>` (type)
+- `avatarFallback<Msg>(props: AvatarFallbackProps, h: HtmlBuilder<Msg>): Html` (function)
+
+### Badge
+
+A shadcn-styled Badge component for Foldkit.
+
+Source: `src/ui/badge.ts`
+
+Examples: Basic, Variants, With Icon, With Spinner, Link, Custom Colors, RTL
+
+- `badgeVariants: value` (value)
+- `BadgeVariants = VariantProps<typeof badgeVariants>` (type)
+- `BadgeProps = Readonly<{ children: ReadonlyArray<Html | string>; variant?: BadgeVariants['variant']; class?: string; }>` (type)
+- `badge<Msg>(props: BadgeProps, h: HtmlBuilder<Msg>): Html` (function)
+
+### Breadcrumb
+
+A shadcn-styled Breadcrumb component for Foldkit.
+
+Source: `src/ui/breadcrumb.ts`
+
+Examples: Basic, Custom separator, Dropdown, Collapsed, Link component, RTL
+
+- `BreadcrumbProps = Slot` (type)
+- `breadcrumb<Msg>(props: BreadcrumbProps, h: HtmlBuilder<Msg>): Html` (function)
+- `breadcrumbList<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
+- `breadcrumbItem<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
+- `BreadcrumbLinkProps = Slot & Readonly<{ href: string; }>` (type)
+- `breadcrumbLink<Msg>(props: BreadcrumbLinkProps, h: HtmlBuilder<Msg>): Html` (function)
+- `breadcrumbPage<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
+- `BreadcrumbSeparatorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html | string>; }>` (type)
+- `breadcrumbSeparator<Msg>(props: BreadcrumbSeparatorProps = {}, h: HtmlBuilder<Msg>): Html` (function)
+- `BreadcrumbEllipsisProps = Readonly<{ class?: string; }>` (type)
+- `breadcrumbEllipsis<Msg>(props: BreadcrumbEllipsisProps = {}, h: HtmlBuilder<Msg>): Html` (function)
+
+### Bubble
+
+A shadcn-styled Bubble component for Foldkit.
+
+Source: `src/ui/bubble.ts`
+
+Examples: Basic, Variants, Alignment, Bubble Group, Links and Buttons, Reactions, Show More / Collapsible, Tooltip, Popover
+
+- `bubbleVariants: value` (value)
+- `BubbleVariant = VariantProps<typeof bubbleVariants>['variant']` (type)
+- `bubbleGroup<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+- `bubble<Msg>(props: ChildrenProps & Readonly<{ variant?: BubbleVariant; align?: 'start' | 'end' }>, h: HtmlBuilder<Msg>): Html` (function)
+- `bubbleContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+- `bubbleReactions<Msg>(props: ChildrenProps & Readonly<{ side?: 'top' | 'bottom'; align?: 'start' | 'end' }>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Button Group
+
+A shadcn-styled Button Group component for Foldkit.
+
+Source: `src/ui/button-group.ts`
+
+Examples: Basic, Orientation, Size, Nested, Separator, Split, Input, Input Group, Dropdown Menu, Select, Popover, RTL
+
+- `buttonGroupVariants: value` (value)
+- `ButtonGroupVariants = VariantProps<typeof buttonGroupVariants>` (type)
+- `ButtonGroupProps = Readonly<{ children: ReadonlyArray<Html | string>; orientation?: ButtonGroupVariants['orientation']; class?: string; }>` (type)
+- `buttonGroup<Msg>(props: ButtonGroupProps, h: HtmlBuilder<Msg>): Html` (function)
+- `ButtonGroupSeparatorProps = Readonly<{ orientation?: 'horizontal' | 'vertical'; class?: string; }>` (type)
+- `buttonGroupSeparator<Msg>(props: ButtonGroupSeparatorProps = {}, h: HtmlBuilder<Msg>): Html` (function)
+- `ButtonGroupTextProps = Readonly<{ children: ReadonlyArray<Html | string>; class?: string; }>` (type)
+- `buttonGroupText<Msg>(props: ButtonGroupTextProps, h: HtmlBuilder<Msg>): Html` (function)
+
+### Button
+
+A shadcn-styled Button component for Foldkit.
+
+Source: `src/ui/button.ts`
+
+Examples: Basic, Size, Default, Outline, Secondary, Ghost, Destructive, Link, Icon, With Icon, Rounded, Spinner, Button Group, As Link, RTL
+
+- `buttonVariants: value` (value)
+- `ButtonVariants = VariantProps<typeof buttonVariants>` (type)
+- `ButtonProps<Msg> = Readonly<{ children: ReadonlyArray<Html | string>; onClick?: Msg; variant?: ButtonVariants['variant']; size?: ButtonVariants['size']; isDisabled?: boolean; type?: 'button' | 'submit' | 'reset'; class?: string; slot?: string; dataSize?: stri…` (type)
+- `button<Msg>(props: ButtonProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `ButtonLinkProps = Readonly<{ children: ReadonlyArray<Html | string>; href: string; variant?: ButtonVariants['variant']; size?: ButtonVariants['size']; class?: string; target?: '_blank' | '_self'; }>` (type)
+- `buttonLink<Msg>(props: ButtonLinkProps, h: HtmlBuilder<Msg>): Html` (function)
+
+### Calendar
+
+A shadcn-styled Calendar component for Foldkit.
+
+Source: `src/ui/calendar.ts`
+
+Examples: Basic, Selected Date, Disabled Dates, Custom Cell Size, RTL
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `OutMessage: value` (value)
+- `OutMessage = typeof OutMessage.Type` (type)
+- `init: value` (value)
+- `update: value` (value)
+- `selectDate: value` (value)
+- `focusDate: value` (value)
+- `reflectMinDate: value` (value)
+- `reflectMaxDate: value` (value)
+- `reflectDisabledDates: value` (value)
+- `reflectDisabledDaysOfWeek: value` (value)
+- `dropToDays: value` (value)
+- `CalendarViewOptions = Readonly<{ class?: string; }>` (type)
+- `calendarView<Msg>(attributes: CalendarPrimitive.CalendarAttributes, options: CalendarViewOptions, h: HtmlBuilder<Msg>): Html` (function)
+- `CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; class?: string; previousMonthLabel?: string; nextMonthLabel?: string; previousYearsPageLabel?: string; ne…` (type)
+- `calendar<Msg>(props: CalendarProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Card
+
+A shadcn-styled Card component for Foldkit.
+
+Source: `src/ui/card.ts`
+
+Examples: Basic, Size, Spacing, Edge to Edge, Image, RTL
+
+- `CardProps = Slot & Readonly<{ element?: 'div' | 'section' | 'article'; }>` (type)
+- `card<Msg>(props: CardProps, h: HtmlBuilder<Msg>): Html` (function)
+- `cardHeader: value` (value)
+- `cardTitle: value` (value)
+- `cardDescription: value` (value)
+- `cardAction: value` (value)
+- `cardContent: value` (value)
+- `cardFooter: value` (value)
+
+### Carousel
+
+A shadcn-styled Carousel component for Foldkit.
+
+Source: `src/ui/carousel.ts`
+
+Examples: Basic, Sizes, Spacing, Orientation, API, Plugins, RTL
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Previous: value` (value)
+- `Next: value` (value)
+- `WentTo: value` (value)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `init(id: string, count: number, index = 0): Model` (function)
+- `update(model: Model, message: Message): Model` (function)
+- `CarouselProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Html | string>; ariaLabel?: string; orientation?: 'horizontal' | 'vertical'; loop?: boolean; /** Number of slides advanced by the controls. */ slide…` (type)
+- `carousel<Msg>(props: CarouselProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Chart
+
+A shadcn-styled Chart component for Foldkit.
+
+Source: `src/ui/chart.ts`
+
+Examples: Basic, Your First Chart, Add a Grid, Add an Axis, Add Tooltip, Add Legend, Tooltip, RTL
+
+- `ChartSeriesConfig = Readonly<{ label?: Html | string; color?: string; icon?: Html; }>` (type)
+- `ChartConfig = Readonly<Record<string, ChartSeriesConfig>>` (type)
+- `ChartContainerProps = Readonly<{ config: ChartConfig; children: ReadonlyArray<Html | string>; class?: string; ariaLabel?: string; }>` (type)
+- `chartContainer<Msg>(props: ChartContainerProps, h: HtmlBuilder<Msg>): Html` (function)
+- `ChartLegendProps = Readonly<{ config: ChartConfig; series?: ReadonlyArray<string>; class?: string; }>` (type)
+- `chartLegend<Msg>(props: ChartLegendProps, h: HtmlBuilder<Msg>): Html` (function)
+- `ChartTooltipItem = Readonly<{ key: string; value: Html | string }>` (type)
+- `chartTooltipContent<Msg>(props: Readonly<{ config: ChartConfig; label?: Html | string; items: ReadonlyArray<ChartTooltipItem>; class?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
+- `BarChartDatum = Readonly<{ label: string; value: number; }>` (type)
+- `BarChartProps = Readonly<{ data: ReadonlyArray<BarChartDatum>; class?: string; showXAxisLabels?: boolean; isCompact?: boolean; }>` (type)
+- `barChart<Msg>(props: BarChartProps, h: HtmlBuilder<Msg>): Html` (function)
+- `AreaChartProps = Readonly<{ data: ReadonlyArray<number>; class?: string; }>` (type)
+- `areaChart<Msg>(props: AreaChartProps, h: HtmlBuilder<Msg>): Html` (function)
+- `DonutChartProps = Readonly<{ value: number; max: number; label?: string; sublabel?: string; class?: string; }>` (type)
+- `donutChart<Msg>(props: DonutChartProps, h: HtmlBuilder<Msg>): Html` (function)
+
+### Checkbox
+
+A shadcn-styled Checkbox component for Foldkit.
+
+Source: `src/ui/checkbox.ts`
+
+Examples: Basic, Invalid State, Description, Disabled, Group, Table, RTL
+
+- `CheckboxProps<Msg> = Readonly<{ id: string; isChecked: boolean; onToggle: (isChecked: boolean) => Msg; label: string; description?: string; isDisabled?: boolean; isIndeterminate?: boolean; name?: string; value?: string; class?: string; }>` (type)
+- `checkbox<Msg>(props: CheckboxProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Collapsible
+
+A shadcn-styled Collapsible component for Foldkit.
+
+Source: `src/ui/collapsible.ts`
+
+Examples: Basic, Settings Panel, File Tree, RTL
+
+- `CollapsibleProps<Msg> = Readonly<{ id: string; isOpen: boolean; onToggle: (isOpen: boolean) => Msg; trigger: Html | string; content: Html | string; isDisabled?: boolean; ariaLabel?: string; class?: string; triggerClass?: string; contentClass?: string; }>` (type)
+- `collapsible<Msg>(props: CollapsibleProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Combobox
+
+A shadcn-styled Combobox component for Foldkit.
+
+Source: `src/ui/combobox.ts`
+
+Examples: Basic, Multiple, Clear Button, Groups, Custom Items, Invalid, Disabled, Auto Highlight, Popup, Input Group, RTL
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `OutMessage: value` (value)
+- `OutMessage<Value extends string = string> = ComboboxPrimitive.OutMessage<Value>` (type)
+- `init: value` (value)
+- `create: value` (value)
+- `update: value` (value)
+- `ComboboxSize = 'sm' | 'default'` (type)
+- `ComboboxItemConfig = Readonly<{ content?: Html | string; searchText?: string; class?: string; isDisabled?: boolean; }>` (type)
+- `ComboboxProps<Item, Value extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Value>; restingInputValue: string; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToValue: (item: Item) => Value; itemToLa…` (type)
+- `combobox<Item, Value extends string, Msg>(props: ComboboxProps<Item, Value, Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Command
+
+A shadcn-styled Command component for Foldkit.
+
+Source: `src/ui/command.ts`
+
+Examples: Basic, Shortcuts, Groups, Scrollable, RTL
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `OutMessage: value` (value)
+- `OutMessage<Item extends string = string> = ComboboxPrimitive.OutMessage<Item>` (type)
+- `init: value` (value)
+- `create: value` (value)
+- `update: value` (value)
+- `CommandItemConfig = Readonly<{ content: Html | string; searchText?: string; shortcut?: Html | string; class?: string; isDisabled?: boolean; }>` (type)
+- `CommandProps<Item extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Item>; restingInputValue: string; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => CommandItemConfig; plac…` (type)
+- `commandGroupHeading<Msg>(content: Html | string, className: string | undefined, h: HtmlBuilder<Msg>): Html` (function)
+- `commandShortcut<Msg>(content: Html | string, className: string | undefined, h: HtmlBuilder<Msg>): Html` (function)
+- `commandSeparator<Msg>(className: string | undefined, h: HtmlBuilder<Msg>): Html` (function)
+- `commandEmpty<Msg>(content: Html | string, className: string | undefined, h: HtmlBuilder<Msg>): Html` (function)
+- `command<Item extends string, Msg>(props: CommandProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `commandPalette: value` (value)
+
+### Context Menu
+
+A shadcn-styled Context Menu component for Foldkit.
+
+Source: `src/ui/context-menu.ts`
+
+Examples: Sides, RTL
+
+- `Model: value` (value)
+- `Model = DropdownMenu.Model` (type)
+- `Message: value` (value)
+- `Message = DropdownMenu.Message` (type)
+- `OutMessage<Item extends string = string> = DropdownMenu.OutMessage<Item>` (type)
+- `init: value` (value)
+- `create: value` (value)
+- `update: value` (value)
+- `open: value` (value)
+- `openAt: value` (value)
+- `close: value` (value)
+- `selectItem: value` (value)
+- `ContextMenuItemConfig = DropdownMenu.DropdownMenuItemConfig` (type)
+- `ContextMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => ContextMenuItemConfig; ariaLabel?: string; class?: string; }>` (type)
+- `contextMenu<Item extends string, Msg>(props: ContextMenuProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Data Table
+
+A shadcn-styled Data Table component for Foldkit.
+
+Source: `src/ui/data-table.ts`
+
+Examples: Basic Table, Cell Formatting, Row Actions, Pagination, Sorting, Filtering, Visibility, Row Selection, RTL
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Filtered: value` (value)
+- `Sorted: value` (value)
+- `ChangedPage: value` (value)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `init(pageSize = 10): Model` (function)
+- `update(model: Model, message: Message): Model` (function)
+- `DataTableColumn<Row> = Readonly<{ key: string; header: string; cell: (row: Row) => Html | string; sortValue?: (row: Row) => string | number; class?: string; }>` (type)
+- `DataTableProps<Row, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; rows: ReadonlyArray<Row>; columns: ReadonlyArray<DataTableColumn<Row>>; rowKey: (row: Row) => string; filterText?: (row: Row) => string; filterPlaceholder?: string…` (type)
+- `dataTable<Row, Msg>(props: DataTableProps<Row, Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Date Picker
+
+A shadcn-styled Date Picker component for Foldkit.
+
+Source: `src/ui/date-picker.ts`
+
+Examples: Basic, Range Picker, Date of Birth, Input, Time Picker, Natural Language Picker, RTL
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `OutMessage: value` (value)
+- `OutMessage = typeof OutMessage.Type` (type)
+- `init: value` (value)
+- `update: value` (value)
+- `open: value` (value)
+- `close: value` (value)
+- `selectDate: value` (value)
+- `clear: value` (value)
+- `focusDate: value` (value)
+- `reflectMinDate: value` (value)
+- `reflectMaxDate: value` (value)
+- `reflectDisabledDates: value` (value)
+- `reflectDisabledDaysOfWeek: value` (value)
+- `triggerId: value` (value)
+- `DatePickerProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; placeholder?: string; formatDate?: (date: FoldkitCalendar.CalendarDate) => string; name?: string; isDis…` (type)
+- `datePicker<Msg>(props: DatePickerProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Dialog
+
+A shadcn-styled Dialog component for Foldkit.
+
+Source: `src/ui/dialog.ts`
+
+Examples: Custom Close Button, No Close Button, Sticky Footer, Scrollable Content, RTL
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `OutMessage: value` (value)
+- `OutMessage = typeof OutMessage.Type` (type)
+- `init: value` (value)
+- `update: value` (value)
+- `open: value` (value)
+- `close: value` (value)
+- `FOOTER_CLASS: value` (value)
+- `DialogSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; initialFocusAttributes: () => ReadonlyArray<ChildAttribute>; }>` (type)
+- `DialogPartProps = Readonly<{ children: ReadonlyArray<Html | string>; class?: string; }>` (type)
+- `DialogTextPartProps = DialogPartProps & Readonly<{ attributes: ReadonlyArray<ChildAttribute> }>` (type)
+- `DialogCloseProps = Readonly<{ children?: ReadonlyArray<Html | string>; class?: string; ariaLabel?: string; }>` (type)
+- `dialogHeader<Msg>(props: DialogPartProps, h: HtmlBuilder<Msg>): Html` (function)
+- `dialogTitle<Msg>(props: DialogTextPartProps, h: HtmlBuilder<Msg>): Html` (function)
+- `dialogDescription<Msg>(props: DialogTextPartProps, h: HtmlBuilder<Msg>): Html` (function)
+- `dialogFooter<Msg>(props: DialogPartProps, h: HtmlBuilder<Msg>): Html` (function)
+- `DialogParts<Msg> = Readonly<{ header: (props: DialogPartProps) => Html; title: (props: Omit<DialogTextPartProps, 'attributes'>) => Html; description: (props: Omit<DialogTextPartProps, 'attributes'>) => Html; footer: (props: DialogPartProps) => Html; close: (p…` (type)
+- `DialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; content?: (slots: DialogSlots) => ReadonlyArray<Html>; footer?: (slots: DialogSlots) => ReadonlyArray<Html>; /** Replaces the default …` (type)
+- `dialog<Msg>(props: DialogProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Direction
+
+A shadcn-styled Direction component for Foldkit.
+
+Source: `src/ui/direction.ts`
+
+Examples: Usage, useDirection
+
+- `Direction = 'ltr' | 'rtl'` (type)
+- `direction<Msg>(props: Readonly<{ direction: Direction; children: ReadonlyArray<Html | string>; class?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Drawer
+
+A shadcn-styled Drawer component for Foldkit.
+
+Source: `src/ui/drawer.ts`
+
+Examples: Custom Sizes, Position, Swipe Handle, Nested, Non Modal, Snap Points, Responsive
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `GotDialogMessage: value` (value)
+- `StartedDrag: value` (value)
+- `Dragged: value` (value)
+- `EndedDrag: value` (value)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `OutMessage: value` (value)
+- `OutMessage = typeof OutMessage.Type` (type)
+- `init(config: DialogPrimitive.InitConfig): Model` (function)
+- `update(model: Model, message: Message): UpdateReturn` (function)
+- `open(model: Model): UpdateReturn` (function)
+- `close(model: Model): UpdateReturn` (function)
+- `DrawerDirection = 'top' | 'right' | 'bottom' | 'left'` (type)
+- `DrawerSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; }>` (type)
+- `DrawerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; content?: (slots: DrawerSlots) => ReadonlyArray<Html>; footer?: (slots: DrawerSlots) => ReadonlyArray<Html>; direction?: DrawerDirecti…` (type)
+- `drawer<Msg>(props: DrawerProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Dropdown Menu
+
+A shadcn-styled Dropdown Menu component for Foldkit.
+
+Source: `src/ui/dropdown-menu.ts`
+
+Examples: Checkboxes Icons, Radio Group, Radio Icons, Avatar, Complex, RTL
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Opened: value` (value)
+- `AnchoredAt: value` (value)
+- `OpenedFromContext: value` (value)
+- `OpenedAt: value` (value)
+- `Closed: value` (value)
+- `ActivatedItem: value` (value)
+- `OpenedSubmenu: value` (value)
+- `ActivatedSubmenuItem: value` (value)
+- `ClosedSubmenu: value` (value)
+- `SelectedItem: value` (value)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `Selected: value` (value)
+- `OutMessage: value` (value)
+- `OutMessage<Item extends string = string> = Readonly<{ _tag: 'Selected'; value: Item; index: number; }>` (type)
+- `init(config: Readonly<{ id: string; isAnimated?: boolean; isModal?: boolean }>): Model` (function)
+- `create<Item extends string = string>(): inferred` (function)
+- `update: value` (value)
+- `open: value` (value)
+- `openAt: value` (value)
+- `close: value` (value)
+- `selectItem: value` (value)
+- `DropdownMenuItemConfig = Readonly<{ label: Html | string; icon?: Html; shortcut?: Html | string; variant?: 'default' | 'destructive'; kind?: 'item' | 'checkbox' | 'radio'; isChecked?: boolean; isInset?: boolean; isDisabled?: boolean; group?: string; submenu?:…` (type)
+- `DropdownMenuSide = 'top' | 'right' | 'bottom' | 'left'` (type)
+- `DropdownMenuAlign = 'start' | 'center' | 'end'` (type)
+- `DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenuItemConfig; align?: Dropdow…` (type)
+- `dropdownMenu<Item extends string, Msg>(props: DropdownMenuProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Empty
+
+A shadcn-styled Empty component for Foldkit.
+
+Source: `src/ui/empty.ts`
+
+Examples: Outline, Background, Avatar, Avatar Group, InputGroup, RTL
+
+- `empty: value` (value)
+- `emptyHeader: value` (value)
+- `emptyMediaVariants: value` (value)
+- `EmptyMediaVariants = VariantProps<typeof emptyMediaVariants>` (type)
+- `EmptyMediaProps = SlotProps & Readonly<{ variant?: EmptyMediaVariants['variant']; }>` (type)
+- `emptyMedia<Msg>(props: EmptyMediaProps, h: HtmlBuilder<Msg>): Html` (function)
+- `emptyTitle: value` (value)
+- `emptyDescription: value` (value)
+- `emptyContent: value` (value)
+
+### Field
+
+A shadcn-styled Field component for Foldkit.
+
+Source: `src/ui/field.ts`
+
+Examples: Anatomy, Form, Input, Textarea, Select, Slider, Fieldset, Checkbox, Radio, Switch, Choice Card, Field Group, RTL, Responsive Layout, Validation and Errors
+
+- `FieldSetProps = Slot & Readonly<{ isDisabled?: boolean }>` (type)
+- `fieldSet<Msg>(props: FieldSetProps, h: HtmlBuilder<Msg>): Html` (function)
+- `FieldLegendProps = Slot & Readonly<{ variant?: 'legend' | 'label' }>` (type)
+- `fieldLegend<Msg>(props: FieldLegendProps, h: HtmlBuilder<Msg>): Html` (function)
+- `FieldGroupProps = Slot & Readonly<{ variant?: 'default' | 'outline' }>` (type)
+- `fieldGroup<Msg>(props: FieldGroupProps, h: HtmlBuilder<Msg>): Html` (function)
+- `fieldVariants: value` (value)
+- `FieldVariants = VariantProps<typeof fieldVariants>` (type)
+- `FieldProps = Slot & Readonly<{ orientation?: FieldVariants['orientation']; isInvalid?: boolean; isDisabled?: boolean; }>` (type)
+- `field<Msg>(props: FieldProps, h: HtmlBuilder<Msg>): Html` (function)
+- `fieldContent<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
+- `FieldLabelProps = Slot & Readonly<{ for?: string }>` (type)
+- `fieldLabel<Msg>(props: FieldLabelProps, h: HtmlBuilder<Msg>): Html` (function)
+- `fieldTitle<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
+- `fieldDescription<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
+- `FieldSeparatorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html | string>; }>` (type)
+- `fieldSeparator<Msg>(props: FieldSeparatorProps = {}, h: HtmlBuilder<Msg>): Html` (function)
+- `FieldError = Readonly<{ message?: string }> | undefined` (type)
+- `FieldErrorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html | string>; errors?: ReadonlyArray<FieldError>; }>` (type)
+- `fieldError<Msg>(props: FieldErrorProps = {}, h: HtmlBuilder<Msg>): Html` (function)
+
+### Form
+
+A shadcn-styled Form component for Foldkit.
+
+Source: `src/ui/form.ts`
+
+Examples: Basic, Validation, Async Submission, Disabled, Textarea, Date Picker
+
+- `FormProps<Msg> = Slot & Readonly<{ onSubmit?: Msg; ariaLabel?: string }>` (type)
+- `form<Msg>(props: FormProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `FormItemProps = Slot & Readonly<{ id: string; isInvalid?: boolean; isDisabled?: boolean }>` (type)
+- `formItem<Msg>(props: FormItemProps, h: HtmlBuilder<Msg>): Html` (function)
+- `FormLabelProps = Slot & Readonly<{ for: string }>` (type)
+- `formLabel<Msg>(props: FormLabelProps, h: HtmlBuilder<Msg>): Html` (function)
+- `FormDescriptionProps = Slot & Readonly<{ id?: string }>` (type)
+- `formDescription<Msg>(props: FormDescriptionProps, h: HtmlBuilder<Msg>): Html` (function)
+- `FormMessageProps = Readonly<{ id?: string; class?: string; message?: string; errors?: ReadonlyArray<Field.FieldError>; }>` (type)
+- `formMessage<Msg>(props: FormMessageProps = {}, h: HtmlBuilder<Msg>): Html` (function)
+- `formControlIds(id: string): Readonly<{
+  descriptionId: string;
+  messageId: string;
+  describedBy: string;
+}>` (function)
+
+### Hover Card
+
+A shadcn-styled Hover Card component for Foldkit.
+
+Source: `src/ui/hover-card.ts`
+
+Examples: Basic, Sides, RTL
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Entered: value` (value)
+- `Left: value` (value)
+- `CompletedWaitBeforeClosingHoverCard: value` (value)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `InitConfig = Readonly<{ id: string; closeDelay?: number; showDelay?: number; }>` (type)
+- `init(config: InitConfig): Model` (function)
+- `update(model: Model, message: Message): UpdateReturn` (function)
+- `reflectShowDelay(model: Model, _showDelay: number): Model` (function)
+- `HoverCardSide = 'top' | 'right' | 'bottom' | 'left'` (type)
+- `HoverCardAlign = 'start' | 'center' | 'end'` (type)
+- `HoverCardProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; content: Html | string; align?: HoverCardAlign; side?: HoverCardSide; isDisabled?: boolean; ariaLabel?: string; triggerClass?: string; class?: s…` (type)
+- `hoverCard<Msg>(props: HoverCardProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Input Group
+
+A shadcn-styled Input Group component for Foldkit.
+
+Source: `src/ui/input-group.ts`
+
+Examples: Align — inline-start, Align — inline-end, Align — block-start, Align — block-end, Icon, Text, Button, Kbd, Dropdown, Spinner, Textarea, Custom Input, RTL
+
+- `inputGroup<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
+- `inputGroupAddonVariants: value` (value)
+- `InputGroupAddonVariants = VariantProps< typeof inputGroupAddonVariants >` (type)
+- `InputGroupAddonProps<Msg = never> = SlotProps & Readonly<{ align?: InputGroupAddonVariants['align']; focusControlId?: string; onFocus?: Msg; }>` (type)
+- `inputGroupAddon<Msg>(props: InputGroupAddonProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `inputGroupButtonVariants: value` (value)
+- `InputGroupButtonVariants = VariantProps< typeof inputGroupButtonVariants >` (type)
+- `InputGroupButtonProps<Msg> = Omit< ButtonProps<Msg>, 'size' | 'class' > & Readonly<{ size?: InputGroupButtonVariants['size']; class?: string; }>` (type)
+- `inputGroupButton<Msg>(props: InputGroupButtonProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `inputGroupText<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
+- `InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; class?: string; }>` (type)
+- `inputGroupInput<Msg>(props: InputGroupInputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Input Otp
+
+A shadcn-styled Input Otp component for Foldkit.
+
+Source: `src/ui/input-otp.ts`
+
+Examples: Pattern, Separator, Disabled, Controlled, Invalid, Four Digits, Alphanumeric, Form, RTL
+
+- `InputOtpProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; length?: number; name?: string; ariaLabel?: string; isDisabled?: boolean; isInvalid?: boolean; class?: string; groupClass?: string; /** Pattern accepted by the control…` (type)
+- `inputOtp<Msg>(props: InputOtpProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `inputOtpSeparator<Msg>(h: HtmlBuilder<Msg>): Html` (function)
+
+### Input
+
+A shadcn-styled Input component for Foldkit.
+
+Source: `src/ui/input.ts`
+
+Examples: Basic, Field, Field Group, Disabled, Invalid, File, Inline, Grid, Required, Badge, Input Group, Button Group, Form, RTL
+
+- `InputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; label?: string; description?: string; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; class?: string; }>` (type)
+- `input<Msg>(props: InputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Item
+
+A shadcn-styled Item component for Foldkit.
+
+Source: `src/ui/item.ts`
+
+Examples: Variant, Size, Icon, Avatar, Image, Group, Header, Link, Dropdown, RTL
+
+- `itemVariants: value` (value)
+- `ItemVariants = VariantProps<typeof itemVariants>` (type)
+- `ItemProps = SlotProps & Readonly<{ variant?: ItemVariants['variant']; size?: ItemVariants['size']; element?: 'div' | 'li' | 'article'; }>` (type)
+- `item<Msg>(props: ItemProps, h: HtmlBuilder<Msg>): Html` (function)
+- `itemMediaVariants: value` (value)
+- `ItemMediaVariants = VariantProps<typeof itemMediaVariants>` (type)
+- `ItemMediaProps = SlotProps & Readonly<{ variant?: ItemMediaVariants['variant']; }>` (type)
+- `itemMedia<Msg>(props: ItemMediaProps, h: HtmlBuilder<Msg>): Html` (function)
+- `itemContent: value` (value)
+- `itemTitle: value` (value)
+- `itemDescription<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
+- `itemActions: value` (value)
+- `itemHeader: value` (value)
+- `itemFooter: value` (value)
+- `itemGroup<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
+- `ItemSeparatorProps = Readonly<{ class?: string; }>` (type)
+- `itemSeparator<Msg>(props: ItemSeparatorProps = {}, h: HtmlBuilder<Msg>): Html` (function)
+
+### Kbd
+
+A shadcn-styled Kbd component for Foldkit.
+
+Source: `src/ui/kbd.ts`
+
+Examples: Group, Button, Tooltip, Input Group, RTL
+
+- `kbd<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
+- `kbdGroup<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
+
+### Label
+
+A shadcn-styled Label component for Foldkit.
+
+Source: `src/ui/label.ts`
+
+Examples: Usage, Label in Field, RTL
+
+- `LabelProps = Readonly<{ for?: string; class?: string; children: ReadonlyArray<Html | string>; }>` (type)
+- `label<Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html` (function)
+
+### Marker
+
+A shadcn-styled Marker component for Foldkit.
+
+Source: `src/ui/marker.ts`
+
+Examples: Basic, Separator, Dot, With Icon, In a Message Stream, RTL
+
+- `markerVariants: value` (value)
+- `marker<Msg>(props: ChildrenProps & Readonly<{ variant?: VariantProps<typeof markerVariants>['variant'] }>, h: HtmlBuilder<Msg>): Html` (function)
+- `markerIcon<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+- `markerContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+
+### Menubar
+
+A shadcn-styled Menubar component for Foldkit.
+
+Source: `src/ui/menubar.ts`
+
+Examples: Basic, Checkbox, Radio, Submenu, With Icons, RTL
+
+- `MenubarMenu<Item extends string, Msg> = Readonly<{ id: string; label: string; model: DropdownMenu.Model; toParentMessage: (message: DropdownMenu.Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig; }>` (type)
+- `MenubarProps<Item extends string, Msg> = Readonly<{ menus: ReadonlyArray<MenubarMenu<Item, Msg>>; /** Coordinated focus/open callback used for ArrowLeft/ArrowRight menubar navigation. */ onMove?: (index: number) => Msg; activeIndex?: number; ariaLabel?: strin…` (type)
+- `menubar<Item extends string, Msg>(props: MenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Message Scroller
+
+A shadcn-styled Message Scroller component for Foldkit.
+
+Source: `src/ui/message-scroller.ts`
+
+Examples: Basic, Auto-scroll, New-message Indicator, Long Conversation, Custom Scroll Button, RTL
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Scrolled: value` (value)
+- `RequestedScroll: value` (value)
+- `CompletedMessageScrollerScrollTo: value` (value)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `init(id: string): Model` (function)
+- `update(model: Model, message: Message): UpdateReturn` (function)
+- `messageScroller<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+- `messageScrollerViewport<Msg>(props: ChildrenProps & Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; }>, h: HtmlBuilder<Msg>): Html` (function)
+- `messageScrollerContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+- `messageScrollerItem<Msg>(props: ChildrenProps & Readonly<{ scrollAnchor?: boolean }>, h: HtmlBuilder<Msg>): Html` (function)
+- `messageScrollerButton<Msg>(props: Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; direction?: 'start' | 'end'; class?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Message
+
+A shadcn-styled Message component for Foldkit.
+
+Source: `src/ui/message.ts`
+
+Examples: Basic, Incoming and Outgoing, Avatar, Header and Footer Metadata, Actions, With Bubble, Grouped Messages, RTL
+
+- `messageGroup<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+- `message<Msg>(props: ChildrenProps & Readonly<{ align?: 'start' | 'end' }>, h: HtmlBuilder<Msg>): Html` (function)
+- `messageAvatar<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+- `messageContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+- `messageHeader<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+- `messageFooter<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+
+### Native Select
+
+A shadcn-styled Native Select component for Foldkit.
+
+Source: `src/ui/native-select.ts`
+
+Examples: Simple, With groups, Groups, Disabled, Invalid, Native Select vs Select, RTL
+
+- `NativeSelectOption = Readonly<{ value: string; label: string; isDisabled?: boolean; }>` (type)
+- `NativeSelectGroup = Readonly<{ label: string; options: ReadonlyArray<NativeSelectOption>; isDisabled?: boolean; }>` (type)
+- `NativeSelectOptionProps = NativeSelectOption & Readonly<{ class?: string; }>` (type)
+- `nativeSelectOption<Msg>(props: NativeSelectOptionProps, h: HtmlBuilder<Msg>): Html` (function)
+- `NativeSelectOptGroupProps = NativeSelectGroup & Readonly<{ class?: string; }>` (type)
+- `nativeSelectOptGroup<Msg>(props: NativeSelectOptGroupProps, h: HtmlBuilder<Msg>): Html` (function)
+- `NativeSelectProps<Msg> = Readonly<{ id: string; value: string; onChange: (value: string) => Msg; options: ReadonlyArray<NativeSelectOption>; groups?: ReadonlyArray<NativeSelectGroup>; label?: string; description?: string; name?: string; size?: 'sm' | 'default…` (type)
+- `nativeSelect<Msg>(props: NativeSelectProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Navigation Menu
+
+A shadcn-styled Navigation Menu component for Foldkit.
+
+Source: `src/ui/navigation-menu.ts`
+
+Examples: Basic, Link Component, RTL
+
+- `navigationMenu<Msg>(props: Slot & Readonly<{ ariaLabel?: string }>, h: HtmlBuilder<Msg>): Html` (function)
+- `navigationMenuList<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
+- `navigationMenuItem<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
+- `navigationMenuLink<Msg>(props: Slot & Readonly<{ href: string; isActive?: boolean }>, h: HtmlBuilder<Msg>): Html` (function)
+- `NavigationMenuDisclosureProps<Msg> = Readonly<{ model: Popover.Model; toParentMessage: (message: Popover.Message) => Msg; label: string; content: Html | string; class?: string; ariaLabel?: string; }>` (type)
+- `navigationMenuDisclosure<Msg>(props: NavigationMenuDisclosureProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Pagination
+
+A shadcn-styled Pagination component for Foldkit.
+
+Source: `src/ui/pagination.ts`
+
+Examples: Simple, Icons Only, Next.js, RTL
+
+- `pagination<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
+- `paginationContent<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
+- `paginationItem<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
+- `PaginationLinkProps = Readonly<{ href: string; children: ReadonlyArray<Html | string>; isActive?: boolean; size?: ButtonVariants['size']; ariaLabel?: string; class?: string; }>` (type)
+- `paginationLink<Msg>(props: PaginationLinkProps, h: HtmlBuilder<Msg>): Html` (function)
+- `PaginationDirectionProps = Readonly<{ href: string; class?: string; }>` (type)
+- `paginationPrevious<Msg>(props: PaginationDirectionProps, h: HtmlBuilder<Msg>): Html` (function)
+- `paginationNext<Msg>(props: PaginationDirectionProps, h: HtmlBuilder<Msg>): Html` (function)
+- `PaginationEllipsisProps = Readonly<{ class?: string; }>` (type)
+- `paginationEllipsis<Msg>(props: PaginationEllipsisProps = {}, h: HtmlBuilder<Msg>): Html` (function)
+
+### Popover
+
+A shadcn-styled Popover component for Foldkit.
+
+Source: `src/ui/popover.ts`
+
+Examples: Basic, Align, With Form, RTL
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `OutMessage: value` (value)
+- `OutMessage = typeof OutMessage.Type` (type)
+- `init: value` (value)
+- `update: value` (value)
+- `open: value` (value)
+- `close: value` (value)
+- `PopoverSide = 'top' | 'right' | 'bottom' | 'left'` (type)
+- `PopoverAlign = 'start' | 'center' | 'end'` (type)
+- `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; content: Html | string; align?: PopoverAlign; side?: PopoverSide; class?: string; }>` (type)
+- `popover<Msg>(props: PopoverProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Progress
+
+A shadcn-styled Progress component for Foldkit.
+
+Source: `src/ui/progress.ts`
+
+Examples: Basic, Label, Controlled, RTL
+
+- `ProgressProps = Readonly<{ /** `null` renders an indeterminate progress indicator. */ value: number | null; class?: string; }>` (type)
+- `progress<Msg>(props: ProgressProps, h: HtmlBuilder<Msg>): Html` (function)
+
+### Radio Group
+
+A shadcn-styled Radio Group component for Foldkit.
+
+Source: `src/ui/radio-group.ts`
+
+Examples: Basic, Description, Choice Card, Fieldset, Disabled, Invalid, RTL
+
+- `RadioGroupOption = Readonly<{ value: string; label: string; description?: string; }>` (type)
+- `RadioGroupProps<Msg> = Readonly<{ id: string; selectedValue: Option.Option<string>; onSelect: (value: string) => Msg; ariaLabel: string; options: ReadonlyArray<RadioGroupOption>; isDisabled?: boolean; name?: string; orientation?: RadioGroupPrimitive.Orientati…` (type)
+- `radioGroup<Msg>(props: RadioGroupProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Resizable
+
+A shadcn-styled Resizable component for Foldkit.
+
+Source: `src/ui/resizable.ts`
+
+Examples: Basic, Vertical, Handle, RTL
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `StartedResize: value` (value)
+- `DraggedResize: value` (value)
+- `EndedResize: value` (value)
+- `NudgedResize: value` (value)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `init(id: string, firstSize = 50): Model` (function)
+- `update(model: Model, message: Message): Model` (function)
+- `ResizableProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; first: Html | string; second: Html | string; direction?: 'horizontal' | 'vertical'; withHandle?: boolean; minSize?: number; maxSize?: number; /** Pixel extent of the pa…` (type)
+- `resizable<Msg>(props: ResizableProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `GroupModel: value` (value)
+- `GroupModel = typeof GroupModel.Type` (type)
+- `StartedGroupResize: value` (value)
+- `DraggedGroupResize: value` (value)
+- `EndedGroupResize: value` (value)
+- `NudgedGroupResize: value` (value)
+- `GroupMessage: value` (value)
+- `GroupMessage = typeof GroupMessage.Type` (type)
+- `initGroup(id: string, panelCount: number, sizes?: ReadonlyArray<number>): GroupModel` (function)
+- `updateGroup(model: GroupModel, message: GroupMessage): GroupModel` (function)
+- `ResizableGroupProps<Msg> = Readonly<{ model: GroupModel; toParentMessage: (message: GroupMessage) => Msg; panels: ReadonlyArray<Html | string>; direction?: 'horizontal' | 'vertical'; minSize?: number; extent: number; withHandles?: boolean; disabled?: boolean;…` (type)
+- `resizableGroup<Msg>(props: ResizableGroupProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Scroll Area
+
+A shadcn-styled Scroll Area component for Foldkit.
+
+Source: `src/ui/scroll-area.ts`
+
+Examples: Basic, Horizontal, RTL
+
+- `ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; orientation?: 'vertical' | 'horizontal' | 'both'; ariaLabel?: string; tabIndex?: number; }>` (type)
+- `scrollArea<Msg>(props: ScrollAreaProps, h: HtmlBuilder<Msg>): Html` (function)
+
+### Select
+
+A shadcn-styled Select component for Foldkit.
+
+Source: `src/ui/select.ts`
+
+Examples: Basic, Align Item With Trigger, Groups, Scrollable, Disabled, Invalid, RTL
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `OutMessage: value` (value)
+- `OutMessage<Value extends string = string> = ListboxPrimitive.OutMessage<Value>` (type)
+- `init: value` (value)
+- `create: value` (value)
+- `update: value` (value)
+- `SelectSize = 'sm' | 'default'` (type)
+- `SelectItemConfig = Readonly<{ content?: Html | string; searchText?: string; class?: string; isDisabled?: boolean; }>` (type)
+- `SelectProps<Item, Value extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Value>; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToValue: (item: Item) => Value; itemToLabel: (item: Item) => string; …` (type)
+- `select<Item, Value extends string, Msg>(props: SelectProps<Item, Value, Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Separator
+
+A shadcn-styled Separator component for Foldkit.
+
+Source: `src/ui/separator.ts`
+
+Examples: Basic, Vertical, Menu, List, RTL
+
+- `SeparatorProps = Readonly<{ orientation?: 'horizontal' | 'vertical'; class?: string; }>` (type)
+- `separator<Msg>(props: SeparatorProps = {}, h: HtmlBuilder<Msg>): Html` (function)
+
+### Sheet
+
+A shadcn-styled Sheet component for Foldkit.
+
+Source: `src/ui/sheet.ts`
+
+Examples: Basic, Compound Layout, Side, No Close Button, RTL
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `OutMessage: value` (value)
+- `OutMessage = typeof OutMessage.Type` (type)
+- `init: value` (value)
+- `update: value` (value)
+- `open: value` (value)
+- `close: value` (value)
+- `SheetSide = 'top' | 'right' | 'bottom' | 'left'` (type)
+- `SheetSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; initialFocusAttributes: () => ReadonlyArray<ChildAttribute>; }>` (type)
+- `SheetPartProps = Readonly<{ children: ReadonlyArray<Html | string>; class?: string; }>` (type)
+- `SheetTextPartProps = SheetPartProps & Readonly<{ attributes: ReadonlyArray<ChildAttribute> }>` (type)
+- `SheetCloseProps = Readonly<{ children?: ReadonlyArray<Html | string>; class?: string; ariaLabel?: string; }>` (type)
+- `sheetHeader<Msg>(props: SheetPartProps, h: HtmlBuilder<Msg>): Html` (function)
+- `sheetTitle<Msg>(props: SheetTextPartProps, h: HtmlBuilder<Msg>): Html` (function)
+- `sheetDescription<Msg>(props: SheetTextPartProps, h: HtmlBuilder<Msg>): Html` (function)
+- `sheetFooter<Msg>(props: SheetPartProps, h: HtmlBuilder<Msg>): Html` (function)
+- `SheetParts<Msg> = Readonly<{ header: (props: SheetPartProps) => Html; title: (props: Omit<SheetTextPartProps, 'attributes'>) => Html; description: (props: Omit<SheetTextPartProps, 'attributes'>) => Html; footer: (props: SheetPartProps) => Html; close: (props?…` (type)
+- `SheetProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; content?: (slots: SheetSlots) => ReadonlyArray<Html>; footer?: (slots: SheetSlots) => ReadonlyArray<Html>; layout?: (parts: SheetParts<…` (type)
+- `sheet<Msg>(props: SheetProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Sidebar
+
+A shadcn-styled Sidebar component for Foldkit.
+
+Source: `src/ui/sidebar.ts`
+
+Examples: Basic, Structure, SidebarMenu, SidebarMenuSkeleton, RTL
+
+- `export * from '@/lib/sidebar-state'` (re-export)
+- `SidebarState = 'expanded' | 'collapsed'` (type)
+- `SidebarSide = 'left' | 'right'` (type)
+- `SidebarVariant = 'sidebar' | 'floating' | 'inset'` (type)
+- `SidebarCollapsible = 'offcanvas' | 'icon' | 'none'` (type)
+- `SidebarProviderProps = Slot & Readonly<{ state?: SidebarState; }>` (type)
+- `sidebarProvider<Msg>(props: SidebarProviderProps, h: HtmlBuilder<Msg>): Html` (function)
+- `SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; isMobileOpen?: boolean; onMobileDismiss?: Msg; }>` (type)
+- `sidebar<Msg>(props: SidebarProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `SidebarTriggerProps<Msg> = Readonly<{ onClick: Msg; class?: string; }>` (type)
+- `sidebarTrigger<Msg>(props: SidebarTriggerProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `SidebarRailProps<Msg> = Readonly<{ onClick: Msg; }>` (type)
+- `sidebarRail<Msg>(props: SidebarRailProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `sidebarInset<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
+- `SidebarInputProps<Msg> = Readonly<{ id?: string; value?: string; onInput?: (value: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; class?: string; }>` (type)
+- `sidebarInput<Msg>(props: SidebarInputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `sidebarHeader: value` (value)
+- `sidebarFooter: value` (value)
+- `sidebarSeparator<Msg>(props: Readonly<{ class?: string }> = {}, h: HtmlBuilder<Msg>): Html` (function)
+- `sidebarContent: value` (value)
+- `sidebarGroup: value` (value)
+- `sidebarGroupLabel: value` (value)
+- `SidebarActionProps<Msg> = Slot & Readonly<{ onClick?: Msg; }>` (type)
+- `sidebarGroupAction<Msg>(props: SidebarActionProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `sidebarGroupContent: value` (value)
+- `sidebarMenu<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
+- `sidebarMenuItem<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
+- `sidebarMenuButtonVariants: value` (value)
+- `SidebarMenuButtonVariants = VariantProps< typeof sidebarMenuButtonVariants >` (type)
+- `SidebarMenuButtonProps<Msg> = Readonly<{ children: ReadonlyArray<Html | string>; onClick?: Msg; href?: string; isActive?: boolean; variant?: SidebarMenuButtonVariants['variant']; size?: SidebarMenuButtonVariants['size']; tooltip?: string; class?: string; }>` (type)
+- `sidebarMenuButton<Msg>(props: SidebarMenuButtonProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `SidebarMenuActionProps<Msg> = SidebarActionProps<Msg> & Readonly<{ showOnHover?: boolean; }>` (type)
+- `sidebarMenuAction<Msg>(props: SidebarMenuActionProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `sidebarMenuBadge: value` (value)
+- `SidebarMenuSkeletonProps = Readonly<{ showIcon?: boolean; widthPercent?: number; class?: string; }>` (type)
+- `sidebarMenuSkeleton<Msg>(props: SidebarMenuSkeletonProps = {}, h: HtmlBuilder<Msg>): Html` (function)
+- `sidebarMenuSub<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
+- `sidebarMenuSubItem<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
+- `SidebarMenuSubButtonProps<Msg> = Readonly<{ children: ReadonlyArray<Html | string>; href?: string; onClick?: Msg; size?: 'sm' | 'md'; isActive?: boolean; class?: string; }>` (type)
+- `sidebarMenuSubButton<Msg>(props: SidebarMenuSubButtonProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Skeleton
+
+A shadcn-styled Skeleton component for Foldkit.
+
+Source: `src/ui/skeleton.ts`
+
+Examples: Basic, Avatar, Card, Text, Form, Table, RTL
+
+- `SkeletonProps = Readonly<{ class?: string; }>` (type)
+- `skeleton<Msg>(props: SkeletonProps = {}, h: HtmlBuilder<Msg>): Html` (function)
+
+### Slider
+
+A shadcn-styled Slider component for Foldkit.
+
+Source: `src/ui/slider.ts`
+
+Examples: Basic, Range, Multiple Thumbs, Vertical, Controlled, Disabled, RTL
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `OutMessage: value` (value)
+- `OutMessage = typeof OutMessage.Type` (type)
+- `init: value` (value)
+- `update: value` (value)
+- `reflectRange: value` (value)
+- `snapAndClamp: value` (value)
+- `subscriptions: value` (value)
+- `subscriptionsForRoot: value` (value)
+- `fractionOfValue: value` (value)
+- `SliderProps<Msg> = Readonly<{ model: Model; value: number; toParentMessage: (message: Message) => Msg; label?: string; ariaLabel?: string; formatValue?: (value: number) => string; isDisabled?: boolean; name?: string; class?: string; }>` (type)
+- `RangeSliderProps<Msg> = Readonly<{ values: readonly [number, number]; min: number; max: number; step?: number; onInput: (values: readonly [number, number]) => Msg; orientation?: 'horizontal' | 'vertical'; ariaLabels?: readonly [string, string]; isDisabled?: b…` (type)
+- `rangeSlider<Msg>(props: RangeSliderProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `slider<Msg>(props: SliderProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Sonner
+
+A shadcn-styled Sonner component for Foldkit.
+
+Source: `src/ui/sonner.ts`
+
+Examples: Basic, Success, Variants
+
+- `ToastPayload: value` (value)
+- `ToastPayload = typeof ToastPayload.Type` (type)
+- `Variant: value` (value)
+- `Variant = typeof Variant.Type` (type)
+- `Entry: value` (value)
+- `Entry = typeof Entry.Type` (type)
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Dismissed: value` (value)
+- `CompletedWaitBeforeDismissingSonner: value` (value)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `DismissedToast: value` (value)
+- `OutMessage: value` (value)
+- `OutMessage = typeof OutMessage.Type` (type)
+- `init(config: Readonly<{ id: string }>): Model` (function)
+- `update(model: Model, message: Message): UpdateReturn` (function)
+- `ToastInput = Readonly<{ title: string; description?: string; actionLabel?: string; duration?: Duration.Input; sticky?: boolean; }>` (type)
+- `ShowInput = ToastInput & Readonly<{ variant: Variant }>` (type)
+- `success(input: ToastInput): ShowInput` (function)
+- `error(input: ToastInput): ShowInput` (function)
+- `info(input: ToastInput): ShowInput` (function)
+- `warning(input: ToastInput): ShowInput` (function)
+- `show(model: Model, input: ShowInput): UpdateReturn` (function)
+- `dismiss(model: Model, id: string): UpdateReturn` (function)
+- `dismissAll(model: Model): UpdateReturn` (function)
+- `Added: value` (value)
+- `SonnerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; actionToMessage?: (entry: Entry) => Msg; ariaLabel?: string; class?: string; entryClass?: string; }>` (type)
+- `sonner<Msg>(props: SonnerProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Spinner
+
+A shadcn-styled Spinner component for Foldkit.
+
+Source: `src/ui/spinner.ts`
+
+Examples: Basic, Customization, Size, Button, Badge, Input Group, Empty, RTL
+
+- `SpinnerProps = Readonly<{ class?: string; }>` (type)
+- `spinner<Msg>(props: SpinnerProps = {}, h: HtmlBuilder<Msg>): Html` (function)
+
+### Switch
+
+A shadcn-styled Switch component for Foldkit.
+
+Source: `src/ui/switch.ts`
+
+Examples: Basic, Description, Choice Card, Disabled, Invalid, Size, RTL
+
+- `SwitchSize = 'sm' | 'default'` (type)
+- `SwitchProps<Msg> = Readonly<{ id: string; isChecked: boolean; onToggle: (isChecked: boolean) => Msg; label: string; description?: string; size?: SwitchSize; isDisabled?: boolean; name?: string; value?: string; class?: string; }>` (type)
+- `switchControl<Msg>(props: SwitchProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `export { switchControl as switch } from ` (re-export)
+
+### Table
+
+A shadcn-styled Table component for Foldkit.
+
+Source: `src/ui/table.ts`
+
+Examples: Basic, Footer, Actions, Data Table, RTL
+
+- `table<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
+- `tableHeader: value` (value)
+- `tableBody: value` (value)
+- `tableFooter: value` (value)
+- `tableRow: value` (value)
+- `tableHead: value` (value)
+- `tableCell: value` (value)
+- `tableCaption: value` (value)
+
+### Tabs
+
+A shadcn-styled Tabs component for Foldkit.
+
+Source: `src/ui/tabs.ts`
+
+Examples: Basic, Line, Vertical, Disabled, Icons, RTL
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `OutMessage: value` (value)
+- `OutMessage = TabsPrimitive.OutMessage<string>` (type)
+- `init: value` (value)
+- `create: value` (value)
+- `update: value` (value)
+- `tabsListVariants: value` (value)
+- `TabsListVariants = VariantProps<typeof tabsListVariants>` (type)
+- `TabsOrientation = 'horizontal' | 'vertical'` (type)
+- `TabConfig = Readonly<{ value: string; label: Html | string; content: Html | string; isDisabled?: boolean; }>` (type)
+- `TabsProps<Msg> = Readonly<{ model: Model; selectedValue: string; toParentMessage: (message: Message) => Msg; tabs: ReadonlyArray<TabConfig>; ariaLabel?: string; orientation?: TabsOrientation; activationMode?: TabsPrimitive.ActivationMode; variant?: TabsListVa…` (type)
+- `tabs<Msg>(props: TabsProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Textarea
+
+A shadcn-styled Textarea component for Foldkit.
+
+Source: `src/ui/textarea.ts`
+
+Examples: Basic, Field, Disabled, Invalid, Button, RTL
+
+- `TextareaProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; label?: string; description?: string; placeholder?: string; name?: string; rows?: number; isDisabled?: boolean; isInvalid?: boolean; class?: string; }>` (type)
+- `textarea<Msg>(props: TextareaProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Toast
+
+A shadcn-styled Toast component for Foldkit.
+
+Source: `src/ui/toast.ts`
+
+Examples: Basic, Types, Action, Promise
+
+- `export * from '@/ui/sonner'` (re-export)
+- `export { sonner as toast } from '@/ui/sonner'` (re-export)
+
+### Toggle Group
+
+A shadcn-styled Toggle Group component for Foldkit.
+
+Source: `src/ui/toggle-group.ts`
+
+Examples: Basic, Outline, Size, Spacing, Vertical, Disabled, Custom, RTL
+
+- `ToggleGroupItem = Readonly<{ value: string; children: ReadonlyArray<Html | string>; isDisabled?: boolean; class?: string; }>` (type)
+- `ToggleGroupProps<Msg> = Readonly<{ items: ReadonlyArray<ToggleGroupItem>; onToggle: (itemValue: string) => Msg; variant?: ToggleVariants['variant']; size?: ToggleVariants['size']; class?: string; }> & (SingleSelection | MultipleSelection)` (type)
+- `toggleGroup<Msg>(props: ToggleGroupProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Toggle
+
+A shadcn-styled Toggle component for Foldkit.
+
+Source: `src/ui/toggle.ts`
+
+Examples: Basic, Outline, With Text, Size, Disabled, RTL
+
+- `toggleVariants: value` (value)
+- `ToggleVariants = VariantProps<typeof toggleVariants>` (type)
+- `ToggleProps<Msg> = Readonly<{ isPressed: boolean; onToggle: Msg; variant?: ToggleVariants['variant']; size?: ToggleVariants['size']; children: ReadonlyArray<Html | string>; isDisabled?: boolean; class?: string; }>` (type)
+- `toggle<Msg>(props: ToggleProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Tooltip
+
+A shadcn-styled Tooltip component for Foldkit.
+
+Source: `src/ui/tooltip.ts`
+
+Examples: Basic, Side, With Keyboard Shortcut, Disabled Button, RTL
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `OutMessage: value` (value)
+- `OutMessage = typeof OutMessage.Type` (type)
+- `init: value` (value)
+- `update: value` (value)
+- `reflectShowDelay: value` (value)
+- `TooltipSide = 'top' | 'right' | 'bottom' | 'left'` (type)
+- `TooltipAlign = 'start' | 'center' | 'end'` (type)
+- `TooltipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; content: Html | string; align?: TooltipAlign; side?: TooltipSide; isDisabled?: boolean; ariaLabel?: string; triggerClass?: string; class?: string;…` (type)
+- `tooltip<Msg>(props: TooltipProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Typography
+
+A shadcn-styled Typography component for Foldkit.
+
+Source: `src/ui/typography.ts`
+
+Examples: Basic, h1, h2, h3, h4, p, blockquote, table, list, Inline code, Lead, Large, Small, Muted, RTL
+
+- `typographyH1<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` (function)
+- `typographyH2<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` (function)
+- `typographyH3<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` (function)
+- `typographyH4<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` (function)
+- `typographyP<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` (function)
+- `typographyBlockquote<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` (function)
+- `typographyInlineCode<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` (function)
+- `typographyLead<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` (function)
+- `typographyLarge<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` (function)
+- `typographySmall<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` (function)
+- `typographyMuted<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` (function)

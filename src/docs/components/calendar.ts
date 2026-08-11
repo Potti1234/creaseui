@@ -11,6 +11,7 @@ import {
 } from '@/docs/component-page';
 import * as CopyFeedback from '@/docs/copy-feedback';
 import { completeExample } from '@/docs/components/complete-example';
+import { componentApi } from '@/docs/generated-component-api';
 import * as Calendar from '@/ui/calendar';
 import * as Card from '@/ui/card';
 import * as Direction from '@/ui/direction';
@@ -176,6 +177,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       sidebarScrolled: CopyFeedback.ObservedSidebarScroll(),
       composition:
         'Calendar.Model\n├── calendar navigation and view mode\n├── focused and selected dates\n└── disabled-date constraints',
+      apiEntries: componentApi.calendar ?? [],
       examples: [
         docsExample({
           title: 'Basic',

@@ -103,8 +103,8 @@ const menuExamples = (kind: 'context' | 'dropdown') => [
                   itemToConfig: (child) => ({
                     label:
                       child === 'save'
-                        ? 'Save Page Asâ€¦'
-                        : 'Create Shortcutâ€¦',
+                        ? 'Save Page As…'
+                        : 'Create Shortcut…',
                   }),
                 },
               }
@@ -130,9 +130,9 @@ const menuExamples = (kind: 'context' | 'dropdown') => [
               ? 'Back'
               : item === 'reload'
                 ? 'Reload'
-                : 'Save Page Asâ€¦',
+                : 'Save Page As…',
           shortcut:
-            item === 'back' ? 'âŒ˜[' : item === 'reload' ? 'âŒ˜R' : 'â‡§âŒ˜S',
+            item === 'back' ? '⌘[' : item === 'reload' ? '⌘R' : '⇧⌘S',
         }),
         {},
         h,
@@ -166,7 +166,7 @@ const menuExamples = (kind: 'context' | 'dropdown') => [
           label: item[0]?.toUpperCase() + item.slice(1),
           icon: h.span(
             [h.AriaHidden(true)],
-            [item === 'edit' ? 'âœŽ' : item === 'copy' ? 'â§‰' : 'âŒ«'],
+            [item === 'edit' ? '✎' : item === 'copy' ? '⧉' : '⌫'],
           ),
         }),
         {},
@@ -274,7 +274,7 @@ const paymentTable = (
       ],
       rowKey: (row) => row.id,
       filterText: (row) => row.email,
-      filterPlaceholder: 'Filter emailsâ€¦',
+      filterPlaceholder: 'Filter emails…',
       ariaLabel: 'Payments',
     },
     h,
@@ -326,6 +326,44 @@ const dialog = (
             variant === 'scroll'
               ? 'Please read the following terms carefully.'
               : 'Make changes to your profile here.',
+          ...(variant === 'close'
+            ? {
+                layout: (parts: Dialog.DialogParts<Msg>) => [
+                  parts.header({
+                    children: [
+                      parts.title({ children: ['Edit profile'] }),
+                      parts.description({
+                        children: ['Make changes to your profile here.'],
+                      }),
+                    ],
+                  }),
+                  Input.input(
+                    {
+                      id: 'dialog-name-compound',
+                      label: 'Name',
+                      value: model.dialogName,
+                      onInput: text('dialogName'),
+                    },
+                    h,
+                  ),
+                  parts.footer({
+                    children: [
+                      parts.close({
+                        ariaLabel: 'Cancel',
+                        children: ['Cancel'],
+                        class:
+                          'inline-flex h-8 items-center justify-center rounded-md border bg-background px-3 text-sm font-medium shadow-xs',
+                      }),
+                      Button.button(
+                        { children: ['Save changes'], onClick: action },
+                        h,
+                      ),
+                    ],
+                  }),
+                  parts.close(),
+                ],
+              }
+            : {}),
           ...(variant === 'scroll'
             ? { class: 'max-h-[70vh] overflow-y-auto' }
             : {}),
@@ -355,7 +393,7 @@ const dialog = (
                     h,
                   ),
                 ],
-          ...(variant === 'no-close'
+          ...(variant === 'no-close' || variant === 'close'
             ? {}
             : {
                 footer: (slots: Dialog.DialogSlots) => [
@@ -464,8 +502,8 @@ const emptyState = (
                     variant === 'avatar'
                       ? 'CN'
                       : variant === 'group'
-                        ? 'CN Â· LR'
-                        : 'ï¼‹',
+                        ? 'CN · LR'
+                        : '＋',
                   ],
                 },
                 h,
@@ -718,7 +756,7 @@ const hoverCard = (
           h.h4([h.Class('font-semibold')], ['@nextjs']),
           h.p(
             [h.Class('text-sm leading-5')],
-            ['The React Framework â€“ created and maintained by @vercel.'],
+            ['The React Framework – created and maintained by @vercel.'],
           ),
           h.p(
             [h.Class('text-xs text-muted-foreground')],
@@ -742,7 +780,11 @@ const inputPreview = (
       onInput: text('input'),
       type: variant === 'file' ? 'file' : 'text',
       ...(variant === 'file' ? {} : { placeholder: 'Email' }),
-      ...(variant === 'required' ? { label: 'Email *' } : {}),
+      ...(variant === 'required'
+        ? { label: 'Email *' }
+        : variant === 'file'
+          ? { label: 'Upload file' }
+          : {}),
       isDisabled: variant === 'disabled',
       isInvalid: variant === 'invalid',
       class: 'max-w-sm',
@@ -772,7 +814,7 @@ const inputGroup = (
                     ),
                   ]
                 : content === 'kbd'
-                  ? [Kbd.kbd({ children: ['âŒ˜K'] }, h)]
+                  ? [Kbd.kbd({ children: ['⌘K'] }, h)]
                   : [InputGroup.inputGroupText({ children: ['https://'] }, h)],
           },
           h,
@@ -833,7 +875,7 @@ const itemPreview = (
             variant: media === 'icon' ? 'icon' : 'image',
             children: [
               media === 'icon'
-                ? 'ðŸ“„'
+                ? '📄'
                 : media === 'avatar'
                   ? 'CN'
                   : h.img([
@@ -1021,7 +1063,7 @@ const menubar = (
               : {
                   label: item[0]?.toUpperCase() + item.slice(1),
                   ...(mode === 'icons'
-                    ? { icon: h.span([h.AriaHidden(true)], ['â–§']) }
+                    ? { icon: h.span([h.AriaHidden(true)], ['▧']) }
                     : {}),
                 },
         },
@@ -1050,7 +1092,7 @@ const menubar = (
           toParentMessage: (message) =>
             State.GotMenubarMessage({ target: 'view', message }),
           items: ['reload'],
-          itemToConfig: () => ({ label: 'Reload', shortcut: 'âŒ˜R' }),
+          itemToConfig: () => ({ label: 'Reload', shortcut: '⌘R' }),
         },
       ],
     },
@@ -1289,7 +1331,7 @@ const rawDefinitions: PageDefinitions = {
                   ['back', 'reload'],
                   (item) => ({
                     label:
-                      item === 'back' ? 'Ø±Ø¬ÙˆØ¹' : 'Ø¥Ø¹Ø§Ø¯Ø© ØªØ­Ù…ÙŠÙ„',
+                      item === 'back' ? 'رجوع' : 'إعادة تحميل',
                   }),
                   {},
                   h,
@@ -1351,7 +1393,7 @@ const rawDefinitions: PageDefinitions = {
       {
         title: 'Filtering',
         preview: (model, h: HtmlBuilder<Msg>) => paymentTable(model, true, h),
-        code: `filterText: row => row.email\nfilterPlaceholder: 'Filter emailsâ€¦'`,
+        code: `filterText: row => row.email\nfilterPlaceholder: 'Filter emails…'`,
         previewClass: 'justify-stretch',
       },
       {
@@ -1479,7 +1521,7 @@ const rawDefinitions: PageDefinitions = {
               children: [
                 datePicker(
                   model,
-                  { placeholder: 'Ø§Ø®ØªØ± ØªØ§Ø±ÙŠØ®Ù‹Ø§' },
+                  { placeholder: 'اختر تاريخًا' },
                   h,
                 ),
               ],
@@ -1499,7 +1541,20 @@ const rawDefinitions: PageDefinitions = {
       {
         title: 'Custom Close Button',
         preview: (model, h: HtmlBuilder<Msg>) => dialog(model, 'close', h),
-        code: `Dialog.dialog({ model, content, footer: slots => [h.button([...slots.closeButton], ['Cancel'])] })`,
+        code: `Dialog.dialog({
+  model,
+  toParentMessage,
+  title: 'Edit profile',
+  layout: parts => [
+    parts.header({ children: [
+      parts.title({ children: ['Edit profile'] }),
+      parts.description({ children: ['Make changes to your profile here.'] }),
+    ] }),
+    form,
+    parts.footer({ children: [parts.close({ children: ['Cancel'] }), save] }),
+    parts.close(),
+  ],
+})`,
       },
       {
         title: 'No Close Button',
@@ -1556,12 +1611,12 @@ const rawDefinitions: PageDefinitions = {
                   [
                     h.h3(
                       [h.Class('font-semibold')],
-                      ['ÙˆØ§Ø¬Ù‡Ø© Ù…Ù† Ø§Ù„ÙŠÙ…ÙŠÙ† Ø¥Ù„Ù‰ Ø§Ù„ÙŠØ³Ø§Ø±'],
+                      ['واجهة من اليمين إلى اليسار'],
                     ),
                     h.p(
                       [h.Class('text-sm text-muted-foreground')],
                       [
-                        'ÙŠØªØ¯ÙÙ‚ Ù‡Ø°Ø§ Ø§Ù„Ù…Ø­ØªÙˆÙ‰ ØªÙ„Ù‚Ø§Ø¦ÙŠÙ‹Ø§ Ù…Ù† Ø§Ù„ÙŠÙ…ÙŠÙ† Ø¥Ù„Ù‰ Ø§Ù„ÙŠØ³Ø§Ø±.',
+                        'يتدفق هذا المحتوى تلقائيًا من اليمين إلى اليسار.',
                       ],
                     ),
                   ],
@@ -1576,7 +1631,7 @@ const rawDefinitions: PageDefinitions = {
   },
   'dropdown-menu': {
     description:
-      'Displays a menu to the user â€” such as a set of actions or functions â€” triggered by a button.',
+      'Displays a menu to the user — such as a set of actions or functions — triggered by a button.',
     composition:
       'Dropdown Menu combines a trigger, positioned content, items, submenus, checkbox items, and radio items over a typed Foldkit model.',
     examples: [
@@ -1593,7 +1648,7 @@ const rawDefinitions: PageDefinitions = {
                 item === 'status' ? 'Show Status Bar' : 'Show Activity Bar',
               kind: 'checkbox',
               isChecked: item === 'status',
-              icon: h.span([h.AriaHidden(true)], ['âœ“']),
+              icon: h.span([h.AriaHidden(true)], ['✓']),
             }),
             {},
             h,
@@ -1630,7 +1685,7 @@ const rawDefinitions: PageDefinitions = {
               isChecked: item === 'light',
               icon: h.span(
                 [h.AriaHidden(true)],
-                [item === 'light' ? 'â˜€' : 'â˜¾'],
+                [item === 'light' ? '☀' : '☾'],
               ),
             }),
             {},
@@ -1663,7 +1718,7 @@ const rawDefinitions: PageDefinitions = {
             ['account', 'team', 'invite', 'logout'],
             (item) => ({
               label: item[0]?.toUpperCase() + item.slice(1),
-              ...(item === 'invite' ? { shortcut: 'âŒ˜I' } : {}),
+              ...(item === 'invite' ? { shortcut: '⌘I' } : {}),
               group: item === 'logout' ? 'Account' : 'Workspace',
               variant: item === 'logout' ? 'destructive' : 'default',
             }),
@@ -1686,8 +1741,8 @@ const rawDefinitions: PageDefinitions = {
                   (item) => ({
                     label:
                       item === 'profile'
-                        ? 'Ø§Ù„Ù…Ù„Ù Ø§Ù„Ø´Ø®ØµÙŠ'
-                        : 'Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª',
+                        ? 'الملف الشخصي'
+                        : 'الإعدادات',
                   }),
                   {},
                   h,
@@ -2017,7 +2072,7 @@ const rawDefinitions: PageDefinitions = {
                   h,
                 ),
                 Button.button(
-                  { children: ['Submittingâ€¦'], isDisabled: true },
+                  { children: ['Submitting…'], isDisabled: true },
                   h,
                 ),
               ],
@@ -2234,7 +2289,7 @@ const rawDefinitions: PageDefinitions = {
                   id: 'search-input',
                   value: model.input,
                   onInput: text('input'),
-                  placeholder: 'Searchâ€¦',
+                  placeholder: 'Search…',
                   class: 'rounded-r-none',
                 },
                 h,
@@ -2274,25 +2329,25 @@ const rawDefinitions: PageDefinitions = {
       'Input Group composes an input or textarea with inline or block addons. Addons can contain text, icons, keyboard hints, buttons, or progress feedback.',
     examples: [
       {
-        title: 'Align â€” inline-start',
+        title: 'Align — inline-start',
         preview: (model, h: HtmlBuilder<Msg>) =>
           inputGroup(model, 'inline-start', undefined, h),
         code: `InputGroup.inputGroupAddon({ align: 'inline-start', children: [...] })`,
       },
       {
-        title: 'Align â€” inline-end',
+        title: 'Align — inline-end',
         preview: (model, h: HtmlBuilder<Msg>) =>
           inputGroup(model, 'inline-end', undefined, h),
         code: `InputGroup.inputGroupAddon({ align: 'inline-end', children: [...] })`,
       },
       {
-        title: 'Align â€” block-start',
+        title: 'Align — block-start',
         preview: (model, h: HtmlBuilder<Msg>) =>
           inputGroup(model, 'block-start', undefined, h),
         code: `InputGroup.inputGroupAddon({ align: 'block-start', children: [...] })`,
       },
       {
-        title: 'Align â€” block-end',
+        title: 'Align — block-end',
         preview: (model, h: HtmlBuilder<Msg>) =>
           inputGroup(model, 'block-end', undefined, h),
         code: `InputGroup.inputGroupAddon({ align: 'block-end', children: [...] })`,
@@ -2305,7 +2360,7 @@ const rawDefinitions: PageDefinitions = {
               class: 'max-w-sm',
               children: [
                 InputGroup.inputGroupAddon(
-                  { children: [h.span([h.AriaHidden(true)], ['âŒ•'])] },
+                  { children: [h.span([h.AriaHidden(true)], ['⌕'])] },
                   h,
                 ),
                 InputGroup.inputGroupInput(
@@ -2313,7 +2368,7 @@ const rawDefinitions: PageDefinitions = {
                     id: 'group-icon',
                     value: model.inputGroup,
                     onInput: text('inputGroup'),
-                    placeholder: 'Searchâ€¦',
+                    placeholder: 'Search…',
                   },
                   h,
                 ),
@@ -2339,7 +2394,7 @@ const rawDefinitions: PageDefinitions = {
         title: 'Kbd',
         preview: (model, h: HtmlBuilder<Msg>) =>
           inputGroup(model, 'inline-end', 'kbd', h),
-        code: `InputGroup.inputGroupAddon({ children: [Kbd.kbd({ children: ['âŒ˜K'] })] })`,
+        code: `InputGroup.inputGroupAddon({ children: [Kbd.kbd({ children: ['⌘K'] })] })`,
       },
       {
         title: 'Dropdown',
@@ -2353,7 +2408,7 @@ const rawDefinitions: PageDefinitions = {
                     id: 'group-dropdown',
                     value: model.inputGroup,
                     onInput: text('inputGroup'),
-                    placeholder: 'Searchâ€¦',
+                    placeholder: 'Search…',
                   },
                   h,
                 ),
@@ -2393,7 +2448,7 @@ const rawDefinitions: PageDefinitions = {
                     children: [
                       h.span(
                         [h.AriaLabel('Loading'), h.Class('animate-spin')],
-                        ['â—Œ'],
+                        ['◌'],
                       ),
                     ],
                   },
@@ -2404,7 +2459,7 @@ const rawDefinitions: PageDefinitions = {
                     id: 'group-spinner',
                     value: model.inputGroup,
                     onInput: text('inputGroup'),
-                    placeholder: 'Searchingâ€¦',
+                    placeholder: 'Searching…',
                   },
                   h,
                 ),
@@ -2762,13 +2817,13 @@ const rawDefinitions: PageDefinitions = {
           Kbd.kbdGroup(
             {
               children: [
-                Kbd.kbd({ children: ['âŒ˜'] }, h),
+                Kbd.kbd({ children: ['⌘'] }, h),
                 Kbd.kbd({ children: ['K'] }, h),
               ],
             },
             h,
           ),
-        code: `Kbd.kbdGroup({ children: [Kbd.kbd({ children: ['âŒ˜'] }), Kbd.kbd({ children: ['K'] })] })`,
+        code: `Kbd.kbdGroup({ children: [Kbd.kbd({ children: ['⌘'] }), Kbd.kbd({ children: ['K'] })] })`,
       },
       {
         title: 'Button',
@@ -2776,12 +2831,12 @@ const rawDefinitions: PageDefinitions = {
           Button.button(
             {
               variant: 'outline',
-              children: ['Open command', Kbd.kbd({ children: ['âŒ˜K'] }, h)],
+              children: ['Open command', Kbd.kbd({ children: ['⌘K'] }, h)],
               onClick: action,
             },
             h,
           ),
-        code: `Button.button({ children: ['Open command', Kbd.kbd({ children: ['âŒ˜K'] })] })`,
+        code: `Button.button({ children: ['Open command', Kbd.kbd({ children: ['⌘K'] })] })`,
       },
       {
         title: 'Tooltip',
@@ -2800,7 +2855,7 @@ const rawDefinitions: PageDefinitions = {
         title: 'Input Group',
         preview: (model, h: HtmlBuilder<Msg>) =>
           inputGroup(model, 'inline-end', 'kbd', h),
-        code: `InputGroup.inputGroupAddon({ children: [Kbd.kbd({ children: ['âŒ˜K'] })] })`,
+        code: `InputGroup.inputGroupAddon({ children: [Kbd.kbd({ children: ['⌘K'] })] })`,
       },
       {
         title: 'RTL',
@@ -2852,7 +2907,7 @@ const rawDefinitions: PageDefinitions = {
                     Label.label(
                       {
                         for: 'rtl-email',
-                        children: ['Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ'],
+                        children: ['البريد الإلكتروني'],
                       },
                       h,
                     ),
@@ -2902,13 +2957,13 @@ const rawDefinitions: PageDefinitions = {
           Marker.marker(
             {
               children: [
-                Marker.markerIcon({ children: ['â€¢'] }, h),
+                Marker.markerIcon({ children: ['•'] }, h),
                 Marker.markerContent({ children: ['3 unread'] }, h),
               ],
             },
             h,
           ),
-        code: `Marker.marker({ children: [Marker.markerIcon({ children: ['â€¢'] }), content] })`,
+        code: `Marker.marker({ children: [Marker.markerIcon({ children: ['•'] }), content] })`,
       },
       {
         title: 'With Icon',
@@ -2916,7 +2971,7 @@ const rawDefinitions: PageDefinitions = {
           Marker.marker(
             {
               children: [
-                Marker.markerIcon({ children: ['âœ¦'] }, h),
+                Marker.markerIcon({ children: ['✦'] }, h),
                 Marker.markerContent({ children: ['New messages'] }, h),
               ],
             },
@@ -2954,7 +3009,7 @@ const rawDefinitions: PageDefinitions = {
                   {
                     variant: 'separator',
                     children: [
-                      Marker.markerContent({ children: ['Ø§Ù„ÙŠÙˆÙ…'] }, h),
+                      Marker.markerContent({ children: ['اليوم'] }, h),
                     ],
                   },
                   h,

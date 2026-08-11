@@ -160,6 +160,7 @@ const select = (
   items: ReadonlyArray<Fruit> = fruits,
   grouped = false,
   h: HtmlBuilder<Message>,
+  isDisabled = false,
 ) =>
   Select.select(
     {
@@ -170,6 +171,7 @@ const select = (
       itemToValue: (item) => item.value,
       itemToLabel: (item) => item.label,
       placeholder: 'Select a fruit',
+      isDisabled,
       ...(grouped
         ? {
             itemGroupKey: (item: Fruit) => item.group ?? '',
@@ -187,6 +189,7 @@ const sheet = (
   showCloseButton = true,
   variantIndex: number | undefined,
   h: HtmlBuilder<Message>,
+  compound = false,
 ) =>
   h.div(
     [],
@@ -203,7 +206,7 @@ const sheet = (
       Sheet.sheet(
         {
           model: variantIndex === undefined
-            ? { ...model.sheet, id: `docs-sheet-${suffix}` }
+            ? model.sheet
             : model.sheetVariants[variantIndex] ?? model.sheet,
           toParentMessage: (message) => variantIndex === undefined
             ? State.GotSheetMessage({ message })
@@ -213,6 +216,41 @@ const sheet = (
             'Make changes to your profile here. Click save when you are done.',
           side,
           showCloseButton,
+          ...(compound
+            ? {
+                layout: (parts: Sheet.SheetParts<Message>) => [
+                  parts.header({
+                    children: [
+                      parts.title({ children: ['Edit profile'] }),
+                      parts.description({
+                        children: ['Make changes to your profile here.'],
+                      }),
+                    ],
+                  }),
+                  Input.input(
+                    {
+                      id: `sheet-name-${suffix}-compound`,
+                      value: model.sheetName,
+                      onInput: (value) =>
+                        State.ChangedText({ target: 'sheetName', value }),
+                      label: 'Name',
+                    },
+                    h,
+                  ),
+                  parts.footer({
+                    children: [
+                      parts.close({
+                        ariaLabel: 'Cancel',
+                        children: ['Cancel'],
+                        class:
+                          'inline-flex h-8 items-center justify-center rounded-md border px-3 text-sm font-medium',
+                      }),
+                    ],
+                  }),
+                  parts.close(),
+                ],
+              }
+            : {}),
           content: () => [
             Input.input(
               {
@@ -410,12 +448,12 @@ const tabSet = (
       tabs: [
         {
           value: 'account',
-          label: config.icons ? 'âš™ Account' : 'Account',
+          label: config.icons ? '⚙ Account' : 'Account',
           content: 'Make changes to your account here.',
         },
         {
           value: 'password',
-          label: config.icons ? 'ðŸ”’ Password' : 'Password',
+          label: config.icons ? '🔒 Password' : 'Password',
           content: 'Change your password here.',
           ...(config.disabled === undefined
             ? {}
@@ -544,7 +582,7 @@ const tooltip = (
 const rawDefinitions: PageDefinitions = {
   popover: {
     description: 'Displays rich content in a portal, triggered by a button.',
-    composition: 'Popover\nâ”œâ”€â”€ PopoverTrigger\nâ””â”€â”€ PopoverContent',
+    composition: 'Popover\n├── PopoverTrigger\n└── PopoverContent',
     examples: [
       basic(
         'popover',
@@ -605,7 +643,7 @@ const rawDefinitions: PageDefinitions = {
         title: 'RTL',
         preview: (model, h: HtmlBuilder<Message>) =>
           rtl(popover(model, 'rtl', 'end', undefined, h), h),
-        code: `<Direction direction="rtl">â€¦</Direction>`,
+        code: `<Direction direction="rtl">…</Direction>`,
       },
     ],
   },
@@ -613,7 +651,7 @@ const rawDefinitions: PageDefinitions = {
     description:
       'Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.',
     composition:
-      'Progress\nâ””â”€â”€ ProgressIndicator\n\nWith label and value: Label + value + Progress',
+      'Progress\n└── ProgressIndicator\n\nWith label and value: Label + value + Progress',
     examples: [
       basic('progress', `Progress.progress({ value: 60 })`),
       {
@@ -643,15 +681,15 @@ const rawDefinitions: PageDefinitions = {
         title: 'RTL',
         preview: (_model, h: HtmlBuilder<Message>) =>
           rtl(Progress.progress({ value: 60, class: width }, h), h),
-        code: `<Direction direction="rtl">â€¦</Direction>`,
+        code: `<Direction direction="rtl">…</Direction>`,
       },
     ],
   },
   'radio-group': {
     description:
-      'A set of checkable buttonsâ€”known as radio buttonsâ€”where no more than one of the buttons can be checked at a time.',
+      'A set of checkable buttons—known as radio buttons—where no more than one of the buttons can be checked at a time.',
     composition:
-      'RadioGroup\nâ”œâ”€â”€ RadioGroupItem\nâ”œâ”€â”€ Label\nâ””â”€â”€ Description',
+      'RadioGroup\n├── RadioGroupItem\n├── Label\n└── Description',
     examples: [
       basic('radio-group', `RadioGroup.radioGroup({ model, options })`),
       {
@@ -694,7 +732,7 @@ const rawDefinitions: PageDefinitions = {
             { class: 'rounded-lg border p-4' },
             h,
           ),
-        code: `RadioGroup.radioGroup({ class: 'rounded-lg border p-4', â€¦ })`,
+        code: `RadioGroup.radioGroup({ class: 'rounded-lg border p-4', … })`,
       },
       {
         title: 'Fieldset',
@@ -704,7 +742,7 @@ const rawDefinitions: PageDefinitions = {
             [
               h.legend(
                 [h.Class('text-sm font-medium')],
-                ['Notify me aboutâ€¦'],
+                ['Notify me about…'],
               ),
               radio(
                 model,
@@ -718,7 +756,7 @@ const rawDefinitions: PageDefinitions = {
               ),
             ],
           ),
-        code: `<fieldset><legend>â€¦</legend>{radioGroup}</fieldset>`,
+        code: `<fieldset><legend>…</legend>{radioGroup}</fieldset>`,
       },
       {
         title: 'Disabled',
@@ -733,7 +771,7 @@ const rawDefinitions: PageDefinitions = {
             { disabled: true },
             h,
           ),
-        code: `RadioGroup.radioGroup({ isDisabled: true, â€¦ })`,
+        code: `RadioGroup.radioGroup({ isDisabled: true, … })`,
       },
       {
         title: 'Invalid',
@@ -757,7 +795,7 @@ const rawDefinitions: PageDefinitions = {
               ),
             ],
           ),
-        code: `<div aria-invalid="true">â€¦</div>`,
+        code: `<div aria-invalid="true">…</div>`,
       },
       {
         title: 'RTL',
@@ -767,15 +805,15 @@ const rawDefinitions: PageDefinitions = {
               model,
               'rtl',
               [
-                { value: 'one', label: 'Ø§Ù„Ø®ÙŠØ§Ø± Ø§Ù„Ø£ÙˆÙ„' },
-                { value: 'two', label: 'Ø§Ù„Ø®ÙŠØ§Ø± Ø§Ù„Ø«Ø§Ù†ÙŠ' },
+                { value: 'one', label: 'الخيار الأول' },
+                { value: 'two', label: 'الخيار الثاني' },
               ],
               {},
               h,
             ),
             h,
           ),
-        code: `<Direction direction="rtl">â€¦</Direction>`,
+        code: `<Direction direction="rtl">…</Direction>`,
       },
     ],
   },
@@ -783,33 +821,33 @@ const rawDefinitions: PageDefinitions = {
     description:
       'Accessible resizable panel groups and layouts with keyboard support.',
     composition:
-      'ResizablePanelGroup\nâ”œâ”€â”€ ResizablePanel\nâ”œâ”€â”€ ResizableHandle\nâ””â”€â”€ ResizablePanel',
+      'ResizablePanelGroup\n├── ResizablePanel\n├── ResizableHandle\n└── ResizablePanel',
     examples: [
       basic('resizable', `Resizable.resizable({ model, first, second })`),
       {
         title: 'Vertical',
         preview: (model, h: HtmlBuilder<Message>) =>
           resizePanel(model, 'vertical', 'vertical', undefined, h),
-        code: `Resizable.resizable({ direction: 'vertical', â€¦ })`,
+        code: `Resizable.resizable({ direction: 'vertical', … })`,
       },
       {
         title: 'Handle',
         preview: (model, h: HtmlBuilder<Message>) =>
           resizePanel(model, 'handle', 'horizontal', true, h),
-        code: `Resizable.resizable({ withHandle: true, â€¦ })`,
+        code: `Resizable.resizable({ withHandle: true, … })`,
       },
       {
         title: 'RTL',
         preview: (model, h: HtmlBuilder<Message>) =>
           rtl(resizePanel(model, 'rtl', 'horizontal', false, h), h),
-        code: `<Direction direction="rtl">â€¦</Direction>`,
+        code: `<Direction direction="rtl">…</Direction>`,
       },
     ],
   },
   'scroll-area': {
     description:
       'Augments native scroll functionality for custom, cross-browser styling.',
-    composition: 'ScrollArea\nâ””â”€â”€ native scroll viewport',
+    composition: 'ScrollArea\n└── native scroll viewport',
     examples: [
       basic('scroll-area', `ScrollArea.scrollArea({ children })`),
       {
@@ -854,22 +892,22 @@ const rawDefinitions: PageDefinitions = {
               {
                 class: 'h-56 w-48 rounded-md border p-4',
                 children: Array.from({ length: 20 }, (_, index) =>
-                  h.div([h.Class('py-1 text-sm')], [`ÙˆØ³Ù… ${index + 1}`]),
+                  h.div([h.Class('py-1 text-sm')], [`وسم ${index + 1}`]),
                 ),
               },
               h,
             ),
             h,
           ),
-        code: `<Direction direction="rtl">â€¦</Direction>`,
+        code: `<Direction direction="rtl">…</Direction>`,
       },
     ],
   },
   select: {
     description:
-      'Displays a list of options for the user to pick fromâ€”triggered by a button.',
+      'Displays a list of options for the user to pick from—triggered by a button.',
     composition:
-      'Select\nâ”œâ”€â”€ SelectTrigger\nâ”œâ”€â”€ SelectContent\nâ”œâ”€â”€ SelectGroup\nâ””â”€â”€ SelectItem',
+      'Select\n├── SelectTrigger\n├── SelectContent\n├── SelectGroup\n└── SelectItem',
     examples: [
       basic(
         'select',
@@ -885,7 +923,7 @@ const rawDefinitions: PageDefinitions = {
         title: 'Groups',
         preview: (model, h: HtmlBuilder<Message>) =>
           select(model, 'groups', fruits, true, h),
-        code: `Select.select({ itemGroupKey, groupToHeading, â€¦ })`,
+        code: `Select.select({ itemGroupKey, groupToHeading, … })`,
       },
       {
         title: 'Scrollable',
@@ -900,16 +938,13 @@ const rawDefinitions: PageDefinitions = {
             undefined,
             h,
           ),
-        code: `Select.select({ items: timeZones, â€¦ })`,
+        code: `Select.select({ items: timeZones, … })`,
       },
       {
         title: 'Disabled',
         preview: (model, h: HtmlBuilder<Message>) =>
-          h.div(
-            [h.Class('pointer-events-none opacity-50')],
-            [select(model, 'disabled', fruits, false, h)],
-          ),
-        code: `<div class="pointer-events-none opacity-50">â€¦</div>`,
+          select(model, 'disabled', fruits, false, h, true),
+        code: `Select.select({ isDisabled: true, … })`,
       },
       {
         title: 'Invalid',
@@ -924,13 +959,13 @@ const rawDefinitions: PageDefinitions = {
               ),
             ],
           ),
-        code: `<div aria-invalid="true">â€¦</div>`,
+        code: `<div aria-invalid="true">…</div>`,
       },
       {
         title: 'RTL',
         preview: (model, h: HtmlBuilder<Message>) =>
           rtl(select(model, 'rtl', fruits, false, h), h),
-        code: `<Direction direction="rtl">â€¦</Direction>`,
+        code: `<Direction direction="rtl">…</Direction>`,
       },
     ],
   },
@@ -981,14 +1016,14 @@ const rawDefinitions: PageDefinitions = {
         preview: (_model, h: HtmlBuilder<Message>) =>
           rtl(
             row(
-              'Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©',
+              'الرئيسية',
               Separator.separator({ orientation: 'vertical', class: 'h-5' }, h),
-              'Ø§Ù„ØªÙˆØ«ÙŠÙ‚',
+              'التوثيق',
               h,
             ),
             h,
           ),
-        code: `<Direction direction="rtl">â€¦</Direction>`,
+        code: `<Direction direction="rtl">…</Direction>`,
       },
     ],
   },
@@ -996,9 +1031,25 @@ const rawDefinitions: PageDefinitions = {
     description:
       'Extends the Dialog component to display content that complements the main content of the screen.',
     composition:
-      'Sheet\nâ”œâ”€â”€ SheetTrigger\nâ”œâ”€â”€ SheetContent\nâ”œâ”€â”€ SheetHeader\nâ””â”€â”€ SheetFooter',
+      'Sheet\n├── SheetTrigger\n├── SheetContent\n├── SheetHeader\n└── SheetFooter',
     examples: [
       basic('sheet', `Sheet.sheet({ model, title, content })`),
+      {
+        title: 'Compound Layout',
+        preview: (model, h: HtmlBuilder<Message>) =>
+          sheet(model, 'compound', 'right', true, undefined, h, true),
+        code: `Sheet.sheet({
+  model,
+  toParentMessage,
+  title: 'Edit profile',
+  layout: parts => [
+    parts.header({ children: [parts.title({ children: ['Edit profile'] })] }),
+    form,
+    parts.footer({ children: [parts.close({ children: ['Cancel'] })] }),
+    parts.close(),
+  ],
+})`,
+      },
       {
         title: 'Side',
         preview: (model, h: HtmlBuilder<Message>) =>
@@ -1008,30 +1059,30 @@ const rawDefinitions: PageDefinitions = {
             ),
             h,
           ),
-        code: `Sheet.sheet({ side: 'left', â€¦ })`,
+        code: `Sheet.sheet({ side: 'left', … })`,
       },
       {
         title: 'No Close Button',
         preview: (model, h: HtmlBuilder<Message>) =>
           sheet(model, 'no-close', 'right', false, undefined, h),
-        code: `Sheet.sheet({ showCloseButton: false, â€¦ })`,
+        code: `Sheet.sheet({ showCloseButton: false, … })`,
       },
       {
         title: 'RTL',
         preview: (model, h: HtmlBuilder<Message>) =>
           rtl(sheet(model, 'rtl', 'right', true, undefined, h), h),
-        code: `<Direction direction="rtl">â€¦</Direction>`,
+        code: `<Direction direction="rtl">…</Direction>`,
       },
     ],
   },
   sidebar: {
     description: 'A composable, themeable and customizable sidebar component.',
     composition:
-      'SidebarProvider\nâ”œâ”€â”€ Sidebar\nâ”‚   â”œâ”€â”€ SidebarHeader\nâ”‚   â”œâ”€â”€ SidebarContent\nâ”‚   â””â”€â”€ SidebarFooter\nâ””â”€â”€ SidebarInset',
+      'SidebarProvider\n├── Sidebar\n│   ├── SidebarHeader\n│   ├── SidebarContent\n│   └── SidebarFooter\n└── SidebarInset',
     examples: [
       basic(
         'sidebar',
-        `Sidebar.sidebarProvider({ children: [Sidebar.sidebar({ â€¦ })] })`,
+        `Sidebar.sidebarProvider({ children: [Sidebar.sidebar({ … })] })`,
       ),
       {
         title: 'Structure',
@@ -1128,7 +1179,7 @@ const rawDefinitions: PageDefinitions = {
             },
             h,
           ),
-        code: `Sidebar.sidebarMenu({ children: items.map(â€¦) })`,
+        code: `Sidebar.sidebarMenu({ children: items.map(…) })`,
       },
       {
         title: 'SidebarMenuSkeleton',
@@ -1148,9 +1199,9 @@ const rawDefinitions: PageDefinitions = {
             Sidebar.sidebarMenu(
               {
                 children: [
-                  'Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©',
-                  'Ø§Ù„Ø¨Ø±ÙŠØ¯',
-                  'Ø§Ù„ØªÙ‚ÙˆÙŠÙ…',
+                  'الرئيسية',
+                  'البريد',
+                  'التقويم',
                 ].map((label) =>
                   Sidebar.sidebarMenuItem(
                     {
@@ -1166,7 +1217,7 @@ const rawDefinitions: PageDefinitions = {
             ),
             h,
           ),
-        code: `<Direction direction="rtl">â€¦</Direction>`,
+        code: `<Direction direction="rtl">…</Direction>`,
       },
     ],
   },
@@ -1202,7 +1253,7 @@ const rawDefinitions: PageDefinitions = {
             },
             h,
           ),
-        code: `Card.card({ children: [Skeleton.skeleton(â€¦), â€¦] })`,
+        code: `Card.card({ children: [Skeleton.skeleton(…), …] })`,
       },
       {
         title: 'Text',
@@ -1234,7 +1285,7 @@ const rawDefinitions: PageDefinitions = {
             ),
             h,
           ),
-        code: `rows.map(() => Skeleton.skeleton(â€¦))`,
+        code: `rows.map(() => Skeleton.skeleton(…))`,
       },
       {
         title: 'RTL',
@@ -1247,7 +1298,7 @@ const rawDefinitions: PageDefinitions = {
             ),
             h,
           ),
-        code: `<Direction direction="rtl">â€¦</Direction>`,
+        code: `<Direction direction="rtl">…</Direction>`,
       },
     ],
   },
@@ -1266,7 +1317,7 @@ const rawDefinitions: PageDefinitions = {
         title: 'Multiple Thumbs',
         preview: (model, h: HtmlBuilder<Message>) =>
           slider(model, 'multiple', { label: 'Range' }, h),
-        code: `Slider.slider({ model: multipleThumbModel, â€¦ })`,
+        code: `Slider.slider({ model: multipleThumbModel, … })`,
       },
       {
         title: 'Vertical',
@@ -1275,7 +1326,7 @@ const rawDefinitions: PageDefinitions = {
             [h.Class('flex h-48 items-center')],
             [slider(model, 'vertical', { class: 'w-48 -rotate-90' }, h)],
           ),
-        code: `Slider.slider({ class: '-rotate-90', â€¦ })`,
+        code: `Slider.slider({ class: '-rotate-90', … })`,
       },
       {
         title: 'Controlled',
@@ -1294,13 +1345,13 @@ const rawDefinitions: PageDefinitions = {
         title: 'Disabled',
         preview: (model, h: HtmlBuilder<Message>) =>
           slider(model, 'disabled', { disabled: true }, h),
-        code: `Slider.slider({ isDisabled: true, â€¦ })`,
+        code: `Slider.slider({ isDisabled: true, … })`,
       },
       {
         title: 'RTL',
         preview: (model, h: HtmlBuilder<Message>) =>
           rtl(slider(model, 'rtl', {}, h), h),
-        code: `<Direction direction="rtl">â€¦</Direction>`,
+        code: `<Direction direction="rtl">…</Direction>`,
       },
     ],
   },
@@ -1333,7 +1384,7 @@ const rawDefinitions: PageDefinitions = {
             Badge.badge({ variant: 'secondary', children: ['Warning'] }, h),
             h,
           ),
-        code: `Sonner.success(â€¦), Sonner.error(â€¦), Sonner.info(â€¦), Sonner.warning(â€¦)`,
+        code: `Sonner.success(…), Sonner.error(…), Sonner.info(…), Sonner.warning(…)`,
       },
     ],
   },
@@ -1393,7 +1444,7 @@ const rawDefinitions: PageDefinitions = {
                   id: 'spinner-search',
                   value: '',
                   onInput: () => action,
-                  placeholder: 'Searchingâ€¦',
+                  placeholder: 'Searching…',
                 },
                 h,
               ),
@@ -1412,7 +1463,7 @@ const rawDefinitions: PageDefinitions = {
             Spinner.spinner({ class: 'mx-auto size-6' }, h),
             h.p(
               [h.Class('text-center text-sm text-muted-foreground')],
-              ['Loading your projectsâ€¦'],
+              ['Loading your projects…'],
             ),
             h,
           ),
@@ -1421,8 +1472,8 @@ const rawDefinitions: PageDefinitions = {
       {
         title: 'RTL',
         preview: (_model, h: HtmlBuilder<Message>) =>
-          rtl(row(Spinner.spinner({}, h), 'Ø¬Ø§Ø±Ù Ø§Ù„ØªØ­Ù…ÙŠÙ„â€¦', h), h),
-        code: `<Direction direction="rtl">â€¦</Direction>`,
+          rtl(row(Spinner.spinner({}, h), 'جارٍ التحميل…', h), h),
+        code: `<Direction direction="rtl">…</Direction>`,
       },
     ],
   },
@@ -1443,7 +1494,7 @@ const rawDefinitions: PageDefinitions = {
             { description: 'Enable or disable wireless communications.' },
             h,
           ),
-        code: `Switch.switchControl({ description: 'â€¦', â€¦ })`,
+        code: `Switch.switchControl({ description: '…', … })`,
       },
       {
         title: 'Choice Card',
@@ -1472,13 +1523,13 @@ const rawDefinitions: PageDefinitions = {
             },
             h,
           ),
-        code: `Card.card({ children: [Switch.switchControl(â€¦)] })`,
+        code: `Card.card({ children: [Switch.switchControl(…)] })`,
       },
       {
         title: 'Disabled',
         preview: (model, h: HtmlBuilder<Message>) =>
           switchControl(model, 'disabled', { disabled: true }, h),
-        code: `Switch.switchControl({ isDisabled: true, â€¦ })`,
+        code: `Switch.switchControl({ isDisabled: true, … })`,
       },
       {
         title: 'Invalid',
@@ -1493,7 +1544,7 @@ const rawDefinitions: PageDefinitions = {
               ),
             ],
           ),
-        code: `<div aria-invalid="true">â€¦</div>`,
+        code: `<div aria-invalid="true">…</div>`,
       },
       {
         title: 'Size',
@@ -1503,27 +1554,27 @@ const rawDefinitions: PageDefinitions = {
             switchControl(model, 'default', {}, h),
             h,
           ),
-        code: `Switch.switchControl({ size: 'sm', â€¦ })`,
+        code: `Switch.switchControl({ size: 'sm', … })`,
       },
       {
         title: 'RTL',
         preview: (model, h: HtmlBuilder<Message>) =>
           rtl(switchControl(model, 'rtl', {}, h), h),
-        code: `<Direction direction="rtl">â€¦</Direction>`,
+        code: `<Direction direction="rtl">…</Direction>`,
       },
     ],
   },
   table: {
     description: 'A responsive table component.',
     composition:
-      'Table\nâ”œâ”€â”€ TableCaption\nâ”œâ”€â”€ TableHeader\nâ”œâ”€â”€ TableBody\nâ””â”€â”€ TableFooter',
+      'Table\n├── TableCaption\n├── TableHeader\n├── TableBody\n└── TableFooter',
     examples: [
-      basic('table', `Table.table({ children: [â€¦] })`),
+      basic('table', `Table.table({ children: […] })`),
       {
         title: 'Footer',
         preview: (_model, h: HtmlBuilder<Message>) =>
           invoiceTable(true, undefined, h),
-        code: `Table.tableFooter({ children: [â€¦] })`,
+        code: `Table.tableFooter({ children: […] })`,
       },
       {
         title: 'Actions',
@@ -1549,46 +1600,46 @@ const rawDefinitions: PageDefinitions = {
         title: 'RTL',
         preview: (_model, h: HtmlBuilder<Message>) =>
           rtl(invoiceTable(false, false, h), h),
-        code: `<Direction direction="rtl">â€¦</Direction>`,
+        code: `<Direction direction="rtl">…</Direction>`,
       },
     ],
   },
   tabs: {
     description:
-      'A set of layered sections of contentâ€”known as tab panelsâ€”that are displayed one at a time.',
+      'A set of layered sections of content—known as tab panels—that are displayed one at a time.',
     composition:
-      'Tabs\nâ”œâ”€â”€ TabsList\nâ”‚   â””â”€â”€ TabsTrigger\nâ””â”€â”€ TabsContent',
+      'Tabs\n├── TabsList\n│   └── TabsTrigger\n└── TabsContent',
     examples: [
       basic('tabs', `Tabs.tabs({ model, tabs })`),
       {
         title: 'Line',
         preview: (model, h: HtmlBuilder<Message>) =>
           tabSet(model, 'line', { variant: 'line' }, h),
-        code: `Tabs.tabs({ variant: 'line', â€¦ })`,
+        code: `Tabs.tabs({ variant: 'line', … })`,
       },
       {
         title: 'Vertical',
         preview: (model, h: HtmlBuilder<Message>) =>
           tabSet(model, 'vertical', { orientation: 'vertical' }, h),
-        code: `Tabs.tabs({ orientation: 'vertical', â€¦ })`,
+        code: `Tabs.tabs({ orientation: 'vertical', … })`,
       },
       {
         title: 'Disabled',
         preview: (model, h: HtmlBuilder<Message>) =>
           tabSet(model, 'disabled', { disabled: true }, h),
-        code: `tabs: [{ â€¦, isDisabled: true }]`,
+        code: `tabs: [{ …, isDisabled: true }]`,
       },
       {
         title: 'Icons',
         preview: (model, h: HtmlBuilder<Message>) =>
           tabSet(model, 'icons', { icons: true }, h),
-        code: `tabs: [{ label: iconAndLabel, â€¦ }]`,
+        code: `tabs: [{ label: iconAndLabel, … }]`,
       },
       {
         title: 'RTL',
         preview: (model, h: HtmlBuilder<Message>) =>
           rtl(tabSet(model, 'rtl', {}, h), h),
-        code: `<Direction direction="rtl">â€¦</Direction>`,
+        code: `<Direction direction="rtl">…</Direction>`,
       },
     ],
   },
@@ -1601,13 +1652,13 @@ const rawDefinitions: PageDefinitions = {
         title: 'Field',
         preview: (model, h: HtmlBuilder<Message>) =>
           textarea(model, 'field', { label: 'Message' }, h),
-        code: `Textarea.textarea({ label: 'Message', â€¦ })`,
+        code: `Textarea.textarea({ label: 'Message', … })`,
       },
       {
         title: 'Disabled',
         preview: (model, h: HtmlBuilder<Message>) =>
           textarea(model, 'disabled', { disabled: true }, h),
-        code: `Textarea.textarea({ isDisabled: true, â€¦ })`,
+        code: `Textarea.textarea({ isDisabled: true, … })`,
       },
       {
         title: 'Invalid',
@@ -1620,7 +1671,7 @@ const rawDefinitions: PageDefinitions = {
             ),
             h,
           ),
-        code: `Textarea.textarea({ isInvalid: true, â€¦ })`,
+        code: `Textarea.textarea({ isInvalid: true, … })`,
       },
       {
         title: 'Button',
@@ -1633,13 +1684,13 @@ const rawDefinitions: PageDefinitions = {
             ),
             h,
           ),
-        code: `Textarea.textarea(â€¦) + Button.button(â€¦)`,
+        code: `Textarea.textarea(…) + Button.button(…)`,
       },
       {
         title: 'RTL',
         preview: (model, h: HtmlBuilder<Message>) =>
           rtl(textarea(model, 'rtl', {}, h), h),
-        code: `<Direction direction="rtl">â€¦</Direction>`,
+        code: `<Direction direction="rtl">…</Direction>`,
       },
     ],
   },
@@ -1673,7 +1724,7 @@ const rawDefinitions: PageDefinitions = {
         title: 'Promise',
         preview: (_model, h: HtmlBuilder<Message>) =>
           Button.button({ onClick: action, children: ['Start upload'] }, h),
-        code: `show loading â†’ await command â†’ show success or error`,
+        code: `show loading → await command → show success or error`,
       },
     ],
   },
@@ -1688,7 +1739,7 @@ const rawDefinitions: PageDefinitions = {
         title: 'Outline',
         preview: (_model, h: HtmlBuilder<Message>) =>
           toggle({ variant: 'outline' }, h),
-        code: `Toggle.toggle({ variant: 'outline', â€¦ })`,
+        code: `Toggle.toggle({ variant: 'outline', … })`,
       },
       {
         title: 'With Text',
@@ -1704,25 +1755,25 @@ const rawDefinitions: PageDefinitions = {
             toggle({ size: 'lg' }, h),
             h,
           ),
-        code: `Toggle.toggle({ size: 'sm' | 'default' | 'lg', â€¦ })`,
+        code: `Toggle.toggle({ size: 'sm' | 'default' | 'lg', … })`,
       },
       {
         title: 'Disabled',
         preview: (_model, h: HtmlBuilder<Message>) =>
           toggle({ disabled: true }, h),
-        code: `Toggle.toggle({ isDisabled: true, â€¦ })`,
+        code: `Toggle.toggle({ isDisabled: true, … })`,
       },
       {
         title: 'RTL',
         preview: (_model, h: HtmlBuilder<Message>) =>
           rtl(toggle({ text: true }, h), h),
-        code: `<Direction direction="rtl">â€¦</Direction>`,
+        code: `<Direction direction="rtl">…</Direction>`,
       },
     ],
   },
   'toggle-group': {
     description: 'A set of two-state buttons that can be toggled on or off.',
-    composition: 'ToggleGroup\nâ””â”€â”€ ToggleGroupItem',
+    composition: 'ToggleGroup\n└── ToggleGroupItem',
     examples: [
       basic(
         'toggle-group',
@@ -1732,7 +1783,7 @@ const rawDefinitions: PageDefinitions = {
         title: 'Outline',
         preview: (_model, h: HtmlBuilder<Message>) =>
           toggleGroup({ variant: 'outline' }, h),
-        code: `ToggleGroup.toggleGroup({ variant: 'outline', â€¦ })`,
+        code: `ToggleGroup.toggleGroup({ variant: 'outline', … })`,
       },
       {
         title: 'Size',
@@ -1743,25 +1794,25 @@ const rawDefinitions: PageDefinitions = {
             toggleGroup({ size: 'lg' }, h),
             h,
           ),
-        code: `ToggleGroup.toggleGroup({ size: 'sm' | 'default' | 'lg', â€¦ })`,
+        code: `ToggleGroup.toggleGroup({ size: 'sm' | 'default' | 'lg', … })`,
       },
       {
         title: 'Spacing',
         preview: (_model, h: HtmlBuilder<Message>) =>
           toggleGroup({ variant: 'outline' }, h),
-        code: `ToggleGroup.toggleGroup({ class: 'gap-2', â€¦ })`,
+        code: `ToggleGroup.toggleGroup({ class: 'gap-2', … })`,
       },
       {
         title: 'Vertical',
         preview: (_model, h: HtmlBuilder<Message>) =>
           toggleGroup({ vertical: true, variant: 'outline' }, h),
-        code: `ToggleGroup.toggleGroup({ class: 'flex-col', â€¦ })`,
+        code: `ToggleGroup.toggleGroup({ class: 'flex-col', … })`,
       },
       {
         title: 'Disabled',
         preview: (_model, h: HtmlBuilder<Message>) =>
           toggleGroup({ disabled: true }, h),
-        code: `items: [{ â€¦, isDisabled: true }]`,
+        code: `items: [{ …, isDisabled: true }]`,
       },
       {
         title: 'Custom',
@@ -1773,14 +1824,14 @@ const rawDefinitions: PageDefinitions = {
         title: 'RTL',
         preview: (_model, h: HtmlBuilder<Message>) =>
           rtl(toggleGroup({ variant: 'outline' }, h), h),
-        code: `<Direction direction="rtl">â€¦</Direction>`,
+        code: `<Direction direction="rtl">…</Direction>`,
       },
     ],
   },
   tooltip: {
     description:
       'A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.',
-    composition: 'Tooltip\nâ”œâ”€â”€ TooltipTrigger\nâ””â”€â”€ TooltipContent',
+    composition: 'Tooltip\n├── TooltipTrigger\n└── TooltipContent',
     examples: [
       basic(
         'tooltip',
@@ -1795,7 +1846,7 @@ const rawDefinitions: PageDefinitions = {
             ),
             h,
           ),
-        code: `Tooltip.tooltip({ side: 'right', â€¦ })`,
+        code: `Tooltip.tooltip({ side: 'right', … })`,
       },
       {
         title: 'With Keyboard Shortcut',
@@ -1839,13 +1890,13 @@ const rawDefinitions: PageDefinitions = {
             undefined,
             h,
           ),
-        code: `Tooltip.tooltip({ trigger: disabledButton, â€¦ })`,
+        code: `Tooltip.tooltip({ trigger: disabledButton, … })`,
       },
       {
         title: 'RTL',
         preview: (model, h: HtmlBuilder<Message>) =>
           rtl(tooltip(model, 'rtl', {}, undefined, h), h),
-        code: `<Direction direction="rtl">â€¦</Direction>`,
+        code: `<Direction direction="rtl">…</Direction>`,
       },
     ],
   },
@@ -1863,7 +1914,7 @@ const rawDefinitions: PageDefinitions = {
             { children: ['Taxing Laughter: The Joke Tax Chronicles'] },
             h,
           ),
-        code: `Typography.typographyH1({ children: ['â€¦'] })`,
+        code: `Typography.typographyH1({ children: ['…'] })`,
       },
       {
         title: 'h2',
@@ -1872,13 +1923,13 @@ const rawDefinitions: PageDefinitions = {
             { children: ['The People of the Kingdom'] },
             h,
           ),
-        code: `Typography.typographyH2({ children: ['â€¦'] })`,
+        code: `Typography.typographyH2({ children: ['…'] })`,
       },
       {
         title: 'h3',
         preview: (_model, h: HtmlBuilder<Message>) =>
           Typography.typographyH3({ children: ['The Joke Tax'] }, h),
-        code: `Typography.typographyH3({ children: ['â€¦'] })`,
+        code: `Typography.typographyH3({ children: ['…'] })`,
       },
       {
         title: 'h4',
@@ -1887,7 +1938,7 @@ const rawDefinitions: PageDefinitions = {
             { children: ['People stopped telling jokes'] },
             h,
           ),
-        code: `Typography.typographyH4({ children: ['â€¦'] })`,
+        code: `Typography.typographyH4({ children: ['…'] })`,
       },
       {
         title: 'p',
@@ -1900,7 +1951,7 @@ const rawDefinitions: PageDefinitions = {
             },
             h,
           ),
-        code: `Typography.typographyP({ children: ['â€¦'] })`,
+        code: `Typography.typographyP({ children: ['…'] })`,
       },
       {
         title: 'blockquote',
@@ -1911,13 +1962,13 @@ const rawDefinitions: PageDefinitions = {
             },
             h,
           ),
-        code: `Typography.typographyBlockquote({ children: ['â€¦'] })`,
+        code: `Typography.typographyBlockquote({ children: ['…'] })`,
       },
       {
         title: 'table',
         preview: (_model, h: HtmlBuilder<Message>) =>
           invoiceTable(false, false, h),
-        code: `Table.table({ children: [â€¦] })`,
+        code: `Table.table({ children: […] })`,
       },
       {
         title: 'list',
@@ -1930,7 +1981,7 @@ const rawDefinitions: PageDefinitions = {
               h.li([], ['3rd level of one-liners: 20 gold coins']),
             ],
           ),
-        code: `<ul class="my-6 ml-6 list-disc">â€¦</ul>`,
+        code: `<ul class="my-6 ml-6 list-disc">…</ul>`,
       },
       {
         title: 'Inline code',
@@ -1949,7 +2000,7 @@ const rawDefinitions: PageDefinitions = {
             },
             h,
           ),
-        code: `Typography.typographyLead({ children: ['â€¦'] })`,
+        code: `Typography.typographyLead({ children: ['…'] })`,
       },
       {
         title: 'Large',
@@ -1958,13 +2009,13 @@ const rawDefinitions: PageDefinitions = {
             { children: ['Are you absolutely sure?'] },
             h,
           ),
-        code: `Typography.typographyLarge({ children: ['â€¦'] })`,
+        code: `Typography.typographyLarge({ children: ['…'] })`,
       },
       {
         title: 'Small',
         preview: (_model, h: HtmlBuilder<Message>) =>
           Typography.typographySmall({ children: ['Email address'] }, h),
-        code: `Typography.typographySmall({ children: ['â€¦'] })`,
+        code: `Typography.typographySmall({ children: ['…'] })`,
       },
       {
         title: 'Muted',
@@ -1973,7 +2024,7 @@ const rawDefinitions: PageDefinitions = {
             { children: ['Enter your email address.'] },
             h,
           ),
-        code: `Typography.typographyMuted({ children: ['â€¦'] })`,
+        code: `Typography.typographyMuted({ children: ['…'] })`,
       },
       {
         title: 'RTL',
@@ -1982,14 +2033,14 @@ const rawDefinitions: PageDefinitions = {
             Typography.typographyP(
               {
                 children: [
-                  'ÙÙŠ Ù‚Ø¯ÙŠÙ… Ø§Ù„Ø²Ù…Ø§Ù†ØŒ ÙƒØ§Ù† Ù‡Ù†Ø§Ùƒ Ù…Ù„Ùƒ ÙƒØ³ÙˆÙ„ Ø¬Ø¯Ù‹Ø§.',
+                  'في قديم الزمان، كان هناك ملك كسول جدًا.',
                 ],
               },
               h,
             ),
             h,
           ),
-        code: `<Direction direction="rtl">â€¦</Direction>`,
+        code: `<Direction direction="rtl">…</Direction>`,
       },
     ],
   },

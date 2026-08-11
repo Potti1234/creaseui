@@ -5,6 +5,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html';
 import * as Icon from '@/lib/icon';
 import { cn } from '@/lib/utils';
 import { componentDocsPath } from '@/route';
+import type { ApiEntry } from '@/docs/generated-component-api';
 
 export const COMPONENTS = [
   'Accordion',
@@ -318,6 +319,7 @@ export type ComponentPageConfig<Msg> = Readonly<{
   onCopyCode?: (code: string) => Msg;
   sourceHref?: string;
   apiDescription?: string;
+  apiEntries: ReadonlyArray<ApiEntry>;
   sidebarScrolled: Msg;
 }>;
 
@@ -585,6 +587,53 @@ export const componentPage = <Msg>(
                         ['Read the Foldkit UI reference'],
                       ),
                       '.',
+                    ],
+                  ),
+                  h.div(
+                    [h.Class('overflow-x-auto rounded-lg border')],
+                    [
+                      h.table(
+                        [h.Class('w-full min-w-[42rem] text-left text-sm')],
+                        [
+                          h.thead(
+                            [h.Class('border-b bg-muted/45')],
+                            [
+                              h.tr([], [
+                                h.th([h.Class('px-4 py-3 font-medium')], ['Export']),
+                                h.th([h.Class('px-4 py-3 font-medium')], ['Kind']),
+                                h.th([h.Class('px-4 py-3 font-medium')], ['Signature']),
+                              ]),
+                            ],
+                          ),
+                          h.tbody(
+                            [],
+                            config.apiEntries.map((entry) =>
+                              h.tr(
+                                [h.Class('border-b last:border-0')],
+                                [
+                                  h.td(
+                                    [h.Class('px-4 py-3 align-top font-mono text-xs font-medium')],
+                                    [entry.name],
+                                  ),
+                                  h.td(
+                                    [h.Class('px-4 py-3 align-top text-muted-foreground')],
+                                    [entry.kind],
+                                  ),
+                                  h.td(
+                                    [h.Class('px-4 py-3 align-top')],
+                                    [
+                                      h.code(
+                                        [h.Class('whitespace-normal break-words font-mono text-xs leading-5')],
+                                        [entry.signature],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                   h.div(

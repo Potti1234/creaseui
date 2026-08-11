@@ -1,28 +1,82 @@
 # crease/ui
 
-crease/ui is an MIT-licensed, source-owned component distribution for Foldkit.
-It ports the shadcn/ui visual language and CSS token contract while keeping
-Foldkit's Elm-style architecture authoritative for state and behavior.
+> The shadcn/ui design language rebuilt as source-owned Foldkit components. No React or JSX.
 
-Canonical resources:
-- Documentation: https://creaseui.com/
-- Repository: https://github.com/Potti1234/creaseui
-- Architecture: https://github.com/Potti1234/creaseui/blob/main/docs/architecture.md
-- Component catalog: https://github.com/Potti1234/creaseui/blob/main/docs/component-catalog.md
-- Parity ledger: https://github.com/Potti1234/creaseui/blob/main/docs/component-parity.md
-- Registry guide: https://github.com/Potti1234/creaseui/blob/main/docs/registry.md
+## Primary documentation
 
-Installation:
-- `npx creaseui init`
-- `npx creaseui add button dialog`
-- `npx creaseui diff dialog`
+- Getting started: /docs/getting-started.md
 
-Rules for generated code:
-- Stateful Foldkit UI primitives keep Model, Message, update, and OutMessage.
-- Embed stateful children with `h.submodel` and wrap messages with `Got*`.
-- Stateless helpers are direct view functions and do not become submodels.
-- Model, update, init, and view stay pure; side effects use Commands, Flags,
-  Subscriptions, Mounts, or ManagedResources according to their cause.
-- Use the semantic theme tokens rather than hard-coded component colors.
-- Use one effective `h.Class` attribute per element and merge classes with `cn`.
-- Prefer the crease/ui registry source over recreating raw accessible widgets.
+- Architecture: /docs/architecture.md
+- Registry installation: /docs/registry.md
+- Create presets: /docs/create-presets.md
+- Component parity: /docs/component-parity.md
+- Machine-readable component index: /docs-index.json
+- Complete API inventory: /llms-full.txt
+
+## Components
+
+- Accordion: /docs/components/accordion — install with `npx shadcn@latest add Potti1234/creaseui/accordion`
+- Alert Dialog: /docs/components/alert-dialog — install with `npx shadcn@latest add Potti1234/creaseui/alert-dialog`
+- Alert: /docs/components/alert — install with `npx shadcn@latest add Potti1234/creaseui/alert`
+- Aspect Ratio: /docs/components/aspect-ratio — install with `npx shadcn@latest add Potti1234/creaseui/aspect-ratio`
+- Attachment: /docs/components/attachment — install with `npx shadcn@latest add Potti1234/creaseui/attachment`
+- Avatar: /docs/components/avatar — install with `npx shadcn@latest add Potti1234/creaseui/avatar`
+- Badge: /docs/components/badge — install with `npx shadcn@latest add Potti1234/creaseui/badge`
+- Breadcrumb: /docs/components/breadcrumb — install with `npx shadcn@latest add Potti1234/creaseui/breadcrumb`
+- Bubble: /docs/components/bubble — install with `npx shadcn@latest add Potti1234/creaseui/bubble`
+- Button Group: /docs/components/button-group — install with `npx shadcn@latest add Potti1234/creaseui/button-group`
+- Button: /docs/components/button — install with `npx shadcn@latest add Potti1234/creaseui/button`
+- Calendar: /docs/components/calendar — install with `npx shadcn@latest add Potti1234/creaseui/calendar`
+- Card: /docs/components/card — install with `npx shadcn@latest add Potti1234/creaseui/card`
+- Carousel: /docs/components/carousel — install with `npx shadcn@latest add Potti1234/creaseui/carousel`
+- Chart: /docs/components/chart — install with `npx shadcn@latest add Potti1234/creaseui/chart`
+- Checkbox: /docs/components/checkbox — install with `npx shadcn@latest add Potti1234/creaseui/checkbox`
+- Collapsible: /docs/components/collapsible — install with `npx shadcn@latest add Potti1234/creaseui/collapsible`
+- Combobox: /docs/components/combobox — install with `npx shadcn@latest add Potti1234/creaseui/combobox`
+- Command: /docs/components/command — install with `npx shadcn@latest add Potti1234/creaseui/command`
+- Context Menu: /docs/components/context-menu — install with `npx shadcn@latest add Potti1234/creaseui/context-menu`
+- Data Table: /docs/components/data-table — install with `npx shadcn@latest add Potti1234/creaseui/data-table`
+- Date Picker: /docs/components/date-picker — install with `npx shadcn@latest add Potti1234/creaseui/date-picker`
+- Dialog: /docs/components/dialog — install with `npx shadcn@latest add Potti1234/creaseui/dialog`
+- Direction: /docs/components/direction — install with `npx shadcn@latest add Potti1234/creaseui/direction`
+- Drawer: /docs/components/drawer — install with `npx shadcn@latest add Potti1234/creaseui/drawer`
+- Dropdown Menu: /docs/components/dropdown-menu — install with `npx shadcn@latest add Potti1234/creaseui/dropdown-menu`
+- Empty: /docs/components/empty — install with `npx shadcn@latest add Potti1234/creaseui/empty`
+- Field: /docs/components/field — install with `npx shadcn@latest add Potti1234/creaseui/field`
+- Form: /docs/components/form — install with `npx shadcn@latest add Potti1234/creaseui/form`
+- Hover Card: /docs/components/hover-card — install with `npx shadcn@latest add Potti1234/creaseui/hover-card`
+- Input Group: /docs/components/input-group — install with `npx shadcn@latest add Potti1234/creaseui/input-group`
+- Input Otp: /docs/components/input-otp — install with `npx shadcn@latest add Potti1234/creaseui/input-otp`
+- Input: /docs/components/input — install with `npx shadcn@latest add Potti1234/creaseui/input`
+- Item: /docs/components/item — install with `npx shadcn@latest add Potti1234/creaseui/item`
+- Kbd: /docs/components/kbd — install with `npx shadcn@latest add Potti1234/creaseui/kbd`
+- Label: /docs/components/label — install with `npx shadcn@latest add Potti1234/creaseui/label`
+- Marker: /docs/components/marker — install with `npx shadcn@latest add Potti1234/creaseui/marker`
+- Menubar: /docs/components/menubar — install with `npx shadcn@latest add Potti1234/creaseui/menubar`
+- Message Scroller: /docs/components/message-scroller — install with `npx shadcn@latest add Potti1234/creaseui/message-scroller`
+- Message: /docs/components/message — install with `npx shadcn@latest add Potti1234/creaseui/message`
+- Native Select: /docs/components/native-select — install with `npx shadcn@latest add Potti1234/creaseui/native-select`
+- Navigation Menu: /docs/components/navigation-menu — install with `npx shadcn@latest add Potti1234/creaseui/navigation-menu`
+- Pagination: /docs/components/pagination — install with `npx shadcn@latest add Potti1234/creaseui/pagination`
+- Popover: /docs/components/popover — install with `npx shadcn@latest add Potti1234/creaseui/popover`
+- Progress: /docs/components/progress — install with `npx shadcn@latest add Potti1234/creaseui/progress`
+- Radio Group: /docs/components/radio-group — install with `npx shadcn@latest add Potti1234/creaseui/radio-group`
+- Resizable: /docs/components/resizable — install with `npx shadcn@latest add Potti1234/creaseui/resizable`
+- Scroll Area: /docs/components/scroll-area — install with `npx shadcn@latest add Potti1234/creaseui/scroll-area`
+- Select: /docs/components/select — install with `npx shadcn@latest add Potti1234/creaseui/select`
+- Separator: /docs/components/separator — install with `npx shadcn@latest add Potti1234/creaseui/separator`
+- Sheet: /docs/components/sheet — install with `npx shadcn@latest add Potti1234/creaseui/sheet`
+- Sidebar: /docs/components/sidebar — install with `npx shadcn@latest add Potti1234/creaseui/sidebar`
+- Skeleton: /docs/components/skeleton — install with `npx shadcn@latest add Potti1234/creaseui/skeleton`
+- Slider: /docs/components/slider — install with `npx shadcn@latest add Potti1234/creaseui/slider`
+- Sonner: /docs/components/sonner — install with `npx shadcn@latest add Potti1234/creaseui/sonner`
+- Spinner: /docs/components/spinner — install with `npx shadcn@latest add Potti1234/creaseui/spinner`
+- Switch: /docs/components/switch — install with `npx shadcn@latest add Potti1234/creaseui/switch`
+- Table: /docs/components/table — install with `npx shadcn@latest add Potti1234/creaseui/table`
+- Tabs: /docs/components/tabs — install with `npx shadcn@latest add Potti1234/creaseui/tabs`
+- Textarea: /docs/components/textarea — install with `npx shadcn@latest add Potti1234/creaseui/textarea`
+- Toast: /docs/components/toast — install with `npx shadcn@latest add Potti1234/creaseui/toast`
+- Toggle Group: /docs/components/toggle-group — install with `npx shadcn@latest add Potti1234/creaseui/toggle-group`
+- Toggle: /docs/components/toggle — install with `npx shadcn@latest add Potti1234/creaseui/toggle`
+- Tooltip: /docs/components/tooltip — install with `npx shadcn@latest add Potti1234/creaseui/tooltip`
+- Typography: /docs/components/typography — install with `npx shadcn@latest add Potti1234/creaseui/typography`

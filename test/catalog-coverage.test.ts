@@ -4,6 +4,7 @@ import { basename } from 'node:path'
 import { describe, it } from 'node:test'
 
 import { hasRealPreview } from '../src/docs/components/real-previews.ts'
+import { generatedExampleSources } from '../src/docs/components/generated-example-sources.ts'
 import {
   dedicatedExampleTitles,
   hasDedicatedDefinition,
@@ -48,6 +49,14 @@ const compatibility = JSON.parse(readFileSync('compatibility.json', 'utf8')) as 
 }
 const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as {
   dependencies: Readonly<Record<string, string>>
+}
+const docsIndex = JSON.parse(readFileSync('public/docs-index.json', 'utf8')) as {
+  componentCount: number
+  components: ReadonlyArray<{
+    slug: string
+    examples: ReadonlyArray<string>
+    api: ReadonlyArray<{ name: string; kind: string; signature: string }>
+  }>
 }
 
 const componentBlock = componentPage.match(/export const COMPONENTS = \[([\s\S]*?)\] as const/)?.[1] ?? ''
@@ -157,6 +166,33 @@ describe('component catalog coverage', () => {
         assert.doesNotMatch(example.code, /<\/?(?:Direction|div|fieldset|legend)\b/, `${slug}/${example.title}`)
       }
     }
+  })
+
+  it('publishes searchable and LLM-readable API metadata', () => {
+    assert.equal(docsIndex.componentCount, registrySlugs.length)
+    assert.deepEqual(docsIndex.components.map(component => component.slug).sort(), registrySlugs)
+    assert.ok(docsIndex.components.every(component => component.examples.length >= 2))
+    assert.ok(docsIndex.components.every(component => component.api.length > 0))
+    assert.ok(
+      docsIndex.components.every(component =>
+        component.api.every(entry => entry.name && entry.kind && entry.signature),
+      ),
+    )
+    const llms = readFileSync('public/llms.txt', 'utf8')
+    const llmsFull = readFileSync('public/llms-full.txt', 'utf8')
+    for (const slug of registrySlugs) {
+      assert.match(llms, new RegExp(`/docs/components/${slug}(?:\\s|$)`))
+      assert.match(llmsFull, new RegExp(`src/ui/${slug}\\.ts`))
+    }
+  })
+
+  it('publishes stable source for examples that previously used function strings', () => {
+    for (const [key, source] of Object.entries(generatedExampleSources)) {
+      assert.ok(source.trim(), `${key} has empty generated source`)
+      assert.doesNotMatch(source, /\.toString\(\)/, key)
+      assert.doesNotMatch(source, /(?:^|\W)[A-Za-z_$][\w$]?\([A-Za-z_$],?[A-Za-z_$]?\)=>/u, key)
+    }
+    assert.ok(Object.keys(generatedExampleSources).length >= 100)
   })
 
   it('renders a real Crease UI component for every shared catalog page', () => {

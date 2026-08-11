@@ -11,6 +11,7 @@ import {
 } from '@/docs/component-page';
 import * as CopyFeedback from '@/docs/copy-feedback';
 import { completeExample } from '@/docs/components/complete-example';
+import { componentApi } from '@/docs/generated-component-api';
 
 const Target = S.Literals([
   'basic',
@@ -205,6 +206,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
       sidebarScrolled: CopyFeedback.ObservedSidebarScroll(),
       apiHref: 'https://foldkit.dev/ui/disclosure',
+      apiEntries: componentApi.accordion ?? [],
       sourceHref:
         'https://github.com/Potti1234/creaseui/blob/main/src/ui/accordion.ts',
       examples: [

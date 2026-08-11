@@ -170,7 +170,7 @@ const previews: Readonly<
                   h,
                 ),
                 Attachment.attachmentDescription(
-                  { children: ['2.4 MB Â· Uploaded'] },
+                  { children: ['2.4 MB · Uploaded'] },
                   h,
                 ),
               ],
@@ -496,7 +496,7 @@ const previews: Readonly<
                       Card.cardTitle(
                         {
                           children: [
-                            'Ø§ØªØ¬Ø§Ù‡ Ù…Ù† Ø§Ù„ÙŠÙ…ÙŠÙ† Ø¥Ù„Ù‰ Ø§Ù„ÙŠØ³Ø§Ø±',
+                            'اتجاه من اليمين إلى اليسار',
                           ],
                         },
                         h,
@@ -504,7 +504,7 @@ const previews: Readonly<
                       Card.cardDescription(
                         {
                           children: [
-                            'Ù‡Ø°Ø§ Ø§Ù„Ù…Ø­ØªÙˆÙ‰ ÙŠØ³ØªØ®Ø¯Ù… Ø§ØªØ¬Ø§Ù‡ RTL.',
+                            'هذا المحتوى يستخدم اتجاه RTL.',
                           ],
                         },
                         h,
@@ -569,7 +569,7 @@ const previews: Readonly<
         ],
         rowKey: (row) => row.id,
         filterText: (row) => `${row.status} ${row.email}`,
-        filterPlaceholder: 'Filter emailsâ€¦',
+        filterPlaceholder: 'Filter emails…',
       },
       h,
     ),
@@ -581,7 +581,7 @@ const previews: Readonly<
           Empty.emptyHeader(
             {
               children: [
-                Empty.emptyMedia({ variant: 'icon', children: ['ï¼‹'] }, h),
+                Empty.emptyMedia({ variant: 'icon', children: ['＋'] }, h),
                 Empty.emptyTitle({ children: ['No projects yet'] }, h),
                 Empty.emptyDescription(
                   { children: ['Get started by creating your first project.'] },
@@ -731,7 +731,7 @@ const previews: Readonly<
       [h.Class('flex items-center gap-2 text-sm')],
       [
         'Press',
-        Kbd.kbd({ children: ['âŒ˜'] }, h),
+        Kbd.kbd({ children: ['⌘'] }, h),
         Kbd.kbd({ children: ['K'] }, h),
         'to open the command menu',
       ],
@@ -759,7 +759,7 @@ const previews: Readonly<
         variant: 'outline',
         class: 'w-full max-w-md',
         children: [
-          Item.itemMedia({ variant: 'icon', children: ['ðŸ“„'] }, h),
+          Item.itemMedia({ variant: 'icon', children: ['📄'] }, h),
           Item.itemContent(
             {
               children: [
@@ -1148,7 +1148,7 @@ const previews: Readonly<
         ],
         itemToValue: (item) => item.value,
         itemToLabel: (item) => item.label,
-        placeholder: 'Select frameworkâ€¦',
+        placeholder: 'Select framework…',
       },
       h,
     ),
@@ -1167,7 +1167,7 @@ const previews: Readonly<
         itemToConfig: (item) => ({
           content: item[0]?.toUpperCase() + item.slice(1),
         }),
-        placeholder: 'Type a command or searchâ€¦',
+        placeholder: 'Type a command or search…',
       },
       h,
     ),
@@ -1212,7 +1212,7 @@ const previews: Readonly<
             toParentMessage: (message) => State.GotDialogMessage({ message }),
             title: 'Edit profile',
             description:
-              'Make changes to your profile here. Click save when youâ€™re done.',
+              'Make changes to your profile here. Click save when you’re done.',
             content: () => [
               Input.input(
                 {
@@ -1293,7 +1293,7 @@ const previews: Readonly<
             h.h4([h.Class('font-semibold')], ['@nextjs']),
             h.p(
               [h.Class('text-sm')],
-              ['The React Framework â€“ created and maintained by @vercel.'],
+              ['The React Framework – created and maintained by @vercel.'],
             ),
           ],
         ),

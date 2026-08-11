@@ -35,9 +35,9 @@ type Preview = (model: State.Model, h: HtmlBuilder<Msg>) => Html;
 
 const code = (
   component: string,
-  preview: (...args: ReadonlyArray<never>) => Html,
+  _preview: (...args: ReadonlyArray<never>) => Html,
 ): string =>
-  `import * as ${component} from '@/ui/${component.replaceAll(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()}'\n\nconst preview = ${preview.toString()}`;
+  `import * as ${component} from '@/ui/${component.replaceAll(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()}'`;
 
 const basic = (slug: string, component: string) => {
   const preview = (model: State.Model, h: HtmlBuilder<Msg>) =>
@@ -249,7 +249,7 @@ const attachmentPreview = (
                       ? 'Uploading 64%'
                       : state === 'error'
                         ? 'Upload failed'
-                        : '2.4 MB Â· PDF',
+                        : '2.4 MB · PDF',
                   ],
                 },
                 h,
@@ -603,7 +603,7 @@ const collapsiblePreview = (
       contentClass: 'space-y-2 rounded-md border px-4 py-3 text-sm',
       content:
         kind === 'settings'
-          ? 'Email Â· Push Â· Weekly digest'
+          ? 'Email · Push · Weekly digest'
           : kind === 'tree'
             ? 'components/\nlib/\nmain.ts'
             : '@radix-ui/primitives',
@@ -646,7 +646,7 @@ const comboboxPreview = (
       items: frameworks,
       itemToValue: (item) => item.value,
       itemToLabel: (item) => item.label,
-      placeholder: options.popup ? 'Search commandsâ€¦' : 'Select frameworkâ€¦',
+      placeholder: options.popup ? 'Search commands…' : 'Select framework…',
       ...(options.disabled
         ? { triggerClass: 'pointer-events-none opacity-50' }
         : options.clear
@@ -705,10 +705,10 @@ const commandPreview = (
           itemToConfig: (item) => ({
             content: item[0]?.toUpperCase() + item.slice(1),
             ...(options.shortcuts
-              ? { shortcut: item === 'settings' ? 'âŒ˜,' : 'âŒ˜K' }
+              ? { shortcut: item === 'settings' ? '⌘,' : '⌘K' }
               : {}),
           }),
-          placeholder: 'Type a command or searchâ€¦',
+          placeholder: 'Type a command or search…',
           ...(options.groups
             ? {
                 itemGroupKey: (item) =>
@@ -728,7 +728,7 @@ export const definitions: PageDefinitions = {
   alert: {
     description: 'Displays a callout for user attention.',
     composition:
-      'Alert\nâ”œâ”€â”€ AlertTitle\nâ”œâ”€â”€ AlertDescription\nâ””â”€â”€ AlertAction',
+      'Alert\n├── AlertTitle\n├── AlertDescription\n└── AlertAction',
     examples: [
       basic('alert', 'Alert'),
       staticExample('Destructive', 'Alert', (h: HtmlBuilder<Msg>) =>
@@ -749,7 +749,7 @@ export const definitions: PageDefinitions = {
     description:
       'A modal dialog that interrupts the user with important content and expects a response.',
     composition:
-      'AlertDialog\nâ”œâ”€â”€ Trigger\nâ”œâ”€â”€ Content\nâ”‚   â”œâ”€â”€ Header / Media / Title / Description\nâ”‚   â””â”€â”€ Footer / Cancel / Action',
+      'AlertDialog\n├── Trigger\n├── Content\n│   ├── Header / Media / Title / Description\n│   └── Footer / Cancel / Action',
     examples: [
       basic('alert-dialog', 'AlertDialog'),
       statefulExample('Small', 'AlertDialog', (model, h: HtmlBuilder<Msg>) =>
@@ -797,7 +797,7 @@ export const definitions: PageDefinitions = {
     description:
       'Displays a file or image attachment with media, metadata, upload state, and actions.',
     composition:
-      'Attachment\nâ”œâ”€â”€ AttachmentMedia\nâ”œâ”€â”€ AttachmentContent\nâ”‚   â”œâ”€â”€ AttachmentTitle\nâ”‚   â””â”€â”€ AttachmentDescription\nâ””â”€â”€ AttachmentActions',
+      'Attachment\n├── AttachmentMedia\n├── AttachmentContent\n│   ├── AttachmentTitle\n│   └── AttachmentDescription\n└── AttachmentActions',
     examples: [
       basic('attachment', 'Attachment'),
       staticExample('Image', 'Attachment', (h: HtmlBuilder<Msg>) =>
@@ -829,7 +829,7 @@ export const definitions: PageDefinitions = {
                       h,
                     ),
                     Attachment.attachmentDescription(
-                      { children: ['1.8 MB Â· Image'] },
+                      { children: ['1.8 MB · Image'] },
                       h,
                     ),
                   ],
@@ -886,7 +886,7 @@ export const definitions: PageDefinitions = {
   },
   avatar: {
     description: 'An image element with a fallback for representing the user.',
-    composition: 'Avatar\nâ”œâ”€â”€ AvatarImage\nâ””â”€â”€ AvatarFallback',
+    composition: 'Avatar\n├── AvatarImage\n└── AvatarFallback',
     examples: [
       basic('avatar', 'Avatar'),
       staticExample('Badge', 'Avatar', (h: HtmlBuilder<Msg>) =>
@@ -909,7 +909,7 @@ export const definitions: PageDefinitions = {
             Badge.badge(
               {
                 class: 'absolute -right-1 -bottom-1 size-4 rounded-full p-0',
-                children: ['âœ“'],
+                children: ['✓'],
               },
               h,
             ),
@@ -947,7 +947,7 @@ export const definitions: PageDefinitions = {
             avatar('CN', undefined, h),
             avatar('VC', undefined, h),
             Avatar.avatar(
-              { children: [Avatar.avatarFallback({ children: ['â€¦'] }, h)] },
+              { children: [Avatar.avatarFallback({ children: ['…'] }, h)] },
               h,
             ),
           ],
@@ -1017,7 +1017,7 @@ export const definitions: PageDefinitions = {
         ),
       ),
       staticExample('With Icon', 'Badge', (h: HtmlBuilder<Msg>) =>
-        Badge.badge({ children: ['âœ“', 'Verified'] }, h),
+        Badge.badge({ children: ['✓', 'Verified'] }, h),
       ),
       staticExample('With Spinner', 'Badge', (h: HtmlBuilder<Msg>) =>
         Badge.badge(
@@ -1030,7 +1030,7 @@ export const definitions: PageDefinitions = {
       ),
       staticExample('Link', 'Badge', (h: HtmlBuilder<Msg>) =>
         Badge.badge(
-          { variant: 'outline', children: ['View documentation', 'â†—'] },
+          { variant: 'outline', children: ['View documentation', '↗'] },
           h,
         ),
       ),
@@ -1059,7 +1059,7 @@ export const definitions: PageDefinitions = {
       staticExample('RTL', 'Badge', (h: HtmlBuilder<Msg>) =>
         h.div(
           [h.Dir('rtl')],
-          [Badge.badge({ children: ['ØªÙ… Ø§Ù„ØªØ­Ù‚Ù‚', 'âœ“'] }, h)],
+          [Badge.badge({ children: ['تم التحقق', '✓'] }, h)],
         ),
       ),
     ],
@@ -1068,11 +1068,11 @@ export const definitions: PageDefinitions = {
     description:
       'Displays the path to the current resource using a hierarchy of links.',
     composition:
-      'Breadcrumb\nâ””â”€â”€ BreadcrumbList\n    â”œâ”€â”€ BreadcrumbItem / BreadcrumbLink / BreadcrumbPage\n    â”œâ”€â”€ BreadcrumbSeparator\n    â””â”€â”€ BreadcrumbEllipsis',
+      'Breadcrumb\n└── BreadcrumbList\n    ├── BreadcrumbItem / BreadcrumbLink / BreadcrumbPage\n    ├── BreadcrumbSeparator\n    └── BreadcrumbEllipsis',
     examples: [
       basic('breadcrumb', 'Breadcrumb'),
       staticExample('Custom separator', 'Breadcrumb', (h: HtmlBuilder<Msg>) =>
-        breadcrumbPreview('â€º', undefined, h),
+        breadcrumbPreview('›', undefined, h),
       ),
       statefulExample('Dropdown', 'Breadcrumb', (model, h: HtmlBuilder<Msg>) =>
         row(
@@ -1101,10 +1101,10 @@ export const definitions: PageDefinitions = {
         breadcrumbPreview('/', true, h),
       ),
       staticExample('Link component', 'Breadcrumb', (h: HtmlBuilder<Msg>) =>
-        breadcrumbPreview('â†’', undefined, h),
+        breadcrumbPreview('→', undefined, h),
       ),
       staticExample('RTL', 'Breadcrumb', (h: HtmlBuilder<Msg>) =>
-        h.div([h.Dir('rtl')], [breadcrumbPreview('â€¹', undefined, h)]),
+        h.div([h.Dir('rtl')], [breadcrumbPreview('‹', undefined, h)]),
       ),
     ],
   },
@@ -1148,11 +1148,11 @@ export const definitions: PageDefinitions = {
         buttonPreview('link', 'Learn more', '', h),
       ),
       staticExample('Icon', 'Button', (h: HtmlBuilder<Msg>) =>
-        Button.button({ size: 'icon', onClick: clicked, children: ['ï¼‹'] }, h),
+        Button.button({ size: 'icon', onClick: clicked, children: ['＋'] }, h),
       ),
       staticExample('With Icon', 'Button', (h: HtmlBuilder<Msg>) =>
         Button.button(
-          { onClick: clicked, children: ['âœ‰', 'Login with Email'] },
+          { onClick: clicked, children: ['✉', 'Login with Email'] },
           h,
         ),
       ),
@@ -1180,14 +1180,14 @@ export const definitions: PageDefinitions = {
         ),
       ),
       staticExample('As Link', 'Button', (h: HtmlBuilder<Msg>) =>
-        buttonPreview('link', 'Open documentation â†—', '', h),
+        buttonPreview('link', 'Open documentation ↗', '', h),
       ),
       staticExample('RTL', 'Button', (h: HtmlBuilder<Msg>) =>
         h.div(
           [h.Dir('rtl')],
           [
             Button.button(
-              { onClick: clicked, children: ['Ø§Ù„ØªØ§Ù„ÙŠ', 'â†'] },
+              { onClick: clicked, children: ['التالي', '←'] },
               h,
             ),
           ],
@@ -1199,7 +1199,7 @@ export const definitions: PageDefinitions = {
     description:
       'A container that groups related buttons together with consistent styling.',
     composition:
-      'ButtonGroup\nâ”œâ”€â”€ Button / Input / Select\nâ”œâ”€â”€ ButtonGroupSeparator\nâ””â”€â”€ ButtonGroupText',
+      'ButtonGroup\n├── Button / Input / Select\n├── ButtonGroupSeparator\n└── ButtonGroupText',
     examples: [
       basic('button-group', 'ButtonGroup'),
       staticExample('Orientation', 'ButtonGroup', (h: HtmlBuilder<Msg>) =>
@@ -1309,7 +1309,7 @@ export const definitions: PageDefinitions = {
           {
             children: [
               buttonPreview('default', 'Create', '', h),
-              Button.button({ onClick: clicked, children: ['âŒ„'] }, h),
+              Button.button({ onClick: clicked, children: ['⌄'] }, h),
             ],
           },
           h,
@@ -1391,11 +1391,11 @@ export const definitions: PageDefinitions = {
                     model: model.dropdownMenu,
                     toParentMessage: (message) =>
                       State.GotDropdownMenuMessage({ message }),
-                    trigger: 'âŒ„',
+                    trigger: '⌄',
                     triggerClass: 'rounded-md border px-3',
                     items: ['save-as', 'export'],
                     itemToConfig: (item) => ({
-                      label: item === 'save-as' ? 'Save asâ€¦' : 'Export',
+                      label: item === 'save-as' ? 'Save as…' : 'Export',
                     }),
                   },
                   h,
@@ -1458,8 +1458,8 @@ export const definitions: PageDefinitions = {
             ButtonGroup.buttonGroup(
               {
                 children: [
-                  buttonPreview('outline', 'Ø§Ù„Ø³Ø§Ø¨Ù‚', '', h),
-                  buttonPreview('outline', 'Ø§Ù„ØªØ§Ù„ÙŠ', '', h),
+                  buttonPreview('outline', 'السابق', '', h),
+                  buttonPreview('outline', 'التالي', '', h),
                 ],
               },
               h,
@@ -1473,7 +1473,7 @@ export const definitions: PageDefinitions = {
     description:
       'Displays conversational content in a message bubble. Supports variants, alignment, grouping, reactions, and collapsible content.',
     composition:
-      'BubbleGroup\nâ””â”€â”€ Bubble\n    â”œâ”€â”€ BubbleContent\n    â””â”€â”€ BubbleReactions',
+      'BubbleGroup\n└── Bubble\n    ├── BubbleContent\n    └── BubbleReactions',
     examples: [
       basic('bubble', 'Bubble'),
       staticExample('Variants', 'Bubble', (h: HtmlBuilder<Msg>) =>
@@ -1564,7 +1564,7 @@ export const definitions: PageDefinitions = {
                         variant: 'outline',
                         size: 'sm',
                         onClick: clicked,
-                        children: ['ðŸ‘ 12'],
+                        children: ['👍 12'],
                       },
                       h,
                     ),
@@ -1573,7 +1573,7 @@ export const definitions: PageDefinitions = {
                         variant: 'outline',
                         size: 'sm',
                         onClick: clicked,
-                        children: ['ðŸ‘Ž'],
+                        children: ['👎'],
                       },
                       h,
                     ),
@@ -1636,7 +1636,7 @@ export const definitions: PageDefinitions = {
                         model: model.tooltip,
                         toParentMessage: (message) =>
                           State.GotTooltipMessage({ message }),
-                        trigger: 'ðŸ‘',
+                        trigger: '👍',
                         triggerClass: 'rounded-md border px-2 py-1',
                         content: 'Helpful',
                       },
@@ -1664,9 +1664,9 @@ export const definitions: PageDefinitions = {
                         model: model.popover,
                         toParentMessage: (message) =>
                           State.GotPopoverMessage({ message }),
-                        trigger: 'â€¢â€¢â€¢',
+                        trigger: '•••',
                         triggerClass: 'rounded-md border px-2 py-1',
-                        content: 'Copy Â· Reply Â· Delete',
+                        content: 'Copy · Reply · Delete',
                       },
                       h,
                     ),
@@ -1684,7 +1684,7 @@ export const definitions: PageDefinitions = {
   carousel: {
     description: 'A carousel with motion and swipe built using Embla.',
     composition:
-      'Carousel\nâ”œâ”€â”€ CarouselContent\nâ”‚   â””â”€â”€ CarouselItem\nâ”œâ”€â”€ CarouselPrevious\nâ””â”€â”€ CarouselNext',
+      'Carousel\n├── CarouselContent\n│   └── CarouselItem\n├── CarouselPrevious\n└── CarouselNext',
     examples: [
       basic('carousel', 'Carousel'),
       statefulExample('Sizes', 'Carousel', (model, h: HtmlBuilder<Msg>) =>
@@ -1726,7 +1726,7 @@ export const definitions: PageDefinitions = {
   card: {
     description: 'Displays a card with header, content, and footer.',
     composition:
-      'Card\nâ”œâ”€â”€ CardHeader\nâ”‚   â”œâ”€â”€ CardTitle\nâ”‚   â”œâ”€â”€ CardDescription\nâ”‚   â””â”€â”€ CardAction\nâ”œâ”€â”€ CardContent\nâ””â”€â”€ CardFooter',
+      'Card\n├── CardHeader\n│   ├── CardTitle\n│   ├── CardDescription\n│   └── CardAction\n├── CardContent\n└── CardFooter',
     examples: [
       basic('card', 'Card'),
       staticExample('Size', 'Card', (h: HtmlBuilder<Msg>) =>
@@ -1881,9 +1881,9 @@ export const definitions: PageDefinitions = {
             Chart.barChart(
               {
                 data: [
-                  { label: 'ÙŠÙ†Ø§ÙŠØ±', value: 186 },
-                  { label: 'ÙØ¨Ø±Ø§ÙŠØ±', value: 305 },
-                  { label: 'Ù…Ø§Ø±Ø³', value: 237 },
+                  { label: 'يناير', value: 186 },
+                  { label: 'فبراير', value: 305 },
+                  { label: 'مارس', value: 237 },
                 ],
               },
               h,
@@ -1974,7 +1974,7 @@ export const definitions: PageDefinitions = {
               model,
               {
                 description: true,
-                label: 'Ù‚Ø¨ÙˆÙ„ Ø§Ù„Ø´Ø±ÙˆØ· ÙˆØ§Ù„Ø£Ø­ÙƒØ§Ù…',
+                label: 'قبول الشروط والأحكام',
               },
               h,
             ),
@@ -1986,7 +1986,7 @@ export const definitions: PageDefinitions = {
   collapsible: {
     description: 'An interactive component which expands/collapses a panel.',
     composition:
-      'Collapsible\nâ”œâ”€â”€ CollapsibleTrigger\nâ””â”€â”€ CollapsibleContent',
+      'Collapsible\n├── CollapsibleTrigger\n└── CollapsibleContent',
     examples: [
       basic('collapsible', 'Collapsible'),
       statefulExample(
@@ -2011,7 +2011,7 @@ export const definitions: PageDefinitions = {
   combobox: {
     description: 'Autocomplete input with a list of suggestions.',
     composition:
-      'Combobox\nâ”œâ”€â”€ ComboboxInput / Trigger\nâ”œâ”€â”€ ComboboxContent\nâ””â”€â”€ ComboboxItem / Group',
+      'Combobox\n├── ComboboxInput / Trigger\n├── ComboboxContent\n└── ComboboxItem / Group',
     examples: [
       basic('combobox', 'Combobox'),
       statefulExample(
@@ -2093,7 +2093,7 @@ export const definitions: PageDefinitions = {
               InputGroup.inputGroupAddon(
                 {
                   children: [
-                    InputGroup.inputGroupText({ children: ['âŒ•'] }, h),
+                    InputGroup.inputGroupText({ children: ['⌕'] }, h),
                   ],
                 },
                 h,
@@ -2115,7 +2115,7 @@ export const definitions: PageDefinitions = {
   command: {
     description: 'Command menu for search and quick actions.',
     composition:
-      'Command\nâ”œâ”€â”€ CommandInput\nâ”œâ”€â”€ CommandList / Empty / Group / Separator\nâ””â”€â”€ CommandItem / Shortcut',
+      'Command\n├── CommandInput\n├── CommandList / Empty / Group / Separator\n└── CommandItem / Shortcut',
     examples: [
       basic('command', 'Command'),
       statefulExample('Shortcuts', 'Command', (model, h: HtmlBuilder<Msg>) =>
