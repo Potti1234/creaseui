@@ -1,19 +1,18 @@
 # Component parity
 
-Verified against [`shadcn-ui/ui@cb2bcd88`](https://github.com/shadcn-ui/ui/tree/cb2bcd88)
-on 2026-08-01.
+Verified against [`shadcn-ui/ui@41bbc12c`](https://github.com/shadcn-ui/ui/tree/41bbc12cfd39ed8d9cb8da04275479ee7ecc0612)
+on 2026-08-11.
 
-Crease UI contains all 61 components in the current `new-york-v4` UI registry.
-It additionally ships four documented compatibility entries:
+Crease UI contains all 62 items in the recorded `new-york-v4` UI registry.
+It additionally ships three documented recipes:
 
 - **Data Table**, **Date Picker**, and **Typography** are Crease recipes built from
   the component primitives.
-- **Toast** is a legacy compatibility alias for Sonner.
 
 All 65 entries have a registry item, source module, install target, documentation
-route, real preview, and component-specific examples. Name coverage is not used
-as a synonym for implementation fidelity; the classifications below make the
-remaining framework adaptations explicit.
+route, real preview, and component-specific examples. Toast is present in the
+recorded upstream registry and is no longer classified as Crease-only legacy.
+Name coverage is not used as a synonym for implementation fidelity.
 
 ## Parity classifications
 
@@ -27,7 +26,32 @@ remaining framework adaptations explicit.
 - **Legacy** — retained for compatibility with an older shadcn API.
 
 The machine-readable classification and remaining intentional differences live
-in [`component-roadmap.json`](component-roadmap.json).
+in [`component-roadmap.json`](component-roadmap.json). The generated
+[`component-parity.json`](component-parity.json) expands that policy into one
+contract per component.
+
+## Fidelity dimensions
+
+Every component is tracked independently across visual match, behavior,
+accessibility, composition, documentation, and registry installation. A status
+of **verified** requires linked evidence; **partial** means only a subset is
+covered; **adapted** records an intentional Foldkit-native difference;
+**unverified** is an explicit open verification task; and **not-applicable** is
+reserved for dimensions that do not apply.
+
+The initial contract intentionally marks visual fidelity as unverified until an
+upstream-referenced snapshot exists. This prevents inventory completeness from
+being presented as pixel parity. Browser and axe evidence currently promotes
+Button, Dialog, Input, and Select in the dimensions those tests exercise.
+
+`npm run parity:check` fails when the generated contract is stale or an upstream
+registry item is absent. A scheduled workflow compares the recorded upstream UI
+file tree with `main`; when it changes, refresh the focused audit with:
+
+```sh
+npm run parity:upstream:update -- --upstream-root ../ui
+npm run parity:generate
+```
 
 ## Adapted components
 

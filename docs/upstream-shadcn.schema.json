@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["repository", "commit", "date", "registryPath", "components", "files"],
+  "properties": {
+    "repository": { "type": "string", "format": "uri" },
+    "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "date": { "type": "string", "format": "date" },
+    "registryPath": { "type": "string" },
+    "components": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string" }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "sha"],
+        "properties": {
+          "path": { "type": "string" },
+          "sha": { "type": "string", "pattern": "^[0-9a-f]{40}$" }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

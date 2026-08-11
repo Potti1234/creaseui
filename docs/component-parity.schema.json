@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["upstream", "statuses", "dimensions", "summary", "components"],
+  "properties": {
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["component", "upstream", "classification", "dimensions", "evidence"],
+        "properties": {
+          "component": { "type": "string" },
+          "upstream": { "type": "boolean" },
+          "classification": {
+            "enum": ["full", "adapted", "recipe", "legacy"]
+          },
+          "dimensions": { "type": "object" },
+          "evidence": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

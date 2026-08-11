@@ -1,0 +1,321 @@
+{
+  "$schema": "./upstream-shadcn.schema.json",
+  "repository": "https://github.com/shadcn-ui/ui",
+  "commit": "41bbc12cfd39ed8d9cb8da04275479ee7ecc0612",
+  "date": "2026-08-11",
+  "registryPath": "apps/v4/registry/new-york-v4/ui/_registry.ts",
+  "components": [
+    "accordion",
+    "alert",
+    "alert-dialog",
+    "aspect-ratio",
+    "avatar",
+    "badge",
+    "breadcrumb",
+    "button",
+    "button-group",
+    "calendar",
+    "card",
+    "carousel",
+    "chart",
+    "checkbox",
+    "collapsible",
+    "combobox",
+    "command",
+    "context-menu",
+    "dialog",
+    "drawer",
+    "dropdown-menu",
+    "empty",
+    "field",
+    "form",
+    "hover-card",
+    "input",
+    "input-group",
+    "input-otp",
+    "item",
+    "label",
+    "menubar",
+    "navigation-menu",
+    "pagination",
+    "popover",
+    "progress",
+    "radio-group",
+    "resizable",
+    "scroll-area",
+    "select",
+    "separator",
+    "sheet",
+    "sidebar",
+    "skeleton",
+    "slider",
+    "sonner",
+    "spinner",
+    "switch",
+    "table",
+    "tabs",
+    "textarea",
+    "toast",
+    "toggle",
+    "toggle-group",
+    "tooltip",
+    "kbd",
+    "native-select",
+    "direction",
+    "attachment",
+    "bubble",
+    "marker",
+    "message",
+    "message-scroller"
+  ],
+  "files": [
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/_registry.ts",
+      "sha": "0514b247508e89fb98a43f36f934a6ac142645c8"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/accordion.tsx",
+      "sha": "91e3a250ce6ee0797b0258454d774800650adcc8"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/alert-dialog.tsx",
+      "sha": "9c57648364a922784db10e7c882728452f483b23"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/alert.tsx",
+      "sha": "f99164ed4b320790482f514342dab5e72f284aca"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/aspect-ratio.tsx",
+      "sha": "57e38fa96f9c0cb767d7b8de0d6dbc171d1b921a"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/attachment.tsx",
+      "sha": "016806f67a1c0f094bc9ea6268c1df9aa7ee4f14"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/avatar.tsx",
+      "sha": "ea658505703a577fe93341e5e1a0b478c27245f7"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/badge.tsx",
+      "sha": "6eb2a057aae0e23a74368cc4daf9657210e9a740"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/breadcrumb.tsx",
+      "sha": "004bb63a4c92229e612b6126d79fb7b078aa7565"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/bubble.tsx",
+      "sha": "792146e61d80ef595d032d5d09a3d572d50f1374"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/button-group.tsx",
+      "sha": "e89cfc8f0cf6518b1b69a6654207817a99428364"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/button.tsx",
+      "sha": "4d38506cee5430d95a59ec6a2a0cef2b79217e7a"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/calendar.tsx",
+      "sha": "32972c0cea57d0ed2ac891b8078b4b7d9c4c1654"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/card.tsx",
+      "sha": "acf57dc5a534792273b8fb86227e92e001f3dc53"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/carousel.tsx",
+      "sha": "1c38c8217c215b0db754134956e02ce461f58c90"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/chart.tsx",
+      "sha": "011836a0fbc7b03156ea2d454b7e3efc002f1764"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/checkbox.tsx",
+      "sha": "f5a7e433f3795b82a00c5c06a1fc6decf116a84a"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/collapsible.tsx",
+      "sha": "2f7a4e7fc64a8874373c1584646a63f28cd63c47"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/combobox.tsx",
+      "sha": "f39a4489580ffa630b8a8da51562f10f0fd47f06"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/command.tsx",
+      "sha": "99155c7830419d8944b2232d89df318bf4117e03"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/context-menu.tsx",
+      "sha": "5aaca76552cf0468b1def03c9e2c42f1f0b60734"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/dialog.tsx",
+      "sha": "b65149791bff608418735bd0b62726f365065240"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/direction.tsx",
+      "sha": "22e165774bd595fbf41d0c45efef1cf996897983"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/drawer.tsx",
+      "sha": "ad08671442203fe345093f364696bdf43528e0b7"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/dropdown-menu.tsx",
+      "sha": "ae1fcf62f1e3b648554789b8fe02943d92bf00fc"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/empty.tsx",
+      "sha": "ce4b0095f6d19d2eae2e465060e9060b0c210856"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/field.tsx",
+      "sha": "0a4e421602b12713c93dbf5493382527852d05b6"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/form.tsx",
+      "sha": "3c994b8ca8a319dd1d52328bfb93e20e9a00b593"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/hover-card.tsx",
+      "sha": "91e869c0d3091cbeddf5cb0266e82ddf56f829a6"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/input-group.tsx",
+      "sha": "756f7381b898db4a1c3c20182ce8e65797150faf"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/input-otp.tsx",
+      "sha": "6a556afacd71996bf0e385ff2b04869fb2ee4523"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/input.tsx",
+      "sha": "f1124aea14eee062fc2f4c55dad5f0d9de0ccc1a"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/item.tsx",
+      "sha": "4f132c9184456e0a9125bf16c8f394eff57a01ef"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/kbd.tsx",
+      "sha": "2459224fbc531f6306b73aaeb22e9022d9985332"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/label.tsx",
+      "sha": "1ac80f701ebfe9dc02d632c08cafade732e46625"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/marker.tsx",
+      "sha": "cfa76c6c014ab342befcbf7571eb932917406522"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/menubar.tsx",
+      "sha": "4af16a428377f81cbb3f66adfe518308e0b690d8"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/message-scroller.tsx",
+      "sha": "ab8a157fdfcce36956f7b65a87b0311b42328108"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/message.tsx",
+      "sha": "53437e8db2b0fad1da06a7499e54ddaf116295c2"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/native-select.tsx",
+      "sha": "3058398399ad6c029ad527052475b360b114715b"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/navigation-menu.tsx",
+      "sha": "0a673f513c97fbeaae0872403b7582ab2ba7e3c3"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/pagination.tsx",
+      "sha": "f975e9f2f34568e6b709089d7ba0a99daafad904"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/popover.tsx",
+      "sha": "30058c4ec284ca9cad1ed1162d084ce3cd94e2b0"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/progress.tsx",
+      "sha": "5a0a5a64c925611a9e21cb2d88fd0b1020430a48"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/radio-group.tsx",
+      "sha": "fe514536ed771f7adef0a6b9e4d1aeadc2c95481"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/resizable.tsx",
+      "sha": "a76832a10b4c5c2a137e25c16478567ba86daf0d"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/scroll-area.tsx",
+      "sha": "73c4eb1cdcd4a699b150a9ddc3e87bfb90b63d09"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/select.tsx",
+      "sha": "c0dc7120b4f78008ae5efc6d1c8b7ec8205c35d5"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/separator.tsx",
+      "sha": "cd873e3631b571060f166897b7b62e033e87c18f"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/sheet.tsx",
+      "sha": "cb53bb28b6850745c9519e8e7462e05f85a50c93"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/sidebar.tsx",
+      "sha": "d9ab0aa2d49a55a81ce8b2d5ffd4aebddd0f1531"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/skeleton.tsx",
+      "sha": "3ec6be770b846170b8e7f8916e5f165e2d1730df"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/slider.tsx",
+      "sha": "46ebc4b4df1e9baf1f3997a4b6c08ef80c84a9c9"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/sonner.tsx",
+      "sha": "9b20afe2e10fd9b94d1abc1ae732054b2fb9821c"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/spinner.tsx",
+      "sha": "a70e713c5b4ecb2af186efe3fadea51805f26ba5"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/switch.tsx",
+      "sha": "8baa844fdb17d668b3ce07cfbd6a7ef52e2eb5eb"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/table.tsx",
+      "sha": "7add5f1a22db954ac6cb3446f1bf8c8a9fc5c335"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/tabs.tsx",
+      "sha": "b463afd170637df477e36184aa27d2ad1bd3c3e0"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/textarea.tsx",
+      "sha": "e67d8fefe50c41dfa2deed9a5096d5be7691581a"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/toggle-group.tsx",
+      "sha": "91d4b760d30c7d7bdbe2134f8fa7727dfc22ee47"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/toggle.tsx",
+      "sha": "5250c98ff7f11f531af38c227230a76b7d25bf19"
+    },
+    {
+      "path": "apps/v4/registry/new-york-v4/ui/tooltip.tsx",
+      "sha": "ec65c1e4255f050d9555c6cdade90a5f8a6c0c29"
+    }
+  ]
+}

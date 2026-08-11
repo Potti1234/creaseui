@@ -2,8 +2,8 @@
   "$schema": "./component-roadmap.schema.json",
   "verifiedAgainst": {
     "repository": "https://github.com/shadcn-ui/ui",
-    "commit": "cb2bcd88",
-    "date": "2026-08-01"
+    "commit": "41bbc12cfd39ed8d9cb8da04275479ee7ecc0612",
+    "date": "2026-08-11"
   },
   "documentation": {
     "complete": ["all 65 registry components"],
@@ -24,7 +24,38 @@
       "tooltip"
     ],
     "recipe": ["data-table", "date-picker", "typography"],
-    "legacy": ["toast"]
+    "legacy": []
+  },
+  "qualityContract": {
+    "statuses": ["verified", "partial", "adapted", "unverified", "not-applicable"],
+    "dimensions": ["visual", "behavior", "accessibility", "composition", "documentation", "registry"],
+    "defaults": {
+      "visual": "unverified",
+      "behavior": "partial",
+      "accessibility": "partial",
+      "composition": "partial",
+      "documentation": "verified",
+      "registry": "verified"
+    },
+    "classificationOverrides": {
+      "adapted": { "behavior": "adapted", "composition": "adapted" },
+      "recipe": { "composition": "adapted" },
+      "legacy": { "behavior": "adapted", "composition": "adapted" }
+    },
+    "componentOverrides": {
+      "button": { "accessibility": "verified" },
+      "dialog": { "behavior": "verified", "accessibility": "verified", "composition": "verified" },
+      "input": { "accessibility": "verified" },
+      "select": { "behavior": "verified", "accessibility": "verified" },
+      "sheet": { "composition": "verified" }
+    },
+    "evidence": {
+      "button": ["e2e/site.spec.ts#flagship-accessibility"],
+      "dialog": ["e2e/site.spec.ts#dialog-focus-and-compound-parts", "e2e/site.spec.ts#flagship-accessibility"],
+      "input": ["e2e/site.spec.ts#flagship-accessibility"],
+      "select": ["e2e/site.spec.ts#flagship-accessibility"],
+      "sheet": ["e2e/site.spec.ts#sheet-compound-parts"]
+    }
   },
   "fidelity": [
     {

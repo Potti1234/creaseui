@@ -1,0 +1,1211 @@
+{
+  "$schema": "./component-parity.schema.json",
+  "upstream": {
+    "repository": "https://github.com/shadcn-ui/ui",
+    "commit": "41bbc12cfd39ed8d9cb8da04275479ee7ecc0612",
+    "date": "2026-08-11",
+    "registryItems": 62
+  },
+  "statuses": [
+    "verified",
+    "partial",
+    "adapted",
+    "unverified",
+    "not-applicable"
+  ],
+  "dimensions": [
+    "visual",
+    "behavior",
+    "accessibility",
+    "composition",
+    "documentation",
+    "registry"
+  ],
+  "summary": {
+    "upstreamItems": 62,
+    "registryItems": 65,
+    "creaseOnlyRecipes": [
+      "data-table",
+      "date-picker",
+      "typography"
+    ]
+  },
+  "components": [
+    {
+      "component": "accordion",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/accordion.ts",
+        "src/ui/registry.json#accordion",
+        "/docs/components/accordion"
+      ]
+    },
+    {
+      "component": "alert",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/alert.ts",
+        "src/ui/registry.json#alert",
+        "/docs/components/alert"
+      ]
+    },
+    {
+      "component": "alert-dialog",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/alert-dialog.ts",
+        "src/ui/registry.json#alert-dialog",
+        "/docs/components/alert-dialog"
+      ]
+    },
+    {
+      "component": "aspect-ratio",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/aspect-ratio.ts",
+        "src/ui/registry.json#aspect-ratio",
+        "/docs/components/aspect-ratio"
+      ]
+    },
+    {
+      "component": "attachment",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/attachment.ts",
+        "src/ui/registry.json#attachment",
+        "/docs/components/attachment"
+      ]
+    },
+    {
+      "component": "avatar",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/avatar.ts",
+        "src/ui/registry.json#avatar",
+        "/docs/components/avatar"
+      ]
+    },
+    {
+      "component": "badge",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/badge.ts",
+        "src/ui/registry.json#badge",
+        "/docs/components/badge"
+      ]
+    },
+    {
+      "component": "breadcrumb",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/breadcrumb.ts",
+        "src/ui/registry.json#breadcrumb",
+        "/docs/components/breadcrumb"
+      ]
+    },
+    {
+      "component": "bubble",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/bubble.ts",
+        "src/ui/registry.json#bubble",
+        "/docs/components/bubble"
+      ]
+    },
+    {
+      "component": "button",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "verified",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/button.ts",
+        "src/ui/registry.json#button",
+        "/docs/components/button",
+        "e2e/site.spec.ts#flagship-accessibility"
+      ]
+    },
+    {
+      "component": "button-group",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/button-group.ts",
+        "src/ui/registry.json#button-group",
+        "/docs/components/button-group"
+      ]
+    },
+    {
+      "component": "calendar",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/calendar.ts",
+        "src/ui/registry.json#calendar",
+        "/docs/components/calendar"
+      ]
+    },
+    {
+      "component": "card",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/card.ts",
+        "src/ui/registry.json#card",
+        "/docs/components/card"
+      ]
+    },
+    {
+      "component": "carousel",
+      "upstream": true,
+      "classification": "adapted",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "adapted",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/carousel.ts",
+        "src/ui/registry.json#carousel",
+        "/docs/components/carousel"
+      ]
+    },
+    {
+      "component": "chart",
+      "upstream": true,
+      "classification": "adapted",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "adapted",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/chart.ts",
+        "src/ui/registry.json#chart",
+        "/docs/components/chart"
+      ]
+    },
+    {
+      "component": "checkbox",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/checkbox.ts",
+        "src/ui/registry.json#checkbox",
+        "/docs/components/checkbox"
+      ]
+    },
+    {
+      "component": "collapsible",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/collapsible.ts",
+        "src/ui/registry.json#collapsible",
+        "/docs/components/collapsible"
+      ]
+    },
+    {
+      "component": "combobox",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/combobox.ts",
+        "src/ui/registry.json#combobox",
+        "/docs/components/combobox"
+      ]
+    },
+    {
+      "component": "command",
+      "upstream": true,
+      "classification": "adapted",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "adapted",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/command.ts",
+        "src/ui/registry.json#command",
+        "/docs/components/command"
+      ]
+    },
+    {
+      "component": "context-menu",
+      "upstream": true,
+      "classification": "adapted",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "adapted",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/context-menu.ts",
+        "src/ui/registry.json#context-menu",
+        "/docs/components/context-menu"
+      ]
+    },
+    {
+      "component": "data-table",
+      "upstream": false,
+      "classification": "recipe",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/data-table.ts",
+        "src/ui/registry.json#data-table",
+        "/docs/components/data-table"
+      ]
+    },
+    {
+      "component": "date-picker",
+      "upstream": false,
+      "classification": "recipe",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/date-picker.ts",
+        "src/ui/registry.json#date-picker",
+        "/docs/components/date-picker"
+      ]
+    },
+    {
+      "component": "dialog",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "verified",
+        "accessibility": "verified",
+        "composition": "verified",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/dialog.ts",
+        "src/ui/registry.json#dialog",
+        "/docs/components/dialog",
+        "e2e/site.spec.ts#dialog-focus-and-compound-parts",
+        "e2e/site.spec.ts#flagship-accessibility"
+      ]
+    },
+    {
+      "component": "direction",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/direction.ts",
+        "src/ui/registry.json#direction",
+        "/docs/components/direction"
+      ]
+    },
+    {
+      "component": "drawer",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/drawer.ts",
+        "src/ui/registry.json#drawer",
+        "/docs/components/drawer"
+      ]
+    },
+    {
+      "component": "dropdown-menu",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/dropdown-menu.ts",
+        "src/ui/registry.json#dropdown-menu",
+        "/docs/components/dropdown-menu"
+      ]
+    },
+    {
+      "component": "empty",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/empty.ts",
+        "src/ui/registry.json#empty",
+        "/docs/components/empty"
+      ]
+    },
+    {
+      "component": "field",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/field.ts",
+        "src/ui/registry.json#field",
+        "/docs/components/field"
+      ]
+    },
+    {
+      "component": "form",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/form.ts",
+        "src/ui/registry.json#form",
+        "/docs/components/form"
+      ]
+    },
+    {
+      "component": "hover-card",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/hover-card.ts",
+        "src/ui/registry.json#hover-card",
+        "/docs/components/hover-card"
+      ]
+    },
+    {
+      "component": "input",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "verified",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/input.ts",
+        "src/ui/registry.json#input",
+        "/docs/components/input",
+        "e2e/site.spec.ts#flagship-accessibility"
+      ]
+    },
+    {
+      "component": "input-group",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/input-group.ts",
+        "src/ui/registry.json#input-group",
+        "/docs/components/input-group"
+      ]
+    },
+    {
+      "component": "input-otp",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/input-otp.ts",
+        "src/ui/registry.json#input-otp",
+        "/docs/components/input-otp"
+      ]
+    },
+    {
+      "component": "item",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/item.ts",
+        "src/ui/registry.json#item",
+        "/docs/components/item"
+      ]
+    },
+    {
+      "component": "kbd",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/kbd.ts",
+        "src/ui/registry.json#kbd",
+        "/docs/components/kbd"
+      ]
+    },
+    {
+      "component": "label",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/label.ts",
+        "src/ui/registry.json#label",
+        "/docs/components/label"
+      ]
+    },
+    {
+      "component": "marker",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/marker.ts",
+        "src/ui/registry.json#marker",
+        "/docs/components/marker"
+      ]
+    },
+    {
+      "component": "menubar",
+      "upstream": true,
+      "classification": "adapted",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "adapted",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/menubar.ts",
+        "src/ui/registry.json#menubar",
+        "/docs/components/menubar"
+      ]
+    },
+    {
+      "component": "message",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/message.ts",
+        "src/ui/registry.json#message",
+        "/docs/components/message"
+      ]
+    },
+    {
+      "component": "message-scroller",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/message-scroller.ts",
+        "src/ui/registry.json#message-scroller",
+        "/docs/components/message-scroller"
+      ]
+    },
+    {
+      "component": "native-select",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/native-select.ts",
+        "src/ui/registry.json#native-select",
+        "/docs/components/native-select"
+      ]
+    },
+    {
+      "component": "navigation-menu",
+      "upstream": true,
+      "classification": "adapted",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "adapted",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/navigation-menu.ts",
+        "src/ui/registry.json#navigation-menu",
+        "/docs/components/navigation-menu"
+      ]
+    },
+    {
+      "component": "pagination",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/pagination.ts",
+        "src/ui/registry.json#pagination",
+        "/docs/components/pagination"
+      ]
+    },
+    {
+      "component": "popover",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/popover.ts",
+        "src/ui/registry.json#popover",
+        "/docs/components/popover"
+      ]
+    },
+    {
+      "component": "progress",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/progress.ts",
+        "src/ui/registry.json#progress",
+        "/docs/components/progress"
+      ]
+    },
+    {
+      "component": "radio-group",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/radio-group.ts",
+        "src/ui/registry.json#radio-group",
+        "/docs/components/radio-group"
+      ]
+    },
+    {
+      "component": "resizable",
+      "upstream": true,
+      "classification": "adapted",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "adapted",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/resizable.ts",
+        "src/ui/registry.json#resizable",
+        "/docs/components/resizable"
+      ]
+    },
+    {
+      "component": "scroll-area",
+      "upstream": true,
+      "classification": "adapted",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "adapted",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/scroll-area.ts",
+        "src/ui/registry.json#scroll-area",
+        "/docs/components/scroll-area"
+      ]
+    },
+    {
+      "component": "select",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "verified",
+        "accessibility": "verified",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/select.ts",
+        "src/ui/registry.json#select",
+        "/docs/components/select",
+        "e2e/site.spec.ts#flagship-accessibility"
+      ]
+    },
+    {
+      "component": "separator",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/separator.ts",
+        "src/ui/registry.json#separator",
+        "/docs/components/separator"
+      ]
+    },
+    {
+      "component": "sheet",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "verified",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/sheet.ts",
+        "src/ui/registry.json#sheet",
+        "/docs/components/sheet",
+        "e2e/site.spec.ts#sheet-compound-parts"
+      ]
+    },
+    {
+      "component": "sidebar",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/sidebar.ts",
+        "src/ui/registry.json#sidebar",
+        "/docs/components/sidebar"
+      ]
+    },
+    {
+      "component": "skeleton",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/skeleton.ts",
+        "src/ui/registry.json#skeleton",
+        "/docs/components/skeleton"
+      ]
+    },
+    {
+      "component": "slider",
+      "upstream": true,
+      "classification": "adapted",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "adapted",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/slider.ts",
+        "src/ui/registry.json#slider",
+        "/docs/components/slider"
+      ]
+    },
+    {
+      "component": "sonner",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/sonner.ts",
+        "src/ui/registry.json#sonner",
+        "/docs/components/sonner"
+      ]
+    },
+    {
+      "component": "spinner",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/spinner.ts",
+        "src/ui/registry.json#spinner",
+        "/docs/components/spinner"
+      ]
+    },
+    {
+      "component": "switch",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/switch.ts",
+        "src/ui/registry.json#switch",
+        "/docs/components/switch"
+      ]
+    },
+    {
+      "component": "table",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/table.ts",
+        "src/ui/registry.json#table",
+        "/docs/components/table"
+      ]
+    },
+    {
+      "component": "tabs",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/tabs.ts",
+        "src/ui/registry.json#tabs",
+        "/docs/components/tabs"
+      ]
+    },
+    {
+      "component": "textarea",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/textarea.ts",
+        "src/ui/registry.json#textarea",
+        "/docs/components/textarea"
+      ]
+    },
+    {
+      "component": "toast",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/toast.ts",
+        "src/ui/registry.json#toast",
+        "/docs/components/toast"
+      ]
+    },
+    {
+      "component": "toggle",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/toggle.ts",
+        "src/ui/registry.json#toggle",
+        "/docs/components/toggle"
+      ]
+    },
+    {
+      "component": "toggle-group",
+      "upstream": true,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/toggle-group.ts",
+        "src/ui/registry.json#toggle-group",
+        "/docs/components/toggle-group"
+      ]
+    },
+    {
+      "component": "tooltip",
+      "upstream": true,
+      "classification": "adapted",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "adapted",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/tooltip.ts",
+        "src/ui/registry.json#tooltip",
+        "/docs/components/tooltip"
+      ]
+    },
+    {
+      "component": "typography",
+      "upstream": false,
+      "classification": "recipe",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/typography.ts",
+        "src/ui/registry.json#typography",
+        "/docs/components/typography"
+      ]
+    }
+  ]
+}
