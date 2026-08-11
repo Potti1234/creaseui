@@ -590,7 +590,10 @@ export const componentPage = <Msg>(
                     ],
                   ),
                   h.div(
-                    [h.Class('overflow-x-auto rounded-lg border')],
+                    [
+                      h.Class('overflow-x-auto rounded-lg border'),
+                      h.Attribute('tabindex', '0'),
+                    ],
                     [
                       h.table(
                         [h.Class('w-full min-w-[42rem] text-left text-sm')],
