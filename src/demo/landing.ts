@@ -6,7 +6,13 @@ import { evo } from 'foldkit/struct';
 
 import * as Chart from '@/lib/echarts';
 import * as Icon from '@/lib/icon';
-import { chartsPath, createPath } from '@/route';
+import {
+  CHART_EXAMPLE_COUNT,
+  COMPONENT_COUNT,
+  SHOWCASE_CARD_COUNT,
+  SIDEBAR_BLOCK_COUNT,
+} from '@/lib/project-facts';
+import { componentDocsPath, createPath } from '@/route';
 import { badge } from '@/ui/badge';
 import { button } from '@/ui/button';
 import {
@@ -285,7 +291,7 @@ const hero = (h: HtmlBuilder<Message>): Html => {
                 [button({ children: ['Get Started'] }, h)],
               ),
               h.a(
-                [h.Href(chartsPath('area'))],
+                [h.Href(componentDocsPath('accordion'))],
                 [
                   button(
                     { variant: 'outline', children: ['Browse Components'] },
@@ -320,7 +326,7 @@ const comparisonSlider = (model: Model, h: HtmlBuilder<Message>): Html => {
     [
       sectionHeading(
         'Spot the difference.',
-        'We rebuilt the ui.shadcn.com/create preview board — all 33 cards — on foldkit. Every card within a few pixels of the original. Drag to compare.',
+        `We rebuilt the ui.shadcn.com/create preview board — all ${String(SHOWCASE_CARD_COUNT)} cards — on Foldkit. Drag to compare the two implementations.`,
         h,
       ),
       h.div(
@@ -454,12 +460,14 @@ const howItWorks = (h: HtmlBuilder<Message>): Html => {
                     [
                       h.code(
                         [h.Class('font-mono text-sm')],
-                        ['npx shadcn add @crease/button'],
+                        [
+                          'npx --yes shadcn@latest add Potti1234/creaseui/button --yes',
+                        ],
                       ),
                       badge(
                         {
                           variant: 'secondary',
-                          children: ['registry — coming soon'],
+                          children: ['registry available'],
                         },
                         h,
                       ),
@@ -469,7 +477,7 @@ const howItWorks = (h: HtmlBuilder<Message>): Html => {
                   h.p(
                     [h.Class('text-muted-foreground text-sm')],
                     [
-                      'Today: copy the component file into your project. It is yours — rename it, gut it, extend it.',
+                      'The registry copies the component and its local dependencies into your project. The installed source is yours to rename, adapt, or extend.',
                     ],
                   ),
                 ],
@@ -495,7 +503,7 @@ const howItWorks = (h: HtmlBuilder<Message>): Html => {
                     [h.Class('flex items-center gap-2')],
                     [
                       Icon.check({ class: 'size-4' }, h),
-                      'Every component is a plain foldkit view function.',
+                      'Stateful components expose explicit Foldkit models and messages.',
                     ],
                   ),
                 ],
@@ -538,14 +546,18 @@ const numbers = (h: HtmlBuilder<Message>): Html => {
       h.div(
         [h.Class('grid gap-4 sm:grid-cols-3')],
         [
-          stat('49', 'components — buttons to dialogs to tables', '/create'),
           stat(
-            '70',
+            String(COMPONENT_COUNT),
+            'components — buttons to dialogs to tables',
+            '/docs/components/accordion',
+          ),
+          stat(
+            String(CHART_EXAMPLE_COUNT),
             'charts on Apache ECharts, canvas-rendered',
             '/charts/area',
           ),
           stat(
-            '16',
+            String(SIDEBAR_BLOCK_COUNT),
             'application blocks — full sidebar shells',
             '/blocks/sidebar',
           ),
@@ -660,6 +672,9 @@ const faq = (h: HtmlBuilder<Message>): Html => {
 };
 
 const footer = (h: HtmlBuilder<Message>): Html => {
+  const shortRevision = __CREASEUI_BUILD_SHA__.slice(0, 7);
+  const revisionLabel = `${shortRevision}${__CREASEUI_BUILD_DIRTY__ ? '+dirty' : ''}`;
+
   return h.footer(
     [h.Class('border-t')],
     [
@@ -682,9 +697,25 @@ const footer = (h: HtmlBuilder<Message>): Html => {
                 ['foldkit.dev'],
               ),
               h.span([], ['MIT']),
+              ...(shortRevision.length > 0
+                ? [
+                    h.a(
+                      [
+                        h.Href(
+                          `https://github.com/Potti1234/creaseui/commit/${__CREASEUI_BUILD_SHA__}`,
+                        ),
+                        h.Class('font-mono hover:text-foreground'),
+                        h.AriaLabel(`Source revision ${revisionLabel}`),
+                      ],
+                      [`source ${revisionLabel}`],
+                    ),
+                  ]
+                : []),
               h.span(
                 [],
-                ['Credits: shadcn/ui · foldkit UI · Apache ECharts · Lucide'],
+                [
+                  'Credits: shadcn/ui · Foldkit UI · Apache ECharts · Lucide · Hugeicons · Tabler · Phosphor · Remix Icon',
+                ],
               ),
             ],
           ),
