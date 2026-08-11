@@ -5,7 +5,7 @@ import * as Icon from '@/lib/icon';
 import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/ui/button';
 
-export * from '@/ui/sidebar-state';
+export * from '@/lib/sidebar-state';
 
 /* Ported from shadcn/ui sidebar.tsx as a Foldkit view system.
 

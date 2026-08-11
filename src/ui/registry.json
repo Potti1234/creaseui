@@ -946,6 +946,11 @@
           "path": "sidebar.ts",
           "type": "registry:ui",
           "target": "@ui/sidebar.ts"
+        },
+        {
+          "path": "../lib/sidebar-state.ts",
+          "type": "registry:lib",
+          "target": "@lib/sidebar-state.ts"
         }
       ]
     },
