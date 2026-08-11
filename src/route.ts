@@ -115,7 +115,16 @@ export const urlToAppRoute = Route.parseUrlWithFallback(
   NotFoundRoute,
 )
 
-export const chartsPath = (section: ChartSection): string => `/charts/${section}`
+export const homePath = (): string => homeRouter()
+
+export const createPath = (): string => createRouter()
+
+export const chartsPath = (section: ChartSection): string =>
+  chartsRouter({ section })
+
+export const blocksIndexPath = (): string => blocksIndexRouter()
+
+export const blockPath = (blockId: string): string => blockRouter({ blockId })
 
 export const componentDocsPath = (component: string): string =>
-  `/docs/components/${component}`
+  componentDocsRouter({ component })

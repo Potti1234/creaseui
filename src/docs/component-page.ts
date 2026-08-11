@@ -462,7 +462,7 @@ export const componentPage = <Msg>(
                     [
                       h.a(
                         [
-                          h.Href('/docs/components/accordion'),
+                          h.Href(componentDocsPath('accordion')),
                           h.Class('hover:text-foreground'),
                         ],
                         ['Docs'],
@@ -470,7 +470,7 @@ export const componentPage = <Msg>(
                       h.span([h.AriaHidden(true)], ['/']),
                       h.a(
                         [
-                          h.Href('/docs/components/accordion'),
+                          h.Href(componentDocsPath('accordion')),
                           h.Class('hover:text-foreground'),
                         ],
                         ['Components'],

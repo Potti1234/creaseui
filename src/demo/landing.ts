@@ -6,6 +6,7 @@ import { evo } from 'foldkit/struct';
 
 import * as Chart from '@/lib/echarts';
 import * as Icon from '@/lib/icon';
+import { chartsPath, createPath } from '@/route';
 import { badge } from '@/ui/badge';
 import { button } from '@/ui/button';
 import {
@@ -280,11 +281,11 @@ const hero = (h: HtmlBuilder<Message>): Html => {
             [h.Class('flex flex-wrap items-center gap-3')],
             [
               h.a(
-                [h.Href('/create')],
+                [h.Href(createPath())],
                 [button({ children: ['Get Started'] }, h)],
               ),
               h.a(
-                [h.Href('/charts/area')],
+                [h.Href(chartsPath('area'))],
                 [
                   button(
                     { variant: 'outline', children: ['Browse Components'] },

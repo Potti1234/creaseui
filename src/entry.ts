@@ -3,8 +3,10 @@ import { Runtime } from 'foldkit'
 import {
   ChangedUrl,
   ClickedLink,
+  Flags,
   Message,
   Model,
+  flags,
   init,
   subscriptions,
   update,
@@ -13,6 +15,8 @@ import {
 
 const application = Runtime.makeApplication({
   Model,
+  Flags,
+  flags,
   init,
   update,
   view,

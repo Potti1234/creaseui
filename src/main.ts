@@ -1,5 +1,5 @@
 import { Effect, Match as M, Schema as S } from 'effect';
-import type { Runtime} from 'foldkit';
+import type { Runtime } from 'foldkit';
 import { Command, Subscription } from 'foldkit';
 import type { Document, Html, HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
@@ -26,7 +26,11 @@ import * as Icon from '@/lib/icon';
 import {
   AppRoute,
   type ChartSection,
+  blocksIndexPath,
   chartsPath,
+  componentDocsPath,
+  createPath,
+  homePath,
   isChartSection,
   urlToAppRoute,
 } from '@/route';
@@ -52,6 +56,17 @@ export const Model = S.Struct({
   catalogDocs: ComponentCatalog.Model,
 });
 export type Model = typeof Model.Type;
+
+// FLAGS
+
+export const Flags = S.Struct({
+  isDark: S.Boolean,
+});
+export type Flags = typeof Flags.Type;
+
+export const flags: Effect.Effect<Flags> = Effect.sync(() => ({
+  isDark: document.documentElement.classList.contains('dark'),
+}));
 
 // MESSAGE
 
@@ -124,12 +139,13 @@ export type Message = typeof Message.Type;
 
 // INIT
 
-export const init: Runtime.RoutingApplicationInit<Model, Message> = (
+export const init: Runtime.RoutingApplicationInit<Model, Message, Flags> = (
+  flags,
   url: Url,
 ) => [
   {
     route: urlToAppRoute(url),
-    isDark: document.documentElement.classList.contains('dark'),
+    isDark: flags.isDark,
     board: Board.init(),
     blocks: Blocks.init(),
     landing: Landing.init(),
@@ -418,16 +434,19 @@ const header = (model: Model, h: HtmlBuilder<Message>): Html => {
           ),
         ],
         [
-          h.a([h.Href('/'), h.Class('text-sm font-semibold')], ['crease/ui']),
+          h.a(
+            [h.Href(homePath()), h.Class('text-sm font-semibold')],
+            ['crease/ui'],
+          ),
           headerLink(
-            '/docs/components/accordion',
+            componentDocsPath('accordion'),
             'Docs',
             model.route._tag === 'ComponentDocs',
             '',
             h,
           ),
           headerLink(
-            '/create',
+            createPath(),
             'Create',
             model.route._tag === 'Create',
             'hidden sm:inline-flex',
@@ -441,7 +460,7 @@ const header = (model: Model, h: HtmlBuilder<Message>): Html => {
             h,
           ),
           headerLink(
-            '/blocks/sidebar',
+            blocksIndexPath(),
             'Blocks',
             model.route._tag === 'BlocksIndex',
             'hidden sm:inline-flex',
@@ -468,14 +487,14 @@ const header = (model: Model, h: HtmlBuilder<Message>): Html => {
                 ],
                 [
                   headerLink(
-                    '/docs/components/accordion',
+                    componentDocsPath('accordion'),
                     'Docs',
                     model.route._tag === 'ComponentDocs',
                     'rounded-md px-3 py-2 hover:bg-accent',
                     h,
                   ),
                   headerLink(
-                    '/create',
+                    createPath(),
                     'Create',
                     model.route._tag === 'Create',
                     'rounded-md px-3 py-2 hover:bg-accent',
@@ -489,7 +508,7 @@ const header = (model: Model, h: HtmlBuilder<Message>): Html => {
                     h,
                   ),
                   headerLink(
-                    '/blocks/sidebar',
+                    blocksIndexPath(),
                     'Blocks',
                     model.route._tag === 'BlocksIndex',
                     'rounded-md px-3 py-2 hover:bg-accent',
@@ -690,7 +709,10 @@ const homeView = (h: HtmlBuilder<Message>): Html => {
             [],
             [
               h.a(
-                [h.Href('/create'), h.Class('underline underline-offset-4')],
+                [
+                  h.Href(createPath()),
+                  h.Class('underline underline-offset-4'),
+                ],
                 ['/create — the ui.shadcn.com/create preview board'],
               ),
             ],
