@@ -178,6 +178,7 @@ test('authored helper pages publish complete application source', async ({ page 
     'resizable',
     'scroll-area',
     'separator',
+    'sheet',
     'skeleton',
     'slider',
     'spinner',
@@ -353,7 +354,7 @@ test('sheet compound parts preserve focus and accessible structure', async ({ pa
   await expect(sheet.locator('[data-slot="sheet-header"]')).toBeVisible()
   await expect(sheet.locator('[data-slot="sheet-title"]')).toHaveText('Edit profile')
   await expect(sheet.locator('[data-slot="sheet-footer"]')).toBeVisible()
-  await expect(example.locator('code')).toContainText('layout: parts')
+  await expect(example.locator('code')).toContainText('Sheet.open')
 
   await page.keyboard.press('Escape')
   await expect(sheet).toBeHidden()

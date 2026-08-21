@@ -1,0 +1,91 @@
+import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import * as State from '@/docs/components/catalog-state';
+import * as Button from '@/ui/button';
+import * as Sheet from '@/ui/sheet';
+
+const source = (name: string, side: Sheet.SheetSide, title: string): string => foldkitApplication({
+  title: `Sheet — ${name}`,
+  imports: `import { Schema as S } from 'effect'
+import { Command, Runtime, Subscription } from 'foldkit'
+import { type Document, type HtmlBuilder } from 'foldkit/html'
+import { m } from 'foldkit/message'
+
+import * as Button from '@/ui/button'
+import * as Sheet from '@/ui/sheet'`,
+  model: `export const Model = S.Struct({ sheet: Sheet.Model })
+export type Model = typeof Model.Type`,
+  messages: `export const ClickedOpen = m('ClickedOpenSheet${name.replaceAll(/[^a-zA-Z0-9]/g, '')}')
+export const GotSheetMessage = m('GotSheetMessage${name.replaceAll(/[^a-zA-Z0-9]/g, '')}', { message: Sheet.Message })
+export const Message = S.Union([ClickedOpen, GotSheetMessage])
+export type Message = typeof Message.Type`,
+  init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
+  { sheet: Sheet.init({ id: 'settings-sheet', isAnimated: true }) },
+  [],
+]`,
+  update: `const mapSheet = (
+  model: Model,
+  result: ReturnType<typeof Sheet.update>,
+): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+  const [sheet, commands] = result
+  return [
+    { ...model, sheet },
+    Command.mapMessages(commands, next => GotSheetMessage({ message: next })),
+  ]
+}
+
+export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+  switch (message._tag) {
+    case 'ClickedOpenSheet${name.replaceAll(/[^a-zA-Z0-9]/g, '')}':
+      return mapSheet(model, Sheet.open(model.sheet))
+    case 'GotSheetMessage${name.replaceAll(/[^a-zA-Z0-9]/g, '')}':
+      return mapSheet(model, Sheet.update(model.sheet, message.message))
+  }
+}`,
+  view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: 'Sheet — ${name}',
+  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+    Button.button({ variant: 'outline', onClick: ClickedOpen(), children: ['Open ${side} sheet'] }, h),
+    Sheet.sheet({
+      model: model.sheet,
+      toParentMessage: message => GotSheetMessage({ message }),
+      side: '${side}',
+      title: '${title}',
+      description: 'Update the settings, then save or cancel.',
+      content: () => [
+        h.div([h.Class('px-4 text-sm')], ['Sheet content remains ordinary Foldkit Html.']),
+      ],
+      footer: slots => [
+        h.button([
+          ...slots.closeButton,
+          ...slots.initialFocusAttributes(),
+          h.Type('button'), h.Class('rounded-md border px-4 py-2 text-sm'),
+        ], ['Cancel']),
+        h.button([
+          ...slots.closeButton,
+          h.Type('button'), h.Class('rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground'),
+        ], ['Save']),
+      ],
+    }, h),
+  ]),
+})`,
+});
+
+const preview = (model: State.Model, side: Sheet.SheetSide, title: string, h: HtmlBuilder<State.Message>) => h.div([], [Button.button({ variant: 'outline', onClick: State.OpenedOverlay({ target: 'sheet' }), children: [`Open ${side} sheet`] }, h), Sheet.sheet({ model: model.sheet, toParentMessage: (message) => State.GotSheetMessage({ message }), side, title, description: 'Update the settings, then save or cancel.', content: () => [h.div([h.Class('px-4 text-sm')], ['Sheet content remains ordinary Foldkit Html.'])], footer: (slots) => [h.button([...slots.closeButton, ...slots.initialFocusAttributes(), h.Type('button'), h.Class('rounded-md border px-4 py-2 text-sm')], ['Cancel']), h.button([...slots.closeButton, h.Type('button'), h.Class('rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground')], ['Save'])] }, h)]);
+
+export const sheetPage = authoredPage({
+  slug: 'sheet', title: 'Sheet', kind: 'submodel',
+  definition: {
+    kind: 'submodel', description: 'Presents modal task content from a screen edge while preserving the underlying page context.',
+    architecture: 'Sheet reuses Foldkit’s Dialog child Model. Programmatic open and child update return focus/animation Commands that the parent must map through GotSheetMessage.',
+    apiHref: 'https://foldkit.dev/ui/dialog',
+    composition: 'Trigger (parent Message)\nSheet submodel\n└── edge panel\n    ├── header / title / description\n    ├── content\n    ├── footer\n    └── close action',
+    styling: 'Right and left sheets suit settings or navigation; top and bottom sheets suit short contextual workflows. Avoid using a sheet for content that needs the full page.',
+    accessibility: 'Sheet inherits Dialog’s title/description relationships, focus trap, Escape behavior, and trigger focus restoration. Use initialFocusAttributes once when a specific control should receive focus.',
+    keyboard: [['Tab / Shift+Tab', 'Cycles within the open sheet.'], ['Escape', 'Closes the sheet and returns focus to its trigger.']],
+    examples: [
+      { title: 'Compound layout', description: 'Compose content and footer controls while Foldkit owns the modal lifecycle.', preview: (model, h) => preview(model, 'right', 'Edit profile', h), code: source('Compound layout', 'right', 'Edit profile') },
+      { title: 'Bottom task', description: 'Changing the edge is view configuration; the child integration remains identical.', preview: (model, h) => preview(model, 'bottom', 'Quick settings', h), code: source('Bottom task', 'bottom', 'Quick settings') },
+    ],
+  },
+});
+import type { HtmlBuilder } from 'foldkit/html';
