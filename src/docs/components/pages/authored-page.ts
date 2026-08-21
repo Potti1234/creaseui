@@ -176,3 +176,45 @@ ${config.viewBody
   ),
 })`,
   });
+
+export const controlledTextApplication = (config: Readonly<{
+  componentName: 'Input' | 'Textarea';
+  componentSlug: 'input' | 'textarea';
+  exampleName: string;
+  field: string;
+  initialValue: string;
+  viewBody: string;
+}>): string =>
+  foldkitApplication({
+    title: `${config.componentName} — ${config.exampleName}`,
+    imports: `import { Schema as S } from 'effect'
+import { Command, Runtime, Subscription } from 'foldkit'
+import { type Document, type HtmlBuilder } from 'foldkit/html'
+import { m } from 'foldkit/message'
+
+import * as ${config.componentName} from '@/ui/${config.componentSlug}'`,
+    model: `export const Model = S.Struct({ ${config.field}: S.String })
+export type Model = typeof Model.Type`,
+    messages: `export const Changed${config.componentName} = m('Changed${config.componentName}${config.exampleName.replaceAll(/[^a-zA-Z0-9]/g, '')}', { value: S.String })
+export const Message = S.Union([Changed${config.componentName}])
+export type Message = typeof Message.Type`,
+    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
+  { ${config.field}: ${JSON.stringify(config.initialValue)} },
+  [],
+]`,
+    update: `export const update = (
+  model: Model,
+  message: Message,
+): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+  switch (message._tag) {
+    case 'Changed${config.componentName}${config.exampleName.replaceAll(/[^a-zA-Z0-9]/g, '')}':
+      return [{ ...model, ${config.field}: message.value }, []]
+  }
+}`,
+    view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: '${config.componentName} — ${config.exampleName}',
+  body: h.main([h.Class('mx-auto max-w-md p-8')], [
+${config.viewBody.split('\n').map((line) => `    ${line}`).join('\n')}
+  ]),
+})`,
+  });

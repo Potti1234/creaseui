@@ -152,6 +152,7 @@ test('authored helper pages publish complete application source', async ({ page 
     'direction',
     'empty',
     'item',
+    'input',
     'kbd',
     'label',
     'marker',
@@ -162,6 +163,7 @@ test('authored helper pages publish complete application source', async ({ page 
     'skeleton',
     'spinner',
     'table',
+    'textarea',
     'typography',
   ]) {
     await page.goto(`/docs/components/${route}`)

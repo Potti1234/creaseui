@@ -8,6 +8,7 @@ import { cardPage } from '@/docs/components/pages/card';
 import { directionPage } from '@/docs/components/pages/direction';
 import { emptyPage } from '@/docs/components/pages/empty';
 import { itemPage } from '@/docs/components/pages/item';
+import { inputPage } from '@/docs/components/pages/input';
 import { kbdPage } from '@/docs/components/pages/kbd';
 import { labelPage } from '@/docs/components/pages/label';
 import { markerPage } from '@/docs/components/pages/marker';
@@ -18,6 +19,7 @@ import { separatorPage } from '@/docs/components/pages/separator';
 import { skeletonPage } from '@/docs/components/pages/skeleton';
 import { spinnerPage } from '@/docs/components/pages/spinner';
 import { tablePage } from '@/docs/components/pages/table';
+import { textareaPage } from '@/docs/components/pages/textarea';
 import { typographyPage } from '@/docs/components/pages/typography';
 
 export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
@@ -32,6 +34,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       directionPage,
       emptyPage,
       itemPage,
+      inputPage,
       kbdPage,
       labelPage,
       markerPage,
@@ -42,6 +45,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       skeletonPage,
       spinnerPage,
       tablePage,
+      textareaPage,
       typographyPage,
     ].map((page) => [page.slug, page]),
   ),
