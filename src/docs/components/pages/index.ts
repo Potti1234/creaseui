@@ -6,6 +6,7 @@ import { bubblePage } from '@/docs/components/pages/bubble';
 import { buttonPage } from '@/docs/components/pages/button';
 import { cardPage } from '@/docs/components/pages/card';
 import { checkboxPage } from '@/docs/components/pages/checkbox';
+import { collapsiblePage } from '@/docs/components/pages/collapsible';
 import { directionPage } from '@/docs/components/pages/direction';
 import { emptyPage } from '@/docs/components/pages/empty';
 import { itemPage } from '@/docs/components/pages/item';
@@ -22,6 +23,7 @@ import { spinnerPage } from '@/docs/components/pages/spinner';
 import { switchPage } from '@/docs/components/pages/switch';
 import { tablePage } from '@/docs/components/pages/table';
 import { textareaPage } from '@/docs/components/pages/textarea';
+import { togglePage } from '@/docs/components/pages/toggle';
 import { typographyPage } from '@/docs/components/pages/typography';
 
 export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
@@ -34,6 +36,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       buttonPage,
       cardPage,
       checkboxPage,
+      collapsiblePage,
       directionPage,
       emptyPage,
       itemPage,
@@ -50,6 +53,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       switchPage,
       tablePage,
       textareaPage,
+      togglePage,
       typographyPage,
     ].map((page) => [page.slug, page]),
   ),
