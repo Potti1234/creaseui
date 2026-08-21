@@ -1,5 +1,8 @@
+import { Schema as S } from 'effect';
+import type { HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
 import * as State from '@/docs/components/catalog-state';
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as Button from '@/ui/button';
 import * as Form from '@/ui/form';
 import * as Input from '@/ui/input';
@@ -70,14 +73,37 @@ export type Message = typeof Message.Type`,
 }`,
 });
 
+const ChangedFormEmail = m('ChangedFormEmailPreview', { value: S.String });
+const SubmittedForm = m('SubmittedFormPreview');
+const FormPreviewMessage = S.Union([ChangedFormEmail, SubmittedForm]);
+type FormPreviewMessage = typeof FormPreviewMessage.Type;
+const FormPreviewModel = S.Struct({ _docsPage: S.Literal('form'), email: S.String, hasSubmitted: S.Boolean });
+type FormPreviewModel = typeof FormPreviewModel.Type;
+
+const previewProgram = definePreviewProgram<FormPreviewModel, FormPreviewMessage>({
+  Model: FormPreviewModel,
+  Message: FormPreviewMessage,
+  init: index => ({ _docsPage: 'form', email: '', hasSubmitted: index === 1 }),
+  update: (model, message) => message._tag === 'ChangedFormEmailPreview'
+    ? [{ ...model, email: message.value }, []]
+    : [{ ...model, hasSubmitted: true }, []],
+  view: (_index, model, h) => {
+  const showError = model.hasSubmitted && !model.email.includes('@');
+  const ids = Form.formControlIds(showError ? 'docs-form-error' : 'docs-form-email');
+  const id = showError ? 'docs-form-error' : 'docs-form-email';
+  return Form.form({ class: 'w-full max-w-sm', ariaLabel: 'Newsletter signup', onSubmit: SubmittedForm(), children: [Form.formItem({ id, isInvalid: showError, children: [Form.formLabel({ for: id, children: ['Email'] }, h), Input.input({ id, type: 'email', value: model.email, onInput: value => ChangedFormEmail({ value }), isInvalid: showError, describedBy: ids.describedBy }, h), Form.formDescription({ id: ids.descriptionId, children: ['We only send product updates.'] }, h), Form.formMessage({ id: ids.messageId, ...(showError ? { message: 'Enter a valid email address.' } : {}) }, h)] }, h), Button.button({ type: 'submit', children: ['Subscribe'] }, h)] }, h);
+  },
+});
+
 const preview = (model: State.Model, showError: boolean, h: HtmlBuilder<State.Message>) => {
   const ids = Form.formControlIds(showError ? 'docs-form-error' : 'docs-form-email');
   const id = showError ? 'docs-form-error' : 'docs-form-email';
-  return Form.form({ class: 'w-full max-w-sm', ariaLabel: 'Newsletter signup', onSubmit: State.ClickedPreviewAction(), children: [Form.formItem({ id, isInvalid: showError, children: [Form.formLabel({ for: id, children: ['Email'] }, h), Input.input({ id, type: 'email', value: model.formEmail, onInput: (value) => State.ChangedText({ target: 'formEmail', value }), isInvalid: showError, describedBy: ids.describedBy }, h), Form.formDescription({ id: ids.descriptionId, children: ['We only send product updates.'] }, h), Form.formMessage({ id: ids.messageId, ...(showError ? { message: 'Enter a valid email address.' } : {}) }, h)] }, h), Button.button({ type: 'submit', children: ['Subscribe'] }, h)] }, h);
+  return Form.form({ class: 'w-full max-w-sm', ariaLabel: 'Newsletter signup', onSubmit: State.ClickedPreviewAction(), children: [Form.formItem({ id, isInvalid: showError, children: [Form.formLabel({ for: id, children: ['Email'] }, h), Input.input({ id, type: 'email', value: model.formEmail, onInput: value => State.ChangedText({ target: 'formEmail', value }), isInvalid: showError, describedBy: ids.describedBy }, h), Form.formDescription({ id: ids.descriptionId, children: ['We only send product updates.'] }, h), Form.formMessage({ id: ids.messageId, ...(showError ? { message: 'Enter a valid email address.' } : {}) }, h)] }, h), Button.button({ type: 'submit', children: ['Subscribe'] }, h)] }, h);
 };
 
 export const formPage = authoredPage({
   slug: 'form', title: 'Form', kind: 'recipe',
+  previewProgram,
   definition: {
     kind: 'recipe', description: 'Coordinates semantic submission, controlled values, descriptions, and validation messages without introducing hidden form state.',
     architecture: 'Form is a stateless recipe. Values, touched/submitted flags, validation, async status, and commands all belong to the parent Foldkit Model and update function.',
@@ -92,4 +118,3 @@ export const formPage = authoredPage({
     ],
   },
 });
-import type { HtmlBuilder } from 'foldkit/html';

@@ -1,5 +1,6 @@
+import type { HtmlBuilder } from 'foldkit/html';
 import * as State from '@/docs/components/catalog-state';
-import { authoredPage, controlledStringApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, controlledStringApplication, textPreviewProgram } from '@/docs/components/pages/authored-page';
 import * as Field from '@/ui/field';
 import * as Input from '@/ui/input';
 
@@ -9,12 +10,20 @@ const source = (name: string, viewBody: string, initialValue = ''): string => co
   componentImports: `import * as Input from '@/ui/input'`, viewBody,
 });
 
+const previewProgram = textPreviewProgram('field', ['', '', ''], (index, value, onInput, h) => {
+  const input = (id: string) => Input.input({ id, value, onInput, placeholder: 'Ada Lovelace' }, h);
+  if (index === 0) return Field.field({ class: 'max-w-sm', children: [Field.fieldLabel({ for: 'docs-field-name', children: ['Display name'] }, h), input('docs-field-name'), Field.fieldDescription({ children: ['Shown on your public profile.'] }, h)] }, h);
+  if (index === 1) return Field.field({ class: 'max-w-sm', isInvalid: true, children: [Field.fieldLabel({ for: 'docs-field-error', children: ['Display name'] }, h), Input.input({ id: 'docs-field-error', value, onInput, isInvalid: true }, h), Field.fieldError({ children: ['Display name is required.'] }, h)] }, h);
+  return Field.fieldGroup({ class: 'max-w-sm', children: [Field.field({ children: [Field.fieldLabel({ for: 'docs-field-first', children: ['First name'] }, h), input('docs-field-first')] }, h), Field.field({ children: [Field.fieldLabel({ for: 'docs-field-last', children: ['Last name'] }, h), input('docs-field-last')] }, h)] }, h);
+});
+
 const input = (id: string, model: State.Model, h: HtmlBuilder<State.Message>) => Input.input({
-  id, value: model.fieldName, onInput: (value) => State.ChangedText({ target: 'fieldName', value }), placeholder: 'Ada Lovelace',
+  id, value: model.fieldName, onInput: value => State.ChangedText({ target: 'fieldName', value }), placeholder: 'Ada Lovelace',
 }, h);
 
 export const fieldPage = authoredPage({
   slug: 'field', title: 'Field', kind: 'recipe',
+  previewProgram,
   definition: {
     kind: 'recipe', description: 'Composes a label, control, description, and validation feedback into a consistent accessible field.',
     architecture: 'Field is a stateless layout recipe. The control still emits its own parent Message, while validity and disabled state are derived from the parent Model.',
@@ -76,4 +85,3 @@ export const fieldPage = authoredPage({
     ],
   },
 });
-import type { HtmlBuilder } from 'foldkit/html';
