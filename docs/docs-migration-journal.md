@@ -187,3 +187,12 @@ schema allowed child Messages to render but prevented their updates from being
 routed reliably. Foldkit's routing boundary depends on the exact Model and
 Message schema shape, so each page needs a complete route-local preview program
 before the legacy union is deleted. Do not introduce a partial global model.
+
+### DOC-023 — Date Picker can report an undelivered ResizeObserver loop
+
+Open: the focused Calendar/Date Picker Playwright run passes its interaction
+contracts but Vite reports `ResizeObserver loop completed with undelivered
+notifications` after the portalled picker is measured. Audit the anchor-layer
+measurement scheduling during the final browser pass and either remove the
+feedback loop or prove that the browser notification is benign and suppress it
+at the correct integration boundary rather than hiding all page errors.

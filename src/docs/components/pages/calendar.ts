@@ -1,6 +1,10 @@
+import { Option, Schema as S } from 'effect';
+import { Command } from 'foldkit';
+import * as FoldkitCalendar from 'foldkit/calendar';
 import type { HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
 
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as Calendar from '@/ui/calendar';
 
@@ -68,8 +72,27 @@ const preview = (model: State.Model, h: HtmlBuilder<State.Message>, roomy: boole
   ...(roomy ? { class: '[--cell-size:--spacing(10)]' } : {}),
 }, h);
 
+const GotCalendarPreviewMessage = m('GotCalendarPreviewMessage', { message: Calendar.Message });
+type GotCalendarPreviewMessage = typeof GotCalendarPreviewMessage.Type;
+const CalendarPreviewModel = S.Struct({ _docsPage: S.Literal('calendar'), calendar: Calendar.Model, selectedDate: S.Option(FoldkitCalendar.CalendarDate) });
+type CalendarPreviewModel = typeof CalendarPreviewModel.Type;
+const previewProgram = definePreviewProgram<CalendarPreviewModel, GotCalendarPreviewMessage>({
+  Model: CalendarPreviewModel, Message: GotCalendarPreviewMessage,
+  init: index => {
+    const initialDate = { year: 2026, month: 7, day: 18 };
+    return { _docsPage: 'calendar', calendar: Calendar.init({ id: `docs-calendar-${String(index)}`, today: { year: 2026, month: 7, day: 28 }, initialViewDate: initialDate }), selectedDate: Option.some(initialDate) };
+  },
+  update: (model, message) => {
+    const [calendar, commands, maybeOutput] = Calendar.update(model.calendar, message.message);
+    const selectedDate = Option.match(maybeOutput, { onNone: () => model.selectedDate, onSome: output => output._tag === 'SelectedDate' ? Option.some(output.date) : model.selectedDate });
+    return [{ ...model, calendar, selectedDate }, Command.mapMessages(commands, next => GotCalendarPreviewMessage({ message: next }))];
+  },
+  view: (index, model, h) => Calendar.calendar({ model: model.calendar, maybeSelectedDate: model.selectedDate, toParentMessage: message => GotCalendarPreviewMessage({ message }), ...(index === 1 ? { class: '[--cell-size:--spacing(10)]' } : {}) }, h),
+});
+
 export const calendarPage = authoredPage({
   slug: 'calendar', title: 'Calendar', kind: 'submodel',
+  previewProgram,
   definition: {
     kind: 'submodel', description: 'A keyboard-accessible date grid with month and year navigation.',
     architecture: 'Calendar owns navigation mode, focused date, and disabled-date rules. The parent owns the domain selection: update returns SelectedDate as an OutMessage, which the parent deliberately stores.',

@@ -1,7 +1,10 @@
-import { Option } from 'effect';
+import { Option, Schema as S } from 'effect';
+import { Command } from 'foldkit';
+import * as FoldkitCalendar from 'foldkit/calendar';
 import type { HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
 
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as DatePicker from '@/ui/date-picker';
 
@@ -79,8 +82,27 @@ const preview = (model: State.Model, h: HtmlBuilder<State.Message>, empty: boole
   placeholder: 'Pick a due date',
 }, h);
 
+const GotDatePickerPreviewMessage = m('GotDatePickerPreviewMessage', { message: DatePicker.Message });
+type GotDatePickerPreviewMessage = typeof GotDatePickerPreviewMessage.Type;
+const DatePickerPreviewModel = S.Struct({ _docsPage: S.Literal('date-picker'), datePicker: DatePicker.Model, selectedDate: S.Option(FoldkitCalendar.CalendarDate) });
+type DatePickerPreviewModel = typeof DatePickerPreviewModel.Type;
+const previewProgram = definePreviewProgram<DatePickerPreviewModel, GotDatePickerPreviewMessage>({
+  Model: DatePickerPreviewModel, Message: GotDatePickerPreviewMessage,
+  init: index => {
+    const initialDate = { year: 2026, month: 7, day: 18 };
+    return { _docsPage: 'date-picker', datePicker: DatePicker.init({ id: `docs-date-picker-${String(index)}`, today: { year: 2026, month: 7, day: 28 }, initialViewDate: initialDate, isAnimated: true }), selectedDate: index === 0 ? Option.some(initialDate) : Option.none() };
+  },
+  update: (model, message) => {
+    const [datePicker, commands, maybeOutput] = DatePicker.update(model.datePicker, message.message);
+    const selectedDate = Option.match(maybeOutput, { onNone: () => model.selectedDate, onSome: output => output._tag === 'SelectedDate' ? Option.some(output.date) : output._tag === 'ClearedDate' ? Option.none() : model.selectedDate });
+    return [{ ...model, datePicker, selectedDate }, Command.mapMessages(commands, next => GotDatePickerPreviewMessage({ message: next }))];
+  },
+  view: (index, model, h) => DatePicker.datePicker({ model: model.datePicker, maybeSelectedDate: model.selectedDate, toParentMessage: message => GotDatePickerPreviewMessage({ message }), name: index === 0 ? 'dueDate' : 'newDueDate', ariaLabel: index === 0 ? 'Change due date' : 'Choose a new due date', placeholder: 'Pick a due date' }, h),
+});
+
 export const datePickerPage = authoredPage({
   slug: 'date-picker', title: 'Date Picker', kind: 'submodel',
+  previewProgram,
   definition: {
     kind: 'submodel', description: 'Combines an anchored disclosure with Calendar to select a date.',
     architecture: 'DatePicker is one nested child Model: its disclosure state contains a Calendar Model. The parent maps child Commands and owns the optional selected date returned by SelectedDate or ClearedDate outputs.',
