@@ -32,6 +32,7 @@ import { labelPage } from '@/docs/components/pages/label';
 import { markerPage } from '@/docs/components/pages/marker';
 import { messagePage } from '@/docs/components/pages/message';
 import { nativeSelectPage } from '@/docs/components/pages/native-select';
+import { navigationMenuPage } from '@/docs/components/pages/navigation-menu';
 import { paginationPage } from '@/docs/components/pages/pagination';
 import { popoverPage } from '@/docs/components/pages/popover';
 import { progressPage } from '@/docs/components/pages/progress';
@@ -89,6 +90,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       markerPage,
       messagePage,
       nativeSelectPage,
+      navigationMenuPage,
       paginationPage,
       popoverPage,
       progressPage,

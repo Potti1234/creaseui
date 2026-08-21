@@ -178,6 +178,7 @@ test('authored helper pages publish complete application source', async ({ page 
     'marker',
     'message',
     'native-select',
+    'navigation-menu',
     'pagination',
     'popover',
     'progress',
@@ -494,6 +495,23 @@ test('context menu anchors at the secondary-click target and skips disabled item
   await expect(example.locator('code')).toContainText('ContextMenu.create<Action>()')
   await page.keyboard.press('Escape')
   await expect(menu).toBeHidden()
+})
+
+test('navigation menu distinguishes semantic links from stateful disclosures', async ({ page }) => {
+  await page.goto('/docs/components/navigation-menu')
+  const linksExample = page.locator('#semantic-links')
+  await expect(linksExample.getByRole('navigation', { name: 'Primary' })).toBeVisible()
+  await expect(linksExample.getByRole('link', { name: 'Home' })).toHaveAttribute('aria-current', 'page')
+
+  const disclosureExample = page.locator('#popover-disclosure')
+  const trigger = disclosureExample.getByRole('button', { name: 'Products' })
+  await trigger.click()
+  const content = page.locator('[data-slot="popover-content"]')
+  await expect(content.getByRole('link', { name: 'Analytics' })).toBeVisible()
+  await expect(disclosureExample.locator('code')).toContainText('Popover.update')
+  await page.keyboard.press('Escape')
+  await expect(content).toBeHidden()
+  await expect(trigger).toBeFocused()
 })
 
 test('flagship documentation pages have no automated accessibility violations', async ({
