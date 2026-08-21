@@ -1,6 +1,9 @@
+import { Schema as S } from 'effect';
+import { Command } from 'foldkit';
 import type { HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
 
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as DropdownMenu from '@/ui/dropdown-menu';
 
@@ -66,8 +69,24 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 
 const preview = (model: State.Model, destructive: boolean, h: HtmlBuilder<State.Message>) => DropdownMenu.dropdownMenu({ model: model.dropdownMenu, toParentMessage: (message) => State.GotDropdownMenuMessage({ message }), trigger: 'Open account menu', triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium', ariaLabel: 'Account actions', items: actions, itemToConfig: (action) => ({ label: labelFor(action), ...(action === 'settings' ? { shortcut: '⌘,' } : {}), ...(destructive && action === 'logout' ? { variant: 'destructive' as const } : {}) }) }, h);
 
+const GotDropdownPreviewMessage = m('GotDropdownPreviewMessage', { message: DropdownMenu.Message });
+type GotDropdownPreviewMessage = typeof GotDropdownPreviewMessage.Type;
+const DropdownPreviewModel = S.Struct({ _docsPage: S.Literal('dropdown-menu'), dropdownMenu: DropdownMenu.Model });
+type DropdownPreviewModel = typeof DropdownPreviewModel.Type;
+const previewProgram = definePreviewProgram<DropdownPreviewModel, GotDropdownPreviewMessage>({
+  Model: DropdownPreviewModel,
+  Message: GotDropdownPreviewMessage,
+  init: index => ({ _docsPage: 'dropdown-menu', dropdownMenu: DropdownMenu.init({ id: `docs-dropdown-${String(index)}`, isAnimated: false }) }),
+  update: (model, message) => {
+    const [dropdownMenu, commands] = DropdownMenu.update(model.dropdownMenu, message.message);
+    return [{ ...model, dropdownMenu }, Command.mapMessages(commands, next => GotDropdownPreviewMessage({ message: next }))];
+  },
+  view: (index, model, h) => DropdownMenu.dropdownMenu({ model: model.dropdownMenu, toParentMessage: message => GotDropdownPreviewMessage({ message }), trigger: 'Open account menu', triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium', ariaLabel: 'Account actions', items: actions, itemToConfig: action => ({ label: labelFor(action), ...(action === 'settings' ? { shortcut: '⌘,' } : {}), ...(index === 1 && action === 'logout' ? { variant: 'destructive' as const } : {}) }) }, h),
+});
+
 export const dropdownMenuPage = authoredPage({
   slug: 'dropdown-menu', title: 'Dropdown Menu', kind: 'submodel',
+  previewProgram,
   definition: {
     kind: 'submodel', description: 'Presents a keyboard-navigable set of actions from a button trigger.',
     architecture: 'Dropdown Menu owns disclosure, active item, submenu, and anchor state. Use create<Action>() so its Selected OutMessage is typed, persist or execute that domain action in the parent, and map returned Commands.',

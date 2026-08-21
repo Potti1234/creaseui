@@ -1,8 +1,12 @@
+import { Schema as S } from 'effect';
+import { Command } from 'foldkit';
 import type { HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
 
-import { authoredPage, foldkitApplication, staticComponentApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, definePreviewProgram, foldkitApplication, staticComponentApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as NavigationMenu from '@/ui/navigation-menu';
+import * as Popover from '@/ui/popover';
 
 const links = <Msg>(h: HtmlBuilder<Msg>) => NavigationMenu.navigationMenu({ ariaLabel: 'Primary', children: [NavigationMenu.navigationMenuList({ children: ['Home', 'Components', 'Docs'].map((label, index) => NavigationMenu.navigationMenuItem({ children: [NavigationMenu.navigationMenuLink({ href: `/${label.toLowerCase()}`, isActive: index === 0, children: [label] }, h)] }, h)) }, h)] }, h);
 
@@ -55,8 +59,23 @@ export type Message = typeof Message.Type`,
 
 const previewDisclosure = (model: State.Model, h: HtmlBuilder<State.Message>) => NavigationMenu.navigationMenu({ ariaLabel: 'Primary', children: [NavigationMenu.navigationMenuList({ children: [NavigationMenu.navigationMenuItem({ children: [NavigationMenu.navigationMenuLink({ href: '/', isActive: true, children: ['Home'] }, h)] }, h), NavigationMenu.navigationMenuItem({ children: [NavigationMenu.navigationMenuDisclosure({ model: model.popover, toParentMessage: (message) => State.GotPopoverMessage({ message }), label: 'Products', content: h.ul([h.Class('grid gap-1')], [h.li([], [h.a([h.Href('/products/analytics'), h.Class('block rounded p-2 hover:bg-accent')], ['Analytics'])]), h.li([], [h.a([h.Href('/products/reports'), h.Class('block rounded p-2 hover:bg-accent')], ['Reports'])])]) }, h)] }, h)] }, h)] }, h);
 
+const GotNavigationPreviewMessage = m('GotNavigationPreviewMessage', { message: Popover.Message });
+type GotNavigationPreviewMessage = typeof GotNavigationPreviewMessage.Type;
+const NavigationPreviewModel = S.Struct({ _docsPage: S.Literal('navigation-menu'), products: Popover.Model });
+type NavigationPreviewModel = typeof NavigationPreviewModel.Type;
+const previewProgram = definePreviewProgram<NavigationPreviewModel, GotNavigationPreviewMessage>({
+  Model: NavigationPreviewModel, Message: GotNavigationPreviewMessage,
+  init: index => ({ _docsPage: 'navigation-menu', products: Popover.init({ id: `docs-navigation-products-${String(index)}`, isAnimated: true, contentFocus: true }) }),
+  update: (model, message) => {
+    const [products, commands] = Popover.update(model.products, message.message);
+    return [{ ...model, products }, Command.mapMessages(commands, next => GotNavigationPreviewMessage({ message: next }))];
+  },
+  view: (index, model, h) => index === 0 ? links(h) : NavigationMenu.navigationMenu({ ariaLabel: 'Primary', children: [NavigationMenu.navigationMenuList({ children: [NavigationMenu.navigationMenuItem({ children: [NavigationMenu.navigationMenuLink({ href: '/', isActive: true, children: ['Home'] }, h)] }, h), NavigationMenu.navigationMenuItem({ children: [NavigationMenu.navigationMenuDisclosure({ model: model.products, toParentMessage: message => GotNavigationPreviewMessage({ message }), label: 'Products', content: h.ul([h.Class('grid gap-1')], [h.li([], [h.a([h.Href('/products/analytics'), h.Class('block rounded p-2 hover:bg-accent')], ['Analytics'])]), h.li([], [h.a([h.Href('/products/reports'), h.Class('block rounded p-2 hover:bg-accent')], ['Reports'])])]) }, h)] }, h)] }, h)] }, h),
+});
+
 export const navigationMenuPage = authoredPage({
   slug: 'navigation-menu', title: 'Navigation Menu', kind: 'helper',
+  previewProgram,
   definition: {
     kind: 'helper', description: 'Composes semantic site-navigation links and optional Foldkit Popover disclosures.',
     architecture: 'The nav/list/item/link helpers are stateless Html composition. A disclosure is intentionally different: it receives a parent-owned Popover Model and Message mapping, keeping navigation semantics separate from overlay state.',

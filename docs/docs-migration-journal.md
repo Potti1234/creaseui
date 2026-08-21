@@ -182,11 +182,22 @@ recipe surface. The architecture-kind unit contract caught the regression.
 
 ### DOC-022 — Partial legacy schemas break child-message routing
 
-Open: attempting to reduce `catalog-state` by keeping a partial structural
-schema allowed child Messages to render but prevented their updates from being
-routed reliably. Foldkit's routing boundary depends on the exact Model and
-Message schema shape, so each page needs a complete route-local preview program
-before the legacy union is deleted. Do not introduce a partial global model.
+Closed in the typed preview-boundary slice: each authored page retains its exact
+Model and Message schema inside a real `h.submodel` boundary. The heterogeneous
+catalog transports one `RoutedDocsPreviewMessage` envelope instead of attempting
+to decode a growing union of unrelated child messages. Commands and
+subscriptions are lifted through the same boundary, so page-local behavior is
+preserved without rebuilding a global application model.
+
+### DOC-024 — Inactive page subscriptions read the active page model
+
+Closed in the typed preview-boundary slice: aggregating all route-local
+subscriptions initially passed the current route's example model to every page
+program. Opening Dialog therefore caused Sidebar's drag subscription to read a
+missing `dragState` and abort the update loop. Each lifted subscription now uses
+the active model only when its owning slug matches and otherwise receives its
+own inert initial model. Focused Playwright coverage exercises menus, overlays,
+notifications, and Sidebar together to protect the isolation contract.
 
 ### DOC-023 — Date Picker can report an undelivered ResizeObserver loop
 

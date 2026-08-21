@@ -2,12 +2,15 @@ import assert from 'node:assert/strict'
 import { existsSync, readFileSync } from 'node:fs'
 import { basename } from 'node:path'
 import { describe, it } from 'node:test'
+import { Schema as S } from 'effect'
 
 import {
   componentKind,
+  GotExampleMessage,
   dedicatedExampleTitles,
   hasDedicatedDefinition,
   init as initCatalog,
+  Message as CatalogMessage,
 } from '../src/docs/components/catalog.ts'
 import { authoredPages } from '../src/docs/components/pages/index.ts'
 
@@ -249,6 +252,14 @@ describe('component catalog coverage', () => {
         `${slug} exceeds the ${capacity}-state catalog capacity`,
       )
     }
+  })
+
+  it('decodes the routed preview envelope at the catalog boundary', () => {
+    const message = GotExampleMessage({
+      index: 0,
+      message: { _tag: 'RoutedDocsPreviewMessage', messageJson: JSON.stringify({ _tag: 'GotDropdownPreviewMessage', message: { _tag: 'Opened' } }) },
+    })
+    assert.deepEqual(S.decodeUnknownSync(CatalogMessage)(message), message)
   })
 
   it('tracks documentation and fidelity status explicitly', () => {

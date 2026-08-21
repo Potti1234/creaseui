@@ -1,6 +1,9 @@
+import { Schema as S } from 'effect';
+import { Command } from 'foldkit';
 import type { HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
 
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as ContextMenu from '@/ui/context-menu';
 
@@ -58,8 +61,24 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 
 const preview = (model: State.Model, h: HtmlBuilder<State.Message>) => ContextMenu.contextMenu({ model: model.contextMenu, toParentMessage: (message) => State.GotContextMenuMessage({ message }), class: 'flex h-40 w-72 items-center justify-center rounded-md border border-dashed text-sm', trigger: 'Right click here', ariaLabel: 'Browser actions', items: actions, itemToConfig: (action) => ({ label: labelFor(action), ...(action === 'forward' ? { isDisabled: true } : {}) }) }, h);
 
+const GotContextMenuPreviewMessage = m('GotContextMenuPreviewMessage', { message: ContextMenu.Message });
+type GotContextMenuPreviewMessage = typeof GotContextMenuPreviewMessage.Type;
+const ContextMenuPreviewModel = S.Struct({ _docsPage: S.Literal('context-menu'), contextMenu: ContextMenu.Model });
+type ContextMenuPreviewModel = typeof ContextMenuPreviewModel.Type;
+const previewProgram = definePreviewProgram<ContextMenuPreviewModel, GotContextMenuPreviewMessage>({
+  Model: ContextMenuPreviewModel,
+  Message: GotContextMenuPreviewMessage,
+  init: index => ({ _docsPage: 'context-menu', contextMenu: ContextMenu.init({ id: `docs-context-menu-${String(index)}` }) }),
+  update: (model, message) => {
+    const [contextMenu, commands] = ContextMenu.update(model.contextMenu, message.message);
+    return [{ ...model, contextMenu }, Command.mapMessages(commands, next => GotContextMenuPreviewMessage({ message: next }))];
+  },
+  view: (_index, model, h) => ContextMenu.contextMenu({ model: model.contextMenu, toParentMessage: message => GotContextMenuPreviewMessage({ message }), class: 'flex h-40 w-72 items-center justify-center rounded-md border border-dashed text-sm', trigger: 'Right click here', ariaLabel: 'Browser actions', items: actions, itemToConfig: action => ({ label: labelFor(action), ...(action === 'forward' ? { isDisabled: true } : {}) }) }, h),
+});
+
 export const contextMenuPage = authoredPage({
   slug: 'context-menu', title: 'Context Menu', kind: 'submodel',
+  previewProgram,
   definition: {
     kind: 'submodel', description: 'Opens a typed action menu at the pointer coordinates of a secondary click.',
     architecture: 'Context Menu reuses the Dropdown Menu Model and typed update, adding contextmenu coordinate anchoring. The parent must still consume Selected output and map any returned Commands.',

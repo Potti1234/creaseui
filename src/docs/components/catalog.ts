@@ -5,11 +5,11 @@ import { m } from 'foldkit/message';
 import { defineView } from 'foldkit/submodel';
 
 import { componentPage, componentTitle, example } from '@/docs/component-page';
-import * as State from '@/docs/components/catalog-state';
 import * as CopyFeedback from '@/docs/copy-feedback';
 import type { ComponentKind, PageDefinitions } from '@/docs/components/page-definition';
 import { componentApi } from '@/docs/generated-component-api';
 import { authoredPages } from '@/docs/components/pages';
+import { RoutedDocsPreviewMessage } from '@/docs/components/pages/authored-page';
 
 const definitions: PageDefinitions = {
   ...Object.fromEntries(
@@ -19,21 +19,19 @@ const definitions: PageDefinitions = {
 
 const EXAMPLE_STATE_COUNT = 32;
 const localPrograms = Object.values(authoredPages).flatMap(page =>
-  page.previewProgram === undefined ? [] : [page.previewProgram],
+  page.previewProgram === undefined ? [] : [{ slug: page.slug, program: page.previewProgram }],
 );
-const ExampleModel = S.Union([State.Model, ...localPrograms.map(program => program.Model)]);
-const ExampleMessage = S.Union([State.Message, ...localPrograms.map(program => program.Message)]);
 
 export const Model = S.Struct({
   slug: S.String,
-  examples: S.Array(ExampleModel),
+  examples: S.Array(S.Unknown),
   copiedCode: CopyFeedback.Model,
 });
 export type Model = typeof Model.Type;
 
 export const GotExampleMessage = m('GotCatalogExampleMessage', {
   index: S.Number,
-  message: ExampleMessage,
+  message: RoutedDocsPreviewMessage,
 });
 export const Message = S.Union([GotExampleMessage, CopyFeedback.Message]);
 export type Message = typeof Message.Type;
@@ -42,9 +40,8 @@ export const init = (slug?: string): Model => ({
   slug: slug ?? '',
   examples: Array.from({ length: definitions[slug ?? '']?.examples.length ?? 0 }, (_, index) => {
     const program = authoredPages[slug ?? '']?.previewProgram;
-    return program === undefined
-      ? State.withExampleIds(State.init(), `catalog-example-${String(index)}`)
-      : program.init(index);
+    if (program === undefined) throw new Error(`Missing preview program for ${slug ?? ''}`);
+    return program.init(index);
   }),
   copiedCode: null,
 });
@@ -67,9 +64,8 @@ export const update = (model: Model, message: Message): UpdateReturn => {
   if (current === undefined) return [model, []];
 
   const program = authoredPages[model.slug]?.previewProgram;
-  const [example, commands] = program === undefined
-    ? State.update(current as State.Model, message.message as State.Message)
-    : program.update(current, message.message);
+  if (program === undefined) return [model, []];
+  const [example, commands] = program.update(current, message.message);
   return [
     {
       examples: model.examples.map((candidate, index) =>
@@ -79,34 +75,23 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       copiedCode: model.copiedCode,
     },
     Command.mapMessages(commands, (next) =>
-      GotExampleMessage({ index: message.index, message: next }),
+      GotExampleMessage({ index: message.index, message: next as RoutedDocsPreviewMessage }),
     ),
   ];
 };
 
 export const subscriptions = Subscription.aggregate<Model, Message>()(
-  ...Array.from({ length: EXAMPLE_STATE_COUNT }, (_, index) => {
-    const lifted = Subscription.lift(State.subscriptions)<Model, Message>({
-      toChildModel: (model) =>
-        authoredPages[model.slug]?.previewProgram === undefined
-          ? (model.examples[index] as State.Model | undefined) ?? fallbackExampleState
-          : fallbackExampleState,
-      toParentMessage: (message) => GotExampleMessage({ index, message }),
-    });
-
-    return {
-      [`example${String(index)}SliderPointer`]: lifted.sliderPointer!,
-      [`example${String(index)}SliderEscape`]: lifted.sliderEscape!,
-    };
-  }),
-  ...localPrograms.flatMap((program, programIndex) => {
+  ...localPrograms.flatMap(({ slug, program }, programIndex) => {
     const childSubscriptions = program.subscriptions;
     return childSubscriptions === undefined
       ? []
       : Array.from({ length: EXAMPLE_STATE_COUNT }, (_, index) => {
           const lifted = Subscription.lift(childSubscriptions)<Model, Message>({
-            toChildModel: model => model.examples[index] ?? program.init(index),
-            toParentMessage: message => GotExampleMessage({ index, message }),
+            toChildModel: model =>
+              model.slug === slug
+                ? model.examples[index] ?? program.init(index)
+                : program.init(index),
+            toParentMessage: message => GotExampleMessage({ index, message: message as RoutedDocsPreviewMessage }),
           });
           return Object.fromEntries(Object.entries(lifted).map(([key, subscription]) => [
             `local${String(programIndex)}Example${String(index)}${key}`,
@@ -115,8 +100,6 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
         });
   }),
 );
-
-const fallbackExampleState = State.init();
 
 export const hasCatalogPage = (slug: string): boolean =>
   componentTitle(slug) !== undefined;
@@ -255,9 +238,8 @@ export const view = (
       examples: definition.examples.map((config, index) => {
         const exampleCode = config.code;
         const program = authoredPages[slug]?.previewProgram;
-        const previewView = program === undefined
-          ? defineView<State.Model, State.Message>((exampleModel, h) => config.preview(exampleModel, h))
-          : defineView<unknown, unknown>((exampleModel, h) => program.view(index, exampleModel, h));
+        if (program === undefined) throw new Error(`Missing preview program for ${slug}`);
+        const previewView = defineView<unknown, RoutedDocsPreviewMessage>((exampleModel, h) => program.view(index, exampleModel, h));
 
         return example<Message>(
           {
@@ -267,7 +249,7 @@ export const view = (
               : { description: config.description }),
             preview: h.submodel({
               slotId: `docs-${slug}-example-${String(index)}`,
-              model: model.examples[index] ?? fallbackExampleState,
+              model: model.examples[index] ?? program.init(index),
               view: previewView,
               toParentMessage: (message): Message =>
                 GotExampleMessage({ index, message }),

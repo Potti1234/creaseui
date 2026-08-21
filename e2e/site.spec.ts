@@ -541,7 +541,7 @@ test('sidebar documents persistence and toggles derived shell state', async ({ p
   const example = page.locator('#persistent-shell')
   const provider = example.locator('[data-slot="sidebar-wrapper"]')
   await expect(provider).toHaveAttribute('data-state', 'expanded')
-  await example.getByRole('button', { name: 'Toggle Sidebar' }).click()
+  await example.locator('[data-slot="sidebar-trigger"]').click()
   await expect(provider).toHaveAttribute('data-state', 'collapsed')
   await expect(example.locator('code')).toContainText('Sidebar.shortcut')
   await expect(example.locator('code')).toContainText('Command.mapMessages')

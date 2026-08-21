@@ -1,7 +1,8 @@
 import { Schema as S, type Schema } from 'effect';
-import type { Command, Subscription } from 'foldkit';
+import { Command, Subscription } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
+import { defineView } from 'foldkit/submodel';
 
 import type {
   ComponentKind,
@@ -61,24 +62,59 @@ export type PreviewProgram<Model, Message> = Readonly<{
 
 export type ErasedPreviewProgram = Readonly<{
   Model: Schema.Top;
-  Message: Schema.Top;
+  Message: typeof RoutedDocsPreviewMessage;
   init: (exampleIndex: number) => unknown;
   update: (
     model: unknown,
-    message: unknown,
-  ) => readonly [unknown, ReadonlyArray<Command.Command<unknown>>];
+    message: RoutedDocsPreviewMessage,
+  ) => readonly [unknown, ReadonlyArray<Command.Command<RoutedDocsPreviewMessage>>];
   view: (
     exampleIndex: number,
     model: unknown,
-    h: HtmlBuilder<unknown>,
+    h: HtmlBuilder<RoutedDocsPreviewMessage>,
   ) => Html;
-  subscriptions?: Subscription.Subscriptions<unknown, unknown>;
+  subscriptions?: Subscription.Subscriptions<unknown, RoutedDocsPreviewMessage>;
 }>;
+
+export const RoutedDocsPreviewMessage = m('RoutedDocsPreviewMessage', { messageJson: S.String });
+export type RoutedDocsPreviewMessage = typeof RoutedDocsPreviewMessage.Type;
 
 /** Erases a page-local preview program only at the heterogeneous catalog boundary. */
 export const definePreviewProgram = <Model, Message>(
   program: PreviewProgram<Model, Message>,
-): ErasedPreviewProgram => program as unknown as ErasedPreviewProgram;
+): ErasedPreviewProgram => {
+  const childView = defineView<Model, Message, { exampleIndex: number }>((model, inputs, h) => program.view(inputs.exampleIndex, model, h));
+  return {
+    Model: program.Model,
+    Message: RoutedDocsPreviewMessage,
+    init: program.init,
+    update: (model, message) => {
+      const routed = message as RoutedDocsPreviewMessage;
+      const [next, commands] = program.update(model as Model, JSON.parse(routed.messageJson) as Message);
+      // Foldkit's public Command union retains its schema-derived message type,
+      // while mapMessages accepts the equivalent structural command shape.
+      // Keep that unavoidable erasure at this one catalog boundary.
+      const routedCommands = Command.mapMessages(
+        commands as ReadonlyArray<Command.Command<Message> & { effect: never }>,
+        childMessage => RoutedDocsPreviewMessage({ messageJson: JSON.stringify(childMessage) }),
+      );
+      return [next, routedCommands];
+    },
+    view: (exampleIndex, model, h) => h.submodel({
+      slotId: `typed-preview-${String(exampleIndex)}`,
+      model: model as Model,
+      view: childView,
+      viewInputs: { exampleIndex },
+      toParentMessage: message => RoutedDocsPreviewMessage({ messageJson: JSON.stringify(message) }),
+    }),
+    ...(program.subscriptions === undefined ? {} : {
+      subscriptions: Subscription.lift(program.subscriptions)<unknown, RoutedDocsPreviewMessage>({
+        toChildModel: model => model as Model,
+        toParentMessage: message => RoutedDocsPreviewMessage({ messageJson: JSON.stringify(message) }),
+      }),
+    }),
+  };
+};
 
 const ChangedTextPreview = m('ChangedTextDocsPreview', { value: S.String });
 type ChangedTextPreview = typeof ChangedTextPreview.Type;

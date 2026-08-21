@@ -1,8 +1,12 @@
+import { Option, Schema as S } from 'effect';
+import { Command } from 'foldkit';
 import type { HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
 
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as Menubar from '@/ui/menubar';
+import * as DropdownMenu from '@/ui/dropdown-menu';
 
 const preview = (model: State.Model, h: HtmlBuilder<State.Message>) => Menubar.menubar<string, State.Message>({ ariaLabel: 'Application menu', menus: ([['file', 'File', model.menubarFile], ['edit', 'Edit', model.menubarEdit], ['view', 'View', model.menubarView]] as const).map(([target, label, menu]) => ({ id: `docs-menubar-${target}`, label, model: menu, toParentMessage: (message) => State.GotMenubarMessage({ target, message }), items: ['new', 'open', 'save'], itemToConfig: (item) => ({ label: item[0]?.toUpperCase() + item.slice(1), ...(item === 'save' ? { shortcut: '⌘S' } : {}) }) })) }, h);
 
@@ -88,8 +92,37 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 })`,
 });
 
+const MenuTarget = S.Literals(['file', 'edit', 'view']);
+type MenuTarget = typeof MenuTarget.Type;
+const GotMenubarPreviewMessage = m('GotMenubarPreviewMessage', { target: MenuTarget, message: DropdownMenu.Message });
+const MovedMenubarPreview = m('MovedMenubarPreview', { index: S.Number });
+const MenubarPreviewMessage = S.Union([GotMenubarPreviewMessage, MovedMenubarPreview]);
+type MenubarPreviewMessage = typeof MenubarPreviewMessage.Type;
+const MenubarPreviewModel = S.Struct({ _docsPage: S.Literal('menubar'), file: DropdownMenu.Model, edit: DropdownMenu.Model, view: DropdownMenu.Model, activeMenu: S.Number, maybeLastAction: S.Option(S.String) });
+type MenubarPreviewModel = typeof MenubarPreviewModel.Type;
+const ActionMenu = DropdownMenu.create<string>();
+const targets: ReadonlyArray<MenuTarget> = ['file', 'edit', 'view'];
+const previewProgram = definePreviewProgram<MenubarPreviewModel, MenubarPreviewMessage>({
+  Model: MenubarPreviewModel, Message: MenubarPreviewMessage,
+  init: index => ({ _docsPage: 'menubar', file: DropdownMenu.init({ id: `docs-menubar-file-${String(index)}` }), edit: DropdownMenu.init({ id: `docs-menubar-edit-${String(index)}` }), view: DropdownMenu.init({ id: `docs-menubar-view-${String(index)}` }), activeMenu: 0, maybeLastAction: Option.none() }),
+  update: (model, message) => {
+    if (message._tag === 'MovedMenubarPreview') {
+      const target = targets[message.index];
+      if (target === undefined) return [model, []];
+      const [file] = target === 'file' ? DropdownMenu.open(model.file) : DropdownMenu.close(model.file);
+      const [edit] = target === 'edit' ? DropdownMenu.open(model.edit) : DropdownMenu.close(model.edit);
+      const [view] = target === 'view' ? DropdownMenu.open(model.view) : DropdownMenu.close(model.view);
+      return [{ ...model, file, edit, view, activeMenu: message.index }, []];
+    }
+    const [menu, commands, maybeSelection] = ActionMenu.update(model[message.target], message.message);
+    return [{ ...model, [message.target]: menu, maybeLastAction: Option.match(maybeSelection, { onNone: () => model.maybeLastAction, onSome: selection => Option.some(selection.value) }) }, Command.mapMessages(commands, next => GotMenubarPreviewMessage({ target: message.target, message: next }))];
+  },
+  view: (_index, model, h) => Menubar.menubar<string, MenubarPreviewMessage>({ ariaLabel: 'Application menu', activeIndex: model.activeMenu, onMove: index => MovedMenubarPreview({ index }), menus: ([['file', 'File'], ['edit', 'Edit'], ['view', 'View']] as const).map(([target, label]) => ({ id: `docs-menubar-${target}`, label, model: model[target], toParentMessage: message => GotMenubarPreviewMessage({ target, message }), items: ['new', 'open', 'save'], itemToConfig: item => ({ label: item[0]?.toUpperCase() + item.slice(1), ...(item === 'save' ? { shortcut: '⌘S' } : {}) }) })) }, h),
+});
+
 export const menubarPage = authoredPage({
   slug: 'menubar', title: 'Menubar', kind: 'submodel',
+  previewProgram,
   definition: {
     kind: 'submodel', description: 'Coordinates several persistent top-level application menus with typed child actions.',
     architecture: 'Each top-level label owns an independent Dropdown Menu Model. Parent Messages carry a stable target, map child Commands back to that target, persist typed Selected outputs, and coordinate ArrowLeft/ArrowRight movement with activeIndex/onMove.',

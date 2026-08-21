@@ -1,6 +1,9 @@
+import { Schema as S } from 'effect';
+import { Command, Subscription } from 'foldkit';
 import type { HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
 
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as Sidebar from '@/ui/sidebar';
 
@@ -78,8 +81,36 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
 }`,
 });
 
+const GotSidebarPreviewMessage = m('GotSidebarPreviewMessage', { message: Sidebar.Message });
+type GotSidebarPreviewMessage = typeof GotSidebarPreviewMessage.Type;
+const SidebarPreviewModel = S.Struct({ _docsPage: S.Literal('sidebar'), sidebar: Sidebar.Model });
+type SidebarPreviewModel = typeof SidebarPreviewModel.Type;
+const sidebarPreviewSubscriptions = typeof document === 'undefined'
+  ? undefined
+  : Subscription.make<SidebarPreviewModel, GotSidebarPreviewMessage>()(() => ({
+      sidebarShortcut: Subscription.persistent(
+        Sidebar.shortcut(next => GotSidebarPreviewMessage({ message: next })),
+      ),
+    }));
+const previewProgram = definePreviewProgram<SidebarPreviewModel, GotSidebarPreviewMessage>({
+  Model: SidebarPreviewModel, Message: GotSidebarPreviewMessage,
+  init: index => ({ _docsPage: 'sidebar', sidebar: Sidebar.init({ defaultOpen: true, storageKey: `docs_sidebar_${String(index)}` }) }),
+  update: (model, message) => {
+    const [sidebar, commands] = Sidebar.update(model.sidebar, message.message);
+    return [{ ...model, sidebar }, Command.mapMessages(commands, next => GotSidebarPreviewMessage({ message: next }))];
+  },
+  ...(sidebarPreviewSubscriptions === undefined ? {} : { subscriptions: sidebarPreviewSubscriptions }),
+  view: (index, model, h) => {
+    const interactive = index === 0;
+    const state: Sidebar.SidebarState = model.sidebar.isOpen ? 'expanded' : 'collapsed';
+    const toggle = GotSidebarPreviewMessage({ message: Sidebar.Toggled() });
+    return Sidebar.sidebarProvider({ state, class: 'relative h-80 min-h-0 overflow-hidden rounded-lg border', children: [Sidebar.sidebar({ state, collapsible: interactive ? 'icon' : 'none', isMobileOpen: model.sidebar.isMobileOpen, onMobileDismiss: GotSidebarPreviewMessage({ message: Sidebar.SetMobileOpen({ isOpen: false }) }), ...(interactive ? { class: '!absolute !inset-y-0 !h-full' } : {}), children: [Sidebar.sidebarHeader({ children: [h.div([h.Class('px-2 py-1 font-semibold')], ['Acme Inc.'])] }, h), Sidebar.sidebarContent({ children: [Sidebar.sidebarGroup({ children: [Sidebar.sidebarGroupLabel({ children: ['Platform'] }, h), Sidebar.sidebarGroupContent({ children: [nav(h)] }, h)] }, h)] }, h), Sidebar.sidebarFooter({ children: ['Workspace'] }, h), ...(interactive ? [Sidebar.sidebarRail({ onClick: toggle }, h)] : [])] }, h), Sidebar.sidebarInset({ class: 'min-h-0', children: interactive ? [h.header([h.Class('flex h-12 items-center border-b px-3')], [Sidebar.sidebarTrigger({ onClick: toggle }, h)]), h.div([h.Class('p-4 text-sm text-muted-foreground')], ['Main content remains independent of sidebar state.'])] : [] }, h)] }, h);
+  },
+});
+
 export const sidebarPage = authoredPage({
   slug: 'sidebar', title: 'Sidebar', kind: 'submodel',
+  previewProgram,
   definition: {
     kind: 'submodel', description: 'Builds a responsive application shell with persistent desktop collapse state and separate mobile disclosure state.',
     architecture: 'Sidebar’s exported Model owns desktop open, mobile open, and persistence key. The parent delegates Message, maps the cookie-persistence Command, and registers the cmd/ctrl+B subscription. View helpers receive derived expanded/collapsed state explicitly—there is no React context.',
