@@ -675,6 +675,21 @@ test('controlled helper pages own and update compact local preview state', async
   await expect(toggle).toHaveAttribute('aria-pressed', 'false')
   await toggle.click()
   await expect(toggle).toHaveAttribute('aria-pressed', 'true')
+
+  await page.goto('/docs/components/toggle-group')
+  const right = page.locator('#alignment').getByRole('button', { name: 'Right' })
+  await right.click()
+  await expect(right).toHaveAttribute('aria-pressed', 'true')
+
+  await page.goto('/docs/components/radio-group')
+  const compact = page.locator('#density').getByRole('radio', { name: /Compact/u })
+  await compact.click()
+  await expect(compact).toBeChecked()
+
+  await page.goto('/docs/components/native-select')
+  const fruit = page.locator('#labeled-fruit').getByRole('combobox', { name: 'Fruit' })
+  await fruit.selectOption('blueberry')
+  await expect(fruit).toHaveValue('blueberry')
 })
 
 test('flagship documentation pages have no automated accessibility violations', async ({

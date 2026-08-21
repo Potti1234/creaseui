@@ -1,5 +1,8 @@
+import { Schema as S } from 'effect';
+import { m } from 'foldkit/message';
+
 import * as State from '@/docs/components/catalog-state';
-import { authoredPage, controlledStringApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, controlledStringApplication, definePreviewProgram } from '@/docs/components/pages/authored-page';
 import * as ToggleGroup from '@/ui/toggle-group';
 
 const source = (name: string, config: string): string => controlledStringApplication({
@@ -23,8 +26,20 @@ const items = [
   { value: 'right', children: ['Right'] },
 ] as const;
 
+const PreviewModel = S.Struct({ _docsPage: S.Literal('toggle-group'), value: S.String });
+type PreviewModel = typeof PreviewModel.Type;
+const ChangedPreview = m('ChangedToggleGroupPreview', { value: S.String });
+type PreviewMessage = typeof ChangedPreview.Type;
+const previewProgram = definePreviewProgram<PreviewModel, PreviewMessage>({
+  Model: PreviewModel, Message: ChangedPreview,
+  init: () => ({ _docsPage: 'toggle-group', value: 'center' }),
+  update: (model, message) => [{ ...model, value: message.value }, []],
+  view: (index, model, h) => ToggleGroup.toggleGroup({ value: model.value, onToggle: value => ChangedPreview({ value }), items, ...(index === 1 ? { variant: 'outline' as const } : {}) }, h),
+});
+
 export const toggleGroupPage = authoredPage({
   slug: 'toggle-group', title: 'Toggle Group', kind: 'helper',
+  previewProgram,
   definition: {
     kind: 'helper', description: 'Groups related pressed buttons into a compact single- or multi-selection control.',
     architecture: 'Toggle Group is stateless. Pass value for one selected item or values for multiple items, then interpret onToggle in the parent update function.',

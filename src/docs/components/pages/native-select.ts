@@ -1,5 +1,8 @@
+import { Schema as S } from 'effect';
+import { m } from 'foldkit/message';
+
 import * as State from '@/docs/components/catalog-state';
-import { authoredPage, controlledStringApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, controlledStringApplication, definePreviewProgram } from '@/docs/components/pages/authored-page';
 import * as NativeSelect from '@/ui/native-select';
 
 const source = (name: string, initialValue: string, config: string): string => controlledStringApplication({
@@ -19,8 +22,20 @@ const fruitOptions = [
   { value: 'blueberry', label: 'Blueberry' },
 ] as const;
 
+const PreviewModel = S.Struct({ _docsPage: S.Literal('native-select'), value: S.String });
+type PreviewModel = typeof PreviewModel.Type;
+const ChangedPreview = m('ChangedNativeSelectPreview', { value: S.String });
+type PreviewMessage = typeof ChangedPreview.Type;
+const previewProgram = definePreviewProgram<PreviewModel, PreviewMessage>({
+  Model: PreviewModel, Message: ChangedPreview,
+  init: () => ({ _docsPage: 'native-select', value: 'apple' }),
+  update: (model, message) => [{ ...model, value: message.value }, []],
+  view: (index, model, h) => NativeSelect.nativeSelect({ id: `docs-native-select-${String(index)}`, value: model.value, onChange: value => ChangedPreview({ value }), label: index === 0 ? 'Fruit' : 'Destination', ...(index === 0 ? { description: 'Choose one for the delivery.', options: fruitOptions } : { options: [{ value: 'apple', label: 'Local pickup' }], groups: [{ label: 'Europe', options: [{ value: 'banana', label: 'Berlin' }, { value: 'blueberry', label: 'Paris' }] }] }) }, h),
+});
+
 export const nativeSelectPage = authoredPage({
   slug: 'native-select', title: 'Native Select', kind: 'helper',
+  previewProgram,
   definition: {
     kind: 'helper', description: 'Styles the browser-native select while keeping its familiar platform interaction and form behavior.',
     architecture: 'Native Select is a controlled stateless helper. Keep the selected string in the parent Model and replace it with the value emitted by onChange.',
