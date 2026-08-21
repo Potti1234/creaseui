@@ -177,6 +177,7 @@ test('authored helper pages publish complete application source', async ({ page 
     'label',
     'marker',
     'message',
+    'menubar',
     'native-select',
     'navigation-menu',
     'pagination',
@@ -512,6 +513,21 @@ test('navigation menu distinguishes semantic links from stateful disclosures', a
   await page.keyboard.press('Escape')
   await expect(content).toBeHidden()
   await expect(trigger).toBeFocused()
+})
+
+test('menubar documents independent targeted child models', async ({ page }) => {
+  await page.goto('/docs/components/menubar')
+  const example = page.locator('#coordinated-menus')
+  const menubar = example.getByRole('menubar', { name: 'Application menu' })
+  await expect(menubar).toBeVisible()
+  await example.getByRole('button', { name: 'File' }).click()
+  const menu = example.getByRole('menu', { name: 'File' })
+  await expect(menu).toBeVisible()
+  await expect(menu.getByRole('menuitem', { name: /Save/u })).toContainText('⌘S')
+  await expect(example.locator('code')).toContainText('GotMenuMessage')
+  await expect(example.locator('code')).toContainText('MovedMenu')
+  await page.keyboard.press('Escape')
+  await expect(menu).toBeHidden()
 })
 
 test('flagship documentation pages have no automated accessibility violations', async ({
