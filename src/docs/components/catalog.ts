@@ -10,7 +10,7 @@ import * as CopyFeedback from '@/docs/copy-feedback';
 import { definitions as earlyDefinitions } from '@/docs/components/definitions/a-to-command';
 import { definitions as middleDefinitions } from '@/docs/components/definitions/context-to-pagination';
 import { definitions as lateDefinitions } from '@/docs/components/definitions/popover-to-typography';
-import type { PageDefinitions } from '@/docs/components/page-definition';
+import type { ComponentKind, PageDefinitions } from '@/docs/components/page-definition';
 import { generatedExampleSources } from '@/docs/components/generated-example-sources';
 import { componentApi } from '@/docs/generated-component-api';
 
@@ -98,6 +98,11 @@ export const hasDedicatedDefinition = (slug: string): boolean =>
 export const dedicatedExampleTitles = (slug: string): ReadonlyArray<string> =>
   definitions[slug]?.examples.map((config) => config.title) ?? [];
 
+export const componentKind = (slug: string): ComponentKind | undefined => {
+  const definition = definitions[slug];
+  return definition === undefined ? undefined : kindFor(slug, definition);
+};
+
 export const titleFor = componentTitle;
 
 const exportOverrides: Readonly<Record<string, string>> = {
@@ -124,11 +129,64 @@ const exportOverrides: Readonly<Record<string, string>> = {
 
 const primaryExport = (slug: string): string =>
   exportOverrides[slug] ??
-  slug.replace(/-([a-z])/g, (_match, letter: string) => letter.toUpperCase());
+    slug.replace(/-([a-z])/g, (_match, letter: string) => letter.toUpperCase());
 
-const usageFor = (slug: string, name: string): string => {
+const recipeSlugs = new Set([
+  'data-table',
+  'date-picker',
+  'form',
+  'input-group',
+  'sidebar',
+  'toast',
+  'typography',
+]);
+
+const kindFor = (slug: string, definition: PageDefinitions[string]): ComponentKind => {
+  if (definition.kind !== undefined) return definition.kind;
+  if (recipeSlugs.has(slug)) return 'recipe';
+  const exports = componentApi[slug] ?? [];
+  return exports.some((entry) => entry.name === 'Model') &&
+      exports.some((entry) => entry.name === 'update')
+    ? 'submodel'
+    : 'helper';
+};
+
+const architectureFor = (kind: ComponentKind, name: string): string => {
+  switch (kind) {
+    case 'helper':
+      return `${name} is view-only. Call its render helper directly inside your view; it does not add a child Model, Message, update branch, or h.submodel boundary.`;
+    case 'submodel':
+      return `${name} owns interaction state. Store its Model in the parent, initialize it with the app, embed its Message, delegate update results and Commands, then render it through h.submodel.`;
+    case 'recipe':
+      return `${name} composes source-owned Crease UI modules into an application pattern. Read the installed source as the public API and integrate stateful dependencies through the normal Foldkit update loop.`;
+  }
+};
+
+const compositionFor = (
+  kind: ComponentKind,
+  name: string,
+  viewExport: string,
+): string => {
+  switch (kind) {
+    case 'helper':
+      return `${name}\n└── ${viewExport}(ViewConfig, HtmlBuilder) → Html`;
+    case 'submodel':
+      return `${name}\n├── Model / init\n├── Message / update / Commands\n├── optional OutMessage\n└── h.submodel → ${viewExport} view`;
+    case 'recipe':
+      return `${name}\n├── source-owned composition\n├── stateless helpers and/or child Models\n└── application Model / Message / update integration`;
+  }
+};
+
+const usageFor = (slug: string, name: string, kind: ComponentKind): string => {
   const namespace = name.replaceAll(' ', '');
-  return `import * as ${namespace} from '@/ui/${slug}'\n\n// The installed module is the API. Stateful components expose Model, Message,\n// init, update, and a view helper; stateless components expose view helpers.\n${namespace}.${primaryExport(slug)}({\n  // Use editor completion to supply the typed configuration.\n})`;
+  if (kind === 'helper') {
+    return `import * as ${namespace} from '@/ui/${slug}'\n\nconst view = (model: Model, h: HtmlBuilder<Message>) =>\n  ${namespace}.${primaryExport(slug)}(viewConfig, h)`;
+  }
+  if (kind === 'submodel') {
+    const field = namespace[0]!.toLowerCase() + namespace.slice(1);
+    return `import { Command } from 'foldkit'\nimport * as ${namespace} from '@/ui/${slug}'\n\n// Model and init\n${field}: ${namespace}.Model\n${field}: ${namespace}.init(initConfig)\n\n// Delegate the child update and lift its commands\nconst [next, commands] = ${namespace}.update(model.${field}, childMessage)\nreturn [\n  { ...model, ${field}: next },\n  Command.mapMessages(commands, message => Got${namespace}Message({ message })),\n]\n\n// Keep the child view behind a keyed submodel boundary\nh.submodel({\n  slotId: '${slug}',\n  model: model.${field},\n  view: ${namespace}.view,\n  viewInputs,\n  toParentMessage: message => Got${namespace}Message({ message }),\n})`;
+  }
+  return `import * as ${namespace} from '@/ui/${slug}'\n\n// Recipes are installed as source. Compose their exports in your view and\n// wire stateful dependencies through the parent Model, Message, and update.\n${namespace}.${primaryExport(slug)}(viewConfig, h)`;
 };
 
 export const view = (
@@ -142,20 +200,29 @@ export const view = (
   if (name === undefined || definition === undefined) {
     throw new Error(`Missing dedicated documentation definition for ${slug}`);
   }
+  const kind = kindFor(slug, definition);
 
   return componentPage<Message>(
     {
       name,
       description: definition.description,
+      kind,
+      architecture: definition.architecture ?? architectureFor(kind, name),
       installation: `npx shadcn@latest add Potti1234/creaseui/${slug}`,
-      usage: usageFor(slug, name),
+      usage: usageFor(slug, name, kind),
+      ...(definition.sections === undefined ? {} : { sections: definition.sections }),
+      ...(definition.styling === undefined ? {} : { styling: definition.styling }),
+      ...(definition.accessibility === undefined
+        ? {}
+        : { accessibility: definition.accessibility }),
+      ...(definition.keyboard === undefined ? {} : { keyboard: definition.keyboard }),
       copiedCode: model.copiedCode,
       onCopyCode: (code) => CopyFeedback.ClickedCopyCode({ code }),
       exampleTitles: definition.examples.map((example) => example.title),
       sidebarScrolled: CopyFeedback.ObservedSidebarScroll(),
       composition:
         definition.composition ??
-        `${name}\n├── Model / init / update\n├── ${primaryExport(slug)} view\n└── Source-owned styles and composition`,
+        compositionFor(kind, name, primaryExport(slug)),
       examples: definition.examples.map((config, index) => {
         const exampleCode =
           generatedExampleSources[`${slug}/${config.title}`] ?? config.code;

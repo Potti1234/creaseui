@@ -6,6 +6,7 @@ import { describe, it } from 'node:test'
 import { hasRealPreview } from '../src/docs/components/real-previews.ts'
 import { generatedExampleSources } from '../src/docs/components/generated-example-sources.ts'
 import {
+  componentKind,
   dedicatedExampleTitles,
   hasDedicatedDefinition,
 } from '../src/docs/components/catalog.ts'
@@ -157,6 +158,13 @@ describe('component catalog coverage', () => {
     assert.doesNotMatch(catalog, /being verified|representative .* composition/i)
   })
 
+  it('documents Foldkit architecture instead of assigning state to every component', () => {
+    assert.equal(componentKind('button'), 'helper')
+    assert.equal(componentKind('dialog'), 'submodel')
+    assert.equal(componentKind('toast'), 'recipe')
+    assert.match(componentPage, /How it fits Foldkit/)
+  })
+
   it('shows concrete Foldkit source instead of prose or markup placeholders', () => {
     const definitions = { ...earlyDefinitions, ...middleDefinitions, ...lateDefinitions }
     for (const [slug, definition] of Object.entries(definitions)) {
@@ -191,6 +199,8 @@ describe('component catalog coverage', () => {
       assert.ok(source.trim(), `${key} has empty generated source`)
       assert.doesNotMatch(source, /\.toString\(\)/, key)
       assert.doesNotMatch(source, /(?:^|\W)[A-Za-z_$][\w$]?\([A-Za-z_$],?[A-Za-z_$]?\)=>/u, key)
+      assert.doesNotMatch(source, /import \* as [^\s]+\(/u, key)
+      assert.doesNotMatch(source, /(?:show loading|await command)/iu, key)
     }
     assert.ok(Object.keys(generatedExampleSources).length >= 100)
   })

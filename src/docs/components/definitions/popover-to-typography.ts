@@ -1695,9 +1695,97 @@ const rawDefinitions: PageDefinitions = {
     ],
   },
   toast: {
-    description: 'A succinct message that is displayed temporarily.',
+    kind: 'recipe',
+    description:
+      'A source-owned notification recipe with typed variants, timed dismissal, actions, and a single root-level viewport.',
+    architecture:
+      'Toast is the compatibility name for Crease UI\'s Sonner notification model. Keep one Toast.Model at the application root, call Toast.show from domain update branches, map its Commands, and render Toast.toast once near the root view.',
+    apiHref: 'https://foldkit.dev/ui/toast',
+    apiDescription:
+      'Crease UI Toast is implemented by the source-owned Sonner module. The Foldkit Toast reference demonstrates the same parent-model, command-mapping, root-view, and dismissal-output architecture.',
+    sections: [
+      {
+        id: 'add-to-model',
+        title: 'Add it to the application',
+        description:
+          'Notifications outlive the view that creates them, so the model and viewport belong at the application root.',
+        code: `const Model = S.Struct({
+  toast: Toast.Model,
+  // your domain state
+})
+
+const init = () => [{
+  toast: Toast.init({ id: 'app-toast' }),
+}, []]`,
+      },
+      {
+        id: 'delegate-messages',
+        title: 'Delegate messages',
+        description:
+          'Embed Toast.Message in the parent message union. Always lift returned commands so timers dispatch back through the application update loop.',
+        code: `const GotToastMessage = m('GotToastMessage', {
+  message: Toast.Message,
+})
+
+GotToastMessage: ({ message }) => {
+  const [toast, commands, outMessage] = Toast.update(model.toast, message)
+  return [
+    { ...model, toast },
+    Command.mapMessages(commands, message => GotToastMessage({ message })),
+  ]
+}`,
+      },
+      {
+        id: 'show-a-toast',
+        title: 'Show a toast from update',
+        description:
+          'Programmatic helpers return the next Toast model, timer commands, and an optional output. Keep all three in the update branch rather than triggering notifications from the view.',
+        code: `ClickedSave: () => {
+  const [toast, commands] = Toast.show(
+    model.toast,
+    Toast.success({
+      title: 'Changes saved',
+      description: 'Your preferences are now up to date.',
+    }),
+  )
+
+  return [
+    { ...model, toast },
+    Command.mapMessages(commands, message => GotToastMessage({ message })),
+  ]
+}`,
+      },
+      {
+        id: 'render-the-viewport',
+        title: 'Render one viewport',
+        description:
+          'Place the viewport once near the root of the document. Feature views only dispatch domain messages that eventually call Toast.show.',
+        code: `Toast.toast(
+  {
+    model: model.toast,
+    toParentMessage: message => GotToastMessage({ message }),
+    actionToMessage: entry => ClickedToastAction({ id: entry.id }),
+  },
+  h,
+)`,
+      },
+    ],
+    styling:
+      'The installed source owns the shadcn-like surface styles. Use class for viewport placement and entryClass for entry-level overrides; data-slot="sonner" and data-slot="sonner-toast" are stable styling and testing hooks.',
+    accessibility:
+      'The viewport is an aria-live="polite" notifications region. Error entries use role="alert" while other variants use role="status". Every entry has a labeled dismiss button and action controls remain keyboard reachable.',
+    keyboard: [
+      ['Tab', 'Moves through action and dismiss controls in visible notifications.'],
+      ['Enter / Space', 'Activates the focused action or dismiss button.'],
+    ],
     examples: [
-      basic('toast', `Toast.toast({ model, toParentMessage })`),
+      basic(
+        'toast',
+        `Toast.toast({
+  model: model.toast,
+  toParentMessage: message => GotToastMessage({ message }),
+}, h)`,
+      ),
       {
         title: 'Types',
         preview: (model, h: HtmlBuilder<Message>) =>
@@ -1709,7 +1797,12 @@ const rawDefinitions: PageDefinitions = {
             },
             h,
           ),
-        code: `Sonner.show(model, Sonner.success({ title }))`,
+        description:
+          'Use semantic constructors so visual treatment and live-region roles stay aligned.',
+        code: `Toast.success({ title: 'Saved' })
+Toast.error({ title: 'Could not save' })
+Toast.warning({ title: 'Storage almost full' })
+Toast.info({ title: 'New version available' })`,
       },
       {
         title: 'Action',
@@ -1718,13 +1811,24 @@ const rawDefinitions: PageDefinitions = {
             { onClick: action, children: ['Show toast with action'] },
             h,
           ),
-        code: `Sonner.success({ title: 'Event created', actionLabel: 'Undo' })`,
+        description:
+          'Provide an action label in the payload and map the selected entry to a domain message in the root viewport.',
+        code: `Toast.success({
+  title: 'Event created',
+  actionLabel: 'Undo',
+})`,
       },
       {
         title: 'Promise',
         preview: (_model, h: HtmlBuilder<Message>) =>
           Button.button({ onClick: action, children: ['Start upload'] }, h),
-        code: `show loading → await command → show success or error`,
+        description:
+          'Model async work with a Foldkit Command. Show the result from the completion message rather than awaiting inside the view.',
+        code: `CompletedUpload: ({ result }) =>
+  Result.match(result, {
+    onFailure: () => showToast(model, Toast.error({ title: 'Upload failed' })),
+    onSuccess: () => showToast(model, Toast.success({ title: 'Upload complete' })),
+  })`,
       },
     ],
   },

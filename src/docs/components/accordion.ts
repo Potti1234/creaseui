@@ -191,6 +191,9 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       name: 'Accordion',
       description:
         'A vertically stacked set of interactive headings that each reveal a section of content.',
+      kind: 'submodel',
+      architecture:
+        'Accordion owns which disclosures are open. Keep Accordion.Model in the parent, delegate Accordion.Message through update, and render the child through h.submodel.',
       installation: INSTALLATION,
       usage: USAGE,
       composition: `Parent Model\n└── accordion: Accordion.Model\n\nParent Message\n└── GotAccordionMessage(Accordion.Message)\n\nupdate delegates to Accordion.update; view maps child messages back to the parent.`,

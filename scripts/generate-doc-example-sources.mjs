@@ -91,8 +91,16 @@ for (const definitions of definitionFiles) {
         const helper = expression.expression.text
         if (helper === 'basic') {
           title = 'Basic'
-          namespace = literalText(expression.arguments[1])
-          previewSource = previewSources.get(slug)
+          const authoredCode = literalText(expression.arguments[1])
+          // The early definitions pass a component namespace here, while the
+          // later definitions pass the actual source snippet. Never interpret
+          // arbitrary code as an import identifier.
+          if (authoredCode && /^[A-Z][A-Za-z0-9]*$/.test(authoredCode)) {
+            namespace = authoredCode
+            previewSource = previewSources.get(slug)
+          } else {
+            previewSource = authoredCode
+          }
         } else if (helper === 'staticExample' || helper === 'statefulExample') {
           title = literalText(expression.arguments[0])
           namespace = literalText(expression.arguments[1])

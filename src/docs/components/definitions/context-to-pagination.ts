@@ -1533,8 +1533,20 @@ const rawDefinitions: PageDefinitions = {
     ],
   },
   dialog: {
+    kind: 'submodel',
     description:
       'A window overlaid on either the primary window or another dialog window, rendering the content underneath inert.',
+    architecture:
+      'Dialog is a stateful Foldkit submodel. Its Model owns visibility, focus restoration, backdrop dismissal, and animation; the parent owns the domain messages that open it and react to its OutMessage.',
+    apiHref: 'https://foldkit.dev/ui/dialog',
+    styling:
+      'Crease UI supplies the shadcn-like dialog surface and compound layout parts. Use the layout callback to compose header, title, description, body, footer, and close controls without bypassing the accessibility attributes.',
+    accessibility:
+      'The native dialog surface traps focus while open, restores focus to its trigger after close, labels itself from the title and description parts, and makes the page behind it inert.',
+    keyboard: [
+      ['Tab / Shift+Tab', 'Moves focus within the open dialog.'],
+      ['Escape', 'Closes the dialog and restores focus to its trigger.'],
+    ],
     composition:
       'Dialog owns focus, keyboard dismissal, backdrop behavior, and animation in a Foldkit submodel. Content and footer slots remain application-defined.',
     examples: [

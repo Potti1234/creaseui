@@ -163,6 +163,9 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       name: 'Calendar',
       description:
         'A date field component that allows users to enter and edit dates.',
+      kind: 'submodel',
+      architecture:
+        'Calendar owns focus, navigation, and selection state. Initialize its Model with a stable id and today value, delegate child Messages and Commands, and embed it through h.submodel.',
       installation: INSTALLATION,
       usage: USAGE,
       copiedCode: model.copiedCode,

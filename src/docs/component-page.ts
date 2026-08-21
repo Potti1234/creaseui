@@ -6,6 +6,7 @@ import * as Icon from '@/lib/icon';
 import { cn } from '@/lib/utils';
 import { componentDocsPath } from '@/route';
 import type { ApiEntry } from '@/docs/generated-component-api';
+import type { ComponentKind, DocsSection } from '@/docs/components/page-definition';
 
 export const COMPONENTS = [
   'Accordion',
@@ -309,8 +310,14 @@ export const example = <Msg>(
 export type ComponentPageConfig<Msg> = Readonly<{
   name: string;
   description: string;
+  kind: ComponentKind;
+  architecture: string;
   installation: string;
   usage: string;
+  sections?: ReadonlyArray<DocsSection>;
+  styling?: string;
+  accessibility?: string;
+  keyboard?: ReadonlyArray<readonly [key: string, behavior: string]>;
   examples: ReadonlyArray<Html>;
   apiHref: string;
   composition?: string;
@@ -359,14 +366,25 @@ export const componentPage = <Msg>(
   const previous = currentIndex > 0 ? COMPONENTS[currentIndex - 1] : undefined;
   const next = currentIndex >= 0 ? COMPONENTS[currentIndex + 1] : undefined;
   const toc: ReadonlyArray<readonly [string, string]> = [
+    ['architecture', 'Architecture'],
     ['installation', 'Installation'],
     ['usage', 'Usage'],
+    ...(config.sections ?? []).map(
+      (section) => [section.id, section.title] as const,
+    ),
     ...(config.composition === undefined
       ? []
       : [['composition', 'Composition'] as const]),
     ...(config.exampleTitles ?? []).map(
       (title) => [toSlug(title), title] as const,
     ),
+    ...(config.styling === undefined ? [] : [['styling', 'Styling'] as const]),
+    ...(config.keyboard === undefined
+      ? []
+      : [['keyboard-interaction', 'Keyboard'] as const]),
+    ...(config.accessibility === undefined
+      ? []
+      : [['accessibility', 'Accessibility'] as const]),
     ['api-reference', 'API Reference'],
   ];
   const copy = (code: string, label: string) =>
@@ -505,7 +523,41 @@ export const componentPage = <Msg>(
                         'inline-flex items-center rounded-full border bg-muted/40 px-2.5 py-1 text-xs font-medium text-muted-foreground',
                       ),
                     ],
-                    ['Foldkit-native · source-owned'],
+                    [
+                      config.kind === 'helper'
+                        ? 'Stateless helper'
+                        : config.kind === 'submodel'
+                          ? 'Stateful submodel'
+                          : 'Composed recipe',
+                      ' · source-owned',
+                    ],
+                  ),
+                ],
+              ),
+              h.section(
+                [
+                  h.Id('architecture'),
+                  h.Class('scroll-mt-24 border-y bg-muted/25 px-5 py-5 sm:px-6'),
+                ],
+                [
+                  h.div(
+                    [h.Class('flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between')],
+                    [
+                      h.div(
+                        [h.Class('space-y-1')],
+                        [
+                          h.h2([h.Class('text-sm font-semibold')], ['How it fits Foldkit']),
+                          h.p(
+                            [h.Class('max-w-[70ch] text-sm leading-6 text-muted-foreground')],
+                            [config.architecture],
+                          ),
+                        ],
+                      ),
+                      h.span(
+                        [h.Class('shrink-0 font-mono text-xs text-muted-foreground')],
+                        [config.kind],
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -548,6 +600,27 @@ export const componentPage = <Msg>(
                   ),
                 ],
               ),
+              ...(config.sections ?? []).map((section) =>
+                h.section(
+                  [h.Id(section.id), h.Class('scroll-mt-24 space-y-4')],
+                  [
+                    heading<Msg>(section.id, section.title, '', h),
+                    h.p(
+                      [h.Class('max-w-[70ch] text-sm leading-6 text-muted-foreground')],
+                      [section.description],
+                    ),
+                    ...(section.code === undefined
+                      ? []
+                      : [
+                          codeBlock<Msg>(
+                            section.code,
+                            copy(section.code, section.title.toLowerCase()),
+                            h,
+                          ),
+                        ]),
+                  ],
+                ),
+              ),
               ...(config.composition === undefined
                 ? []
                 : [
@@ -564,6 +637,56 @@ export const componentPage = <Msg>(
                     ),
                   ]),
               ...config.examples,
+              ...(config.styling === undefined
+                ? []
+                : [
+                    h.section(
+                      [h.Id('styling'), h.Class('scroll-mt-24 space-y-3')],
+                      [
+                        heading<Msg>('styling', 'Styling', '', h),
+                        h.p(
+                          [h.Class('max-w-[70ch] text-sm leading-6 text-muted-foreground')],
+                          [config.styling],
+                        ),
+                      ],
+                    ),
+                  ]),
+              ...(config.keyboard === undefined
+                ? []
+                : [
+                    h.section(
+                      [h.Id('keyboard-interaction'), h.Class('scroll-mt-24 space-y-3')],
+                      [
+                        heading<Msg>('keyboard-interaction', 'Keyboard interaction', '', h),
+                        h.dl(
+                          [h.Class('divide-y rounded-lg border')],
+                          config.keyboard.map(([key, behavior]) =>
+                            h.div(
+                              [h.Class('grid gap-1 px-4 py-3 sm:grid-cols-[10rem_1fr]')],
+                              [
+                                h.dt([h.Class('font-mono text-xs font-medium')], [key]),
+                                h.dd([h.Class('text-sm text-muted-foreground')], [behavior]),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ]),
+              ...(config.accessibility === undefined
+                ? []
+                : [
+                    h.section(
+                      [h.Id('accessibility'), h.Class('scroll-mt-24 space-y-3')],
+                      [
+                        heading<Msg>('accessibility', 'Accessibility', '', h),
+                        h.p(
+                          [h.Class('max-w-[70ch] text-sm leading-6 text-muted-foreground')],
+                          [config.accessibility],
+                        ),
+                      ],
+                    ),
+                  ]),
               h.section(
                 [
                   h.Id('api-reference'),

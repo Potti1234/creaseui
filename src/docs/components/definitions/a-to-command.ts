@@ -1117,7 +1117,19 @@ export const definitions: PageDefinitions = {
     ],
   },
   button: {
+    kind: 'helper',
     description: 'Displays a button or a component that looks like a button.',
+    architecture:
+      'Button is a stateless render helper. Pass the parent Message directly as onClick and call Button.button inside view; no child model or message delegation is required.',
+    apiHref: 'https://foldkit.dev/ui/button',
+    styling:
+      'Variants and sizes are source-owned class recipes. Extend them with class or edit the installed module when the application needs a new durable variant.',
+    accessibility:
+      'Button preserves native button semantics, defaults to type="button", exposes disabled state, and keeps focus treatment consistent with the rest of Crease UI.',
+    keyboard: [
+      ['Enter', 'Activates the focused button.'],
+      ['Space', 'Activates the focused button.'],
+    ],
     examples: [
       basic('button', 'Button'),
       staticExample('Size', 'Button', (h: HtmlBuilder<Msg>) =>
