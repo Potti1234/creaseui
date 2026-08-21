@@ -15,7 +15,9 @@ import { kbdPage } from '@/docs/components/pages/kbd';
 import { labelPage } from '@/docs/components/pages/label';
 import { markerPage } from '@/docs/components/pages/marker';
 import { messagePage } from '@/docs/components/pages/message';
+import { nativeSelectPage } from '@/docs/components/pages/native-select';
 import { progressPage } from '@/docs/components/pages/progress';
+import { radioGroupPage } from '@/docs/components/pages/radio-group';
 import { scrollAreaPage } from '@/docs/components/pages/scroll-area';
 import { separatorPage } from '@/docs/components/pages/separator';
 import { skeletonPage } from '@/docs/components/pages/skeleton';
@@ -24,6 +26,7 @@ import { switchPage } from '@/docs/components/pages/switch';
 import { tablePage } from '@/docs/components/pages/table';
 import { textareaPage } from '@/docs/components/pages/textarea';
 import { togglePage } from '@/docs/components/pages/toggle';
+import { toggleGroupPage } from '@/docs/components/pages/toggle-group';
 import { typographyPage } from '@/docs/components/pages/typography';
 
 export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
@@ -45,7 +48,9 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       labelPage,
       markerPage,
       messagePage,
+      nativeSelectPage,
       progressPage,
+      radioGroupPage,
       scrollAreaPage,
       separatorPage,
       skeletonPage,
@@ -54,6 +59,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       tablePage,
       textareaPage,
       togglePage,
+      toggleGroupPage,
       typographyPage,
     ].map((page) => [page.slug, page]),
   ),

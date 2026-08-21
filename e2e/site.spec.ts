@@ -142,6 +142,8 @@ test('Foldkit-native documentation remains contained on mobile', async ({ page }
 })
 
 test('authored helper pages publish complete application source', async ({ page }) => {
+  test.setTimeout(90_000)
+
   for (const route of [
     'alert',
     'aspect-ratio',
@@ -159,7 +161,9 @@ test('authored helper pages publish complete application source', async ({ page 
     'label',
     'marker',
     'message',
+    'native-select',
     'progress',
+    'radio-group',
     'scroll-area',
     'separator',
     'skeleton',
@@ -168,6 +172,7 @@ test('authored helper pages publish complete application source', async ({ page 
     'table',
     'textarea',
     'toggle',
+    'toggle-group',
     'typography',
   ]) {
     await page.goto(`/docs/components/${route}`)

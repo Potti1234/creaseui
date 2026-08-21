@@ -261,3 +261,54 @@ ${config.viewBody.split('\n').map((line) => `    ${line}`).join('\n')}
   ]),
 })`,
 });
+
+export const controlledStringApplication = (config: Readonly<{
+  componentName: string;
+  componentSlug: string;
+  exampleName: string;
+  field: string;
+  initialValue: string;
+  messageName: string;
+  messageField?: string;
+  componentImports?: string;
+  viewBody: string;
+}>): string => {
+  const messageField = config.messageField ?? 'value';
+  const tag = `${config.messageName}${config.exampleName.replaceAll(/[^a-zA-Z0-9]/g, '')}`;
+
+  return foldkitApplication({
+    title: `${config.componentName} — ${config.exampleName}`,
+    imports: `import { Schema as S } from 'effect'
+import { Command, Runtime, Subscription } from 'foldkit'
+import { type Document, type HtmlBuilder } from 'foldkit/html'
+import { m } from 'foldkit/message'
+
+import * as ${config.componentName} from '@/ui/${config.componentSlug}'${
+      config.componentImports === undefined ? '' : `\n${config.componentImports}`
+    }`,
+    model: `export const Model = S.Struct({ ${config.field}: S.String })
+export type Model = typeof Model.Type`,
+    messages: `export const ${config.messageName} = m('${tag}', { ${messageField}: S.String })
+export const Message = S.Union([${config.messageName}])
+export type Message = typeof Message.Type`,
+    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
+  { ${config.field}: ${JSON.stringify(config.initialValue)} },
+  [],
+]`,
+    update: `export const update = (
+  model: Model,
+  message: Message,
+): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+  switch (message._tag) {
+    case '${tag}':
+      return [{ ...model, ${config.field}: message.${messageField} }, []]
+  }
+}`,
+    view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: '${config.componentName} — ${config.exampleName}',
+  body: h.main([h.Class('mx-auto max-w-md p-8')], [
+${config.viewBody.split('\n').map((line) => `    ${line}`).join('\n')}
+  ]),
+})`,
+  });
+};
