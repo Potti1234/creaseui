@@ -179,3 +179,11 @@ hard-coded `submodel`, causing Toast to contradict its intentional registry
 classification as a recipe alias over Sonner. The reusable definition now takes
 an explicit kind; Sonner owns the submodel while Toast documents the compatible
 recipe surface. The architecture-kind unit contract caught the regression.
+
+### DOC-022 — Partial legacy schemas break child-message routing
+
+Open: attempting to reduce `catalog-state` by keeping a partial structural
+schema allowed child Messages to render but prevented their updates from being
+routed reliably. Foldkit's routing boundary depends on the exact Model and
+Message schema shape, so each page needs a complete route-local preview program
+before the legacy union is deleted. Do not introduce a partial global model.
