@@ -5,6 +5,7 @@ import { badgePage } from '@/docs/components/pages/badge';
 import { bubblePage } from '@/docs/components/pages/bubble';
 import { buttonPage } from '@/docs/components/pages/button';
 import { cardPage } from '@/docs/components/pages/card';
+import { checkboxPage } from '@/docs/components/pages/checkbox';
 import { directionPage } from '@/docs/components/pages/direction';
 import { emptyPage } from '@/docs/components/pages/empty';
 import { itemPage } from '@/docs/components/pages/item';
@@ -18,6 +19,7 @@ import { scrollAreaPage } from '@/docs/components/pages/scroll-area';
 import { separatorPage } from '@/docs/components/pages/separator';
 import { skeletonPage } from '@/docs/components/pages/skeleton';
 import { spinnerPage } from '@/docs/components/pages/spinner';
+import { switchPage } from '@/docs/components/pages/switch';
 import { tablePage } from '@/docs/components/pages/table';
 import { textareaPage } from '@/docs/components/pages/textarea';
 import { typographyPage } from '@/docs/components/pages/typography';
@@ -31,6 +33,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       bubblePage,
       buttonPage,
       cardPage,
+      checkboxPage,
       directionPage,
       emptyPage,
       itemPage,
@@ -44,6 +47,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       separatorPage,
       skeletonPage,
       spinnerPage,
+      switchPage,
       tablePage,
       textareaPage,
       typographyPage,
