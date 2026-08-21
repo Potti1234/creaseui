@@ -1,6 +1,8 @@
 import * as State from '@/docs/components/catalog-state';
-import { authoredPage, controlledStringApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, controlledStringApplication, textPreviewProgram } from '@/docs/components/pages/authored-page';
 import * as InputGroup from '@/ui/input-group';
+
+const previewProgram = textPreviewProgram('input-group', ['', ''], (index, value, onInput, h) => InputGroup.inputGroup({ class: 'max-w-sm', children: index === 0 ? [InputGroup.inputGroupAddon({ children: [InputGroup.inputGroupText({ children: ['https://'] }, h)] }, h), InputGroup.inputGroupInput({ id: 'docs-input-group-url', value, onInput, placeholder: 'example.com' }, h)] : [InputGroup.inputGroupInput({ id: 'docs-input-group-weight', value, onInput, placeholder: '0' }, h), InputGroup.inputGroupAddon({ align: 'inline-end', children: [InputGroup.inputGroupText({ children: ['kg'] }, h)] }, h)] }, h));
 
 const source = (name: string, addon: string, placeholder: string): string => controlledStringApplication({
   componentName: 'InputGroup', componentSlug: 'input-group', exampleName: name,
@@ -21,6 +23,7 @@ const source = (name: string, addon: string, placeholder: string): string => con
 
 export const inputGroupPage = authoredPage({
   slug: 'input-group', title: 'Input Group', kind: 'recipe',
+  previewProgram,
   definition: {
     kind: 'recipe', description: 'Composes a text control with contextual prefixes, suffixes, actions, or block-level supporting content.',
     architecture: 'Input Group is a stateless composition recipe. The input value remains parent state; addons provide context and should not become a second competing control.',

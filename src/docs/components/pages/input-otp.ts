@@ -1,6 +1,8 @@
 import * as State from '@/docs/components/catalog-state';
-import { authoredPage, controlledStringApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, controlledStringApplication, textPreviewProgram } from '@/docs/components/pages/authored-page';
 import * as InputOtp from '@/ui/input-otp';
+
+const previewProgram = textPreviewProgram('input-otp', ['123', '123', 'A1B'], (index, value, onInput, h) => InputOtp.inputOtp({ id: `docs-input-otp-${String(index)}`, value, onInput, length: 6, ariaLabel: index === 0 ? 'Verification code' : index === 1 ? 'Recovery code' : 'Invite code', ...(index === 1 ? { separator: (slot: number) => slot === 2 ? InputOtp.inputOtpSeparator(h) : h.span([], []) } : {}), ...(index === 2 ? { pattern: /[A-Z0-9]/u, inputMode: 'text' as const } : {}) }, h));
 
 const source = (name: string, initialValue: string, config: string): string => controlledStringApplication({
   componentName: 'InputOtp', componentSlug: 'input-otp', exampleName: name,
@@ -15,6 +17,7 @@ const source = (name: string, initialValue: string, config: string): string => c
 
 export const inputOtpPage = authoredPage({
   slug: 'input-otp', title: 'Input OTP', kind: 'helper',
+  previewProgram,
   definition: {
     kind: 'helper', description: 'Captures a short verification code through one accessible input rendered as distinct visual slots.',
     architecture: 'Input OTP is controlled and stateless. Store the normalized code string in the parent Model; onInput emits only characters accepted by pattern up to length.',

@@ -1,6 +1,8 @@
 import * as Input from '@/ui/input';
 import * as State from '@/docs/components/catalog-state';
-import { authoredPage, controlledTextApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, controlledTextApplication, textPreviewProgram } from '@/docs/components/pages/authored-page';
+
+const previewProgram = textPreviewProgram('input', ['', 'Crease UI', 'crease-ui'], (index, value, onInput, h) => Input.input({ id: `docs-input-${String(index)}`, value, onInput, class: 'max-w-sm', label: index === 0 ? 'Email' : index === 1 ? 'Project slug' : 'Workspace', ...(index === 0 ? { type: 'email' as const, description: 'We will only use this for account notices.', placeholder: 'you@example.com' } : {}), ...(index === 1 ? { description: 'Use lowercase letters and hyphens.', isInvalid: true } : {}), ...(index === 2 ? { isDisabled: true } : {}) }, h));
 
 const source = (name: string, initialValue: string, config: string): string => controlledTextApplication({
   componentName: 'Input', componentSlug: 'input', exampleName: name, field: 'email', initialValue,
@@ -14,6 +16,7 @@ const source = (name: string, initialValue: string, config: string): string => c
 
 export const inputPage = authoredPage({
   slug: 'input', title: 'Input', kind: 'helper',
+  previewProgram,
   definition: {
     kind: 'helper', description: 'Captures a single line of controlled text with linked labeling, description, and validation state.',
     architecture: 'Input is a stateless controlled helper. Store its value in the application Model and return a fact-like Message from onInput.',

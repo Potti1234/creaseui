@@ -690,6 +690,26 @@ test('controlled helper pages own and update compact local preview state', async
   const fruit = page.locator('#labeled-fruit').getByRole('combobox', { name: 'Fruit' })
   await fruit.selectOption('blueberry')
   await expect(fruit).toHaveValue('blueberry')
+
+  await page.goto('/docs/components/input')
+  const email = page.locator('#email').getByRole('textbox', { name: 'Email' })
+  await email.fill('docs@crease.dev')
+  await expect(email).toHaveValue('docs@crease.dev')
+
+  await page.goto('/docs/components/textarea')
+  const message = page.locator('#message').getByRole('textbox', { name: 'Message' })
+  await message.fill('A complete Foldkit example.')
+  await expect(message).toHaveValue('A complete Foldkit example.')
+
+  await page.goto('/docs/components/input-group')
+  const url = page.locator('#url-prefix').getByRole('textbox')
+  await url.fill('crease.dev')
+  await expect(url).toHaveValue('crease.dev')
+
+  await page.goto('/docs/components/input-otp')
+  const code = page.locator('#six-digit-code').getByRole('textbox', { name: 'Verification code' })
+  await code.fill('654321')
+  await expect(code).toHaveValue('654321')
 })
 
 test('flagship documentation pages have no automated accessibility violations', async ({

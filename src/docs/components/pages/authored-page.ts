@@ -78,6 +78,31 @@ export const definePreviewProgram = <Model, Message>(
   program: PreviewProgram<Model, Message>,
 ): ErasedPreviewProgram => program as unknown as ErasedPreviewProgram;
 
+const ChangedTextPreview = m('ChangedTextDocsPreview', { value: S.String });
+type ChangedTextPreview = typeof ChangedTextPreview.Type;
+
+/** Creates an exact route-local Model for controlled string preview families. */
+export const textPreviewProgram = <const Slug extends string>(
+  slug: Slug,
+  initialValues: ReadonlyArray<string>,
+  render: (
+    exampleIndex: number,
+    value: string,
+    onInput: (value: string) => ChangedTextPreview,
+    h: HtmlBuilder<ChangedTextPreview>,
+  ) => Html,
+): ErasedPreviewProgram => {
+  const Model = S.Struct({ _docsPage: S.Literal(slug), value: S.String });
+  type Model = typeof Model.Type;
+  return definePreviewProgram<Model, ChangedTextPreview>({
+    Model,
+    Message: ChangedTextPreview,
+    init: index => ({ _docsPage: slug, value: initialValues[index] ?? '' }),
+    update: (model, message) => [{ ...model, value: message.value }, []],
+    view: (index, model, h) => render(index, model.value, value => ChangedTextPreview({ value }), h),
+  });
+};
+
 export type FoldkitApplicationSource = Readonly<{
   title: string;
   imports: string;
