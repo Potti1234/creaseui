@@ -1,6 +1,20 @@
+import { Schema as S } from 'effect';
+import { m } from 'foldkit/message';
+
 import * as Toggle from '@/ui/toggle';
 import * as State from '@/docs/components/catalog-state';
-import { authoredPage, controlledBooleanApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, controlledBooleanApplication, definePreviewProgram } from '@/docs/components/pages/authored-page';
+
+const PreviewModel = S.Struct({ _docsPage: S.Literal('toggle'), isPressed: S.Boolean });
+type PreviewModel = typeof PreviewModel.Type;
+const ToggledPreview = m('ToggledTogglePreview');
+type PreviewMessage = typeof ToggledPreview.Type;
+const previewProgram = definePreviewProgram<PreviewModel, PreviewMessage>({
+  Model: PreviewModel, Message: ToggledPreview,
+  init: index => ({ _docsPage: 'toggle', isPressed: index !== 0 }),
+  update: model => [{ ...model, isPressed: !model.isPressed }, []],
+  view: (index, model, h) => Toggle.toggle({ isPressed: model.isPressed, onToggle: ToggledPreview(), children: [index === 0 ? 'Bold' : index === 1 ? 'Italic' : 'Managed'], ...(index === 1 ? { variant: 'outline' as const } : {}), ...(index === 2 ? { isDisabled: true } : {}) }, h),
+});
 
 const source = (name: string, initialValue: boolean, config: string): string => controlledBooleanApplication({
   componentName: 'Toggle', componentSlug: 'toggle', exampleName: name, field: 'isPressed', initialValue,
@@ -15,6 +29,7 @@ const source = (name: string, initialValue: boolean, config: string): string => 
 
 export const togglePage = authoredPage({
   slug: 'toggle', title: 'Toggle', kind: 'helper',
+  previewProgram,
   definition: {
     kind: 'helper', description: 'Represents one independently pressed or unpressed formatting option.',
     architecture: 'Toggle is a stateless controlled button. The parent Model stores pressed state and onToggle dispatches the next domain fact.',

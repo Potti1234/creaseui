@@ -1,6 +1,20 @@
+import { Schema as S } from 'effect';
+import { m } from 'foldkit/message';
+
 import * as Collapsible from '@/ui/collapsible';
 import * as State from '@/docs/components/catalog-state';
-import { authoredPage, controlledBooleanApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, controlledBooleanApplication, definePreviewProgram } from '@/docs/components/pages/authored-page';
+
+const PreviewModel = S.Struct({ _docsPage: S.Literal('collapsible'), isOpen: S.Boolean });
+type PreviewModel = typeof PreviewModel.Type;
+const ToggledPreview = m('ToggledCollapsiblePreview', { isOpen: S.Boolean });
+type PreviewMessage = typeof ToggledPreview.Type;
+const previewProgram = definePreviewProgram<PreviewModel, PreviewMessage>({
+  Model: PreviewModel, Message: ToggledPreview,
+  init: index => ({ _docsPage: 'collapsible', isOpen: index === 1 }),
+  update: (model, message) => [{ ...model, isOpen: message.isOpen }, []],
+  view: (index, model, h) => Collapsible.collapsible({ id: `docs-collapsible-${String(index)}`, isOpen: index === 2 ? false : model.isOpen, onToggle: isOpen => ToggledPreview({ isOpen }), ...(index === 2 ? { isDisabled: true } : {}), trigger: index === 0 ? (model.isOpen ? 'Hide details' : 'Show details') : index === 1 ? 'Architecture notes' : 'Unavailable details', content: index === 1 ? 'Messages describe facts and update owns transitions.' : 'Foldkit keeps disclosure state explicit.', triggerClass: 'rounded-md border px-3 py-2 text-sm', contentClass: 'pt-3 text-sm text-muted-foreground' }, h),
+});
 
 const source = (name: string, initialValue: boolean, config: string): string => controlledBooleanApplication({
   componentName: 'Collapsible', componentSlug: 'collapsible', exampleName: name, field: 'isOpen', initialValue,
@@ -17,6 +31,7 @@ const source = (name: string, initialValue: boolean, config: string): string => 
 
 export const collapsiblePage = authoredPage({
   slug: 'collapsible', title: 'Collapsible', kind: 'helper',
+  previewProgram,
   definition: {
     kind: 'helper', description: 'Shows or hides one region of content from a controlled disclosure button.',
     architecture: 'Collapsible adapts Foldkit’s stateless Disclosure helper. Store isOpen in the parent Model and return the next value through onToggle; no child submodel is needed.',

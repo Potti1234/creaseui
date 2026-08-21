@@ -652,6 +652,31 @@ test('data table filters and sorts through its interaction model', async ({ page
   await expect(filtered.locator('code')).toContainText('DataTable.update')
 })
 
+test('controlled helper pages own and update compact local preview state', async ({ page }) => {
+  await page.goto('/docs/components/checkbox')
+  const checkbox = page.locator('#terms').getByRole('checkbox', { name: 'Accept terms' })
+  await expect(checkbox).not.toBeChecked()
+  await checkbox.click()
+  await expect(checkbox).toBeChecked()
+
+  await page.goto('/docs/components/collapsible')
+  const disclosure = page.locator('#details').getByRole('button', { name: 'Show details' })
+  await disclosure.click()
+  await expect(page.locator('#details').getByRole('button', { name: 'Hide details' })).toHaveAttribute('aria-expanded', 'true')
+
+  await page.goto('/docs/components/switch')
+  const switchControl = page.locator('#notifications').getByRole('switch', { name: 'Notifications' })
+  await expect(switchControl).toBeChecked()
+  await switchControl.click()
+  await expect(switchControl).not.toBeChecked()
+
+  await page.goto('/docs/components/toggle')
+  const toggle = page.locator('#formatting').getByRole('button', { name: 'Bold' })
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false')
+  await toggle.click()
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true')
+})
+
 test('flagship documentation pages have no automated accessibility violations', async ({
   page,
 }) => {

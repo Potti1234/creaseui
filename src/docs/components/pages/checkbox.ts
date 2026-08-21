@@ -1,6 +1,20 @@
+import { Schema as S } from 'effect';
+import { m } from 'foldkit/message';
+
 import * as Checkbox from '@/ui/checkbox';
 import * as State from '@/docs/components/catalog-state';
-import { authoredPage, controlledBooleanApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, controlledBooleanApplication, definePreviewProgram } from '@/docs/components/pages/authored-page';
+
+const PreviewModel = S.Struct({ _docsPage: S.Literal('checkbox'), isChecked: S.Boolean });
+type PreviewModel = typeof PreviewModel.Type;
+const ToggledPreview = m('ToggledCheckboxPreview', { isChecked: S.Boolean });
+type PreviewMessage = typeof ToggledPreview.Type;
+const previewProgram = definePreviewProgram<PreviewModel, PreviewMessage>({
+  Model: PreviewModel, Message: ToggledPreview,
+  init: index => ({ _docsPage: 'checkbox', isChecked: index === 2 }),
+  update: (model, message) => [{ ...model, isChecked: message.isChecked }, []],
+  view: (index, model, h) => Checkbox.checkbox({ id: `docs-checkbox-${String(index)}`, isChecked: index === 2 ? true : model.isChecked, onToggle: isChecked => ToggledPreview({ isChecked }), label: index === 0 ? 'Accept terms' : index === 1 ? 'Select all components' : 'Managed by organization', ...(index === 0 ? { description: 'Required before creating the account.' } : {}), ...(index === 1 ? { isIndeterminate: true } : {}), ...(index === 2 ? { isDisabled: true } : {}) }, h),
+});
 
 const source = (name: string, initialValue: boolean, config: string): string => controlledBooleanApplication({
   componentName: 'Checkbox', componentSlug: 'checkbox', exampleName: name, field: 'isAccepted', initialValue,
@@ -16,6 +30,7 @@ const source = (name: string, initialValue: boolean, config: string): string => 
 
 export const checkboxPage = authoredPage({
   slug: 'checkbox', title: 'Checkbox', kind: 'helper',
+  previewProgram,
   definition: {
     kind: 'helper', description: 'Controls an independent boolean choice with linked labeling and optional form submission.',
     architecture: 'Checkbox is a stateless controlled helper. Store the boolean in the parent Model and return a typed Message from onToggle.',

@@ -1,6 +1,20 @@
+import { Schema as S } from 'effect';
+import { m } from 'foldkit/message';
+
 import * as Switch from '@/ui/switch';
 import * as State from '@/docs/components/catalog-state';
-import { authoredPage, controlledBooleanApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, controlledBooleanApplication, definePreviewProgram } from '@/docs/components/pages/authored-page';
+
+const PreviewModel = S.Struct({ _docsPage: S.Literal('switch'), isChecked: S.Boolean });
+type PreviewModel = typeof PreviewModel.Type;
+const ToggledPreview = m('ToggledSwitchPreview', { isChecked: S.Boolean });
+type PreviewMessage = typeof ToggledPreview.Type;
+const previewProgram = definePreviewProgram<PreviewModel, PreviewMessage>({
+  Model: PreviewModel, Message: ToggledPreview,
+  init: index => ({ _docsPage: 'switch', isChecked: index !== 1 }),
+  update: (model, message) => [{ ...model, isChecked: message.isChecked }, []],
+  view: (index, model, h) => Switch.switchControl({ id: `docs-switch-${String(index)}`, isChecked: index === 2 ? true : model.isChecked, onToggle: isChecked => ToggledPreview({ isChecked }), label: index === 0 ? 'Notifications' : index === 1 ? 'Compact mode' : 'Security scanning', ...(index === 0 ? { description: 'Receive build and deployment updates.' } : {}), ...(index === 1 ? { size: 'sm' as const } : {}), ...(index === 2 ? { isDisabled: true, description: 'Required by your organization.' } : {}) }, h),
+});
 
 const source = (name: string, initialValue: boolean, config: string): string => controlledBooleanApplication({
   componentName: 'Switch', componentSlug: 'switch', exampleName: name, field: 'notificationsEnabled', initialValue,
@@ -16,6 +30,7 @@ const source = (name: string, initialValue: boolean, config: string): string => 
 
 export const switchPage = authoredPage({
   slug: 'switch', title: 'Switch', kind: 'helper',
+  previewProgram,
   definition: {
     kind: 'helper', description: 'Controls an immediate on/off setting with a visible label and optional description.',
     architecture: 'Switch is a stateless controlled helper. The parent Model owns the setting and onToggle returns the next boolean in a domain Message.',
