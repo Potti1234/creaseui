@@ -1,26 +1,21 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { completeExample } from '../src/docs/components/complete-example';
+import { foldkitApplication } from '../src/docs/components/pages/authored-page';
 
 describe('complete documentation examples', () => {
   it('include the complete Foldkit application lifecycle', () => {
-    const code = completeExample({
-      componentName: 'Button',
-      componentSlug: 'button',
-      exampleName: 'Basic',
-      viewCode: "return Button.button({ children: ['Continue'] }, h)",
+    const code = foldkitApplication({
+      title: 'Button — Basic',
+      imports: "import * as Button from '@/ui/button'",
+      model: 'export const Model = S.Struct({})',
+      messages: "export const Message = S.Union([m('NoOp')])",
+      init: 'export const init = () => [{}, []] as const',
+      update: 'export const update = (model: Model) => [model, []] as const',
+      view: "export const view = (_model, h) => ({ title: 'Button', body: Button.button({ children: ['Continue'] }, h) })",
     });
 
-    for (const section of [
-      '// MODEL',
-      '// MESSAGES / COMMANDS',
-      '// INIT',
-      '// UPDATE',
-      '// SUBSCRIPTIONS',
-      '// VIEW — Basic',
-      '// RUNTIME',
-    ]) {
+    for (const section of ['// MODEL', '// MESSAGES', '// INIT', '// UPDATE', '// SUBSCRIPTIONS', '// VIEW', '// RUNTIME']) {
       assert.match(code, new RegExp(section));
     }
     assert.match(code, /Runtime\.makeApplication/);

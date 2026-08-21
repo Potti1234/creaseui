@@ -19,8 +19,6 @@ import * as ChartsPie from '@/demo/charts/pie';
 import * as ChartsRadar from '@/demo/charts/radar';
 import * as ChartsRadial from '@/demo/charts/radial';
 import * as ChartsTooltip from '@/demo/charts/tooltip';
-import * as AccordionDocs from '@/docs/components/accordion';
-import * as CalendarDocs from '@/docs/components/calendar';
 import * as ComponentCatalog from '@/docs/components/catalog';
 import * as Page from '@/app/page';
 import * as Icon from '@/lib/icon';
@@ -93,12 +91,6 @@ export const GotChartsRadialMessage = m('GotChartsRadialMessage', {
 export const GotChartsTooltipMessage = m('GotChartsTooltipMessage', {
   message: ChartsTooltip.Message,
 });
-export const GotAccordionDocsMessage = m('GotAccordionDocsMessage', {
-  message: AccordionDocs.Message,
-});
-export const GotCalendarDocsMessage = m('GotCalendarDocsMessage', {
-  message: CalendarDocs.Message,
-});
 export const GotCatalogDocsMessage = m('GotCatalogDocsMessage', {
   message: ComponentCatalog.Message,
 });
@@ -120,8 +112,6 @@ export const Message = S.Union([
   GotChartsRadarMessage,
   GotChartsRadialMessage,
   GotChartsTooltipMessage,
-  GotAccordionDocsMessage,
-  GotCalendarDocsMessage,
   GotCatalogDocsMessage,
 ]);
 export type Message = typeof Message.Type;
@@ -364,38 +354,6 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         ];
       },
 
-      GotAccordionDocsMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== 'AccordionDocsPage') return [model, []];
-        const currentPage = model.page;
-        const [page, commands] = AccordionDocs.update(
-          currentPage.docs,
-          childMessage,
-        );
-        return [
-          evo(model, {
-            page: () => evo(currentPage, { docs: () => page }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotAccordionDocsMessage({ message: next }),
-          ),
-        ];
-      },
-      GotCalendarDocsMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== 'CalendarDocsPage') return [model, []];
-        const currentPage = model.page;
-        const [page, commands] = CalendarDocs.update(
-          currentPage.docs,
-          childMessage,
-        );
-        return [
-          evo(model, {
-            page: () => evo(currentPage, { docs: () => page }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotCalendarDocsMessage({ message: next }),
-          ),
-        ];
-      },
       GotCatalogDocsMessage: ({ message: childMessage }) => {
         if (model.page._tag !== 'CatalogDocsPage') return [model, []];
         const currentPage = model.page;
@@ -604,13 +562,6 @@ const header = (model: Model, h: HtmlBuilder<Message>): Html => {
    SubmodelViews so h.submodel can embed them with message lifting. */
 const boardView = defineView<Board.Model, Board.Message>(Board.view);
 const landingView = defineView<Landing.Model, Landing.Message>(Landing.view);
-const accordionDocsView = defineView<
-  AccordionDocs.Model,
-  AccordionDocs.Message
->(AccordionDocs.view);
-const calendarDocsView = defineView<CalendarDocs.Model, CalendarDocs.Message>(
-  CalendarDocs.view,
-);
 const catalogDocsView = defineView<
   ComponentCatalog.Model,
   ComponentCatalog.Message,
@@ -832,29 +783,7 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
       Block: ({ blockId }) =>
         keyed(`page-block-${blockId}`, blocksView(model, blockId, h)),
       ComponentDocs: ({ component }) =>
-        component === 'accordion' && model.page._tag === 'AccordionDocsPage'
-          ? keyed(
-              'page-docs-accordion',
-              h.submodel({
-                slotId: 'docs-accordion',
-                model: model.page.docs,
-                view: accordionDocsView,
-                toParentMessage: (message: AccordionDocs.Message): Message =>
-                  GotAccordionDocsMessage({ message }),
-              }),
-            )
-          : component === 'calendar' && model.page._tag === 'CalendarDocsPage'
-            ? keyed(
-                'page-docs-calendar',
-                h.submodel({
-                  slotId: 'docs-calendar',
-                  model: model.page.docs,
-                  view: calendarDocsView,
-                  toParentMessage: (message: CalendarDocs.Message): Message =>
-                    GotCalendarDocsMessage({ message }),
-                }),
-              )
-            : ComponentCatalog.hasCatalogPage(component) &&
+        ComponentCatalog.hasCatalogPage(component) &&
                 model.page._tag === 'CatalogDocsPage'
               ? keyed(
                   `page-docs-${component}`,

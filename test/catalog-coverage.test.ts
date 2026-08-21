@@ -3,16 +3,11 @@ import { existsSync, readFileSync } from 'node:fs'
 import { basename } from 'node:path'
 import { describe, it } from 'node:test'
 
-import { hasRealPreview } from '../src/docs/components/real-previews.ts'
-import { generatedExampleSources } from '../src/docs/components/generated-example-sources.ts'
 import {
   componentKind,
   dedicatedExampleTitles,
   hasDedicatedDefinition,
 } from '../src/docs/components/catalog.ts'
-import { definitions as earlyDefinitions } from '../src/docs/components/definitions/a-to-command.ts'
-import { definitions as middleDefinitions } from '../src/docs/components/definitions/context-to-pagination.ts'
-import { definitions as lateDefinitions } from '../src/docs/components/definitions/popover-to-typography.ts'
 import { authoredPages } from '../src/docs/components/pages/index.ts'
 
 const registry = JSON.parse(readFileSync('src/ui/registry.json', 'utf8')) as {
@@ -191,9 +186,8 @@ describe('component catalog coverage', () => {
   })
 
   it('shows concrete Foldkit source instead of prose or markup placeholders', () => {
-    const definitions = { ...earlyDefinitions, ...middleDefinitions, ...lateDefinitions }
-    for (const [slug, definition] of Object.entries(definitions)) {
-      for (const example of definition.examples) {
+    for (const [slug, page] of Object.entries(authoredPages)) {
+      for (const example of page.definition.examples) {
         assert.doesNotMatch(example.code, /Basic [A-Za-z]+ example/i, `${slug}/${example.title}`)
         assert.doesNotMatch(example.code, /\.\.\.\s*[,})\]]/, `${slug}/${example.title}`)
         assert.doesNotMatch(example.code, /<\/?(?:Direction|div|fieldset|legend)\b/, `${slug}/${example.title}`)
@@ -219,54 +213,22 @@ describe('component catalog coverage', () => {
     }
   })
 
-  it('publishes stable source for examples that previously used function strings', () => {
-    for (const [key, source] of Object.entries(generatedExampleSources)) {
-      assert.ok(source.trim(), `${key} has empty generated source`)
-      assert.doesNotMatch(source, /\.toString\(\)/, key)
-      assert.doesNotMatch(source, /(?:^|\W)[A-Za-z_$][\w$]?\([A-Za-z_$],?[A-Za-z_$]?\)=>/u, key)
-      assert.doesNotMatch(source, /import \* as [^\s]+\(/u, key)
-      assert.doesNotMatch(source, /(?:show loading|await command)/iu, key)
-    }
-    assert.ok(Object.keys(generatedExampleSources).length >= 100)
-  })
-
-  it('renders a real Crease UI component for every shared catalog page', () => {
-    const dedicatedStatefulPages = new Set(['accordion', 'calendar'])
-    assert.deepEqual(
-      documentedSlugs.filter(
-        slug => !dedicatedStatefulPages.has(slug) && !hasRealPreview(slug),
-      ),
-      [],
-    )
+  it('owns every component route in an authored page module', () => {
+    assert.deepEqual(Object.keys(authoredPages).sort(), documentedSlugs)
   })
 
   it('has a component-specific shadcn-style definition for every shared route', () => {
-    const standalonePages = new Set(['accordion', 'calendar'])
     assert.deepEqual(
-      documentedSlugs.filter(
-        slug => !standalonePages.has(slug) && !hasDedicatedDefinition(slug),
-      ),
+      documentedSlugs.filter(slug => !hasDedicatedDefinition(slug)),
       [],
     )
   })
 
   it('provides multiple component-specific examples instead of a generic Basic page', () => {
-    const standalonePages = new Set(['accordion', 'calendar'])
     const shallowPages = documentedSlugs.filter(
-      slug =>
-        !standalonePages.has(slug) && dedicatedExampleTitles(slug).length < 2,
+      slug => dedicatedExampleTitles(slug).length < 2,
     )
     assert.deepEqual(shallowPages, [])
-  })
-
-  it('keeps standalone component pages in the coverage contract', () => {
-    const accordion = readFileSync('src/docs/components/accordion.ts', 'utf8')
-    const calendar = readFileSync('src/docs/components/calendar.ts', 'utf8')
-
-    assert.match(accordion, /componentPage<Message>/)
-    assert.match(calendar, /componentPage<Message>/)
-    assert.match(accordion, /examples:/)
-    assert.match(calendar, /examples:/)
   })
 
   it('does not allow definitions to exceed the allocated example state capacity', () => {

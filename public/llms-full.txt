@@ -87,7 +87,7 @@ A shadcn-styled Accordion component for Foldkit.
 
 Source: `src/ui/accordion.ts`
 
-Examples: Basic, Multiple, Disabled, Borders, Card, RTL
+Examples: Single disclosure, Multiple disclosures
 
 - `AccordionType: value` (value)
 - `AccordionType = typeof AccordionType.Type` (type)
@@ -113,7 +113,7 @@ A shadcn-styled Alert Dialog component for Foldkit.
 
 Source: `src/ui/alert-dialog.ts`
 
-Examples: Basic, Small, Media, Small with Media, Destructive, RTL
+Examples: Timed notification, Sticky error
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -135,7 +135,7 @@ A shadcn-styled Alert component for Foldkit.
 
 Source: `src/ui/alert.ts`
 
-Examples: Basic, Destructive, Action, Custom Colors, RTL
+Examples: Timed notification, Sticky error
 
 - `alertVariants: value` (value)
 - `AlertVariants = VariantProps<typeof alertVariants>` (type)
@@ -150,7 +150,7 @@ A shadcn-styled Aspect Ratio component for Foldkit.
 
 Source: `src/ui/aspect-ratio.ts`
 
-Examples: Basic, Square, Portrait, RTL
+Examples: Timed notification, Sticky error
 
 - `AspectRatioProps = Readonly<{ ratio: number; class?: string; children: ReadonlyArray<Html | string>; }>` (type)
 - `aspectRatio<Msg>(props: AspectRatioProps, h: HtmlBuilder<Msg>): Html` (function)
@@ -161,7 +161,7 @@ A shadcn-styled Attachment component for Foldkit.
 
 Source: `src/ui/attachment.ts`
 
-Examples: Basic, Image, States, Sizes, Group, Trigger
+Examples: Uploaded file, Lifecycle states
 
 - `attachmentVariants: value` (value)
 - `AttachmentState = 'idle' | 'uploading' | 'processing' | 'error' | 'done'` (type)
@@ -180,7 +180,7 @@ A shadcn-styled Avatar component for Foldkit.
 
 Source: `src/ui/avatar.ts`
 
-Examples: Basic, Badge, Badge with Icon, Avatar Group, Avatar Group Count, Avatar Group with Icon, Sizes, Dropdown, RTL
+Examples: Timed notification, Sticky error
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -203,7 +203,7 @@ A shadcn-styled Badge component for Foldkit.
 
 Source: `src/ui/badge.ts`
 
-Examples: Basic, Variants, With Icon, With Spinner, Link, Custom Colors, RTL
+Examples: Timed notification, Sticky error
 
 - `badgeVariants: value` (value)
 - `BadgeVariants = VariantProps<typeof badgeVariants>` (type)
@@ -216,7 +216,7 @@ A shadcn-styled Breadcrumb component for Foldkit.
 
 Source: `src/ui/breadcrumb.ts`
 
-Examples: Basic, Custom separator, Dropdown, Collapsed, Link component, RTL
+Examples: Current path, Collapsed path, Custom separator
 
 - `BreadcrumbProps = Slot` (type)
 - `breadcrumb<Msg>(props: BreadcrumbProps, h: HtmlBuilder<Msg>): Html` (function)
@@ -236,7 +236,7 @@ A shadcn-styled Bubble component for Foldkit.
 
 Source: `src/ui/bubble.ts`
 
-Examples: Basic, Variants, Alignment, Bubble Group, Links and Buttons, Reactions, Show More / Collapsible, Tooltip, Popover
+Examples: Timed notification, Sticky error
 
 - `bubbleVariants: value` (value)
 - `BubbleVariant = VariantProps<typeof bubbleVariants>['variant']` (type)
@@ -251,7 +251,7 @@ A shadcn-styled Button Group component for Foldkit.
 
 Source: `src/ui/button-group.ts`
 
-Examples: Basic, Orientation, Size, Nested, Separator, Split, Input, Input Group, Dropdown Menu, Select, Popover, RTL
+Examples: Timed notification, Sticky error
 
 - `buttonGroupVariants: value` (value)
 - `ButtonGroupVariants = VariantProps<typeof buttonGroupVariants>` (type)
@@ -268,7 +268,7 @@ A shadcn-styled Button component for Foldkit.
 
 Source: `src/ui/button.ts`
 
-Examples: Basic, Size, Default, Outline, Secondary, Ghost, Destructive, Link, Icon, With Icon, Rounded, Spinner, Button Group, As Link, RTL
+Examples: Timed notification, Sticky error
 
 - `buttonVariants: value` (value)
 - `ButtonVariants = VariantProps<typeof buttonVariants>` (type)
@@ -283,7 +283,7 @@ A shadcn-styled Calendar component for Foldkit.
 
 Source: `src/ui/calendar.ts`
 
-Examples: Basic, Selected Date, Disabled Dates, Custom Cell Size, RTL
+Examples: Selected date, Roomier cells
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -311,7 +311,7 @@ A shadcn-styled Card component for Foldkit.
 
 Source: `src/ui/card.ts`
 
-Examples: Basic, Size, Spacing, Edge to Edge, Image, RTL
+Examples: Timed notification, Sticky error
 
 - `CardProps = Slot & Readonly<{ element?: 'div' | 'section' | 'article'; }>` (type)
 - `card<Msg>(props: CardProps, h: HtmlBuilder<Msg>): Html` (function)
@@ -328,7 +328,7 @@ A shadcn-styled Carousel component for Foldkit.
 
 Source: `src/ui/carousel.ts`
 
-Examples: Basic, Sizes, Spacing, Orientation, API, Plugins, RTL
+Examples: Timed notification, Sticky error
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -348,7 +348,7 @@ A shadcn-styled Chart component for Foldkit.
 
 Source: `src/ui/chart.ts`
 
-Examples: Basic, Your First Chart, Add a Grid, Add an Axis, Add Tooltip, Add Legend, Tooltip, RTL
+Examples: Monthly revenue, Traffic trend
 
 - `ChartSeriesConfig = Readonly<{ label?: Html | string; color?: string; icon?: Html; }>` (type)
 - `ChartConfig = Readonly<Record<string, ChartSeriesConfig>>` (type)
@@ -372,7 +372,7 @@ A shadcn-styled Checkbox component for Foldkit.
 
 Source: `src/ui/checkbox.ts`
 
-Examples: Basic, Invalid State, Description, Disabled, Group, Table, RTL
+Examples: Timed notification, Sticky error
 
 - `CheckboxProps<Msg> = Readonly<{ id: string; isChecked: boolean; onToggle: (isChecked: boolean) => Msg; label: string; description?: string; isDisabled?: boolean; isIndeterminate?: boolean; name?: string; value?: string; class?: string; }>` (type)
 - `checkbox<Msg>(props: CheckboxProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
@@ -383,7 +383,7 @@ A shadcn-styled Collapsible component for Foldkit.
 
 Source: `src/ui/collapsible.ts`
 
-Examples: Basic, Settings Panel, File Tree, RTL
+Examples: Timed notification, Sticky error
 
 - `CollapsibleProps<Msg> = Readonly<{ id: string; isOpen: boolean; onToggle: (isOpen: boolean) => Msg; trigger: Html | string; content: Html | string; isDisabled?: boolean; ariaLabel?: string; class?: string; triggerClass?: string; contentClass?: string; }>` (type)
 - `collapsible<Msg>(props: CollapsibleProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
@@ -394,7 +394,7 @@ A shadcn-styled Combobox component for Foldkit.
 
 Source: `src/ui/combobox.ts`
 
-Examples: Basic, Multiple, Clear Button, Groups, Custom Items, Invalid, Disabled, Auto Highlight, Popup, Input Group, RTL
+Examples: Framework search, Grouped frameworks
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -416,7 +416,7 @@ A shadcn-styled Command component for Foldkit.
 
 Source: `src/ui/command.ts`
 
-Examples: Basic, Shortcuts, Groups, Scrollable, RTL
+Examples: Application commands, Grouped commands
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -442,7 +442,7 @@ A shadcn-styled Context Menu component for Foldkit.
 
 Source: `src/ui/context-menu.ts`
 
-Examples: Sides, RTL
+Examples: Browser actions, Disabled action
 
 - `Model: value` (value)
 - `Model = DropdownMenu.Model` (type)
@@ -466,7 +466,7 @@ A shadcn-styled Data Table component for Foldkit.
 
 Source: `src/ui/data-table.ts`
 
-Examples: Basic Table, Cell Formatting, Row Actions, Pagination, Sorting, Filtering, Visibility, Row Selection, RTL
+Examples: Sortable payments, Filter and paginate
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -487,7 +487,7 @@ A shadcn-styled Date Picker component for Foldkit.
 
 Source: `src/ui/date-picker.ts`
 
-Examples: Basic, Range Picker, Date of Birth, Input, Time Picker, Natural Language Picker, RTL
+Examples: Existing value, Empty value
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -516,7 +516,7 @@ A shadcn-styled Dialog component for Foldkit.
 
 Source: `src/ui/dialog.ts`
 
-Examples: Custom Close Button, No Close Button, Sticky Footer, Scrollable Content, RTL
+Examples: Timed notification, Sticky error
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -547,7 +547,7 @@ A shadcn-styled Direction component for Foldkit.
 
 Source: `src/ui/direction.ts`
 
-Examples: Usage, useDirection
+Examples: Timed notification, Sticky error
 
 - `Direction = 'ltr' | 'rtl'` (type)
 - `direction<Msg>(props: Readonly<{ direction: Direction; children: ReadonlyArray<Html | string>; class?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
@@ -558,7 +558,7 @@ A shadcn-styled Drawer component for Foldkit.
 
 Source: `src/ui/drawer.ts`
 
-Examples: Custom Sizes, Position, Swipe Handle, Nested, Non Modal, Snap Points, Responsive
+Examples: Activity goal, Side drawer
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -585,7 +585,7 @@ A shadcn-styled Dropdown Menu component for Foldkit.
 
 Source: `src/ui/dropdown-menu.ts`
 
-Examples: Checkboxes Icons, Radio Group, Radio Icons, Avatar, Complex, RTL
+Examples: Account actions, Destructive action
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -623,7 +623,7 @@ A shadcn-styled Empty component for Foldkit.
 
 Source: `src/ui/empty.ts`
 
-Examples: Outline, Background, Avatar, Avatar Group, InputGroup, RTL
+Examples: Timed notification, Sticky error
 
 - `empty: value` (value)
 - `emptyHeader: value` (value)
@@ -641,7 +641,7 @@ A shadcn-styled Field component for Foldkit.
 
 Source: `src/ui/field.ts`
 
-Examples: Anatomy, Form, Input, Textarea, Select, Slider, Fieldset, Checkbox, Radio, Switch, Choice Card, Field Group, RTL, Responsive Layout, Validation and Errors
+Examples: Timed notification, Sticky error
 
 - `FieldSetProps = Slot & Readonly<{ isDisabled?: boolean }>` (type)
 - `fieldSet<Msg>(props: FieldSetProps, h: HtmlBuilder<Msg>): Html` (function)
@@ -670,7 +670,7 @@ A shadcn-styled Form component for Foldkit.
 
 Source: `src/ui/form.ts`
 
-Examples: Basic, Validation, Async Submission, Disabled, Textarea, Date Picker
+Examples: Newsletter signup, Validation feedback
 
 - `FormProps<Msg> = Slot & Readonly<{ onSubmit?: Msg; ariaLabel?: string }>` (type)
 - `form<Msg>(props: FormProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
@@ -694,7 +694,7 @@ A shadcn-styled Hover Card component for Foldkit.
 
 Source: `src/ui/hover-card.ts`
 
-Examples: Basic, Sides, RTL
+Examples: Profile preview, Side placement
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -718,7 +718,7 @@ A shadcn-styled Input Group component for Foldkit.
 
 Source: `src/ui/input-group.ts`
 
-Examples: Align — inline-start, Align — inline-end, Align — block-start, Align — block-end, Icon, Text, Button, Kbd, Dropdown, Spinner, Textarea, Custom Input, RTL
+Examples: Timed notification, Sticky error
 
 - `inputGroup<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
 - `inputGroupAddonVariants: value` (value)
@@ -739,7 +739,7 @@ A shadcn-styled Input Otp component for Foldkit.
 
 Source: `src/ui/input-otp.ts`
 
-Examples: Pattern, Separator, Disabled, Controlled, Invalid, Four Digits, Alphanumeric, Form, RTL
+Examples: Timed notification, Sticky error
 
 - `InputOtpProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; length?: number; name?: string; ariaLabel?: string; isDisabled?: boolean; isInvalid?: boolean; class?: string; groupClass?: string; /** Pattern accepted by the control…` (type)
 - `inputOtp<Msg>(props: InputOtpProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
@@ -751,7 +751,7 @@ A shadcn-styled Input component for Foldkit.
 
 Source: `src/ui/input.ts`
 
-Examples: Basic, Field, Field Group, Disabled, Invalid, File, Inline, Grid, Required, Badge, Input Group, Button Group, Form, RTL
+Examples: Timed notification, Sticky error
 
 - `InputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; label?: string; description?: string; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; describedBy?: string; class?: string;…` (type)
 - `input<Msg>(props: InputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
@@ -762,7 +762,7 @@ A shadcn-styled Item component for Foldkit.
 
 Source: `src/ui/item.ts`
 
-Examples: Variant, Size, Icon, Avatar, Image, Group, Header, Link, Dropdown, RTL
+Examples: Timed notification, Sticky error
 
 - `itemVariants: value` (value)
 - `ItemVariants = VariantProps<typeof itemVariants>` (type)
@@ -788,7 +788,7 @@ A shadcn-styled Kbd component for Foldkit.
 
 Source: `src/ui/kbd.ts`
 
-Examples: Group, Button, Tooltip, Input Group, RTL
+Examples: Timed notification, Sticky error
 
 - `kbd<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
 - `kbdGroup<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
@@ -799,7 +799,7 @@ A shadcn-styled Label component for Foldkit.
 
 Source: `src/ui/label.ts`
 
-Examples: Usage, Label in Field, RTL
+Examples: Timed notification, Sticky error
 
 - `LabelProps = Readonly<{ for?: string; class?: string; children: ReadonlyArray<Html | string>; }>` (type)
 - `label<Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html` (function)
@@ -810,7 +810,7 @@ A shadcn-styled Marker component for Foldkit.
 
 Source: `src/ui/marker.ts`
 
-Examples: Basic, Separator, Dot, With Icon, In a Message Stream, RTL
+Examples: Timed notification, Sticky error
 
 - `markerVariants: value` (value)
 - `marker<Msg>(props: ChildrenProps & Readonly<{ variant?: VariantProps<typeof markerVariants>['variant'] }>, h: HtmlBuilder<Msg>): Html` (function)
@@ -823,7 +823,7 @@ A shadcn-styled Menubar component for Foldkit.
 
 Source: `src/ui/menubar.ts`
 
-Examples: Basic, Checkbox, Radio, Submenu, With Icons, RTL
+Examples: Coordinated menus, Shortcut hints
 
 - `MenubarMenu<Item extends string, Msg> = Readonly<{ id: string; label: string; model: DropdownMenu.Model; toParentMessage: (message: DropdownMenu.Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig; }>` (type)
 - `MenubarProps<Item extends string, Msg> = Readonly<{ menus: ReadonlyArray<MenubarMenu<Item, Msg>>; /** Coordinated focus/open callback used for ArrowLeft/ArrowRight menubar navigation. */ onMove?: (index: number) => Msg; activeIndex?: number; ariaLabel?: strin…` (type)
@@ -835,7 +835,7 @@ A shadcn-styled Message Scroller component for Foldkit.
 
 Source: `src/ui/message-scroller.ts`
 
-Examples: Basic, Auto-scroll, New-message Indicator, Long Conversation, Custom Scroll Button, RTL
+Examples: Jump to latest, Jump to beginning
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -858,7 +858,7 @@ A shadcn-styled Message component for Foldkit.
 
 Source: `src/ui/message.ts`
 
-Examples: Basic, Incoming and Outgoing, Avatar, Header and Footer Metadata, Actions, With Bubble, Grouped Messages, RTL
+Examples: Timed notification, Sticky error
 
 - `messageGroup<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 - `message<Msg>(props: ChildrenProps & Readonly<{ align?: 'start' | 'end' }>, h: HtmlBuilder<Msg>): Html` (function)
@@ -873,7 +873,7 @@ A shadcn-styled Native Select component for Foldkit.
 
 Source: `src/ui/native-select.ts`
 
-Examples: Simple, With groups, Groups, Disabled, Invalid, Native Select vs Select, RTL
+Examples: Timed notification, Sticky error
 
 - `NativeSelectOption = Readonly<{ value: string; label: string; isDisabled?: boolean; }>` (type)
 - `NativeSelectGroup = Readonly<{ label: string; options: ReadonlyArray<NativeSelectOption>; isDisabled?: boolean; }>` (type)
@@ -890,7 +890,7 @@ A shadcn-styled Navigation Menu component for Foldkit.
 
 Source: `src/ui/navigation-menu.ts`
 
-Examples: Basic, Link Component, RTL
+Examples: Semantic links, Popover disclosure
 
 - `navigationMenu<Msg>(props: Slot & Readonly<{ ariaLabel?: string }>, h: HtmlBuilder<Msg>): Html` (function)
 - `navigationMenuList<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
@@ -905,7 +905,7 @@ A shadcn-styled Pagination component for Foldkit.
 
 Source: `src/ui/pagination.ts`
 
-Examples: Simple, Icons Only, Next.js, RTL
+Examples: Result pages, Compact directions
 
 - `pagination<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
 - `paginationContent<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
@@ -924,7 +924,7 @@ A shadcn-styled Popover component for Foldkit.
 
 Source: `src/ui/popover.ts`
 
-Examples: Basic, Align, With Form, RTL
+Examples: Interactive content, Right aligned
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -947,7 +947,7 @@ A shadcn-styled Progress component for Foldkit.
 
 Source: `src/ui/progress.ts`
 
-Examples: Basic, Label, Controlled, RTL
+Examples: Timed notification, Sticky error
 
 - `ProgressProps = Readonly<{ /** `null` renders an indeterminate progress indicator. */ value: number | null; class?: string; }>` (type)
 - `progress<Msg>(props: ProgressProps, h: HtmlBuilder<Msg>): Html` (function)
@@ -958,7 +958,7 @@ A shadcn-styled Radio Group component for Foldkit.
 
 Source: `src/ui/radio-group.ts`
 
-Examples: Basic, Description, Choice Card, Fieldset, Disabled, Invalid, RTL
+Examples: Timed notification, Sticky error
 
 - `RadioGroupOption = Readonly<{ value: string; label: string; description?: string; }>` (type)
 - `RadioGroupProps<Msg> = Readonly<{ id: string; selectedValue: Option.Option<string>; onSelect: (value: string) => Msg; ariaLabel: string; options: ReadonlyArray<RadioGroupOption>; isDisabled?: boolean; name?: string; orientation?: RadioGroupPrimitive.Orientati…` (type)
@@ -970,7 +970,7 @@ A shadcn-styled Resizable component for Foldkit.
 
 Source: `src/ui/resizable.ts`
 
-Examples: Basic, Vertical, Handle, RTL
+Examples: Timed notification, Sticky error
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -1003,7 +1003,7 @@ A shadcn-styled Scroll Area component for Foldkit.
 
 Source: `src/ui/scroll-area.ts`
 
-Examples: Basic, Horizontal, RTL
+Examples: Timed notification, Sticky error
 
 - `ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; orientation?: 'vertical' | 'horizontal' | 'both'; ariaLabel?: string; tabIndex?: number; }>` (type)
 - `scrollArea<Msg>(props: ScrollAreaProps, h: HtmlBuilder<Msg>): Html` (function)
@@ -1014,7 +1014,7 @@ A shadcn-styled Select component for Foldkit.
 
 Source: `src/ui/select.ts`
 
-Examples: Basic, Align Item With Trigger, Groups, Scrollable, Disabled, Invalid, RTL
+Examples: Typed selection, Grouped fruit
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -1036,7 +1036,7 @@ A shadcn-styled Separator component for Foldkit.
 
 Source: `src/ui/separator.ts`
 
-Examples: Basic, Vertical, Menu, List, RTL
+Examples: Timed notification, Sticky error
 
 - `SeparatorProps = Readonly<{ orientation?: 'horizontal' | 'vertical'; class?: string; }>` (type)
 - `separator<Msg>(props: SeparatorProps = {}, h: HtmlBuilder<Msg>): Html` (function)
@@ -1047,7 +1047,7 @@ A shadcn-styled Sheet component for Foldkit.
 
 Source: `src/ui/sheet.ts`
 
-Examples: Basic, Compound Layout, Side, No Close Button, RTL
+Examples: Compound layout, Bottom task
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -1078,7 +1078,7 @@ A shadcn-styled Sidebar component for Foldkit.
 
 Source: `src/ui/sidebar.ts`
 
-Examples: Basic, Structure, SidebarMenu, SidebarMenuSkeleton, RTL
+Examples: Persistent shell, Static structure
 
 - `export * from '@/lib/sidebar-state'` (re-export)
 - `SidebarState = 'expanded' | 'collapsed'` (type)
@@ -1127,7 +1127,7 @@ A shadcn-styled Skeleton component for Foldkit.
 
 Source: `src/ui/skeleton.ts`
 
-Examples: Basic, Avatar, Card, Text, Form, Table, RTL
+Examples: Timed notification, Sticky error
 
 - `SkeletonProps = Readonly<{ class?: string; }>` (type)
 - `skeleton<Msg>(props: SkeletonProps = {}, h: HtmlBuilder<Msg>): Html` (function)
@@ -1138,7 +1138,7 @@ A shadcn-styled Slider component for Foldkit.
 
 Source: `src/ui/slider.ts`
 
-Examples: Basic, Range, Multiple Thumbs, Vertical, Controlled, Disabled, RTL
+Examples: Timed notification, Sticky error
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -1164,7 +1164,7 @@ A shadcn-styled Sonner component for Foldkit.
 
 Source: `src/ui/sonner.ts`
 
-Examples: Basic, Success, Variants
+Examples: Timed notification, Sticky error
 
 - `ToastPayload: value` (value)
 - `ToastPayload = typeof ToastPayload.Type` (type)
@@ -1202,7 +1202,7 @@ A shadcn-styled Spinner component for Foldkit.
 
 Source: `src/ui/spinner.ts`
 
-Examples: Basic, Customization, Size, Button, Badge, Input Group, Empty, RTL
+Examples: Timed notification, Sticky error
 
 - `SpinnerProps = Readonly<{ class?: string; }>` (type)
 - `spinner<Msg>(props: SpinnerProps = {}, h: HtmlBuilder<Msg>): Html` (function)
@@ -1213,7 +1213,7 @@ A shadcn-styled Switch component for Foldkit.
 
 Source: `src/ui/switch.ts`
 
-Examples: Basic, Description, Choice Card, Disabled, Invalid, Size, RTL
+Examples: Timed notification, Sticky error
 
 - `SwitchSize = 'sm' | 'default'` (type)
 - `SwitchProps<Msg> = Readonly<{ id: string; isChecked: boolean; onToggle: (isChecked: boolean) => Msg; label: string; description?: string; size?: SwitchSize; isDisabled?: boolean; name?: string; value?: string; class?: string; }>` (type)
@@ -1226,7 +1226,7 @@ A shadcn-styled Table component for Foldkit.
 
 Source: `src/ui/table.ts`
 
-Examples: Basic, Footer, Actions, Data Table, RTL
+Examples: Timed notification, Sticky error
 
 - `table<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
 - `tableHeader: value` (value)
@@ -1243,7 +1243,7 @@ A shadcn-styled Tabs component for Foldkit.
 
 Source: `src/ui/tabs.ts`
 
-Examples: Basic, Line, Vertical, Disabled, Icons, RTL
+Examples: Timed notification, Sticky error
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -1267,7 +1267,7 @@ A shadcn-styled Textarea component for Foldkit.
 
 Source: `src/ui/textarea.ts`
 
-Examples: Basic, Field, Disabled, Invalid, Button, RTL
+Examples: Timed notification, Sticky error
 
 - `TextareaProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; label?: string; description?: string; placeholder?: string; name?: string; rows?: number; isDisabled?: boolean; isInvalid?: boolean; class?: string; }>` (type)
 - `textarea<Msg>(props: TextareaProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
@@ -1278,7 +1278,7 @@ A shadcn-styled Toast component for Foldkit.
 
 Source: `src/ui/toast.ts`
 
-Examples: Basic, Types, Action, Promise
+Examples: Timed notification, Sticky error
 
 - `export * from '@/ui/sonner'` (re-export)
 - `export { sonner as toast } from '@/ui/sonner'` (re-export)
@@ -1289,7 +1289,7 @@ A shadcn-styled Toggle Group component for Foldkit.
 
 Source: `src/ui/toggle-group.ts`
 
-Examples: Basic, Outline, Size, Spacing, Vertical, Disabled, Custom, RTL
+Examples: Timed notification, Sticky error
 
 - `ToggleGroupItem = Readonly<{ value: string; children: ReadonlyArray<Html | string>; isDisabled?: boolean; class?: string; }>` (type)
 - `ToggleGroupProps<Msg> = Readonly<{ items: ReadonlyArray<ToggleGroupItem>; onToggle: (itemValue: string) => Msg; variant?: ToggleVariants['variant']; size?: ToggleVariants['size']; class?: string; }> & (SingleSelection | MultipleSelection)` (type)
@@ -1301,7 +1301,7 @@ A shadcn-styled Toggle component for Foldkit.
 
 Source: `src/ui/toggle.ts`
 
-Examples: Basic, Outline, With Text, Size, Disabled, RTL
+Examples: Timed notification, Sticky error
 
 - `toggleVariants: value` (value)
 - `ToggleVariants = VariantProps<typeof toggleVariants>` (type)
@@ -1314,7 +1314,7 @@ A shadcn-styled Tooltip component for Foldkit.
 
 Source: `src/ui/tooltip.ts`
 
-Examples: Basic, Side, With Keyboard Shortcut, Disabled Button, RTL
+Examples: Delayed label, Side label
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -1336,7 +1336,7 @@ A shadcn-styled Typography component for Foldkit.
 
 Source: `src/ui/typography.ts`
 
-Examples: Basic, h1, h2, h3, h4, p, blockquote, table, list, Inline code, Lead, Large, Small, Muted, RTL
+Examples: Timed notification, Sticky error
 
 - `typographyH1<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` (function)
 - `typographyH2<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` (function)

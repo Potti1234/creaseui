@@ -20,12 +20,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Multiple",
-        "Disabled",
-        "Borders",
-        "Card",
-        "RTL"
+        "Single disclosure",
+        "Multiple disclosures"
       ],
       "api": [
         {
@@ -128,12 +124,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Small",
-        "Media",
-        "Small with Media",
-        "Destructive",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -216,11 +208,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Destructive",
-        "Action",
-        "Custom Colors",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -267,10 +256,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Square",
-        "Portrait",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -298,12 +285,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Image",
-        "States",
-        "Sizes",
-        "Group",
-        "Trigger"
+        "Uploaded file",
+        "Lifecycle states"
       ],
       "api": [
         {
@@ -370,15 +353,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Badge",
-        "Badge with Icon",
-        "Avatar Group",
-        "Avatar Group Count",
-        "Avatar Group with Icon",
-        "Sizes",
-        "Dropdown",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -466,13 +442,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Variants",
-        "With Icon",
-        "With Spinner",
-        "Link",
-        "Custom Colors",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -510,12 +481,9 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Custom separator",
-        "Dropdown",
-        "Collapsed",
-        "Link component",
-        "RTL"
+        "Current path",
+        "Collapsed path",
+        "Custom separator"
       ],
       "api": [
         {
@@ -588,15 +556,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Variants",
-        "Alignment",
-        "Bubble Group",
-        "Links and Buttons",
-        "Reactions",
-        "Show More / Collapsible",
-        "Tooltip",
-        "Popover"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -644,18 +605,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Orientation",
-        "Size",
-        "Nested",
-        "Separator",
-        "Split",
-        "Input",
-        "Input Group",
-        "Dropdown Menu",
-        "Select",
-        "Popover",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -713,21 +664,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Size",
-        "Default",
-        "Outline",
-        "Secondary",
-        "Ghost",
-        "Destructive",
-        "Link",
-        "Icon",
-        "With Icon",
-        "Rounded",
-        "Spinner",
-        "Button Group",
-        "As Link",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -776,11 +714,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Selected Date",
-        "Disabled Dates",
-        "Custom Cell Size",
-        "RTL"
+        "Selected date",
+        "Roomier cells"
       ],
       "api": [
         {
@@ -892,12 +827,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Size",
-        "Spacing",
-        "Edge to Edge",
-        "Image",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -956,13 +887,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Sizes",
-        "Spacing",
-        "Orientation",
-        "API",
-        "Plugins",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -1034,14 +960,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Your First Chart",
-        "Add a Grid",
-        "Add an Axis",
-        "Add Tooltip",
-        "Add Legend",
-        "Tooltip",
-        "RTL"
+        "Monthly revenue",
+        "Traffic trend"
       ],
       "api": [
         {
@@ -1134,13 +1054,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Invalid State",
-        "Description",
-        "Disabled",
-        "Group",
-        "Table",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -1167,10 +1082,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Settings Panel",
-        "File Tree",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -1198,17 +1111,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Multiple",
-        "Clear Button",
-        "Groups",
-        "Custom Items",
-        "Invalid",
-        "Disabled",
-        "Auto Highlight",
-        "Popup",
-        "Input Group",
-        "RTL"
+        "Framework search",
+        "Grouped frameworks"
       ],
       "api": [
         {
@@ -1291,11 +1195,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Shortcuts",
-        "Groups",
-        "Scrollable",
-        "RTL"
+        "Application commands",
+        "Grouped commands"
       ],
       "api": [
         {
@@ -1397,8 +1298,8 @@
         "Potti1234/creaseui/dropdown-menu"
       ],
       "examples": [
-        "Sides",
-        "RTL"
+        "Browser actions",
+        "Disabled action"
       ],
       "api": [
         {
@@ -1491,15 +1392,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic Table",
-        "Cell Formatting",
-        "Row Actions",
-        "Pagination",
-        "Sorting",
-        "Filtering",
-        "Visibility",
-        "Row Selection",
-        "RTL"
+        "Sortable payments",
+        "Filter and paginate"
       ],
       "api": [
         {
@@ -1579,13 +1473,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Range Picker",
-        "Date of Birth",
-        "Input",
-        "Time Picker",
-        "Natural Language Picker",
-        "RTL"
+        "Existing value",
+        "Empty value"
       ],
       "api": [
         {
@@ -1702,11 +1591,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Custom Close Button",
-        "No Close Button",
-        "Sticky Footer",
-        "Scrollable Content",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -1832,8 +1718,8 @@
         "Potti1234/creaseui/crease-theme"
       ],
       "examples": [
-        "Usage",
-        "useDirection"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -1860,13 +1746,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Custom Sizes",
-        "Position",
-        "Swipe Handle",
-        "Nested",
-        "Non Modal",
-        "Snap Points",
-        "Responsive"
+        "Activity goal",
+        "Side drawer"
       ],
       "api": [
         {
@@ -1974,12 +1855,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Checkboxes Icons",
-        "Radio Group",
-        "Radio Icons",
-        "Avatar",
-        "Complex",
-        "RTL"
+        "Account actions",
+        "Destructive action"
       ],
       "api": [
         {
@@ -2142,12 +2019,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Outline",
-        "Background",
-        "Avatar",
-        "Avatar Group",
-        "InputGroup",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -2210,21 +2083,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Anatomy",
-        "Form",
-        "Input",
-        "Textarea",
-        "Select",
-        "Slider",
-        "Fieldset",
-        "Checkbox",
-        "Radio",
-        "Switch",
-        "Choice Card",
-        "Field Group",
-        "RTL",
-        "Responsive Layout",
-        "Validation and Errors"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -2342,12 +2202,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Validation",
-        "Async Submission",
-        "Disabled",
-        "Textarea",
-        "Date Picker"
+        "Newsletter signup",
+        "Validation feedback"
       ],
       "api": [
         {
@@ -2419,9 +2275,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Sides",
-        "RTL"
+        "Profile preview",
+        "Side placement"
       ],
       "api": [
         {
@@ -2515,19 +2370,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Align — inline-start",
-        "Align — inline-end",
-        "Align — block-start",
-        "Align — block-end",
-        "Icon",
-        "Text",
-        "Button",
-        "Kbd",
-        "Dropdown",
-        "Spinner",
-        "Textarea",
-        "Custom Input",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -2604,15 +2448,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Pattern",
-        "Separator",
-        "Disabled",
-        "Controlled",
-        "Invalid",
-        "Four Digits",
-        "Alphanumeric",
-        "Form",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -2644,20 +2481,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Field",
-        "Field Group",
-        "Disabled",
-        "Invalid",
-        "File",
-        "Inline",
-        "Grid",
-        "Required",
-        "Badge",
-        "Input Group",
-        "Button Group",
-        "Form",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -2685,16 +2510,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Variant",
-        "Size",
-        "Icon",
-        "Avatar",
-        "Image",
-        "Group",
-        "Header",
-        "Link",
-        "Dropdown",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -2796,11 +2613,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Group",
-        "Button",
-        "Tooltip",
-        "Input Group",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -2827,9 +2641,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Usage",
-        "Label in Field",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -2857,12 +2670,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Separator",
-        "Dot",
-        "With Icon",
-        "In a Message Stream",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -2900,12 +2709,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Checkbox",
-        "Radio",
-        "Submenu",
-        "With Icons",
-        "RTL"
+        "Coordinated menus",
+        "Shortcut hints"
       ],
       "api": [
         {
@@ -2938,12 +2743,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Auto-scroll",
-        "New-message Indicator",
-        "Long Conversation",
-        "Custom Scroll Button",
-        "RTL"
+        "Jump to latest",
+        "Jump to beginning"
       ],
       "api": [
         {
@@ -3030,14 +2831,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Incoming and Outgoing",
-        "Avatar",
-        "Header and Footer Metadata",
-        "Actions",
-        "With Bubble",
-        "Grouped Messages",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -3085,13 +2880,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Simple",
-        "With groups",
-        "Groups",
-        "Disabled",
-        "Invalid",
-        "Native Select vs Select",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -3150,9 +2940,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Link Component",
-        "RTL"
+        "Semantic links",
+        "Popover disclosure"
       ],
       "api": [
         {
@@ -3201,10 +2990,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Simple",
-        "Icons Only",
-        "Next.js",
-        "RTL"
+        "Result pages",
+        "Compact directions"
       ],
       "api": [
         {
@@ -3271,10 +3058,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Align",
-        "With Form",
-        "RTL"
+        "Interactive content",
+        "Right aligned"
       ],
       "api": [
         {
@@ -3361,10 +3146,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Label",
-        "Controlled",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -3392,13 +3175,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Description",
-        "Choice Card",
-        "Fieldset",
-        "Disabled",
-        "Invalid",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -3431,10 +3209,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Vertical",
-        "Handle",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -3571,9 +3347,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Horizontal",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -3601,13 +3376,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Align Item With Trigger",
-        "Groups",
-        "Scrollable",
-        "Disabled",
-        "Invalid",
-        "RTL"
+        "Typed selection",
+        "Grouped fruit"
       ],
       "api": [
         {
@@ -3689,11 +3459,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Vertical",
-        "Menu",
-        "List",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -3721,11 +3488,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Compound Layout",
-        "Side",
-        "No Close Button",
-        "RTL"
+        "Compound layout",
+        "Bottom task"
       ],
       "api": [
         {
@@ -3855,11 +3619,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Structure",
-        "SidebarMenu",
-        "SidebarMenuSkeleton",
-        "RTL"
+        "Persistent shell",
+        "Static structure"
       ],
       "api": [
         {
@@ -4076,13 +3837,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Avatar",
-        "Card",
-        "Text",
-        "Form",
-        "Table",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -4109,13 +3865,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Range",
-        "Multiple Thumbs",
-        "Vertical",
-        "Controlled",
-        "Disabled",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -4218,9 +3969,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Success",
-        "Variants"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -4383,14 +4133,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Customization",
-        "Size",
-        "Button",
-        "Badge",
-        "Input Group",
-        "Empty",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -4417,13 +4161,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Description",
-        "Choice Card",
-        "Disabled",
-        "Invalid",
-        "Size",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -4460,11 +4199,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Footer",
-        "Actions",
-        "Data Table",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -4522,12 +4258,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Line",
-        "Vertical",
-        "Disabled",
-        "Icons",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -4619,12 +4351,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Field",
-        "Disabled",
-        "Invalid",
-        "Button",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -4651,10 +4379,8 @@
         "Potti1234/creaseui/sonner"
       ],
       "examples": [
-        "Basic",
-        "Types",
-        "Action",
-        "Promise"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -4682,14 +4408,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Outline",
-        "Size",
-        "Spacing",
-        "Vertical",
-        "Disabled",
-        "Custom",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -4722,12 +4442,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Outline",
-        "With Text",
-        "Size",
-        "Disabled",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -4764,11 +4480,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "Side",
-        "With Keyboard Shortcut",
-        "Disabled Button",
-        "RTL"
+        "Delayed label",
+        "Side label"
       ],
       "api": [
         {
@@ -4850,21 +4563,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Basic",
-        "h1",
-        "h2",
-        "h3",
-        "h4",
-        "p",
-        "blockquote",
-        "table",
-        "list",
-        "Inline code",
-        "Lead",
-        "Large",
-        "Small",
-        "Muted",
-        "RTL"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {

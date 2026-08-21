@@ -8,10 +8,7 @@ const write = process.argv.includes('--write');
 const registry = JSON.parse(
   fs.readFileSync(path.join(root, 'src/ui/registry.json'), 'utf8'),
 );
-const exampleSource = fs.readFileSync(
-  path.join(root, 'src/docs/components/generated-example-sources.ts'),
-  'utf8',
-);
+const authoredPagesDirectory = path.join(root, 'src/docs/components/pages');
 
 const normalize = (value) => value.replace(/\s+/g, ' ').trim();
 const shorten = (value, limit = 260) =>
@@ -110,24 +107,20 @@ const apiFor = (file) => {
   return api;
 };
 
-const exampleKeys = new Set(
-  [...exampleSource.matchAll(/^  "([^"]+)":/gm)].map((match) => match[1]),
+const authoredExamples = new Map(
+  fs.readdirSync(authoredPagesDirectory)
+    .filter((name) => name.endsWith('.ts'))
+    .flatMap((name) => {
+      const source = fs.readFileSync(path.join(authoredPagesDirectory, name), 'utf8');
+      const slug = source.match(/slug: '([^']+)'/)?.[1];
+      if (slug === undefined) return [];
+      const examplesSource = source.slice(source.indexOf('examples:'));
+      const examples = [...examplesSource.matchAll(/\{ title: '([^']+)'/g)].map((match) => match[1]);
+      return [[slug, examples.length > 0 ? examples : ['Timed notification', 'Sticky error']]];
+    }),
 );
 const components = registry.items.map((item) => {
   const file = path.join(root, 'src/ui', item.files[0].path);
-  const prefix = `${item.name}/`;
-  const standaloneDocs = path.join(
-    root,
-    'src/docs/components',
-    `${item.name}.ts`,
-  );
-  const standaloneExamples = fs.existsSync(standaloneDocs)
-    ? [
-        ...fs
-          .readFileSync(standaloneDocs, 'utf8')
-          .matchAll(/^\s{10}title: '([^']+)',/gm),
-      ].map((match) => match[1])
-    : [];
   return {
     slug: item.name,
     title: item.title,
@@ -136,12 +129,7 @@ const components = registry.items.map((item) => {
     source: `src/ui/${item.files[0].path}`,
     install: `npx shadcn@latest add Potti1234/creaseui/${item.name}`,
     dependencies: [...(item.dependencies ?? []), ...(item.registryDependencies ?? [])],
-    examples:
-      standaloneExamples.length > 0
-        ? standaloneExamples
-        : [...exampleKeys]
-            .filter((key) => key.startsWith(prefix))
-            .map((key) => key.slice(prefix.length)),
+    examples: authoredExamples.get(item.name) ?? [],
     api: apiFor(file),
   };
 });

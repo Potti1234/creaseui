@@ -11,8 +11,6 @@ import * as ChartsPie from '@/demo/charts/pie'
 import * as ChartsRadar from '@/demo/charts/radar'
 import * as ChartsRadial from '@/demo/charts/radial'
 import * as ChartsTooltip from '@/demo/charts/tooltip'
-import * as AccordionDocsFeature from '@/docs/components/accordion'
-import * as CalendarDocsFeature from '@/docs/components/calendar'
 import * as ComponentCatalog from '@/docs/components/catalog'
 import type { AppRoute } from '@/route'
 
@@ -29,12 +27,6 @@ export const Charts = ts('ChartsPage', {
   radial: ChartsRadial.Model,
   tooltip: ChartsTooltip.Model,
 })
-export const AccordionDocs = ts('AccordionDocsPage', {
-  docs: AccordionDocsFeature.Model,
-})
-export const CalendarDocs = ts('CalendarDocsPage', {
-  docs: CalendarDocsFeature.Model,
-})
 export const CatalogDocs = ts('CatalogDocsPage', {
   docs: ComponentCatalog.Model,
 })
@@ -46,8 +38,6 @@ export const Page = S.Union([
   BlocksIndex,
   Block,
   Charts,
-  AccordionDocs,
-  CalendarDocs,
   CatalogDocs,
   NotFound,
 ])
@@ -72,15 +62,9 @@ export const init = (route: AppRoute): Page =>
       BlocksIndex: () => BlocksIndex(),
       Block: () => Block({ blocks: BlocksFeature.init() }),
       ComponentDocs: ({ component }) =>
-        ComponentCatalog.hasAuthoredPage(component)
+        ComponentCatalog.hasCatalogPage(component)
           ? CatalogDocs({ docs: ComponentCatalog.init(component) })
-          : component === 'accordion'
-          ? AccordionDocs({ docs: AccordionDocsFeature.init() })
-          : component === 'calendar'
-            ? CalendarDocs({ docs: CalendarDocsFeature.init() })
-            : ComponentCatalog.hasCatalogPage(component)
-              ? CatalogDocs({ docs: ComponentCatalog.init(component) })
-              : NotFound(),
+          : NotFound(),
       NotFound: () => NotFound(),
     }),
   )

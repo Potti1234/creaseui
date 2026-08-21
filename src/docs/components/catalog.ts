@@ -7,18 +7,11 @@ import { defineView } from 'foldkit/submodel';
 import { componentPage, componentTitle, example } from '@/docs/component-page';
 import * as State from '@/docs/components/catalog-state';
 import * as CopyFeedback from '@/docs/copy-feedback';
-import { definitions as earlyDefinitions } from '@/docs/components/definitions/a-to-command';
-import { definitions as middleDefinitions } from '@/docs/components/definitions/context-to-pagination';
-import { definitions as lateDefinitions } from '@/docs/components/definitions/popover-to-typography';
 import type { ComponentKind, PageDefinitions } from '@/docs/components/page-definition';
-import { generatedExampleSources } from '@/docs/components/generated-example-sources';
 import { componentApi } from '@/docs/generated-component-api';
 import { authoredPages } from '@/docs/components/pages';
 
 const definitions: PageDefinitions = {
-  ...earlyDefinitions,
-  ...middleDefinitions,
-  ...lateDefinitions,
   ...Object.fromEntries(
     Object.values(authoredPages).map((page) => [page.slug, page.definition]),
   ),
@@ -95,8 +88,6 @@ const fallbackExampleState = State.init();
 
 export const hasCatalogPage = (slug: string): boolean =>
   componentTitle(slug) !== undefined;
-
-export const hasAuthoredPage = (slug: string): boolean => slug in authoredPages;
 
 export const hasDedicatedDefinition = (slug: string): boolean =>
   definitions[slug] !== undefined;
@@ -230,10 +221,7 @@ export const view = (
         definition.composition ??
         compositionFor(kind, name, primaryExport(slug)),
       examples: definition.examples.map((config, index) => {
-        const exampleCode =
-          authoredPages[slug] === undefined
-            ? (generatedExampleSources[`${slug}/${config.title}`] ?? config.code)
-            : config.code;
+        const exampleCode = config.code;
         const previewView = defineView<State.Model, State.Message>(
           (exampleModel, h) => config.preview(exampleModel, h),
         );
