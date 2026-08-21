@@ -181,6 +181,7 @@ test('authored helper pages publish complete application source', async ({ page 
     'resizable',
     'scroll-area',
     'separator',
+    'select',
     'sheet',
     'skeleton',
     'slider',
@@ -423,6 +424,20 @@ test('tooltip opens from keyboard focus and dismisses without moving focus', asy
   await page.keyboard.press('Escape')
   await expect(panel).toBeHidden()
   await expect(trigger).toBeFocused()
+})
+
+test('select persists a typed OutMessage selection', async ({ page }) => {
+  await page.goto('/docs/components/select')
+  const example = page.locator('#typed-selection')
+  const trigger = example.getByRole('button', { name: 'Fruit' })
+  await trigger.click()
+  const listbox = page.getByRole('listbox')
+  await expect(listbox).toBeVisible()
+  await page.getByRole('option', { name: 'Banana' }).click()
+  await expect(trigger).toContainText('Banana')
+  await expect(listbox).toBeHidden()
+  await expect(example.locator('code')).toContainText('maybeSelection')
+  await expect(example.locator('code')).toContainText("selection._tag === 'Selected'")
 })
 
 test('flagship documentation pages have no automated accessibility violations', async ({
