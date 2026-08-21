@@ -151,14 +151,17 @@ test('authored helper pages publish complete application source', async ({ page 
     'card',
     'direction',
     'empty',
+    'item',
     'kbd',
     'label',
     'marker',
+    'message',
     'progress',
     'scroll-area',
     'separator',
     'skeleton',
     'spinner',
+    'table',
     'typography',
   ]) {
     await page.goto(`/docs/components/${route}`)
