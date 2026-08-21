@@ -535,22 +535,16 @@ export const dropdownMenu = <Item extends string, Msg>(
           ...(props.triggerClass === undefined
             ? []
             : [h.Class(props.triggerClass)]),
-          h.OnKeyDownPreventDefault((key) =>
-            key === 'ArrowDown' || key === 'Enter' || key === ' '
-              ? Option.some(
-                  props.toParentMessage(
-                    props.model.isOpen
-                      ? (menuKey(
-                          props.model,
-                          props.items,
-                          props.itemToConfig,
-                          key,
-                        ) ?? Opened())
-                      : Opened(),
-                  ),
-                )
-              : Option.none(),
-          ),
+          h.OnKeyDownPreventDefault((key) => {
+            const message = props.model.isOpen
+              ? menuKey(props.model, props.items, props.itemToConfig, key)
+              : key === 'ArrowDown' || key === 'ArrowUp' || key === 'Enter' || key === ' '
+                ? Opened()
+                : undefined;
+            return message === undefined
+              ? Option.none()
+              : Option.some(props.toParentMessage(message));
+          }),
         ],
         [props.trigger],
       ),

@@ -14,9 +14,11 @@ import { checkboxPage } from '@/docs/components/pages/checkbox';
 import { collapsiblePage } from '@/docs/components/pages/collapsible';
 import { comboboxPage } from '@/docs/components/pages/combobox';
 import { commandPage } from '@/docs/components/pages/command';
+import { contextMenuPage } from '@/docs/components/pages/context-menu';
 import { directionPage } from '@/docs/components/pages/direction';
 import { dialogPage } from '@/docs/components/pages/dialog';
 import { drawerPage } from '@/docs/components/pages/drawer';
+import { dropdownMenuPage } from '@/docs/components/pages/dropdown-menu';
 import { emptyPage } from '@/docs/components/pages/empty';
 import { fieldPage } from '@/docs/components/pages/field';
 import { formPage } from '@/docs/components/pages/form';
@@ -69,9 +71,11 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       collapsiblePage,
       comboboxPage,
       commandPage,
+      contextMenuPage,
       directionPage,
       dialogPage,
       drawerPage,
+      dropdownMenuPage,
       emptyPage,
       fieldPage,
       formPage,

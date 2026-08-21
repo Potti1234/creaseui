@@ -168,3 +168,13 @@ property contract and would teach consumers the wrong construction. Both the
 live preview and complete application now conditionally spread the shortcut
 field only when it exists. Typecheck protects the preview; compile-oriented
 example verification remains part of DOC-003's final closure.
+
+### DOC-018 — Context-opened menus ignored Escape on their trigger
+
+Closed in the authored Context Menu slice: a secondary click opened the menu
+while focus remained on its trigger, but the trigger's key handler accepted only
+ArrowDown, Enter, and Space. Escape therefore could not dismiss the visible
+menu until focus was moved manually. The trigger now delegates every recognized
+open-menu key through the same `menuKey` state machine and also accepts ArrowUp
+as an opening key. Desktop and mobile browser tests exercise immediate Escape
+dismissal after a secondary click.

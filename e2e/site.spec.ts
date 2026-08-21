@@ -160,9 +160,11 @@ test('authored helper pages publish complete application source', async ({ page 
     'collapsible',
     'combobox',
     'command',
+    'context-menu',
     'direction',
     'dialog',
     'drawer',
+    'dropdown-menu',
     'empty',
     'field',
     'form',
@@ -464,6 +466,34 @@ test('command search commits a typed parent action', async ({ page }) => {
   await option.click()
   await expect(input).toHaveValue('Settings')
   await expect(example.locator('code')).toContainText("selection._tag === 'Selected'")
+})
+
+test('dropdown menu exposes typed selection wiring and keyboard behavior', async ({ page }) => {
+  await page.goto('/docs/components/dropdown-menu')
+  const example = page.locator('#account-actions')
+  const trigger = example.getByRole('button', { name: 'Open account menu' })
+  await trigger.focus()
+  await page.keyboard.press('Enter')
+  const menu = example.getByRole('menu')
+  await expect(menu).toBeVisible()
+  await page.keyboard.press('ArrowDown')
+  await page.keyboard.press('Enter')
+  await expect(menu).toBeHidden()
+  await expect(example.locator('code')).toContainText('maybeSelection')
+  await expect(example.locator('code')).toContainText('DropdownMenu.create<Action>()')
+})
+
+test('context menu anchors at the secondary-click target and skips disabled items', async ({ page }) => {
+  await page.goto('/docs/components/context-menu')
+  const example = page.locator('#browser-actions')
+  const target = example.getByRole('button', { name: 'Right click here' })
+  await target.click({ button: 'right', position: { x: 80, y: 60 } })
+  const menu = example.getByRole('menu')
+  await expect(menu).toBeVisible()
+  await expect(menu.getByRole('menuitem', { name: 'Forward' })).toHaveAttribute('aria-disabled', 'true')
+  await expect(example.locator('code')).toContainText('ContextMenu.create<Action>()')
+  await page.keyboard.press('Escape')
+  await expect(menu).toBeHidden()
 })
 
 test('flagship documentation pages have no automated accessibility violations', async ({
