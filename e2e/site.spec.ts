@@ -160,6 +160,7 @@ test('authored helper pages publish complete application source', async ({ page 
     'collapsible',
     'direction',
     'dialog',
+    'drawer',
     'empty',
     'field',
     'form',
@@ -358,6 +359,24 @@ test('sheet compound parts preserve focus and accessible structure', async ({ pa
 
   await page.keyboard.press('Escape')
   await expect(sheet).toBeHidden()
+  await expect(trigger).toBeFocused()
+})
+
+test('drawer documents its child model and preserves modal focus behavior', async ({ page }) => {
+  await page.goto('/docs/components/drawer')
+  const example = page.locator('#activity-goal')
+  const trigger = example.getByRole('button', { name: 'Open bottom drawer' })
+
+  await trigger.click()
+  const drawer = page.getByRole('dialog')
+  await expect(drawer).toBeVisible()
+  await expect(drawer.locator('[data-slot="drawer-handle"]')).toBeVisible()
+  await expect(drawer.locator('[data-slot="drawer-title"]')).toHaveText('Move goal')
+  await expect(example.locator('code')).toContainText('Drawer.update')
+  await expect(example.locator('code')).toContainText('Command.mapMessages')
+
+  await page.keyboard.press('Escape')
+  await expect(drawer).toBeHidden()
   await expect(trigger).toBeFocused()
 })
 
