@@ -25,9 +25,9 @@ export type RadioGroupOption = Readonly<{
 }>;
 
 export type RadioGroupProps<Msg> = Readonly<{
-  id: string;
+  model: Model;
+  toParentMessage: (message: Message) => Msg;
   selectedValue: Option.Option<string>;
-  onSelect: (value: string) => Msg;
   ariaLabel: string;
   options: ReadonlyArray<RadioGroupOption>;
   isDisabled?: boolean;
@@ -36,15 +36,25 @@ export type RadioGroupProps<Msg> = Readonly<{
   class?: string;
 }>;
 
+export const Model = RadioGroupPrimitive.Model;
+export type Model = typeof Model.Type;
+export const Message = RadioGroupPrimitive.Message;
+export type Message = typeof Message.Type;
+export type OutMessage = RadioGroupPrimitive.OutMessage<string>;
+export const init = RadioGroupPrimitive.init;
+const StringRadioGroup = RadioGroupPrimitive.create<string>();
+export const update = StringRadioGroup.update;
+
 export const radioGroup = <Msg>(
   props: RadioGroupProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  return RadioGroupPrimitive.view(
-    {
-      id: props.id,
+  return h.submodel({
+    slotId: props.model.id,
+    model: props.model,
+    view: StringRadioGroup.view,
+    viewInputs: {
       selectedValue: props.selectedValue,
-      onSelect: props.onSelect,
       options: props.options.map((option) => option.value),
       ariaLabel: props.ariaLabel,
       isDisabled: props.isDisabled ?? false,
@@ -123,8 +133,8 @@ export const radioGroup = <Msg>(
         );
       },
     },
-    h,
-  );
+    toParentMessage: props.toParentMessage,
+  });
 };
 
 /*

@@ -961,7 +961,14 @@ Source: `src/ui/radio-group.ts`
 Examples: Timed notification, Sticky error
 
 - `RadioGroupOption = Readonly<{ value: string; label: string; description?: string; }>` (type)
-- `RadioGroupProps<Msg> = Readonly<{ id: string; selectedValue: Option.Option<string>; onSelect: (value: string) => Msg; ariaLabel: string; options: ReadonlyArray<RadioGroupOption>; isDisabled?: boolean; name?: string; orientation?: RadioGroupPrimitive.Orientati…` (type)
+- `RadioGroupProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; selectedValue: Option.Option<string>; ariaLabel: string; options: ReadonlyArray<RadioGroupOption>; isDisabled?: boolean; name?: string; orientation?: RadioGroupPrimiti…` (type)
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `OutMessage = RadioGroupPrimitive.OutMessage<string>` (type)
+- `init: value` (value)
+- `update: value` (value)
 - `radioGroup<Msg>(props: RadioGroupProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Resizable

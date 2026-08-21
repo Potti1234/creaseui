@@ -51,21 +51,21 @@
     "component:create": "node scripts/create-component.mjs"
   },
   "dependencies": {
-    "@effect/platform-browser": "4.0.0-beta.102",
-    "@foldkit/ui": "0.137.0",
+    "@effect/platform-browser": "4.0.0-rc.109",
+    "@foldkit/ui": "0.148.2",
     "@tailwindcss/vite": "^4.3.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "echarts": "^6.1.0",
-    "effect": "4.0.0-beta.102",
+    "effect": "4.0.0-rc.109",
     "embla-carousel": "^8.6.0",
-    "foldkit": "0.137.0",
+    "foldkit": "0.148.2",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.3.1"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
-    "@foldkit/vite-plugin": "0.11.3",
+    "@foldkit/vite-plugin": "0.16.1",
     "@iconify-json/hugeicons": "^1.2.32",
     "@iconify-json/lucide": "^1.2.123",
     "@iconify-json/ph": "^1.2.2",

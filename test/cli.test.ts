@@ -22,7 +22,7 @@ describe('crease CLI', () => {
     const result = run('doctor')
 
     assert.equal(result.status, 0)
-    assert.match(result.stdout, /ready \(foldkit 0\.137\.0/)
+    assert.match(result.stdout, /ready \(foldkit 0\.148\.2/)
   })
 
   it('rejects unknown commands without mutating the project', () => {

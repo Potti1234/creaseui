@@ -790,7 +790,14 @@ Source: [`src/ui/radio-group.ts`](../src/ui/radio-group.ts)
 | Export | Kind | Signature |
 | --- | --- | --- |
 | `RadioGroupOption` | type | `RadioGroupOption = Readonly<{ value: string; label: string; description?: string; }>` |
-| `RadioGroupProps` | type | `RadioGroupProps<Msg> = Readonly<{ id: string; selectedValue: Option.Option<string>; onSelect: (value: string) => Msg; ariaLabel: string; options: ReadonlyArray<RadioGroupOption>; isDisabled?: boolean; name?: string; orientation?: RadioGroupPrimitive.Orientati…` |
+| `RadioGroupProps` | type | `RadioGroupProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; selectedValue: Option.Option<string>; ariaLabel: string; options: ReadonlyArray<RadioGroupOption>; isDisabled?: boolean; name?: string; orientation?: RadioGroupPrimiti…` |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `OutMessage` | type | `OutMessage = RadioGroupPrimitive.OutMessage<string>` |
+| `init` | value | `init: value` |
+| `update` | value | `update: value` |
 | `radioGroup` | function | `radioGroup<Msg>(props: RadioGroupProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Resizable

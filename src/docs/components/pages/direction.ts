@@ -8,7 +8,7 @@ const source = (name: string, viewBody: string): string => statelessComponentApp
 });
 const previewProgram = interactionPreviewProgram('direction', (index, interaction, h) => index === 0
   ? Direction.direction({ direction: 'rtl', class: 'flex items-center gap-3', children: [Button.button({ onClick: interaction, children: ['التالي', '←'] }, h)] }, h)
-  : Direction.direction({ direction: 'rtl', children: ['الإصدار ', Direction.direction({ direction: 'ltr', class: 'inline-block font-mono', children: ['v0.137.0'] }, h)] }, h));
+  : Direction.direction({ direction: 'rtl', children: ['الإصدار ', Direction.direction({ direction: 'ltr', class: 'inline-block font-mono', children: ['v0.148.2'] }, h)] }, h));
 
 export const directionPage = authoredPage({
   slug: 'direction', title: 'Direction', kind: 'helper',
@@ -34,7 +34,7 @@ export const directionPage = authoredPage({
 
         code: source('Mixed Direction', `Direction.direction({ direction: 'rtl', children: [
   'الإصدار ',
-  Direction.direction({ direction: 'ltr', class: 'inline-block font-mono', children: ['v0.137.0'] }, h),
+  Direction.direction({ direction: 'ltr', class: 'inline-block font-mono', children: ['v0.148.2'] }, h),
 ] }, h),`),
       },
     ],

@@ -3187,7 +3187,42 @@
         {
           "name": "RadioGroupProps",
           "kind": "type",
-          "signature": "RadioGroupProps<Msg> = Readonly<{ id: string; selectedValue: Option.Option<string>; onSelect: (value: string) => Msg; ariaLabel: string; options: ReadonlyArray<RadioGroupOption>; isDisabled?: boolean; name?: string; orientation?: RadioGroupPrimitive.Orientati…"
+          "signature": "RadioGroupProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; selectedValue: Option.Option<string>; ariaLabel: string; options: ReadonlyArray<RadioGroupOption>; isDisabled?: boolean; name?: string; orientation?: RadioGroupPrimiti…"
+        },
+        {
+          "name": "Model",
+          "kind": "value",
+          "signature": "Model: value"
+        },
+        {
+          "name": "Model",
+          "kind": "type",
+          "signature": "Model = typeof Model.Type"
+        },
+        {
+          "name": "Message",
+          "kind": "value",
+          "signature": "Message: value"
+        },
+        {
+          "name": "Message",
+          "kind": "type",
+          "signature": "Message = typeof Message.Type"
+        },
+        {
+          "name": "OutMessage",
+          "kind": "type",
+          "signature": "OutMessage = RadioGroupPrimitive.OutMessage<string>"
+        },
+        {
+          "name": "init",
+          "kind": "value",
+          "signature": "init: value"
+        },
+        {
+          "name": "update",
+          "kind": "value",
+          "signature": "update: value"
         },
         {
           "name": "radioGroup",
