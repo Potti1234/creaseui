@@ -72,7 +72,9 @@ export const init = (route: AppRoute): Page =>
       BlocksIndex: () => BlocksIndex(),
       Block: () => Block({ blocks: BlocksFeature.init() }),
       ComponentDocs: ({ component }) =>
-        component === 'accordion'
+        ComponentCatalog.hasAuthoredPage(component)
+          ? CatalogDocs({ docs: ComponentCatalog.init(component) })
+          : component === 'accordion'
           ? AccordionDocs({ docs: AccordionDocsFeature.init() })
           : component === 'calendar'
             ? CalendarDocs({ docs: CalendarDocsFeature.init() })

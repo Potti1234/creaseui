@@ -4,6 +4,7 @@ import * as FoldkitCalendar from 'foldkit/calendar'
 import { m } from 'foldkit/message'
 
 import * as AlertDialog from '@/ui/alert-dialog'
+import * as Accordion from '@/ui/accordion'
 import * as Avatar from '@/ui/avatar'
 import * as Carousel from '@/ui/carousel'
 import * as Checkbox from '@/ui/checkbox'
@@ -44,6 +45,8 @@ export const TextTarget = S.Literals([
 export type TextTarget = typeof TextTarget.Type
 
 export const Model = S.Struct({
+  accordion: Accordion.Model,
+  accordionMultiple: Accordion.Model,
   cardEmail: S.String,
   fieldName: S.String,
   formEmail: S.String,
@@ -109,6 +112,9 @@ export const ChangedText = m('ChangedCatalogPreviewText', {
   target: TextTarget,
   value: S.String,
 })
+export const AccordionTarget = S.Literals(['single', 'multiple'])
+export type AccordionTarget = typeof AccordionTarget.Type
+export const GotAccordionMessage = m('GotCatalogAccordionMessage', { target: AccordionTarget, message: Accordion.Message })
 export const ClickedPreviewAction = m('ClickedCatalogPreviewAction')
 export const ChangedNativeSelect = m('ChangedCatalogNativeSelect', { value: S.String })
 export const GotAvatarMessage = m('GotCatalogAvatarMessage', { message: Avatar.Message })
@@ -160,6 +166,7 @@ export const GotTooltipMessage = m('GotCatalogTooltipMessage', { message: Toolti
 export const GotTooltipVariantMessage = m('GotCatalogTooltipVariantMessage', { index: S.Number, message: Tooltip.Message })
 
 export const Message = S.Union([
+  GotAccordionMessage,
   ChangedText,
   ClickedPreviewAction,
   ChangedNativeSelect,
@@ -210,6 +217,8 @@ export const Message = S.Union([
 export type Message = typeof Message.Type
 
 export const init = (): Model => ({
+  accordion: Accordion.init({ id: 'docs-accordion', type: 'single', items: [{ value: 'product', isOpen: true }, { value: 'style' }, { value: 'animation' }] }),
+  accordionMultiple: Accordion.init({ id: 'docs-accordion-multiple', type: 'multiple', items: [{ value: 'product', isOpen: true }, { value: 'style', isOpen: true }, { value: 'animation' }] }),
   cardEmail: '',
   fieldName: '',
   formEmail: '',
@@ -284,6 +293,8 @@ export const withExampleIds = (model: Model, suffix: string): Model => {
   const sheetId = id(model.sheet.id)
   return {
     ...model,
+    accordion: { ...model.accordion, id: id(model.accordion.id) },
+    accordionMultiple: { ...model.accordionMultiple, id: id(model.accordionMultiple.id) },
     carousel: { ...model.carousel, id: id(model.carousel.id) },
     resizable: { ...model.resizable, id: id(model.resizable.id) },
     slider: { ...model.slider, id: id(model.slider.id) },
@@ -343,6 +354,11 @@ type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
+    case 'GotCatalogAccordionMessage': {
+      const field = message.target === 'single' ? 'accordion' : 'accordionMultiple'
+      const [accordion, commands] = Accordion.update(model[field], message.message)
+      return [{ ...model, [field]: accordion }, Command.mapMessages(commands, next => GotAccordionMessage({ target: message.target, message: next }))]
+    }
     case 'ClickedCatalogPreviewAction':
       return [model, []]
     case 'ChangedCatalogNativeSelect':

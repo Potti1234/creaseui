@@ -1,4 +1,5 @@
 import type { AuthoredPage } from '@/docs/components/pages/authored-page';
+import { accordionPage } from '@/docs/components/pages/accordion';
 import { alertPage } from '@/docs/components/pages/alert';
 import { alertDialogPage } from '@/docs/components/pages/alert-dialog';
 import { aspectRatioPage } from '@/docs/components/pages/aspect-ratio';
@@ -59,6 +60,7 @@ import { typographyPage } from '@/docs/components/pages/typography';
 export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
   ...Object.fromEntries(
     [
+      accordionPage,
       alertPage,
       alertDialogPage,
       aspectRatioPage,

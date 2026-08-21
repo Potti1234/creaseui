@@ -145,6 +145,7 @@ test('authored helper pages publish complete application source', async ({ page 
   test.setTimeout(90_000)
 
   for (const route of [
+    'accordion',
     'alert',
     'alert-dialog',
     'aspect-ratio',
@@ -540,6 +541,19 @@ test('sidebar documents persistence and toggles derived shell state', async ({ p
   await expect(provider).toHaveAttribute('data-state', 'collapsed')
   await expect(example.locator('code')).toContainText('Sidebar.shortcut')
   await expect(example.locator('code')).toContainText('Command.mapMessages')
+})
+
+test('accordion enforces single-open state and publishes complete child wiring', async ({ page }) => {
+  await page.goto('/docs/components/accordion')
+  const example = page.locator('#single-disclosure')
+  const product = example.getByRole('button', { name: 'Is it accessible?' })
+  const style = example.getByRole('button', { name: 'Is it styled?' })
+  await expect(product).toHaveAttribute('aria-expanded', 'true')
+  await style.click()
+  await expect(style).toHaveAttribute('aria-expanded', 'true')
+  await expect(product).toHaveAttribute('aria-expanded', 'false')
+  await expect(example.locator('code')).toContainText('maybeToggle')
+  await expect(example.locator('code')).toContainText('Accordion.update')
 })
 
 test('flagship documentation pages have no automated accessibility violations', async ({

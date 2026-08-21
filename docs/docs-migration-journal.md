@@ -178,3 +178,12 @@ menu until focus was moved manually. The trigger now delegates every recognized
 open-menu key through the same `menuKey` state machine and also accepts ArrowUp
 as an opening key. Desktop and mobile browser tests exercise immediate Escape
 dismissal after a secondary click.
+
+### DOC-019 — Standalone route precedence hid an authored page
+
+Closed in the authored Accordion slice: Accordion and Calendar were hard-coded
+to legacy standalone page models before the catalog was consulted. Registering
+an authored Accordion definition therefore passed unit contracts but could not
+change the rendered route. Page initialization now gives explicitly authored
+pages precedence while retaining standalone fallbacks until their migrations
+land. Playwright verifies the authored example id and its single-open behavior.

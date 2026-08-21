@@ -96,6 +96,8 @@ const fallbackExampleState = State.init();
 export const hasCatalogPage = (slug: string): boolean =>
   componentTitle(slug) !== undefined;
 
+export const hasAuthoredPage = (slug: string): boolean => slug in authoredPages;
+
 export const hasDedicatedDefinition = (slug: string): boolean =>
   definitions[slug] !== undefined;
 
