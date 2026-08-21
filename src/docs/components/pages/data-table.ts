@@ -1,6 +1,8 @@
+import { Schema as S } from 'effect';
 import type { HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
 
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as DataTable from '@/ui/data-table';
 
@@ -86,8 +88,20 @@ const preview = (model: State.Model, h: HtmlBuilder<State.Message>, filter: bool
   ariaLabel: 'Payments',
 }, h);
 
+const GotDataTablePreviewMessage = m('GotDataTablePreviewMessage', { message: DataTable.Message });
+type GotDataTablePreviewMessage = typeof GotDataTablePreviewMessage.Type;
+const DataTablePreviewModel = S.Struct({ _docsPage: S.Literal('data-table'), table: DataTable.Model });
+type DataTablePreviewModel = typeof DataTablePreviewModel.Type;
+const previewProgram = definePreviewProgram<DataTablePreviewModel, GotDataTablePreviewMessage>({
+  Model: DataTablePreviewModel, Message: GotDataTablePreviewMessage,
+  init: () => ({ _docsPage: 'data-table', table: DataTable.init(5) }),
+  update: (model, message) => [{ ...model, table: DataTable.update(model.table, message.message) }, []],
+  view: (index, model, h) => DataTable.dataTable({ model: model.table, toParentMessage: message => GotDataTablePreviewMessage({ message }), rows: payments, columns: columns(), rowKey: row => row.id, ...(index === 1 ? { filterText: (row: Payment) => `${row.status} ${row.email}`, filterPlaceholder: 'Filter payments…' } : {}), ariaLabel: 'Payments' }, h),
+});
+
 export const dataTablePage = authoredPage({
   slug: 'data-table', title: 'Data Table', kind: 'recipe',
+  previewProgram,
   definition: {
     kind: 'recipe', description: 'A typed table recipe with filtering, sortable columns, formatting, and pagination.',
     architecture: 'The application owns rows and typed column definitions. DataTable.Model stores only interaction state—filter text, sort choice, direction, page, and page size—and its pure update is delegated by the parent.',

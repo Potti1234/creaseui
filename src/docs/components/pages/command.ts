@@ -1,7 +1,9 @@
-import { Option } from 'effect';
+import { Option, Schema as S } from 'effect';
+import { Command } from 'foldkit';
 import type { HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
 
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as CommandMenu from '@/ui/command';
 
@@ -64,8 +66,24 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 
 const preview = (model: State.Model, grouped: boolean, h: HtmlBuilder<State.Message>) => CommandMenu.command<string, State.Message>({ model: model.command, maybeSelectedValue: model.selectedCommandValue, restingInputValue: Option.match(model.selectedCommandValue, { onNone: () => '', onSome: labelFor }), toParentMessage: (message) => State.GotCommandMessage({ message }), class: 'w-full max-w-md border shadow-md', items: actions, itemToConfig: (action) => ({ content: labelFor(action), ...(action === 'settings' ? { shortcut: '⌘,' } : {}) }), placeholder: 'Type a command or search…', ariaLabel: 'Application commands', ...(grouped ? { itemGroupKey: (action: string) => action === 'settings' ? 'System' : 'Navigation', groupToHeading: (group: string) => group } : {}) }, h);
 
+const GotCommandPreviewMessage = m('GotCommandPreviewMessage', { message: CommandMenu.Message });
+type GotCommandPreviewMessage = typeof GotCommandPreviewMessage.Type;
+const CommandPreviewModel = S.Struct({ _docsPage: S.Literal('command'), command: CommandMenu.Model, maybeAction: S.Option(S.String) });
+type CommandPreviewModel = typeof CommandPreviewModel.Type;
+const previewProgram = definePreviewProgram<CommandPreviewModel, GotCommandPreviewMessage>({
+  Model: CommandPreviewModel, Message: GotCommandPreviewMessage,
+  init: index => ({ _docsPage: 'command', command: CommandMenu.init({ id: `docs-command-${String(index)}`, isAnimated: true }), maybeAction: Option.none() }),
+  update: (model, message) => {
+    const [command, commands, maybeSelection] = CommandMenu.update(model.command, message.message);
+    const maybeAction = Option.match(maybeSelection, { onNone: () => model.maybeAction, onSome: selection => selection._tag === 'Selected' ? Option.some(selection.value) : Option.none<string>() });
+    return [{ ...model, command, maybeAction }, Command.mapMessages(commands, next => GotCommandPreviewMessage({ message: next }))];
+  },
+  view: (index, model, h) => CommandMenu.command<string, GotCommandPreviewMessage>({ model: model.command, maybeSelectedValue: model.maybeAction, restingInputValue: Option.match(model.maybeAction, { onNone: () => '', onSome: labelFor }), toParentMessage: message => GotCommandPreviewMessage({ message }), class: 'w-full max-w-md border shadow-md', items: actions, itemToConfig: action => ({ content: labelFor(action), ...(action === 'settings' ? { shortcut: '⌘,' } : {}) }), placeholder: 'Type a command or search…', ariaLabel: 'Application commands', ...(index === 1 ? { itemGroupKey: (action: string) => action === 'settings' ? 'System' : 'Navigation', groupToHeading: (group: string) => group } : {}) }, h),
+});
+
 export const commandPage = authoredPage({
   slug: 'command', title: 'Command', kind: 'submodel',
+  previewProgram,
   definition: {
     kind: 'submodel', description: 'Provides a searchable command surface for selecting an application action.',
     architecture: 'Command uses Foldkit’s Combobox submodel. Query/disclosure state lives in the child; the parent consumes its typed Selected/Cleared output and decides what application action that selection represents.',
