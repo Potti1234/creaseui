@@ -29,6 +29,7 @@ import { radioGroupPage } from '@/docs/components/pages/radio-group';
 import { scrollAreaPage } from '@/docs/components/pages/scroll-area';
 import { separatorPage } from '@/docs/components/pages/separator';
 import { skeletonPage } from '@/docs/components/pages/skeleton';
+import { sliderPage } from '@/docs/components/pages/slider';
 import { spinnerPage } from '@/docs/components/pages/spinner';
 import { switchPage } from '@/docs/components/pages/switch';
 import { tabsPage } from '@/docs/components/pages/tabs';
@@ -71,6 +72,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       scrollAreaPage,
       separatorPage,
       skeletonPage,
+      sliderPage,
       spinnerPage,
       switchPage,
       tabsPage,

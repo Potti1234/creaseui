@@ -175,6 +175,7 @@ test('authored helper pages publish complete application source', async ({ page 
     'scroll-area',
     'separator',
     'skeleton',
+    'slider',
     'spinner',
     'switch',
     'tabs',
@@ -236,6 +237,17 @@ test('authored tabs keep child instances and selected values independent', async
     'aria-selected',
     'true',
   )
+})
+
+test('authored slider delegates keyboard changes and stores its output value', async ({ page }) => {
+  await page.goto('/docs/components/slider')
+
+  const example = page.locator('#controlled-volume')
+  const slider = example.getByRole('slider', { name: 'Volume' })
+  await slider.focus()
+  await page.keyboard.press('ArrowRight')
+  await expect(slider).toHaveAttribute('aria-valuenow', '51')
+  await expect(example).toContainText('Current value: 51')
 })
 
 test('create icon selection changes the live preview shapes', async ({ page }) => {
