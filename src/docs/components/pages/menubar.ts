@@ -73,7 +73,7 @@ const labelFor = (action: Action): string => action[0]?.toUpperCase() + action.s
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Menubar — Coordinated menus',
   body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
-    Menubar.menubar({
+    Menubar.menubar<Action, Message>({
       ariaLabel: 'Application menu',
       activeIndex: model.activeMenu,
       onMove: index => MovedMenu({ index }),

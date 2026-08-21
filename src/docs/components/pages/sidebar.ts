@@ -37,9 +37,11 @@ export type Message = typeof Message.Type`,
     }
   }
 }`,
-  subscriptions: `export const subscriptions = Subscription.aggregate<Model, Message>()(
-  { sidebarShortcut: () => Sidebar.shortcut(next => GotSidebarMessage({ message: next })) },
-)`,
+  subscriptions: `export const subscriptions = Subscription.make<Model, Message>()(() => ({
+  sidebarShortcut: Subscription.persistent(
+    Sidebar.shortcut(next => GotSidebarMessage({ message: next })),
+  ),
+}))`,
   view: `const navigation = (h: HtmlBuilder<Message>) => Sidebar.sidebarMenu({
   children: ['Playground', 'Models', 'Documentation'].map((label, index) =>
     Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ isActive: index === 0, children: [label] }, h)] }, h),

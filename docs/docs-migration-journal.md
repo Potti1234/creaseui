@@ -14,42 +14,6 @@ the implementation and an automated contract agree.
 
 ## Open problems
 
-### DOC-001 — Grouped definition files hide page ownership
-
-Three alphabetical definition files currently contain about 7,700 lines and
-nearly every component page. A change to one page requires navigating imports,
-helpers, and state shared by dozens of unrelated components.
-
-Resolution target: one authored module per component slug under
-`src/docs/components/pages/`, with an explicit catalog registry.
-
-### DOC-002 — Example source is reconstructed from preview syntax
-
-`scripts/generate-doc-example-sources.mjs` parses the documentation source AST
-and attempts to infer display code. This has already produced malformed imports
-and allows the displayed preview and copyable code to drift apart.
-
-Resolution target: delete the inference pipeline. Each example owns explicit,
-reviewable application source next to its preview.
-
-### DOC-003 — Most snippets are fragments, not runnable Foldkit programs
-
-Many examples contain one expression, an ellipsis, or prose. They omit Model,
-Message, init, update, subscriptions, view, and runtime wiring, so copying the
-snippet cannot reproduce the preview.
-
-Resolution target: every example exposes a complete application module and the
-test suite rejects fragment-only source.
-
-### DOC-004 — A generic complete-example wrapper invents unrelated behavior
-
-The current `completeExample` helper wraps a view fragment in an `exampleRuns`
-counter regardless of what the component does. Stateful components therefore do
-not demonstrate their actual child Model, Message, Commands, or OutMessage.
-
-Resolution target: shared example primitives may format common Foldkit sections,
-but component pages must author their real state and update integration.
-
 ### DOC-005 — Shared catalog state couples unrelated pages
 
 Every shared page allocates the large `catalog-state` model, including state for
@@ -112,19 +76,30 @@ icon picker also failed once independently of documentation changes.
 Resolution target: keep a deterministic documentation matrix and separately
 identify whether shared runtime state or test assumptions cause parallel flakes.
 
-### DOC-013 — Lifecycle-complete examples can still depend on missing locals
-
-The first authored-page contract verifies Model, Message, init, update, view,
-subscriptions, and runtime sections, but it does not prove that identifiers used
-inside the view are declared. The Table and horizontal Scroll Area applications
-both passed that contract while referring to demo collections that were absent
-from the copyable module.
-
-Resolution target: keep example data inside the complete module (or explicitly
-support declarations in the source formatter), repair every discovered missing
-identifier, and add compile-oriented source verification before closing DOC-003.
-
 ## Closed problems
+
+### DOC-001 — Grouped definition files hid page ownership
+
+Closed in `0f4e857`: all 65 routes are registered from individual authored page
+modules, and the three 7,700-line grouped definition files were deleted.
+
+### DOC-002 — Example source was reconstructed from preview syntax
+
+Closed in `0f4e857`: the AST inference script and generated source registry were
+deleted. Every authored example now owns explicit source beside its preview.
+
+### DOC-003 / DOC-013 — Displayed applications were not proven runnable
+
+Closed by the copyable-application compiler contract. All 130 displayed modules
+are compiled together with the repository tsconfig and real Foldkit/Crease UI
+sources. The first run caught invalid Menubar generic inference and an obsolete
+Sidebar subscription shape; both were repaired before the contract passed.
+
+### DOC-004 — Generic example wrapping invented unrelated behavior
+
+Closed in `0f4e857`: `complete-example.ts` was deleted. Shared helpers format the
+application boundary only; each component page authors its actual Model,
+Message, update, subscriptions, view, and runtime content.
 
 ### DOC-021 — Repeated Date Picker examples shared nested popover ids
 
