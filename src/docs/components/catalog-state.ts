@@ -82,6 +82,7 @@ export const Model = S.Struct({
   datePicker: DatePicker.Model,
   selectedDate: S.Option(FoldkitCalendar.CalendarDate),
   dialog: Dialog.Model,
+  dialogSecondary: Dialog.Model,
   drawer: Drawer.Model,
   dropdownMenu: DropdownMenu.Model,
   hoverCard: HoverCard.Model,
@@ -133,6 +134,8 @@ export const GotCommandMessage = m('GotCatalogCommandMessage', { message: Comman
 export const GotContextMenuMessage = m('GotCatalogContextMenuMessage', { message: ContextMenu.Message })
 export const GotDatePickerMessage = m('GotCatalogDatePickerMessage', { message: DatePicker.Message })
 export const GotDialogMessage = m('GotCatalogDialogMessage', { message: Dialog.Message })
+export const OpenedDialogSecondary = m('OpenedCatalogDialogSecondary')
+export const GotDialogSecondaryMessage = m('GotCatalogDialogSecondaryMessage', { message: Dialog.Message })
 export const GotDrawerMessage = m('GotCatalogDrawerMessage', { message: Drawer.Message })
 export const GotDropdownMenuMessage = m('GotCatalogDropdownMenuMessage', { message: DropdownMenu.Message })
 export const GotHoverCardMessage = m('GotCatalogHoverCardMessage', { message: HoverCard.Message })
@@ -177,6 +180,8 @@ export const Message = S.Union([
   GotContextMenuMessage,
   GotDatePickerMessage,
   GotDialogMessage,
+  OpenedDialogSecondary,
+  GotDialogSecondaryMessage,
   GotDrawerMessage,
   GotDropdownMenuMessage,
   GotHoverCardMessage,
@@ -233,6 +238,7 @@ export const init = (): Model => ({
   datePicker: DatePicker.init({ id: 'docs-date-picker', today: { year: 2026, month: 7, day: 28 }, initialViewDate: { year: 2026, month: 7, day: 18 }, isAnimated: true }),
   selectedDate: Option.some({ year: 2026, month: 7, day: 18 }),
   dialog: Dialog.init({ id: 'docs-dialog', isAnimated: true }),
+  dialogSecondary: Dialog.init({ id: 'docs-dialog-secondary', isAnimated: true }),
   drawer: Drawer.init({ id: 'docs-drawer', isAnimated: true }),
   dropdownMenu: DropdownMenu.init({ id: 'docs-dropdown' }),
   hoverCard: HoverCard.init({ id: 'docs-hover-card' }),
@@ -451,6 +457,14 @@ export const update = (model: Model, message: Message): UpdateReturn => {
     case 'GotCatalogDialogMessage': {
       const [dialog, commands] = Dialog.update(model.dialog, message.message)
       return [{ ...model, dialog }, Command.mapMessages(commands, next => GotDialogMessage({ message: next }))]
+    }
+    case 'OpenedCatalogDialogSecondary': {
+      const [dialogSecondary, commands] = Dialog.open(model.dialogSecondary)
+      return [{ ...model, dialogSecondary }, Command.mapMessages(commands, next => GotDialogSecondaryMessage({ message: next }))]
+    }
+    case 'GotCatalogDialogSecondaryMessage': {
+      const [dialogSecondary, commands] = Dialog.update(model.dialogSecondary, message.message)
+      return [{ ...model, dialogSecondary }, Command.mapMessages(commands, next => GotDialogSecondaryMessage({ message: next }))]
     }
     case 'GotCatalogDrawerMessage': {
       const [drawer, commands] = Drawer.update(model.drawer, message.message)

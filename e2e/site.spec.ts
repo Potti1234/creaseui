@@ -158,6 +158,7 @@ test('authored helper pages publish complete application source', async ({ page 
     'checkbox',
     'collapsible',
     'direction',
+    'dialog',
     'empty',
     'field',
     'form',
@@ -303,8 +304,8 @@ test('create icon selection changes the live preview shapes', async ({ page }) =
 
 test('dialog traps focus, closes with Escape, and restores its trigger', async ({ page }) => {
   await page.goto('/docs/components/dialog')
-  const example = page.locator('#custom-close-button')
-  const trigger = example.getByRole('button', { name: 'Open Dialog' })
+  const example = page.locator('#edit-profile')
+  const trigger = example.getByRole('button', { name: 'Open profile' })
 
   await trigger.click()
   const dialog = page.getByRole('dialog')
@@ -313,10 +314,10 @@ test('dialog traps focus, closes with Escape, and restores its trigger', async (
   await expect(dialog.locator('[data-slot="dialog-header"]')).toBeVisible()
   await expect(dialog.locator('[data-slot="dialog-title"]')).toHaveText('Edit profile')
   await expect(dialog.locator('[data-slot="dialog-footer"]')).toBeVisible()
-  await expect(page.locator('#custom-close-button code')).toContainText('layout: parts')
+  await expect(example.locator('code')).toContainText('Dialog.open')
 
   await page.keyboard.press('Tab')
-  await expect(dialog).toContainText('Save changes')
+  await expect(dialog).toContainText('Save')
   expect(await dialog.evaluate(node => node.contains(document.activeElement))).toBe(true)
 
   await page.keyboard.press('Escape')
