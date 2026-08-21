@@ -1,6 +1,9 @@
+import { Schema as S } from 'effect';
+import { Command } from 'foldkit';
 import type { HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
 
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as Button from '@/ui/button';
 import * as Drawer from '@/ui/drawer';
@@ -73,8 +76,31 @@ const preview = (model: State.Model, direction: Drawer.DrawerDirection, h: HtmlB
   Drawer.drawer({ model: model.drawer, toParentMessage: (message) => State.GotDrawerMessage({ message }), direction, title: 'Move goal', description: 'Set your daily activity goal.', content: () => [h.div([h.Class('px-4 pb-6 text-center')], [h.p([h.Class('text-5xl font-bold tabular-nums')], ['350']), h.p([h.Class('text-sm text-muted-foreground')], ['Calories per day'])])], footer: (slots) => [h.button([...slots.closeButton, h.Type('button'), h.Class('rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground')], ['Save goal']), h.button([...slots.closeButton, h.Type('button'), h.Class('rounded-md border px-4 py-2 text-sm')], ['Cancel'])] }, h),
 ]);
 
+const OpenedDrawerPreview = m('OpenedDrawerPreview');
+const GotDrawerPreviewMessage = m('GotDrawerPreviewMessage', { message: Drawer.Message });
+const DrawerPreviewMessage = S.Union([OpenedDrawerPreview, GotDrawerPreviewMessage]);
+type DrawerPreviewMessage = typeof DrawerPreviewMessage.Type;
+const DrawerPreviewModel = S.Struct({ _docsPage: S.Literal('drawer'), drawer: Drawer.Model });
+type DrawerPreviewModel = typeof DrawerPreviewModel.Type;
+const previewProgram = definePreviewProgram<DrawerPreviewModel, DrawerPreviewMessage>({
+  Model: DrawerPreviewModel,
+  Message: DrawerPreviewMessage,
+  init: index => ({ _docsPage: 'drawer', drawer: Drawer.init({ id: `docs-drawer-${String(index)}`, isAnimated: true }) }),
+  update: (model, message) => {
+    const [drawer, commands] = message._tag === 'OpenedDrawerPreview'
+      ? Drawer.open(model.drawer)
+      : Drawer.update(model.drawer, message.message);
+    return [{ ...model, drawer }, Command.mapMessages(commands, next => GotDrawerPreviewMessage({ message: next }))];
+  },
+  view: (index, model, h) => {
+    const direction: Drawer.DrawerDirection = index === 0 ? 'bottom' : 'right';
+    return h.div([], [Button.button({ variant: 'outline', onClick: OpenedDrawerPreview(), children: [`Open ${direction} drawer`] }, h), Drawer.drawer({ model: model.drawer, toParentMessage: message => GotDrawerPreviewMessage({ message }), direction, title: 'Move goal', description: 'Set your daily activity goal.', content: () => [h.div([h.Class('px-4 pb-6 text-center')], [h.p([h.Class('text-5xl font-bold tabular-nums')], ['350']), h.p([h.Class('text-sm text-muted-foreground')], ['Calories per day'])])], footer: slots => [h.button([...slots.closeButton, h.Type('button'), h.Class('rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground')], ['Save goal']), h.button([...slots.closeButton, h.Type('button'), h.Class('rounded-md border px-4 py-2 text-sm')], ['Cancel'])] }, h)]);
+  },
+});
+
 export const drawerPage = authoredPage({
   slug: 'drawer', title: 'Drawer', kind: 'submodel',
+  previewProgram,
   definition: {
     kind: 'submodel', description: 'Presents a dismissible task panel that can be dragged away from any screen edge.',
     architecture: 'Drawer owns a nested Dialog Model plus drag start and offset state. The parent delegates every Drawer.Message and maps the returned Commands so focus and animation effects run.',

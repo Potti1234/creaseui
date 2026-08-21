@@ -1,6 +1,9 @@
+import { Schema as S } from 'effect';
+import { Command } from 'foldkit';
 import type { HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
 
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as HoverCard from '@/ui/hover-card';
 
@@ -55,8 +58,24 @@ export type Message = typeof Message.Type`,
 
 const preview = (model: State.Model, side: HoverCard.HoverCardSide, h: HtmlBuilder<State.Message>) => HoverCard.hoverCard({ model: model.hoverCard, toParentMessage: (message) => State.GotHoverCardMessage({ message }), trigger: '@foldkit', triggerClass: 'underline underline-offset-4', ariaLabel: 'Preview the Foldkit profile', side, content: card(h) }, h);
 
+const GotHoverCardPreviewMessage = m('GotHoverCardPreviewMessage', { message: HoverCard.Message });
+type GotHoverCardPreviewMessage = typeof GotHoverCardPreviewMessage.Type;
+const HoverCardPreviewModel = S.Struct({ _docsPage: S.Literal('hover-card'), hoverCard: HoverCard.Model });
+type HoverCardPreviewModel = typeof HoverCardPreviewModel.Type;
+const previewProgram = definePreviewProgram<HoverCardPreviewModel, GotHoverCardPreviewMessage>({
+  Model: HoverCardPreviewModel,
+  Message: GotHoverCardPreviewMessage,
+  init: index => ({ _docsPage: 'hover-card', hoverCard: HoverCard.init({ id: `docs-hover-card-${String(index)}`, closeDelay: 150 }) }),
+  update: (model, message) => {
+    const [hoverCard, commands] = HoverCard.update(model.hoverCard, message.message);
+    return [{ ...model, hoverCard }, Command.mapMessages(commands, next => GotHoverCardPreviewMessage({ message: next }))];
+  },
+  view: (index, model, h) => HoverCard.hoverCard({ model: model.hoverCard, toParentMessage: message => GotHoverCardPreviewMessage({ message }), trigger: '@foldkit', triggerClass: 'underline underline-offset-4', ariaLabel: 'Preview the Foldkit profile', side: index === 0 ? 'bottom' : 'right', content: card(h) }, h),
+});
+
 export const hoverCardPage = authoredPage({
   slug: 'hover-card', title: 'Hover Card', kind: 'submodel',
+  previewProgram,
   definition: {
     kind: 'submodel', description: 'Reveals supplementary preview information when a pointer or keyboard focus rests on a trigger.',
     architecture: 'Hover Card keeps disclosure and a versioned close delay in a child Model. The delayed Command must be mapped back to the child so stale leave events cannot close a newly re-entered card.',

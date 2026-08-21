@@ -1,7 +1,33 @@
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { Schema as S } from 'effect';
+import { Command } from 'foldkit';
+import { m } from 'foldkit/message';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as AlertDialog from '@/ui/alert-dialog';
 import * as Button from '@/ui/button';
+
+const OpenedAlertDialogPreview = m('OpenedAlertDialogPreview');
+const ConfirmedAlertDialogPreview = m('ConfirmedAlertDialogPreview');
+const GotAlertDialogPreviewMessage = m('GotAlertDialogPreviewMessage', { message: AlertDialog.Message });
+const AlertDialogPreviewMessage = S.Union([OpenedAlertDialogPreview, ConfirmedAlertDialogPreview, GotAlertDialogPreviewMessage]);
+type AlertDialogPreviewMessage = typeof AlertDialogPreviewMessage.Type;
+const AlertDialogPreviewModel = S.Struct({ _docsPage: S.Literal('alert-dialog'), alertDialog: AlertDialog.Model, isConfirmed: S.Boolean });
+type AlertDialogPreviewModel = typeof AlertDialogPreviewModel.Type;
+const previewProgram = definePreviewProgram<AlertDialogPreviewModel, AlertDialogPreviewMessage>({
+  Model: AlertDialogPreviewModel,
+  Message: AlertDialogPreviewMessage,
+  init: index => ({ _docsPage: 'alert-dialog', alertDialog: AlertDialog.init({ id: `docs-alert-dialog-${String(index)}`, isAnimated: true }), isConfirmed: false }),
+  update: (model, message) => {
+    const base = message._tag === 'ConfirmedAlertDialogPreview' ? { ...model, isConfirmed: true } : model;
+    const [alertDialog, commands] = message._tag === 'OpenedAlertDialogPreview'
+      ? AlertDialog.open(model.alertDialog)
+      : message._tag === 'ConfirmedAlertDialogPreview'
+        ? AlertDialog.close(model.alertDialog)
+        : AlertDialog.update(model.alertDialog, message.message);
+    return [{ ...base, alertDialog }, Command.mapMessages(commands, next => GotAlertDialogPreviewMessage({ message: next }))];
+  },
+  view: (index, model, h) => h.div([h.Class('grid justify-items-center gap-3')], [Button.button({ variant: index === 0 ? 'destructive' : 'outline', onClick: OpenedAlertDialogPreview(), children: [index === 0 ? 'Delete project' : 'Leave workspace'] }, h), AlertDialog.alertDialog({ model: model.alertDialog, toParentMessage: message => GotAlertDialogPreviewMessage({ message }), title: index === 0 ? 'Delete this project?' : 'Leave workspace?', description: index === 0 ? 'This action cannot be undone.' : 'You will lose access to team projects.', actionLabel: index === 0 ? 'Delete' : 'Leave', onAction: ConfirmedAlertDialogPreview(), cancelLabel: index === 0 ? 'Cancel' : 'Stay', ...(index === 1 ? { size: 'sm' as const } : {}) }, h), ...(index === 0 ? [h.p([h.Role('status'), h.Class('text-sm text-muted-foreground')], [model.isConfirmed ? 'Project deleted.' : 'Project is active.'])] : [])]),
+});
 
 const source = (name: string, size: 'default' | 'sm'): string => foldkitApplication({
   title: `Alert Dialog — ${name}`,
@@ -68,6 +94,7 @@ export const update = (model: Model, message: Message): readonly [Model, Readonl
 
 export const alertDialogPage = authoredPage({
   slug: 'alert-dialog', title: 'Alert Dialog', kind: 'submodel',
+  previewProgram,
   definition: {
     kind: 'submodel', description: 'Interrupts with a consequential decision that requires an explicit confirm or cancel action.',
     architecture: 'Alert Dialog uses the Dialog child Model and Commands. The primary action emits a domain Message; that parent branch performs the action and calls AlertDialog.close so confirmation is observable and focus restoration remains intact.',
