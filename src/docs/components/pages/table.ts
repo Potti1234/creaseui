@@ -25,7 +25,11 @@ export const tablePage = authoredPage({
       Table.tableHead({ children: ['State'] }, h),
     ] }, h),
   ] }, h),
-  Table.tableBody({ children: rows.map(row =>
+  Table.tableBody({ children: [
+    { name: 'Accordion', state: 'Stateful' },
+    { name: 'Button', state: 'Stateless' },
+    { name: 'Dialog', state: 'Stateful' },
+  ].map(row =>
     Table.tableRow({ children: [
       Table.tableCell({ children: [row.name] }, h),
       Table.tableCell({ children: [row.state] }, h),

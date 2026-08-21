@@ -32,7 +32,10 @@ export const scrollAreaPage = authoredPage({
   orientation: 'horizontal',
   ariaLabel: 'Release versions',
   class: 'w-80 rounded-md border p-4',
-  children: [h.div([h.Class('flex w-max gap-3')], versions.map(version =>
+  children: [h.div([h.Class('flex w-max gap-3')], [
+    'Component 1', 'Component 2', 'Component 3', 'Component 4',
+    'Component 5', 'Component 6', 'Component 7', 'Component 8',
+  ].map(version =>
     h.span([h.Class('rounded-md bg-muted px-3 py-2')], [version]),
   ))],
 }, h),`),

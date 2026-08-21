@@ -108,6 +108,18 @@ icon picker also failed once independently of documentation changes.
 Resolution target: keep a deterministic documentation matrix and separately
 identify whether shared runtime state or test assumptions cause parallel flakes.
 
+### DOC-013 — Lifecycle-complete examples can still depend on missing locals
+
+The first authored-page contract verifies Model, Message, init, update, view,
+subscriptions, and runtime sections, but it does not prove that identifiers used
+inside the view are declared. The Table and horizontal Scroll Area applications
+both passed that contract while referring to demo collections that were absent
+from the copyable module.
+
+Resolution target: keep example data inside the complete module (or explicitly
+support declarations in the source formatter), repair every discovered missing
+identifier, and add compile-oriented source verification before closing DOC-003.
+
 ## Closed problems
 
 ### DOC-011 — Generated source silently overrides authored source
