@@ -12,6 +12,8 @@ import { cardPage } from '@/docs/components/pages/card';
 import { carouselPage } from '@/docs/components/pages/carousel';
 import { checkboxPage } from '@/docs/components/pages/checkbox';
 import { collapsiblePage } from '@/docs/components/pages/collapsible';
+import { comboboxPage } from '@/docs/components/pages/combobox';
+import { commandPage } from '@/docs/components/pages/command';
 import { directionPage } from '@/docs/components/pages/direction';
 import { dialogPage } from '@/docs/components/pages/dialog';
 import { drawerPage } from '@/docs/components/pages/drawer';
@@ -65,6 +67,8 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       carouselPage,
       checkboxPage,
       collapsiblePage,
+      comboboxPage,
+      commandPage,
       directionPage,
       dialogPage,
       drawerPage,

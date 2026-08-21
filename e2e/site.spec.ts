@@ -158,6 +158,8 @@ test('authored helper pages publish complete application source', async ({ page 
     'carousel',
     'checkbox',
     'collapsible',
+    'combobox',
+    'command',
     'direction',
     'dialog',
     'drawer',
@@ -437,6 +439,30 @@ test('select persists a typed OutMessage selection', async ({ page }) => {
   await expect(trigger).toContainText('Banana')
   await expect(listbox).toBeHidden()
   await expect(example.locator('code')).toContainText('maybeSelection')
+  await expect(example.locator('code')).toContainText("selection._tag === 'Selected'")
+})
+
+test('combobox filters items and persists its typed selection output', async ({ page }) => {
+  await page.goto('/docs/components/combobox')
+  const example = page.locator('#framework-search')
+  const input = example.getByRole('combobox', { name: 'Framework' })
+  await input.fill('sve')
+  const option = page.getByRole('option', { name: 'SvelteKit' })
+  await expect(option).toBeVisible()
+  await option.click()
+  await expect(input).toHaveValue('SvelteKit')
+  await expect(example.locator('code')).toContainText('maybeSelection')
+})
+
+test('command search commits a typed parent action', async ({ page }) => {
+  await page.goto('/docs/components/command')
+  const example = page.locator('#application-commands')
+  const input = example.getByRole('combobox', { name: 'Application commands' })
+  await input.fill('sett')
+  const option = page.getByRole('option', { name: /Settings/u })
+  await expect(option).toBeVisible()
+  await option.click()
+  await expect(input).toHaveValue('Settings')
   await expect(example.locator('code')).toContainText("selection._tag === 'Selected'")
 })
 

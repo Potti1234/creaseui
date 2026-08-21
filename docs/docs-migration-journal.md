@@ -159,3 +159,12 @@ contract incorrectly searched inside that article even though the accessibility
 snapshot proved the panel was open. The contract now scopes the trigger and
 source to the example, but locates the portalled panel at page level; desktop
 and mobile runs verify visibility, Escape dismissal, and focus restoration.
+
+### DOC-017 — Optional example configuration was authored as explicit undefined
+
+Closed in the authored Command slice: the first preview returned
+`shortcut: string | undefined`, which violates the repository's exact optional
+property contract and would teach consumers the wrong construction. Both the
+live preview and complete application now conditionally spread the shortcut
+field only when it exists. Typecheck protects the preview; compile-oriented
+example verification remains part of DOC-003's final closure.
