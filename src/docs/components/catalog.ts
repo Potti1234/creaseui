@@ -209,7 +209,7 @@ export const view = (
       kind,
       architecture: definition.architecture ?? architectureFor(kind, name),
       installation: `npx shadcn@latest add Potti1234/creaseui/${slug}`,
-      usage: usageFor(slug, name, kind),
+      usage: definition.usage ?? usageFor(slug, name, kind),
       ...(definition.sections === undefined ? {} : { sections: definition.sections }),
       ...(definition.styling === undefined ? {} : { styling: definition.styling }),
       ...(definition.accessibility === undefined
@@ -258,7 +258,8 @@ export const view = (
       apiDescription:
         definition.apiDescription ??
         `${name} is source-owned after installation. Its public model, messages, update function, and view helpers are documented directly in the installed TypeScript source.`,
-      apiEntries: componentApi[slug] ?? [],
+      apiEntries:
+        slug === 'toast' ? (componentApi.sonner ?? []) : (componentApi[slug] ?? []),
     },
     h,
   );

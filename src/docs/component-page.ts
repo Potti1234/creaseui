@@ -332,6 +332,29 @@ export type ComponentPageConfig<Msg> = Readonly<{
 
 const SIDEBAR_SCROLL_KEY = 'creaseui-docs-sidebar-scroll';
 
+const apiPurpose = (entry: ApiEntry): string => {
+  switch (entry.name) {
+    case 'Model':
+      return 'State owned by the component and stored in the parent model.';
+    case 'Message':
+      return 'Child events delegated through the parent update loop.';
+    case 'OutMessage':
+      return 'Typed events emitted for the parent domain to interpret.';
+    case 'init':
+      return 'Creates the initial component model.';
+    case 'update':
+      return 'Applies a child message and returns state, commands, and optional output.';
+    case 'view':
+      return 'Submodel view embedded with h.submodel.';
+    default:
+      return entry.kind === 'function'
+        ? 'Public operation or render helper.'
+        : entry.kind === 'type'
+          ? 'Public configuration or data contract.'
+          : 'Public schema, message constructor, or compatibility export.';
+  }
+};
+
 export const componentPage = <Msg>(
   config: ComponentPageConfig<Msg>,
   h: HtmlBuilder<Msg>,
@@ -517,19 +540,46 @@ export const componentPage = <Msg>(
                     ],
                     [config.description],
                   ),
-                  h.p(
+                  h.div(
+                    [h.Class('flex flex-wrap items-center gap-2')],
                     [
-                      h.Class(
-                        'inline-flex items-center rounded-full border bg-muted/40 px-2.5 py-1 text-xs font-medium text-muted-foreground',
+                      h.span(
+                        [
+                          h.Class(
+                            'inline-flex items-center rounded-full border bg-muted/40 px-2.5 py-1 text-xs font-medium text-muted-foreground',
+                          ),
+                        ],
+                        [
+                          config.kind === 'helper'
+                            ? 'Stateless helper'
+                            : config.kind === 'submodel'
+                              ? 'Stateful submodel'
+                              : 'Composed recipe',
+                        ],
                       ),
-                    ],
-                    [
-                      config.kind === 'helper'
-                        ? 'Stateless helper'
-                        : config.kind === 'submodel'
-                          ? 'Stateful submodel'
-                          : 'Composed recipe',
-                      ' · source-owned',
+                      h.span(
+                        [h.Class('text-xs text-muted-foreground')],
+                        ['Installed as source'],
+                      ),
+                      h.span([h.AriaHidden(true), h.Class('text-border')], ['·']),
+                      h.a(
+                        [
+                          h.Href(config.apiHref),
+                          h.Class('text-xs font-medium underline underline-offset-4'),
+                        ],
+                        ['Foldkit reference'],
+                      ),
+                      ...(config.sourceHref === undefined
+                        ? []
+                        : [
+                            h.a(
+                              [
+                                h.Href(config.sourceHref),
+                                h.Class('text-xs font-medium underline underline-offset-4'),
+                              ],
+                              ['Source'],
+                            ),
+                          ]),
                     ],
                   ),
                 ],
@@ -719,7 +769,7 @@ export const componentPage = <Msg>(
                     ],
                     [
                       h.table(
-                        [h.Class('w-full min-w-[42rem] text-left text-sm')],
+                        [h.Class('w-full min-w-[54rem] text-left text-sm')],
                         [
                           h.thead(
                             [h.Class('border-b bg-muted/45')],
@@ -728,6 +778,7 @@ export const componentPage = <Msg>(
                                 h.th([h.Class('px-4 py-3 font-medium')], ['Export']),
                                 h.th([h.Class('px-4 py-3 font-medium')], ['Kind']),
                                 h.th([h.Class('px-4 py-3 font-medium')], ['Signature']),
+                                h.th([h.Class('px-4 py-3 font-medium')], ['Purpose']),
                               ]),
                             ],
                           ),
@@ -753,6 +804,10 @@ export const componentPage = <Msg>(
                                         [entry.signature],
                                       ),
                                     ],
+                                  ),
+                                  h.td(
+                                    [h.Class('max-w-xs px-4 py-3 align-top text-muted-foreground')],
+                                    [apiPurpose(entry)],
                                   ),
                                 ],
                               ),

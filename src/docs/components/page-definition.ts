@@ -24,6 +24,7 @@ export type PageDefinition = Readonly<{
   examples: ReadonlyArray<DocsExample>;
   kind?: ComponentKind;
   architecture?: string;
+  usage?: string;
   sections?: ReadonlyArray<DocsSection>;
   styling?: string;
   accessibility?: string;

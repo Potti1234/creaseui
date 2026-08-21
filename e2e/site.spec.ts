@@ -107,6 +107,37 @@ test('create preset shuffle updates executable output', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Copy Registry JSON' })).toBeVisible()
 })
 
+test('component docs explain the Foldkit integration model', async ({ page }) => {
+  await page.goto('/docs/components/button')
+  await expect(page.getByText('Stateless helper', { exact: true })).toBeVisible()
+  await expect(page.locator('#architecture')).toContainText('does not add a child Model')
+  await expect(page.locator('#keyboard-interaction')).toContainText('Enter')
+
+  await page.goto('/docs/components/dialog')
+  await expect(page.getByText('Stateful submodel', { exact: true })).toBeVisible()
+  await expect(page.locator('#architecture')).toContainText('stateful Foldkit submodel')
+  await expect(page.locator('#accessibility')).toContainText('restores focus')
+
+  await page.goto('/docs/components/toast')
+  await expect(page.getByText('Composed recipe', { exact: true })).toBeVisible()
+  await expect(page.locator('#usage')).toContainText('Toast.show')
+  await expect(page.locator('#render-the-viewport')).toContainText('Toast.toast')
+  await expect(page.locator('#api-reference')).toContainText('DismissedToast')
+  await expect(page.locator('#api-reference').getByRole('columnheader', { name: 'Purpose' })).toBeVisible()
+})
+
+test('Foldkit-native documentation remains contained on mobile', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/docs/components/toast')
+
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  )
+  expect(overflow).toBeLessThanOrEqual(1)
+  await expect(page.getByText('Browse components')).toBeVisible()
+  await expect(page.locator('#architecture')).toBeVisible()
+})
+
 test('create icon selection changes the live preview shapes', async ({ page }) => {
   await page.goto('/create')
   const board = page.locator('[data-slot="capture-target"]')

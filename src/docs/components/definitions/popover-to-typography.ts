@@ -1700,6 +1700,18 @@ const rawDefinitions: PageDefinitions = {
       'A source-owned notification recipe with typed variants, timed dismissal, actions, and a single root-level viewport.',
     architecture:
       'Toast is the compatibility name for Crease UI\'s Sonner notification model. Keep one Toast.Model at the application root, call Toast.show from domain update branches, map its Commands, and render Toast.toast once near the root view.',
+    usage: `import { Command } from 'foldkit'
+import * as Toast from '@/ui/toast'
+
+const [toast, commands] = Toast.show(
+  model.toast,
+  Toast.success({ title: 'Changes saved' }),
+)
+
+return [
+  { ...model, toast },
+  Command.mapMessages(commands, message => GotToastMessage({ message })),
+]`,
     apiHref: 'https://foldkit.dev/ui/toast',
     apiDescription:
       'Crease UI Toast is implemented by the source-owned Sonner module. The Foldkit Toast reference demonstrates the same parent-model, command-mapping, root-view, and dismissal-output architecture.',
