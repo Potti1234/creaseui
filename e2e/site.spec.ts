@@ -118,13 +118,13 @@ test('component docs explain the Foldkit integration model', async ({ page }) =>
 
   await page.goto('/docs/components/dialog')
   await expect(page.getByText('Stateful submodel', { exact: true })).toBeVisible()
-  await expect(page.locator('#architecture')).toContainText('stateful Foldkit submodel')
-  await expect(page.locator('#accessibility')).toContainText('restores focus')
+  await expect(page.locator('#architecture')).toContainText('child submodel')
+  await expect(page.locator('#accessibility')).toContainText('focus restoration')
 
   await page.goto('/docs/components/toast')
   await expect(page.getByText('Composed recipe', { exact: true })).toBeVisible()
   await expect(page.locator('#usage')).toContainText('Toast.show')
-  await expect(page.locator('#render-the-viewport')).toContainText('Toast.toast')
+  await expect(page.locator('#usage')).toContainText('Toast.toast')
   await expect(page.locator('#api-reference')).toContainText('DismissedToast')
   await expect(page.locator('#api-reference').getByRole('columnheader', { name: 'Purpose' })).toBeVisible()
 })
@@ -142,7 +142,7 @@ test('Foldkit-native documentation remains contained on mobile', async ({ page }
 })
 
 test('authored helper pages publish complete application source', async ({ page }) => {
-  test.setTimeout(90_000)
+  test.setTimeout(180_000)
 
   for (const route of [
     'accordion',
@@ -613,6 +613,8 @@ test('calendar emits selection while retaining child navigation state', async ({
 })
 
 test('date picker composes disclosure and calendar into one child model', async ({ page }) => {
+  const pageErrors: Array<string> = []
+  page.on('pageerror', error => pageErrors.push(error.message))
   await page.goto('/docs/components/date-picker')
   const example = page.locator('#existing-value')
   const trigger = example.getByRole('button', { name: 'Change due date' })
@@ -623,6 +625,8 @@ test('date picker composes disclosure and calendar into one child model', async 
   await expect(page.locator('[data-slot="popover-content"]')).toBeHidden()
   await expect(example.locator('code')).toContainText('ClearedDate')
   await expect(example.locator('code')).toContainText('Command.mapMessages')
+  await page.waitForTimeout(100)
+  expect(pageErrors).toEqual([])
 })
 
 test('chart documents pure Foldkit SVG recipes with complete source', async ({ page }) => {

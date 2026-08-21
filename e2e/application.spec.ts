@@ -56,7 +56,7 @@ test('opens and closes a dialog with its accessible contract intact', async ({
   page,
 }) => {
   await page.goto('/docs/components/dialog')
-  await page.getByRole('button', { name: 'Open Dialog' }).first().click()
+  await page.getByRole('button', { name: 'Open profile', exact: true }).click()
 
   const dialog = page.getByRole('dialog', { name: 'Edit profile' })
   await expect(dialog).toBeVisible()
@@ -67,6 +67,6 @@ test('opens and closes a dialog with its accessible contract intact', async ({
   )
   await expectNoSeriousAccessibilityViolations(page)
 
-  await dialog.getByRole('button', { name: 'Close' }).click()
+  await dialog.getByRole('button', { name: 'Cancel' }).click()
   await expect(dialog).toBeHidden()
 })

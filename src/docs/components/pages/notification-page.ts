@@ -87,6 +87,15 @@ export const update = (model: Model, message: Message): readonly [Model, Readonl
 export const notificationDefinition = (config: NotificationConfig): PageDefinition => ({
   kind: config.kind, description: config.description,
   architecture: `${config.title} owns an ordered Entry collection and next id. show may return a delayed-dismiss Command; update/dismiss may emit DismissedToast output. The parent maps Commands and handles action clicks as domain Messages.`,
+  usage: `const [notifications, commands] = ${config.namespace}.show(
+  model.notifications,
+  { title: 'Saved', variant: 'Success' },
+)
+
+${config.namespace}.${config.slug}({
+  model: notifications,
+  toParentMessage: message => GotNotificationMessage({ message }),
+}, h)`,
   apiHref: 'https://foldkit.dev/guide/effects',
   composition: `Parent Model\n└── ${config.title} Model\n    ├── stable keyed entries\n    ├── variant + payload + duration\n    ├── optional action → parent Message\n    └── dismiss/timer Message + OutMessage`,
   styling: 'The fixed viewport stacks keyed notifications. Prefer brief titles, useful descriptions, and one clear action; sticky notifications require an obvious dismissal route.',

@@ -14,56 +14,23 @@ the implementation and an automated contract agree.
 
 ## Open problems
 
-### DOC-006 — Registry state labels and docs architecture can disagree
-
-Registry metadata classifies the source file mechanically. Toast is labeled
-stateless even though it re-exports the stateful Sonner Model/update API. Recipes
-also need a category distinct from helper/submodel.
-
-Resolution target: define one canonical documentation kind contract and verify
-registry-facing descriptions against intentional recipe aliases.
-
-### DOC-007 — API signatures lack member-level explanations
-
-Generated API rows expose declaration signatures, but configuration fields,
-defaults, return tuples, styling hooks, and output semantics are often only
-discoverable by reading source.
-
-Resolution target: authored page sections explain integration and important
-fields; generated declarations remain a supplement, not the primary teaching
-surface.
-
-### DOC-008 — Page completeness is measured by example count
-
-Coverage currently accepts a page when it has two examples, regardless of
-whether their source is executable, their preview is distinct, or the important
-states and accessibility behavior are documented.
-
-Resolution target: validate authored ownership, complete application sections,
-unique example intent, architecture kind, accessibility content, and reference
-links.
-
-### DOC-009 — Canonical Foldkit source is not vendored
-
-The Foldkit skill expects `repos/foldkit/` as the canonical local reference, but
-this repository does not currently contain it. The installed pinned packages
-remain available for API verification, but examples cannot be compared against
-the full framework applications offline.
-
-Resolution target: use the pinned package source during this migration and decide
-whether the Foldkit subtree belongs in this repository without silently adding a
-large unrelated vendor commit.
-
-### DOC-010 — Browser suite has unrelated concurrency flakiness
-
-The full Playwright suite can fail under eight-worker parallelism through route
-or interaction timing, while serial documentation runs pass. The mobile Create
-icon picker also failed once independently of documentation changes.
-
-Resolution target: keep a deterministic documentation matrix and separately
-identify whether shared runtime state or test assumptions cause parallel flakes.
+None. External Foldkit source remains consumed from the pinned package rather
+than copied into this repository; that is an explicit dependency decision, not
+an unfinished migration task.
 
 ## Closed problems
+
+### DOC-006 through DOC-010 — Architecture, completeness, and verification gaps
+
+Closed by the authored-page contracts and final audit. Documentation kinds now
+distinguish helpers, submodels, and recipes; every page owns architecture,
+accessibility, and component-specific examples; generated declarations are a
+supplement to complete runnable applications; all displayed applications compile
+against pinned Foldkit 0.137.0; and the 92-test desktop/mobile Playwright suite
+passes with four workers. Stale generated-page selectors and the route-matrix
+timeout were corrected rather than treated as product failures. Vendoring the
+entire Foldkit repository was deliberately excluded because the pinned installed
+source supplied the canonical API without adding unrelated repository weight.
 
 ### DOC-005 — Shared catalog state coupled unrelated pages
 
@@ -196,9 +163,8 @@ notifications, and Sidebar together to protect the isolation contract.
 
 ### DOC-023 — Date Picker can report an undelivered ResizeObserver loop
 
-Open: the focused Calendar/Date Picker Playwright run passes its interaction
-contracts but Vite reports `ResizeObserver loop completed with undelivered
-notifications` after the portalled picker is measured. Audit the anchor-layer
-measurement scheduling during the final browser pass and either remove the
-feedback loop or prove that the browser notification is benign and suppress it
-at the correct integration boundary rather than hiding all page errors.
+Closed by the final browser audit: the focused desktop and mobile Date Picker
+contract now records every `pageerror`, waits beyond the portalled measurement
+cycle, and requires an empty error list. Repeated runs no longer reproduce the
+earlier Chromium notification; no suppression was added, so a future observer
+loop fails the interaction contract instead of being hidden.

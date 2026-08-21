@@ -25,8 +25,7 @@ test.describe('carousel', () => {
   }, testInfo) => {
     await page.goto('/docs/components/carousel')
 
-    const heading = page.getByRole('heading', { name: 'Orientation' })
-    const example = heading.locator('xpath=following::*[@data-slot="carousel"][1]')
+    const example = page.locator('#two-at-a-time [data-slot="carousel"]')
     const viewport = example.locator('[data-slot="carousel-content"]')
     const container = viewport.locator(':scope > div')
     const next = example.getByRole('button', { name: 'Next slide' })
