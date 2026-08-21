@@ -1,6 +1,29 @@
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { Option, Schema as S } from 'effect';
+import { Command, Subscription } from 'foldkit';
+import { m } from 'foldkit/message';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as Slider from '@/ui/slider';
+
+const GotSliderPreviewMessage = m('GotSliderPreviewMessage', { message: Slider.Message });
+type GotSliderPreviewMessage = typeof GotSliderPreviewMessage.Type;
+const SliderPreviewModel = S.Struct({ _docsPage: S.Literal('slider'), slider: Slider.Model, value: S.Number });
+type SliderPreviewModel = typeof SliderPreviewModel.Type;
+const previewProgram = definePreviewProgram<SliderPreviewModel, GotSliderPreviewMessage>({
+  Model: SliderPreviewModel, Message: GotSliderPreviewMessage,
+  init: index => ({ _docsPage: 'slider', slider: Slider.init({ id: `docs-slider-${String(index)}`, min: 0, max: 100, step: 1 }), value: index === 0 ? 50 : 65 }),
+  update: (model, message) => {
+    const [slider, commands, maybeChange] = Slider.update(model.slider, message.message);
+    return [{ ...model, slider, value: Option.match(maybeChange, { onNone: () => model.value, onSome: change => change.value }) }, Command.mapMessages(commands, next => GotSliderPreviewMessage({ message: next }))];
+  },
+  subscriptions: Subscription.lift({ pointer: Slider.subscriptions.dragPointer, escape: Slider.subscriptions.dragEscape })<SliderPreviewModel, GotSliderPreviewMessage>({
+    toChildModel: model => model.slider,
+    toParentMessage: message => GotSliderPreviewMessage({ message }),
+  }),
+  view: (index, model, h) => index === 0
+    ? h.div([h.Class('w-full max-w-sm')], [Slider.slider({ model: model.slider, value: model.value, toParentMessage: message => GotSliderPreviewMessage({ message }), label: 'Volume', formatValue: value => `${Math.round(value)} percent` }, h), h.p([h.Class('mt-3 text-sm text-muted-foreground')], [`Current value: ${Math.round(model.value)}`])])
+    : Slider.slider({ model: model.slider, value: model.value, toParentMessage: message => GotSliderPreviewMessage({ message }), label: 'Managed volume', isDisabled: true, class: 'max-w-sm' }, h),
+});
 
 const source = (name: string, initialValue: number, disabled: boolean): string => foldkitApplication({
   title: `Slider — ${name}`,
@@ -76,6 +99,7 @@ export type Message = typeof Message.Type`,
 
 export const sliderPage = authoredPage({
   slug: 'slider', title: 'Slider', kind: 'submodel',
+  previewProgram,
   definition: {
     kind: 'submodel', description: 'Selects a numeric value from a bounded range through pointer and keyboard interaction.',
     architecture: 'Slider keeps drag/focus mechanics in a child Model and reports value changes as OutMessages. The parent delegates Messages, maps Commands, stores the emitted value, and lifts pointer/Escape subscriptions.',

@@ -1,5 +1,5 @@
 import { Schema as S, type Schema } from 'effect';
-import type { Command } from 'foldkit';
+import type { Command, Subscription } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
@@ -56,6 +56,7 @@ export type PreviewProgram<Model, Message> = Readonly<{
     model: Model,
     h: HtmlBuilder<Message>,
   ) => Html;
+  subscriptions?: Subscription.Subscriptions<Model, Message>;
 }>;
 
 export type ErasedPreviewProgram = Readonly<{
@@ -71,6 +72,7 @@ export type ErasedPreviewProgram = Readonly<{
     model: unknown,
     h: HtmlBuilder<unknown>,
   ) => Html;
+  subscriptions?: Subscription.Subscriptions<unknown, unknown>;
 }>;
 
 /** Erases a page-local preview program only at the heterogeneous catalog boundary. */

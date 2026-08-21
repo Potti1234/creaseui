@@ -99,6 +99,21 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
       [`example${String(index)}SliderEscape`]: lifted.sliderEscape!,
     };
   }),
+  ...localPrograms.flatMap((program, programIndex) => {
+    const childSubscriptions = program.subscriptions;
+    return childSubscriptions === undefined
+      ? []
+      : Array.from({ length: EXAMPLE_STATE_COUNT }, (_, index) => {
+          const lifted = Subscription.lift(childSubscriptions)<Model, Message>({
+            toChildModel: model => model.examples[index] ?? program.init(index),
+            toParentMessage: message => GotExampleMessage({ index, message }),
+          });
+          return Object.fromEntries(Object.entries(lifted).map(([key, subscription]) => [
+            `local${String(programIndex)}Example${String(index)}${key}`,
+            subscription,
+          ])) as Subscription.Subscriptions<Model, Message>;
+        });
+  }),
 );
 
 const fallbackExampleState = State.init();
