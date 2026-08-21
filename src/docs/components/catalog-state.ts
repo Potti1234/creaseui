@@ -64,6 +64,7 @@ export const Model = S.Struct({
   dataTable: DataTable.Model,
   selectedRadioValue: S.String,
   resizable: Resizable.Model,
+  resizableVertical: Resizable.Model,
   slider: Slider.Model,
   sliderValue: S.Number,
   isSwitchChecked: S.Boolean,
@@ -119,6 +120,7 @@ export const ToggledCollapsible = m('ToggledCatalogCollapsible', { isOpen: S.Boo
 export const GotDataTableMessage = m('GotCatalogDataTableMessage', { message: DataTable.Message })
 export const SelectedRadioValue = m('SelectedCatalogRadioValue', { value: S.String })
 export const GotResizableMessage = m('GotCatalogResizableMessage', { message: Resizable.Message })
+export const GotResizableVerticalMessage = m('GotCatalogResizableVerticalMessage', { message: Resizable.Message })
 export const GotSliderMessage = m('GotCatalogSliderMessage', { message: Slider.Message })
 export const ToggledSwitch = m('ToggledCatalogSwitch', { isChecked: S.Boolean })
 export const GotTabsMessage = m('GotCatalogTabsMessage', { message: Tabs.Message })
@@ -161,6 +163,7 @@ export const Message = S.Union([
   GotDataTableMessage,
   SelectedRadioValue,
   GotResizableMessage,
+  GotResizableVerticalMessage,
   GotSliderMessage,
   ToggledSwitch,
   GotTabsMessage,
@@ -209,6 +212,7 @@ export const init = (): Model => ({
   dataTable: DataTable.init(5),
   selectedRadioValue: 'comfortable',
   resizable: Resizable.init('docs-resizable', 50),
+  resizableVertical: Resizable.init('docs-resizable-vertical', 40),
   slider: Slider.init({ id: 'docs-slider', min: 0, max: 100, step: 1 }),
   sliderValue: 50,
   isSwitchChecked: true,
@@ -370,6 +374,8 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       return [{ ...model, selectedRadioValue: message.value }, []]
     case 'GotCatalogResizableMessage':
       return [{ ...model, resizable: Resizable.update(model.resizable, message.message) }, []]
+    case 'GotCatalogResizableVerticalMessage':
+      return [{ ...model, resizableVertical: Resizable.update(model.resizableVertical, message.message) }, []]
     case 'GotCatalogSliderMessage': {
       const [slider, commands, maybeChange] = Slider.update(model.slider, message.message)
       return [{ ...model, slider, sliderValue: Option.match(maybeChange, { onNone: () => model.sliderValue, onSome: change => change.value }) }, Command.mapMessages(commands, next => GotSliderMessage({ message: next }))]

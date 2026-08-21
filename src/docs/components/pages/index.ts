@@ -26,6 +26,7 @@ import { nativeSelectPage } from '@/docs/components/pages/native-select';
 import { paginationPage } from '@/docs/components/pages/pagination';
 import { progressPage } from '@/docs/components/pages/progress';
 import { radioGroupPage } from '@/docs/components/pages/radio-group';
+import { resizablePage } from '@/docs/components/pages/resizable';
 import { scrollAreaPage } from '@/docs/components/pages/scroll-area';
 import { separatorPage } from '@/docs/components/pages/separator';
 import { skeletonPage } from '@/docs/components/pages/skeleton';
@@ -69,6 +70,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       paginationPage,
       progressPage,
       radioGroupPage,
+      resizablePage,
       scrollAreaPage,
       separatorPage,
       skeletonPage,

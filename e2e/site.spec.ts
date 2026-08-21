@@ -172,6 +172,7 @@ test('authored helper pages publish complete application source', async ({ page 
     'pagination',
     'progress',
     'radio-group',
+    'resizable',
     'scroll-area',
     'separator',
     'skeleton',
@@ -248,6 +249,22 @@ test('authored slider delegates keyboard changes and stores its output value', a
   await page.keyboard.press('ArrowRight')
   await expect(slider).toHaveAttribute('aria-valuenow', '51')
   await expect(example).toContainText('Current value: 51')
+})
+
+test('authored resizable instances keep axis-specific child state independent', async ({ page }) => {
+  await page.goto('/docs/components/resizable')
+
+  const horizontal = page.locator('#editor-and-preview').getByRole('separator')
+  const vertical = page.locator('#vertical-split').getByRole('separator')
+  await horizontal.focus()
+  await page.keyboard.press('ArrowRight')
+  await expect(horizontal).toHaveAttribute('aria-valuenow', '52')
+  await expect(vertical).toHaveAttribute('aria-valuenow', '40')
+
+  await vertical.focus()
+  await page.keyboard.press('ArrowDown')
+  await expect(vertical).toHaveAttribute('aria-valuenow', '42')
+  await expect(horizontal).toHaveAttribute('aria-valuenow', '52')
 })
 
 test('create icon selection changes the live preview shapes', async ({ page }) => {
