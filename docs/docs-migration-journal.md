@@ -110,4 +110,14 @@ identify whether shared runtime state or test assumptions cause parallel flakes.
 
 ## Closed problems
 
-None yet.
+### DOC-011 — Generated source silently overrides authored source
+
+Closed in `92ce514`: the catalog bypasses legacy generated source for every
+registered authored page. Unit tests inspect complete lifecycle sections and
+Playwright verifies the expanded application source in the rendered page.
+
+### DOC-012 — Inert examples still need a closed Message boundary
+
+Closed in `dfd31b4`: `staticComponentApplication` emits an explicit NoOp schema
+and identity update, while `statelessComponentApplication` uses a real click
+Message for interactive controls.

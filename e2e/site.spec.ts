@@ -147,6 +147,8 @@ test('authored helper pages publish complete application source', async ({ page 
     'aspect-ratio',
     'badge',
     'button',
+    'card',
+    'empty',
     'kbd',
     'progress',
     'separator',
@@ -154,7 +156,7 @@ test('authored helper pages publish complete application source', async ({ page 
     'spinner',
   ]) {
     await page.goto(`/docs/components/${route}`)
-    await expect(page.getByText('Stateless helper', { exact: true })).toBeVisible()
+    await expect(page.getByText(/^(Stateless helper|Composed recipe)$/u)).toBeVisible()
     await expect(page.locator('main code').filter({ hasText: 'Runtime.makeApplication' }).first()).toBeAttached()
   }
 })
