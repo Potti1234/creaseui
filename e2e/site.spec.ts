@@ -146,14 +146,17 @@ test('authored helper pages publish complete application source', async ({ page 
     'alert',
     'aspect-ratio',
     'badge',
+    'bubble',
     'button',
     'card',
     'empty',
     'kbd',
+    'marker',
     'progress',
     'separator',
     'skeleton',
     'spinner',
+    'typography',
   ]) {
     await page.goto(`/docs/components/${route}`)
     await expect(page.getByText(/^(Stateless helper|Composed recipe)$/u)).toBeVisible()
