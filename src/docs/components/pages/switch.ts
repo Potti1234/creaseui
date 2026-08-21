@@ -2,7 +2,6 @@ import { Schema as S } from 'effect';
 import { m } from 'foldkit/message';
 
 import * as Switch from '@/ui/switch';
-import * as State from '@/docs/components/catalog-state';
 import { authoredPage, controlledBooleanApplication, definePreviewProgram } from '@/docs/components/pages/authored-page';
 
 const PreviewModel = S.Struct({ _docsPage: S.Literal('switch'), isChecked: S.Boolean });
@@ -41,17 +40,17 @@ export const switchPage = authoredPage({
     examples: [
       {
         title: 'Notifications', description: 'Apply an immediate preference through a typed toggle Message.',
-        preview: (model, h) => Switch.switchControl({ id: 'docs-switch-notifications', isChecked: model.isSwitchChecked, onToggle: (isChecked) => State.ToggledSwitch({ isChecked }), label: 'Notifications', description: 'Receive build and deployment updates.' }, h),
+
         code: source('Notifications', true, `description: 'Receive build and deployment updates.',`),
       },
       {
         title: 'Small', description: 'Use the compact size in a dense but still clearly labeled settings row.',
-        preview: (model, h) => Switch.switchControl({ id: 'docs-switch-small', size: 'sm', isChecked: model.isSwitchChecked, onToggle: (isChecked) => State.ToggledSwitch({ isChecked }), label: 'Compact mode' }, h),
+
         code: source('Small', false, `size: 'sm',`),
       },
       {
         title: 'Disabled', description: 'Explain organization-managed state in adjacent copy.',
-        preview: (_model, h) => Switch.switchControl({ id: 'docs-switch-disabled', isChecked: true, onToggle: (isChecked) => State.ToggledSwitch({ isChecked }), isDisabled: true, label: 'Security scanning', description: 'Required by your organization.' }, h),
+
         code: source('Disabled', true, `isDisabled: true,
   description: 'Required by your organization.',`),
       },

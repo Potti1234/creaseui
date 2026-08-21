@@ -1,7 +1,5 @@
 import { Schema as S } from 'effect';
 import { m } from 'foldkit/message';
-
-import * as State from '@/docs/components/catalog-state';
 import { authoredPage, controlledStringApplication, definePreviewProgram } from '@/docs/components/pages/authored-page';
 import * as NativeSelect from '@/ui/native-select';
 
@@ -46,7 +44,7 @@ export const nativeSelectPage = authoredPage({
     examples: [
       {
         title: 'Labeled fruit', description: 'The selected option is ordinary application state, not state hidden inside the helper.',
-        preview: (model, h) => NativeSelect.nativeSelect({ id: 'docs-native-select-fruit', value: model.nativeSelect, onChange: (value) => State.ChangedNativeSelect({ value }), label: 'Fruit', description: 'Choose one for the delivery.', options: fruitOptions }, h),
+
         code: source('Labeled fruit', 'apple', `label: 'Fruit',
   description: 'Choose one for the delivery.',
   options: [
@@ -57,7 +55,7 @@ export const nativeSelectPage = authoredPage({
       },
       {
         title: 'Grouped options', description: 'Use optgroups when category labels help users scan a longer native menu.',
-        preview: (model, h) => NativeSelect.nativeSelect({ id: 'docs-native-select-grouped', value: model.nativeSelect, onChange: (value) => State.ChangedNativeSelect({ value }), label: 'Destination', options: [{ value: 'apple', label: 'Local pickup' }], groups: [{ label: 'Europe', options: [{ value: 'banana', label: 'Berlin' }, { value: 'blueberry', label: 'Paris' }] }] }, h),
+
         code: source('Grouped options', 'apple', `label: 'Destination',
   options: [{ value: 'apple', label: 'Local pickup' }],
   groups: [{

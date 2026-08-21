@@ -16,7 +16,7 @@ export const skeletonPage = authoredPage({
     examples: [
       {
         title: 'Profile', description: 'Mirror the avatar and text geometry of the eventual profile row.',
-        preview: (_model, h) => h.div([h.Class('flex items-center gap-4')], [
+        staticPreview: (_model, h) => h.div([h.Class('flex items-center gap-4')], [
           Skeleton.skeleton({ class: 'size-12 rounded-full' }, h),
           h.div([h.Class('space-y-2')], [
             Skeleton.skeleton({ class: 'h-4 w-48' }, h),
@@ -33,7 +33,7 @@ export const skeletonPage = authoredPage({
       },
       {
         title: 'Card', description: 'Reserve media and copy as one stable loading composition.',
-        preview: (_model, h) => h.div([h.Class('w-full max-w-sm space-y-3')], [
+        staticPreview: (_model, h) => h.div([h.Class('w-full max-w-sm space-y-3')], [
           Skeleton.skeleton({ class: 'aspect-video w-full' }, h),
           Skeleton.skeleton({ class: 'h-4 w-3/4' }, h),
           Skeleton.skeleton({ class: 'h-4 w-1/2' }, h),

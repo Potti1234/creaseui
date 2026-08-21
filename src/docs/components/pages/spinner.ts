@@ -16,12 +16,12 @@ export const spinnerPage = authoredPage({
     examples: [
       {
         title: 'Default', description: 'Use the default size for compact control feedback.',
-        preview: (_model, h) => Spinner.spinner({}, h),
+        staticPreview: (_model, h) => Spinner.spinner({}, h),
         code: source('Default', `Spinner.spinner({}, h),`),
       },
       {
         title: 'With Label', description: 'Visible text clarifies the operation represented by the spinner.',
-        preview: (_model, h) => h.div([h.Class('flex items-center gap-2 text-sm')], [Spinner.spinner({}, h), 'Saving changes']),
+        staticPreview: (_model, h) => h.div([h.Class('flex items-center gap-2 text-sm')], [Spinner.spinner({}, h), 'Saving changes']),
         code: source('With Label', `h.div([h.Class('flex items-center gap-2 text-sm')], [
   Spinner.spinner({}, h),
   'Saving changes',

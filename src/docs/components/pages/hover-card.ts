@@ -4,7 +4,6 @@ import type { HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as HoverCard from '@/ui/hover-card';
 
 const card = <Msg>(h: HtmlBuilder<Msg>) => h.div([h.Class('space-y-1')], [h.h4([h.Class('font-semibold')], ['@foldkit']), h.p([h.Class('text-sm')], ['Typed functional web applications without a virtual DOM.'])]);
@@ -56,8 +55,6 @@ export type Message = typeof Message.Type`,
 })`,
 });
 
-const preview = (model: State.Model, side: HoverCard.HoverCardSide, h: HtmlBuilder<State.Message>) => HoverCard.hoverCard({ model: model.hoverCard, toParentMessage: (message) => State.GotHoverCardMessage({ message }), trigger: '@foldkit', triggerClass: 'underline underline-offset-4', ariaLabel: 'Preview the Foldkit profile', side, content: card(h) }, h);
-
 const GotHoverCardPreviewMessage = m('GotHoverCardPreviewMessage', { message: HoverCard.Message });
 type GotHoverCardPreviewMessage = typeof GotHoverCardPreviewMessage.Type;
 const HoverCardPreviewModel = S.Struct({ _docsPage: S.Literal('hover-card'), hoverCard: HoverCard.Model });
@@ -85,8 +82,8 @@ export const hoverCardPage = authoredPage({
     accessibility: 'The trigger is a real button and opens on focus as well as hover. The panel is supplemental rather than modal; users can continue through the page without interacting with it.',
     keyboard: [['Tab', 'Focusing the trigger reveals the card.'], ['Shift+Tab / Tab away', 'Schedules the card to close after its configured delay.'], ['Pointer hover', 'Keeps the card open while the pointer crosses from trigger to content.']],
     examples: [
-      { title: 'Profile preview', description: 'Focus and hover share one child update path with a race-safe delayed close command.', preview: (model, h) => preview(model, 'bottom', h), code: source('Profile preview', 'bottom') },
-      { title: 'Side placement', description: 'Move the preview without changing its state or command integration.', preview: (model, h) => preview(model, 'right', h), code: source('Side placement', 'right') },
+      { title: 'Profile preview', description: 'Focus and hover share one child update path with a race-safe delayed close command.',  code: source('Profile preview', 'bottom') },
+      { title: 'Side placement', description: 'Move the preview without changing its state or command integration.',  code: source('Side placement', 'right') },
     ],
   },
 });

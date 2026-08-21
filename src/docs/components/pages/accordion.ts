@@ -1,10 +1,8 @@
 import { Option, Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import type { HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as Accordion from '@/ui/accordion';
 
 const items = [
@@ -61,8 +59,6 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 })`,
 });
 
-const preview = (model: State.Model, target: State.AccordionTarget, h: HtmlBuilder<State.Message>) => h.div([h.Class('w-full max-w-xl')], [Accordion.accordion({ model: target === 'single' ? model.accordion : model.accordionMultiple, toParentMessage: (message) => State.GotAccordionMessage({ target, message }), items }, h)]);
-
 const GotAccordionPreviewMessage = m('GotAccordionPreviewMessage', { message: Accordion.Message });
 type GotAccordionPreviewMessage = typeof GotAccordionPreviewMessage.Type;
 const AccordionPreviewModel = S.Struct({ _docsPage: S.Literal('accordion'), accordion: Accordion.Model, maybeLastToggledValue: S.Option(S.String) });
@@ -101,8 +97,8 @@ export const accordionPage = authoredPage({
     accessibility: 'Each heading contains a real button connected to its panel with Disclosure semantics. Disabled headings remain visible but unavailable; focus indication and expanded state come from the primitive.',
     keyboard: [['Tab / Shift+Tab', 'Moves between accordion heading buttons.'], ['Enter / Space', 'Toggles the focused disclosure.']],
     examples: [
-      { title: 'Single disclosure', description: 'Opening one item closes the previous item and emits the toggled value to the parent.', preview: (model, h) => preview(model, 'single', h), code: source('Single disclosure', 'single') },
-      { title: 'Multiple disclosures', description: 'Multiple mode preserves independent open states using the same child Message and update path.', preview: (model, h) => preview(model, 'multiple', h), code: source('Multiple disclosures', 'multiple') },
+      { title: 'Single disclosure', description: 'Opening one item closes the previous item and emits the toggled value to the parent.',  code: source('Single disclosure', 'single') },
+      { title: 'Multiple disclosures', description: 'Multiple mode preserves independent open states using the same child Message and update path.',  code: source('Multiple disclosures', 'multiple') },
     ],
   },
 });

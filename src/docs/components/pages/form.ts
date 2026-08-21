@@ -1,7 +1,5 @@
 import { Schema as S } from 'effect';
-import type { HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
-import * as State from '@/docs/components/catalog-state';
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as Button from '@/ui/button';
 import * as Form from '@/ui/form';
@@ -95,12 +93,6 @@ const previewProgram = definePreviewProgram<FormPreviewModel, FormPreviewMessage
   },
 });
 
-const preview = (model: State.Model, showError: boolean, h: HtmlBuilder<State.Message>) => {
-  const ids = Form.formControlIds(showError ? 'docs-form-error' : 'docs-form-email');
-  const id = showError ? 'docs-form-error' : 'docs-form-email';
-  return Form.form({ class: 'w-full max-w-sm', ariaLabel: 'Newsletter signup', onSubmit: State.ClickedPreviewAction(), children: [Form.formItem({ id, isInvalid: showError, children: [Form.formLabel({ for: id, children: ['Email'] }, h), Input.input({ id, type: 'email', value: model.formEmail, onInput: value => State.ChangedText({ target: 'formEmail', value }), isInvalid: showError, describedBy: ids.describedBy }, h), Form.formDescription({ id: ids.descriptionId, children: ['We only send product updates.'] }, h), Form.formMessage({ id: ids.messageId, ...(showError ? { message: 'Enter a valid email address.' } : {}) }, h)] }, h), Button.button({ type: 'submit', children: ['Subscribe'] }, h)] }, h);
-};
-
 export const formPage = authoredPage({
   slug: 'form', title: 'Form', kind: 'recipe',
   previewProgram,
@@ -113,8 +105,8 @@ export const formPage = authoredPage({
     accessibility: 'Use formControlIds to connect description and message content. Submission is a typed Message from the native form event, so keyboard and assistive-technology submission work normally.',
     keyboard: [['Enter', 'Submits the form from a compatible control.'], ['Tab', 'Moves through controls and the submit action in document order.']],
     examples: [
-      { title: 'Newsletter signup', description: 'Input and submit events become separate typed Messages in the parent application.', preview: (model, h) => preview(model, false, h), code: source('Newsletter signup', false) },
-      { title: 'Validation feedback', description: 'Derive invalid state after submission and connect the error to the input with stable IDs.', preview: (model, h) => preview(model, true, h), code: source('Validation feedback', true) },
+      { title: 'Newsletter signup', description: 'Input and submit events become separate typed Messages in the parent application.',  code: source('Newsletter signup', false) },
+      { title: 'Validation feedback', description: 'Derive invalid state after submission and connect the error to the input with stable IDs.',  code: source('Validation feedback', true) },
     ],
   },
 });

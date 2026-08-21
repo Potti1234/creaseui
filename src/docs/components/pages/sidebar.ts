@@ -4,16 +4,9 @@ import type { HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as Sidebar from '@/ui/sidebar';
 
 const nav = <Msg>(h: HtmlBuilder<Msg>) => Sidebar.sidebarMenu({ children: ['Playground', 'Models', 'Documentation'].map((label, index) => Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ isActive: index === 0, children: [label] }, h)] }, h)) }, h);
-
-const preview = (model: State.Model, interactive: boolean, h: HtmlBuilder<State.Message>) => {
-  const state: Sidebar.SidebarState = model.isCollapsibleOpen ? 'expanded' : 'collapsed';
-  const toggle = State.ToggledCollapsible({ isOpen: !model.isCollapsibleOpen });
-  return Sidebar.sidebarProvider({ state, class: 'relative h-80 min-h-0 overflow-hidden rounded-lg border', children: [Sidebar.sidebar({ state, collapsible: interactive ? 'icon' : 'none', ...(interactive ? { class: '!absolute !inset-y-0 !h-full' } : {}), children: [Sidebar.sidebarHeader({ children: [h.div([h.Class('px-2 py-1 font-semibold')], ['Acme Inc.'])] }, h), Sidebar.sidebarContent({ children: [Sidebar.sidebarGroup({ children: [Sidebar.sidebarGroupLabel({ children: ['Platform'] }, h), Sidebar.sidebarGroupContent({ children: [nav(h)] }, h)] }, h)] }, h), Sidebar.sidebarFooter({ children: ['Workspace'] }, h)] }, h), Sidebar.sidebarInset({ class: 'min-h-0', children: interactive ? [h.header([h.Class('flex h-12 items-center border-b px-3')], [Sidebar.sidebarTrigger({ onClick: toggle }, h)]), h.div([h.Class('p-4 text-sm text-muted-foreground')], ['Main content remains independent of sidebar state.'])] : [] }, h)] }, h);
-};
 
 const source = foldkitApplication({
   title: 'Sidebar — Persistent application shell',
@@ -120,8 +113,8 @@ export const sidebarPage = authoredPage({
     accessibility: 'Triggers have screen-reader labels, mobile presentation is a named aside with a dismiss backdrop, and navigation items remain ordinary buttons or links. Persisted visual state must not hide the only route to content.',
     keyboard: [['Ctrl/⌘ + B', 'Toggles desktop sidebar state through a document subscription.'], ['Tab', 'Moves through the trigger and visible navigation controls.'], ['Enter / Space', 'Activates the focused navigation control or trigger.']],
     examples: [
-      { title: 'Persistent shell', description: 'The complete application includes the child update, persistence Command mapping, keyboard subscription, mobile state, and composed view.', preview: (model, h) => preview(model, true, h), code: source },
-      { title: 'Static structure', description: 'Use collapsible none when a bounded navigation column should always remain present.', preview: (model, h) => preview(model, false, h), code: source },
+      { title: 'Persistent shell', description: 'The complete application includes the child update, persistence Command mapping, keyboard subscription, mobile state, and composed view.',  code: source },
+      { title: 'Static structure', description: 'Use collapsible none when a bounded navigation column should always remain present.',  code: source },
     ],
   },
 });

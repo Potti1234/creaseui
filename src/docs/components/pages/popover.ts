@@ -4,7 +4,6 @@ import type { HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as Popover from '@/ui/popover';
 
 const content = <Msg>(h: HtmlBuilder<Msg>) => h.div([h.Class('grid gap-2')], [
@@ -60,8 +59,6 @@ export type Message = typeof Message.Type`,
 })`,
 });
 
-const preview = (model: State.Model, side: Popover.PopoverSide, align: Popover.PopoverAlign, h: HtmlBuilder<State.Message>) => Popover.popover({ model: model.popover, toParentMessage: (message) => State.GotPopoverMessage({ message }), trigger: 'Open dimensions', triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium', side, align, content: content(h) }, h);
-
 const GotPopoverPreviewMessage = m('GotPopoverPreviewMessage', { message: Popover.Message });
 type GotPopoverPreviewMessage = typeof GotPopoverPreviewMessage.Type;
 const PopoverPreviewModel = S.Struct({ _docsPage: S.Literal('popover'), popover: Popover.Model });
@@ -89,8 +86,8 @@ export const popoverPage = authoredPage({
     accessibility: 'The primitive connects trigger state and panel behavior. Set contentFocus when the panel contains controls; Escape and outside interaction dismiss it and return focus appropriately.',
     keyboard: [['Enter / Space', 'Opens or closes the anchored panel.'], ['Tab', 'Moves into interactive popover content when contentFocus is enabled.'], ['Escape', 'Closes the panel and restores trigger focus.']],
     examples: [
-      { title: 'Interactive content', description: 'A bottom-start panel whose child update and effect commands are delegated by the parent.', preview: (model, h) => preview(model, 'bottom', 'start', h), code: source('Interactive content', 'bottom', 'start') },
-      { title: 'Right aligned', description: 'Placement is an input to the same complete submodel integration.', preview: (model, h) => preview(model, 'right', 'center', h), code: source('Right aligned', 'right', 'center') },
+      { title: 'Interactive content', description: 'A bottom-start panel whose child update and effect commands are delegated by the parent.',  code: source('Interactive content', 'bottom', 'start') },
+      { title: 'Right aligned', description: 'Placement is an input to the same complete submodel integration.',  code: source('Right aligned', 'right', 'center') },
     ],
   },
 });

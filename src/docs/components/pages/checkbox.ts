@@ -2,7 +2,6 @@ import { Schema as S } from 'effect';
 import { m } from 'foldkit/message';
 
 import * as Checkbox from '@/ui/checkbox';
-import * as State from '@/docs/components/catalog-state';
 import { authoredPage, controlledBooleanApplication, definePreviewProgram } from '@/docs/components/pages/authored-page';
 
 const PreviewModel = S.Struct({ _docsPage: S.Literal('checkbox'), isChecked: S.Boolean });
@@ -41,17 +40,17 @@ export const checkboxPage = authoredPage({
     examples: [
       {
         title: 'Terms', description: 'Model the checked value explicitly and update it from the toggle fact.',
-        preview: (model, h) => Checkbox.checkbox({ id: 'docs-checkbox-terms', isChecked: model.isCheckboxChecked, onToggle: (isChecked) => State.ToggledCheckbox({ isChecked }), label: 'Accept terms', description: 'Required before creating the account.' }, h),
+
         code: source('Terms', false, `description: 'Required before creating the account.',`),
       },
       {
         title: 'Indeterminate', description: 'Use indeterminate for a parent choice whose children contain mixed values.',
-        preview: (model, h) => Checkbox.checkbox({ id: 'docs-checkbox-mixed', isChecked: model.isCheckboxChecked, onToggle: (isChecked) => State.ToggledCheckbox({ isChecked }), isIndeterminate: true, label: 'Select all components' }, h),
+
         code: source('Indeterminate', false, `isIndeterminate: true,`),
       },
       {
         title: 'Disabled', description: 'Disabled state remains visible and labeled but cannot dispatch a toggle Message.',
-        preview: (_model, h) => Checkbox.checkbox({ id: 'docs-checkbox-disabled', isChecked: true, onToggle: (isChecked) => State.ToggledCheckbox({ isChecked }), isDisabled: true, label: 'Managed by organization' }, h),
+
         code: source('Disabled', true, `isDisabled: true,`),
       },
     ],

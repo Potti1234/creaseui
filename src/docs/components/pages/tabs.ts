@@ -2,7 +2,6 @@ import { Option, Schema as S } from 'effect';
 import { Command } from 'foldkit';
 import { m } from 'foldkit/message';
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as Tabs from '@/ui/tabs';
 
 const source = (name: string, initialValue: string, tabSource: string, extra: string): string => foldkitApplication({
@@ -106,14 +105,14 @@ export const tabsPage = authoredPage({
     examples: [
       {
         title: 'Settings', description: 'Child update manages focus while the parent persists the selected domain value.',
-        preview: (model, h) => Tabs.tabs({ model: model.tabs, selectedValue: model.selectedTabValue, toParentMessage: (message) => State.GotTabsMessage({ message }), ariaLabel: 'Settings', tabs: configs }, h),
+
         code: source('Settings', 'account', `        { value: 'account', label: 'Account', content: 'Manage your profile details.' },
         { value: 'security', label: 'Security', content: 'Review passwords and sessions.' },
         { value: 'billing', label: 'Billing', content: 'Update invoices and payment methods.' },`, ''),
       },
       {
         title: 'Line variant', description: 'A separate child instance needs its own id, Model, Message routing, and selected value.',
-        preview: (model, h) => Tabs.tabs({ model: model.tabsLine, selectedValue: model.selectedLineTabValue, toParentMessage: (message) => State.GotTabsLineMessage({ message }), ariaLabel: 'Project sections', variant: 'line', tabs: [{ value: 'overview', label: 'Overview', content: 'Project activity and health.' }, { value: 'deployments', label: 'Deployments', content: 'Recent production releases.' }, { value: 'settings', label: 'Settings', content: 'Project-level configuration.' }] }, h),
+
         code: source('Line variant', 'overview', `        { value: 'overview', label: 'Overview', content: 'Project activity and health.' },
         { value: 'deployments', label: 'Deployments', content: 'Recent production releases.' },
         { value: 'settings', label: 'Settings', content: 'Project-level configuration.' },`, `variant: 'line',`),

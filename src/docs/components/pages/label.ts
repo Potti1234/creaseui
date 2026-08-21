@@ -14,7 +14,7 @@ export const labelPage = authoredPage({
     examples: [
       {
         title: 'Input Label', description: 'Match the label for value to the input id.',
-        preview: (_model, h) => h.div([h.Class('grid w-full max-w-sm gap-2')], [Label.label({ for: 'docs-email', children: ['Email address'] }, h), h.input([h.Id('docs-email'), h.Type('email'), h.Class('h-9 rounded-md border px-3')])]),
+        staticPreview: (_model, h) => h.div([h.Class('grid w-full max-w-sm gap-2')], [Label.label({ for: 'docs-email', children: ['Email address'] }, h), h.input([h.Id('docs-email'), h.Type('email'), h.Class('h-9 rounded-md border px-3')])]),
         code: source('Input Label', `h.div([h.Class('grid w-full max-w-sm gap-2')], [
   Label.label({ for: 'email', children: ['Email address'] }, h),
   h.input([h.Id('email'), h.Type('email'), h.Class('h-9 rounded-md border px-3')]),
@@ -22,7 +22,7 @@ export const labelPage = authoredPage({
       },
       {
         title: 'Supporting Text', description: 'Keep requirements adjacent to the labeled control.',
-        preview: (_model, h) => h.div([h.Class('grid w-full max-w-sm gap-2')], [Label.label({ for: 'docs-project', children: ['Project name'] }, h), h.input([h.Id('docs-project'), h.Class('h-9 rounded-md border px-3')]), h.p([h.Class('text-xs text-muted-foreground')], ['Use 3–32 characters.'])]),
+        staticPreview: (_model, h) => h.div([h.Class('grid w-full max-w-sm gap-2')], [Label.label({ for: 'docs-project', children: ['Project name'] }, h), h.input([h.Id('docs-project'), h.Class('h-9 rounded-md border px-3')]), h.p([h.Class('text-xs text-muted-foreground')], ['Use 3–32 characters.'])]),
         code: source('Supporting Text', `h.div([h.Class('grid w-full max-w-sm gap-2')], [
   Label.label({ for: 'project', children: ['Project name'] }, h),
   h.input([h.Id('project'), h.Class('h-9 rounded-md border px-3')]),

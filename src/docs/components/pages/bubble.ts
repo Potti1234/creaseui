@@ -25,7 +25,7 @@ export const bubblePage = authoredPage({
     examples: [
       {
         title: 'Conversation', description: 'Map sender identity to alignment while preserving a chronological DOM order.',
-        preview: (_model, h) => Bubble.bubbleGroup({ class: 'w-full max-w-md', children: [
+        staticPreview: (_model, h) => Bubble.bubbleGroup({ class: 'w-full max-w-md', children: [
           message('Can you review the Foldkit update?', 'secondary', 'start', h),
           message('Yes — I will check the model and command flow.', 'default', 'end', h),
         ] }, h),
@@ -43,7 +43,7 @@ export const bubblePage = authoredPage({
       },
       {
         title: 'Reaction', description: 'Place reactions as supporting metadata without changing the message content.',
-        preview: (_model, h) => Bubble.bubble({ variant: 'tinted', children: [
+        staticPreview: (_model, h) => Bubble.bubble({ variant: 'tinted', children: [
           Bubble.bubbleContent({ children: ['The documentation build passed.'] }, h),
           Bubble.bubbleReactions({ children: ['👍 3'] }, h),
         ] }, h),
@@ -57,7 +57,7 @@ export const bubblePage = authoredPage({
       },
       {
         title: 'Error', description: 'Use destructive tone for a failed message and include readable explanatory text.',
-        preview: (_model, h) => message('Message could not be sent.', 'destructive', 'end', h),
+        staticPreview: (_model, h) => message('Message could not be sent.', 'destructive', 'end', h),
         code: source('Error', `Bubble.bubble({ variant: 'destructive', align: 'end', children: [
   Bubble.bubbleContent({ children: ['Message could not be sent.'] }, h),
 ] }, h),`),

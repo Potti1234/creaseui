@@ -2,7 +2,6 @@ import { Schema as S } from 'effect';
 import { m } from 'foldkit/message';
 
 import * as Toggle from '@/ui/toggle';
-import * as State from '@/docs/components/catalog-state';
 import { authoredPage, controlledBooleanApplication, definePreviewProgram } from '@/docs/components/pages/authored-page';
 
 const PreviewModel = S.Struct({ _docsPage: S.Literal('toggle'), isPressed: S.Boolean });
@@ -40,17 +39,17 @@ export const togglePage = authoredPage({
     examples: [
       {
         title: 'Formatting', description: 'Derive the next pressed value from the current Model when constructing the Message.',
-        preview: (model, h) => Toggle.toggle({ isPressed: model.togglePressed, onToggle: State.ToggledPreview(), children: ['Bold'] }, h),
+
         code: source('Formatting', false, ''),
       },
       {
         title: 'Outline', description: 'Outline treatment works well when the toggle sits beside ordinary buttons.',
-        preview: (model, h) => Toggle.toggle({ variant: 'outline', isPressed: model.togglePressed, onToggle: State.ToggledPreview(), children: ['Italic'] }, h),
+
         code: source('Outline', true, `variant: 'outline',`),
       },
       {
         title: 'Disabled', description: 'Disabled state remains focusable and exposes the current pressed value.',
-        preview: (model, h) => Toggle.toggle({ isDisabled: true, isPressed: model.togglePressed, onToggle: State.ToggledPreview(), children: ['Managed'] }, h),
+
         code: source('Disabled', true, `isDisabled: true,`),
       },
     ],

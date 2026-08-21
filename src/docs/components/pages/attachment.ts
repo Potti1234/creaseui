@@ -49,8 +49,8 @@ export const attachmentPage = authoredPage({
     accessibility: 'Titles and descriptions remain readable text. Give icon-only actions an accessible label, preserve visible error copy, and do not communicate upload status through color alone.',
     keyboard: [['Tab', 'Moves to attachment actions supplied by the parent.'], ['Enter / Space', 'Activates the focused parent action.']],
     examples: [
-      { title: 'Uploaded file', description: 'Compose a completed file record; a real Remove action should emit a parent Message that mutates the file collection.', preview: (_model, h) => attachment('done', h), code: application('Uploaded file', basicBody) },
-      { title: 'Lifecycle states', description: 'Render upload lifecycle as domain data. Attachment itself does not start, poll, or retry an upload.', preview: (_model, h) => h.div([h.Class('grid gap-3')], (['uploading', 'processing', 'error', 'done'] as const).map((state) => attachment(state, h))), code: application('Lifecycle states', statesBody) },
+      { title: 'Uploaded file', description: 'Compose a completed file record; a real Remove action should emit a parent Message that mutates the file collection.', staticPreview: (_model, h) => attachment('done', h), code: application('Uploaded file', basicBody) },
+      { title: 'Lifecycle states', description: 'Render upload lifecycle as domain data. Attachment itself does not start, poll, or retry an upload.', staticPreview: (_model, h) => h.div([h.Class('grid gap-3')], (['uploading', 'processing', 'error', 'done'] as const).map((state) => attachment(state, h))), code: application('Lifecycle states', statesBody) },
     ],
   },
 });

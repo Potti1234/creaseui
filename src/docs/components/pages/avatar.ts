@@ -1,6 +1,5 @@
 import { Schema as S } from 'effect';
 import { m } from 'foldkit/message';
-import * as State from '@/docs/components/catalog-state';
 import { authoredPage, definePreviewProgram, foldkitApplication, staticComponentApplication } from '@/docs/components/pages/authored-page';
 import * as Avatar from '@/ui/avatar';
 
@@ -77,12 +76,12 @@ export const avatarPage = authoredPage({
     examples: [
       {
         title: 'Image lifecycle', description: 'Load and error events flow through the child update so fallback visibility is model-driven.',
-        preview: (model, h) => Avatar.avatar({ size: 'lg', children: [Avatar.avatarImage({ src: portrait, alt: 'Ada Lovelace', model: model.avatar, toParentMessage: (message) => State.GotAvatarMessage({ message }) }, h), Avatar.avatarFallback({ model: model.avatar, children: ['AL'] }, h)] }, h),
+
         code: lifecycleSource,
       },
       {
         title: 'Initials only', description: 'Omit the image entirely when the application has no meaningful image source.',
-        preview: (_model, h) => Avatar.avatar({ children: [Avatar.avatarFallback({ children: ['CN'] }, h)] }, h),
+
         code: staticComponentApplication({ componentName: 'Avatar', componentSlug: 'avatar', exampleName: 'Initials only', viewBody: `Avatar.avatar({ children: [
   Avatar.avatarFallback({ children: ['CN'] }, h),
 ] }, h),` }),

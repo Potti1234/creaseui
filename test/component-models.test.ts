@@ -2,9 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import { Option } from 'effect';
-import { Tooltip } from '@foldkit/ui';
 
-import * as CatalogState from '../src/docs/components/catalog-state.ts';
 import * as Carousel from '../src/ui/carousel.ts';
 import * as ContextMenu from '../src/ui/context-menu.ts';
 import * as Drawer from '../src/ui/drawer.ts';
@@ -15,58 +13,6 @@ import * as Sidebar from '../src/ui/sidebar.ts';
 import * as Sonner from '../src/ui/sonner.ts';
 
 describe('stateful component models', () => {
-  it('persists controlled documentation values and child component state', () => {
-    const initial = CatalogState.init();
-    const [withText] = CatalogState.update(
-      initial,
-      CatalogState.ChangedText({ target: 'input', value: 'hello@crease.ui' }),
-    );
-    const [withCarousel] = CatalogState.update(
-      withText,
-      CatalogState.GotCarouselMessage({ message: Carousel.Next() }),
-    );
-
-    assert.equal(withCarousel.input, 'hello@crease.ui');
-    assert.equal(withCarousel.carousel.index, 1);
-  });
-
-  it('keeps docs dialog animation targets aligned with their rendered ids', () => {
-    const model = CatalogState.withExampleIds(
-      CatalogState.init(),
-      'catalog-example-0',
-    );
-
-    assert.equal(
-      model.alertDialog.animation.id,
-      `${model.alertDialog.id}-panel`,
-    );
-    assert.equal(model.dialog.animation.id, `${model.dialog.id}-panel`);
-    assert.equal(
-      model.drawer.dialog.animation.id,
-      `${model.drawer.dialog.id}-panel`,
-    );
-    assert.equal(model.sheet.animation.id, `${model.sheet.id}-panel`);
-    for (const sheet of model.sheetVariants) {
-      assert.equal(sheet.animation.id, `${sheet.id}-panel`);
-    }
-  });
-
-  it('keeps repeated tooltip demo instances independent', () => {
-    const initial = CatalogState.init();
-    const [focused] = CatalogState.update(
-      initial,
-      CatalogState.GotTooltipVariantMessage({
-        index: 1,
-        message: Tooltip.FocusedTrigger(),
-      }),
-    );
-
-    assert.equal(focused.tooltipVariants[1]?.isOpen, true);
-    assert.equal(focused.tooltipVariants[0]?.isOpen, false);
-    assert.equal(focused.tooltipVariants[2]?.isOpen, false);
-    assert.equal(focused.tooltipVariants[3]?.isOpen, false);
-  });
-
   it('bounds carousel navigation at the available slides', () => {
     const model = Carousel.init('gallery', 3);
     assert.equal(Carousel.update(model, Carousel.Previous()).index, 0);

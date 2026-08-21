@@ -16,7 +16,7 @@ export const aspectRatioPage = authoredPage({
     examples: [
       {
         title: 'Video', description: 'Use 16 / 9 for common video and landscape media.',
-        preview: (_model, h) => AspectRatio.aspectRatio({ ratio: 16 / 9, class: 'w-full max-w-lg overflow-hidden rounded-lg bg-muted', children: [h.div([h.Class('flex size-full items-center justify-center text-sm text-muted-foreground')], ['16:9'])] }, h),
+        staticPreview: (_model, h) => AspectRatio.aspectRatio({ ratio: 16 / 9, class: 'w-full max-w-lg overflow-hidden rounded-lg bg-muted', children: [h.div([h.Class('flex size-full items-center justify-center text-sm text-muted-foreground')], ['16:9'])] }, h),
         code: source('Video', `AspectRatio.aspectRatio({
   ratio: 16 / 9,
   class: 'w-full max-w-lg overflow-hidden rounded-lg bg-muted',
@@ -27,7 +27,7 @@ export const aspectRatioPage = authoredPage({
       },
       {
         title: 'Square', description: 'A ratio of 1 keeps avatars and artwork square.',
-        preview: (_model, h) => AspectRatio.aspectRatio({ ratio: 1, class: 'w-48 rounded-lg bg-muted', children: [h.div([h.Class('flex size-full items-center justify-center text-sm text-muted-foreground')], ['1:1'])] }, h),
+        staticPreview: (_model, h) => AspectRatio.aspectRatio({ ratio: 1, class: 'w-48 rounded-lg bg-muted', children: [h.div([h.Class('flex size-full items-center justify-center text-sm text-muted-foreground')], ['1:1'])] }, h),
         code: source('Square', `AspectRatio.aspectRatio({
   ratio: 1,
   class: 'w-48 rounded-lg bg-muted',

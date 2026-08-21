@@ -1,10 +1,8 @@
 import { Option, Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import type { HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as Combobox from '@/ui/combobox';
 
 const frameworks = [{ value: 'next', label: 'Next.js' }, { value: 'svelte', label: 'SvelteKit' }, { value: 'nuxt', label: 'Nuxt.js' }] as const;
@@ -76,8 +74,6 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 })`,
 });
 
-const preview = (model: State.Model, grouped: boolean, h: HtmlBuilder<State.Message>) => Combobox.combobox({ model: model.combobox, maybeSelectedValue: model.selectedComboboxValue, restingInputValue: Option.match(model.selectedComboboxValue, { onNone: () => '', onSome: labelFor }), toParentMessage: (message) => State.GotComboboxMessage({ message }), items: frameworks, itemToValue: (item) => item.value, itemToLabel: (item) => item.label, placeholder: 'Search frameworks…', ariaLabel: 'Framework', ...(grouped ? { itemGroupKey: (item: typeof frameworks[number]) => item.value === 'next' ? 'React' : 'Other', groupToHeading: (group: string) => group } : {}) }, h);
-
 const GotComboboxPreviewMessage = m('GotComboboxPreviewMessage', { message: Combobox.Message });
 type GotComboboxPreviewMessage = typeof GotComboboxPreviewMessage.Type;
 const ComboboxPreviewModel = S.Struct({ _docsPage: S.Literal('combobox'), combobox: Combobox.Model, maybeFramework: S.Option(S.String) });
@@ -105,8 +101,8 @@ export const comboboxPage = authoredPage({
     accessibility: 'The primitive manages combobox, listbox, active-descendant, and option semantics. Supply ariaLabel when no visible label wraps the input.',
     keyboard: [['Type', 'Filters the projected item list.'], ['Arrow Up / Down', 'Moves the active option.'], ['Enter', 'Emits Selected and closes the popup.'], ['Escape', 'Closes without replacing the stored domain selection.']],
     examples: [
-      { title: 'Framework search', description: 'A typed selection remains parent-owned while the child keeps its transient query and disclosure state.', preview: (model, h) => preview(model, false, h), code: source('Framework search', false) },
-      { title: 'Grouped frameworks', description: 'Searchable groups add view metadata without changing OutMessage handling.', preview: (model, h) => preview(model, true, h), code: source('Grouped frameworks', true) },
+      { title: 'Framework search', description: 'A typed selection remains parent-owned while the child keeps its transient query and disclosure state.',  code: source('Framework search', false) },
+      { title: 'Grouped frameworks', description: 'Searchable groups add view metadata without changing OutMessage handling.',  code: source('Grouped frameworks', true) },
     ],
   },
 });

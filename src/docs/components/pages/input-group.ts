@@ -1,4 +1,4 @@
-import * as State from '@/docs/components/catalog-state';
+
 import { authoredPage, controlledStringApplication, textPreviewProgram } from '@/docs/components/pages/authored-page';
 import * as InputGroup from '@/ui/input-group';
 
@@ -34,14 +34,14 @@ export const inputGroupPage = authoredPage({
     examples: [
       {
         title: 'URL prefix', description: 'A stable protocol prefix gives context while the editable path remains ordinary string state.',
-        preview: (model, h) => InputGroup.inputGroup({ class: 'max-w-sm', children: [InputGroup.inputGroupAddon({ children: [InputGroup.inputGroupText({ children: ['https://'] }, h)] }, h), InputGroup.inputGroupInput({ id: 'docs-input-group-url', value: model.inputGroup, onInput: (value) => State.ChangedText({ target: 'inputGroup', value }), placeholder: 'example.com' }, h)] }, h),
+
         code: source('URL prefix', `InputGroup.inputGroupAddon({
       children: [InputGroup.inputGroupText({ children: ['https://'] }, h)],
     }, h),`, 'example.com'),
       },
       {
         title: 'Trailing unit', description: 'Align a unit after the control when it qualifies the entered value.',
-        preview: (model, h) => InputGroup.inputGroup({ class: 'max-w-sm', children: [InputGroup.inputGroupInput({ id: 'docs-input-group-weight', value: model.inputGroup, onInput: (value) => State.ChangedText({ target: 'inputGroup', value }), placeholder: '0' }, h), InputGroup.inputGroupAddon({ align: 'inline-end', children: [InputGroup.inputGroupText({ children: ['kg'] }, h)] }, h)] }, h),
+
         code: source('Trailing unit', `InputGroup.inputGroupAddon({
       align: 'inline-end',
       children: [InputGroup.inputGroupText({ children: ['kg'] }, h)],

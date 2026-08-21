@@ -2,7 +2,6 @@ import { Schema as S } from 'effect';
 import { Command } from 'foldkit';
 import { m } from 'foldkit/message';
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as AlertDialog from '@/ui/alert-dialog';
 import * as Button from '@/ui/button';
 
@@ -105,12 +104,12 @@ export const alertDialogPage = authoredPage({
     examples: [
       {
         title: 'Delete project', description: 'Confirmation is a distinct domain Message, not merely a close side effect.',
-        preview: (model, h) => h.div([h.Class('grid justify-items-center gap-3')], [Button.button({ variant: 'destructive', onClick: State.OpenedOverlay({ target: 'alertDialog' }), children: ['Delete project'] }, h), AlertDialog.alertDialog({ model: model.alertDialog, toParentMessage: (message) => State.GotAlertDialogMessage({ message }), title: 'Delete this project?', description: 'This action cannot be undone.', actionLabel: 'Delete', onAction: State.ConfirmedAlertDialog(), cancelLabel: 'Cancel' }, h), h.p([h.Role('status'), h.Class('text-sm text-muted-foreground')], [model.alertDialogConfirmed ? 'Project deleted.' : 'Project is active.'])]),
+
         code: source('Delete project', 'default'),
       },
       {
         title: 'Compact decision', description: 'The small layout suits a short binary decision and still owns an independent child Model.',
-        preview: (model, h) => h.div([], [Button.button({ variant: 'outline', onClick: State.OpenedAlertDialogCompact(), children: ['Leave workspace'] }, h), AlertDialog.alertDialog({ model: model.alertDialogCompact, toParentMessage: (message) => State.GotAlertDialogCompactMessage({ message }), title: 'Leave workspace?', description: 'You will lose access to team projects.', actionLabel: 'Leave', onAction: State.ConfirmedAlertDialogCompact(), cancelLabel: 'Stay', size: 'sm' }, h)]),
+
         code: source('Compact decision', 'sm'),
       },
     ],

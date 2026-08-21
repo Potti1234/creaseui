@@ -225,6 +225,13 @@ describe('component catalog coverage', () => {
     const chart = initCatalog('chart')
     assert.deepEqual(chart.examples, [{ _docsPage: 'chart' }, { _docsPage: 'chart' }])
     assert.ok(!('dialog' in (chart.examples[0] ?? {})))
+    for (const page of Object.values(authoredPages)) {
+      if (page.previewMode !== 'static') continue
+      assert.ok(
+        page.definition.examples.every(example => example.staticPreview !== undefined),
+        `${page.slug} must author every static preview`,
+      )
+    }
   })
 
   it('has a component-specific shadcn-style definition for every shared route', () => {

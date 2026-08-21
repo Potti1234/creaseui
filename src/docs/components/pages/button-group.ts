@@ -1,4 +1,4 @@
-import * as State from '@/docs/components/catalog-state';
+
 import { authoredPage, interactionPreviewProgram, statelessComponentApplication } from '@/docs/components/pages/authored-page';
 import * as Button from '@/ui/button';
 import * as ButtonGroup from '@/ui/button-group';
@@ -16,12 +16,6 @@ const source = (name: string, orientation: 'horizontal' | 'vertical'): string =>
 }, h),`,
 });
 
-const buttons = (h: HtmlBuilder<State.Message>) => [
-  Button.button({ variant: 'outline', onClick: State.ClickedPreviewAction(), children: ['Previous'] }, h),
-  Button.button({ variant: 'outline', onClick: State.ClickedPreviewAction(), children: ['Current'] }, h),
-  Button.button({ variant: 'outline', onClick: State.ClickedPreviewAction(), children: ['Next'] }, h),
-];
-
 const previewProgram = interactionPreviewProgram('button-group', (index, interaction, h) => ButtonGroup.buttonGroup({ orientation: index === 1 ? 'vertical' : 'horizontal', children: [Button.button({ variant: 'outline', onClick: interaction, children: ['Previous'] }, h), Button.button({ variant: 'outline', onClick: interaction, children: ['Current'] }, h), Button.button({ variant: 'outline', onClick: interaction, children: ['Next'] }, h)] }, h));
 
 export const buttonGroupPage = authoredPage({
@@ -37,15 +31,14 @@ export const buttonGroupPage = authoredPage({
     examples: [
       {
         title: 'Pagination actions', description: 'Adjacent actions share a boundary but continue to dispatch normal button messages.',
-        preview: (_model, h) => ButtonGroup.buttonGroup({ children: buttons(h) }, h),
+
         code: source('Pagination actions', 'horizontal'),
       },
       {
         title: 'Vertical tools', description: 'Use vertical orientation for a narrow toolbar without changing the children.',
-        preview: (_model, h) => ButtonGroup.buttonGroup({ orientation: 'vertical', children: buttons(h) }, h),
+
         code: source('Vertical tools', 'vertical'),
       },
     ],
   },
 });
-import type { HtmlBuilder } from 'foldkit/html';

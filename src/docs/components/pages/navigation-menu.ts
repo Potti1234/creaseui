@@ -4,7 +4,6 @@ import type { HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import { authoredPage, definePreviewProgram, foldkitApplication, staticComponentApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as NavigationMenu from '@/ui/navigation-menu';
 import * as Popover from '@/ui/popover';
 
@@ -57,8 +56,6 @@ export type Message = typeof Message.Type`,
 })`,
 });
 
-const previewDisclosure = (model: State.Model, h: HtmlBuilder<State.Message>) => NavigationMenu.navigationMenu({ ariaLabel: 'Primary', children: [NavigationMenu.navigationMenuList({ children: [NavigationMenu.navigationMenuItem({ children: [NavigationMenu.navigationMenuLink({ href: '/', isActive: true, children: ['Home'] }, h)] }, h), NavigationMenu.navigationMenuItem({ children: [NavigationMenu.navigationMenuDisclosure({ model: model.popover, toParentMessage: (message) => State.GotPopoverMessage({ message }), label: 'Products', content: h.ul([h.Class('grid gap-1')], [h.li([], [h.a([h.Href('/products/analytics'), h.Class('block rounded p-2 hover:bg-accent')], ['Analytics'])]), h.li([], [h.a([h.Href('/products/reports'), h.Class('block rounded p-2 hover:bg-accent')], ['Reports'])])]) }, h)] }, h)] }, h)] }, h);
-
 const GotNavigationPreviewMessage = m('GotNavigationPreviewMessage', { message: Popover.Message });
 type GotNavigationPreviewMessage = typeof GotNavigationPreviewMessage.Type;
 const NavigationPreviewModel = S.Struct({ _docsPage: S.Literal('navigation-menu'), products: Popover.Model });
@@ -85,14 +82,14 @@ export const navigationMenuPage = authoredPage({
     accessibility: 'The helpers render nav, list, list-item, link, and aria-current semantics. Name multiple navigation landmarks distinctly. Disclosure links remain real anchors inside a keyboard-operable Popover.',
     keyboard: [['Tab / Shift+Tab', 'Moves through links and disclosure triggers in document order.'], ['Enter', 'Follows a link or opens the focused disclosure.'], ['Escape', 'Closes an open disclosure and restores its trigger focus.']],
     examples: [
-      { title: 'Semantic links', description: 'Plain site navigation needs no Foldkit child model; the active route supplies aria-current.', preview: (_model, h) => links(h), code: staticComponentApplication({ componentName: 'NavigationMenu', componentSlug: 'navigation-menu', exampleName: 'Semantic links', viewBody: `NavigationMenu.navigationMenu({ ariaLabel: 'Primary', children: [
+      { title: 'Semantic links', description: 'Plain site navigation needs no Foldkit child model; the active route supplies aria-current.',  code: staticComponentApplication({ componentName: 'NavigationMenu', componentSlug: 'navigation-menu', exampleName: 'Semantic links', viewBody: `NavigationMenu.navigationMenu({ ariaLabel: 'Primary', children: [
   NavigationMenu.navigationMenuList({ children: ['Home', 'Components', 'Docs'].map((label, index) =>
     NavigationMenu.navigationMenuItem({ children: [
       NavigationMenu.navigationMenuLink({ href: \`/\${label.toLowerCase()}\`, isActive: index === 0, children: [label] }, h),
     ] }, h),
   ) }, h),
 ] }, h)` }) },
-      { title: 'Popover disclosure', description: 'A rich navigation disclosure uses an explicit Popover child integration rather than hidden component-local state.', preview: previewDisclosure, code: disclosureSource },
+      { title: 'Popover disclosure', description: 'A rich navigation disclosure uses an explicit Popover child integration rather than hidden component-local state.',  code: disclosureSource },
     ],
   },
 });

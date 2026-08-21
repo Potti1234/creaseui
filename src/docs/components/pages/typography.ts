@@ -16,7 +16,7 @@ export const typographyPage = authoredPage({
     examples: [
       {
         title: 'Article', description: 'Compose semantic headings and paragraphs into a readable article rhythm.',
-        preview: (_model, h) => h.article([h.Class('w-full max-w-2xl')], [
+        staticPreview: (_model, h) => h.article([h.Class('w-full max-w-2xl')], [
           Typography.typographyH2({ children: ['Foldkit architecture'] }, h),
           Typography.typographyLead({ children: ['Model behavior explicitly and keep views pure.'] }, h),
           Typography.typographyP({ children: ['Messages describe facts. The update function owns state transitions and commands describe effects.'] }, h),
@@ -29,7 +29,7 @@ export const typographyPage = authoredPage({
       },
       {
         title: 'Inline Code', description: 'Use inline code for symbols, package names, and short expressions inside prose.',
-        preview: (_model, h) => Typography.typographyP({ children: ['Render stateful children with ', Typography.typographyInlineCode({ children: ['h.submodel'] }, h), '.'] }, h),
+        staticPreview: (_model, h) => Typography.typographyP({ children: ['Render stateful children with ', Typography.typographyInlineCode({ children: ['h.submodel'] }, h), '.'] }, h),
         code: source('Inline Code', `Typography.typographyP({ children: [
   'Render stateful children with ',
   Typography.typographyInlineCode({ children: ['h.submodel'] }, h),
@@ -38,7 +38,7 @@ export const typographyPage = authoredPage({
       },
       {
         title: 'Quotation', description: 'Preserve blockquote semantics for attributed or quoted prose.',
-        preview: (_model, h) => Typography.typographyBlockquote({ children: ['The architecture is solved; model the behavior.'] }, h),
+        staticPreview: (_model, h) => Typography.typographyBlockquote({ children: ['The architecture is solved; model the behavior.'] }, h),
         code: source('Quotation', `Typography.typographyBlockquote({
   children: ['The architecture is solved; model the behavior.'],
 }, h),`),

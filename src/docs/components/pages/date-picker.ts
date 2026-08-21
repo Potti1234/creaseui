@@ -1,11 +1,9 @@
 import { Option, Schema as S } from 'effect';
 import { Command } from 'foldkit';
 import * as FoldkitCalendar from 'foldkit/calendar';
-import type { HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as DatePicker from '@/ui/date-picker';
 
 const source = (name: string, empty: boolean): string => foldkitApplication({
@@ -73,15 +71,6 @@ export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>
 })`,
 });
 
-const preview = (model: State.Model, h: HtmlBuilder<State.Message>, empty: boolean) => DatePicker.datePicker({
-  model: model.datePicker,
-  maybeSelectedDate: empty ? Option.none() : model.selectedDate,
-  toParentMessage: message => State.GotDatePickerMessage({ message }),
-  name: empty ? 'newDueDate' : 'dueDate',
-  ariaLabel: empty ? 'Choose a new due date' : 'Change due date',
-  placeholder: 'Pick a due date',
-}, h);
-
 const GotDatePickerPreviewMessage = m('GotDatePickerPreviewMessage', { message: DatePicker.Message });
 type GotDatePickerPreviewMessage = typeof GotDatePickerPreviewMessage.Type;
 const DatePickerPreviewModel = S.Struct({ _docsPage: S.Literal('date-picker'), datePicker: DatePicker.Model, selectedDate: S.Option(FoldkitCalendar.CalendarDate) });
@@ -112,8 +101,8 @@ export const datePickerPage = authoredPage({
     accessibility: 'Give the trigger a purpose-specific accessible name. Opening moves interaction into the date grid; selection closes the panel and returns the chosen value to the parent.',
     keyboard: [['Enter / Space', 'Opens the picker from its trigger or selects the focused date.'], ['Arrow keys', 'Moves through dates inside the calendar.'], ['Escape', 'Closes the panel and restores trigger focus.']],
     examples: [
-      { title: 'Existing value', description: 'The trigger formats parent-owned selection while the child owns disclosure and calendar interaction.', preview: (model, h) => preview(model, h, false), code: source('Existing value', false) },
-      { title: 'Empty value', description: 'An absent domain value produces a clear placeholder without changing the child Model shape.', preview: (model, h) => preview(model, h, true), code: source('Empty value', true) },
+      { title: 'Existing value', description: 'The trigger formats parent-owned selection while the child owns disclosure and calendar interaction.',  code: source('Existing value', false) },
+      { title: 'Empty value', description: 'An absent domain value produces a clear placeholder without changing the child Model shape.',  code: source('Empty value', true) },
     ],
   },
 });

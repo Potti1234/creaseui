@@ -1,10 +1,8 @@
 import { Option, Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import type { HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as CommandMenu from '@/ui/command';
 
 const actions = ['calendar', 'search', 'settings'] as const;
@@ -64,8 +62,6 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 })`,
 });
 
-const preview = (model: State.Model, grouped: boolean, h: HtmlBuilder<State.Message>) => CommandMenu.command<string, State.Message>({ model: model.command, maybeSelectedValue: model.selectedCommandValue, restingInputValue: Option.match(model.selectedCommandValue, { onNone: () => '', onSome: labelFor }), toParentMessage: (message) => State.GotCommandMessage({ message }), class: 'w-full max-w-md border shadow-md', items: actions, itemToConfig: (action) => ({ content: labelFor(action), ...(action === 'settings' ? { shortcut: '⌘,' } : {}) }), placeholder: 'Type a command or search…', ariaLabel: 'Application commands', ...(grouped ? { itemGroupKey: (action: string) => action === 'settings' ? 'System' : 'Navigation', groupToHeading: (group: string) => group } : {}) }, h);
-
 const GotCommandPreviewMessage = m('GotCommandPreviewMessage', { message: CommandMenu.Message });
 type GotCommandPreviewMessage = typeof GotCommandPreviewMessage.Type;
 const CommandPreviewModel = S.Struct({ _docsPage: S.Literal('command'), command: CommandMenu.Model, maybeAction: S.Option(S.String) });
@@ -93,8 +89,8 @@ export const commandPage = authoredPage({
     accessibility: 'The primitive supplies combobox/listbox semantics and keyboard navigation. Shortcuts do not replace accessible action labels.',
     keyboard: [['Type', 'Filters commands by their configured search text.'], ['Arrow Up / Down', 'Moves the active command.'], ['Enter', 'Emits the selected action to the parent.'], ['Escape', 'Closes the list without running an action.']],
     examples: [
-      { title: 'Application commands', description: 'The parent stores the typed output; executing its domain effect remains an explicit parent decision.', preview: (model, h) => preview(model, false, h), code: source('Application commands', false) },
-      { title: 'Grouped commands', description: 'Group headings and shortcut hints enrich the same complete selection architecture.', preview: (model, h) => preview(model, true, h), code: source('Grouped commands', true) },
+      { title: 'Application commands', description: 'The parent stores the typed output; executing its domain effect remains an explicit parent decision.',  code: source('Application commands', false) },
+      { title: 'Grouped commands', description: 'Group headings and shortcut hints enrich the same complete selection architecture.',  code: source('Grouped commands', true) },
     ],
   },
 });

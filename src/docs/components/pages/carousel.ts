@@ -3,7 +3,6 @@ import type { HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as Card from '@/ui/card';
 import * as Carousel from '@/ui/carousel';
 
@@ -89,12 +88,12 @@ export const carouselPage = authoredPage({
     examples: [
       {
         title: 'Single slide', description: 'Embla selection events update the child index displayed beneath the carousel.',
-        preview: (model, h) => h.div([h.Class('w-full max-w-xs')], [Carousel.carousel({ model: model.carousel, toParentMessage: (message) => State.GotCarouselMessage({ message }), ariaLabel: 'Featured projects', items: cards(3, h) }, h), h.p([h.Class('mt-4 text-center text-sm text-muted-foreground')], [`Slide ${model.carousel.index + 1} of ${model.carousel.count}`])]),
+
         code: source('Single slide', 3, 100),
       },
       {
         title: 'Two at a time', description: 'A second carousel has its own identity and Model; itemSize changes layout without sharing selection state.',
-        preview: (model, h) => h.div([h.Class('w-full max-w-sm')], [Carousel.carousel({ model: model.carouselCompact, toParentMessage: (message) => State.GotCarouselCompactMessage({ message }), ariaLabel: 'Compact projects', itemSize: 50, items: cards(4, h) }, h), h.p([h.Class('mt-4 text-center text-sm text-muted-foreground')], [`Snap ${model.carouselCompact.index + 1}`])]),
+
         code: source('Two at a time', 4, 50),
       },
     ],

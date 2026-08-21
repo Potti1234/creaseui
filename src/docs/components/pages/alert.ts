@@ -65,8 +65,7 @@ export const alertPage = authoredPage({
       {
         title: 'Default',
         description: 'Use the default treatment for timely, non-destructive information.',
-        preview: (_model, h) =>
-          alertView('default', 'Heads up', 'You can add components with the Crease registry.', h),
+
         code: source(
           'Default',
           `Alert.alert({
@@ -81,8 +80,7 @@ export const alertPage = authoredPage({
       {
         title: 'Destructive',
         description: 'Use destructive styling for errors that require the reader’s attention.',
-        preview: (_model, h) =>
-          alertView('destructive', 'Upload failed', 'Check your connection and try again.', h),
+
         code: source(
           'Destructive',
           `Alert.alert({

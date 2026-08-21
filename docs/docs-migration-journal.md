@@ -14,19 +14,6 @@ the implementation and an automated contract agree.
 
 ## Open problems
 
-### DOC-005 — Shared catalog state couples unrelated pages
-
-Every shared page allocates the large `catalog-state` model, including state for
-components that are not on the active route. This obscures ownership, increases
-patch cost, and makes examples less representative of consumer applications.
-
-Resolution target: each component documentation page owns only the state and
-messages used by its examples.
-
-Browser verification now shows the cost directly: each example receives a full
-copy of the catalog model, and fresh authored routes trigger Foldkit slow-patch
-warnings around 60 ms while logging enormous duplicated model payloads.
-
 ### DOC-006 — Registry state labels and docs architecture can disagree
 
 Registry metadata classifies the source file mechanically. Toast is labeled
@@ -77,6 +64,14 @@ Resolution target: keep a deterministic documentation matrix and separately
 identify whether shared runtime state or test assumptions cause parallel flakes.
 
 ## Closed problems
+
+### DOC-005 — Shared catalog state coupled unrelated pages
+
+Closed in the route-local preview cleanup: all 65 authored pages now render from
+their own exact preview program (or the shared closed static program), and the
+large `catalog-state` Model, Message union, legacy callbacks, and their obsolete
+tests were deleted. The catalog stores only the active page's example models;
+the complete source shown beside each example describes that same ownership.
 
 ### DOC-001 — Grouped definition files hid page ownership
 

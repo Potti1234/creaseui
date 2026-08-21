@@ -1,7 +1,5 @@
 import { Option, Schema as S } from 'effect';
 import { m } from 'foldkit/message';
-
-import * as State from '@/docs/components/catalog-state';
 import { authoredPage, controlledStringApplication, definePreviewProgram } from '@/docs/components/pages/authored-page';
 import * as RadioGroup from '@/ui/radio-group';
 
@@ -48,7 +46,7 @@ export const radioGroupPage = authoredPage({
     examples: [
       {
         title: 'Density', description: 'Descriptions turn short option labels into an informed single-choice decision.',
-        preview: (model, h) => RadioGroup.radioGroup({ id: 'docs-radio-density', selectedValue: Option.some(model.selectedRadioValue), onSelect: (value) => State.SelectedRadioValue({ value }), ariaLabel: 'Interface density', options }, h),
+
         code: source('Density', `options: [
     { value: 'default', label: 'Default', description: 'Balanced spacing for most interfaces.' },
     { value: 'comfortable', label: 'Comfortable', description: 'More space around every control.' },
@@ -57,7 +55,7 @@ export const radioGroupPage = authoredPage({
       },
       {
         title: 'Disabled group', description: 'Disable the group when the entire decision is unavailable, while preserving its context.',
-        preview: (model, h) => RadioGroup.radioGroup({ id: 'docs-radio-disabled', selectedValue: Option.some(model.selectedRadioValue), onSelect: (value) => State.SelectedRadioValue({ value }), ariaLabel: 'Interface density', isDisabled: true, options: options.map(({ value, label }) => ({ value, label })) }, h),
+
         code: source('Disabled group', `isDisabled: true,
   options: [
     { value: 'default', label: 'Default' },

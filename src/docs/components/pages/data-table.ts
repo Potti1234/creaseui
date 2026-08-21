@@ -1,9 +1,7 @@
 import { Schema as S } from 'effect';
-import type { HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as DataTable from '@/ui/data-table';
 
 type Payment = Readonly<{ id: string; status: string; email: string; amount: number }>;
@@ -78,16 +76,6 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 })`,
 });
 
-const preview = (model: State.Model, h: HtmlBuilder<State.Message>, filter: boolean) => DataTable.dataTable({
-  model: model.dataTable,
-  toParentMessage: message => State.GotDataTableMessage({ message }),
-  rows: payments,
-  columns: columns(),
-  rowKey: row => row.id,
-  ...(filter ? { filterText: (row: Payment) => `${row.status} ${row.email}`, filterPlaceholder: 'Filter payments…' } : {}),
-  ariaLabel: 'Payments',
-}, h);
-
 const GotDataTablePreviewMessage = m('GotDataTablePreviewMessage', { message: DataTable.Message });
 type GotDataTablePreviewMessage = typeof GotDataTablePreviewMessage.Type;
 const DataTablePreviewModel = S.Struct({ _docsPage: S.Literal('data-table'), table: DataTable.Model });
@@ -111,8 +99,8 @@ export const dataTablePage = authoredPage({
     accessibility: 'Use a descriptive table label, stable row keys, and text equivalents for formatted values. Sortable headers expose aria-sort and remain keyboard-operable buttons.',
     keyboard: [['Tab', 'Moves through the filter, sortable headers, and pagination controls.'], ['Enter / Space', 'Changes sort direction or activates pagination.']],
     examples: [
-      { title: 'Sortable payments', description: 'Typed columns provide renderers and comparable values while update owns sort direction and page reset.', preview: (model, h) => preview(model, h, false), code: source('Sortable payments', 5, false), previewClass: 'justify-stretch' },
-      { title: 'Filter and paginate', description: 'Filtering derives from parent-owned rows, resets the current page, and paginates the resulting collection.', preview: (model, h) => preview(model, h, true), code: source('Filter and paginate', 5, true), previewClass: 'justify-stretch' },
+      { title: 'Sortable payments', description: 'Typed columns provide renderers and comparable values while update owns sort direction and page reset.',  code: source('Sortable payments', 5, false), previewClass: 'justify-stretch' },
+      { title: 'Filter and paginate', description: 'Filtering derives from parent-owned rows, resets the current page, and paginates the resulting collection.',  code: source('Filter and paginate', 5, true), previewClass: 'justify-stretch' },
     ],
   },
 });

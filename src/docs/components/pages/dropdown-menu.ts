@@ -1,10 +1,8 @@
 import { Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import type { HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as DropdownMenu from '@/ui/dropdown-menu';
 
 const actions = ['profile', 'billing', 'settings', 'logout'] as const;
@@ -67,8 +65,6 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 })`,
 }).replace("shortcut: action === 'settings' ? '⌘,' : undefined,", "...(action === 'settings' ? { shortcut: '⌘,' } : {}),");
 
-const preview = (model: State.Model, destructive: boolean, h: HtmlBuilder<State.Message>) => DropdownMenu.dropdownMenu({ model: model.dropdownMenu, toParentMessage: (message) => State.GotDropdownMenuMessage({ message }), trigger: 'Open account menu', triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium', ariaLabel: 'Account actions', items: actions, itemToConfig: (action) => ({ label: labelFor(action), ...(action === 'settings' ? { shortcut: '⌘,' } : {}), ...(destructive && action === 'logout' ? { variant: 'destructive' as const } : {}) }) }, h);
-
 const GotDropdownPreviewMessage = m('GotDropdownPreviewMessage', { message: DropdownMenu.Message });
 type GotDropdownPreviewMessage = typeof GotDropdownPreviewMessage.Type;
 const DropdownPreviewModel = S.Struct({ _docsPage: S.Literal('dropdown-menu'), dropdownMenu: DropdownMenu.Model });
@@ -96,8 +92,8 @@ export const dropdownMenuPage = authoredPage({
     accessibility: 'The menu implements menu/menuitem roles, roving active state, disabled items, and Escape dismissal. The trigger needs a clear accessible name.',
     keyboard: [['Enter / Space', 'Opens the menu or selects the active action.'], ['Arrow Up / Down', 'Moves among enabled items.'], ['Arrow Right / Left', 'Opens or closes a submenu.'], ['Escape', 'Closes the complete menu tree.']],
     examples: [
-      { title: 'Account actions', description: 'The complete parent consumes the typed Selected output rather than dropping the action.', preview: (model, h) => preview(model, false, h), code: source('Account actions', false) },
-      { title: 'Destructive action', description: 'Visual severity is item configuration; selection still follows the same typed output path.', preview: (model, h) => preview(model, true, h), code: source('Destructive action', true) },
+      { title: 'Account actions', description: 'The complete parent consumes the typed Selected output rather than dropping the action.',  code: source('Account actions', false) },
+      { title: 'Destructive action', description: 'Visual severity is item configuration; selection still follows the same typed output path.',  code: source('Destructive action', true) },
     ],
   },
 });

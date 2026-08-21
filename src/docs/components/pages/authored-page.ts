@@ -8,7 +8,6 @@ import type {
   ComponentKind,
   PageDefinition,
 } from '@/docs/components/page-definition';
-import type * as LegacyState from '@/docs/components/catalog-state';
 
 export type AuthoredPage = Readonly<{
   slug: string;
@@ -35,10 +34,7 @@ export const authoredPage = (page: AuthoredPage): AuthoredPage => {
       const example = page.definition.examples[index];
       return example === undefined
         ? h.empty
-        : example.preview(
-            {} as LegacyState.Model,
-            h as unknown as HtmlBuilder<LegacyState.Message>,
-          );
+        : example.staticPreview?.({}, h as unknown as HtmlBuilder<never>) ?? h.empty;
     },
   });
   return { ...page, previewProgram };

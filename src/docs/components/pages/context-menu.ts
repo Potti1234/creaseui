@@ -1,10 +1,8 @@
 import { Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import type { HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as ContextMenu from '@/ui/context-menu';
 
 const actions = ['back', 'forward', 'reload'] as const;
@@ -59,8 +57,6 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 })`,
 });
 
-const preview = (model: State.Model, h: HtmlBuilder<State.Message>) => ContextMenu.contextMenu({ model: model.contextMenu, toParentMessage: (message) => State.GotContextMenuMessage({ message }), class: 'flex h-40 w-72 items-center justify-center rounded-md border border-dashed text-sm', trigger: 'Right click here', ariaLabel: 'Browser actions', items: actions, itemToConfig: (action) => ({ label: labelFor(action), ...(action === 'forward' ? { isDisabled: true } : {}) }) }, h);
-
 const GotContextMenuPreviewMessage = m('GotContextMenuPreviewMessage', { message: ContextMenu.Message });
 type GotContextMenuPreviewMessage = typeof GotContextMenuPreviewMessage.Type;
 const ContextMenuPreviewModel = S.Struct({ _docsPage: S.Literal('context-menu'), contextMenu: ContextMenu.Model });
@@ -88,8 +84,8 @@ export const contextMenuPage = authoredPage({
     accessibility: 'A pointer context menu needs equivalent visible controls elsewhere. Once open, the menu remains fully keyboard navigable and Escape dismissible.',
     keyboard: [['Shift+F10 / context-menu key', 'Browsers may dispatch the context-menu event from the focused target.'], ['Arrow Up / Down', 'Moves among enabled actions.'], ['Enter', 'Selects the active action.'], ['Escape', 'Closes the menu.']],
     examples: [
-      { title: 'Browser actions', description: 'Secondary-click coordinates live in the child model; the chosen action returns to the parent.', preview, code: source('Browser actions') },
-      { title: 'Disabled action', description: 'Disabled entries are skipped by pointer and keyboard navigation.', preview, code: source('Disabled action') },
+      { title: 'Browser actions', description: 'Secondary-click coordinates live in the child model; the chosen action returns to the parent.', code: source('Browser actions') },
+      { title: 'Disabled action', description: 'Disabled entries are skipped by pointer and keyboard navigation.', code: source('Disabled action') },
     ],
   },
 });

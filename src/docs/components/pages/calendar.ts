@@ -1,11 +1,9 @@
 import { Option, Schema as S } from 'effect';
 import { Command } from 'foldkit';
 import * as FoldkitCalendar from 'foldkit/calendar';
-import type { HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as Calendar from '@/ui/calendar';
 
 const source = (name: string, roomy: boolean): string => foldkitApplication({
@@ -65,13 +63,6 @@ export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>
 })`,
 });
 
-const preview = (model: State.Model, h: HtmlBuilder<State.Message>, roomy: boolean) => Calendar.calendar({
-  model: model.calendar,
-  maybeSelectedDate: model.selectedCalendarDate,
-  toParentMessage: message => State.GotCalendarMessage({ message }),
-  ...(roomy ? { class: '[--cell-size:--spacing(10)]' } : {}),
-}, h);
-
 const GotCalendarPreviewMessage = m('GotCalendarPreviewMessage', { message: Calendar.Message });
 type GotCalendarPreviewMessage = typeof GotCalendarPreviewMessage.Type;
 const CalendarPreviewModel = S.Struct({ _docsPage: S.Literal('calendar'), calendar: Calendar.Model, selectedDate: S.Option(FoldkitCalendar.CalendarDate) });
@@ -102,8 +93,8 @@ export const calendarPage = authoredPage({
     accessibility: 'The calendar is a labeled grid with roving focus. Today, the selected date, unavailable dates, and view-navigation controls remain programmatically distinguishable.',
     keyboard: [['Arrow keys', 'Moves focus between dates.'], ['Page Up / Page Down', 'Moves to the previous or next month.'], ['Enter / Space', 'Selects the focused date and emits SelectedDate.']],
     examples: [
-      { title: 'Selected date', description: 'The parent stores the selected date emitted by the child while Calendar keeps focus and navigation state.', preview: (model, h) => preview(model, h, false), code: source('Selected date', false) },
-      { title: 'Roomier cells', description: 'View density changes through a CSS token; the Model, Message, update, and output contract stay identical.', preview: (model, h) => preview(model, h, true), code: source('Roomier cells', true) },
+      { title: 'Selected date', description: 'The parent stores the selected date emitted by the child while Calendar keeps focus and navigation state.',  code: source('Selected date', false) },
+      { title: 'Roomier cells', description: 'View density changes through a CSS token; the Model, Message, update, and output contract stay identical.',  code: source('Roomier cells', true) },
     ],
   },
 });

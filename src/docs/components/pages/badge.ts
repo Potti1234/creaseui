@@ -20,7 +20,7 @@ export const badgePage = authoredPage({
       {
         title: 'Variants',
         description: 'Variants communicate hierarchy and status while preserving readable text.',
-        preview: (_model, h) => h.div([h.Class('flex flex-wrap gap-2')], [
+        staticPreview: (_model, h) => h.div([h.Class('flex flex-wrap gap-2')], [
           Badge.badge({ children: ['Default'] }, h),
           Badge.badge({ variant: 'secondary', children: ['Secondary'] }, h),
           Badge.badge({ variant: 'outline', children: ['Outline'] }, h),
@@ -36,7 +36,7 @@ export const badgePage = authoredPage({
       {
         title: 'Status',
         description: 'Pair a concise state with nearby content instead of encoding meaning through color alone.',
-        preview: (_model, h) => Badge.badge({ variant: 'secondary', children: ['Ready to publish'] }, h),
+        staticPreview: (_model, h) => Badge.badge({ variant: 'secondary', children: ['Ready to publish'] }, h),
         code: source('Status', `Badge.badge({
   variant: 'secondary',
   children: ['Ready to publish'],

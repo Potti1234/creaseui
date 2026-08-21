@@ -1,9 +1,7 @@
 import { Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import type { HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as Button from '@/ui/button';
 import * as Sheet from '@/ui/sheet';
 
@@ -74,8 +72,6 @@ export const update = (model: Model, message: Message): readonly [Model, Readonl
 })`,
 });
 
-const preview = (model: State.Model, side: Sheet.SheetSide, title: string, h: HtmlBuilder<State.Message>) => h.div([], [Button.button({ variant: 'outline', onClick: State.OpenedOverlay({ target: 'sheet' }), children: [`Open ${side} sheet`] }, h), Sheet.sheet({ model: model.sheet, toParentMessage: (message) => State.GotSheetMessage({ message }), side, title, description: 'Update the settings, then save or cancel.', content: () => [h.div([h.Class('px-4 text-sm')], ['Sheet content remains ordinary Foldkit Html.'])], footer: (slots) => [h.button([...slots.closeButton, ...slots.initialFocusAttributes(), h.Type('button'), h.Class('rounded-md border px-4 py-2 text-sm')], ['Cancel']), h.button([...slots.closeButton, h.Type('button'), h.Class('rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground')], ['Save'])] }, h)]);
-
 const OpenedSheetPreview = m('OpenedSheetPreview');
 const GotSheetPreviewMessage = m('GotSheetPreviewMessage', { message: Sheet.Message });
 const SheetPreviewMessage = S.Union([OpenedSheetPreview, GotSheetPreviewMessage]);
@@ -111,8 +107,8 @@ export const sheetPage = authoredPage({
     accessibility: 'Sheet inherits Dialog’s title/description relationships, focus trap, Escape behavior, and trigger focus restoration. Use initialFocusAttributes once when a specific control should receive focus.',
     keyboard: [['Tab / Shift+Tab', 'Cycles within the open sheet.'], ['Escape', 'Closes the sheet and returns focus to its trigger.']],
     examples: [
-      { title: 'Compound layout', description: 'Compose content and footer controls while Foldkit owns the modal lifecycle.', preview: (model, h) => preview(model, 'right', 'Edit profile', h), code: source('Compound layout', 'right', 'Edit profile') },
-      { title: 'Bottom task', description: 'Changing the edge is view configuration; the child integration remains identical.', preview: (model, h) => preview(model, 'bottom', 'Quick settings', h), code: source('Bottom task', 'bottom', 'Quick settings') },
+      { title: 'Compound layout', description: 'Compose content and footer controls while Foldkit owns the modal lifecycle.',  code: source('Compound layout', 'right', 'Edit profile') },
+      { title: 'Bottom task', description: 'Changing the edge is view configuration; the child integration remains identical.',  code: source('Bottom task', 'bottom', 'Quick settings') },
     ],
   },
 });

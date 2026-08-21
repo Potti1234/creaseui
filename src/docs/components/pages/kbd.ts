@@ -15,7 +15,7 @@ export const kbdPage = authoredPage({
     examples: [
       {
         title: 'Key', description: 'Display a single key inline with instructions.',
-        preview: (_model, h) => h.p([h.Class('text-sm')], ['Press ', Kbd.kbd({ children: ['Esc'] }, h), ' to close.']),
+        staticPreview: (_model, h) => h.p([h.Class('text-sm')], ['Press ', Kbd.kbd({ children: ['Esc'] }, h), ' to close.']),
         code: source('Key', `h.p([h.Class('text-sm')], [
   'Press ',
   Kbd.kbd({ children: ['Esc'] }, h),
@@ -24,7 +24,7 @@ export const kbdPage = authoredPage({
       },
       {
         title: 'Shortcut', description: 'Group keys that form one shortcut.',
-        preview: (_model, h) => Kbd.kbdGroup({ children: [Kbd.kbd({ children: ['⌘'] }, h), Kbd.kbd({ children: ['K'] }, h)] }, h),
+        staticPreview: (_model, h) => Kbd.kbdGroup({ children: [Kbd.kbd({ children: ['⌘'] }, h), Kbd.kbd({ children: ['K'] }, h)] }, h),
         code: source('Shortcut', `Kbd.kbdGroup({
   children: [
     Kbd.kbd({ children: ['⌘'] }, h),

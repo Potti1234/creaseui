@@ -4,13 +4,10 @@ import type { HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as Bubble from '@/ui/bubble';
 import * as MessageScroller from '@/ui/message-scroller';
 
 const messages = <Msg>(h: HtmlBuilder<Msg>) => Array.from({ length: 18 }, (_, index) => MessageScroller.messageScrollerItem({ scrollAnchor: index === 17, children: [Bubble.bubble({ align: index % 2 === 0 ? 'start' : 'end', children: [Bubble.bubbleContent({ children: [`Message ${index + 1}`] }, h)] }, h)] }, h));
-
-const preview = (model: State.Model, direction: 'start' | 'end', h: HtmlBuilder<State.Message>) => MessageScroller.messageScroller({ class: 'relative h-72 w-full max-w-md rounded-md border', children: [MessageScroller.messageScrollerViewport({ model: model.messageScroller, toParentMessage: (message) => State.GotMessageScrollerMessage({ message }), children: [MessageScroller.messageScrollerContent({ children: messages(h) }, h)] }, h), MessageScroller.messageScrollerButton({ model: model.messageScroller, toParentMessage: (message) => State.GotMessageScrollerMessage({ message }), direction }, h)] }, h);
 
 const GotMessageScrollerPreviewMessage = m('GotMessageScrollerPreviewMessage', { message: MessageScroller.Message });
 type GotMessageScrollerPreviewMessage = typeof GotMessageScrollerPreviewMessage.Type;
@@ -93,8 +90,8 @@ export const messageScrollerPage = authoredPage({
     accessibility: 'The jump control leaves the accessibility tree when inactive and has a screen-reader label when active. Conversation messages should retain their own semantic author/time/content structure.',
     keyboard: [['Tab', 'Reaches the jump control only while it is active.'], ['Enter / Space', 'Requests a smooth scroll to the configured edge.']],
     examples: [
-      { title: 'Jump to latest', description: 'Scroll measurements activate the end button; its Message becomes a mapped DOM scroll Command.', preview: (model, h) => preview(model, 'end', h), code: source('Jump to latest', 'end') },
-      { title: 'Jump to beginning', description: 'The same measured Model can expose a start-edge control for history navigation.', preview: (model, h) => preview(model, 'start', h), code: source('Jump to beginning', 'start') },
+      { title: 'Jump to latest', description: 'Scroll measurements activate the end button; its Message becomes a mapped DOM scroll Command.',  code: source('Jump to latest', 'end') },
+      { title: 'Jump to beginning', description: 'The same measured Model can expose a start-edge control for history navigation.',  code: source('Jump to beginning', 'start') },
     ],
   },
 });

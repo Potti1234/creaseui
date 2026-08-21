@@ -2,7 +2,6 @@ import { Option, Schema as S } from 'effect';
 import { Command, Subscription } from 'foldkit';
 import { m } from 'foldkit/message';
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as Slider from '@/ui/slider';
 
 const GotSliderPreviewMessage = m('GotSliderPreviewMessage', { message: Slider.Message });
@@ -110,12 +109,12 @@ export const sliderPage = authoredPage({
     examples: [
       {
         title: 'Controlled volume', description: 'The child reports changes while the parent remains the source of truth for the numeric value.',
-        preview: (model, h) => h.div([h.Class('w-full max-w-sm')], [Slider.slider({ model: model.slider, value: model.sliderValue, toParentMessage: (message) => State.GotSliderMessage({ message }), label: 'Volume', formatValue: (value) => `${Math.round(value)} percent` }, h), h.p([h.Class('mt-3 text-sm text-muted-foreground')], [`Current value: ${Math.round(model.sliderValue)}`])]),
+
         code: source('Controlled volume', 50, false),
       },
       {
         title: 'Disabled value', description: 'Disabled state preserves the current value and semantics without installing an alternate update path.',
-        preview: (_model, h) => Slider.slider({ model: Slider.init({ id: 'docs-slider-disabled', min: 0, max: 100, step: 1 }), value: 65, toParentMessage: (message) => State.GotSliderMessage({ message }), label: 'Managed volume', isDisabled: true, class: 'max-w-sm' }, h),
+
         code: source('Disabled value', 65, true),
       },
     ],

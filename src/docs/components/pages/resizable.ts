@@ -2,7 +2,6 @@ import { Schema as S } from 'effect';
 import type { HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as Resizable from '@/ui/resizable';
 
 const source = (name: string, direction: 'horizontal' | 'vertical', initialSize: number): string => foldkitApplication({
@@ -80,12 +79,12 @@ export const resizablePage = authoredPage({
     examples: [
       {
         title: 'Editor and preview', description: 'Pointer and keyboard events update one explicit split percentage.',
-        preview: (model, h) => Resizable.resizable({ model: model.resizable, toParentMessage: (message) => State.GotResizableMessage({ message }), extent: 640, withHandle: true, ariaLabel: 'Resize editor and preview', class: 'h-56 w-full max-w-xl', first: panel('Editor', h), second: panel('Preview', h) }, h),
+
         code: source('Editor and preview', 'horizontal', 50),
       },
       {
         title: 'Vertical split', description: 'A second panel group needs a separate Model and message route even when it lives on the same page.',
-        preview: (model, h) => Resizable.resizable({ model: model.resizableVertical, toParentMessage: (message) => State.GotResizableVerticalMessage({ message }), direction: 'vertical', extent: 256, withHandle: true, ariaLabel: 'Resize workspace rows', class: 'h-64 w-full max-w-xl', first: panel('Canvas', h), second: panel('Console', h) }, h),
+
         code: source('Vertical split', 'vertical', 40),
       },
     ],

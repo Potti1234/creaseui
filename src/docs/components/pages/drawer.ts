@@ -1,10 +1,8 @@
 import { Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import type { HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as Button from '@/ui/button';
 import * as Drawer from '@/ui/drawer';
 
@@ -71,11 +69,6 @@ export const update = (model: Model, message: Message): readonly [Model, Readonl
 })`,
 });
 
-const preview = (model: State.Model, direction: Drawer.DrawerDirection, h: HtmlBuilder<State.Message>) => h.div([], [
-  Button.button({ variant: 'outline', onClick: State.OpenedOverlay({ target: 'drawer' }), children: [`Open ${direction} drawer`] }, h),
-  Drawer.drawer({ model: model.drawer, toParentMessage: (message) => State.GotDrawerMessage({ message }), direction, title: 'Move goal', description: 'Set your daily activity goal.', content: () => [h.div([h.Class('px-4 pb-6 text-center')], [h.p([h.Class('text-5xl font-bold tabular-nums')], ['350']), h.p([h.Class('text-sm text-muted-foreground')], ['Calories per day'])])], footer: (slots) => [h.button([...slots.closeButton, h.Type('button'), h.Class('rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground')], ['Save goal']), h.button([...slots.closeButton, h.Type('button'), h.Class('rounded-md border px-4 py-2 text-sm')], ['Cancel'])] }, h),
-]);
-
 const OpenedDrawerPreview = m('OpenedDrawerPreview');
 const GotDrawerPreviewMessage = m('GotDrawerPreviewMessage', { message: Drawer.Message });
 const DrawerPreviewMessage = S.Union([OpenedDrawerPreview, GotDrawerPreviewMessage]);
@@ -110,8 +103,8 @@ export const drawerPage = authoredPage({
     accessibility: 'The nested Dialog supplies naming, focus containment, Escape dismissal, and trigger focus restoration. The drag handle is decorative; every workflow still needs ordinary keyboard-operable close controls.',
     keyboard: [['Tab / Shift+Tab', 'Moves through controls while focus remains in the drawer.'], ['Escape', 'Closes the drawer and restores focus to its trigger.'], ['Pointer drag', 'Dragging at least 120px toward the configured edge dismisses the drawer.']],
     examples: [
-      { title: 'Activity goal', description: 'A complete bottom drawer with content, footer controls, and swipe-to-dismiss state.', preview: (model, h) => preview(model, 'bottom', h), code: source('Activity goal', 'bottom') },
-      { title: 'Side drawer', description: 'The same child integration can present a compact task from the right edge.', preview: (model, h) => preview(model, 'right', h), code: source('Side drawer', 'right') },
+      { title: 'Activity goal', description: 'A complete bottom drawer with content, footer controls, and swipe-to-dismiss state.',  code: source('Activity goal', 'bottom') },
+      { title: 'Side drawer', description: 'The same child integration can present a compact task from the right edge.',  code: source('Side drawer', 'right') },
     ],
   },
 });

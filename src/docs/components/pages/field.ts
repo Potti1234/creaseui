@@ -1,5 +1,4 @@
-import type { HtmlBuilder } from 'foldkit/html';
-import * as State from '@/docs/components/catalog-state';
+
 import { authoredPage, controlledStringApplication, textPreviewProgram } from '@/docs/components/pages/authored-page';
 import * as Field from '@/ui/field';
 import * as Input from '@/ui/input';
@@ -17,10 +16,6 @@ const previewProgram = textPreviewProgram('field', ['', '', ''], (index, value, 
   return Field.fieldGroup({ class: 'max-w-sm', children: [Field.field({ children: [Field.fieldLabel({ for: 'docs-field-first', children: ['First name'] }, h), input('docs-field-first')] }, h), Field.field({ children: [Field.fieldLabel({ for: 'docs-field-last', children: ['Last name'] }, h), input('docs-field-last')] }, h)] }, h);
 });
 
-const input = (id: string, model: State.Model, h: HtmlBuilder<State.Message>) => Input.input({
-  id, value: model.fieldName, onInput: value => State.ChangedText({ target: 'fieldName', value }), placeholder: 'Ada Lovelace',
-}, h);
-
 export const fieldPage = authoredPage({
   slug: 'field', title: 'Field', kind: 'recipe',
   previewProgram,
@@ -34,7 +29,7 @@ export const fieldPage = authoredPage({
     examples: [
       {
         title: 'Anatomy', description: 'Keep the label, controlled input, and supporting text together without moving input state into Field.',
-        preview: (model, h) => Field.field({ class: 'max-w-sm', children: [Field.fieldLabel({ for: 'docs-field-name', children: ['Display name'] }, h), input('docs-field-name', model, h), Field.fieldDescription({ children: ['Shown on your public profile.'] }, h)] }, h),
+
         code: source('Anatomy', `Field.field({
   class: 'max-w-sm',
   children: [
@@ -51,7 +46,7 @@ export const fieldPage = authoredPage({
       },
       {
         title: 'Validation error', description: 'Render an alert only when the parent validation result says the field is invalid.',
-        preview: (model, h) => Field.field({ class: 'max-w-sm', isInvalid: true, children: [Field.fieldLabel({ for: 'docs-field-error', children: ['Display name'] }, h), Input.input({ id: 'docs-field-error', value: model.fieldName, onInput: (value) => State.ChangedText({ target: 'fieldName', value }), isInvalid: true }, h), Field.fieldError({ children: ['Display name is required.'] }, h)] }, h),
+
         code: source('Validation error', `Field.field({
   class: 'max-w-sm',
   isInvalid: true,
@@ -67,7 +62,7 @@ export const fieldPage = authoredPage({
       },
       {
         title: 'Field group', description: 'Group related fields under one spacing contract while each input keeps a unique id.',
-        preview: (model, h) => Field.fieldGroup({ class: 'max-w-sm', children: [Field.field({ children: [Field.fieldLabel({ for: 'docs-field-first', children: ['First name'] }, h), input('docs-field-first', model, h)] }, h), Field.field({ children: [Field.fieldLabel({ for: 'docs-field-last', children: ['Last name'] }, h), input('docs-field-last', model, h)] }, h)] }, h),
+
         code: source('Field group', `Field.fieldGroup({
   class: 'max-w-sm',
   children: [

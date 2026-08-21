@@ -21,7 +21,7 @@ export const itemPage = authoredPage({
     examples: [
       {
         title: 'Collection', description: 'Compose repeated items inside one semantic group.',
-        preview: (_model, h) => Item.itemGroup({ class: 'w-full max-w-lg gap-1', children: [entry('Documentation', 'Guides and component references.', h), entry('Examples', 'Complete Foldkit applications.', h)] }, h),
+        staticPreview: (_model, h) => Item.itemGroup({ class: 'w-full max-w-lg gap-1', children: [entry('Documentation', 'Guides and component references.', h), entry('Examples', 'Complete Foldkit applications.', h)] }, h),
         code: source('Collection', `Item.itemGroup({ class: 'w-full max-w-lg gap-1', children: [
   Item.item({ element: 'li', children: [
     Item.itemMedia({ variant: 'icon', children: ['D'] }, h),
@@ -34,7 +34,7 @@ export const itemPage = authoredPage({
       },
       {
         title: 'Outlined', description: 'Use outline when an item needs a distinct boundary from its surrounding list.',
-        preview: (_model, h) => Item.item({ variant: 'outline', class: 'w-full max-w-lg', children: [Item.itemContent({ children: [Item.itemTitle({ children: ['Registry source'] }, h), Item.itemDescription({ children: ['Copied into your application and owned by you.'] }, h)] }, h)] }, h),
+        staticPreview: (_model, h) => Item.item({ variant: 'outline', class: 'w-full max-w-lg', children: [Item.itemContent({ children: [Item.itemTitle({ children: ['Registry source'] }, h), Item.itemDescription({ children: ['Copied into your application and owned by you.'] }, h)] }, h)] }, h),
         code: source('Outlined', `Item.item({ variant: 'outline', class: 'w-full max-w-lg', children: [
   Item.itemContent({ children: [
     Item.itemTitle({ children: ['Registry source'] }, h),
@@ -44,7 +44,7 @@ export const itemPage = authoredPage({
       },
       {
         title: 'Header and Footer', description: 'Use structured regions for metadata that belongs to the same item.',
-        preview: (_model, h) => Item.item({ variant: 'muted', class: 'w-full max-w-lg', children: [Item.itemHeader({ children: ['Build #418', 'Passed'] }, h), Item.itemContent({ children: [Item.itemTitle({ children: ['Documentation verification'] }, h)] }, h), Item.itemFooter({ children: ['main', '2 minutes ago'] }, h)] }, h),
+        staticPreview: (_model, h) => Item.item({ variant: 'muted', class: 'w-full max-w-lg', children: [Item.itemHeader({ children: ['Build #418', 'Passed'] }, h), Item.itemContent({ children: [Item.itemTitle({ children: ['Documentation verification'] }, h)] }, h), Item.itemFooter({ children: ['main', '2 minutes ago'] }, h)] }, h),
         code: source('Header and Footer', `Item.item({ variant: 'muted', class: 'w-full max-w-lg', children: [
   Item.itemHeader({ children: ['Build #418', 'Passed'] }, h),
   Item.itemContent({ children: [Item.itemTitle({ children: ['Documentation verification'] }, h)] }, h),

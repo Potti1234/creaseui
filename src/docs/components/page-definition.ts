@@ -1,11 +1,9 @@
 import type { Html, HtmlBuilder } from 'foldkit/html';
 
-import type * as State from '@/docs/components/catalog-state';
-
 export type DocsExample = Readonly<{
   title: string;
   description?: string;
-  preview: (model: State.Model, h: HtmlBuilder<State.Message>) => Html;
+  staticPreview?: (model: Readonly<Record<string, never>>, h: HtmlBuilder<never>) => Html;
   code: string;
   previewClass?: string;
 }>;

@@ -1,14 +1,10 @@
 import { Option, Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import type { HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as Menubar from '@/ui/menubar';
 import * as DropdownMenu from '@/ui/dropdown-menu';
-
-const preview = (model: State.Model, h: HtmlBuilder<State.Message>) => Menubar.menubar<string, State.Message>({ ariaLabel: 'Application menu', menus: ([['file', 'File', model.menubarFile], ['edit', 'Edit', model.menubarEdit], ['view', 'View', model.menubarView]] as const).map(([target, label, menu]) => ({ id: `docs-menubar-${target}`, label, model: menu, toParentMessage: (message) => State.GotMenubarMessage({ target, message }), items: ['new', 'open', 'save'], itemToConfig: (item) => ({ label: item[0]?.toUpperCase() + item.slice(1), ...(item === 'save' ? { shortcut: '⌘S' } : {}) }) })) }, h);
 
 const source = foldkitApplication({
   title: 'Menubar — Coordinated menus',
@@ -132,8 +128,8 @@ export const menubarPage = authoredPage({
     accessibility: 'The wrapper exposes a named menubar and each child retains menu/menuitem semantics. Horizontal arrows move between top-level menus; vertical arrows remain inside the active child.',
     keyboard: [['Arrow Left / Right', 'Moves to and opens the adjacent top-level menu.'], ['Arrow Up / Down', 'Moves within the current child menu.'], ['Enter / Space', 'Opens a menu or selects an action.'], ['Escape', 'Closes the active menu.']],
     examples: [
-      { title: 'Coordinated menus', description: 'Three child models are routed by target and horizontal movement is explicit parent state.', preview, code: source },
-      { title: 'Shortcut hints', description: 'Shortcut labels enrich items but global keyboard subscriptions remain separate application behavior.', preview, code: source },
+      { title: 'Coordinated menus', description: 'Three child models are routed by target and horizontal movement is explicit parent state.', code: source },
+      { title: 'Shortcut hints', description: 'Shortcut labels enrich items but global keyboard subscriptions remain separate application behavior.', code: source },
     ],
   },
 });

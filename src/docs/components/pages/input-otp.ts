@@ -1,4 +1,4 @@
-import * as State from '@/docs/components/catalog-state';
+
 import { authoredPage, controlledStringApplication, textPreviewProgram } from '@/docs/components/pages/authored-page';
 import * as InputOtp from '@/ui/input-otp';
 
@@ -28,13 +28,13 @@ export const inputOtpPage = authoredPage({
     examples: [
       {
         title: 'Six-digit code', description: 'A single parent string drives all six visual slots and supports one-time-code autofill.',
-        preview: (model, h) => InputOtp.inputOtp({ id: 'docs-input-otp-code', value: model.inputOtp, onInput: (value) => State.ChangedText({ target: 'inputOtp', value }), length: 6, ariaLabel: 'Verification code' }, h),
+
         code: source('Six-digit code', '123', `length: 6,
   ariaLabel: 'Verification code',`),
       },
       {
         title: 'Grouped code', description: 'A visual separator can clarify code groups without splitting the editable value.',
-        preview: (model, h) => InputOtp.inputOtp({ id: 'docs-input-otp-grouped', value: model.inputOtp, onInput: (value) => State.ChangedText({ target: 'inputOtp', value }), length: 6, ariaLabel: 'Recovery code', separator: (index) => index === 2 ? InputOtp.inputOtpSeparator(h) : h.span([], []) }, h),
+
         code: source('Grouped code', '123', `length: 6,
   ariaLabel: 'Recovery code',
   separator: index => index === 2
@@ -43,7 +43,7 @@ export const inputOtpPage = authoredPage({
       },
       {
         title: 'Alphanumeric', description: 'Change both pattern and input mode when the code is not numeric.',
-        preview: (model, h) => InputOtp.inputOtp({ id: 'docs-input-otp-alpha', value: model.inputOtp, onInput: (value) => State.ChangedText({ target: 'inputOtp', value }), length: 6, pattern: /[A-Z0-9]/u, inputMode: 'text', ariaLabel: 'Invite code' }, h),
+
         code: source('Alphanumeric', 'A1B', `length: 6,
   pattern: /[A-Z0-9]/u,
   inputMode: 'text',

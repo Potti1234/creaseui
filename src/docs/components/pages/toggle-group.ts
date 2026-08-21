@@ -1,7 +1,5 @@
 import { Schema as S } from 'effect';
 import { m } from 'foldkit/message';
-
-import * as State from '@/docs/components/catalog-state';
 import { authoredPage, controlledStringApplication, definePreviewProgram } from '@/docs/components/pages/authored-page';
 import * as ToggleGroup from '@/ui/toggle-group';
 
@@ -50,12 +48,12 @@ export const toggleGroupPage = authoredPage({
     examples: [
       {
         title: 'Alignment', description: 'For exclusive selection, store one value and replace it with the emitted item value.',
-        preview: (model, h) => ToggleGroup.toggleGroup({ value: model.toggleGroupValue, onToggle: (value) => State.ChangedToggleGroup({ value }), items }, h),
+
         code: source('Alignment', ''),
       },
       {
         title: 'Outline', description: 'The outline variant gives a segmented-control treatment without changing the state contract.',
-        preview: (model, h) => ToggleGroup.toggleGroup({ value: model.toggleGroupValue, onToggle: (value) => State.ChangedToggleGroup({ value }), variant: 'outline', items }, h),
+
         code: source('Outline', `variant: 'outline',`),
       },
     ],

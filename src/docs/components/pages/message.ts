@@ -17,7 +17,7 @@ export const messagePage = authoredPage({
     examples: [
       {
         title: 'Incoming', description: 'Keep sender, content, and timestamp in one readable row.',
-        preview: (_model, h) => MessageUi.message({ class: 'max-w-xl', children: [
+        staticPreview: (_model, h) => MessageUi.message({ class: 'max-w-xl', children: [
           MessageUi.messageAvatar({ children: ['A'] }, h),
           MessageUi.messageContent({ children: [MessageUi.messageHeader({ children: ['Ada'] }, h), Bubble.bubble({ variant: 'secondary', children: [Bubble.bubbleContent({ children: ['The Foldkit example is ready for review.'] }, h)] }, h), MessageUi.messageFooter({ children: ['10:42'] }, h)] }, h),
         ] }, h),
@@ -34,7 +34,7 @@ export const messagePage = authoredPage({
       },
       {
         title: 'Outgoing', description: 'Alignment distinguishes the local participant without changing chronological order.',
-        preview: (_model, h) => MessageUi.message({ align: 'end', class: 'max-w-xl', children: [MessageUi.messageAvatar({ children: ['Y'] }, h), MessageUi.messageContent({ children: [MessageUi.messageHeader({ children: ['You'] }, h), Bubble.bubble({ align: 'end', children: [Bubble.bubbleContent({ children: ['I will check the update and command flow.'] }, h)] }, h), MessageUi.messageFooter({ children: ['Delivered'] }, h)] }, h)] }, h),
+        staticPreview: (_model, h) => MessageUi.message({ align: 'end', class: 'max-w-xl', children: [MessageUi.messageAvatar({ children: ['Y'] }, h), MessageUi.messageContent({ children: [MessageUi.messageHeader({ children: ['You'] }, h), Bubble.bubble({ align: 'end', children: [Bubble.bubbleContent({ children: ['I will check the update and command flow.'] }, h)] }, h), MessageUi.messageFooter({ children: ['Delivered'] }, h)] }, h)] }, h),
         code: source('Outgoing', `MessageUi.message({ align: 'end', class: 'max-w-xl', children: [
   MessageUi.messageAvatar({ children: ['Y'] }, h),
   MessageUi.messageContent({ children: [

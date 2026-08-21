@@ -1,10 +1,8 @@
 import { Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import type { HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as Tooltip from '@/ui/tooltip';
 
 const source = (name: string, side: Tooltip.TooltipSide, showArrow: boolean): string => foldkitApplication({
@@ -52,8 +50,6 @@ export type Message = typeof Message.Type`,
 })`,
 });
 
-const preview = (model: State.Model, side: Tooltip.TooltipSide, showArrow: boolean, h: HtmlBuilder<State.Message>) => Tooltip.tooltip({ model: model.tooltip, toParentMessage: (message) => State.GotTooltipMessage({ message }), trigger: 'Add', triggerClass: 'rounded-md border px-3 py-2 text-sm', ariaLabel: 'Add item to library', content: 'Add to library', side, showArrow }, h);
-
 const GotTooltipPreviewMessage = m('GotTooltipPreviewMessage', { message: Tooltip.Message });
 type GotTooltipPreviewMessage = typeof GotTooltipPreviewMessage.Type;
 const TooltipPreviewModel = S.Struct({ _docsPage: S.Literal('tooltip'), tooltip: Tooltip.Model });
@@ -81,8 +77,8 @@ export const tooltipPage = authoredPage({
     accessibility: 'Tooltips open on keyboard focus as well as hover and must never contain required or interactive content. Give icon-only triggers an accessible name independent of the tooltip text.',
     keyboard: [['Tab', 'Focusing the trigger schedules or reveals the tooltip.'], ['Escape', 'Dismisses the visible tooltip without moving focus.'], ['Blur', 'Closes the tooltip when focus leaves the trigger.']],
     examples: [
-      { title: 'Delayed label', description: 'The complete application maps the primitive’s delayed-show Command through its parent Message.', preview: (model, h) => preview(model, 'top', true, h), code: source('Delayed label', 'top', true) },
-      { title: 'Side label', description: 'Placement and arrow visibility are view inputs; the child lifecycle remains unchanged.', preview: (model, h) => preview(model, 'right', false, h), code: source('Side label', 'right', false) },
+      { title: 'Delayed label', description: 'The complete application maps the primitive’s delayed-show Command through its parent Message.',  code: source('Delayed label', 'top', true) },
+      { title: 'Side label', description: 'Placement and arrow visibility are view inputs; the child lifecycle remains unchanged.',  code: source('Side label', 'right', false) },
     ],
   },
 });

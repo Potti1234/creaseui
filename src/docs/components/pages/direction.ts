@@ -1,13 +1,11 @@
 import * as Direction from '@/ui/direction';
 import * as Button from '@/ui/button';
-import * as State from '@/docs/components/catalog-state';
 import { authoredPage, interactionPreviewProgram, statelessComponentApplication } from '@/docs/components/pages/authored-page';
 
 const source = (name: string, viewBody: string): string => statelessComponentApplication({
   componentName: 'Direction', componentSlug: 'direction', exampleName: name, viewBody,
   componentImports: `import * as Button from '@/ui/button'`,
 });
-const clicked = State.ClickedPreviewAction();
 const previewProgram = interactionPreviewProgram('direction', (index, interaction, h) => index === 0
   ? Direction.direction({ direction: 'rtl', class: 'flex items-center gap-3', children: [Button.button({ onClick: interaction, children: ['التالي', '←'] }, h)] }, h)
   : Direction.direction({ direction: 'rtl', children: ['الإصدار ', Direction.direction({ direction: 'ltr', class: 'inline-block font-mono', children: ['v0.137.0'] }, h)] }, h));
@@ -24,7 +22,7 @@ export const directionPage = authoredPage({
     examples: [
       {
         title: 'Right to Left', description: 'Apply RTL direction to content and direction-aware child controls.',
-        preview: (_model, h) => Direction.direction({ direction: 'rtl', class: 'flex items-center gap-3', children: [Button.button({ onClick: clicked, children: ['التالي', '←'] }, h)] }, h),
+
         code: source('Right to Left', `Direction.direction({
   direction: 'rtl',
   class: 'flex items-center gap-3',
@@ -33,7 +31,7 @@ export const directionPage = authoredPage({
       },
       {
         title: 'Mixed Direction', description: 'Nest a local LTR token inside an RTL sentence when the content requires it.',
-        preview: (_model, h) => Direction.direction({ direction: 'rtl', children: ['الإصدار ', Direction.direction({ direction: 'ltr', class: 'inline-block font-mono', children: ['v0.137.0'] }, h)] }, h),
+
         code: source('Mixed Direction', `Direction.direction({ direction: 'rtl', children: [
   'الإصدار ',
   Direction.direction({ direction: 'ltr', class: 'inline-block font-mono', children: ['v0.137.0'] }, h),

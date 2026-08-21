@@ -16,7 +16,7 @@ export const scrollAreaPage = authoredPage({
     examples: [
       {
         title: 'Vertical', description: 'Bound the height and label the independently scrollable list.',
-        preview: (_model, h) => ScrollArea.scrollArea({ orientation: 'vertical', ariaLabel: 'Component list', class: 'h-56 w-72 rounded-md border p-3', children: items.map((item) => h.div([h.Class('border-b py-2 text-sm last:border-0')], [item])) }, h),
+        staticPreview: (_model, h) => ScrollArea.scrollArea({ orientation: 'vertical', ariaLabel: 'Component list', class: 'h-56 w-72 rounded-md border p-3', children: items.map((item) => h.div([h.Class('border-b py-2 text-sm last:border-0')], [item])) }, h),
         code: source('Vertical', `ScrollArea.scrollArea({
   orientation: 'vertical',
   ariaLabel: 'Component list',
@@ -28,7 +28,7 @@ export const scrollAreaPage = authoredPage({
       },
       {
         title: 'Horizontal', description: 'Use horizontal overflow for a deliberate one-line sequence.',
-        preview: (_model, h) => ScrollArea.scrollArea({ orientation: 'horizontal', ariaLabel: 'Release versions', class: 'w-80 rounded-md border p-4', children: [h.div([h.Class('flex w-max gap-3')], items.slice(0, 8).map((item) => h.span([h.Class('rounded-md bg-muted px-3 py-2 text-sm')], [item])))] }, h),
+        staticPreview: (_model, h) => ScrollArea.scrollArea({ orientation: 'horizontal', ariaLabel: 'Release versions', class: 'w-80 rounded-md border p-4', children: [h.div([h.Class('flex w-max gap-3')], items.slice(0, 8).map((item) => h.span([h.Class('rounded-md bg-muted px-3 py-2 text-sm')], [item])))] }, h),
         code: source('Horizontal', `ScrollArea.scrollArea({
   orientation: 'horizontal',
   ariaLabel: 'Release versions',

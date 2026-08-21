@@ -17,7 +17,7 @@ export const markerPage = authoredPage({
     examples: [
       {
         title: 'Separator', description: 'Separate groups in a timeline with a centered textual marker.',
-        preview: (_model, h) => Marker.marker({ variant: 'separator', class: 'max-w-lg', children: [Marker.markerContent({ children: ['Today'] }, h)] }, h),
+        staticPreview: (_model, h) => Marker.marker({ variant: 'separator', class: 'max-w-lg', children: [Marker.markerContent({ children: ['Today'] }, h)] }, h),
         code: source('Separator', `Marker.marker({
   variant: 'separator',
   class: 'max-w-lg',
@@ -26,7 +26,7 @@ export const markerPage = authoredPage({
       },
       {
         title: 'With Icon', description: 'Pair a decorative icon with content when it helps scanning.',
-        preview: (_model, h) => Marker.marker({ class: 'max-w-lg', children: [Marker.markerIcon({ children: ['●'] }, h), Marker.markerContent({ children: ['Deployment completed'] }, h)] }, h),
+        staticPreview: (_model, h) => Marker.marker({ class: 'max-w-lg', children: [Marker.markerIcon({ children: ['●'] }, h), Marker.markerContent({ children: ['Deployment completed'] }, h)] }, h),
         code: source('With Icon', `Marker.marker({
   class: 'max-w-lg',
   children: [
@@ -37,7 +37,7 @@ export const markerPage = authoredPage({
       },
       {
         title: 'Border', description: 'Use a border marker as a compact heading between adjacent regions.',
-        preview: (_model, h) => Marker.marker({ variant: 'border', class: 'max-w-lg', children: [Marker.markerContent({ children: ['Earlier'] }, h)] }, h),
+        staticPreview: (_model, h) => Marker.marker({ variant: 'border', class: 'max-w-lg', children: [Marker.markerContent({ children: ['Earlier'] }, h)] }, h),
         code: source('Border', `Marker.marker({ variant: 'border', class: 'max-w-lg', children: [
   Marker.markerContent({ children: ['Earlier'] }, h),
 ] }, h),`),

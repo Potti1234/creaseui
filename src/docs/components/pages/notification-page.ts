@@ -1,12 +1,9 @@
-import type { HtmlBuilder } from 'foldkit/html';
+
 
 import { foldkitApplication } from '@/docs/components/pages/authored-page';
 import type { PageDefinition } from '@/docs/components/page-definition';
 import type { ComponentKind } from '@/docs/components/page-definition';
-import * as State from '@/docs/components/catalog-state';
-import * as Button from '@/ui/button';
-import * as Sonner from '@/ui/sonner';
-import * as Toast from '@/ui/toast';
+import type * as Sonner from '@/ui/sonner';
 
 type NotificationConfig = Readonly<{
   slug: 'sonner' | 'toast';
@@ -87,13 +84,6 @@ export const update = (model: Model, message: Message): readonly [Model, Readonl
   });
 };
 
-const preview = (config: NotificationConfig, variant: Sonner.Variant, sticky: boolean, model: State.Model, h: HtmlBuilder<State.Message>) => {
-  const notificationModel = config.slug === 'sonner' ? model.sonner : model.toast;
-  const view = config.slug === 'sonner' ? Sonner.sonner : Toast.toast;
-  const got = (message: Sonner.Message) => config.slug === 'sonner' ? State.GotSonnerMessage({ message }) : State.GotToastMessage({ message });
-  return h.div([], [Button.button({ onClick: State.ShowedNotification({ target: config.slug, variant, sticky }), children: [`Show ${config.title.toLowerCase()}`] }, h), view({ model: notificationModel, toParentMessage: got, ariaLabel: `${config.title} notifications` }, h)]);
-};
-
 export const notificationDefinition = (config: NotificationConfig): PageDefinition => ({
   kind: config.kind, description: config.description,
   architecture: `${config.title} owns an ordered Entry collection and next id. show may return a delayed-dismiss Command; update/dismiss may emit DismissedToast output. The parent maps Commands and handles action clicks as domain Messages.`,
@@ -103,7 +93,7 @@ export const notificationDefinition = (config: NotificationConfig): PageDefiniti
   accessibility: 'The viewport is a named polite live region. Error entries use alert while other variants use status. Actions and dismiss controls are real, labeled buttons.',
   keyboard: [['Tab', 'Moves to an action or dismiss button in a visible notification.'], ['Enter / Space', 'Runs the focused action or dismisses the entry.']],
   examples: [
-    { title: 'Timed notification', description: 'Showing a non-sticky entry returns a delay Command that is mapped through the parent Message.', preview: (model, h) => preview(config, 'Success', false, model, h), code: application(config, 'Timed notification', 'Success', false) },
-    { title: 'Sticky error', description: 'A sticky error remains until its action or dismiss control emits a parent-handled Message.', preview: (model, h) => preview(config, 'Error', true, model, h), code: application(config, 'Sticky error', 'Error', true) },
+    { title: 'Timed notification', description: 'Showing a non-sticky entry returns a delay Command that is mapped through the parent Message.',  code: application(config, 'Timed notification', 'Success', false) },
+    { title: 'Sticky error', description: 'A sticky error remains until its action or dismiss control emits a parent-handled Message.',  code: application(config, 'Sticky error', 'Error', true) },
   ],
 });

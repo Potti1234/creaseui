@@ -17,7 +17,7 @@ export const tablePage = authoredPage({
     examples: [
       {
         title: 'Component Inventory', description: 'Render one header row and map domain records into body rows.',
-        preview: (_model, h) => Table.table({ class: 'max-w-xl', children: [Table.tableCaption({ children: ['Foldkit ownership by component.'] }, h), Table.tableHeader({ children: [Table.tableRow({ children: [Table.tableHead({ children: ['Component'] }, h), Table.tableHead({ children: ['State'] }, h)] }, h)] }, h), Table.tableBody({ children: rows.map(([name, state]) => Table.tableRow({ children: [Table.tableCell({ class: 'font-medium', children: [name] }, h), Table.tableCell({ children: [state] }, h)] }, h)) }, h)] }, h),
+        staticPreview: (_model, h) => Table.table({ class: 'max-w-xl', children: [Table.tableCaption({ children: ['Foldkit ownership by component.'] }, h), Table.tableHeader({ children: [Table.tableRow({ children: [Table.tableHead({ children: ['Component'] }, h), Table.tableHead({ children: ['State'] }, h)] }, h)] }, h), Table.tableBody({ children: rows.map(([name, state]) => Table.tableRow({ children: [Table.tableCell({ class: 'font-medium', children: [name] }, h), Table.tableCell({ children: [state] }, h)] }, h)) }, h)] }, h),
         code: source('Component Inventory', `Table.table({ children: [
   Table.tableCaption({ children: ['Foldkit ownership by component.'] }, h),
   Table.tableHeader({ children: [
@@ -40,7 +40,7 @@ export const tablePage = authoredPage({
       },
       {
         title: 'Footer', description: 'Use a semantic footer for totals that summarize the body columns.',
-        preview: (_model, h) => Table.table({ class: 'max-w-xl', children: [Table.tableBody({ children: [Table.tableRow({ children: [Table.tableCell({ children: ['Authored pages'] }, h), Table.tableCell({ class: 'text-right', children: ['22'] }, h)] }, h)] }, h), Table.tableFooter({ children: [Table.tableRow({ children: [Table.tableCell({ children: ['Total routes'] }, h), Table.tableCell({ class: 'text-right', children: ['65'] }, h)] }, h)] }, h)] }, h),
+        staticPreview: (_model, h) => Table.table({ class: 'max-w-xl', children: [Table.tableBody({ children: [Table.tableRow({ children: [Table.tableCell({ children: ['Authored pages'] }, h), Table.tableCell({ class: 'text-right', children: ['22'] }, h)] }, h)] }, h), Table.tableFooter({ children: [Table.tableRow({ children: [Table.tableCell({ children: ['Total routes'] }, h), Table.tableCell({ class: 'text-right', children: ['65'] }, h)] }, h)] }, h)] }, h),
         code: source('Footer', `Table.table({ children: [
   Table.tableBody({ children: [
     Table.tableRow({ children: [

@@ -1,10 +1,8 @@
 import { Option, Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import type { HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
-import * as State from '@/docs/components/catalog-state';
 import * as Select from '@/ui/select';
 
 const fruits = [{ value: 'apple', label: 'Apple' }, { value: 'banana', label: 'Banana' }, { value: 'blueberry', label: 'Blueberry' }] as const;
@@ -73,8 +71,6 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 })`,
 });
 
-const preview = (model: State.Model, grouped: boolean, h: HtmlBuilder<State.Message>) => Select.select({ model: model.select, maybeSelectedValue: model.selectedSelectValue, toParentMessage: (message) => State.GotSelectMessage({ message }), items: fruits, itemToValue: (item) => item.value, itemToLabel: (item) => item.label, placeholder: 'Select a fruit', ariaLabel: 'Fruit', ...(grouped ? { itemGroupKey: (item: typeof fruits[number]) => item.value === 'blueberry' ? 'Berries' : 'Common', groupToHeading: (group: string) => group } : {}) }, h);
-
 const GotSelectPreviewMessage = m('GotSelectPreviewMessage', { message: Select.Message });
 type GotSelectPreviewMessage = typeof GotSelectPreviewMessage.Type;
 const SelectPreviewModel = S.Struct({ _docsPage: S.Literal('select'), select: Select.Model, maybeFruit: S.Option(S.String) });
@@ -102,8 +98,8 @@ export const selectPage = authoredPage({
     accessibility: 'The primitive supplies listbox/option semantics, active-descendant navigation, typeahead, disabled states, and trigger relationships. Always provide a visible label or ariaLabel.',
     keyboard: [['Enter / Space', 'Opens the listbox and commits the active option.'], ['Arrow Up / Down', 'Moves the active option.'], ['Home / End', 'Moves to the first or last enabled option.'], ['Escape', 'Closes without changing the stored selection.']],
     examples: [
-      { title: 'Typed selection', description: 'Persist the child OutMessage into a domain Option instead of deriving selection from the child’s disclosure state.', preview: (model, h) => preview(model, false, h), code: source('Typed selection', false) },
-      { title: 'Grouped fruit', description: 'Group headings are projections over the same typed item collection.', preview: (model, h) => preview(model, true, h), code: source('Grouped fruit', true) },
+      { title: 'Typed selection', description: 'Persist the child OutMessage into a domain Option instead of deriving selection from the child’s disclosure state.',  code: source('Typed selection', false) },
+      { title: 'Grouped fruit', description: 'Group headings are projections over the same typed item collection.',  code: source('Grouped fruit', true) },
     ],
   },
 });

@@ -32,10 +32,10 @@ export const breadcrumbPage = authoredPage({
     styling: 'Keep labels brief and collapse middle ancestors before wrapping an unreadably long trail.',
     accessibility: 'The nav landmark is named breadcrumb, separators are hidden from assistive technology, and the current page exposes aria-current=page.',
     examples: [
-      { title: 'Current path', description: 'Ancestors are links; the final item is current-page text rather than a redundant link.', preview: (_model, h) => view(undefined, false, h), code: source('Current path', '{}', '') },
-      { title: 'Collapsed path', description: 'Use an ellipsis for omitted middle levels while retaining the first ancestor and current page.', preview: (_model, h) => view(undefined, true, h), code: source('Collapsed path', '{}', `Breadcrumb.breadcrumbItem({ children: [Breadcrumb.breadcrumbEllipsis({}, h)] }, h),
+      { title: 'Current path', description: 'Ancestors are links; the final item is current-page text rather than a redundant link.', staticPreview: (_model, h) => view(undefined, false, h), code: source('Current path', '{}', '') },
+      { title: 'Collapsed path', description: 'Use an ellipsis for omitted middle levels while retaining the first ancestor and current page.', staticPreview: (_model, h) => view(undefined, true, h), code: source('Collapsed path', '{}', `Breadcrumb.breadcrumbItem({ children: [Breadcrumb.breadcrumbEllipsis({}, h)] }, h),
     Breadcrumb.breadcrumbSeparator({}, h),`) },
-      { title: 'Custom separator', description: 'A textual separator remains presentational and does not pollute the accessible trail.', preview: (_model, h) => view('›', false, h), code: source('Custom separator', `{ children: ['›'] }`, '') },
+      { title: 'Custom separator', description: 'A textual separator remains presentational and does not pollute the accessible trail.', staticPreview: (_model, h) => view('›', false, h), code: source('Custom separator', `{ children: ['›'] }`, '') },
     ],
   },
 });

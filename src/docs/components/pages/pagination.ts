@@ -38,8 +38,8 @@ export const paginationPage = authoredPage({
     accessibility: 'The wrapper is a pagination navigation landmark, the active link exposes aria-current=page, and direction links have explicit accessible labels.',
     keyboard: [['Tab', 'Moves through each available page link.'], ['Enter', 'Navigates to the focused page href.']],
     examples: [
-      { title: 'Result pages', description: 'Generate page hrefs from route data and mark exactly one link as current.', preview: (_model, h) => pages(2, h), code: source('Result pages', false) },
-      { title: 'Compact directions', description: 'Hide direction text visually in narrow layouts while preserving each link’s accessible label.', preview: (_model, h) => h.div([h.Class('[&_a:first-of-type_span]:hidden [&_a:last-of-type_span]:hidden')], [pages(2, h)]), code: source('Compact directions', true) },
+      { title: 'Result pages', description: 'Generate page hrefs from route data and mark exactly one link as current.', staticPreview: (_model, h) => pages(2, h), code: source('Result pages', false) },
+      { title: 'Compact directions', description: 'Hide direction text visually in narrow layouts while preserving each link’s accessible label.', staticPreview: (_model, h) => h.div([h.Class('[&_a:first-of-type_span]:hidden [&_a:last-of-type_span]:hidden')], [pages(2, h)]), code: source('Compact directions', true) },
     ],
   },
 });

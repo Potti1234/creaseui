@@ -17,12 +17,12 @@ export const progressPage = authoredPage({
     examples: [
       {
         title: 'Determinate', description: 'Pass a numeric percentage when total work is known.',
-        preview: (_model, h) => Progress.progress({ value: 64, class: 'max-w-md' }, h),
+        staticPreview: (_model, h) => Progress.progress({ value: 64, class: 'max-w-md' }, h),
         code: source('Determinate', `Progress.progress({ value: 64, class: 'max-w-md' }, h),`),
       },
       {
         title: 'Indeterminate', description: 'Pass null while work is active but its total cannot be measured.',
-        preview: (_model, h) => Progress.progress({ value: null, class: 'max-w-md' }, h),
+        staticPreview: (_model, h) => Progress.progress({ value: null, class: 'max-w-md' }, h),
         code: source('Indeterminate', `Progress.progress({ value: null, class: 'max-w-md' }, h),`),
       },
     ],

@@ -18,7 +18,7 @@ export const cardPage = authoredPage({
     examples: [
       {
         title: 'Article', description: 'Use the article element for a self-contained item with its own heading.',
-        preview: (_model, h) => Card.card({ element: 'article', class: 'w-full max-w-sm', children: [
+        staticPreview: (_model, h) => Card.card({ element: 'article', class: 'w-full max-w-sm', children: [
           Card.cardHeader({ children: [Card.cardTitle({ children: ['Release notes'] }, h), Card.cardDescription({ children: ['Crease UI 0.1.0'] }, h)] }, h),
           Card.cardContent({ children: ['A source-owned component library for Foldkit applications.'] }, h),
         ] }, h),
@@ -36,7 +36,7 @@ export const cardPage = authoredPage({
       },
       {
         title: 'With Footer', description: 'Keep supporting actions in the footer while domain behavior remains in the child controls.',
-        preview: (_model, h) => Card.card({ class: 'w-full max-w-sm', children: [
+        staticPreview: (_model, h) => Card.card({ class: 'w-full max-w-sm', children: [
           Card.cardHeader({ children: [Card.cardTitle({ children: ['Deploy project'] }, h), Card.cardDescription({ children: ['Production is ready.'] }, h)] }, h),
           Card.cardContent({ children: ['All checks passed.'] }, h),
           Card.cardFooter({ class: 'justify-end text-sm font-medium', children: ['Ready to deploy'] }, h),

@@ -15,7 +15,7 @@ export const separatorPage = authoredPage({
     examples: [
       {
         title: 'Horizontal', description: 'Divide vertically stacked regions with a full-width rule.',
-        preview: (_model, h) => h.div([h.Class('w-full max-w-md space-y-4')], ['Account', Separator.separator({}, h), 'Preferences']),
+        staticPreview: (_model, h) => h.div([h.Class('w-full max-w-md space-y-4')], ['Account', Separator.separator({}, h), 'Preferences']),
         code: source('Horizontal', `h.div([h.Class('w-full max-w-md space-y-4')], [
   'Account',
   Separator.separator({}, h),
@@ -24,7 +24,7 @@ export const separatorPage = authoredPage({
       },
       {
         title: 'Vertical', description: 'Give a vertical separator an explicit height through its parent or class.',
-        preview: (_model, h) => h.div([h.Class('flex h-5 items-center gap-4')], ['Docs', Separator.separator({ orientation: 'vertical' }, h), 'API']),
+        staticPreview: (_model, h) => h.div([h.Class('flex h-5 items-center gap-4')], ['Docs', Separator.separator({ orientation: 'vertical' }, h), 'API']),
         code: source('Vertical', `h.div([h.Class('flex h-5 items-center gap-4')], [
   'Docs',
   Separator.separator({ orientation: 'vertical' }, h),
