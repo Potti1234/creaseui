@@ -232,7 +232,7 @@ Source: [`src/ui/carousel.ts`](../src/ui/carousel.ts)
 | `Message` | type | `Message = typeof Message.Type` |
 | `init` | function | `init(id: string, count: number, index = 0): Model` |
 | `update` | function | `update(model: Model, message: Message): Model` |
-| `CarouselProps` | type | `CarouselProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Html \| string>; ariaLabel?: string; orientation?: 'horizontal' \| 'vertical'; loop?: boolean; /** Number of slides advanced by the controls. */ slide…` |
+| `CarouselProps` | type | `CarouselProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Html \| string>; ariaLabel?: string; orientation?: 'horizontal' \| 'vertical'; loop?: boolean; /** Additional Embla options. Component-level options t…` |
 | `carousel` | function | `carousel<Msg>(props: CarouselProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Chart
