@@ -625,6 +625,33 @@ test('date picker composes disclosure and calendar into one child model', async 
   await expect(example.locator('code')).toContainText('Command.mapMessages')
 })
 
+test('chart documents pure Foldkit SVG recipes with complete source', async ({ page }) => {
+  await page.goto('/docs/components/chart')
+  const bars = page.locator('#monthly-revenue')
+  await expect(bars.getByRole('img', { name: 'Bar chart' })).toBeVisible()
+  await expect(bars.locator('rect')).toHaveCount(6)
+  const trend = page.locator('#traffic-trend')
+  await expect(trend.getByRole('img', { name: 'Area chart' })).toBeVisible()
+  await expect(trend.locator('[data-slot="chart-legend"]')).toContainText('Visitors')
+  await expect(bars.locator('code')).toContainText('Runtime.makeApplication')
+})
+
+test('data table filters and sorts through its interaction model', async ({ page }) => {
+  await page.goto('/docs/components/data-table')
+  const sortable = page.locator('#sortable-payments')
+  const amountHeader = sortable.getByRole('columnheader', { name: 'Amount' })
+  await sortable.getByRole('button', { name: 'Amount' }).click()
+  await expect(amountHeader).toHaveAttribute('aria-sort', 'ascending')
+  await sortable.getByRole('button', { name: 'Amount' }).click()
+  await expect(amountHeader).toHaveAttribute('aria-sort', 'descending')
+
+  const filtered = page.locator('#filter-and-paginate')
+  await filtered.getByRole('searchbox', { name: 'Filter payments…' }).fill('failed')
+  await expect(filtered.getByRole('row')).toHaveCount(2)
+  await expect(filtered).toContainText('r@example.com')
+  await expect(filtered.locator('code')).toContainText('DataTable.update')
+})
+
 test('flagship documentation pages have no automated accessibility violations', async ({
   page,
 }) => {

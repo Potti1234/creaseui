@@ -13,12 +13,14 @@ import { buttonGroupPage } from '@/docs/components/pages/button-group';
 import { calendarPage } from '@/docs/components/pages/calendar';
 import { cardPage } from '@/docs/components/pages/card';
 import { carouselPage } from '@/docs/components/pages/carousel';
+import { chartPage } from '@/docs/components/pages/chart';
 import { checkboxPage } from '@/docs/components/pages/checkbox';
 import { collapsiblePage } from '@/docs/components/pages/collapsible';
 import { comboboxPage } from '@/docs/components/pages/combobox';
 import { commandPage } from '@/docs/components/pages/command';
 import { contextMenuPage } from '@/docs/components/pages/context-menu';
 import { datePickerPage } from '@/docs/components/pages/date-picker';
+import { dataTablePage } from '@/docs/components/pages/data-table';
 import { directionPage } from '@/docs/components/pages/direction';
 import { dialogPage } from '@/docs/components/pages/dialog';
 import { drawerPage } from '@/docs/components/pages/drawer';
@@ -80,12 +82,14 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       calendarPage,
       cardPage,
       carouselPage,
+      chartPage,
       checkboxPage,
       collapsiblePage,
       comboboxPage,
       commandPage,
       contextMenuPage,
       datePickerPage,
+      dataTablePage,
       directionPage,
       dialogPage,
       drawerPage,
