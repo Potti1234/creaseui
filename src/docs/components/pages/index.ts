@@ -45,6 +45,7 @@ import { tablePage } from '@/docs/components/pages/table';
 import { textareaPage } from '@/docs/components/pages/textarea';
 import { togglePage } from '@/docs/components/pages/toggle';
 import { toggleGroupPage } from '@/docs/components/pages/toggle-group';
+import { tooltipPage } from '@/docs/components/pages/tooltip';
 import { typographyPage } from '@/docs/components/pages/typography';
 
 export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
@@ -96,6 +97,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       textareaPage,
       togglePage,
       toggleGroupPage,
+      tooltipPage,
       typographyPage,
     ].map((page) => [page.slug, page]),
   ),

@@ -191,6 +191,7 @@ test('authored helper pages publish complete application source', async ({ page 
     'textarea',
     'toggle',
     'toggle-group',
+    'tooltip',
     'typography',
   ]) {
     await page.goto(`/docs/components/${route}`)
@@ -408,6 +409,20 @@ test('hover card is available to keyboard focus and closes after blur', async ({
   await expect(example.locator('code')).toContainText('closeDelay')
   await page.getByRole('link', { name: 'crease/ui' }).focus()
   await expect(panel).toBeHidden({ timeout: 2_000 })
+})
+
+test('tooltip opens from keyboard focus and dismisses without moving focus', async ({ page }) => {
+  await page.goto('/docs/components/tooltip')
+  const example = page.locator('#delayed-label')
+  const trigger = example.getByRole('button', { name: 'Add item to library' })
+  await trigger.focus()
+  const panel = page.locator('[data-slot="tooltip-content"]')
+  await expect(panel).toBeVisible()
+  await expect(panel).toHaveText(/Add to library/u)
+  await expect(example.locator('code')).toContainText('Command.mapMessages')
+  await page.keyboard.press('Escape')
+  await expect(panel).toBeHidden()
+  await expect(trigger).toBeFocused()
 })
 
 test('flagship documentation pages have no automated accessibility violations', async ({
