@@ -141,6 +141,24 @@ test('Foldkit-native documentation remains contained on mobile', async ({ page }
   await expect(page.locator('#architecture')).toBeVisible()
 })
 
+test('authored helper pages publish complete application source', async ({ page }) => {
+  for (const route of [
+    'alert',
+    'aspect-ratio',
+    'badge',
+    'button',
+    'kbd',
+    'progress',
+    'separator',
+    'skeleton',
+    'spinner',
+  ]) {
+    await page.goto(`/docs/components/${route}`)
+    await expect(page.getByText('Stateless helper', { exact: true })).toBeVisible()
+    await expect(page.locator('main code').filter({ hasText: 'Runtime.makeApplication' }).first()).toBeAttached()
+  }
+})
+
 test('create icon selection changes the live preview shapes', async ({ page }) => {
   await page.goto('/create')
   const board = page.locator('[data-slot="capture-target"]')

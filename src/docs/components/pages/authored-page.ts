@@ -130,3 +130,49 @@ ${config.viewBody
   ),
 })`,
   });
+
+export const staticComponentApplication = (config: Readonly<{
+  componentName: string;
+  componentSlug: string;
+  exampleName: string;
+  componentImports?: string;
+  viewBody: string;
+}>): string =>
+  foldkitApplication({
+    title: `${config.componentName} — ${config.exampleName}`,
+    imports: `import { Schema as S } from 'effect'
+import { Command, Runtime, Subscription } from 'foldkit'
+import { type Document, type HtmlBuilder } from 'foldkit/html'
+import { m } from 'foldkit/message'
+
+import * as ${config.componentName} from '@/ui/${config.componentSlug}'${
+      config.componentImports === undefined ? '' : `\n${config.componentImports}`
+    }`,
+    model: `export const Model = S.Struct({})
+export type Model = typeof Model.Type`,
+    messages: `// This example has no interaction. Runtime applications still expose a
+// closed Message schema so the program boundary remains explicit.
+export const NoOp = m('NoOp${config.componentName}${config.exampleName.replaceAll(/[^a-zA-Z0-9]/g, '')}')
+export const Message = S.Union([NoOp])
+export type Message = typeof Message.Type`,
+    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
+  {},
+  [],
+]`,
+    update: `export const update = (
+  model: Model,
+  _message: Message,
+): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [model, []]`,
+    view: `export const view = (_model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: '${config.componentName} — ${config.exampleName}',
+  body: h.main(
+    [h.Class('flex min-h-screen items-center justify-center p-8')],
+    [
+${config.viewBody
+  .split('\n')
+  .map((line) => `      ${line}`)
+  .join('\n')}
+    ],
+  ),
+})`,
+  });
