@@ -1,6 +1,9 @@
+import { Schema as S } from 'effect';
+import { Command } from 'foldkit';
 import type { HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
 
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as Popover from '@/ui/popover';
 
@@ -59,8 +62,24 @@ export type Message = typeof Message.Type`,
 
 const preview = (model: State.Model, side: Popover.PopoverSide, align: Popover.PopoverAlign, h: HtmlBuilder<State.Message>) => Popover.popover({ model: model.popover, toParentMessage: (message) => State.GotPopoverMessage({ message }), trigger: 'Open dimensions', triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium', side, align, content: content(h) }, h);
 
+const GotPopoverPreviewMessage = m('GotPopoverPreviewMessage', { message: Popover.Message });
+type GotPopoverPreviewMessage = typeof GotPopoverPreviewMessage.Type;
+const PopoverPreviewModel = S.Struct({ _docsPage: S.Literal('popover'), popover: Popover.Model });
+type PopoverPreviewModel = typeof PopoverPreviewModel.Type;
+const previewProgram = definePreviewProgram<PopoverPreviewModel, GotPopoverPreviewMessage>({
+  Model: PopoverPreviewModel,
+  Message: GotPopoverPreviewMessage,
+  init: index => ({ _docsPage: 'popover', popover: Popover.init({ id: `docs-popover-${String(index)}`, isAnimated: true, contentFocus: true }) }),
+  update: (model, message) => {
+    const [popover, commands] = Popover.update(model.popover, message.message);
+    return [{ ...model, popover }, Command.mapMessages(commands, next => GotPopoverPreviewMessage({ message: next }))];
+  },
+  view: (index, model, h) => Popover.popover({ model: model.popover, toParentMessage: message => GotPopoverPreviewMessage({ message }), trigger: 'Open dimensions', triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium', side: index === 0 ? 'bottom' : 'right', align: index === 0 ? 'start' : 'center', content: content(h) }, h),
+});
+
 export const popoverPage = authoredPage({
   slug: 'popover', title: 'Popover', kind: 'submodel',
+  previewProgram,
   definition: {
     kind: 'submodel', description: 'Displays interactive content in a floating panel anchored to a trigger.',
     architecture: 'Popover is a Foldkit child Model rendered with h.submodel. Its Message drives disclosure, anchored positioning, outside-click dismissal, focus movement, and animation commands.',

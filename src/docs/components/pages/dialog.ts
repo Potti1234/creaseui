@@ -1,7 +1,44 @@
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { Schema as S } from 'effect';
+import { Command } from 'foldkit';
+import { m } from 'foldkit/message';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as Button from '@/ui/button';
 import * as Dialog from '@/ui/dialog';
+
+const OpenedDialogPreview = m('OpenedDialogPreview');
+const GotDialogPreviewMessage = m('GotDialogPreviewMessage', { message: Dialog.Message });
+const DialogPreviewMessage = S.Union([OpenedDialogPreview, GotDialogPreviewMessage]);
+type DialogPreviewMessage = typeof DialogPreviewMessage.Type;
+const DialogPreviewModel = S.Struct({ _docsPage: S.Literal('dialog'), dialog: Dialog.Model });
+type DialogPreviewModel = typeof DialogPreviewModel.Type;
+
+const previewProgram = definePreviewProgram<DialogPreviewModel, DialogPreviewMessage>({
+  Model: DialogPreviewModel,
+  Message: DialogPreviewMessage,
+  init: index => ({ _docsPage: 'dialog', dialog: Dialog.init({ id: `docs-dialog-${String(index)}`, isAnimated: true }) }),
+  update: (model, message) => {
+    const [dialog, commands] = message._tag === 'OpenedDialogPreview'
+      ? Dialog.open(model.dialog)
+      : Dialog.update(model.dialog, message.message);
+    return [{ ...model, dialog }, Command.mapMessages(commands, next => GotDialogPreviewMessage({ message: next }))];
+  },
+  view: (index, model, h) => h.div([], [
+    Button.button({ ...(index === 1 ? { variant: 'outline' as const } : {}), onClick: OpenedDialogPreview(), children: [index === 0 ? 'Open profile' : 'Review change'] }, h),
+    Dialog.dialog({
+      model: model.dialog,
+      toParentMessage: message => GotDialogPreviewMessage({ message }),
+      title: index === 0 ? 'Edit profile' : 'Review change',
+      description: index === 0 ? 'Make changes to your public details.' : 'Confirm the updated workspace name.',
+      ...(index === 1 ? { class: 'sm:max-w-sm' } : {}),
+      ...(index === 0 ? { content: () => [h.p([h.Class('text-sm')], ['Profile fields belong here.'])] } : {}),
+      footer: slots => [
+        h.button([...slots.closeButton, ...(index === 0 ? slots.initialFocusAttributes() : []), h.Type('button'), h.Class('rounded-md border px-4 py-2 text-sm')], [index === 0 ? 'Cancel' : 'Back']),
+        h.button([...slots.closeButton, h.Type('button'), h.Class('rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground')], [index === 0 ? 'Save' : 'Confirm']),
+      ],
+    }, h),
+  ]),
+});
 
 const source = (name: string, title: string, description: string, compact: boolean): string => foldkitApplication({
   title: `Dialog — ${name}`,
@@ -77,6 +114,7 @@ export const update = (
 
 export const dialogPage = authoredPage({
   slug: 'dialog', title: 'Dialog', kind: 'submodel',
+  previewProgram,
   definition: {
     kind: 'submodel', description: 'Opens focused content in a modal surface with focus trapping, restoration, dismissal, and optional transitions.',
     architecture: 'Dialog is a child submodel. Programmatic open and child update both return Commands for focus and animation timing; always map them back through the wrapper Message instead of discarding them.',

@@ -1,4 +1,8 @@
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { Schema as S } from 'effect';
+import { Command } from 'foldkit';
+import type { HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as Button from '@/ui/button';
 import * as Sheet from '@/ui/sheet';
@@ -72,8 +76,32 @@ export const update = (model: Model, message: Message): readonly [Model, Readonl
 
 const preview = (model: State.Model, side: Sheet.SheetSide, title: string, h: HtmlBuilder<State.Message>) => h.div([], [Button.button({ variant: 'outline', onClick: State.OpenedOverlay({ target: 'sheet' }), children: [`Open ${side} sheet`] }, h), Sheet.sheet({ model: model.sheet, toParentMessage: (message) => State.GotSheetMessage({ message }), side, title, description: 'Update the settings, then save or cancel.', content: () => [h.div([h.Class('px-4 text-sm')], ['Sheet content remains ordinary Foldkit Html.'])], footer: (slots) => [h.button([...slots.closeButton, ...slots.initialFocusAttributes(), h.Type('button'), h.Class('rounded-md border px-4 py-2 text-sm')], ['Cancel']), h.button([...slots.closeButton, h.Type('button'), h.Class('rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground')], ['Save'])] }, h)]);
 
+const OpenedSheetPreview = m('OpenedSheetPreview');
+const GotSheetPreviewMessage = m('GotSheetPreviewMessage', { message: Sheet.Message });
+const SheetPreviewMessage = S.Union([OpenedSheetPreview, GotSheetPreviewMessage]);
+type SheetPreviewMessage = typeof SheetPreviewMessage.Type;
+const SheetPreviewModel = S.Struct({ _docsPage: S.Literal('sheet'), sheet: Sheet.Model });
+type SheetPreviewModel = typeof SheetPreviewModel.Type;
+const previewProgram = definePreviewProgram<SheetPreviewModel, SheetPreviewMessage>({
+  Model: SheetPreviewModel,
+  Message: SheetPreviewMessage,
+  init: index => ({ _docsPage: 'sheet', sheet: Sheet.init({ id: `docs-sheet-${String(index)}`, isAnimated: true }) }),
+  update: (model, message) => {
+    const [sheet, commands] = message._tag === 'OpenedSheetPreview'
+      ? Sheet.open(model.sheet)
+      : Sheet.update(model.sheet, message.message);
+    return [{ ...model, sheet }, Command.mapMessages(commands, next => GotSheetPreviewMessage({ message: next }))];
+  },
+  view: (index, model, h) => {
+    const side: Sheet.SheetSide = index === 0 ? 'right' : 'bottom';
+    const title = index === 0 ? 'Edit profile' : 'Quick settings';
+    return h.div([], [Button.button({ variant: 'outline', onClick: OpenedSheetPreview(), children: [`Open ${side} sheet`] }, h), Sheet.sheet({ model: model.sheet, toParentMessage: message => GotSheetPreviewMessage({ message }), side, title, description: 'Update the settings, then save or cancel.', content: () => [h.div([h.Class('px-4 text-sm')], ['Sheet content remains ordinary Foldkit Html.'])], footer: slots => [h.button([...slots.closeButton, ...slots.initialFocusAttributes(), h.Type('button'), h.Class('rounded-md border px-4 py-2 text-sm')], ['Cancel']), h.button([...slots.closeButton, h.Type('button'), h.Class('rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground')], ['Save'])] }, h)]);
+  },
+});
+
 export const sheetPage = authoredPage({
   slug: 'sheet', title: 'Sheet', kind: 'submodel',
+  previewProgram,
   definition: {
     kind: 'submodel', description: 'Presents modal task content from a screen edge while preserving the underlying page context.',
     architecture: 'Sheet reuses Foldkit’s Dialog child Model. Programmatic open and child update return focus/animation Commands that the parent must map through GotSheetMessage.',
@@ -88,4 +116,3 @@ export const sheetPage = authoredPage({
     ],
   },
 });
-import type { HtmlBuilder } from 'foldkit/html';
