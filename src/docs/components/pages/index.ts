@@ -3,6 +3,7 @@ import { accordionPage } from '@/docs/components/pages/accordion';
 import { alertPage } from '@/docs/components/pages/alert';
 import { alertDialogPage } from '@/docs/components/pages/alert-dialog';
 import { aspectRatioPage } from '@/docs/components/pages/aspect-ratio';
+import { attachmentPage } from '@/docs/components/pages/attachment';
 import { avatarPage } from '@/docs/components/pages/avatar';
 import { badgePage } from '@/docs/components/pages/badge';
 import { breadcrumbPage } from '@/docs/components/pages/breadcrumb';
@@ -64,6 +65,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       alertPage,
       alertDialogPage,
       aspectRatioPage,
+      attachmentPage,
       avatarPage,
       badgePage,
       breadcrumbPage,

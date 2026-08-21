@@ -149,6 +149,7 @@ test('authored helper pages publish complete application source', async ({ page 
     'alert',
     'alert-dialog',
     'aspect-ratio',
+    'attachment',
     'avatar',
     'badge',
     'breadcrumb',
@@ -554,6 +555,16 @@ test('accordion enforces single-open state and publishes complete child wiring',
   await expect(product).toHaveAttribute('aria-expanded', 'false')
   await expect(example.locator('code')).toContainText('maybeToggle')
   await expect(example.locator('code')).toContainText('Accordion.update')
+})
+
+test('attachment explains parent-owned lifecycle through rendered states', async ({ page }) => {
+  await page.goto('/docs/components/attachment')
+  const example = page.locator('#lifecycle-states')
+  await expect(example.locator('[data-slot="attachment"]')).toHaveCount(4)
+  await expect(example.locator('[data-slot="attachment"][data-state="error"]')).toContainText('Upload failed')
+  await expect(example.locator('[data-slot="attachment"][data-state="done"]')).toContainText('Uploaded')
+  await expect(example.locator('code')).toContainText("(['uploading', 'processing', 'error', 'done'] as const)")
+  await expect(example.locator('code')).toContainText('Runtime.makeApplication')
 })
 
 test('flagship documentation pages have no automated accessibility violations', async ({
