@@ -10,6 +10,7 @@ import { breadcrumbPage } from '@/docs/components/pages/breadcrumb';
 import { bubblePage } from '@/docs/components/pages/bubble';
 import { buttonPage } from '@/docs/components/pages/button';
 import { buttonGroupPage } from '@/docs/components/pages/button-group';
+import { calendarPage } from '@/docs/components/pages/calendar';
 import { cardPage } from '@/docs/components/pages/card';
 import { carouselPage } from '@/docs/components/pages/carousel';
 import { checkboxPage } from '@/docs/components/pages/checkbox';
@@ -17,6 +18,7 @@ import { collapsiblePage } from '@/docs/components/pages/collapsible';
 import { comboboxPage } from '@/docs/components/pages/combobox';
 import { commandPage } from '@/docs/components/pages/command';
 import { contextMenuPage } from '@/docs/components/pages/context-menu';
+import { datePickerPage } from '@/docs/components/pages/date-picker';
 import { directionPage } from '@/docs/components/pages/direction';
 import { dialogPage } from '@/docs/components/pages/dialog';
 import { drawerPage } from '@/docs/components/pages/drawer';
@@ -75,6 +77,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       bubblePage,
       buttonPage,
       buttonGroupPage,
+      calendarPage,
       cardPage,
       carouselPage,
       checkboxPage,
@@ -82,6 +85,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       comboboxPage,
       commandPage,
       contextMenuPage,
+      datePickerPage,
       directionPage,
       dialogPage,
       drawerPage,

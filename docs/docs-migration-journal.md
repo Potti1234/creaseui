@@ -126,6 +126,15 @@ identifier, and add compile-oriented source verification before closing DOC-003.
 
 ## Closed problems
 
+### DOC-021 — Repeated Date Picker examples shared nested popover ids
+
+Closed in the authored Calendar and Date Picker slice: `withExampleIds` changed
+the Date Picker root and nested Calendar ids but left its nested Popover and
+animation ids unchanged. Rendering two examples therefore produced duplicate
+trigger ids and ambiguous ARIA relationships. The example-local identity pass
+now updates every nested child id; desktop and mobile Playwright coverage opens
+the picker, selects a date, and confirms the parent-owned value changes.
+
 ### DOC-011 — Generated source silently overrides authored source
 
 Closed in `92ce514`: the catalog bypasses legacy generated source for every

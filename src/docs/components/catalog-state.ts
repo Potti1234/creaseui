@@ -6,6 +6,7 @@ import { m } from 'foldkit/message'
 import * as AlertDialog from '@/ui/alert-dialog'
 import * as Accordion from '@/ui/accordion'
 import * as Avatar from '@/ui/avatar'
+import * as Calendar from '@/ui/calendar'
 import * as Carousel from '@/ui/carousel'
 import * as Checkbox from '@/ui/checkbox'
 import * as Collapsible from '@/ui/collapsible'
@@ -63,6 +64,8 @@ export const Model = S.Struct({
   toggleGroupValue: S.String,
   carousel: Carousel.Model,
   carouselCompact: Carousel.Model,
+  calendar: Calendar.Model,
+  selectedCalendarDate: S.Option(FoldkitCalendar.CalendarDate),
   isCheckboxChecked: S.Boolean,
   isCollapsibleOpen: S.Boolean,
   dataTable: DataTable.Model,
@@ -126,6 +129,7 @@ export const OpenedOverlay = m('OpenedCatalogOverlay', { target: OverlayTarget }
 export const OpenedSheetVariant = m('OpenedCatalogSheetVariant', { index: S.Number })
 export const GotCarouselMessage = m('GotCatalogCarouselMessage', { message: Carousel.Message })
 export const GotCarouselCompactMessage = m('GotCatalogCarouselCompactMessage', { message: Carousel.Message })
+export const GotCalendarMessage = m('GotCatalogCalendarMessage', { message: Calendar.Message })
 export const ToggledCheckbox = m('ToggledCatalogCheckbox', { isChecked: S.Boolean })
 export const ToggledCollapsible = m('ToggledCatalogCollapsible', { isOpen: S.Boolean })
 export const GotDataTableMessage = m('GotCatalogDataTableMessage', { message: DataTable.Message })
@@ -180,6 +184,7 @@ export const Message = S.Union([
   OpenedSheetVariant,
   GotCarouselMessage,
   GotCarouselCompactMessage,
+  GotCalendarMessage,
   ToggledCheckbox,
   ToggledCollapsible,
   GotDataTableMessage,
@@ -239,6 +244,8 @@ export const init = (): Model => ({
   toggleGroupValue: 'center',
   carousel: Carousel.init('docs-carousel', 3),
   carouselCompact: Carousel.init('docs-carousel-compact', 4),
+  calendar: Calendar.init({ id: 'docs-calendar', today: { year: 2026, month: 7, day: 28 }, initialViewDate: { year: 2026, month: 7, day: 18 } }),
+  selectedCalendarDate: Option.some({ year: 2026, month: 7, day: 18 }),
   isCheckboxChecked: true,
   isCollapsibleOpen: true,
   dataTable: DataTable.init(5),
@@ -300,6 +307,7 @@ export const withExampleIds = (model: Model, suffix: string): Model => {
     accordion: { ...model.accordion, id: id(model.accordion.id) },
     accordionMultiple: { ...model.accordionMultiple, id: id(model.accordionMultiple.id) },
     carousel: { ...model.carousel, id: id(model.carousel.id) },
+    calendar: { ...model.calendar, id: id(model.calendar.id) },
     resizable: { ...model.resizable, id: id(model.resizable.id) },
     slider: { ...model.slider, id: id(model.slider.id) },
     tabs: { ...model.tabs, id: id(model.tabs.id) },
@@ -315,6 +323,11 @@ export const withExampleIds = (model: Model, suffix: string): Model => {
       ...model.datePicker,
       id: id(model.datePicker.id),
       calendar: { ...model.datePicker.calendar, id: id(model.datePicker.calendar.id) },
+      popover: {
+        ...model.datePicker.popover,
+        id: id(model.datePicker.popover.id),
+        animation: { ...model.datePicker.popover.animation, id: id(model.datePicker.popover.animation.id) },
+      },
     },
     dialog: {
       ...model.dialog,
@@ -408,6 +421,14 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       return [{ ...model, carousel: Carousel.update(model.carousel, message.message) }, []]
     case 'GotCatalogCarouselCompactMessage':
       return [{ ...model, carouselCompact: Carousel.update(model.carouselCompact, message.message) }, []]
+    case 'GotCatalogCalendarMessage': {
+      const [calendar, commands, maybeSelection] = Calendar.update(model.calendar, message.message)
+      const selectedCalendarDate = Option.match(maybeSelection, {
+        onNone: () => model.selectedCalendarDate,
+        onSome: selection => selection._tag === 'SelectedDate' ? Option.some(selection.date) : model.selectedCalendarDate,
+      })
+      return [{ ...model, calendar, selectedCalendarDate }, Command.mapMessages(commands, next => GotCalendarMessage({ message: next }))]
+    }
     case 'ToggledCatalogCheckbox':
       return [{ ...model, isCheckboxChecked: message.isChecked }, []]
     case 'ToggledCatalogCollapsible':

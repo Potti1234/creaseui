@@ -601,6 +601,30 @@ for (const route of ['sonner', 'toast'] as const) {
   })
 }
 
+test('calendar emits selection while retaining child navigation state', async ({ page }) => {
+  await page.goto('/docs/components/calendar')
+  const example = page.locator('#selected-date')
+  const calendar = example.locator('[data-slot="calendar"]')
+  const day = calendar.getByRole('button', { name: 'Monday, July 20, 2026' })
+  await day.click()
+  await expect(day.locator('..')).toHaveAttribute('data-selected', '')
+  await expect(example.locator('code')).toContainText('maybeOutput')
+  await expect(example.locator('code')).toContainText('SelectedDate')
+})
+
+test('date picker composes disclosure and calendar into one child model', async ({ page }) => {
+  await page.goto('/docs/components/date-picker')
+  const example = page.locator('#existing-value')
+  const trigger = example.getByRole('button', { name: 'Change due date' })
+  await trigger.click()
+  const day = page.locator('[data-slot="popover-content"]').getByRole('button', { name: 'Monday, July 20, 2026' })
+  await day.click()
+  await expect(trigger).toContainText('July 20, 2026')
+  await expect(page.locator('[data-slot="popover-content"]')).toBeHidden()
+  await expect(example.locator('code')).toContainText('ClearedDate')
+  await expect(example.locator('code')).toContainText('Command.mapMessages')
+})
+
 test('flagship documentation pages have no automated accessibility violations', async ({
   page,
 }) => {
