@@ -13,11 +13,15 @@ import { definitions as lateDefinitions } from '@/docs/components/definitions/po
 import type { ComponentKind, PageDefinitions } from '@/docs/components/page-definition';
 import { generatedExampleSources } from '@/docs/components/generated-example-sources';
 import { componentApi } from '@/docs/generated-component-api';
+import { authoredPages } from '@/docs/components/pages';
 
 const definitions: PageDefinitions = {
   ...earlyDefinitions,
   ...middleDefinitions,
   ...lateDefinitions,
+  ...Object.fromEntries(
+    Object.values(authoredPages).map((page) => [page.slug, page.definition]),
+  ),
 };
 
 const EXAMPLE_STATE_COUNT = 32;
@@ -225,7 +229,9 @@ export const view = (
         compositionFor(kind, name, primaryExport(slug)),
       examples: definition.examples.map((config, index) => {
         const exampleCode =
-          generatedExampleSources[`${slug}/${config.title}`] ?? config.code;
+          authoredPages[slug] === undefined
+            ? (generatedExampleSources[`${slug}/${config.title}`] ?? config.code)
+            : config.code;
         const previewView = defineView<State.Model, State.Message>(
           (exampleModel, h) => config.preview(exampleModel, h),
         );

@@ -13,6 +13,7 @@ import {
 import { definitions as earlyDefinitions } from '../src/docs/components/definitions/a-to-command.ts'
 import { definitions as middleDefinitions } from '../src/docs/components/definitions/context-to-pagination.ts'
 import { definitions as lateDefinitions } from '../src/docs/components/definitions/popover-to-typography.ts'
+import { authoredPages } from '../src/docs/components/pages/index.ts'
 
 const registry = JSON.parse(readFileSync('src/ui/registry.json', 'utf8')) as {
   items: ReadonlyArray<{
@@ -163,6 +164,30 @@ describe('component catalog coverage', () => {
     assert.equal(componentKind('dialog'), 'submodel')
     assert.equal(componentKind('toast'), 'recipe')
     assert.match(componentPage, /How it fits Foldkit/)
+  })
+
+  it('keeps authored page examples as complete Foldkit applications', () => {
+    assert.ok(Object.keys(authoredPages).length > 0)
+
+    for (const page of Object.values(authoredPages)) {
+      assert.equal(page.slug, page.slug.toLowerCase())
+      assert.equal(page.kind, page.definition.kind)
+      for (const example of page.definition.examples) {
+        for (const section of [
+          '// MODEL',
+          '// MESSAGES',
+          '// INIT',
+          '// UPDATE',
+          '// SUBSCRIPTIONS',
+          '// VIEW',
+          '// RUNTIME',
+        ]) {
+          assert.match(example.code, new RegExp(section), `${page.slug}/${example.title}`)
+        }
+        assert.match(example.code, /Runtime\.makeApplication/, `${page.slug}/${example.title}`)
+        assert.doesNotMatch(example.code, /\bviewConfig\b/, `${page.slug}/${example.title}`)
+      }
+    }
   })
 
   it('shows concrete Foldkit source instead of prose or markup placeholders', () => {
