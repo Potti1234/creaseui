@@ -59,6 +59,7 @@ export const Model = S.Struct({
   togglePressed: S.Boolean,
   toggleGroupValue: S.String,
   carousel: Carousel.Model,
+  carouselCompact: Carousel.Model,
   isCheckboxChecked: S.Boolean,
   isCollapsibleOpen: S.Boolean,
   dataTable: DataTable.Model,
@@ -115,6 +116,7 @@ export type OverlayTarget = typeof OverlayTarget.Type
 export const OpenedOverlay = m('OpenedCatalogOverlay', { target: OverlayTarget })
 export const OpenedSheetVariant = m('OpenedCatalogSheetVariant', { index: S.Number })
 export const GotCarouselMessage = m('GotCatalogCarouselMessage', { message: Carousel.Message })
+export const GotCarouselCompactMessage = m('GotCatalogCarouselCompactMessage', { message: Carousel.Message })
 export const ToggledCheckbox = m('ToggledCatalogCheckbox', { isChecked: S.Boolean })
 export const ToggledCollapsible = m('ToggledCatalogCollapsible', { isOpen: S.Boolean })
 export const GotDataTableMessage = m('GotCatalogDataTableMessage', { message: DataTable.Message })
@@ -158,6 +160,7 @@ export const Message = S.Union([
   OpenedOverlay,
   OpenedSheetVariant,
   GotCarouselMessage,
+  GotCarouselCompactMessage,
   ToggledCheckbox,
   ToggledCollapsible,
   GotDataTableMessage,
@@ -207,6 +210,7 @@ export const init = (): Model => ({
   togglePressed: true,
   toggleGroupValue: 'center',
   carousel: Carousel.init('docs-carousel', 3),
+  carouselCompact: Carousel.init('docs-carousel-compact', 4),
   isCheckboxChecked: true,
   isCollapsibleOpen: true,
   dataTable: DataTable.init(5),
@@ -364,6 +368,8 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       return [{ ...model, [message.target]: message.value }, []]
     case 'GotCatalogCarouselMessage':
       return [{ ...model, carousel: Carousel.update(model.carousel, message.message) }, []]
+    case 'GotCatalogCarouselCompactMessage':
+      return [{ ...model, carouselCompact: Carousel.update(model.carouselCompact, message.message) }, []]
     case 'ToggledCatalogCheckbox':
       return [{ ...model, isCheckboxChecked: message.isChecked }, []]
     case 'ToggledCatalogCollapsible':

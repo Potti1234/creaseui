@@ -8,6 +8,7 @@ import { bubblePage } from '@/docs/components/pages/bubble';
 import { buttonPage } from '@/docs/components/pages/button';
 import { buttonGroupPage } from '@/docs/components/pages/button-group';
 import { cardPage } from '@/docs/components/pages/card';
+import { carouselPage } from '@/docs/components/pages/carousel';
 import { checkboxPage } from '@/docs/components/pages/checkbox';
 import { collapsiblePage } from '@/docs/components/pages/collapsible';
 import { directionPage } from '@/docs/components/pages/direction';
@@ -52,6 +53,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       buttonPage,
       buttonGroupPage,
       cardPage,
+      carouselPage,
       checkboxPage,
       collapsiblePage,
       directionPage,

@@ -154,6 +154,7 @@ test('authored helper pages publish complete application source', async ({ page 
     'button',
     'button-group',
     'card',
+    'carousel',
     'checkbox',
     'collapsible',
     'direction',
@@ -265,6 +266,20 @@ test('authored resizable instances keep axis-specific child state independent', 
   await page.keyboard.press('ArrowDown')
   await expect(vertical).toHaveAttribute('aria-valuenow', '42')
   await expect(horizontal).toHaveAttribute('aria-valuenow', '52')
+})
+
+test('authored carousels synchronize Embla selections without sharing state', async ({ page }) => {
+  await page.goto('/docs/components/carousel')
+
+  const single = page.locator('#single-slide')
+  const compact = page.locator('#two-at-a-time')
+  await single.getByRole('button', { name: 'Next slide' }).click()
+  await expect(single).toContainText('Slide 2 of 3')
+  await expect(compact).toContainText('Snap 1')
+
+  await compact.getByRole('button', { name: 'Next slide' }).click()
+  await expect(compact).toContainText('Snap 2')
+  await expect(single).toContainText('Slide 2 of 3')
 })
 
 test('create icon selection changes the live preview shapes', async ({ page }) => {
