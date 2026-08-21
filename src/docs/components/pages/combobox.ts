@@ -1,7 +1,9 @@
-import { Option } from 'effect';
+import { Option, Schema as S } from 'effect';
+import { Command } from 'foldkit';
 import type { HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
 
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as Combobox from '@/ui/combobox';
 
@@ -76,8 +78,24 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 
 const preview = (model: State.Model, grouped: boolean, h: HtmlBuilder<State.Message>) => Combobox.combobox({ model: model.combobox, maybeSelectedValue: model.selectedComboboxValue, restingInputValue: Option.match(model.selectedComboboxValue, { onNone: () => '', onSome: labelFor }), toParentMessage: (message) => State.GotComboboxMessage({ message }), items: frameworks, itemToValue: (item) => item.value, itemToLabel: (item) => item.label, placeholder: 'Search frameworks…', ariaLabel: 'Framework', ...(grouped ? { itemGroupKey: (item: typeof frameworks[number]) => item.value === 'next' ? 'React' : 'Other', groupToHeading: (group: string) => group } : {}) }, h);
 
+const GotComboboxPreviewMessage = m('GotComboboxPreviewMessage', { message: Combobox.Message });
+type GotComboboxPreviewMessage = typeof GotComboboxPreviewMessage.Type;
+const ComboboxPreviewModel = S.Struct({ _docsPage: S.Literal('combobox'), combobox: Combobox.Model, maybeFramework: S.Option(S.String) });
+type ComboboxPreviewModel = typeof ComboboxPreviewModel.Type;
+const previewProgram = definePreviewProgram<ComboboxPreviewModel, GotComboboxPreviewMessage>({
+  Model: ComboboxPreviewModel, Message: GotComboboxPreviewMessage,
+  init: index => ({ _docsPage: 'combobox', combobox: Combobox.init({ id: `docs-combobox-${String(index)}`, isAnimated: true }), maybeFramework: Option.none() }),
+  update: (model, message) => {
+    const [combobox, commands, maybeSelection] = Combobox.update(model.combobox, message.message);
+    const maybeFramework = Option.match(maybeSelection, { onNone: () => model.maybeFramework, onSome: selection => selection._tag === 'Selected' ? Option.some(selection.value) : Option.none<string>() });
+    return [{ ...model, combobox, maybeFramework }, Command.mapMessages(commands, next => GotComboboxPreviewMessage({ message: next }))];
+  },
+  view: (index, model, h) => Combobox.combobox({ model: model.combobox, maybeSelectedValue: model.maybeFramework, restingInputValue: Option.match(model.maybeFramework, { onNone: () => '', onSome: labelFor }), toParentMessage: message => GotComboboxPreviewMessage({ message }), items: frameworks, itemToValue: item => item.value, itemToLabel: item => item.label, placeholder: 'Search frameworks…', ariaLabel: 'Framework', ...(index === 1 ? { itemGroupKey: (item: typeof frameworks[number]) => item.value === 'next' ? 'React' : 'Other', groupToHeading: (group: string) => group } : {}) }, h),
+});
+
 export const comboboxPage = authoredPage({
   slug: 'combobox', title: 'Combobox', kind: 'submodel',
+  previewProgram,
   definition: {
     kind: 'submodel', description: 'Combines a searchable text input with a typed single-selection popup.',
     architecture: 'The child Model owns query, active option, disclosure, and anchor state. The parent separately stores Option<FrameworkValue>, derives the resting label, consumes Selected/Cleared OutMessage values, and maps returned Commands.',

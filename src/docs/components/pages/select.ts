@@ -1,6 +1,9 @@
+import { Option, Schema as S } from 'effect';
+import { Command } from 'foldkit';
 import type { HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
 
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as Select from '@/ui/select';
 
@@ -72,8 +75,24 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 
 const preview = (model: State.Model, grouped: boolean, h: HtmlBuilder<State.Message>) => Select.select({ model: model.select, maybeSelectedValue: model.selectedSelectValue, toParentMessage: (message) => State.GotSelectMessage({ message }), items: fruits, itemToValue: (item) => item.value, itemToLabel: (item) => item.label, placeholder: 'Select a fruit', ariaLabel: 'Fruit', ...(grouped ? { itemGroupKey: (item: typeof fruits[number]) => item.value === 'blueberry' ? 'Berries' : 'Common', groupToHeading: (group: string) => group } : {}) }, h);
 
+const GotSelectPreviewMessage = m('GotSelectPreviewMessage', { message: Select.Message });
+type GotSelectPreviewMessage = typeof GotSelectPreviewMessage.Type;
+const SelectPreviewModel = S.Struct({ _docsPage: S.Literal('select'), select: Select.Model, maybeFruit: S.Option(S.String) });
+type SelectPreviewModel = typeof SelectPreviewModel.Type;
+const previewProgram = definePreviewProgram<SelectPreviewModel, GotSelectPreviewMessage>({
+  Model: SelectPreviewModel, Message: GotSelectPreviewMessage,
+  init: index => ({ _docsPage: 'select', select: Select.init({ id: `docs-select-${String(index)}`, isAnimated: true }), maybeFruit: Option.some('apple') }),
+  update: (model, message) => {
+    const [select, commands, maybeSelection] = Select.update(model.select, message.message);
+    const maybeFruit = Option.match(maybeSelection, { onNone: () => model.maybeFruit, onSome: selection => selection._tag === 'Selected' ? Option.some(selection.value) : Option.none<string>() });
+    return [{ ...model, select, maybeFruit }, Command.mapMessages(commands, next => GotSelectPreviewMessage({ message: next }))];
+  },
+  view: (index, model, h) => Select.select({ model: model.select, maybeSelectedValue: model.maybeFruit, toParentMessage: message => GotSelectPreviewMessage({ message }), items: fruits, itemToValue: item => item.value, itemToLabel: item => item.label, placeholder: 'Select a fruit', ariaLabel: 'Fruit', ...(index === 1 ? { itemGroupKey: (item: typeof fruits[number]) => item.value === 'blueberry' ? 'Berries' : 'Common', groupToHeading: (group: string) => group } : {}) }, h),
+});
+
 export const selectPage = authoredPage({
   slug: 'select', title: 'Select', kind: 'submodel',
+  previewProgram,
   definition: {
     kind: 'submodel', description: 'Lets a user choose one typed value from a disclosure listbox.',
     architecture: 'Select wraps Foldkit’s Listbox child Model. The parent owns the selected Option separately, delegates Message, persists the Selected or Cleared OutMessage, and maps focus/positioning Commands.',
