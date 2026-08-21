@@ -1,6 +1,8 @@
+import { Schema as S } from 'effect';
 import type { HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
 
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as Card from '@/ui/card';
 import * as Carousel from '@/ui/carousel';
@@ -62,8 +64,20 @@ export type Message = typeof Message.Type`,
 
 const cards = <Msg>(count: number, h: HtmlBuilder<Msg>) => Array.from({ length: count }, (_, index) => Card.card({ children: [Card.cardContent({ class: 'flex aspect-square items-center justify-center p-6 text-4xl font-semibold', children: [String(index + 1)] }, h)] }, h));
 
+const GotCarouselPreviewMessage = m('GotCarouselPreviewMessage', { message: Carousel.Message });
+type GotCarouselPreviewMessage = typeof GotCarouselPreviewMessage.Type;
+const CarouselPreviewModel = S.Struct({ _docsPage: S.Literal('carousel'), carousel: Carousel.Model });
+type CarouselPreviewModel = typeof CarouselPreviewModel.Type;
+const previewProgram = definePreviewProgram<CarouselPreviewModel, GotCarouselPreviewMessage>({
+  Model: CarouselPreviewModel, Message: GotCarouselPreviewMessage,
+  init: index => ({ _docsPage: 'carousel', carousel: Carousel.init(`docs-carousel-${String(index)}`, index === 0 ? 3 : 4) }),
+  update: (model, message) => [{ ...model, carousel: Carousel.update(model.carousel, message.message) }, []],
+  view: (index, model, h) => h.div([h.Class(index === 0 ? 'w-full max-w-xs' : 'w-full max-w-sm')], [Carousel.carousel({ model: model.carousel, toParentMessage: message => GotCarouselPreviewMessage({ message }), ariaLabel: index === 0 ? 'Featured projects' : 'Compact projects', ...(index === 1 ? { itemSize: 50 } : {}), items: cards(index === 0 ? 3 : 4, h) }, h), h.p([h.Class('mt-4 text-center text-sm text-muted-foreground')], [index === 0 ? `Slide ${model.carousel.index + 1} of ${model.carousel.count}` : `Snap ${model.carousel.index + 1}`])]),
+});
+
 export const carouselPage = authoredPage({
   slug: 'carousel', title: 'Carousel', kind: 'submodel',
+  previewProgram,
   definition: {
     kind: 'submodel', description: 'Presents an ordered set of slides with swipe, button, and keyboard navigation powered by Embla.',
     architecture: 'Carousel stores the selected snap index in a child Model. Embla runs as an OnMount stream and emits WentTo Messages; delegate those through Carousel.update so browser motion and application state stay synchronized.',

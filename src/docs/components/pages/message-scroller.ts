@@ -1,6 +1,9 @@
+import { Schema as S } from 'effect';
+import { Command } from 'foldkit';
 import type { HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
 
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as Bubble from '@/ui/bubble';
 import * as MessageScroller from '@/ui/message-scroller';
@@ -8,6 +11,20 @@ import * as MessageScroller from '@/ui/message-scroller';
 const messages = <Msg>(h: HtmlBuilder<Msg>) => Array.from({ length: 18 }, (_, index) => MessageScroller.messageScrollerItem({ scrollAnchor: index === 17, children: [Bubble.bubble({ align: index % 2 === 0 ? 'start' : 'end', children: [Bubble.bubbleContent({ children: [`Message ${index + 1}`] }, h)] }, h)] }, h));
 
 const preview = (model: State.Model, direction: 'start' | 'end', h: HtmlBuilder<State.Message>) => MessageScroller.messageScroller({ class: 'relative h-72 w-full max-w-md rounded-md border', children: [MessageScroller.messageScrollerViewport({ model: model.messageScroller, toParentMessage: (message) => State.GotMessageScrollerMessage({ message }), children: [MessageScroller.messageScrollerContent({ children: messages(h) }, h)] }, h), MessageScroller.messageScrollerButton({ model: model.messageScroller, toParentMessage: (message) => State.GotMessageScrollerMessage({ message }), direction }, h)] }, h);
+
+const GotMessageScrollerPreviewMessage = m('GotMessageScrollerPreviewMessage', { message: MessageScroller.Message });
+type GotMessageScrollerPreviewMessage = typeof GotMessageScrollerPreviewMessage.Type;
+const MessageScrollerPreviewModel = S.Struct({ _docsPage: S.Literal('message-scroller'), scroller: MessageScroller.Model });
+type MessageScrollerPreviewModel = typeof MessageScrollerPreviewModel.Type;
+const previewProgram = definePreviewProgram<MessageScrollerPreviewModel, GotMessageScrollerPreviewMessage>({
+  Model: MessageScrollerPreviewModel, Message: GotMessageScrollerPreviewMessage,
+  init: index => ({ _docsPage: 'message-scroller', scroller: MessageScroller.init(`docs-message-scroller-${String(index)}`) }),
+  update: (model, message) => {
+    const [scroller, commands] = MessageScroller.update(model.scroller, message.message);
+    return [{ ...model, scroller }, Command.mapMessages(commands, next => GotMessageScrollerPreviewMessage({ message: next }))];
+  },
+  view: (index, model, h) => MessageScroller.messageScroller({ class: 'relative h-72 w-full max-w-md rounded-md border', children: [MessageScroller.messageScrollerViewport({ model: model.scroller, toParentMessage: message => GotMessageScrollerPreviewMessage({ message }), children: [MessageScroller.messageScrollerContent({ children: messages(h) }, h)] }, h), MessageScroller.messageScrollerButton({ model: model.scroller, toParentMessage: message => GotMessageScrollerPreviewMessage({ message }), direction: index === 0 ? 'end' : 'start' }, h)] }, h),
+});
 
 const source = (name: string, direction: 'start' | 'end') => foldkitApplication({
   title: `Message Scroller — ${name}`,
@@ -66,6 +83,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 
 export const messageScrollerPage = authoredPage({
   slug: 'message-scroller', title: 'Message Scroller', kind: 'submodel',
+  previewProgram,
   definition: {
     kind: 'submodel', description: 'Tracks a conversation viewport and offers an accessible jump control when content exists beyond an edge.',
     architecture: 'The Model stores measured scrollTop, scrollHeight, and clientHeight. An OnMount subscription emits Scrolled from the real viewport; RequestedScroll returns a DOM scroll Command that the parent must map.',
