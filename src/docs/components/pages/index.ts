@@ -2,6 +2,7 @@ import type { AuthoredPage } from '@/docs/components/pages/authored-page';
 import { alertPage } from '@/docs/components/pages/alert';
 import { aspectRatioPage } from '@/docs/components/pages/aspect-ratio';
 import { badgePage } from '@/docs/components/pages/badge';
+import { breadcrumbPage } from '@/docs/components/pages/breadcrumb';
 import { bubblePage } from '@/docs/components/pages/bubble';
 import { buttonPage } from '@/docs/components/pages/button';
 import { buttonGroupPage } from '@/docs/components/pages/button-group';
@@ -21,6 +22,7 @@ import { labelPage } from '@/docs/components/pages/label';
 import { markerPage } from '@/docs/components/pages/marker';
 import { messagePage } from '@/docs/components/pages/message';
 import { nativeSelectPage } from '@/docs/components/pages/native-select';
+import { paginationPage } from '@/docs/components/pages/pagination';
 import { progressPage } from '@/docs/components/pages/progress';
 import { radioGroupPage } from '@/docs/components/pages/radio-group';
 import { scrollAreaPage } from '@/docs/components/pages/scroll-area';
@@ -40,6 +42,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       alertPage,
       aspectRatioPage,
       badgePage,
+      breadcrumbPage,
       bubblePage,
       buttonPage,
       buttonGroupPage,
@@ -59,6 +62,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       markerPage,
       messagePage,
       nativeSelectPage,
+      paginationPage,
       progressPage,
       radioGroupPage,
       scrollAreaPage,
