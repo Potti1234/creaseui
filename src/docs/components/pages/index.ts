@@ -43,6 +43,7 @@ import { scrollAreaPage } from '@/docs/components/pages/scroll-area';
 import { separatorPage } from '@/docs/components/pages/separator';
 import { selectPage } from '@/docs/components/pages/select';
 import { sheetPage } from '@/docs/components/pages/sheet';
+import { sidebarPage } from '@/docs/components/pages/sidebar';
 import { skeletonPage } from '@/docs/components/pages/skeleton';
 import { sliderPage } from '@/docs/components/pages/slider';
 import { spinnerPage } from '@/docs/components/pages/spinner';
@@ -102,6 +103,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       separatorPage,
       selectPage,
       sheetPage,
+      sidebarPage,
       skeletonPage,
       sliderPage,
       spinnerPage,

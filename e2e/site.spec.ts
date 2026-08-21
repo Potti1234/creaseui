@@ -189,6 +189,7 @@ test('authored helper pages publish complete application source', async ({ page 
     'separator',
     'select',
     'sheet',
+    'sidebar',
     'skeleton',
     'slider',
     'spinner',
@@ -528,6 +529,17 @@ test('menubar documents independent targeted child models', async ({ page }) => 
   await expect(example.locator('code')).toContainText('MovedMenu')
   await page.keyboard.press('Escape')
   await expect(menu).toBeHidden()
+})
+
+test('sidebar documents persistence and toggles derived shell state', async ({ page }) => {
+  await page.goto('/docs/components/sidebar')
+  const example = page.locator('#persistent-shell')
+  const provider = example.locator('[data-slot="sidebar-wrapper"]')
+  await expect(provider).toHaveAttribute('data-state', 'expanded')
+  await example.getByRole('button', { name: 'Toggle Sidebar' }).click()
+  await expect(provider).toHaveAttribute('data-state', 'collapsed')
+  await expect(example.locator('code')).toContainText('Sidebar.shortcut')
+  await expect(example.locator('code')).toContainText('Command.mapMessages')
 })
 
 test('flagship documentation pages have no automated accessibility violations', async ({
