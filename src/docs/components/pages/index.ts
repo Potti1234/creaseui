@@ -31,6 +31,7 @@ import { separatorPage } from '@/docs/components/pages/separator';
 import { skeletonPage } from '@/docs/components/pages/skeleton';
 import { spinnerPage } from '@/docs/components/pages/spinner';
 import { switchPage } from '@/docs/components/pages/switch';
+import { tabsPage } from '@/docs/components/pages/tabs';
 import { tablePage } from '@/docs/components/pages/table';
 import { textareaPage } from '@/docs/components/pages/textarea';
 import { togglePage } from '@/docs/components/pages/toggle';
@@ -72,6 +73,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       skeletonPage,
       spinnerPage,
       switchPage,
+      tabsPage,
       tablePage,
       textareaPage,
       togglePage,

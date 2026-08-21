@@ -69,6 +69,8 @@ export const Model = S.Struct({
   isSwitchChecked: S.Boolean,
   tabs: Tabs.Model,
   selectedTabValue: S.String,
+  tabsLine: Tabs.Model,
+  selectedLineTabValue: S.String,
   alertDialog: AlertDialog.Model,
   combobox: Combobox.Model,
   selectedComboboxValue: S.Option(S.String),
@@ -120,6 +122,7 @@ export const GotResizableMessage = m('GotCatalogResizableMessage', { message: Re
 export const GotSliderMessage = m('GotCatalogSliderMessage', { message: Slider.Message })
 export const ToggledSwitch = m('ToggledCatalogSwitch', { isChecked: S.Boolean })
 export const GotTabsMessage = m('GotCatalogTabsMessage', { message: Tabs.Message })
+export const GotTabsLineMessage = m('GotCatalogTabsLineMessage', { message: Tabs.Message })
 export const GotAlertDialogMessage = m('GotCatalogAlertDialogMessage', { message: AlertDialog.Message })
 export const GotComboboxMessage = m('GotCatalogComboboxMessage', { message: Combobox.Message })
 export const GotCommandMessage = m('GotCatalogCommandMessage', { message: CommandMenu.Message })
@@ -161,6 +164,7 @@ export const Message = S.Union([
   GotSliderMessage,
   ToggledSwitch,
   GotTabsMessage,
+  GotTabsLineMessage,
   GotAlertDialogMessage,
   GotComboboxMessage,
   GotCommandMessage,
@@ -210,6 +214,8 @@ export const init = (): Model => ({
   isSwitchChecked: true,
   tabs: Tabs.init({ id: 'docs-tabs' }),
   selectedTabValue: 'account',
+  tabsLine: Tabs.init({ id: 'docs-tabs-line' }),
+  selectedLineTabValue: 'overview',
   alertDialog: AlertDialog.init({ id: 'docs-alert-dialog', isAnimated: true }),
   combobox: Combobox.init({ id: 'docs-combobox', isAnimated: true }),
   selectedComboboxValue: Option.none(),
@@ -382,6 +388,20 @@ export const update = (model: Model, message: Message): UpdateReturn => {
           }),
         },
         Command.mapMessages(commands, next => GotTabsMessage({ message: next })),
+      ]
+    }
+    case 'GotCatalogTabsLineMessage': {
+      const [tabsLine, commands, maybeSelection] = Tabs.update(model.tabsLine, message.message)
+      return [
+        {
+          ...model,
+          tabsLine,
+          selectedLineTabValue: Option.match(maybeSelection, {
+            onNone: () => model.selectedLineTabValue,
+            onSome: selection => selection.value,
+          }),
+        },
+        Command.mapMessages(commands, next => GotTabsLineMessage({ message: next })),
       ]
     }
     case 'GotCatalogAlertDialogMessage': {

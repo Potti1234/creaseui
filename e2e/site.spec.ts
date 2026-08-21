@@ -177,6 +177,7 @@ test('authored helper pages publish complete application source', async ({ page 
     'skeleton',
     'spinner',
     'switch',
+    'tabs',
     'table',
     'textarea',
     'toggle',
@@ -211,6 +212,30 @@ test('avatar delegates image lifecycle into its documented child model', async (
   await expect(image).toBeVisible()
   await expect(image).not.toHaveAttribute('data-loading', '')
   await expect(example.locator('[data-slot="avatar-fallback"]')).toHaveCount(0)
+})
+
+test('authored tabs keep child instances and selected values independent', async ({ page }) => {
+  await page.goto('/docs/components/tabs')
+
+  const settings = page.locator('#settings')
+  const line = page.locator('#line-variant')
+  await settings.getByRole('tab', { name: 'Security' }).click()
+  await expect(settings.getByRole('tabpanel')).toHaveText(
+    'Review passwords and sessions.',
+  )
+  await expect(line.getByRole('tab', { name: 'Overview' })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  )
+
+  await line.getByRole('tab', { name: 'Deployments' }).click()
+  await expect(line.getByRole('tabpanel')).toHaveText(
+    'Recent production releases.',
+  )
+  await expect(settings.getByRole('tab', { name: 'Security' })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  )
 })
 
 test('create icon selection changes the live preview shapes', async ({ page }) => {
