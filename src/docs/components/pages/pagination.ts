@@ -1,7 +1,9 @@
+import type { HtmlBuilder } from 'foldkit/html';
+
 import { authoredPage, staticComponentApplication } from '@/docs/components/pages/authored-page';
 import * as Pagination from '@/ui/pagination';
 
-const pages = (active: number, h: HtmlBuilder<State.Message>) => Pagination.pagination({ children: [Pagination.paginationContent({ children: [Pagination.paginationItem({ children: [Pagination.paginationPrevious({ href: '/invoices?page=1' }, h)] }, h), ...[1, 2, 3].map((page) => Pagination.paginationItem({ children: [Pagination.paginationLink({ href: `/invoices?page=${String(page)}`, isActive: page === active, children: [String(page)] }, h)] }, h)), Pagination.paginationItem({ children: [Pagination.paginationNext({ href: '/invoices?page=3' }, h)] }, h)] }, h)] }, h);
+const pages = <Msg>(active: number, h: HtmlBuilder<Msg>) => Pagination.pagination({ children: [Pagination.paginationContent({ children: [Pagination.paginationItem({ children: [Pagination.paginationPrevious({ href: '/invoices?page=1' }, h)] }, h), ...[1, 2, 3].map((page) => Pagination.paginationItem({ children: [Pagination.paginationLink({ href: `/invoices?page=${String(page)}`, isActive: page === active, children: [String(page)] }, h)] }, h)), Pagination.paginationItem({ children: [Pagination.paginationNext({ href: '/invoices?page=3' }, h)] }, h)] }, h)] }, h);
 
 const source = (name: string, compact: boolean): string => staticComponentApplication({
   componentName: 'Pagination', componentSlug: 'pagination', exampleName: name,
@@ -26,6 +28,7 @@ const source = (name: string, compact: boolean): string => staticComponentApplic
 
 export const paginationPage = authoredPage({
   slug: 'pagination', title: 'Pagination', kind: 'recipe',
+  previewMode: 'static',
   definition: {
     kind: 'recipe', description: 'Links between result pages through a named navigation landmark with explicit current-page state.',
     architecture: 'Pagination is stateless. Derive hrefs and isActive from the route or query model instead of maintaining a second hidden page index.',
@@ -40,6 +43,3 @@ export const paginationPage = authoredPage({
     ],
   },
 });
-import type { HtmlBuilder } from 'foldkit/html';
-
-import type * as State from '@/docs/components/catalog-state';

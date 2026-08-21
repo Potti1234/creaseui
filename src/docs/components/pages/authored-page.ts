@@ -103,6 +103,29 @@ export const textPreviewProgram = <const Slug extends string>(
   });
 };
 
+const InteractedPreview = m('InteractedWithDocsPreview');
+type InteractedPreview = typeof InteractedPreview.Type;
+
+/** Creates a route-local counter Model for previews whose controls emit one generic action. */
+export const interactionPreviewProgram = <const Slug extends string>(
+  slug: Slug,
+  render: (
+    exampleIndex: number,
+    interaction: InteractedPreview,
+    h: HtmlBuilder<InteractedPreview>,
+  ) => Html,
+): ErasedPreviewProgram => {
+  const Model = S.Struct({ _docsPage: S.Literal(slug), interactionCount: S.Number });
+  type Model = typeof Model.Type;
+  return definePreviewProgram<Model, InteractedPreview>({
+    Model,
+    Message: InteractedPreview,
+    init: () => ({ _docsPage: slug, interactionCount: 0 }),
+    update: model => [{ ...model, interactionCount: model.interactionCount + 1 }, []],
+    view: (index, _model, h) => render(index, InteractedPreview(), h),
+  });
+};
+
 export type FoldkitApplicationSource = Readonly<{
   title: string;
   imports: string;

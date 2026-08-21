@@ -1,16 +1,20 @@
 import * as Direction from '@/ui/direction';
 import * as Button from '@/ui/button';
 import * as State from '@/docs/components/catalog-state';
-import { authoredPage, statelessComponentApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, interactionPreviewProgram, statelessComponentApplication } from '@/docs/components/pages/authored-page';
 
 const source = (name: string, viewBody: string): string => statelessComponentApplication({
   componentName: 'Direction', componentSlug: 'direction', exampleName: name, viewBody,
   componentImports: `import * as Button from '@/ui/button'`,
 });
 const clicked = State.ClickedPreviewAction();
+const previewProgram = interactionPreviewProgram('direction', (index, interaction, h) => index === 0
+  ? Direction.direction({ direction: 'rtl', class: 'flex items-center gap-3', children: [Button.button({ onClick: interaction, children: ['التالي', '←'] }, h)] }, h)
+  : Direction.direction({ direction: 'rtl', children: ['الإصدار ', Direction.direction({ direction: 'ltr', class: 'inline-block font-mono', children: ['v0.137.0'] }, h)] }, h));
 
 export const directionPage = authoredPage({
   slug: 'direction', title: 'Direction', kind: 'helper',
+  previewProgram,
   definition: {
     kind: 'helper', description: 'Sets left-to-right or right-to-left writing direction for a subtree.',
     architecture: 'Direction is a stateless wrapper around the native dir attribute. It changes layout context without introducing component state.',

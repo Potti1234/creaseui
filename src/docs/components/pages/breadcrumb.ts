@@ -1,7 +1,9 @@
+import type { HtmlBuilder } from 'foldkit/html';
+
 import { authoredPage, staticComponentApplication } from '@/docs/components/pages/authored-page';
 import * as Breadcrumb from '@/ui/breadcrumb';
 
-const view = (separator: string | undefined, collapsed: boolean, h: HtmlBuilder<State.Message>) => Breadcrumb.breadcrumb({ children: [Breadcrumb.breadcrumbList({ children: [Breadcrumb.breadcrumbItem({ children: [Breadcrumb.breadcrumbLink({ href: '/docs', children: ['Docs'] }, h)] }, h), Breadcrumb.breadcrumbSeparator(separator === undefined ? {} : { children: [separator] }, h), ...(collapsed ? [Breadcrumb.breadcrumbItem({ children: [Breadcrumb.breadcrumbEllipsis({}, h)] }, h), Breadcrumb.breadcrumbSeparator({}, h)] : []), Breadcrumb.breadcrumbItem({ children: [Breadcrumb.breadcrumbPage({ children: ['Breadcrumb'] }, h)] }, h)] }, h)] }, h);
+const view = <Msg>(separator: string | undefined, collapsed: boolean, h: HtmlBuilder<Msg>) => Breadcrumb.breadcrumb({ children: [Breadcrumb.breadcrumbList({ children: [Breadcrumb.breadcrumbItem({ children: [Breadcrumb.breadcrumbLink({ href: '/docs', children: ['Docs'] }, h)] }, h), Breadcrumb.breadcrumbSeparator(separator === undefined ? {} : { children: [separator] }, h), ...(collapsed ? [Breadcrumb.breadcrumbItem({ children: [Breadcrumb.breadcrumbEllipsis({}, h)] }, h), Breadcrumb.breadcrumbSeparator({}, h)] : []), Breadcrumb.breadcrumbItem({ children: [Breadcrumb.breadcrumbPage({ children: ['Breadcrumb'] }, h)] }, h)] }, h)] }, h);
 
 const source = (name: string, separator: string, middle: string): string => staticComponentApplication({
   componentName: 'Breadcrumb', componentSlug: 'breadcrumb', exampleName: name,
@@ -21,6 +23,7 @@ const source = (name: string, separator: string, middle: string): string => stat
 
 export const breadcrumbPage = authoredPage({
   slug: 'breadcrumb', title: 'Breadcrumb', kind: 'recipe',
+  previewMode: 'static',
   definition: {
     kind: 'recipe', description: 'Shows the current resource’s position in a hierarchy with linked ancestors and one current page.',
     architecture: 'Breadcrumb is a stateless semantic recipe. Derive its items from route data; navigation remains ordinary href behavior or your router’s link integration.',
@@ -36,6 +39,3 @@ export const breadcrumbPage = authoredPage({
     ],
   },
 });
-import type { HtmlBuilder } from 'foldkit/html';
-
-import type * as State from '@/docs/components/catalog-state';

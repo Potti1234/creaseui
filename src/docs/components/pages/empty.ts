@@ -1,7 +1,7 @@
 import * as Empty from '@/ui/empty';
 import * as Button from '@/ui/button';
 import * as State from '@/docs/components/catalog-state';
-import { authoredPage, statelessComponentApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, interactionPreviewProgram, statelessComponentApplication } from '@/docs/components/pages/authored-page';
 
 const source = (name: string, viewBody: string): string =>
   statelessComponentApplication({
@@ -10,9 +10,11 @@ const source = (name: string, viewBody: string): string =>
   });
 
 const clicked = State.ClickedPreviewAction();
+const previewProgram = interactionPreviewProgram('empty', (index, interaction, h) => Empty.empty({ class: `w-full max-w-xl${index === 0 ? ' border' : ''}`, children: [Empty.emptyHeader({ children: index === 0 ? [Empty.emptyMedia({ variant: 'icon', children: ['+'] }, h), Empty.emptyTitle({ children: ['No projects yet'] }, h), Empty.emptyDescription({ children: ['Create a project to start shipping with Crease UI.'] }, h)] : [Empty.emptyTitle({ children: ['No matching components'] }, h), Empty.emptyDescription({ children: ['Try a different search or clear the current filters.'] }, h)] }, h), Empty.emptyContent({ children: [Button.button({ ...(index === 1 ? { variant: 'outline' as const } : {}), onClick: interaction, children: [index === 0 ? 'Create project' : 'Clear filters'] }, h)] }, h)] }, h));
 
 export const emptyPage = authoredPage({
   slug: 'empty', title: 'Empty', kind: 'recipe',
+  previewProgram,
   definition: {
     kind: 'recipe',
     description: 'Explains an empty collection or unavailable result and offers a useful next action.',

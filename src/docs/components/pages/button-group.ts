@@ -1,5 +1,5 @@
 import * as State from '@/docs/components/catalog-state';
-import { authoredPage, statelessComponentApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, interactionPreviewProgram, statelessComponentApplication } from '@/docs/components/pages/authored-page';
 import * as Button from '@/ui/button';
 import * as ButtonGroup from '@/ui/button-group';
 
@@ -22,8 +22,11 @@ const buttons = (h: HtmlBuilder<State.Message>) => [
   Button.button({ variant: 'outline', onClick: State.ClickedPreviewAction(), children: ['Next'] }, h),
 ];
 
+const previewProgram = interactionPreviewProgram('button-group', (index, interaction, h) => ButtonGroup.buttonGroup({ orientation: index === 1 ? 'vertical' : 'horizontal', children: [Button.button({ variant: 'outline', onClick: interaction, children: ['Previous'] }, h), Button.button({ variant: 'outline', onClick: interaction, children: ['Current'] }, h), Button.button({ variant: 'outline', onClick: interaction, children: ['Next'] }, h)] }, h));
+
 export const buttonGroupPage = authoredPage({
   slug: 'button-group', title: 'Button Group', kind: 'recipe',
+  previewProgram,
   definition: {
     kind: 'recipe', description: 'Visually joins related actions while preserving each button as an independent Foldkit message source.',
     architecture: 'Button Group owns no state. Each child button emits its own typed parent Message; the group contributes layout and an accessible group boundary.',
