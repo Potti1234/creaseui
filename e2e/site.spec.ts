@@ -147,6 +147,7 @@ test('authored helper pages publish complete application source', async ({ page 
   for (const route of [
     'alert',
     'aspect-ratio',
+    'avatar',
     'badge',
     'breadcrumb',
     'bubble',
@@ -183,7 +184,7 @@ test('authored helper pages publish complete application source', async ({ page 
     'typography',
   ]) {
     await page.goto(`/docs/components/${route}`)
-    await expect(page.getByText(/^(Stateless helper|Composed recipe)$/u)).toBeVisible()
+    await expect(page.getByText(/^(Stateless helper|Stateful submodel|Composed recipe)$/u)).toBeVisible()
     await expect(page.locator('main code').filter({ hasText: 'Runtime.makeApplication' }).first()).toBeAttached()
   }
 })
@@ -200,6 +201,16 @@ test('authored form connects controlled input help and validation', async ({ pag
   await expect(page.locator('#docs-form-error-message')).toHaveText(
     'Enter a valid email address.',
   )
+})
+
+test('avatar delegates image lifecycle into its documented child model', async ({ page }) => {
+  await page.goto('/docs/components/avatar')
+
+  const example = page.locator('#image-lifecycle')
+  const image = example.getByRole('img', { name: 'Ada Lovelace' })
+  await expect(image).toBeVisible()
+  await expect(image).not.toHaveAttribute('data-loading', '')
+  await expect(example.locator('[data-slot="avatar-fallback"]')).toHaveCount(0)
 })
 
 test('create icon selection changes the live preview shapes', async ({ page }) => {

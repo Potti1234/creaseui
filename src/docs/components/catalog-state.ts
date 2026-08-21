@@ -4,6 +4,7 @@ import * as FoldkitCalendar from 'foldkit/calendar'
 import { m } from 'foldkit/message'
 
 import * as AlertDialog from '@/ui/alert-dialog'
+import * as Avatar from '@/ui/avatar'
 import * as Carousel from '@/ui/carousel'
 import * as Checkbox from '@/ui/checkbox'
 import * as Collapsible from '@/ui/collapsible'
@@ -54,6 +55,7 @@ export const Model = S.Struct({
   dialogName: S.String,
   sheetName: S.String,
   nativeSelect: S.String,
+  avatar: Avatar.Model,
   togglePressed: S.Boolean,
   toggleGroupValue: S.String,
   carousel: Carousel.Model,
@@ -102,6 +104,7 @@ export const ChangedText = m('ChangedCatalogPreviewText', {
 })
 export const ClickedPreviewAction = m('ClickedCatalogPreviewAction')
 export const ChangedNativeSelect = m('ChangedCatalogNativeSelect', { value: S.String })
+export const GotAvatarMessage = m('GotCatalogAvatarMessage', { message: Avatar.Message })
 export const ToggledPreview = m('ToggledCatalogPreview')
 export const ChangedToggleGroup = m('ChangedCatalogToggleGroup', { value: S.String })
 export const OverlayTarget = S.Literals(['alertDialog', 'dialog', 'drawer', 'sheet'])
@@ -144,6 +147,7 @@ export const Message = S.Union([
   ChangedText,
   ClickedPreviewAction,
   ChangedNativeSelect,
+  GotAvatarMessage,
   ToggledPreview,
   ChangedToggleGroup,
   OpenedOverlay,
@@ -192,6 +196,7 @@ export const init = (): Model => ({
   dialogName: 'Pedro Duarte',
   sheetName: 'Pedro Duarte',
   nativeSelect: 'apple',
+  avatar: Avatar.init(),
   togglePressed: true,
   toggleGroupValue: 'center',
   carousel: Carousel.init('docs-carousel', 3),
@@ -310,6 +315,8 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       return [model, []]
     case 'ChangedCatalogNativeSelect':
       return [{ ...model, nativeSelect: message.value }, []]
+    case 'GotCatalogAvatarMessage':
+      return [{ ...model, avatar: Avatar.update(model.avatar, message.message) }, []]
     case 'ToggledCatalogPreview':
       return [{ ...model, togglePressed: !model.togglePressed }, []]
     case 'ChangedCatalogToggleGroup':
