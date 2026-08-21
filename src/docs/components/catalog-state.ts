@@ -162,6 +162,9 @@ export const GotSheetMessage = m('GotCatalogSheetMessage', { message: Sheet.Mess
 export const GotSheetVariantMessage = m('GotCatalogSheetVariantMessage', { index: S.Number, message: Sheet.Message })
 export const GotSonnerMessage = m('GotCatalogSonnerMessage', { message: Sonner.Message })
 export const GotToastMessage = m('GotCatalogToastMessage', { message: Sonner.Message })
+export const NotificationTarget = S.Literals(['sonner', 'toast'])
+export type NotificationTarget = typeof NotificationTarget.Type
+export const ShowedNotification = m('ShowedCatalogNotification', { target: NotificationTarget, variant: Sonner.Variant, sticky: S.Boolean })
 export const GotTooltipMessage = m('GotCatalogTooltipMessage', { message: Tooltip.Message })
 export const GotTooltipVariantMessage = m('GotCatalogTooltipVariantMessage', { index: S.Number, message: Tooltip.Message })
 
@@ -211,6 +214,7 @@ export const Message = S.Union([
   GotSheetVariantMessage,
   GotSonnerMessage,
   GotToastMessage,
+  ShowedNotification,
   GotTooltipMessage,
   GotTooltipVariantMessage,
 ])
@@ -273,8 +277,8 @@ export const init = (): Model => ({
   selectedSelectValue: Option.some('apple'),
   sheet: Sheet.init({ id: 'docs-sheet', isAnimated: true }),
   sheetVariants: Array.from({ length: 4 }, (_, index) => Sheet.init({ id: `docs-sheet-variant-${String(index)}`, isAnimated: true })),
-  sonner: Sonner.show(Sonner.init({ id: 'docs-sonner' }), Sonner.success({ title: 'Event has been created', description: 'Sunday, December 03, 2023 at 9:00 AM', sticky: true }))[0],
-  toast: Sonner.show(Sonner.init({ id: 'docs-toast' }), Sonner.info({ title: 'Scheduled: Catch up', description: 'Friday, February 10, 2023 at 5:57 PM', sticky: true }))[0],
+  sonner: Sonner.init({ id: 'docs-sonner' }),
+  toast: Sonner.init({ id: 'docs-toast' }),
   tooltip: Tooltip.init({ id: 'docs-tooltip', showDelay: 0 }),
   tooltipVariants: Array.from({ length: 4 }, (_, index) => Tooltip.init({ id: `docs-tooltip-variant-${String(index)}`, showDelay: 0 })),
 })
@@ -569,6 +573,20 @@ export const update = (model: Model, message: Message): UpdateReturn => {
     case 'GotCatalogToastMessage': {
       const [toast, commands] = Sonner.update(model.toast, message.message)
       return [{ ...model, toast }, Command.mapMessages(commands, next => GotToastMessage({ message: next }))]
+    }
+    case 'ShowedCatalogNotification': {
+      const current = message.target === 'sonner' ? model.sonner : model.toast
+      const input = message.variant === 'Success'
+        ? Sonner.success({ title: 'Event has been created', description: 'Sunday at 9:00 AM', sticky: message.sticky })
+        : message.variant === 'Error'
+          ? Sonner.error({ title: 'Could not save changes', description: 'Try again in a moment.', sticky: message.sticky })
+          : message.variant === 'Warning'
+            ? Sonner.warning({ title: 'Storage almost full', sticky: message.sticky })
+            : Sonner.info({ title: 'Scheduled: Catch up', description: 'Friday at 5:57 PM', sticky: message.sticky })
+      const [notification, commands] = Sonner.show(current, input)
+      return message.target === 'sonner'
+        ? [{ ...model, sonner: notification }, Command.mapMessages(commands, next => GotSonnerMessage({ message: next }))]
+        : [{ ...model, toast: notification }, Command.mapMessages(commands, next => GotToastMessage({ message: next }))]
     }
     case 'GotCatalogTooltipMessage': {
       const [tooltip, commands] = Tooltip.update(model.tooltip, message.message)

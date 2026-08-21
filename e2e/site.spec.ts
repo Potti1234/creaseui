@@ -196,11 +196,13 @@ test('authored helper pages publish complete application source', async ({ page 
     'skeleton',
     'slider',
     'spinner',
+    'sonner',
     'switch',
     'tabs',
     'table',
     'textarea',
     'toggle',
+    'toast',
     'toggle-group',
     'tooltip',
     'typography',
@@ -583,6 +585,21 @@ test('message scroller measures overflow and maps its scroll command', async ({ 
   await expect(example.locator('code')).toContainText('Command.mapMessages')
   await expect(example.locator('code')).toContainText('MessageScroller.update')
 })
+
+for (const route of ['sonner', 'toast'] as const) {
+  test(`${route} shows and dismisses an accessible notification`, async ({ page }) => {
+    await page.goto(`/docs/components/${route}`)
+    const example = page.locator('#sticky-error')
+    await example.getByRole('button', { name: `Show ${route}` }).click()
+    const viewport = page.getByRole('region', { name: `${route === 'sonner' ? 'Sonner' : 'Toast'} notifications` })
+    const alert = viewport.getByRole('alert')
+    await expect(alert).toContainText('Could not save changes')
+    await alert.getByRole('button', { name: 'Dismiss notification' }).click()
+    await expect(alert).toBeHidden()
+    await expect(example.locator('code')).toContainText('Command.mapMessages')
+    await expect(example.locator('code')).toContainText('.show(')
+  })
+}
 
 test('flagship documentation pages have no automated accessibility violations', async ({
   page,

@@ -187,3 +187,11 @@ an authored Accordion definition therefore passed unit contracts but could not
 change the rendered route. Page initialization now gives explicitly authored
 pages precedence while retaining standalone fallbacks until their migrations
 land. Playwright verifies the authored example id and its single-open behavior.
+
+### DOC-020 — A shared docs primitive erased recipe identity
+
+Closed in the Sonner/Toast slice: the first shared notification definition
+hard-coded `submodel`, causing Toast to contradict its intentional registry
+classification as a recipe alias over Sonner. The reusable definition now takes
+an explicit kind; Sonner owns the submodel while Toast documents the compatible
+recipe surface. The architecture-kind unit contract caught the regression.

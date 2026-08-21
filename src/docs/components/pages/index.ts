@@ -50,11 +50,13 @@ import { sidebarPage } from '@/docs/components/pages/sidebar';
 import { skeletonPage } from '@/docs/components/pages/skeleton';
 import { sliderPage } from '@/docs/components/pages/slider';
 import { spinnerPage } from '@/docs/components/pages/spinner';
+import { sonnerPage } from '@/docs/components/pages/sonner';
 import { switchPage } from '@/docs/components/pages/switch';
 import { tabsPage } from '@/docs/components/pages/tabs';
 import { tablePage } from '@/docs/components/pages/table';
 import { textareaPage } from '@/docs/components/pages/textarea';
 import { togglePage } from '@/docs/components/pages/toggle';
+import { toastPage } from '@/docs/components/pages/toast';
 import { toggleGroupPage } from '@/docs/components/pages/toggle-group';
 import { tooltipPage } from '@/docs/components/pages/tooltip';
 import { typographyPage } from '@/docs/components/pages/typography';
@@ -113,11 +115,13 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       skeletonPage,
       sliderPage,
       spinnerPage,
+      sonnerPage,
       switchPage,
       tabsPage,
       tablePage,
       textareaPage,
       togglePage,
+      toastPage,
       toggleGroupPage,
       tooltipPage,
       typographyPage,
