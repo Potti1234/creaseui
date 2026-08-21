@@ -59,6 +59,10 @@ patch cost, and makes examples less representative of consumer applications.
 Resolution target: each component documentation page owns only the state and
 messages used by its examples.
 
+Browser verification now shows the cost directly: each example receives a full
+copy of the catalog model, and fresh authored routes trigger Foldkit slow-patch
+warnings around 60 ms while logging enormous duplicated model payloads.
+
 ### DOC-006 — Registry state labels and docs architecture can disagree
 
 Registry metadata classifies the source file mechanically. Toast is labeled
@@ -139,3 +143,10 @@ Message for interactive controls.
 Closed in the authored Form slice: Input now exposes `describedBy`, the complete
 Form applications connect description and error IDs, generated API metadata is
 updated, and Playwright verifies the rendered `aria-describedby` relationship.
+
+### DOC-015 — Alert Dialog actions could not report confirmation
+
+Closed in the authored Alert Dialog slice: `onAction` lets the primary action
+emit a domain Message instead of silently reusing cancel behavior. The parent
+branch updates domain state, calls `AlertDialog.close`, maps focus/animation
+Commands, and Playwright verifies the status change, closure, and focus return.

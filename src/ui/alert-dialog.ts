@@ -56,6 +56,7 @@ export type AlertDialogProps<Msg> = Readonly<{
   description?: string;
   media?: ReadonlyArray<Html | string>;
   actionLabel: string;
+  onAction?: Msg;
   cancelLabel?: string;
   size?: 'default' | 'sm';
   actionClass?: string;
@@ -205,7 +206,9 @@ export const alertDialog = <Msg>(
                         ),
                         hd.button(
                           [
-                            ...closeButton,
+                            ...(props.onAction === undefined
+                              ? closeButton
+                              : [hd.OnClick(props.onAction)]),
                             hd.Type('button'),
                             hd.DataAttribute('slot', 'alert-dialog-action'),
                             hd.Class(

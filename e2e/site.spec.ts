@@ -146,6 +146,7 @@ test('authored helper pages publish complete application source', async ({ page 
 
   for (const route of [
     'alert',
+    'alert-dialog',
     'aspect-ratio',
     'avatar',
     'badge',
@@ -322,6 +323,21 @@ test('dialog traps focus, closes with Escape, and restores its trigger', async (
 
   await page.keyboard.press('Escape')
   await expect(dialog).toBeHidden()
+  await expect(trigger).toBeFocused()
+})
+
+test('alert dialog confirmation emits a domain message and closes', async ({ page }) => {
+  await page.goto('/docs/components/alert-dialog')
+
+  const example = page.locator('#delete-project')
+  const trigger = example.getByRole('button', { name: 'Delete project', exact: true })
+  await trigger.click()
+  const alertDialog = page.getByRole('alertdialog')
+  await expect(alertDialog).toBeVisible()
+  const confirm = alertDialog.getByRole('button', { name: 'Delete', exact: true })
+  await confirm.click()
+  await expect(alertDialog).toBeHidden()
+  await expect(example.getByRole('status')).toHaveText('Project deleted.')
   await expect(trigger).toBeFocused()
 })
 

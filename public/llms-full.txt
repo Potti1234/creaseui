@@ -126,7 +126,7 @@ Examples: Basic, Small, Media, Small with Media, Destructive, RTL
 - `open: value` (value)
 - `close: value` (value)
 - `AlertDialogSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; }>` (type)
-- `AlertDialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; media?: ReadonlyArray<Html | string>; actionLabel: string; cancelLabel?: string; size?: 'default' | 'sm'; actionClass?: string; c…` (type)
+- `AlertDialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; media?: ReadonlyArray<Html | string>; actionLabel: string; onAction?: Msg; cancelLabel?: string; size?: 'default' | 'sm'; actionC…` (type)
 - `alertDialog<Msg>(props: AlertDialogProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Alert

@@ -43,7 +43,7 @@ Source: [`src/ui/alert-dialog.ts`](../src/ui/alert-dialog.ts)
 | `open` | value | `open: value` |
 | `close` | value | `close: value` |
 | `AlertDialogSlots` | type | `AlertDialogSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; }>` |
-| `AlertDialogProps` | type | `AlertDialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; media?: ReadonlyArray<Html \| string>; actionLabel: string; cancelLabel?: string; size?: 'default' \| 'sm'; actionClass?: string; c…` |
+| `AlertDialogProps` | type | `AlertDialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; media?: ReadonlyArray<Html \| string>; actionLabel: string; onAction?: Msg; cancelLabel?: string; size?: 'default' \| 'sm'; actionC…` |
 | `alertDialog` | function | `alertDialog<Msg>(props: AlertDialogProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Alert

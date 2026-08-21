@@ -74,6 +74,8 @@ export const Model = S.Struct({
   tabsLine: Tabs.Model,
   selectedLineTabValue: S.String,
   alertDialog: AlertDialog.Model,
+  alertDialogConfirmed: S.Boolean,
+  alertDialogCompact: AlertDialog.Model,
   combobox: Combobox.Model,
   selectedComboboxValue: S.Option(S.String),
   command: CommandMenu.Model,
@@ -129,6 +131,10 @@ export const ToggledSwitch = m('ToggledCatalogSwitch', { isChecked: S.Boolean })
 export const GotTabsMessage = m('GotCatalogTabsMessage', { message: Tabs.Message })
 export const GotTabsLineMessage = m('GotCatalogTabsLineMessage', { message: Tabs.Message })
 export const GotAlertDialogMessage = m('GotCatalogAlertDialogMessage', { message: AlertDialog.Message })
+export const ConfirmedAlertDialog = m('ConfirmedCatalogAlertDialog')
+export const OpenedAlertDialogCompact = m('OpenedCatalogAlertDialogCompact')
+export const ConfirmedAlertDialogCompact = m('ConfirmedCatalogAlertDialogCompact')
+export const GotAlertDialogCompactMessage = m('GotCatalogAlertDialogCompactMessage', { message: AlertDialog.Message })
 export const GotComboboxMessage = m('GotCatalogComboboxMessage', { message: Combobox.Message })
 export const GotCommandMessage = m('GotCatalogCommandMessage', { message: CommandMenu.Message })
 export const GotContextMenuMessage = m('GotCatalogContextMenuMessage', { message: ContextMenu.Message })
@@ -175,6 +181,10 @@ export const Message = S.Union([
   GotTabsMessage,
   GotTabsLineMessage,
   GotAlertDialogMessage,
+  ConfirmedAlertDialog,
+  OpenedAlertDialogCompact,
+  ConfirmedAlertDialogCompact,
+  GotAlertDialogCompactMessage,
   GotComboboxMessage,
   GotCommandMessage,
   GotContextMenuMessage,
@@ -230,6 +240,8 @@ export const init = (): Model => ({
   tabsLine: Tabs.init({ id: 'docs-tabs-line' }),
   selectedLineTabValue: 'overview',
   alertDialog: AlertDialog.init({ id: 'docs-alert-dialog', isAnimated: true }),
+  alertDialogConfirmed: false,
+  alertDialogCompact: AlertDialog.init({ id: 'docs-alert-dialog-compact', isAnimated: true }),
   combobox: Combobox.init({ id: 'docs-combobox', isAnimated: true }),
   selectedComboboxValue: Option.none(),
   command: CommandMenu.init({ id: 'docs-command', isAnimated: true }),
@@ -425,6 +437,22 @@ export const update = (model: Model, message: Message): UpdateReturn => {
     case 'GotCatalogAlertDialogMessage': {
       const [alertDialog, commands] = AlertDialog.update(model.alertDialog, message.message)
       return [{ ...model, alertDialog }, Command.mapMessages(commands, next => GotAlertDialogMessage({ message: next }))]
+    }
+    case 'ConfirmedCatalogAlertDialog': {
+      const [alertDialog, commands] = AlertDialog.close(model.alertDialog)
+      return [{ ...model, alertDialog, alertDialogConfirmed: true }, Command.mapMessages(commands, next => GotAlertDialogMessage({ message: next }))]
+    }
+    case 'OpenedCatalogAlertDialogCompact': {
+      const [alertDialogCompact, commands] = AlertDialog.open(model.alertDialogCompact)
+      return [{ ...model, alertDialogCompact }, Command.mapMessages(commands, next => GotAlertDialogCompactMessage({ message: next }))]
+    }
+    case 'ConfirmedCatalogAlertDialogCompact': {
+      const [alertDialogCompact, commands] = AlertDialog.close(model.alertDialogCompact)
+      return [{ ...model, alertDialogCompact }, Command.mapMessages(commands, next => GotAlertDialogCompactMessage({ message: next }))]
+    }
+    case 'GotCatalogAlertDialogCompactMessage': {
+      const [alertDialogCompact, commands] = AlertDialog.update(model.alertDialogCompact, message.message)
+      return [{ ...model, alertDialogCompact }, Command.mapMessages(commands, next => GotAlertDialogCompactMessage({ message: next }))]
     }
     case 'GotCatalogComboboxMessage': {
       const [combobox, commands, maybeSelection] = Combobox.update(model.combobox, message.message)
