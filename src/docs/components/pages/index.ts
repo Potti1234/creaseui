@@ -33,6 +33,7 @@ import { kbdPage } from '@/docs/components/pages/kbd';
 import { labelPage } from '@/docs/components/pages/label';
 import { markerPage } from '@/docs/components/pages/marker';
 import { messagePage } from '@/docs/components/pages/message';
+import { messageScrollerPage } from '@/docs/components/pages/message-scroller';
 import { menubarPage } from '@/docs/components/pages/menubar';
 import { nativeSelectPage } from '@/docs/components/pages/native-select';
 import { navigationMenuPage } from '@/docs/components/pages/navigation-menu';
@@ -95,6 +96,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       labelPage,
       markerPage,
       messagePage,
+      messageScrollerPage,
       menubarPage,
       nativeSelectPage,
       navigationMenuPage,

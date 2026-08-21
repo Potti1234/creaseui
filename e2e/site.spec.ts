@@ -179,6 +179,7 @@ test('authored helper pages publish complete application source', async ({ page 
     'label',
     'marker',
     'message',
+    'message-scroller',
     'menubar',
     'native-select',
     'navigation-menu',
@@ -565,6 +566,22 @@ test('attachment explains parent-owned lifecycle through rendered states', async
   await expect(example.locator('[data-slot="attachment"][data-state="done"]')).toContainText('Uploaded')
   await expect(example.locator('code')).toContainText("(['uploading', 'processing', 'error', 'done'] as const)")
   await expect(example.locator('code')).toContainText('Runtime.makeApplication')
+})
+
+test('message scroller measures overflow and maps its scroll command', async ({ page }) => {
+  await page.goto('/docs/components/message-scroller')
+  const example = page.locator('#jump-to-latest')
+  const viewport = example.locator('[data-slot="message-scroller-viewport"]')
+  await viewport.evaluate(node => {
+    node.scrollTop = 40
+    node.dispatchEvent(new Event('scroll'))
+  })
+  const button = example.getByRole('button', { name: 'Scroll to end' })
+  await expect(button).toHaveAttribute('data-active', 'true')
+  await button.click()
+  await expect.poll(() => viewport.evaluate(node => Math.round(node.scrollTop + node.clientHeight - node.scrollHeight))).toBeGreaterThanOrEqual(-1)
+  await expect(example.locator('code')).toContainText('Command.mapMessages')
+  await expect(example.locator('code')).toContainText('MessageScroller.update')
 })
 
 test('flagship documentation pages have no automated accessibility violations', async ({
