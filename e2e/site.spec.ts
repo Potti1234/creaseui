@@ -156,6 +156,8 @@ test('authored helper pages publish complete application source', async ({ page 
     'collapsible',
     'direction',
     'empty',
+    'field',
+    'form',
     'item',
     'input',
     'input-group',
@@ -182,6 +184,20 @@ test('authored helper pages publish complete application source', async ({ page 
     await expect(page.getByText(/^(Stateless helper|Composed recipe)$/u)).toBeVisible()
     await expect(page.locator('main code').filter({ hasText: 'Runtime.makeApplication' }).first()).toBeAttached()
   }
+})
+
+test('authored form connects controlled input help and validation', async ({ page }) => {
+  await page.goto('/docs/components/form')
+
+  const input = page.locator('#docs-form-error')
+  await expect(input).toHaveAttribute(
+    'aria-describedby',
+    'docs-form-error-description docs-form-error-message',
+  )
+  await expect(input).toHaveAttribute('aria-invalid', 'true')
+  await expect(page.locator('#docs-form-error-message')).toHaveText(
+    'Enter a valid email address.',
+  )
 })
 
 test('create icon selection changes the live preview shapes', async ({ page }) => {

@@ -133,3 +133,9 @@ Playwright verifies the expanded application source in the rendered page.
 Closed in `dfd31b4`: `staticComponentApplication` emits an explicit NoOp schema
 and identity update, while `statelessComponentApplication` uses a real click
 Message for interactive controls.
+
+### DOC-014 — Form control IDs could not be applied to Input
+
+Closed in the authored Form slice: Input now exposes `describedBy`, the complete
+Form applications connect description and error IDs, generated API metadata is
+updated, and Playwright verifies the rendered `aria-describedby` relationship.

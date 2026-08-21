@@ -28,6 +28,7 @@ export type InputProps<Msg> = Readonly<{
   name?: string;
   isDisabled?: boolean;
   isInvalid?: boolean;
+  describedBy?: string;
   class?: string;
 }>;
 
@@ -50,6 +51,9 @@ export const input = <Msg>(
       toView: ({ input: inputAttributes, label, description }) => {
         const inputElement = h.input([
           ...inputAttributes,
+          ...(props.describedBy === undefined
+            ? []
+            : [h.AriaDescribedBy(props.describedBy)]),
           h.Class(cn(INPUT_CLASS, props.class)),
         ]);
 

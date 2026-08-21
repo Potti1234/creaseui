@@ -753,7 +753,7 @@ Source: `src/ui/input.ts`
 
 Examples: Basic, Field, Field Group, Disabled, Invalid, File, Inline, Grid, Required, Badge, Input Group, Button Group, Form, RTL
 
-- `InputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; label?: string; description?: string; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; class?: string; }>` (type)
+- `InputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; label?: string; description?: string; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; describedBy?: string; class?: string;…` (type)
 - `input<Msg>(props: InputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Item

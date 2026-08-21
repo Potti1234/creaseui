@@ -10,6 +10,8 @@ import { checkboxPage } from '@/docs/components/pages/checkbox';
 import { collapsiblePage } from '@/docs/components/pages/collapsible';
 import { directionPage } from '@/docs/components/pages/direction';
 import { emptyPage } from '@/docs/components/pages/empty';
+import { fieldPage } from '@/docs/components/pages/field';
+import { formPage } from '@/docs/components/pages/form';
 import { itemPage } from '@/docs/components/pages/item';
 import { inputPage } from '@/docs/components/pages/input';
 import { inputGroupPage } from '@/docs/components/pages/input-group';
@@ -46,6 +48,8 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       collapsiblePage,
       directionPage,
       emptyPage,
+      fieldPage,
+      formPage,
       itemPage,
       inputPage,
       inputGroupPage,
