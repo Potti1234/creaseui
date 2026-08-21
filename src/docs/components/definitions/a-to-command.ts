@@ -4,6 +4,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html';
 import type { PageDefinitions } from '@/docs/components/page-definition';
 import { realPreview } from '@/docs/components/real-previews';
 import * as State from '@/docs/components/catalog-state';
+import { cn } from '@/lib/utils';
 import * as Alert from '@/ui/alert';
 import * as AlertDialog from '@/ui/alert-dialog';
 import * as AspectRatio from '@/ui/aspect-ratio';
@@ -521,19 +522,26 @@ const carouselPreview = (
         : { orientation: options.orientation }),
       class:
         options.orientation === 'vertical'
-          ? 'h-56 w-56'
+          ? 'my-12 h-56 w-56'
           : options.compact
             ? 'w-56'
             : 'w-full max-w-xs',
       items: [1, 2, 3].map((number) =>
         Card.card(
           {
-            class: options.spacing ? 'mx-2' : '',
+            class: cn(
+              options.spacing && 'mx-2',
+              options.orientation === 'vertical' && 'h-full',
+            ),
             children: [
               Card.cardContent(
                 {
-                  class:
-                    'flex aspect-square items-center justify-center p-6 text-4xl font-semibold',
+                  class: cn(
+                    'flex items-center justify-center p-6 text-4xl font-semibold',
+                    options.orientation === 'vertical'
+                      ? 'h-full'
+                      : 'aspect-square',
+                  ),
                   children: [String(number)],
                 },
                 h,

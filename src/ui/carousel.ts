@@ -97,7 +97,7 @@ export const carousel = <Msg>(
         [
           h.Tabindex(props.keyboardNavigation === false ? -1 : 0),
           h.DataAttribute('slot', 'carousel-content'),
-          h.Class('overflow-hidden outline-none'),
+          h.Class(cn('overflow-hidden outline-none', vertical && 'h-full')),
           h.OnMount({
             name: `embla-carousel-${props.model.id}`,
             f: (element) =>
@@ -123,7 +123,9 @@ export const carousel = <Msg>(
               h.Class(
                 cn(
                   'flex touch-pan-y',
-                  vertical ? 'h-full flex-col touch-pan-x' : '-ml-4',
+                  vertical
+                    ? '-mt-4 h-full flex-col touch-pan-x'
+                    : '-ml-4',
                 ),
               ),
             ],
@@ -138,7 +140,7 @@ export const carousel = <Msg>(
                   h.Class(
                     cn(
                       'min-w-0 shrink-0 grow-0 snap-start',
-                      vertical ? 'pt-4' : 'pl-4',
+                      vertical ? 'min-h-0 basis-full pt-4' : 'pl-4',
                     ),
                   ),
                 ],
@@ -278,15 +280,19 @@ const carouselButton = <Msg>(
         cn(
           'absolute flex size-8 items-center justify-center rounded-full border bg-background shadow-xs hover:bg-accent disabled:pointer-events-none disabled:opacity-50',
           props.vertical
-            ? `left-1/2 -translate-x-1/2 ${previous ? '-top-12 rotate-90' : '-bottom-12 rotate-90'}`
+            ? `left-1/2 -translate-x-1/2 ${previous ? '-top-12' : '-bottom-12'}`
             : `top-1/2 -translate-y-1/2 ${previous ? '-left-12' : '-right-12'}`,
         ),
       ),
     ],
     [
-      previous
-        ? Icon.arrowLeft<Msg>({ class: 'size-4' }, h)
-        : Icon.arrowRight<Msg>({ class: 'size-4' }, h),
+      props.vertical
+        ? previous
+          ? Icon.arrowUp<Msg>({ class: 'size-4' }, h)
+          : Icon.arrowDown<Msg>({ class: 'size-4' }, h)
+        : previous
+          ? Icon.arrowLeft<Msg>({ class: 'size-4' }, h)
+          : Icon.arrowRight<Msg>({ class: 'size-4' }, h),
       h.span([h.Class('sr-only')], [props.label]),
     ],
   );
