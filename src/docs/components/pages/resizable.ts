@@ -1,4 +1,7 @@
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { Schema as S } from 'effect';
+import type { HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as Resizable from '@/ui/resizable';
 
@@ -51,8 +54,21 @@ export type Message = typeof Message.Type`,
 
 const panel = <Msg>(label: string, h: HtmlBuilder<Msg>) => h.div([h.Class('flex size-full items-center justify-center p-4 text-sm')], [label]);
 
+const GotResizablePreviewMessage = m('GotResizablePreviewMessage', { message: Resizable.Message });
+type GotResizablePreviewMessage = typeof GotResizablePreviewMessage.Type;
+const ResizablePreviewModel = S.Struct({ _docsPage: S.Literal('resizable'), panels: Resizable.Model });
+type ResizablePreviewModel = typeof ResizablePreviewModel.Type;
+const previewProgram = definePreviewProgram<ResizablePreviewModel, GotResizablePreviewMessage>({
+  Model: ResizablePreviewModel,
+  Message: GotResizablePreviewMessage,
+  init: index => ({ _docsPage: 'resizable', panels: Resizable.init(`docs-resizable-${String(index)}`, index === 0 ? 50 : 40) }),
+  update: (model, message) => [{ ...model, panels: Resizable.update(model.panels, message.message) }, []],
+  view: (index, model, h) => Resizable.resizable({ model: model.panels, toParentMessage: message => GotResizablePreviewMessage({ message }), ...(index === 1 ? { direction: 'vertical' as const } : {}), extent: index === 0 ? 640 : 256, withHandle: true, ariaLabel: index === 0 ? 'Resize editor and preview' : 'Resize workspace rows', class: index === 0 ? 'h-56 w-full max-w-xl' : 'h-64 w-full max-w-xl', first: panel(index === 0 ? 'Editor' : 'Canvas', h), second: panel(index === 0 ? 'Preview' : 'Console', h) }, h),
+});
+
 export const resizablePage = authoredPage({
   slug: 'resizable', title: 'Resizable', kind: 'submodel',
+  previewProgram,
   definition: {
     kind: 'submodel', description: 'Lets users allocate space between adjacent panels with pointer or keyboard input.',
     architecture: 'Resizable owns drag state and the first panel percentage in a child Model. Wrap its Messages and delegate through Resizable.update; unlike Slider, pointer tracking stays on the rendered group and requires no global subscription.',
@@ -75,4 +91,3 @@ export const resizablePage = authoredPage({
     ],
   },
 });
-import type { HtmlBuilder } from 'foldkit/html';

@@ -1,4 +1,7 @@
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { Option, Schema as S } from 'effect';
+import { Command } from 'foldkit';
+import { m } from 'foldkit/message';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as Tabs from '@/ui/tabs';
 
@@ -66,8 +69,32 @@ const configs = [
   { value: 'billing', label: 'Billing', content: 'Update invoices and payment methods.' },
 ] as const;
 
+const lineConfigs = [
+  { value: 'overview', label: 'Overview', content: 'Project activity and health.' },
+  { value: 'deployments', label: 'Deployments', content: 'Recent production releases.' },
+  { value: 'settings', label: 'Settings', content: 'Project-level configuration.' },
+] as const;
+const GotTabsPreviewMessage = m('GotTabsPreviewMessage', { message: Tabs.Message });
+type GotTabsPreviewMessage = typeof GotTabsPreviewMessage.Type;
+const TabsPreviewModel = S.Struct({ _docsPage: S.Literal('tabs'), tabs: Tabs.Model, selectedTab: S.String });
+type TabsPreviewModel = typeof TabsPreviewModel.Type;
+const previewProgram = definePreviewProgram<TabsPreviewModel, GotTabsPreviewMessage>({
+  Model: TabsPreviewModel,
+  Message: GotTabsPreviewMessage,
+  init: index => ({ _docsPage: 'tabs', tabs: Tabs.init({ id: `docs-tabs-${String(index)}` }), selectedTab: index === 0 ? 'account' : 'overview' }),
+  update: (model, message) => {
+    const [tabs, commands, maybeSelection] = Tabs.update(model.tabs, message.message);
+    return [
+      { ...model, tabs, selectedTab: Option.match(maybeSelection, { onNone: () => model.selectedTab, onSome: selection => selection.value }) },
+      Command.mapMessages(commands, next => GotTabsPreviewMessage({ message: next })),
+    ];
+  },
+  view: (index, model, h) => Tabs.tabs({ model: model.tabs, selectedValue: model.selectedTab, toParentMessage: message => GotTabsPreviewMessage({ message }), ariaLabel: index === 0 ? 'Settings' : 'Project sections', tabs: index === 0 ? configs : lineConfigs, ...(index === 1 ? { variant: 'line' as const } : {}) }, h),
+});
+
 export const tabsPage = authoredPage({
   slug: 'tabs', title: 'Tabs', kind: 'submodel',
+  previewProgram,
   definition: {
     kind: 'submodel', description: 'Switches between related panels while coordinating roving focus, keyboard navigation, and an application-owned selected value.',
     architecture: 'Tabs has a child Model for focus/navigation mechanics and emits selection as an OutMessage. Delegate child Messages through Tabs.update, map returned Commands, and store the selected value in the parent Model.',

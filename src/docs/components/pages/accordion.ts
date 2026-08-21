@@ -1,6 +1,9 @@
+import { Option, Schema as S } from 'effect';
+import { Command } from 'foldkit';
 import type { HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
 
-import { authoredPage, foldkitApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, definePreviewProgram, foldkitApplication } from '@/docs/components/pages/authored-page';
 import * as State from '@/docs/components/catalog-state';
 import * as Accordion from '@/ui/accordion';
 
@@ -60,8 +63,35 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 
 const preview = (model: State.Model, target: State.AccordionTarget, h: HtmlBuilder<State.Message>) => h.div([h.Class('w-full max-w-xl')], [Accordion.accordion({ model: target === 'single' ? model.accordion : model.accordionMultiple, toParentMessage: (message) => State.GotAccordionMessage({ target, message }), items }, h)]);
 
+const GotAccordionPreviewMessage = m('GotAccordionPreviewMessage', { message: Accordion.Message });
+type GotAccordionPreviewMessage = typeof GotAccordionPreviewMessage.Type;
+const AccordionPreviewModel = S.Struct({ _docsPage: S.Literal('accordion'), accordion: Accordion.Model, maybeLastToggledValue: S.Option(S.String) });
+type AccordionPreviewModel = typeof AccordionPreviewModel.Type;
+const previewProgram = definePreviewProgram<AccordionPreviewModel, GotAccordionPreviewMessage>({
+  Model: AccordionPreviewModel,
+  Message: GotAccordionPreviewMessage,
+  init: index => ({
+    _docsPage: 'accordion',
+    accordion: Accordion.init({
+      id: `docs-accordion-${String(index)}`,
+      type: index === 0 ? 'single' : 'multiple',
+      items: [{ value: 'product', isOpen: true }, { value: 'style', isOpen: index === 1 }, { value: 'animation' }],
+    }),
+    maybeLastToggledValue: Option.none(),
+  }),
+  update: (model, message) => {
+    const [accordion, commands, maybeToggle] = Accordion.update(model.accordion, message.message);
+    return [
+      { ...model, accordion, maybeLastToggledValue: Option.match(maybeToggle, { onNone: () => model.maybeLastToggledValue, onSome: toggled => Option.some(toggled.value) }) },
+      Command.mapMessages(commands, next => GotAccordionPreviewMessage({ message: next })),
+    ];
+  },
+  view: (_index, model, h) => h.div([h.Class('w-full max-w-xl')], [Accordion.accordion({ model: model.accordion, toParentMessage: message => GotAccordionPreviewMessage({ message }), items }, h)]),
+});
+
 export const accordionPage = authoredPage({
   slug: 'accordion', title: 'Accordion', kind: 'submodel',
+  previewProgram,
   definition: {
     kind: 'submodel', description: 'Groups disclosure headings whose panels can open one-at-a-time or independently.',
     architecture: 'Accordion stores stable item ids and open booleans in one child Model, delegates indexed Disclosure messages, enforces single/multiple policy in update, and emits a ToggledItem OutMessage for parent domain logic.',
