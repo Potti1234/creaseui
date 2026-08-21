@@ -4,6 +4,7 @@ import { aspectRatioPage } from '@/docs/components/pages/aspect-ratio';
 import { badgePage } from '@/docs/components/pages/badge';
 import { bubblePage } from '@/docs/components/pages/bubble';
 import { buttonPage } from '@/docs/components/pages/button';
+import { buttonGroupPage } from '@/docs/components/pages/button-group';
 import { cardPage } from '@/docs/components/pages/card';
 import { checkboxPage } from '@/docs/components/pages/checkbox';
 import { collapsiblePage } from '@/docs/components/pages/collapsible';
@@ -11,6 +12,8 @@ import { directionPage } from '@/docs/components/pages/direction';
 import { emptyPage } from '@/docs/components/pages/empty';
 import { itemPage } from '@/docs/components/pages/item';
 import { inputPage } from '@/docs/components/pages/input';
+import { inputGroupPage } from '@/docs/components/pages/input-group';
+import { inputOtpPage } from '@/docs/components/pages/input-otp';
 import { kbdPage } from '@/docs/components/pages/kbd';
 import { labelPage } from '@/docs/components/pages/label';
 import { markerPage } from '@/docs/components/pages/marker';
@@ -37,6 +40,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       badgePage,
       bubblePage,
       buttonPage,
+      buttonGroupPage,
       cardPage,
       checkboxPage,
       collapsiblePage,
@@ -44,6 +48,8 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       emptyPage,
       itemPage,
       inputPage,
+      inputGroupPage,
+      inputOtpPage,
       kbdPage,
       labelPage,
       markerPage,

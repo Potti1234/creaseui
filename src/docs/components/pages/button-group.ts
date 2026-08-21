@@ -1,0 +1,48 @@
+import * as State from '@/docs/components/catalog-state';
+import { authoredPage, statelessComponentApplication } from '@/docs/components/pages/authored-page';
+import * as Button from '@/ui/button';
+import * as ButtonGroup from '@/ui/button-group';
+
+const source = (name: string, orientation: 'horizontal' | 'vertical'): string => statelessComponentApplication({
+  componentName: 'ButtonGroup', componentSlug: 'button-group', exampleName: name,
+  componentImports: `import * as Button from '@/ui/button'`,
+  viewBody: `ButtonGroup.buttonGroup({
+  orientation: '${orientation}',
+  children: [
+    Button.button({ variant: 'outline', onClick: ClickedExample(), children: ['Previous'] }, h),
+    Button.button({ variant: 'outline', onClick: ClickedExample(), children: ['Current'] }, h),
+    Button.button({ variant: 'outline', onClick: ClickedExample(), children: ['Next'] }, h),
+  ],
+}, h),`,
+});
+
+const buttons = (h: HtmlBuilder<State.Message>) => [
+  Button.button({ variant: 'outline', onClick: State.ClickedPreviewAction(), children: ['Previous'] }, h),
+  Button.button({ variant: 'outline', onClick: State.ClickedPreviewAction(), children: ['Current'] }, h),
+  Button.button({ variant: 'outline', onClick: State.ClickedPreviewAction(), children: ['Next'] }, h),
+];
+
+export const buttonGroupPage = authoredPage({
+  slug: 'button-group', title: 'Button Group', kind: 'recipe',
+  definition: {
+    kind: 'recipe', description: 'Visually joins related actions while preserving each button as an independent Foldkit message source.',
+    architecture: 'Button Group owns no state. Each child button emits its own typed parent Message; the group contributes layout and an accessible group boundary.',
+    apiHref: 'https://foldkit.dev/ui/button',
+    composition: 'ButtonGroup\n├── Button / Input / Select\n├── ButtonGroupSeparator\n└── ButtonGroupText',
+    styling: 'Group actions only when they form one compact task. Keep destructive or unrelated actions visually separate.',
+    accessibility: 'The wrapper exposes role=group and every child retains native button semantics. Button labels must remain unambiguous when read without visual position.',
+    examples: [
+      {
+        title: 'Pagination actions', description: 'Adjacent actions share a boundary but continue to dispatch normal button messages.',
+        preview: (_model, h) => ButtonGroup.buttonGroup({ children: buttons(h) }, h),
+        code: source('Pagination actions', 'horizontal'),
+      },
+      {
+        title: 'Vertical tools', description: 'Use vertical orientation for a narrow toolbar without changing the children.',
+        preview: (_model, h) => ButtonGroup.buttonGroup({ orientation: 'vertical', children: buttons(h) }, h),
+        code: source('Vertical tools', 'vertical'),
+      },
+    ],
+  },
+});
+import type { HtmlBuilder } from 'foldkit/html';
