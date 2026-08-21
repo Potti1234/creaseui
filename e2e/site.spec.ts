@@ -110,7 +110,7 @@ test('create preset shuffle updates executable output', async ({ page }) => {
 test('component docs explain the Foldkit integration model', async ({ page }) => {
   await page.goto('/docs/components/button')
   await expect(page.getByText('Stateless helper', { exact: true })).toBeVisible()
-  await expect(page.locator('#architecture')).toContainText('does not add a child Model')
+  await expect(page.locator('#architecture')).toContainText('no child model')
   await expect(page.locator('#keyboard-interaction')).toContainText('Enter')
 
   await page.goto('/docs/components/dialog')
