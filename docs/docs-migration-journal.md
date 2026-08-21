@@ -150,3 +150,12 @@ Closed in the authored Alert Dialog slice: `onAction` lets the primary action
 emit a domain Message instead of silently reusing cancel behavior. The parent
 branch updates domain state, calls `AlertDialog.close`, maps focus/animation
 Commands, and Playwright verifies the status change, closure, and focus return.
+
+### DOC-016 — Anchored overlays escape their example article in the DOM
+
+Closed in the authored Popover slice: Foldkit's anchor layer portals the
+positioned panel outside the documentation example article. The first browser
+contract incorrectly searched inside that article even though the accessibility
+snapshot proved the panel was open. The contract now scopes the trigger and
+source to the example, but locates the portalled panel at page level; desktop
+and mobile runs verify visibility, Escape dismissal, and focus restoration.

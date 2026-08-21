@@ -18,6 +18,7 @@ import { drawerPage } from '@/docs/components/pages/drawer';
 import { emptyPage } from '@/docs/components/pages/empty';
 import { fieldPage } from '@/docs/components/pages/field';
 import { formPage } from '@/docs/components/pages/form';
+import { hoverCardPage } from '@/docs/components/pages/hover-card';
 import { itemPage } from '@/docs/components/pages/item';
 import { inputPage } from '@/docs/components/pages/input';
 import { inputGroupPage } from '@/docs/components/pages/input-group';
@@ -28,6 +29,7 @@ import { markerPage } from '@/docs/components/pages/marker';
 import { messagePage } from '@/docs/components/pages/message';
 import { nativeSelectPage } from '@/docs/components/pages/native-select';
 import { paginationPage } from '@/docs/components/pages/pagination';
+import { popoverPage } from '@/docs/components/pages/popover';
 import { progressPage } from '@/docs/components/pages/progress';
 import { radioGroupPage } from '@/docs/components/pages/radio-group';
 import { resizablePage } from '@/docs/components/pages/resizable';
@@ -67,6 +69,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       emptyPage,
       fieldPage,
       formPage,
+      hoverCardPage,
       itemPage,
       inputPage,
       inputGroupPage,
@@ -77,6 +80,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       messagePage,
       nativeSelectPage,
       paginationPage,
+      popoverPage,
       progressPage,
       radioGroupPage,
       resizablePage,

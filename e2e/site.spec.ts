@@ -164,6 +164,7 @@ test('authored helper pages publish complete application source', async ({ page 
     'empty',
     'field',
     'form',
+    'hover-card',
     'item',
     'input',
     'input-group',
@@ -174,6 +175,7 @@ test('authored helper pages publish complete application source', async ({ page 
     'message',
     'native-select',
     'pagination',
+    'popover',
     'progress',
     'radio-group',
     'resizable',
@@ -378,6 +380,34 @@ test('drawer documents its child model and preserves modal focus behavior', asyn
   await page.keyboard.press('Escape')
   await expect(drawer).toBeHidden()
   await expect(trigger).toBeFocused()
+})
+
+test('popover delegates disclosure commands and restores trigger focus', async ({ page }) => {
+  await page.goto('/docs/components/popover')
+  const example = page.locator('#interactive-content')
+  const trigger = example.getByRole('button', { name: 'Open dimensions' })
+  await trigger.click()
+  // Foldkit's anchor layer portals positioned content outside the example article.
+  const panel = page.locator('[data-slot="popover-content"]')
+  await expect(panel).toBeVisible()
+  await expect(panel).toContainText('Set the dimensions')
+  await expect(example.locator('code')).toContainText('Command.mapMessages')
+  await page.keyboard.press('Escape')
+  await expect(panel).toBeHidden()
+  await expect(trigger).toBeFocused()
+})
+
+test('hover card is available to keyboard focus and closes after blur', async ({ page }) => {
+  await page.goto('/docs/components/hover-card')
+  const example = page.locator('#profile-preview')
+  const trigger = example.getByRole('button', { name: 'Preview the Foldkit profile' })
+  const panel = example.locator('[data-slot="hover-card-content"]')
+  await trigger.focus()
+  await expect(panel).toBeVisible()
+  await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+  await expect(example.locator('code')).toContainText('closeDelay')
+  await page.getByRole('link', { name: 'crease/ui' }).focus()
+  await expect(panel).toBeHidden({ timeout: 2_000 })
 })
 
 test('flagship documentation pages have no automated accessibility violations', async ({
