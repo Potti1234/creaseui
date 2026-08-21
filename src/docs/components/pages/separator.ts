@@ -6,6 +6,7 @@ const source = (name: string, viewBody: string): string =>
 
 export const separatorPage = authoredPage({
   slug: 'separator', title: 'Separator', kind: 'helper',
+  previewMode: 'static',
   definition: {
     kind: 'helper', description: 'Visually separates adjacent content without adding semantic structure.',
     architecture: 'Separator is a stateless decorative helper. Content grouping belongs in semantic parent elements.',

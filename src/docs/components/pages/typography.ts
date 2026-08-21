@@ -6,6 +6,7 @@ const source = (name: string, viewBody: string): string =>
 
 export const typographyPage = authoredPage({
   slug: 'typography', title: 'Typography', kind: 'recipe',
+  previewMode: 'static',
   definition: {
     kind: 'recipe', description: 'Applies a consistent prose hierarchy to headings, paragraphs, quotations, code, and supporting text.',
     architecture: 'Typography is a source-owned collection of stateless semantic helpers. Content remains ordinary Html and requires no component model.',

@@ -10,6 +10,7 @@ const entry = <Msg>(title: string, description: string, h: Parameters<typeof Ite
 
 export const itemPage = authoredPage({
   slug: 'item', title: 'Item', kind: 'helper',
+  previewMode: 'static',
   definition: {
     kind: 'helper', description: 'Composes media, copy, metadata, and actions into a reusable list item.',
     architecture: 'Item is a stateless composition helper. Collections and selection state remain in the parent Model and are mapped to item views.',

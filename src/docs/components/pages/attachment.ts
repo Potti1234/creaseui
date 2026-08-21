@@ -39,6 +39,7 @@ const application = (name: string, viewBody: string) => staticComponentApplicati
 
 export const attachmentPage = authoredPage({
   slug: 'attachment', title: 'Attachment', kind: 'helper',
+  previewMode: 'static',
   definition: {
     kind: 'helper', description: 'Displays a parent-owned file record with media, metadata, lifecycle state, and actions.',
     architecture: 'Attachment is stateless Html composition. File input events, upload Effects, progress, retry, and removal belong to the parent Model/Message/update; pass the resulting domain state into the view helpers.',

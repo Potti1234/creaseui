@@ -6,6 +6,7 @@ const items = Array.from({ length: 18 }, (_, index) => `Component ${String(index
 
 export const scrollAreaPage = authoredPage({
   slug: 'scroll-area', title: 'Scroll Area', kind: 'helper',
+  previewMode: 'static',
   definition: {
     kind: 'helper', description: 'Provides a focusable overflow region with restrained native scrollbar styling.',
     architecture: 'Scroll Area is stateless and uses native scrolling. Scroll position remains browser-owned unless the application explicitly models restoration.',

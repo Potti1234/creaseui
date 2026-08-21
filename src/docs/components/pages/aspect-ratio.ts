@@ -6,6 +6,7 @@ const source = (name: string, viewBody: string): string =>
 
 export const aspectRatioPage = authoredPage({
   slug: 'aspect-ratio', title: 'Aspect Ratio', kind: 'helper',
+  previewMode: 'static',
   definition: {
     kind: 'helper', description: 'Keeps media or composed content at a stable width-to-height ratio.',
     architecture: 'Aspect Ratio is a stateless layout helper backed by the native aspect-ratio style.',

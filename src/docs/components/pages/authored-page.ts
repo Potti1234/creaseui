@@ -1,16 +1,82 @@
+import { Schema as S, type Schema } from 'effect';
+import type { Command } from 'foldkit';
+import type { Html, HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
+
 import type {
   ComponentKind,
   PageDefinition,
 } from '@/docs/components/page-definition';
+import type * as LegacyState from '@/docs/components/catalog-state';
 
 export type AuthoredPage = Readonly<{
   slug: string;
   title: string;
   kind: ComponentKind;
   definition: PageDefinition;
+  previewProgram?: ErasedPreviewProgram;
+  previewMode?: 'static';
 }>;
 
-export const authoredPage = (page: AuthoredPage): AuthoredPage => page;
+const StaticPreviewMessage = m('InteractedWithStaticDocsPreview');
+type StaticPreviewMessage = typeof StaticPreviewMessage.Type;
+
+export const authoredPage = (page: AuthoredPage): AuthoredPage => {
+  if (page.previewMode !== 'static' || page.previewProgram !== undefined) return page;
+  const Model = S.Struct({ _docsPage: S.Literal(page.slug) });
+  type Model = typeof Model.Type;
+  const previewProgram = definePreviewProgram<Model, StaticPreviewMessage>({
+    Model,
+    Message: StaticPreviewMessage,
+    init: () => ({ _docsPage: page.slug }),
+    update: (model) => [model, []],
+    view: (index, _model, h) => {
+      const example = page.definition.examples[index];
+      return example === undefined
+        ? h.empty
+        : example.preview(
+            {} as LegacyState.Model,
+            h as unknown as HtmlBuilder<LegacyState.Message>,
+          );
+    },
+  });
+  return { ...page, previewProgram };
+};
+
+export type PreviewProgram<Model, Message> = Readonly<{
+  Model: Schema.Schema<Model>;
+  Message: Schema.Schema<Message>;
+  init: (exampleIndex: number) => Model;
+  update: (
+    model: Model,
+    message: Message,
+  ) => readonly [Model, ReadonlyArray<Command.Command<Message>>];
+  view: (
+    exampleIndex: number,
+    model: Model,
+    h: HtmlBuilder<Message>,
+  ) => Html;
+}>;
+
+export type ErasedPreviewProgram = Readonly<{
+  Model: Schema.Top;
+  Message: Schema.Top;
+  init: (exampleIndex: number) => unknown;
+  update: (
+    model: unknown,
+    message: unknown,
+  ) => readonly [unknown, ReadonlyArray<Command.Command<unknown>>];
+  view: (
+    exampleIndex: number,
+    model: unknown,
+    h: HtmlBuilder<unknown>,
+  ) => Html;
+}>;
+
+/** Erases a page-local preview program only at the heterogeneous catalog boundary. */
+export const definePreviewProgram = <Model, Message>(
+  program: PreviewProgram<Model, Message>,
+): ErasedPreviewProgram => program as unknown as ErasedPreviewProgram;
 
 export type FoldkitApplicationSource = Readonly<{
   title: string;

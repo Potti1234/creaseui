@@ -6,6 +6,7 @@ const source = (name: string, viewBody: string): string =>
 
 export const spinnerPage = authoredPage({
   slug: 'spinner', title: 'Spinner', kind: 'helper',
+  previewMode: 'static',
   definition: {
     kind: 'helper', description: 'Indicates short, indeterminate work with a compact animated icon.',
     architecture: 'Spinner is a stateless view helper. Command state in the parent Model determines when it appears.',

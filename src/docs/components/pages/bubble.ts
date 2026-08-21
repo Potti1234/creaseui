@@ -13,6 +13,7 @@ const message = <Msg>(
 
 export const bubblePage = authoredPage({
   slug: 'bubble', title: 'Bubble', kind: 'helper',
+  previewMode: 'static',
   definition: {
     kind: 'helper',
     description: 'Presents one message in a conversational thread with alignment, tone, and optional reactions.',

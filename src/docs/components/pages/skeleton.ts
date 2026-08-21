@@ -6,6 +6,7 @@ const source = (name: string, viewBody: string): string =>
 
 export const skeletonPage = authoredPage({
   slug: 'skeleton', title: 'Skeleton', kind: 'helper',
+  previewMode: 'static',
   definition: {
     kind: 'helper', description: 'Reserves the shape of content while data is loading.',
     architecture: 'Skeleton is stateless. The parent Model decides whether to render loading placeholders or resolved content.',

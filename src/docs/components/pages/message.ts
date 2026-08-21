@@ -6,6 +6,7 @@ const source = (name: string, viewBody: string): string => staticComponentApplic
 
 export const messagePage = authoredPage({
   slug: 'message', title: 'Message', kind: 'recipe',
+  previewMode: 'static',
   definition: {
     kind: 'recipe', description: 'Composes sender identity, conversational content, and delivery metadata into one transcript row.',
     architecture: 'Message is a stateless composition recipe. The parent owns the ordered transcript and maps each domain message into Message and Bubble helpers.',

@@ -6,6 +6,7 @@ const rows = [['Accordion', 'Stateful'], ['Button', 'Stateless'], ['Dialog', 'St
 
 export const tablePage = authoredPage({
   slug: 'table', title: 'Table', kind: 'helper',
+  previewMode: 'static',
   definition: {
     kind: 'helper', description: 'Presents structured data in semantic rows and columns with responsive horizontal overflow.',
     architecture: 'Table is stateless. Sorting, filtering, pagination, and selected rows belong to the parent Model; this component only renders semantic table parts.',

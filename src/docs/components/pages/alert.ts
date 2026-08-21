@@ -1,5 +1,8 @@
+import { Schema as S } from 'effect';
+import { m } from 'foldkit/message';
+
 import * as Alert from '@/ui/alert';
-import { authoredPage, staticComponentApplication } from '@/docs/components/pages/authored-page';
+import { authoredPage, definePreviewProgram, staticComponentApplication } from '@/docs/components/pages/authored-page';
 
 const source = (name: string, viewBody: string): string =>
   staticComponentApplication({
@@ -27,10 +30,26 @@ const alertView = <Msg>(
     h,
   );
 
+const PreviewModel = S.Struct({ _docsPage: S.Literal('alert') });
+type PreviewModel = typeof PreviewModel.Type;
+const PreviewMessage = m('InteractedWithAlertPreview');
+type PreviewMessage = typeof PreviewMessage.Type;
+
+const previewProgram = definePreviewProgram<PreviewModel, PreviewMessage>({
+  Model: PreviewModel,
+  Message: PreviewMessage,
+  init: () => ({ _docsPage: 'alert' }),
+  update: (model) => [model, []],
+  view: (index, _model, h) => index === 0
+    ? alertView('default', 'Heads up', 'You can add components with the Crease registry.', h)
+    : alertView('destructive', 'Something went wrong', 'Your session could not be refreshed.', h),
+});
+
 export const alertPage = authoredPage({
   slug: 'alert',
   title: 'Alert',
   kind: 'helper',
+  previewProgram,
   definition: {
     kind: 'helper',
     description:

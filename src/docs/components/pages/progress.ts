@@ -6,6 +6,7 @@ const source = (name: string, viewBody: string): string =>
 
 export const progressPage = authoredPage({
   slug: 'progress', title: 'Progress', kind: 'helper',
+  previewMode: 'static',
   definition: {
     kind: 'helper',
     description: 'Shows the completion of a task as a determinate or indeterminate horizontal indicator.',

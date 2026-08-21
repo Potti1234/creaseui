@@ -8,6 +8,7 @@ export const badgePage = authoredPage({
   slug: 'badge',
   title: 'Badge',
   kind: 'helper',
+  previewMode: 'static',
   definition: {
     kind: 'helper',
     description: 'Displays a compact status, category, or count next to related content.',

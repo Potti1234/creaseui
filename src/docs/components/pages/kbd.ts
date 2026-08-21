@@ -6,6 +6,7 @@ const source = (name: string, viewBody: string): string =>
 
 export const kbdPage = authoredPage({
   slug: 'kbd', title: 'Kbd', kind: 'helper',
+  previewMode: 'static',
   definition: {
     kind: 'helper', description: 'Formats keyboard keys and shortcuts inline with explanatory text.',
     architecture: 'Kbd is a stateless semantic helper that returns native kbd markup.',

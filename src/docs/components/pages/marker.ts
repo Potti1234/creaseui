@@ -6,6 +6,7 @@ const source = (name: string, viewBody: string): string =>
 
 export const markerPage = authoredPage({
   slug: 'marker', title: 'Marker', kind: 'helper',
+  previewMode: 'static',
   definition: {
     kind: 'helper', description: 'Labels a boundary, timestamp, or contextual point inside a longer stream of content.',
     architecture: 'Marker is a stateless view helper. The parent Model chooses where markers occur in the surrounding sequence.',

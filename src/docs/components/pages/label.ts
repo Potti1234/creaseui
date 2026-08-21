@@ -5,6 +5,7 @@ const source = (name: string, viewBody: string): string => staticComponentApplic
 
 export const labelPage = authoredPage({
   slug: 'label', title: 'Label', kind: 'helper',
+  previewMode: 'static',
   definition: {
     kind: 'helper', description: 'Associates visible text with a form control.',
     architecture: 'Label is a stateless native label helper. Controlled input values and change Messages remain in the parent application.',

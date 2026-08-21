@@ -7,6 +7,7 @@ import {
   componentKind,
   dedicatedExampleTitles,
   hasDedicatedDefinition,
+  init as initCatalog,
 } from '../src/docs/components/catalog.ts'
 import { authoredPages } from '../src/docs/components/pages/index.ts'
 
@@ -215,6 +216,12 @@ describe('component catalog coverage', () => {
 
   it('owns every component route in an authored page module', () => {
     assert.deepEqual(Object.keys(authoredPages).sort(), documentedSlugs)
+  })
+
+  it('keeps static page previews in route-local models', () => {
+    const chart = initCatalog('chart')
+    assert.deepEqual(chart.examples, [{ _docsPage: 'chart' }, { _docsPage: 'chart' }])
+    assert.ok(!('dialog' in (chart.examples[0] ?? {})))
   })
 
   it('has a component-specific shadcn-style definition for every shared route', () => {

@@ -6,6 +6,7 @@ const source = (name: string, viewBody: string): string =>
 
 export const cardPage = authoredPage({
   slug: 'card', title: 'Card', kind: 'helper',
+  previewMode: 'static',
   definition: {
     kind: 'helper',
     description: 'Groups related information and actions into one visually distinct surface.',

@@ -18,24 +18,34 @@ const definitions: PageDefinitions = {
 };
 
 const EXAMPLE_STATE_COUNT = 32;
+const localPrograms = Object.values(authoredPages).flatMap(page =>
+  page.previewProgram === undefined ? [] : [page.previewProgram],
+);
+const ExampleModel = S.Union([State.Model, ...localPrograms.map(program => program.Model)]);
+const ExampleMessage = S.Union([State.Message, ...localPrograms.map(program => program.Message)]);
 
 export const Model = S.Struct({
-  examples: S.Array(State.Model),
+  slug: S.String,
+  examples: S.Array(ExampleModel),
   copiedCode: CopyFeedback.Model,
 });
 export type Model = typeof Model.Type;
 
 export const GotExampleMessage = m('GotCatalogExampleMessage', {
   index: S.Number,
-  message: State.Message,
+  message: ExampleMessage,
 });
 export const Message = S.Union([GotExampleMessage, CopyFeedback.Message]);
 export type Message = typeof Message.Type;
 
 export const init = (slug?: string): Model => ({
-  examples: Array.from({ length: definitions[slug ?? '']?.examples.length ?? 0 }, (_, index) =>
-    State.withExampleIds(State.init(), `catalog-example-${String(index)}`),
-  ),
+  slug: slug ?? '',
+  examples: Array.from({ length: definitions[slug ?? '']?.examples.length ?? 0 }, (_, index) => {
+    const program = authoredPages[slug ?? '']?.previewProgram;
+    return program === undefined
+      ? State.withExampleIds(State.init(), `catalog-example-${String(index)}`)
+      : program.init(index);
+  }),
   copiedCode: null,
 });
 
@@ -56,12 +66,16 @@ export const update = (model: Model, message: Message): UpdateReturn => {
   const current = model.examples[message.index];
   if (current === undefined) return [model, []];
 
-  const [example, commands] = State.update(current, message.message);
+  const program = authoredPages[model.slug]?.previewProgram;
+  const [example, commands] = program === undefined
+    ? State.update(current as State.Model, message.message as State.Message)
+    : program.update(current, message.message);
   return [
     {
       examples: model.examples.map((candidate, index) =>
         index === message.index ? example : candidate,
       ),
+      slug: model.slug,
       copiedCode: model.copiedCode,
     },
     Command.mapMessages(commands, (next) =>
@@ -73,7 +87,10 @@ export const update = (model: Model, message: Message): UpdateReturn => {
 export const subscriptions = Subscription.aggregate<Model, Message>()(
   ...Array.from({ length: EXAMPLE_STATE_COUNT }, (_, index) => {
     const lifted = Subscription.lift(State.subscriptions)<Model, Message>({
-      toChildModel: (model) => model.examples[index] ?? fallbackExampleState,
+      toChildModel: (model) =>
+        authoredPages[model.slug]?.previewProgram === undefined
+          ? (model.examples[index] as State.Model | undefined) ?? fallbackExampleState
+          : fallbackExampleState,
       toParentMessage: (message) => GotExampleMessage({ index, message }),
     });
 
@@ -222,9 +239,10 @@ export const view = (
         compositionFor(kind, name, primaryExport(slug)),
       examples: definition.examples.map((config, index) => {
         const exampleCode = config.code;
-        const previewView = defineView<State.Model, State.Message>(
-          (exampleModel, h) => config.preview(exampleModel, h),
-        );
+        const program = authoredPages[slug]?.previewProgram;
+        const previewView = program === undefined
+          ? defineView<State.Model, State.Message>((exampleModel, h) => config.preview(exampleModel, h))
+          : defineView<unknown, unknown>((exampleModel, h) => program.view(index, exampleModel, h));
 
         return example<Message>(
           {
@@ -236,7 +254,7 @@ export const view = (
               slotId: `docs-${slug}-example-${String(index)}`,
               model: model.examples[index] ?? fallbackExampleState,
               view: previewView,
-              toParentMessage: (message: State.Message): Message =>
+              toParentMessage: (message): Message =>
                 GotExampleMessage({ index, message }),
             }),
             code: exampleCode,

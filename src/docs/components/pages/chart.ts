@@ -28,6 +28,7 @@ const areaSource = staticComponentApplication({
 
 export const chartPage = authoredPage({
   slug: 'chart', title: 'Chart', kind: 'recipe',
+  previewMode: 'static',
   definition: {
     kind: 'recipe', description: 'Dependency-free SVG chart recipes and shared legend, tooltip, and series configuration helpers.',
     architecture: 'Chart helpers are pure view composition, not child Models. Keep live data and interaction in the parent, derive SVG from that Model, and introduce Messages only when the surrounding product behavior needs them.',
