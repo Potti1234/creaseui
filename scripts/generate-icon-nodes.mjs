@@ -22,7 +22,7 @@ const catalog = JSON.parse(
 )
 // Keep icons referenced through named wrappers. The broad literal scan below
 // can miss a literal when comments or template strings sit between quotes.
-const requiredIconNames = ['code-xml']
+const requiredIconNames = ['arrow-down', 'arrow-left', 'arrow-up', 'code-xml']
 const names = Array.from(
   new Set(
     [
