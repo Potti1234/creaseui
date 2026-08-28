@@ -29,7 +29,7 @@ const cn = (...values: ReadonlyArray<unknown>): string =>
      animate-in/fade-in-0/zoom-in-95 become CSS transitions driven by
      data-[closed]:. Pass isAnimated: true to init for the transition to run.
 
-   State (Model/Message/update) is the foldkit Dialog's own â€” re-exported here
+   State (Model/Message/update) is the foldkit Dialog's own — re-exported here
    so consumers import everything from this module, shadcn-style. */
 
 export const Model = DialogPrimitive.Model;

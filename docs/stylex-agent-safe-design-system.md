@@ -656,7 +656,7 @@ three layers:
 3. reference-backed patterns constrain recurring composition and information
    hierarchy.
 
-The third layer was underdeveloped in the first pass. Polar's â€œLLM-safeâ€ idea
+The third layer was underdeveloped in the first pass. Polar's “LLM-safe” idea
 remains valid, but a constrained vocabulary only produces consistent output
 for concepts it can name. Linear's migration lesson also applies: compiler
 correctness and static extraction are foundations, while visual migration
@@ -672,10 +672,10 @@ failure should become a contract rather than a page-local override.
 
 The experiment supports the direction proposed by Polar Orbit: an AI-safe
 design system should not rely on an agent remembering a style guide. It should
-make the approved decisions the easiestâ€”and ideally the onlyâ€”decisions that
+make the approved decisions the easiest—and ideally the only—decisions that
 compile.
 
-For Crease, the strongest architecture is not â€œStyleX instead of Tailwind.â€ It
+For Crease, the strongest architecture is not “StyleX instead of Tailwind.” It
 is:
 
 > semantic decisions + closed APIs + Elm state + static extraction + executable contracts + browser verification

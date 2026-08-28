@@ -169,7 +169,7 @@ export const dataTable = <Row, Msg>(
                   h.OnInput((value) =>
                     props.toParentMessage(Filtered({ value })),
                   ),
-                  h.Placeholder(props.filterPlaceholder ?? 'Filter rowsâ€¦'),
+                  h.Placeholder(props.filterPlaceholder ?? 'Filter rows…'),
                   h.AriaLabel(props.filterPlaceholder ?? 'Filter rows'),
                   h.Class(
                     'h-10 w-full max-w-sm rounded-md border border-input bg-transparent px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
