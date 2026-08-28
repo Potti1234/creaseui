@@ -58,6 +58,7 @@ export const flags: Effect.Effect<Flags> = Effect.sync(() => ({
 // MESSAGE
 
 export const CompletedNavigateInternal = m('CompletedNavigateInternal');
+export const CompletedScrollPageToTop = m('CompletedScrollPageToTop');
 export const CompletedLoadExternal = m('CompletedLoadExternal');
 export const ClickedLink = m('ClickedLink', { request: UrlRequest });
 export const ChangedUrl = m('ChangedUrl', { url: Url });
@@ -97,6 +98,7 @@ export const GotCatalogDocsMessage = m('GotCatalogDocsMessage', {
 
 export const Message = S.Union([
   CompletedNavigateInternal,
+  CompletedScrollPageToTop,
   CompletedLoadExternal,
   ClickedLink,
   ChangedUrl,
@@ -140,6 +142,14 @@ const LoadExternal = Command.define('LoadExternal', {
   execute: ({ href }) => load(href).pipe(Effect.as(CompletedLoadExternal())),
 });
 
+const ScrollPageToTop = Command.define('ScrollPageToTop', {
+  messages: [CompletedScrollPageToTop],
+  execute: Effect.sync(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    return CompletedScrollPageToTop();
+  }),
+});
+
 const ApplyTheme = Command.define('ApplyTheme', {
   args: { isDark: S.Boolean },
   messages: [CompletedApplyTheme],
@@ -162,6 +172,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
     withUpdateReturn,
     M.tagsExhaustive({
       CompletedNavigateInternal: () => [model, []],
+      CompletedScrollPageToTop: () => [model, []],
       CompletedLoadExternal: () => [model, []],
       CompletedApplyTheme: () => [model, []],
 
@@ -187,7 +198,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           route: () => urlToAppRoute(url),
           page: () => Page.init(urlToAppRoute(url)),
         }),
-        [],
+        [ScrollPageToTop()],
       ],
 
       GotBoardMessage: ({ message: childMessage }) => {
