@@ -1,0 +1,277 @@
+import type { Option } from 'effect';
+import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html';
+
+import { Combobox as ComboboxPrimitive } from '@foldkit/ui';
+
+import * as Icon from '@/lib/icon';
+import * as stylex from '@stylexjs/stylex'
+import type { StaticStyles } from '@stylexjs/stylex'
+import { overlayStyles } from './overlay-tokens.stylex'
+import type { ComponentLayoutStyle } from './contracts'
+import { themedAnchor } from './overlay-boundary'
+import { className } from './style'
+
+const styles = stylex.create({
+  contents: { display: 'contents' },
+  empty: { paddingBlock: '1.5rem', fontSize: '0.875rem', textAlign: 'center', },
+})
+
+const isStaticStyle = (value: unknown): value is StaticStyles =>
+  typeof value === 'object' && value !== null
+const cn = (...values: ReadonlyArray<unknown>): string =>
+  className(...values.filter(isStaticStyle))
+
+/* Ported from shadcn/ui command.tsx on top of foldkit's config-driven
+   single-select Combobox submodel.
+
+   Command's selected/highlighted state maps to foldkit's data-active
+   attribute. Disabled styling uses data-disabled, and the anchored list uses
+   a finite data-closed transition. Pass isAnimated: true to init.
+
+   PORT NOTE: global cmd-k dialog wiring is intentionally not included;
+   consumers compose commandPalette with the dialog wrapper.
+
+   PORT NOTE: foldkit Combobox exposes the input-wrapper suffix as a toggle
+   button, so the decorative search icon is rendered through that button and
+   visually ordered before the input. Per-item attributes are not exposed;
+   command-item is therefore placed on the inner content span. */
+
+export const Model = ComboboxPrimitive.Model;
+export type Model = typeof Model.Type;
+export const Message = ComboboxPrimitive.Message;
+export type Message = typeof Message.Type;
+export const OutMessage = ComboboxPrimitive.OutMessage;
+export type OutMessage<Item extends string = string> =
+  ComboboxPrimitive.OutMessage<Item>;
+
+export const init = ComboboxPrimitive.init;
+export const create = ComboboxPrimitive.create;
+export const update = ComboboxPrimitive.create().update;
+
+const ROOT_CLASS = overlayStyles.root
+
+const INPUT_WRAPPER_CLASS = overlayStyles.inputWrapper
+
+const INPUT_CLASS = overlayStyles.input
+
+const SEARCH_BUTTON_CLASS = overlayStyles.icon
+
+const CONTENT_CLASS = overlayStyles.panel
+
+const LIST_CLASS = overlayStyles.list
+
+const ITEM_CLASS = overlayStyles.item
+
+const GROUP_CLASS = overlayStyles.group
+
+const SEPARATOR_CLASS = overlayStyles.separator
+
+const SHORTCUT_CLASS = overlayStyles.shortcut
+
+const BACKDROP_CLASS = overlayStyles.backdrop
+
+export type CommandItemConfig = Readonly<{
+  content: Html | string;
+  searchText?: string;
+  shortcut?: Html | string;
+  layoutStyle?: ComponentLayoutStyle;
+  isDisabled?: boolean;
+}>;
+
+export type CommandProps<Item extends string, Msg> = Readonly<{
+  model: Model;
+  maybeSelectedValue: Option.Option<Item>;
+  restingInputValue: string;
+  toParentMessage: (message: Message) => Msg;
+  items: ReadonlyArray<Item>;
+  itemToConfig: (item: Item) => CommandItemConfig;
+  placeholder?: string;
+  ariaLabel?: string;
+  layoutStyle?: ComponentLayoutStyle;
+  itemGroupKey?: (item: Item, index: number) => string;
+  groupToHeading?: (groupKey: string) => Html | string | undefined;
+}>;
+
+export const commandGroupHeading = <Msg>(
+  content: Html | string,
+  layoutStyle: ComponentLayoutStyle | undefined,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  return h.span(
+    [h.DataAttribute('slot', 'command-group-heading'), h.Class(cn(layoutStyle))],
+    [content],
+  );
+};
+
+export const commandShortcut = <Msg>(
+  content: Html | string,
+  layoutStyle: ComponentLayoutStyle | undefined,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  return h.span(
+    [
+      h.DataAttribute('slot', 'command-shortcut'),
+      h.Class(cn(SHORTCUT_CLASS, layoutStyle)),
+    ],
+    [content],
+  );
+};
+
+export const commandSeparator = <Msg>(
+  layoutStyle: ComponentLayoutStyle | undefined,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  return h.div(
+    [
+      h.Role('separator'),
+      h.DataAttribute('slot', 'command-separator'),
+      h.Class(cn(SEPARATOR_CLASS, layoutStyle)),
+    ],
+    [],
+  );
+};
+
+export const commandEmpty = <Msg>(
+  content: Html | string,
+  layoutStyle: ComponentLayoutStyle | undefined,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  return h.div(
+    [
+      h.DataAttribute('slot', 'command-empty'),
+      h.Class(cn(styles.empty, layoutStyle)),
+    ],
+    [content],
+  );
+};
+
+export const command = <Item extends string, Msg>(
+  props: CommandProps<Item, Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const hc = h;
+  const commandPrimitive = ComboboxPrimitive.create<Item>();
+  const itemToSearchText = (item: Item): string => {
+    const config = props.itemToConfig(item);
+    return (
+      config.searchText ??
+      (typeof config.content === 'string' ? config.content : item)
+    );
+  };
+  const query = props.model.inputValue.trim().toLocaleLowerCase();
+  const isShowingSelectedLabel =
+    props.restingInputValue === props.model.inputValue;
+  const visibleItems = props.items.filter(
+    (item) =>
+      query === '' ||
+      isShowingSelectedLabel ||
+      itemToSearchText(item).toLocaleLowerCase().includes(query),
+  );
+
+  return h.submodel({
+    slotId: props.model.id,
+    model: props.model,
+    view: commandPrimitive.view,
+    viewInputs: {
+      maybeSelectedValue: props.maybeSelectedValue,
+      restingInputValue: props.restingInputValue,
+      items: visibleItems,
+      itemToValue: (item) => item,
+      itemToDisplayText: itemToSearchText,
+      isItemDisabled: (item) => props.itemToConfig(item).isDisabled ?? false,
+      itemToConfig: (item) => {
+        const config = props.itemToConfig(item);
+
+        return {
+          className: cn(ITEM_CLASS, config.layoutStyle),
+          content: hc.span(
+            [hc.DataAttribute('slot', 'command-item'), hc.Class(className(styles.contents))],
+            [
+              config.content,
+              ...(config.shortcut === undefined
+                ? []
+                : [commandShortcut(config.shortcut, undefined, h)]),
+            ],
+          ),
+        };
+      },
+      inputClassName: className(INPUT_CLASS),
+      inputAttributes: childAttributes([
+        hc.DataAttribute('slot', 'command-input'),
+      ]),
+      ...(props.placeholder === undefined
+        ? {}
+        : { inputPlaceholder: props.placeholder }),
+      inputWrapperClassName: className(INPUT_WRAPPER_CLASS),
+      inputWrapperAttributes: childAttributes([
+        hc.DataAttribute('slot', 'command-input-wrapper'),
+      ]),
+      buttonContent: Icon.search({ class: className(overlayStyles.icon) }, h),
+      buttonClassName: className(SEARCH_BUTTON_CLASS),
+      buttonAttributes: childAttributes([hc.AriaLabel('Toggle command list')]),
+      openOnFocus: true,
+      itemsClassName: className(CONTENT_CLASS),
+      itemsAttributes: childAttributes([
+        hc.DataAttribute('slot', 'command-list'),
+      ]),
+      itemsScrollClassName: className(LIST_CLASS),
+      backdropClassName: className(BACKDROP_CLASS),
+      className: cn(ROOT_CLASS, props.layoutStyle),
+      attributes: childAttributes([hc.DataAttribute('slot', 'command')]),
+      anchor: themedAnchor({ placement: 'bottom-start', gap: 0 }),
+      ...(props.itemGroupKey === undefined
+        ? {}
+        : {
+            itemGroupKey: props.itemGroupKey,
+            groupToHeading: (groupKey: string) => {
+              const heading = props.groupToHeading?.(groupKey);
+              return heading === undefined
+                ? undefined
+                : {
+                    content: commandGroupHeading(heading, undefined, h),
+                  };
+            },
+            groupClassName: className(GROUP_CLASS),
+            groupAttributes: childAttributes([
+              hc.DataAttribute('slot', 'command-group'),
+            ]),
+            separatorClassName: className(SEPARATOR_CLASS),
+            separatorAttributes: childAttributes([
+              hc.DataAttribute('slot', 'command-separator'),
+            ]),
+          }),
+      ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
+    },
+    toParentMessage: props.toParentMessage,
+  });
+};
+
+export const commandPalette = command;
+
+/*
+   Minimal wiring:
+
+   type Action = 'profile' | 'settings'
+   const AppCommand = create<Action>()
+
+   // Model: { command: Model }
+   // Message: GotCommandMessage({ message: Message })
+   // Init: command: init({ id: 'app-command', isAnimated: true })
+   //
+   // Update:
+   // const [command, commands, maybeOutMessage] =
+   //   AppCommand.update(model.command, message)
+   //
+   // View:
+   // command<Action, AppMessage>({
+   //   model: model.command,
+   //   toParentMessage: message => GotCommandMessage({ message }),
+   //   items: ['profile', 'settings'],
+   //   itemToConfig: item => ({
+   //     content: item === 'profile' ? 'Profile' : 'Settings',
+   //     shortcut: item === 'profile' ? 'âŒ˜P' : 'âŒ˜,',
+   //   }),
+   //   placeholder: 'Type a command or search...',
+   // })
+*/
+

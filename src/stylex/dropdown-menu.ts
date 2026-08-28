@@ -1,0 +1,597 @@
+const styles = stylex.create({
+  backdrop: { cursor: interactionTokens.cursorDefault, inset: 0, position: 'fixed', zIndex: 40 },
+  bottom: { marginTop: '0.25rem', top: '100%' },
+  indicator: { alignItems: 'center', display: 'flex', height: '0.875rem', justifyContent: 'center', left: '0.5rem', position: 'absolute', width: '0.875rem' },
+  destructive: { backgroundColor: tokens.destructiveSurface, color: tokens.destructive },
+  inset: { paddingLeft: '2rem' },
+  label: { flexGrow: 1 },
+  left: { marginRight: '0.25rem', right: '100%' },
+  root: { display: 'inline-flex', position: 'relative' },
+  right: { left: '100%', marginLeft: '0.25rem' },
+  shortcut: { color: tokens.mutedForeground, fontSize: '0.75rem', letterSpacing: '0.1em', marginLeft: 'auto' },
+  top: { bottom: '100%', marginBottom: '0.25rem' },
+})
+
+const isStaticStyle = (value: unknown): value is StaticStyles =>
+  typeof value === 'object' && value !== null
+const cn = (...values: ReadonlyArray<unknown>): string =>
+  className(...values.filter(isStaticStyle))
+
+import { Option, Schema as S } from 'effect';
+import type { Command } from 'foldkit';
+import type { Html, HtmlBuilder } from 'foldkit/html';
+import { m } from 'foldkit/message';
+
+import * as Icon from '@/lib/icon';
+import * as stylex from '@stylexjs/stylex'
+import type { StaticStyles } from '@stylexjs/stylex'
+import { overlayStyles } from './overlay-tokens.stylex'
+import type { ComponentLayoutStyle } from './contracts'
+import { className } from './style'
+import { tokens } from './tokens.stylex'
+import { interactionTokens } from './interaction-tokens.stylex.const'
+
+export const Model = S.Struct({
+  id: S.String,
+  isOpen: S.Boolean,
+  isAnimated: S.Boolean,
+  activeIndex: S.Number,
+  activeSubmenuIndex: S.Number,
+  openSubmenuIndex: S.Option(S.Number),
+  anchorX: S.Option(S.Number),
+  anchorY: S.Option(S.Number),
+});
+export type Model = typeof Model.Type;
+
+export const Opened = m('Opened');
+export const AnchoredAt = m('AnchoredAt', { x: S.Number, y: S.Number });
+export const OpenedFromContext = m('OpenedFromContext');
+export const OpenedAt = m('OpenedAt', { x: S.Number, y: S.Number });
+export const Closed = m('Closed');
+export const ActivatedItem = m('ActivatedItem', { index: S.Number });
+export const OpenedSubmenu = m('OpenedSubmenu', { index: S.Number });
+export const ActivatedSubmenuItem = m('ActivatedSubmenuItem', {
+  index: S.Number,
+});
+export const ClosedSubmenu = m('ClosedSubmenu');
+export const SelectedItem = m('SelectedItem', {
+  item: S.String,
+  index: S.Number,
+});
+export const Message = S.Union([
+  Opened,
+  AnchoredAt,
+  OpenedFromContext,
+  OpenedAt,
+  Closed,
+  ActivatedItem,
+  OpenedSubmenu,
+  ActivatedSubmenuItem,
+  ClosedSubmenu,
+  SelectedItem,
+]);
+export type Message = typeof Message.Type;
+
+export const Selected = m('Selected', { value: S.String, index: S.Number });
+export const OutMessage = S.Union([Selected]);
+export type OutMessage<Item extends string = string> = Readonly<{
+  _tag: 'Selected';
+  value: Item;
+  index: number;
+}>;
+
+export const init = (
+  config: Readonly<{ id: string; isAnimated?: boolean; isModal?: boolean }>,
+): Model => ({
+  id: config.id,
+  isOpen: false,
+  isAnimated: config.isAnimated ?? false,
+  activeIndex: 0,
+  activeSubmenuIndex: 0,
+  openSubmenuIndex: Option.none(),
+  anchorX: Option.none(),
+  anchorY: Option.none(),
+});
+
+type UpdateReturn<Item extends string> = readonly [
+  Model,
+  ReadonlyArray<Command.Command<Message>>,
+  Option.Option<OutMessage<Item>>,
+];
+
+const updateTyped = <Item extends string>(
+  model: Model,
+  message: Message,
+): UpdateReturn<Item> => {
+  switch (message._tag) {
+    case 'Opened':
+      return [
+        {
+          ...model,
+          isOpen: true,
+          anchorX: Option.none(),
+          anchorY: Option.none(),
+        },
+        [],
+        Option.none(),
+      ];
+    case 'AnchoredAt':
+      return [
+        {
+          ...model,
+          anchorX: Option.some(message.x),
+          anchorY: Option.some(message.y),
+        },
+        [],
+        Option.none(),
+      ];
+    case 'OpenedFromContext':
+      return [{ ...model, isOpen: true }, [], Option.none()];
+    case 'OpenedAt':
+      return [
+        {
+          ...model,
+          isOpen: true,
+          anchorX: Option.some(message.x),
+          anchorY: Option.some(message.y),
+        },
+        [],
+        Option.none(),
+      ];
+    case 'Closed':
+      return [
+        {
+          ...model,
+          isOpen: false,
+          openSubmenuIndex: Option.none(),
+          anchorX: Option.none(),
+          anchorY: Option.none(),
+        },
+        [],
+        Option.none(),
+      ];
+    case 'ActivatedItem':
+      return [
+        { ...model, activeIndex: Math.max(0, message.index) },
+        [],
+        Option.none(),
+      ];
+    case 'OpenedSubmenu':
+      return [
+        {
+          ...model,
+          activeIndex: message.index,
+          activeSubmenuIndex: 0,
+          openSubmenuIndex: Option.some(message.index),
+        },
+        [],
+        Option.none(),
+      ];
+    case 'ActivatedSubmenuItem':
+      return [
+        { ...model, activeSubmenuIndex: Math.max(0, message.index) },
+        [],
+        Option.none(),
+      ];
+    case 'ClosedSubmenu':
+      return [{ ...model, openSubmenuIndex: Option.none() }, [], Option.none()];
+    case 'SelectedItem':
+      return [
+        {
+          ...model,
+          isOpen: false,
+          openSubmenuIndex: Option.none(),
+          anchorX: Option.none(),
+          anchorY: Option.none(),
+        },
+        [],
+        Option.some(
+          Selected({
+            value: message.item,
+            index: message.index,
+          }) as OutMessage<Item>,
+        ),
+      ];
+  }
+};
+
+export const create = <Item extends string = string>() => ({
+  update: (model: Model, message: Message): UpdateReturn<Item> =>
+    updateTyped<Item>(model, message),
+  open: (model: Model): UpdateReturn<Item> =>
+    updateTyped<Item>(model, Opened()),
+  openAt: (model: Model, x: number, y: number): UpdateReturn<Item> =>
+    updateTyped<Item>(model, OpenedAt({ x, y })),
+  close: (model: Model): UpdateReturn<Item> =>
+    updateTyped<Item>(model, Closed()),
+  selectItem: (model: Model, item: Item, index: number): UpdateReturn<Item> =>
+    updateTyped<Item>(model, SelectedItem({ item, index })),
+});
+
+export const update = create().update;
+export const open = create().open;
+export const openAt = create().openAt;
+export const close = create().close;
+export const selectItem = create().selectItem;
+
+const CONTENT_CLASS = overlayStyles.panel
+const ITEM_CLASS = overlayStyles.item
+const SUBMENU_CLASS = overlayStyles.panel
+
+export type DropdownMenuItemConfig = Readonly<{
+  label: Html | string;
+  icon?: Html;
+  shortcut?: Html | string;
+  variant?: 'default' | 'destructive';
+  kind?: 'item' | 'checkbox' | 'radio';
+  isChecked?: boolean;
+  isInset?: boolean;
+  isDisabled?: boolean;
+  group?: string;
+  submenu?: Readonly<{
+    items: ReadonlyArray<string>;
+    itemToConfig: (item: string) => DropdownMenuItemConfig;
+  }>;
+}>;
+
+export type DropdownMenuSide = 'top' | 'right' | 'bottom' | 'left';
+export type DropdownMenuAlign = 'start' | 'center' | 'end';
+
+export type DropdownMenuProps<Item extends string, Msg> = Readonly<{
+  model: Model;
+  toParentMessage: (message: Message) => Msg;
+  trigger: Html | string;
+  triggerLayoutStyle?: ComponentLayoutStyle;
+  items: ReadonlyArray<Item>;
+  itemToConfig: (item: Item) => DropdownMenuItemConfig;
+  align?: DropdownMenuAlign;
+  side?: DropdownMenuSide;
+  ariaLabel?: string;
+  openOnContextMenu?: boolean;
+}>;
+
+const positionClass = (
+  side: DropdownMenuSide,
+  _align: DropdownMenuAlign,
+): StaticStyles => styles[side]
+
+const menuKey = <Item extends string>(
+  model: Model,
+  items: ReadonlyArray<Item>,
+  itemToConfig: (item: Item) => DropdownMenuItemConfig,
+  key: string,
+): Message | undefined => {
+  const parentIndex = Option.getOrUndefined(model.openSubmenuIndex);
+  const parent = parentIndex === undefined ? undefined : items[parentIndex];
+  const submenu =
+    parent === undefined ? undefined : itemToConfig(parent).submenu;
+  if (submenu !== undefined) {
+    const children = submenu.items
+      .map((item, index) => ({
+        item,
+        index,
+        config: submenu.itemToConfig(item),
+      }))
+      .filter((entry) => entry.config.isDisabled !== true);
+    const currentChild = Math.max(
+      0,
+      children.findIndex((entry) => entry.index === model.activeSubmenuIndex),
+    );
+    if (key === 'ArrowDown' || key === 'ArrowUp') {
+      const delta = key === 'ArrowDown' ? 1 : -1;
+      return ActivatedSubmenuItem({
+        index:
+          children[
+            (currentChild + delta + children.length) %
+              Math.max(1, children.length)
+          ]?.index ?? 0,
+      });
+    }
+    if (key === 'Home')
+      return ActivatedSubmenuItem({ index: children[0]?.index ?? 0 });
+    if (key === 'End')
+      return ActivatedSubmenuItem({ index: children.at(-1)?.index ?? 0 });
+    if (key === 'ArrowLeft') return ClosedSubmenu();
+    if (key === 'Enter' || key === ' ') {
+      const child = submenu.items[model.activeSubmenuIndex];
+      return child === undefined
+        ? undefined
+        : SelectedItem({ item: child, index: model.activeSubmenuIndex });
+    }
+  }
+  const enabled = items
+    .map((item, index) => ({ item, index, config: itemToConfig(item) }))
+    .filter((entry) => entry.config.isDisabled !== true);
+  const current = Math.max(
+    0,
+    enabled.findIndex((entry) => entry.index === model.activeIndex),
+  );
+  if (key === 'Escape') return Closed();
+  if (key === 'Home') return ActivatedItem({ index: enabled[0]?.index ?? 0 });
+  if (key === 'End')
+    return ActivatedItem({ index: enabled.at(-1)?.index ?? 0 });
+  if (key === 'ArrowDown' || key === 'ArrowUp') {
+    const delta = key === 'ArrowDown' ? 1 : -1;
+    return ActivatedItem({
+      index:
+        enabled[
+          (current + delta + enabled.length) % Math.max(1, enabled.length)
+        ]?.index ?? 0,
+    });
+  }
+  const active = items[model.activeIndex];
+  if (active === undefined) return undefined;
+  const config = itemToConfig(active);
+  if (key === 'ArrowRight' && config.submenu !== undefined)
+    return OpenedSubmenu({ index: model.activeIndex });
+  if (key === 'ArrowLeft') return ClosedSubmenu();
+  if (
+    (key === 'Enter' || key === ' ') &&
+    config.submenu === undefined &&
+    config.isDisabled !== true
+  )
+    return SelectedItem({ item: active, index: model.activeIndex });
+  return undefined;
+};
+
+export const dropdownMenu = <Item extends string, Msg>(
+  props: DropdownMenuProps<Item, Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const anchorX = Option.getOrUndefined(props.model.anchorX);
+  const anchorY = Option.getOrUndefined(props.model.anchorY);
+  const keyMessage = (key: string) => {
+    const message = menuKey(props.model, props.items, props.itemToConfig, key);
+    return message === undefined
+      ? Option.none()
+      : Option.some(props.toParentMessage(message));
+  };
+
+  const renderItem = (
+    item: string,
+    index: number,
+    config: DropdownMenuItemConfig,
+    isSubmenu = false,
+  ): Html => {
+    const active = isSubmenu
+      ? props.model.activeSubmenuIndex === index - props.items.length
+      : props.model.activeIndex === index;
+    const checked = config.isChecked ?? false;
+    const role =
+      config.kind === 'checkbox'
+        ? 'menuitemcheckbox'
+        : config.kind === 'radio'
+          ? 'menuitemradio'
+          : config.submenu === undefined
+            ? 'menuitem'
+            : 'menuitem';
+    return h.div(
+      [
+        h.Role(role),
+        h.Tabindex(active ? 0 : -1),
+        h.DataAttribute('active', String(active)),
+        ...(config.kind === 'checkbox' || config.kind === 'radio'
+          ? [h.AriaChecked(checked)]
+          : []),
+        ...(config.isDisabled === true
+          ? [h.AriaDisabled(true), h.DataAttribute('disabled', '')]
+          : []),
+        ...(config.submenu === undefined
+          ? []
+          : [
+              h.AriaHasPopup('menu'),
+              h.AriaExpanded(
+                Option.contains(props.model.openSubmenuIndex, index),
+              ),
+            ]),
+        ...(config.isDisabled === true
+          ? []
+          : [
+              h.OnMouseEnter(
+                props.toParentMessage(
+                  isSubmenu
+                    ? ActivatedSubmenuItem({
+                        index: index - props.items.length,
+                      })
+                    : config.submenu === undefined
+                      ? ActivatedItem({ index })
+                      : OpenedSubmenu({ index }),
+                ),
+              ),
+            ]),
+        ...(config.isDisabled === true || config.submenu !== undefined
+          ? []
+          : [h.OnClick(props.toParentMessage(SelectedItem({ item, index })))]),
+        h.Class(
+          cn(
+            ITEM_CLASS,
+            config.isInset ? styles.inset : undefined,
+            config.variant === 'destructive' ? styles.destructive : undefined,
+          ),
+        ),
+      ],
+      [
+        ...(config.kind === 'checkbox' || config.kind === 'radio'
+          ? [
+              h.span(
+                [
+                  h.Class(className(styles.indicator)),
+                ],
+                [
+                  checked
+                    ? config.kind === 'checkbox'
+                      ? Icon.check<Msg>({ class: className(overlayStyles.icon) }, h)
+                      : Icon.circleIcon<Msg>(
+                          { class: className(overlayStyles.icon) },
+                          h,
+                        )
+                    : '',
+                ],
+              ),
+            ]
+          : []),
+        ...(config.icon === undefined ? [] : [config.icon]),
+        h.span([h.Class(className(styles.label))], [config.label]),
+        ...(config.shortcut === undefined
+          ? []
+          : [
+              h.span(
+                [
+                  h.Class(className(styles.shortcut)),
+                ],
+                [config.shortcut],
+              ),
+            ]),
+        ...(config.submenu === undefined
+          ? []
+          : [Icon.chevronRight<Msg>({ class: className(overlayStyles.icon) }, h)]),
+        ...(config.submenu === undefined ||
+        !Option.contains(props.model.openSubmenuIndex, index)
+          ? []
+          : [
+              h.div(
+                [
+                  h.Role('menu'),
+                  h.AriaLabel(
+                    `${typeof config.label === 'string' ? config.label : 'Submenu'} submenu`,
+                  ),
+                  h.Class(className(SUBMENU_CLASS)),
+                ],
+                config.submenu.items.map((child, childIndex) =>
+                  renderItem(
+                    child,
+                    props.items.length + childIndex,
+                    config.submenu?.itemToConfig(child) ?? { label: child },
+                    true,
+                  ),
+                ),
+              ),
+            ]),
+      ],
+    );
+  };
+
+  const grouped: Array<Html> = [];
+  let previousGroup: string | undefined;
+  props.items.forEach((item, index) => {
+    const config = props.itemToConfig(item);
+    if (config.group !== previousGroup) {
+      if (grouped.length > 0)
+        grouped.push(
+          h.div(
+            [h.Role('separator'), h.Class(className(overlayStyles.separator))],
+            [],
+          ),
+        );
+      if (config.group !== undefined)
+        grouped.push(
+          h.div([h.Class(className(overlayStyles.label))], [config.group]),
+        );
+      previousGroup = config.group;
+    }
+    grouped.push(renderItem(item, index, config));
+  });
+
+  return h.div(
+    [h.DataAttribute('slot', 'dropdown-menu'), h.Class(className(styles.root))],
+    [
+      h.button(
+        [
+          h.Type('button'),
+          h.AriaHasPopup('menu'),
+          h.AriaExpanded(props.model.isOpen),
+          ...(props.openOnContextMenu === true
+            ? [
+                h.OnContextMenu(props.toParentMessage(OpenedFromContext())),
+                h.OnPointerDown(
+                  (
+                    _pointerType,
+                    button,
+                    _screenX,
+                    _screenY,
+                    _timeStamp,
+                    clientX,
+                    clientY,
+                  ) =>
+                    button === 2
+                      ? Option.some(
+                          props.toParentMessage(
+                            AnchoredAt({ x: clientX, y: clientY }),
+                          ),
+                        )
+                      : Option.none(),
+                ),
+              ]
+            : [
+                h.OnClick(
+                  props.toParentMessage(
+                    props.model.isOpen ? Closed() : Opened(),
+                  ),
+                ),
+              ]),
+          h.DataAttribute('slot', 'dropdown-menu-trigger'),
+          ...(props.triggerLayoutStyle === undefined
+            ? []
+            : [h.Class(className(props.triggerLayoutStyle))]),
+          h.OnKeyDownPreventDefault((key) => {
+            const message = props.model.isOpen
+              ? menuKey(props.model, props.items, props.itemToConfig, key)
+              : key === 'ArrowDown' || key === 'ArrowUp' || key === 'Enter' || key === ' '
+                ? Opened()
+                : undefined;
+            return message === undefined
+              ? Option.none()
+              : Option.some(props.toParentMessage(message));
+          }),
+        ],
+        [props.trigger],
+      ),
+      ...(props.model.isOpen
+        ? [
+            h.button(
+              [
+                h.Type('button'),
+                h.AriaLabel('Close menu'),
+                h.OnClick(props.toParentMessage(Closed())),
+                h.Class(className(styles.backdrop)),
+              ],
+              [],
+            ),
+            h.div(
+              [
+                h.Role('menu'),
+                h.AriaLabel(props.ariaLabel ?? 'Menu'),
+                h.Tabindex(0),
+                h.OnKeyDownPreventDefault(keyMessage),
+                h.DataAttribute('slot', 'dropdown-menu-content'),
+                ...(anchorX !== undefined && anchorY !== undefined
+                  ? [
+                      h.Style({
+                        position: 'fixed',
+                        left: `${Math.max(4, Math.min(anchorX, window.innerWidth - 164))}px`,
+                        top: `${Math.max(4, Math.min(anchorY, window.innerHeight - 48))}px`,
+                        maxHeight: 'calc(100vh - 8px)',
+                      }),
+                    ]
+                  : []),
+                h.Class(
+                  cn(
+                    CONTENT_CLASS,
+                    anchorX !== undefined
+                      ? undefined
+                      : positionClass(
+                          props.side ?? 'bottom',
+                          props.align ?? 'start',
+                        ),
+                  ),
+                ),
+              ],
+              grouped,
+            ),
+          ]
+        : []),
+    ],
+  );
+};
+
+
