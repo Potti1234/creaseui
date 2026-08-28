@@ -328,6 +328,8 @@ export type ComponentPageConfig<Msg> = Readonly<{
   apiDescription?: string;
   apiEntries: ReadonlyArray<ApiEntry>;
   sidebarScrolled: Msg;
+  renderer: 'tailwind' | 'stylex';
+  onRendererChange: (renderer: 'tailwind' | 'stylex') => Msg;
 }>;
 
 const SIDEBAR_SCROLL_KEY = 'creaseui-docs-sidebar-scroll';
@@ -543,6 +545,33 @@ export const componentPage = <Msg>(
                   h.div(
                     [h.Class('flex flex-wrap items-center gap-2')],
                     [
+                      h.div(
+                        [
+                          h.Role('group'),
+                          h.AriaLabel('Preview styling engine'),
+                          h.Class('mr-2 inline-flex rounded-md border bg-muted/30 p-0.5'),
+                        ],
+                        (['tailwind', 'stylex'] as const).map((renderer) =>
+                          h.button(
+                            [
+                              h.Type('button'),
+                              h.OnClick(config.onRendererChange(renderer)),
+                              h.AriaPressed(
+                                config.renderer === renderer ? 'true' : 'false',
+                              ),
+                              h.Class(
+                                cn(
+                                  'min-h-9 rounded-[5px] px-3 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring/50',
+                                  config.renderer === renderer
+                                    ? 'bg-background text-foreground shadow-xs'
+                                    : 'text-muted-foreground hover:text-foreground',
+                                ),
+                              ),
+                            ],
+                            [renderer === 'tailwind' ? 'Tailwind' : 'StyleX'],
+                          ),
+                        ),
+                      ),
                       h.span(
                         [
                           h.Class(

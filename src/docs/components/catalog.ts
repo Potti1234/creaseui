@@ -10,6 +10,19 @@ import type { ComponentKind, PageDefinitions } from '@/docs/components/page-defi
 import { componentApi } from '@/docs/generated-component-api';
 import { authoredPages } from '@/docs/components/pages';
 import { RoutedDocsPreviewMessage } from '@/docs/components/pages/authored-page';
+type StyleXSpecimen = Readonly<{ name: string; note: string; view: Html }>;
+type StyleXSpecimenProvider = <Msg>(
+  noOpMessage: Msg,
+  h: HtmlBuilder<Msg>,
+) => ReadonlyArray<StyleXSpecimen>;
+
+let stylexSpecimenProvider: StyleXSpecimenProvider | undefined;
+
+export const installStyleXSpecimenProvider = (
+  provider: StyleXSpecimenProvider,
+): void => {
+  stylexSpecimenProvider = provider;
+};
 
 const definitions: PageDefinitions = {
   ...Object.fromEntries(
@@ -25,6 +38,7 @@ const localPrograms = Object.values(authoredPages).flatMap(page =>
 export const Model = S.Struct({
   slug: S.String,
   examples: S.Array(S.Unknown),
+  renderer: S.Literals(['tailwind', 'stylex']),
   copiedCode: CopyFeedback.Model,
 });
 export type Model = typeof Model.Type;
@@ -33,7 +47,16 @@ export const GotExampleMessage = m('GotCatalogExampleMessage', {
   index: S.Number,
   message: RoutedDocsPreviewMessage,
 });
-export const Message = S.Union([GotExampleMessage, CopyFeedback.Message]);
+export const ChangedRenderer = m('ChangedCatalogRenderer', {
+  renderer: S.Literals(['tailwind', 'stylex']),
+});
+export const InteractedWithStyleXSpecimen = m('InteractedWithStyleXSpecimen');
+export const Message = S.Union([
+  GotExampleMessage,
+  ChangedRenderer,
+  InteractedWithStyleXSpecimen,
+  CopyFeedback.Message,
+]);
 export type Message = typeof Message.Type;
 
 export const init = (slug?: string): Model => ({
@@ -43,12 +66,17 @@ export const init = (slug?: string): Model => ({
     if (program === undefined) throw new Error(`Missing preview program for ${slug ?? ''}`);
     return program.init(index);
   }),
+  renderer: 'tailwind',
   copiedCode: null,
 });
 
 type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
 
 export const update = (model: Model, message: Message): UpdateReturn => {
+  if (message._tag === 'ChangedCatalogRenderer') {
+    return [{ ...model, renderer: message.renderer }, []];
+  }
+  if (message._tag === 'InteractedWithStyleXSpecimen') return [model, []];
   if (message._tag !== 'GotCatalogExampleMessage') {
     const [copiedCode, commands] = CopyFeedback.update(
       model.copiedCode,
@@ -72,6 +100,7 @@ export const update = (model: Model, message: Message): UpdateReturn => {
         index === message.index ? example : candidate,
       ),
       slug: model.slug,
+      renderer: model.renderer,
       copiedCode: model.copiedCode,
     },
     Command.mapMessages(commands, (next) =>
@@ -213,6 +242,63 @@ export const view = (
     throw new Error(`Missing dedicated documentation definition for ${slug}`);
   }
   const kind = kindFor(slug, definition);
+  const stylexSpecimen = stylexSpecimenProvider
+    ? stylexSpecimenProvider(InteractedWithStyleXSpecimen(), h).find(
+        (specimen) => specimen.name === slug,
+      )
+    : undefined;
+  const renderedExamples =
+    model.renderer === 'stylex' && stylexSpecimen !== undefined
+      ? [
+          example<Message>(
+            {
+              title: 'StyleX specimen',
+              description:
+                'The same component family rendered through its statically extracted StyleX counterpart.',
+              preview: stylexSpecimen.view,
+              code: `import * as ${name.replaceAll(' ', '')} from '@/stylex/${slug}'`,
+              onCopy: CopyFeedback.ClickedCopyCode({
+                code: `import * as ${name.replaceAll(' ', '')} from '@/stylex/${slug}'`,
+              }),
+              isCopied:
+                model.copiedCode ===
+                `import * as ${name.replaceAll(' ', '')} from '@/stylex/${slug}'`,
+            },
+            h,
+          ),
+        ]
+      : definition.examples.map((config, index) => {
+          const exampleCode = config.code;
+          const program = authoredPages[slug]?.previewProgram;
+          if (program === undefined)
+            throw new Error(`Missing preview program for ${slug}`);
+          const previewView = defineView<unknown, RoutedDocsPreviewMessage>(
+            (exampleModel, h) => program.view(index, exampleModel, h),
+          );
+
+          return example<Message>(
+            {
+              title: config.title,
+              ...(config.description === undefined
+                ? {}
+                : { description: config.description }),
+              preview: h.submodel({
+                slotId: `docs-${slug}-example-${String(index)}`,
+                model: model.examples[index] ?? program.init(index),
+                view: previewView,
+                toParentMessage: (message): Message =>
+                  GotExampleMessage({ index, message }),
+              }),
+              code: exampleCode,
+              onCopy: CopyFeedback.ClickedCopyCode({ code: exampleCode }),
+              isCopied: model.copiedCode === exampleCode,
+              ...(config.previewClass === undefined
+                ? {}
+                : { previewClass: config.previewClass }),
+            },
+            h,
+          );
+        });
 
   return componentPage<Message>(
     {
@@ -221,7 +307,13 @@ export const view = (
       kind,
       architecture: definition.architecture ?? architectureFor(kind, name),
       installation: `npx shadcn@latest add Potti1234/creaseui/${slug}`,
-      usage: definition.usage ?? usageFor(slug, name, kind),
+      usage:
+        model.renderer === 'stylex'
+          ? (definition.usage ?? usageFor(slug, name, kind)).replaceAll(
+              `@/ui/${slug}`,
+              `@/stylex/${slug}`,
+            )
+          : definition.usage ?? usageFor(slug, name, kind),
       ...(definition.sections === undefined ? {} : { sections: definition.sections }),
       ...(definition.styling === undefined ? {} : { styling: definition.styling }),
       ...(definition.accessibility === undefined
@@ -230,42 +322,19 @@ export const view = (
       ...(definition.keyboard === undefined ? {} : { keyboard: definition.keyboard }),
       copiedCode: model.copiedCode,
       onCopyCode: (code) => CopyFeedback.ClickedCopyCode({ code }),
-      exampleTitles: definition.examples.map((example) => example.title),
+      exampleTitles:
+        model.renderer === 'stylex'
+          ? ['StyleX specimen']
+          : definition.examples.map((example) => example.title),
       sidebarScrolled: CopyFeedback.ObservedSidebarScroll(),
+      renderer: model.renderer,
+      onRendererChange: (renderer) => ChangedRenderer({ renderer }),
       composition:
         definition.composition ??
         compositionFor(kind, name, primaryExport(slug)),
-      examples: definition.examples.map((config, index) => {
-        const exampleCode = config.code;
-        const program = authoredPages[slug]?.previewProgram;
-        if (program === undefined) throw new Error(`Missing preview program for ${slug}`);
-        const previewView = defineView<unknown, RoutedDocsPreviewMessage>((exampleModel, h) => program.view(index, exampleModel, h));
-
-        return example<Message>(
-          {
-            title: config.title,
-            ...(config.description === undefined
-              ? {}
-              : { description: config.description }),
-            preview: h.submodel({
-              slotId: `docs-${slug}-example-${String(index)}`,
-              model: model.examples[index] ?? program.init(index),
-              view: previewView,
-              toParentMessage: (message): Message =>
-                GotExampleMessage({ index, message }),
-            }),
-            code: exampleCode,
-            onCopy: CopyFeedback.ClickedCopyCode({ code: exampleCode }),
-            isCopied: model.copiedCode === exampleCode,
-            ...(config.previewClass === undefined
-              ? {}
-              : { previewClass: config.previewClass }),
-          },
-          h,
-        );
-      }),
+      examples: renderedExamples,
       apiHref: definition.apiHref ?? 'https://foldkit.dev/ui/overview',
-      sourceHref: `https://github.com/Potti1234/creaseui/blob/main/src/ui/${slug}.ts`,
+      sourceHref: `https://github.com/Potti1234/creaseui/blob/main/src/${model.renderer === 'stylex' ? 'stylex' : 'ui'}/${slug}.ts`,
       apiDescription:
         definition.apiDescription ??
         `${name} is source-owned after installation. Its public model, messages, update function, and view helpers are documented directly in the installed TypeScript source.`,
