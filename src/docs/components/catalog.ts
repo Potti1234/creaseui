@@ -242,7 +242,8 @@ export const view = (
     throw new Error(`Missing dedicated documentation definition for ${slug}`);
   }
   const kind = kindFor(slug, definition);
-  const stylexSpecimen = stylexSpecimenProvider
+  const stylexSpecimen =
+    model.renderer === 'stylex' && stylexSpecimenProvider
     ? stylexSpecimenProvider(InteractedWithStyleXSpecimen(), h).find(
         (specimen) => specimen.name === slug,
       )
