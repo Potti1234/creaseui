@@ -1,0 +1,25 @@
+{
+  "mode": "integrated-page-switch",
+  "interpretation": "Coverage measures StyleX counterparts and integrated documentation specimens while Tailwind remains the default renderer.",
+  "components": {
+    "source": 65,
+    "stylexCounterparts": 65,
+    "paired": 65,
+    "coveragePercent": 100
+  },
+  "documentationSpecimens": {
+    "source": 65,
+    "stylexSpecimens": 65,
+    "coveragePercent": 100
+  },
+  "constrainedComposition": {
+    "primitiveCount": 5
+  },
+  "guardrails": {
+    "boundaryFiles": 96,
+    "cssFallbacks": 0,
+    "legacyUiImports": 0,
+    "suppressions": 0,
+    "unsafeBodyPortals": 0
+  }
+}
