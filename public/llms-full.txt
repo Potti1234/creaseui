@@ -468,16 +468,8 @@ Source: `src/ui/data-table.ts`
 
 Examples: Sortable payments, Filter and paginate
 
-- `Model: value` (value)
-- `Model = typeof Model.Type` (type)
-- `Filtered: value` (value)
-- `Sorted: value` (value)
-- `ChangedPage: value` (value)
-- `Message: value` (value)
-- `Message = typeof Message.Type` (type)
-- `init(pageSize = 10): Model` (function)
-- `update(model: Model, message: Message): Model` (function)
-- `DataTableColumn<Row> = Readonly<{ key: string; header: string; cell: (row: Row) => Html | string; sortValue?: (row: Row) => string | number; class?: string; }>` (type)
+- `export * from '@/lib/data-table-state'` (re-export)
+- `DataTableColumn<Row> = Readonly<{ key: string; header: string; cell: (row: Row) => Html | string; sortValue?: (row: Row) => string | number; isHideable?: boolean; class?: string; }>` (type)
 - `DataTableProps<Row, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; rows: ReadonlyArray<Row>; columns: ReadonlyArray<DataTableColumn<Row>>; rowKey: (row: Row) => string; filterText?: (row: Row) => string; filterPlaceholder?: string…` (type)
 - `dataTable<Row, Msg>(props: DataTableProps<Row, Msg>, h: HtmlBuilder<Msg>): Html` (function)
 

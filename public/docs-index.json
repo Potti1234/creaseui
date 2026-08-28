@@ -1397,54 +1397,14 @@
       ],
       "api": [
         {
-          "name": "Model",
-          "kind": "value",
-          "signature": "Model: value"
-        },
-        {
-          "name": "Model",
-          "kind": "type",
-          "signature": "Model = typeof Model.Type"
-        },
-        {
-          "name": "Filtered",
-          "kind": "value",
-          "signature": "Filtered: value"
-        },
-        {
-          "name": "Sorted",
-          "kind": "value",
-          "signature": "Sorted: value"
-        },
-        {
-          "name": "ChangedPage",
-          "kind": "value",
-          "signature": "ChangedPage: value"
-        },
-        {
-          "name": "Message",
-          "kind": "value",
-          "signature": "Message: value"
-        },
-        {
-          "name": "Message",
-          "kind": "type",
-          "signature": "Message = typeof Message.Type"
-        },
-        {
-          "name": "init",
-          "kind": "function",
-          "signature": "init(pageSize = 10): Model"
-        },
-        {
-          "name": "update",
-          "kind": "function",
-          "signature": "update(model: Model, message: Message): Model"
+          "name": "*",
+          "kind": "re-export",
+          "signature": "export * from '@/lib/data-table-state'"
         },
         {
           "name": "DataTableColumn",
           "kind": "type",
-          "signature": "DataTableColumn<Row> = Readonly<{ key: string; header: string; cell: (row: Row) => Html | string; sortValue?: (row: Row) => string | number; class?: string; }>"
+          "signature": "DataTableColumn<Row> = Readonly<{ key: string; header: string; cell: (row: Row) => Html | string; sortValue?: (row: Row) => string | number; isHideable?: boolean; class?: string; }>"
         },
         {
           "name": "DataTableProps",
