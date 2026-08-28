@@ -2,7 +2,10 @@ import { defineConfig } from 'vite'
 import { execFileSync } from 'node:child_process'
 
 import { foldkit } from '@foldkit/vite-plugin'
+import stylex from '@stylexjs/unplugin'
 import tailwindcss from '@tailwindcss/vite'
+
+import { stylexCompilerOptions } from './stylex.config.js'
 
 const sourceRevision = (): string => {
   const environmentRevision =
@@ -41,7 +44,11 @@ export default defineConfig({
     __CREASEUI_BUILD_SHA__: JSON.stringify(buildSha),
     __CREASEUI_BUILD_DIRTY__: JSON.stringify(buildDirty),
   },
-  plugins: [tailwindcss(), foldkit()],
+  plugins: [
+    stylex.vite(stylexCompilerOptions),
+    tailwindcss(),
+    foldkit(),
+  ],
   resolve: {
     alias: {
       '@': '/src',
