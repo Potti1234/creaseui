@@ -255,9 +255,9 @@ const hero = (h: HtmlBuilder<Message>): Html => {
             [h.Class('flex items-center gap-3')],
             [
               h.img([
-                h.Src('/logo-mark.svg'),
-                h.Alt('crease/ui'),
-                h.Class('size-9 rounded-md'),
+                h.Src('/favicon.svg'),
+                h.Alt('Crease'),
+                h.Class('size-10 rounded-[9px]'),
               ]),
               h.span(
                 [h.Class('text-lg font-semibold tracking-tight')],
