@@ -787,6 +787,7 @@
       "title": "Pagination",
       "description": "A shadcn-styled Pagination component for Foldkit.",
       "registryDependencies": [
+        "Potti1234/creaseui/pagination-behavior",
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",

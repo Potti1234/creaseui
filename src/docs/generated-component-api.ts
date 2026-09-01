@@ -2337,6 +2337,11 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
   ],
   "pagination": [
     {
+      "name": "*",
+      "kind": "re-export",
+      "signature": "export * from '@/lib/pagination'"
+    },
+    {
       "name": "pagination",
       "kind": "function",
       "signature": "pagination<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html"
@@ -2364,7 +2369,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "PaginationDirectionProps",
       "kind": "type",
-      "signature": "PaginationDirectionProps = Readonly<{ href: string; class?: string; }>"
+      "signature": "PaginationDirectionProps = Readonly<{ href?: string; isDisabled?: boolean; class?: string; }>"
     },
     {
       "name": "paginationPrevious",
@@ -2385,6 +2390,11 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "paginationEllipsis",
       "kind": "function",
       "signature": "paginationEllipsis<Msg>(props: PaginationEllipsisProps = {}, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "paginationPages",
+      "kind": "function",
+      "signature": "paginationPages<Msg>(props: PaginationRecipeProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "popover": [

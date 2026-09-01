@@ -752,16 +752,18 @@ Source: [`src/ui/pagination.ts`](../src/ui/pagination.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
+| `*` | re-export | `export * from '@/lib/pagination'` |
 | `pagination` | function | `pagination<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` |
 | `paginationContent` | function | `paginationContent<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` |
 | `paginationItem` | function | `paginationItem<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` |
 | `PaginationLinkProps` | type | `PaginationLinkProps = Readonly<{ href: string; children: ReadonlyArray<Html \| string>; isActive?: boolean; size?: ButtonVariants['size']; ariaLabel?: string; class?: string; }>` |
 | `paginationLink` | function | `paginationLink<Msg>(props: PaginationLinkProps, h: HtmlBuilder<Msg>): Html` |
-| `PaginationDirectionProps` | type | `PaginationDirectionProps = Readonly<{ href: string; class?: string; }>` |
+| `PaginationDirectionProps` | type | `PaginationDirectionProps = Readonly<{ href?: string; isDisabled?: boolean; class?: string; }>` |
 | `paginationPrevious` | function | `paginationPrevious<Msg>(props: PaginationDirectionProps, h: HtmlBuilder<Msg>): Html` |
 | `paginationNext` | function | `paginationNext<Msg>(props: PaginationDirectionProps, h: HtmlBuilder<Msg>): Html` |
 | `PaginationEllipsisProps` | type | `PaginationEllipsisProps = Readonly<{ class?: string; }>` |
 | `paginationEllipsis` | function | `paginationEllipsis<Msg>(props: PaginationEllipsisProps = {}, h: HtmlBuilder<Msg>): Html` |
+| `paginationPages` | function | `paginationPages<Msg>(props: PaginationRecipeProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Popover
 

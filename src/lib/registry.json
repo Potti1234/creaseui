@@ -249,6 +249,19 @@
           "target": "@lib/menubar.ts"
         }
       ]
+    },
+    {
+      "name": "pagination-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Pagination Range Policy",
+      "description": "Skin-neutral page normalization and finite sibling and boundary range derivation.",
+      "files": [
+        {
+          "path": "pagination.ts",
+          "type": "registry:lib",
+          "target": "@lib/pagination.ts"
+        }
+      ]
     }
   ]
 }

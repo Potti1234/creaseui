@@ -293,6 +293,21 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/menubar['"]/u)
   })
 
+  it('shares Pagination range policy while keeping page state parent-owned', () => {
+    const behavior = readFileSync('src/lib/pagination.ts', 'utf8')
+    const tailwind = readFileSync('src/ui/pagination.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/pagination.ts', 'utf8')
+
+    assert.match(behavior, /export const paginationItems/u)
+    assert.match(tailwind, /@\/lib\/pagination/u)
+    assert.match(stylex, /@\/lib\/pagination/u)
+    assert.match(tailwind, /navigation\.kind === 'link'/u)
+    assert.match(stylex, /navigation\.kind === 'link'/u)
+    assert.doesNotMatch(tailwind, /export const Model/u)
+    assert.doesNotMatch(stylex, /export const Model/u)
+    assert.doesNotMatch(stylex, /from ['"]@\/ui\/pagination['"]/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

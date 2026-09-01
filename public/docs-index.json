@@ -3076,16 +3076,24 @@
       "source": "src/ui/pagination.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/pagination",
       "dependencies": [
+        "Potti1234/creaseui/pagination-behavior",
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Result pages",
-        "Compact directions"
+        "Addressable pages",
+        "In-place results",
+        "Compact neighborhood",
+        "Disabled boundary"
       ],
       "api": [
+        {
+          "name": "*",
+          "kind": "re-export",
+          "signature": "export * from '@/lib/pagination'"
+        },
         {
           "name": "pagination",
           "kind": "function",
@@ -3114,7 +3122,7 @@
         {
           "name": "PaginationDirectionProps",
           "kind": "type",
-          "signature": "PaginationDirectionProps = Readonly<{ href: string; class?: string; }>"
+          "signature": "PaginationDirectionProps = Readonly<{ href?: string; isDisabled?: boolean; class?: string; }>"
         },
         {
           "name": "paginationPrevious",
@@ -3135,6 +3143,11 @@
           "name": "paginationEllipsis",
           "kind": "function",
           "signature": "paginationEllipsis<Msg>(props: PaginationEllipsisProps = {}, h: HtmlBuilder<Msg>): Html"
+        },
+        {
+          "name": "paginationPages",
+          "kind": "function",
+          "signature": "paginationPages<Msg>(props: PaginationRecipeProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },

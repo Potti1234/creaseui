@@ -3,10 +3,18 @@ import type { Html, HtmlBuilder } from 'foldkit/html';
 import * as Icon from '@/lib/icon';
 import { buttonVariants, type ButtonVariants } from '@/ui/button';
 import { cn } from '@/lib/utils';
+import {
+  normalizePagination,
+  paginationItems,
+  type PaginationRecipeProps,
+} from '@/lib/pagination';
+
+export * from '@/lib/pagination';
 
 type SlotProps = Readonly<{
   children: ReadonlyArray<Html | string>;
   class?: string;
+  ariaLabel?: string;
 }>;
 
 export const pagination = <Msg>(
@@ -16,7 +24,7 @@ export const pagination = <Msg>(
   return h.nav(
     [
       h.Role('navigation'),
-      h.AriaLabel('pagination'),
+      h.AriaLabel(props.ariaLabel ?? 'Pagination'),
       h.DataAttribute('slot', 'pagination'),
       h.Class(cn('mx-auto flex w-full justify-center', props.class)),
     ],
@@ -84,7 +92,8 @@ export const paginationLink = <Msg>(
 };
 
 export type PaginationDirectionProps = Readonly<{
-  href: string;
+  href?: string;
+  isDisabled?: boolean;
   class?: string;
 }>;
 
@@ -92,6 +101,11 @@ export const paginationPrevious = <Msg>(
   props: PaginationDirectionProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
+  if (props.isDisabled === true || props.href === undefined) return h.span([
+    h.Role('link'), h.AriaDisabled(true), h.Tabindex(-1), h.AriaLabel('Go to previous page'),
+    h.DataAttribute('slot', 'pagination-previous'),
+    h.Class(cn(buttonVariants({ variant: 'ghost', size: 'default' }), 'gap-1 px-2.5 opacity-50 sm:pl-2.5', props.class)),
+  ], [Icon.chevronLeft<Msg>({}, h), h.span([h.Class('hidden sm:block')], ['Previous'])]);
   return paginationLink<Msg>(
     {
       href: props.href,
@@ -111,6 +125,11 @@ export const paginationNext = <Msg>(
   props: PaginationDirectionProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
+  if (props.isDisabled === true || props.href === undefined) return h.span([
+    h.Role('link'), h.AriaDisabled(true), h.Tabindex(-1), h.AriaLabel('Go to next page'),
+    h.DataAttribute('slot', 'pagination-next'),
+    h.Class(cn(buttonVariants({ variant: 'ghost', size: 'default' }), 'gap-1 px-2.5 opacity-50 sm:pr-2.5', props.class)),
+  ], [h.span([h.Class('hidden sm:block')], ['Next']), Icon.chevronRight<Msg>({}, h)]);
   return paginationLink<Msg>(
     {
       href: props.href,
@@ -145,4 +164,41 @@ export const paginationEllipsis = <Msg>(
       h.span([h.Class('sr-only')], ['More pages']),
     ],
   );
+};
+
+const actionButton = <Msg>(page: number, current: number, label: string, message: Msg, h: HtmlBuilder<Msg>): Html =>
+  h.button([
+    h.Type('button'), h.OnClick(message), h.AriaLabel(label),
+    ...(page === current ? [h.AriaCurrent('page'), h.DataAttribute('active', 'true')] : []),
+    h.DataAttribute('slot', 'pagination-button'),
+    h.Class(buttonVariants({ variant: page === current ? 'outline' : 'ghost', size: 'icon' })),
+  ], [String(page)]);
+
+const actionDirection = <Msg>(direction: 'previous' | 'next', page: number, disabled: boolean, message: Msg, h: HtmlBuilder<Msg>): Html =>
+  h.button([
+    h.Type('button'), h.Disabled(disabled), h.OnClick(message),
+    h.AriaLabel(`Go to ${direction} page`), h.DataAttribute('slot', `pagination-${direction}`),
+    h.Class(cn(buttonVariants({ variant: 'ghost', size: 'default' }), 'gap-1 px-2.5')),
+  ], direction === 'previous'
+    ? [Icon.chevronLeft<Msg>({}, h), h.span([h.Class('hidden sm:block')], ['Previous'])]
+    : [h.span([h.Class('hidden sm:block')], ['Next']), Icon.chevronRight<Msg>({}, h)]);
+
+export const paginationPages = <Msg>(props: PaginationRecipeProps<Msg>, h: HtmlBuilder<Msg>): Html => {
+  const normalized = normalizePagination(props);
+  const navigate = (page: number, label: string): Html => props.navigation.kind === 'link'
+    ? paginationLink({ href: props.navigation.href(page), isActive: page === normalized.page, ariaLabel: label, children: [String(page)] }, h)
+    : actionButton(page, normalized.page, label, props.navigation.onNavigate(page), h);
+  const previous = normalized.page - 1;
+  const next = normalized.page + 1;
+  return pagination({ ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }), children: [paginationContent({ children: [
+    paginationItem({ children: [props.navigation.kind === 'link'
+      ? paginationPrevious({ ...(previous < 1 ? { isDisabled: true } : { href: props.navigation.href(previous) }) }, h)
+      : actionDirection('previous', previous, previous < 1, props.navigation.onNavigate(Math.max(1, previous)), h)] }, h),
+    ...paginationItems(normalized).map((item) => paginationItem({ children: [typeof item === 'number'
+      ? navigate(item, item === normalized.page ? `Page ${String(item)}, current page` : `Go to page ${String(item)}`)
+      : paginationEllipsis({}, h)] }, h)),
+    paginationItem({ children: [props.navigation.kind === 'link'
+      ? paginationNext({ ...(next > normalized.totalPages ? { isDisabled: true } : { href: props.navigation.href(next) }) }, h)
+      : actionDirection('next', next, next > normalized.totalPages, props.navigation.onNavigate(Math.min(normalized.totalPages, next)), h)] }, h),
+  ] }, h)] }, h);
 };

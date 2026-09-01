@@ -915,18 +915,20 @@ A shadcn-styled Pagination component for Foldkit.
 
 Source: `src/ui/pagination.ts`
 
-Examples: Result pages, Compact directions
+Examples: Addressable pages, In-place results, Compact neighborhood, Disabled boundary
 
+- `export * from '@/lib/pagination'` (re-export)
 - `pagination<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
 - `paginationContent<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
 - `paginationItem<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
 - `PaginationLinkProps = Readonly<{ href: string; children: ReadonlyArray<Html | string>; isActive?: boolean; size?: ButtonVariants['size']; ariaLabel?: string; class?: string; }>` (type)
 - `paginationLink<Msg>(props: PaginationLinkProps, h: HtmlBuilder<Msg>): Html` (function)
-- `PaginationDirectionProps = Readonly<{ href: string; class?: string; }>` (type)
+- `PaginationDirectionProps = Readonly<{ href?: string; isDisabled?: boolean; class?: string; }>` (type)
 - `paginationPrevious<Msg>(props: PaginationDirectionProps, h: HtmlBuilder<Msg>): Html` (function)
 - `paginationNext<Msg>(props: PaginationDirectionProps, h: HtmlBuilder<Msg>): Html` (function)
 - `PaginationEllipsisProps = Readonly<{ class?: string; }>` (type)
 - `paginationEllipsis<Msg>(props: PaginationEllipsisProps = {}, h: HtmlBuilder<Msg>): Html` (function)
+- `paginationPages<Msg>(props: PaginationRecipeProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Popover
 

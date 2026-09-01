@@ -1115,6 +1115,32 @@ test("menubar documents independent targeted child models", async ({
   );
 });
 
+test("pagination keeps routing and in-place actions parent controlled", async ({ page }) => {
+  await page.goto("/docs/components/pagination");
+
+  const links = page.locator("#addressable-pages");
+  const current = links.getByRole("link", { name: "Page 6, current page" });
+  await expect(current).toHaveAttribute("aria-current", "page");
+  await expect(links.getByRole("link", { name: "Go to page 5" })).toHaveAttribute("href", "/invoices?page=5");
+  await expect(links.locator('[data-slot="pagination-ellipsis"]')).toHaveCount(2);
+
+  const actions = page.locator("#in-place-results");
+  await actions.getByRole("button", { name: "Go to page 3" }).click();
+  await expect(actions.getByRole("button", { name: "Page 3, current page" })).toHaveAttribute("aria-current", "page");
+  await expect(actions.locator("code")).toContainText("ChangedPage");
+
+  const compact = page.locator("#compact-neighborhood");
+  await expect(compact.locator('[data-slot="pagination-link"][aria-label^="Go to page"], [data-slot="pagination-link"][aria-label^="Page "]')).toHaveCount(3);
+  await expect(compact.locator('[data-slot="pagination-ellipsis"]')).toHaveCount(2);
+
+  const boundary = page.locator("#disabled-boundary");
+  const previous = boundary.getByRole("button", { name: "Go to previous page" });
+  await expect(previous).toBeDisabled();
+  await expect(previous).not.toBeFocused();
+  await boundary.getByRole("button", { name: "Go to next page" }).click();
+  await expect(boundary.getByRole("button", { name: "Page 2, current page" })).toHaveAttribute("aria-current", "page");
+});
+
 test("sidebar documents persistence and toggles derived shell state", async ({
   page,
 }) => {
