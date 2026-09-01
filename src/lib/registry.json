@@ -106,6 +106,19 @@
           "target": "@lib/input.ts"
         }
       ]
+    },
+    {
+      "name": "textarea-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Textarea Behavior",
+      "description": "Skin-neutral controlled multiline semantics, resize policy, and deterministic description linkage shared by Crease renderers.",
+      "files": [
+        {
+          "path": "textarea.ts",
+          "type": "registry:lib",
+          "target": "@lib/textarea.ts"
+        }
+      ]
     }
   ]
 }

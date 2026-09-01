@@ -1073,6 +1073,19 @@ test("controlled helper pages own and update compact local preview state", async
     .getByRole("textbox", { name: "Message" });
   await message.fill("A complete Foldkit example.");
   await expect(message).toHaveValue("A complete Foldkit example.");
+  const deploymentNotes = page
+    .locator("#form-and-resize")
+    .getByRole("textbox", { name: "Deployment notes" });
+  await expect(deploymentNotes).toHaveAttribute("readonly", "");
+  await expect(deploymentNotes).toHaveAttribute("rows", "5");
+  await expect(deploymentNotes).toHaveAttribute("wrap", "hard");
+  await expect(deploymentNotes).toHaveAttribute("data-resize", "none");
+  await expect(deploymentNotes).not.toHaveAttribute("aria-describedby");
+  const submittedNotes = await page.evaluate(() => {
+    const form = document.querySelector<HTMLFormElement>("#textarea-profile");
+    return form === null ? null : new FormData(form).get("notes");
+  });
+  expect(submittedNotes).toBe("First line\nSecond line");
 
   await page.goto("/docs/components/input-group");
   const url = page.locator("#url-prefix").getByRole("textbox");

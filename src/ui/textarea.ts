@@ -1,7 +1,6 @@
 ﻿import type { Html, HtmlBuilder } from 'foldkit/html';
 
-import { Textarea as TextareaPrimitive } from '@foldkit/ui';
-
+import { type TextareaBehaviorProps, renderTextarea } from '@/lib/textarea';
 import { cn } from '@/lib/utils';
 
 /* Ported from shadcn/ui textarea.tsx. The textarea class string is verbatim.
@@ -17,17 +16,14 @@ const LABEL_CLASS =
 
 const DESCRIPTION_CLASS = 'text-muted-foreground text-sm';
 
-export type TextareaProps<Msg> = Readonly<{
-  id: string;
-  value: string;
-  onInput: (value: string) => Msg;
-  label?: string;
-  description?: string;
-  placeholder?: string;
-  name?: string;
-  rows?: number;
-  isDisabled?: boolean;
-  isInvalid?: boolean;
+const RESIZE_CLASS = {
+  none: 'resize-none',
+  vertical: 'resize-y',
+  horizontal: 'resize-x',
+  both: 'resize',
+} as const;
+
+export type TextareaProps<Msg> = TextareaBehaviorProps<Msg> & Readonly<{
   class?: string;
 }>;
 
@@ -35,50 +31,17 @@ export const textarea = <Msg>(
   props: TextareaProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  return TextareaPrimitive.view(
+  return renderTextarea(
+    props,
     {
-      id: props.id,
-      value: props.value,
-      onInput: props.onInput,
-      isDisabled: props.isDisabled ?? false,
-      isInvalid: props.isInvalid ?? false,
-      ...(props.name === undefined ? {} : { name: props.name }),
-      ...(props.rows === undefined ? {} : { rows: props.rows }),
-      ...(props.placeholder === undefined
-        ? {}
-        : { placeholder: props.placeholder }),
-      toView: ({ textarea: textareaAttributes, label, description }) => {
-        const textareaElement = h.textarea(
-          [
-            ...textareaAttributes,
-            h.DataAttribute('slot', 'textarea'),
-            h.Class(cn(TEXTAREA_CLASS, props.class)),
-          ],
-          [],
-        );
-
-        if (props.label === undefined && props.description === undefined) {
-          return textareaElement;
-        }
-
-        return h.div(
-          [h.Class('grid gap-2')],
-          [
-            ...(props.label === undefined
-              ? []
-              : [h.label([...label, h.Class(LABEL_CLASS)], [props.label])]),
-            textareaElement,
-            ...(props.description === undefined
-              ? []
-              : [
-                  h.p(
-                    [...description, h.Class(DESCRIPTION_CLASS)],
-                    [props.description],
-                  ),
-                ]),
-          ],
-        );
-      },
+      field: [h.Class('grid gap-2')],
+      label: [h.Class(LABEL_CLASS)],
+      textarea: [
+        h.Class(
+          cn(TEXTAREA_CLASS, RESIZE_CLASS[props.resize ?? 'vertical'], props.class),
+        ),
+      ],
+      description: [h.Class(DESCRIPTION_CLASS)],
     },
     h,
   );

@@ -1068,7 +1068,7 @@ Source: [`src/ui/textarea.ts`](../src/ui/textarea.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `TextareaProps` | type | `TextareaProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; label?: string; description?: string; placeholder?: string; name?: string; rows?: number; isDisabled?: boolean; isInvalid?: boolean; class?: string; }>` |
+| `TextareaProps` | type | `TextareaProps<Msg> = TextareaBehaviorProps<Msg> & Readonly<{ class?: string; }>` |
 | `textarea` | function | `textarea<Msg>(props: TextareaProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Toast

@@ -3358,7 +3358,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "TextareaProps",
       "kind": "type",
-      "signature": "TextareaProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; label?: string; description?: string; placeholder?: string; name?: string; rows?: number; isDisabled?: boolean; isInvalid?: boolean; class?: string; }>"
+      "signature": "TextareaProps<Msg> = TextareaBehaviorProps<Msg> & Readonly<{ class?: string; }>"
     },
     {
       "name": "textarea",
