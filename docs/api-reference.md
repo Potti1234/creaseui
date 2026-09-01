@@ -599,7 +599,7 @@ Source: [`src/ui/input.ts`](../src/ui/input.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `InputProps` | type | `InputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; label?: string; description?: string; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; describedBy?: string; class?: string;…` |
+| `InputProps` | type | `InputProps<Msg> = InputBehaviorProps<Msg> & Readonly<{ class?: string; }>` |
 | `input` | function | `input<Msg>(props: InputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Item

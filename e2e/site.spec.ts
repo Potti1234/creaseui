@@ -1053,6 +1053,19 @@ test("controlled helper pages own and update compact local preview state", async
   const email = page.locator("#email").getByRole("textbox", { name: "Email" });
   await email.fill("docs@crease.dev");
   await expect(email).toHaveValue("docs@crease.dev");
+  await expect(email).toHaveAttribute("autocomplete", "email");
+  await expect(email).toHaveAttribute("inputmode", "email");
+  const emailDescriptionId = await email.getAttribute("aria-describedby");
+  expect(emailDescriptionId).toBe("docs-input-0-description");
+  await expect(page.locator(`#${emailDescriptionId}`)).toContainText(
+    "account notices",
+  );
+  const readOnlyEmail = page
+    .locator("#native-form-attributes")
+    .getByRole("textbox", { name: "Account email" });
+  await expect(readOnlyEmail).toHaveAttribute("readonly", "");
+  await expect(readOnlyEmail).toHaveAttribute("form", "profile");
+  await expect(readOnlyEmail).not.toHaveAttribute("aria-describedby");
 
   await page.goto("/docs/components/textarea");
   const message = page

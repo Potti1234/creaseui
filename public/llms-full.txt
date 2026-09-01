@@ -744,7 +744,7 @@ Source: `src/ui/input.ts`
 
 Examples: Timed notification, Sticky error
 
-- `InputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; label?: string; description?: string; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; describedBy?: string; class?: string;…` (type)
+- `InputProps<Msg> = InputBehaviorProps<Msg> & Readonly<{ class?: string; }>` (type)
 - `input<Msg>(props: InputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Item

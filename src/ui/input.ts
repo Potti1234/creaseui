@@ -1,7 +1,6 @@
 ﻿import type { Html, HtmlBuilder } from 'foldkit/html';
 
-import { Input as InputPrimitive } from '@foldkit/ui';
-
+import { type InputBehaviorProps, renderInput } from '@/lib/input';
 import { cn } from '@/lib/utils';
 
 /* Ported from shadcn/ui input.tsx + label.tsx. Class strings verbatim — the
@@ -17,18 +16,7 @@ const LABEL_CLASS =
 
 const DESCRIPTION_CLASS = 'text-muted-foreground text-sm';
 
-export type InputProps<Msg> = Readonly<{
-  id: string;
-  value: string;
-  onInput: (value: string) => Msg;
-  label?: string;
-  description?: string;
-  placeholder?: string;
-  type?: string;
-  name?: string;
-  isDisabled?: boolean;
-  isInvalid?: boolean;
-  describedBy?: string;
+export type InputProps<Msg> = InputBehaviorProps<Msg> & Readonly<{
   class?: string;
 }>;
 
@@ -36,49 +24,13 @@ export const input = <Msg>(
   props: InputProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  return InputPrimitive.view(
+  return renderInput(
+    props,
     {
-      id: props.id,
-      value: props.value,
-      onInput: props.onInput,
-      isDisabled: props.isDisabled ?? false,
-      isInvalid: props.isInvalid ?? false,
-      type: props.type ?? 'text',
-      ...(props.name === undefined ? {} : { name: props.name }),
-      ...(props.placeholder === undefined
-        ? {}
-        : { placeholder: props.placeholder }),
-      toView: ({ input: inputAttributes, label, description }) => {
-        const inputElement = h.input([
-          ...inputAttributes,
-          ...(props.describedBy === undefined
-            ? []
-            : [h.AriaDescribedBy(props.describedBy)]),
-          h.Class(cn(INPUT_CLASS, props.class)),
-        ]);
-
-        if (props.label === undefined && props.description === undefined) {
-          return inputElement;
-        }
-
-        return h.div(
-          [h.Class('grid gap-2')],
-          [
-            ...(props.label === undefined
-              ? []
-              : [h.label([...label, h.Class(LABEL_CLASS)], [props.label])]),
-            inputElement,
-            ...(props.description === undefined
-              ? []
-              : [
-                  h.p(
-                    [...description, h.Class(DESCRIPTION_CLASS)],
-                    [props.description],
-                  ),
-                ]),
-          ],
-        );
-      },
+      field: [h.Class('grid gap-2')],
+      label: [h.Class(LABEL_CLASS)],
+      input: [h.Class(cn(INPUT_CLASS, props.class))],
+      description: [h.Class(DESCRIPTION_CLASS)],
     },
     h,
   );

@@ -62,6 +62,16 @@ describe('StyleX component authoring contract', () => {
     assert.match(stylex, /renderButtonLink\(/u)
   })
 
+  it('keeps Input behavior in the skin-neutral behavior module', () => {
+    const tailwind = readFileSync('src/ui/input.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/input.ts', 'utf8')
+
+    assert.match(tailwind, /from '@\/lib\/input'/u)
+    assert.match(stylex, /from '@\/lib\/input'/u)
+    assert.doesNotMatch(stylex, /from '@\/ui\/input'/u)
+    assert.match(stylex, /renderInput\(/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

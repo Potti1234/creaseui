@@ -1,8 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { Input as InputPrimitive } from '@foldkit/ui'
-
+import { type InputBehaviorProps, renderInput } from '@/lib/input'
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
@@ -60,66 +59,29 @@ const styles = stylex.create({
   },
 })
 
-export type InputProps<Msg> = Readonly<{
-  id: string
-  value: string
-  onInput: (value: string) => Msg
-  label?: string
-  description?: string
-  placeholder?: string
-  type?: string
-  name?: string
-  isDisabled?: boolean
-  isInvalid?: boolean
-  describedBy?: string
+export type InputProps<Msg> = InputBehaviorProps<Msg> & Readonly<{
   /** Parent-layout positioning only. Add visual choices as named variants. */
   layoutStyle?: ComponentLayoutStyle
 }>
 
 export const input = <Msg>(props: InputProps<Msg>, h: HtmlBuilder<Msg>): Html =>
-  InputPrimitive.view(
+  renderInput(
+    props,
     {
-      id: props.id,
-      value: props.value,
-      onInput: props.onInput,
-      isDisabled: props.isDisabled ?? false,
-      isInvalid: props.isInvalid ?? false,
-      type: props.type ?? 'text',
-      ...(props.name === undefined ? {} : { name: props.name }),
-      ...(props.placeholder === undefined ? {} : { placeholder: props.placeholder }),
-      toView: ({ input: inputAttributes, label, description }) => {
-        const control = h.input([
-          ...inputAttributes,
-          ...(props.describedBy === undefined
-            ? []
-            : [h.AriaDescribedBy(props.describedBy)]),
-          h.Class(
-            className(
-              styles.input,
-              props.isDisabled && styles.disabled,
-              props.isInvalid && styles.invalid,
-              props.layoutStyle,
-            ),
+      field: [h.Class(className(styles.field))],
+      label: [h.Class(className(styles.label))],
+      input: [
+        h.Class(
+          className(
+            styles.input,
+            props.isDisabled && styles.disabled,
+            props.isInvalid && styles.invalid,
+            props.layoutStyle,
           ),
-        ])
-
-        if (props.label === undefined && props.description === undefined) return control
-
-        return h.div(
-          [h.Class(className(styles.field))],
-          [
-            ...(props.label === undefined
-              ? []
-              : [h.label([...label, h.Class(className(styles.label))], [props.label])]),
-            control,
-            ...(props.description === undefined
-              ? []
-              : [h.p([...description, h.Class(className(styles.description))], [props.description])]),
-          ],
-        )
-      },
+        ),
+      ],
+      description: [h.Class(className(styles.description))],
     },
     h,
   )
-
 

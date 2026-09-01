@@ -2455,6 +2455,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/input",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/input-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -2465,7 +2466,7 @@
         {
           "name": "InputProps",
           "kind": "type",
-          "signature": "InputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; label?: string; description?: string; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; describedBy?: string; class?: string;…"
+          "signature": "InputProps<Msg> = InputBehaviorProps<Msg> & Readonly<{ class?: string; }>"
         },
         {
           "name": "input",

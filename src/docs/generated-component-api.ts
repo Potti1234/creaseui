@@ -1904,7 +1904,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "InputProps",
       "kind": "type",
-      "signature": "InputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; label?: string; description?: string; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; describedBy?: string; class?: string;…"
+      "signature": "InputProps<Msg> = InputBehaviorProps<Msg> & Readonly<{ class?: string; }>"
     },
     {
       "name": "input",

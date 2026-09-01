@@ -93,6 +93,19 @@
           "target": "@lib/button.ts"
         }
       ]
+    },
+    {
+      "name": "input-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Input Behavior",
+      "description": "Skin-neutral controlled input semantics and deterministic label and description linkage shared by Crease renderers.",
+      "files": [
+        {
+          "path": "input.ts",
+          "type": "registry:lib",
+          "target": "@lib/input.ts"
+        }
+      ]
     }
   ]
 }

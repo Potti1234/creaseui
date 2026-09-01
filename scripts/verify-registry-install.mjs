@@ -10,7 +10,19 @@ const fixture = mkdtempSync(join(tmpdir(), 'creaseui-registry-'))
 const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx'
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm'
 const registry = JSON.parse(readFileSync(join(root, 'src', 'ui', 'registry.json'), 'utf8'))
-const componentNames = registry.items.map(item => item.name)
+const registryComponentNames = registry.items.map(item => item.name)
+const requestedComponentNames = process.argv.slice(2)
+const unknownComponentNames = requestedComponentNames.filter(
+  name => !registryComponentNames.includes(name),
+)
+assert.deepEqual(
+  unknownComponentNames,
+  [],
+  `Unknown registry components: ${unknownComponentNames.join(', ')}`,
+)
+const componentNames = requestedComponentNames.length === 0
+  ? registryComponentNames
+  : requestedComponentNames
 const sourcePackage = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'))
 const frameworkVersions = {
   '@effect/platform-browser': process.env.CREASEUI_PLATFORM_VERSION ?? sourcePackage.dependencies['@effect/platform-browser'],
@@ -61,7 +73,7 @@ const run = (command, args) =>
       : reject(new Error(`${command} exited with code ${code ?? 'unknown'}`)))
   })
 
-for (const file of ['tsconfig.json', 'vite.config.ts', 'index.html']) {
+for (const file of ['tsconfig.json', 'vite.config.ts', 'stylex.config.js', 'index.html']) {
   cpSync(join(root, file), join(fixture, file))
 }
 
@@ -142,27 +154,29 @@ for (const [packageName, expectedVersion] of Object.entries(frameworkVersions)) 
   )
 }
   await run(npm, ['install'])
-  for (const iconLibrary of [
-    'lucide',
-    'hugeicons',
-    'tabler',
-    'phosphor',
-    'remixicon',
-  ]) {
-    await run(npx, [
-      '--yes',
-      'shadcn@latest',
-      'add',
-      `${registryBaseUrl}/icons-${iconLibrary}.json`,
-      '--yes',
-      '--overwrite',
-    ])
-    assert.match(
-      readFileSync(join(fixture, 'src', 'lib', 'icon.ts'), 'utf8'),
-      new RegExp(`crease-icon-${iconLibrary}`),
-      `${iconLibrary} adapter did not replace the consumer icon module`,
-    )
-    await run(npm, ['run', 'typecheck'])
+  if (requestedComponentNames.length === 0) {
+    for (const iconLibrary of [
+      'lucide',
+      'hugeicons',
+      'tabler',
+      'phosphor',
+      'remixicon',
+    ]) {
+      await run(npx, [
+        '--yes',
+        'shadcn@latest',
+        'add',
+        `${registryBaseUrl}/icons-${iconLibrary}.json`,
+        '--yes',
+        '--overwrite',
+      ])
+      assert.match(
+        readFileSync(join(fixture, 'src', 'lib', 'icon.ts'), 'utf8'),
+        new RegExp(`crease-icon-${iconLibrary}`),
+        `${iconLibrary} adapter did not replace the consumer icon module`,
+      )
+      await run(npm, ['run', 'typecheck'])
+    }
   }
   await run(npm, ['run', 'typecheck'])
   await run(npm, ['run', 'build'])
