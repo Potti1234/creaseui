@@ -181,6 +181,20 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(stylex, /const comboboxPrimitive = ComboboxPrimitive\.create<Value>\(\);/u)
   })
 
+  it('keeps Dropdown Menu interaction policy in one skin-neutral module', () => {
+    const behavior = readFileSync('src/lib/dropdown-menu-behavior.ts', 'utf8')
+    const tailwind = readFileSync('src/ui/dropdown-menu.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/dropdown-menu.ts', 'utf8')
+
+    assert.match(tailwind, /@\/lib\/dropdown-menu-behavior/u)
+    assert.match(stylex, /@\/lib\/dropdown-menu-behavior/u)
+    assert.match(behavior, /export const update/u)
+    assert.match(behavior, /export const keyMessage/u)
+    assert.doesNotMatch(stylex, /from ['"]@\/ui\/dropdown-menu['"]/u)
+    assert.doesNotMatch(tailwind, /const enabled = items/u)
+    assert.doesNotMatch(stylex, /const enabled = items/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

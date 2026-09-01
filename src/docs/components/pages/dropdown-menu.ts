@@ -8,7 +8,12 @@ import * as DropdownMenu from '@/ui/dropdown-menu';
 const actions = ['profile', 'billing', 'settings', 'logout'] as const;
 const labelFor = (value: string): string => value[0]?.toUpperCase() + value.slice(1);
 
-const source = (name: string, destructive: boolean): string => foldkitApplication({
+const source = (
+  name: string,
+  destructive: boolean,
+  itemConfig = '',
+  rootConfig = '',
+): string => foldkitApplication({
   title: `Dropdown Menu — ${name}`,
   imports: `import { Option, Schema as S } from 'effect'
 import { Command, Runtime, Subscription } from 'foldkit'
@@ -58,7 +63,9 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
         label: labelFor(action),
         shortcut: action === 'settings' ? '⌘,' : undefined,
         ${destructive ? "variant: action === 'logout' ? 'destructive' : 'default'," : ''}
+        ${itemConfig}
       }),
+      ${rootConfig}
     }, h),
     h.p([h.Role('status'), h.Class('text-sm')], [Option.match(model.maybeLastAction, { onNone: () => 'No action selected', onSome: value => \`Selected: \${labelFor(value)}\` })]),
   ]),
@@ -77,7 +84,7 @@ const previewProgram = definePreviewProgram<DropdownPreviewModel, GotDropdownPre
     const [dropdownMenu, commands] = DropdownMenu.update(model.dropdownMenu, message.message);
     return [{ ...model, dropdownMenu }, Command.mapMessages(commands, next => GotDropdownPreviewMessage({ message: next }))];
   },
-  view: (index, model, h) => DropdownMenu.dropdownMenu({ model: model.dropdownMenu, toParentMessage: message => GotDropdownPreviewMessage({ message }), trigger: 'Open account menu', triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium', ariaLabel: 'Account actions', items: actions, itemToConfig: action => ({ label: labelFor(action), ...(action === 'settings' ? { shortcut: '⌘,' } : {}), ...(index === 1 && action === 'logout' ? { variant: 'destructive' as const } : {}) }) }, h),
+  view: (index, model, h) => DropdownMenu.dropdownMenu({ model: model.dropdownMenu, toParentMessage: message => GotDropdownPreviewMessage({ message }), trigger: 'Open account menu', triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium', ariaLabel: 'Account actions', items: actions, itemToConfig: action => ({ label: labelFor(action), ...(action === 'settings' ? { shortcut: '⌘,' } : {}), ...(index === 1 && action === 'logout' ? { variant: 'destructive' as const } : {}), ...(index >= 2 && action === 'billing' ? { isDisabled: true } : {}), ...(index >= 2 && action === 'settings' ? { submenu: { items: ['profile', 'billing'] as const, itemToConfig: (child: typeof actions[number]) => ({ label: labelFor(child), isDisabled: child === 'billing' }) } } : {}) }), ...(index === 3 ? { direction: 'rtl' as const } : {}) }, h),
 });
 
 export const dropdownMenuPage = authoredPage({
@@ -85,15 +92,18 @@ export const dropdownMenuPage = authoredPage({
   previewProgram,
   definition: {
     kind: 'submodel', description: 'Presents a keyboard-navigable set of actions from a button trigger.',
-    architecture: 'Dropdown Menu owns disclosure, active item, submenu, and anchor state. Use create<Action>() so its Selected OutMessage is typed, persist or execute that domain action in the parent, and map returned Commands.',
+    architecture: 'A skin-neutral behavior module owns disclosure, active item, disabled traversal, typeahead, submenu routing, context anchoring, and selection. Use create<Action>() so the Selected OutMessage is typed; skins only project semantic parts and visual tokens.',
     apiHref: 'https://foldkit.dev/ui/menu',
     composition: 'Parent Model\n├── Dropdown Menu child Model\n├── optional last domain action\n└── menu view\n    ├── trigger\n    ├── items / checked items\n    ├── shortcuts\n    └── optional submenu',
     styling: 'Use destructive treatment only for destructive actions and separate unrelated groups. Shortcut labels are hints, not event handlers.',
-    accessibility: 'The menu implements menu/menuitem roles, roving active state, disabled items, and Escape dismissal. The trigger needs a clear accessible name.',
+    accessibility: 'The menu implements menu/menuitem roles, deterministic trigger/content relationships, roving active state, disabled items, typeahead, mirrored RTL submenu keys, outside dismissal, and Escape dismissal. The trigger needs a clear accessible name.',
     keyboard: [['Enter / Space', 'Opens the menu or selects the active action.'], ['Arrow Up / Down', 'Moves among enabled items.'], ['Arrow Right / Left', 'Opens or closes a submenu.'], ['Escape', 'Closes the complete menu tree.']],
     examples: [
       { title: 'Account actions', description: 'The complete parent consumes the typed Selected output rather than dropping the action.',  code: source('Account actions', false) },
       { title: 'Destructive action', description: 'Visual severity is item configuration; selection still follows the same typed output path.',  code: source('Destructive action', true) },
+      { title: 'Submenu and disabled action', description: 'Submenu routing and disabled-item traversal use the same shared typed action union.', code: source('Submenu and disabled action', false, `...(action === 'billing' ? { isDisabled: true } : {}),
+        ...(action === 'settings' ? { submenu: { items: ['profile', 'billing'], itemToConfig: child => ({ label: labelFor(child), isDisabled: child === 'billing' }) } } : {}),`) },
+      { title: 'RTL submenu', description: 'Forward and back submenu keys mirror with direction while Escape closes the complete tree.', code: source('RTL submenu', false, `...(action === 'settings' ? { submenu: { items: ['profile', 'billing'], itemToConfig: child => ({ label: labelFor(child) }) } } : {}),`, `direction: 'rtl',`) },
     ],
   },
 });

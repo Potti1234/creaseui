@@ -173,6 +173,19 @@
       ]
     },
     {
+      "name": "dropdown-menu-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Dropdown Menu Behavior",
+      "description": "Skin-neutral disclosure, active item, disabled traversal, typeahead, submenu routing, context anchoring, and typed selection behavior.",
+      "files": [
+        {
+          "path": "dropdown-menu-behavior.ts",
+          "type": "registry:lib",
+          "target": "@lib/dropdown-menu-behavior.ts"
+        }
+      ]
+    },
+    {
       "name": "radio-group-behavior",
       "type": "registry:lib",
       "title": "Foldkit Radio Group Behavior",

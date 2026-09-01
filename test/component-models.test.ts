@@ -6,6 +6,7 @@ import { Option } from 'effect';
 import * as Carousel from '../src/ui/carousel.ts';
 import * as ContextMenu from '../src/ui/context-menu.ts';
 import * as Drawer from '../src/ui/drawer.ts';
+import * as DropdownMenuBehavior from '../src/lib/dropdown-menu-behavior.ts';
 import * as DropdownMenu from '../src/ui/dropdown-menu.ts';
 import * as HoverCard from '../src/ui/hover-card.ts';
 import * as Resizable from '../src/ui/resizable.ts';
@@ -77,6 +78,63 @@ describe('stateful component models', () => {
       value: 'billing',
       index: 1,
     });
+  });
+
+  it('shares disabled traversal, typeahead, and submenu routing across menu skins', () => {
+    const items = ['profile', 'billing', 'settings', 'more'] as const;
+    const itemToBehavior = (item: typeof items[number]) => ({
+      label: item,
+      isDisabled: item === 'billing',
+      ...(item === 'more'
+        ? {
+            submenu: {
+              items: ['invite', 'remove'],
+              itemToBehavior: (child: string) => ({
+                label: child,
+                isDisabled: child === 'remove',
+              }),
+            },
+          }
+        : {}),
+    });
+    const model = DropdownMenu.init({ id: 'account' });
+
+    assert.deepEqual(
+      DropdownMenuBehavior.keyMessage(model, items, itemToBehavior, 'ArrowDown'),
+      { _tag: 'ActivatedItem', index: 2 },
+    );
+    assert.deepEqual(
+      DropdownMenuBehavior.keyMessage(model, items, itemToBehavior, 's'),
+      { _tag: 'ActivatedItem', index: 2 },
+    );
+    const submenuModel = {
+      ...model,
+      activeIndex: 3,
+      openSubmenuIndex: Option.some(3),
+    };
+    assert.deepEqual(
+      DropdownMenuBehavior.keyMessage(
+        submenuModel,
+        items,
+        itemToBehavior,
+        'ArrowDown',
+      ),
+      { _tag: 'ActivatedSubmenuItem', index: 0 },
+    );
+    assert.deepEqual(
+      DropdownMenuBehavior.keyMessage(submenuModel, items, itemToBehavior, 'Escape'),
+      { _tag: 'Closed' },
+    );
+    assert.deepEqual(
+      DropdownMenuBehavior.keyMessage(
+        submenuModel,
+        items,
+        itemToBehavior,
+        'ArrowRight',
+        'rtl',
+      ),
+      { _tag: 'ClosedSubmenu' },
+    );
   });
 
   it('keeps a context menu anchored to the secondary-click coordinates', () => {

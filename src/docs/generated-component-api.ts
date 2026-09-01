@@ -1043,12 +1043,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ContextMenuItemConfig",
       "kind": "type",
-      "signature": "ContextMenuItemConfig = DropdownMenu.DropdownMenuItemConfig"
+      "signature": "ContextMenuItemConfig<Item extends string = string> = DropdownMenu.DropdownMenuItemConfig<Item>"
     },
     {
       "name": "ContextMenuProps",
       "kind": "type",
-      "signature": "ContextMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => ContextMenuItemConfig; ariaLabel?: string; class?: string; }>"
+      "signature": "ContextMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => ContextMenuItemConfig<Item>; ariaLabel?: string; class?: string…"
     },
     {
       "name": "contextMenu",
@@ -1520,7 +1520,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "DropdownMenuItemConfig",
       "kind": "type",
-      "signature": "DropdownMenuItemConfig = Readonly<{ label: Html | string; icon?: Html; shortcut?: Html | string; variant?: 'default' | 'destructive'; kind?: 'item' | 'checkbox' | 'radio'; isChecked?: boolean; isInset?: boolean; isDisabled?: boolean; group?: string; submenu?:…"
+      "signature": "DropdownMenuItemConfig<Item extends string = string> = Readonly<{ label: Html | string; icon?: Html; shortcut?: Html | string; variant?: 'default' | 'destructive'; kind?: 'item' | 'checkbox' | 'radio'; isChecked?: boolean; isInset?: boolean; isDisabled?: bool…"
     },
     {
       "name": "DropdownMenuSide",
@@ -1535,7 +1535,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "DropdownMenuProps",
       "kind": "type",
-      "signature": "DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenuItemConfig; align?: Dropdow…"
+      "signature": "DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenuItemConfig<Item>; align?: D…"
     },
     {
       "name": "dropdownMenu",
@@ -2089,7 +2089,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "MenubarMenu",
       "kind": "type",
-      "signature": "MenubarMenu<Item extends string, Msg> = Readonly<{ id: string; label: string; model: DropdownMenu.Model; toParentMessage: (message: DropdownMenu.Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig; }>"
+      "signature": "MenubarMenu<Item extends string, Msg> = Readonly<{ id: string; label: string; model: DropdownMenu.Model; toParentMessage: (message: DropdownMenu.Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Ite…"
     },
     {
       "name": "MenubarProps",

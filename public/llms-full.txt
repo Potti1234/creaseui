@@ -460,8 +460,8 @@ Examples: Browser actions, Disabled action
 - `openAt: value` (value)
 - `close: value` (value)
 - `selectItem: value` (value)
-- `ContextMenuItemConfig = DropdownMenu.DropdownMenuItemConfig` (type)
-- `ContextMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => ContextMenuItemConfig; ariaLabel?: string; class?: string; }>` (type)
+- `ContextMenuItemConfig<Item extends string = string> = DropdownMenu.DropdownMenuItemConfig<Item>` (type)
+- `ContextMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => ContextMenuItemConfig<Item>; ariaLabel?: string; class?: string…` (type)
 - `contextMenu<Item extends string, Msg>(props: ContextMenuProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Data Table
@@ -581,7 +581,7 @@ A shadcn-styled Dropdown Menu component for Foldkit.
 
 Source: `src/ui/dropdown-menu.ts`
 
-Examples: Account actions, Destructive action
+Examples: Account actions, Destructive action, Submenu and disabled action, RTL submenu
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -607,10 +607,10 @@ Examples: Account actions, Destructive action
 - `openAt: value` (value)
 - `close: value` (value)
 - `selectItem: value` (value)
-- `DropdownMenuItemConfig = Readonly<{ label: Html | string; icon?: Html; shortcut?: Html | string; variant?: 'default' | 'destructive'; kind?: 'item' | 'checkbox' | 'radio'; isChecked?: boolean; isInset?: boolean; isDisabled?: boolean; group?: string; submenu?:…` (type)
+- `DropdownMenuItemConfig<Item extends string = string> = Readonly<{ label: Html | string; icon?: Html; shortcut?: Html | string; variant?: 'default' | 'destructive'; kind?: 'item' | 'checkbox' | 'radio'; isChecked?: boolean; isInset?: boolean; isDisabled?: bool…` (type)
 - `DropdownMenuSide = 'top' | 'right' | 'bottom' | 'left'` (type)
 - `DropdownMenuAlign = 'start' | 'center' | 'end'` (type)
-- `DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenuItemConfig; align?: Dropdow…` (type)
+- `DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenuItemConfig<Item>; align?: D…` (type)
 - `dropdownMenu<Item extends string, Msg>(props: DropdownMenuProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Empty
@@ -824,7 +824,7 @@ Source: `src/ui/menubar.ts`
 
 Examples: Coordinated menus, Shortcut hints
 
-- `MenubarMenu<Item extends string, Msg> = Readonly<{ id: string; label: string; model: DropdownMenu.Model; toParentMessage: (message: DropdownMenu.Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig; }>` (type)
+- `MenubarMenu<Item extends string, Msg> = Readonly<{ id: string; label: string; model: DropdownMenu.Model; toParentMessage: (message: DropdownMenu.Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Ite…` (type)
 - `MenubarProps<Item extends string, Msg> = Readonly<{ menus: ReadonlyArray<MenubarMenu<Item, Msg>>; /** Coordinated focus/open callback used for ArrowLeft/ArrowRight menubar navigation. */ onMove?: (index: number) => Msg; activeIndex?: number; ariaLabel?: strin…` (type)
 - `menubar<Item extends string, Msg>(props: MenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` (function)
 

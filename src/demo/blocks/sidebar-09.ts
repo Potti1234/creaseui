@@ -298,9 +298,9 @@ const userSummary = (h: HtmlBuilder<Message>): Html => {
 const userActionConfig = (
   action: UserAction,
   h: HtmlBuilder<Message>,
-): DropdownMenu.DropdownMenuItemConfig =>
+): DropdownMenu.DropdownMenuItemConfig<UserAction> =>
   M.value(action).pipe(
-    M.withReturnType<DropdownMenu.DropdownMenuItemConfig>(),
+    M.withReturnType<DropdownMenu.DropdownMenuItemConfig<UserAction>>(),
     M.when('upgrade', () => ({
       label: 'Upgrade to Pro',
       icon: Icon.icon('sparkles', {}, h),

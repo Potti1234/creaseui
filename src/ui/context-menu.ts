@@ -16,14 +16,15 @@ export const openAt = DropdownMenu.openAt;
 export const close = DropdownMenu.close;
 export const selectItem = DropdownMenu.selectItem;
 
-export type ContextMenuItemConfig = DropdownMenu.DropdownMenuItemConfig;
+export type ContextMenuItemConfig<Item extends string = string> =
+  DropdownMenu.DropdownMenuItemConfig<Item>;
 
 export type ContextMenuProps<Item extends string, Msg> = Readonly<{
   model: Model;
   toParentMessage: (message: Message) => Msg;
   trigger: Html | string;
   items: ReadonlyArray<Item>;
-  itemToConfig: (item: Item) => ContextMenuItemConfig;
+  itemToConfig: (item: Item) => ContextMenuItemConfig<Item>;
   ariaLabel?: string;
   class?: string;
 }>;

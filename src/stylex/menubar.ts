@@ -43,7 +43,7 @@ export type MenubarMenu<Item extends string, Msg> = Readonly<{
   model: DropdownMenu.Model;
   toParentMessage: (message: DropdownMenu.Message) => Msg;
   items: ReadonlyArray<Item>;
-  itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig;
+  itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Item>;
 }>;
 
 export type MenubarProps<Item extends string, Msg> = Readonly<{
@@ -110,4 +110,3 @@ export const menubar = <Item extends string, Msg>(
     ),
   );
 };
-

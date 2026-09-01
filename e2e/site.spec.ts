@@ -853,6 +853,7 @@ test("dropdown menu exposes typed selection wiring and keyboard behavior", async
   await page.goto("/docs/components/dropdown-menu");
   const example = page.locator("#account-actions");
   const trigger = example.getByRole("button", { name: "Open account menu" });
+  await expect(trigger).toHaveAttribute("aria-controls", "docs-dropdown-0-content");
   await trigger.focus();
   await page.keyboard.press("Enter");
   const menu = example.getByRole("menu");
@@ -860,10 +861,42 @@ test("dropdown menu exposes typed selection wiring and keyboard behavior", async
   await page.keyboard.press("ArrowDown");
   await page.keyboard.press("Enter");
   await expect(menu).toBeHidden();
+  await expect(trigger).toBeFocused();
   await expect(example.locator("code")).toContainText("maybeSelection");
   await expect(example.locator("code")).toContainText(
     "DropdownMenu.create<Action>()",
   );
+
+  const submenuExample = page.locator("#submenu-and-disabled-action");
+  const submenuTrigger = submenuExample.getByRole("button", {
+    name: "Open account menu",
+  });
+  await submenuTrigger.focus();
+  await page.keyboard.press("Enter");
+  await page.keyboard.press("s");
+  const settings = submenuExample.getByRole("menuitem", { name: /Settings/u });
+  await expect(settings).toHaveAttribute("data-active", "true");
+  await page.keyboard.press("ArrowRight");
+  const menus = submenuExample.getByRole("menu");
+  await expect(menus).toHaveCount(2);
+  await expect(
+    submenuExample.getByRole("menuitem", { name: "Billing" }).last(),
+  ).toHaveAttribute("aria-disabled", "true");
+  await page.keyboard.press("Escape");
+  await expect(menus).toHaveCount(0);
+  await expect(submenuTrigger).toBeFocused();
+
+  const rtlExample = page.locator("#rtl-submenu");
+  const rtlTrigger = rtlExample.getByRole("button", { name: "Open account menu" });
+  await expect(rtlExample.locator('[data-slot="dropdown-menu"]')).toHaveAttribute(
+    "dir",
+    "rtl",
+  );
+  await rtlTrigger.focus();
+  await page.keyboard.press("Enter");
+  await page.keyboard.press("s");
+  await page.keyboard.press("ArrowLeft");
+  await expect(rtlExample.getByRole("menu")).toHaveCount(2);
 });
 
 test("context menu anchors at the secondary-click target and skips disabled items", async ({

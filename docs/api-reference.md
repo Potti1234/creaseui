@@ -341,8 +341,8 @@ Source: [`src/ui/context-menu.ts`](../src/ui/context-menu.ts)
 | `openAt` | value | `openAt: value` |
 | `close` | value | `close: value` |
 | `selectItem` | value | `selectItem: value` |
-| `ContextMenuItemConfig` | type | `ContextMenuItemConfig = DropdownMenu.DropdownMenuItemConfig` |
-| `ContextMenuProps` | type | `ContextMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => ContextMenuItemConfig; ariaLabel?: string; class?: string; }>` |
+| `ContextMenuItemConfig` | type | `ContextMenuItemConfig<Item extends string = string> = DropdownMenu.DropdownMenuItemConfig<Item>` |
+| `ContextMenuProps` | type | `ContextMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => ContextMenuItemConfig<Item>; ariaLabel?: string; class?: string…` |
 | `contextMenu` | function | `contextMenu<Item extends string, Msg>(props: ContextMenuProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Data Table
@@ -476,10 +476,10 @@ Source: [`src/ui/dropdown-menu.ts`](../src/ui/dropdown-menu.ts)
 | `openAt` | value | `openAt: value` |
 | `close` | value | `close: value` |
 | `selectItem` | value | `selectItem: value` |
-| `DropdownMenuItemConfig` | type | `DropdownMenuItemConfig = Readonly<{ label: Html \| string; icon?: Html; shortcut?: Html \| string; variant?: 'default' \| 'destructive'; kind?: 'item' \| 'checkbox' \| 'radio'; isChecked?: boolean; isInset?: boolean; isDisabled?: boolean; group?: string; submenu?:…` |
+| `DropdownMenuItemConfig` | type | `DropdownMenuItemConfig<Item extends string = string> = Readonly<{ label: Html \| string; icon?: Html; shortcut?: Html \| string; variant?: 'default' \| 'destructive'; kind?: 'item' \| 'checkbox' \| 'radio'; isChecked?: boolean; isInset?: boolean; isDisabled?: bool…` |
 | `DropdownMenuSide` | type | `DropdownMenuSide = 'top' \| 'right' \| 'bottom' \| 'left'` |
 | `DropdownMenuAlign` | type | `DropdownMenuAlign = 'start' \| 'center' \| 'end'` |
-| `DropdownMenuProps` | type | `DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenuItemConfig; align?: Dropdow…` |
+| `DropdownMenuProps` | type | `DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenuItemConfig<Item>; align?: D…` |
 | `dropdownMenu` | function | `dropdownMenu<Item extends string, Msg>(props: DropdownMenuProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Empty
@@ -669,7 +669,7 @@ Source: [`src/ui/menubar.ts`](../src/ui/menubar.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `MenubarMenu` | type | `MenubarMenu<Item extends string, Msg> = Readonly<{ id: string; label: string; model: DropdownMenu.Model; toParentMessage: (message: DropdownMenu.Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig; }>` |
+| `MenubarMenu` | type | `MenubarMenu<Item extends string, Msg> = Readonly<{ id: string; label: string; model: DropdownMenu.Model; toParentMessage: (message: DropdownMenu.Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Ite…` |
 | `MenubarProps` | type | `MenubarProps<Item extends string, Msg> = Readonly<{ menus: ReadonlyArray<MenubarMenu<Item, Msg>>; /** Coordinated focus/open callback used for ArrowLeft/ArrowRight menubar navigation. */ onMove?: (index: number) => Msg; activeIndex?: number; ariaLabel?: strin…` |
 | `menubar` | function | `menubar<Item extends string, Msg>(props: MenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` |
 

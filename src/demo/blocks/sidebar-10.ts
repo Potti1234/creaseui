@@ -596,9 +596,9 @@ const navMain = (h: HtmlBuilder<Message>): Html => {
 const favoriteActionConfig = (
   action: FavoriteAction,
   h: HtmlBuilder<Message>,
-): DropdownMenu.DropdownMenuItemConfig =>
+): DropdownMenu.DropdownMenuItemConfig<FavoriteAction> =>
   M.value(action).pipe(
-    M.withReturnType<DropdownMenu.DropdownMenuItemConfig>(),
+    M.withReturnType<DropdownMenu.DropdownMenuItemConfig<FavoriteAction>>(),
     M.when('remove', () => ({
       label: 'Remove from Favorites',
       icon: Icon.icon(
