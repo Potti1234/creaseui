@@ -210,6 +210,19 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(stylex, /activationMode\?: TabsPrimitive\.ActivationMode/u)
   })
 
+  it('keeps Toggle controlled on the canonical button primitive in both skins', () => {
+    const tailwind = readFileSync('src/ui/toggle.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/toggle.ts', 'utf8')
+
+    assert.match(tailwind, /Button as ButtonPrimitive/u)
+    assert.match(stylex, /Button as ButtonPrimitive/u)
+    assert.match(tailwind, /h\.AriaPressed/u)
+    assert.match(stylex, /h\.AriaPressed/u)
+    assert.doesNotMatch(stylex, /from ['"]@\/ui\/toggle['"]/u)
+    assert.doesNotMatch(tailwind, /export const Model/u)
+    assert.doesNotMatch(stylex, /export const Model/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

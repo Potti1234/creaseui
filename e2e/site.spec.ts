@@ -1196,6 +1196,23 @@ test("controlled helper pages own and update compact local preview state", async
   await expect(toggle).toHaveAttribute("aria-pressed", "false");
   await toggle.click();
   await expect(toggle).toHaveAttribute("aria-pressed", "true");
+  await toggle.focus();
+  await page.keyboard.press("Space");
+  await expect(toggle).toHaveAttribute("aria-pressed", "false");
+  await page.keyboard.press("Enter");
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+  const disabledToggle = page
+    .locator("#disabled")
+    .getByRole("button", { name: "Managed" });
+  await expect(disabledToggle).toBeDisabled();
+  await expect(disabledToggle).toHaveAttribute("aria-pressed", "true");
+  await disabledToggle.click({ force: true });
+  await expect(disabledToggle).toHaveAttribute("aria-pressed", "true");
+  await expect(
+    page
+      .locator("#compact-named-control")
+      .getByRole("button", { name: "Bold formatting" }),
+  ).toBeVisible();
 
   await page.goto("/docs/components/toggle-group");
   const right = page

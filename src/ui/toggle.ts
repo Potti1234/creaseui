@@ -6,7 +6,7 @@ import { Button as ButtonPrimitive } from '@foldkit/ui';
 import { cn } from '@/lib/utils';
 
 export const toggleVariants = cva(
-  "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 aria-[pressed=true]:bg-accent aria-[pressed=true]:text-accent-foreground dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-[color,box-shadow] motion-reduce:transition-none outline-none hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 aria-[pressed=true]:bg-accent aria-[pressed=true]:text-accent-foreground dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
@@ -36,6 +36,9 @@ export type ToggleProps<Msg> = Readonly<{
   size?: ToggleVariants['size'];
   children: ReadonlyArray<Html | string>;
   isDisabled?: boolean;
+  id?: string;
+  ariaLabel?: string;
+  describedBy?: string;
   class?: string;
 }>;
 
@@ -54,6 +57,11 @@ export const toggle = <Msg>(
             ...button,
             h.DataAttribute('slot', 'toggle'),
             h.AriaPressed(props.isPressed ? 'true' : 'false'),
+            ...(props.id === undefined ? [] : [h.Id(props.id)]),
+            ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
+            ...(props.describedBy === undefined
+              ? []
+              : [h.AriaDescribedBy(props.describedBy)]),
             h.Class(
               cn(
                 toggleVariants({

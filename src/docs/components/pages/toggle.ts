@@ -12,7 +12,7 @@ const previewProgram = definePreviewProgram<PreviewModel, PreviewMessage>({
   Model: PreviewModel, Message: ToggledPreview,
   init: index => ({ _docsPage: 'toggle', isPressed: index !== 0 }),
   update: model => [{ ...model, isPressed: !model.isPressed }, []],
-  view: (index, model, h) => Toggle.toggle({ isPressed: model.isPressed, onToggle: ToggledPreview(), children: [index === 0 ? 'Bold' : index === 1 ? 'Italic' : 'Managed'], ...(index === 1 ? { variant: 'outline' as const } : {}), ...(index === 2 ? { isDisabled: true } : {}) }, h),
+  view: (index, model, h) => Toggle.toggle({ isPressed: model.isPressed, onToggle: ToggledPreview(), children: [index === 0 ? 'Bold' : index === 1 ? 'Italic' : index === 2 ? 'Managed' : 'B'], ...(index === 1 ? { variant: 'outline' as const } : {}), ...(index === 2 ? { isDisabled: true } : {}), ...(index === 3 ? { ariaLabel: 'Bold formatting', size: 'sm' as const } : {}) }, h),
 });
 
 const source = (name: string, initialValue: boolean, config: string): string => controlledBooleanApplication({
@@ -33,8 +33,8 @@ export const togglePage = authoredPage({
     kind: 'helper', description: 'Represents one independently pressed or unpressed formatting option.',
     architecture: 'Toggle is a stateless controlled button. The parent Model stores pressed state and onToggle dispatches the next domain fact.',
     apiHref: 'https://foldkit.dev/ui/button',
-    styling: 'Use outline when a persistent boundary helps distinguish the control from nearby content. Icon-only toggles require an accessible name in their surrounding composition.',
-    accessibility: 'The helper exposes aria-pressed and preserves native button keyboard behavior. Pressed state must remain distinguishable beyond color alone.',
+    styling: 'Use outline when a persistent boundary helps distinguish the control from nearby content. Icon-only toggles require ariaLabel; pressed state remains visible through surface and contrast, not color alone.',
+    accessibility: 'The helper exposes aria-pressed and preserves native button Enter/Space activation, native disabled behavior, focus-visible treatment, optional description linkage, and an explicit accessible name for icon-only content.',
     keyboard: [['Enter / Space', 'Toggles the focused pressed button.']],
     examples: [
       {
@@ -48,9 +48,14 @@ export const togglePage = authoredPage({
         code: source('Outline', true, `variant: 'outline',`),
       },
       {
-        title: 'Disabled', description: 'Disabled state remains focusable and exposes the current pressed value.',
+        title: 'Disabled', description: 'Native disabled state prevents pointer and keyboard activation while retaining the current pressed value for assistive technology.',
 
         code: source('Disabled', true, `isDisabled: true,`),
+      },
+      {
+        title: 'Compact named control', description: 'Provide ariaLabel whenever visual content alone does not form a usable accessible name.',
+        code: source('Compact named control', false, `size: 'sm',
+  ariaLabel: 'Bold formatting',`),
       },
     ],
   },

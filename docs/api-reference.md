@@ -1106,7 +1106,7 @@ Source: [`src/ui/toggle.ts`](../src/ui/toggle.ts)
 | --- | --- | --- |
 | `toggleVariants` | value | `toggleVariants: value` |
 | `ToggleVariants` | type | `ToggleVariants = VariantProps<typeof toggleVariants>` |
-| `ToggleProps` | type | `ToggleProps<Msg> = Readonly<{ isPressed: boolean; onToggle: Msg; variant?: ToggleVariants['variant']; size?: ToggleVariants['size']; children: ReadonlyArray<Html \| string>; isDisabled?: boolean; class?: string; }>` |
+| `ToggleProps` | type | `ToggleProps<Msg> = Readonly<{ isPressed: boolean; onToggle: Msg; variant?: ToggleVariants['variant']; size?: ToggleVariants['size']; children: ReadonlyArray<Html \| string>; isDisabled?: boolean; id?: string; ariaLabel?: string; describedBy?: string; class?: s…` |
 | `toggle` | function | `toggle<Msg>(props: ToggleProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Tooltip

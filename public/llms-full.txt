@@ -1311,7 +1311,7 @@ Examples: Timed notification, Sticky error
 
 - `toggleVariants: value` (value)
 - `ToggleVariants = VariantProps<typeof toggleVariants>` (type)
-- `ToggleProps<Msg> = Readonly<{ isPressed: boolean; onToggle: Msg; variant?: ToggleVariants['variant']; size?: ToggleVariants['size']; children: ReadonlyArray<Html | string>; isDisabled?: boolean; class?: string; }>` (type)
+- `ToggleProps<Msg> = Readonly<{ isPressed: boolean; onToggle: Msg; variant?: ToggleVariants['variant']; size?: ToggleVariants['size']; children: ReadonlyArray<Html | string>; isDisabled?: boolean; id?: string; ariaLabel?: string; describedBy?: string; class?: s…` (type)
 - `toggle<Msg>(props: ToggleProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Tooltip
