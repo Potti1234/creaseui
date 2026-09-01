@@ -33,8 +33,6 @@ export type OutMessage<Value extends string = string> =
   ComboboxPrimitive.OutMessage<Value>;
 
 export const init = ComboboxPrimitive.init;
-export const create = ComboboxPrimitive.create;
-export const update = ComboboxPrimitive.create().update;
 
 const ROOT_CLASS =
   'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground';
@@ -46,7 +44,7 @@ const INPUT_CLASS =
   'flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden placeholder:text-muted-foreground data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50';
 
 const CONTENT_CLASS =
-  'z-50 w-(--button-width) min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md transition duration-200 ease-out data-[closed]:opacity-0 data-[closed]:scale-95';
+  'z-50 w-(--button-width) min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md transition duration-200 ease-out motion-reduce:transition-none data-[closed]:opacity-0 data-[closed]:scale-95';
 
 const LIST_CLASS =
   'max-h-[300px] scroll-py-1 overflow-x-hidden overflow-y-auto p-1';
@@ -85,16 +83,22 @@ export type ComboboxProps<Item, Value extends string, Msg> = Readonly<{
   triggerClass?: string;
   size?: ComboboxSize;
   ariaLabel?: string;
+  ariaLabelledBy?: string;
+  isDisabled?: boolean;
+  isReadOnly?: boolean;
+  isInvalid?: boolean;
+  formName?: string;
+  direction?: 'ltr' | 'rtl';
   itemGroupKey?: (item: Item, index: number) => string;
   groupToHeading?: (groupKey: string) => string | undefined;
 }>;
 
-export const combobox = <Item, Value extends string, Msg>(
+const renderCombobox = <Item, Value extends string, Msg>(
+  comboboxPrimitive: ComboboxPrimitive.Bundle<Value>,
   props: ComboboxProps<Item, Value, Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
   const hc = h;
-  const comboboxPrimitive = ComboboxPrimitive.create<Value>();
   const itemForValue = (value: Value): Item | undefined =>
     props.items.find((item) => props.itemToValue(item) === value);
   const labelForValue = (value: Value): string => {
@@ -115,11 +119,7 @@ export const combobox = <Item, Value extends string, Msg>(
     )
     .map(props.itemToValue);
 
-  return h.submodel({
-    slotId: props.model.id,
-    model: props.model,
-    view: comboboxPrimitive.view,
-    viewInputs: {
+  const viewInputs: ComboboxPrimitive.ViewInputs<Value> = {
       maybeSelectedValue: props.maybeSelectedValue,
       restingInputValue: props.restingInputValue,
       items: values,
@@ -168,9 +168,17 @@ export const combobox = <Item, Value extends string, Msg>(
       ]),
       itemsScrollClassName: LIST_CLASS,
       backdropClassName: BACKDROP_CLASS,
+      backdropAttributes: childAttributes([hc.DataAttribute('slot', 'combobox-backdrop')]),
       className: ROOT_CLASS,
-      attributes: childAttributes([hc.DataAttribute('slot', 'command')]),
+      attributes: childAttributes([
+        hc.DataAttribute('slot', 'command'),
+        ...(props.direction === undefined ? [] : [hc.Dir(props.direction)]),
+      ]),
       anchor: { placement: 'bottom-start', gap: 4 },
+      isDisabled: props.isDisabled ?? false,
+      isReadOnly: props.isReadOnly ?? false,
+      isInvalid: props.isInvalid ?? false,
+      ...(props.formName === undefined ? {} : { formName: props.formName }),
       ...(props.itemGroupKey === undefined
         ? {}
         : {
@@ -201,10 +209,34 @@ export const combobox = <Item, Value extends string, Msg>(
             ]),
           }),
       ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
-    },
+      ...(props.ariaLabelledBy === undefined ? {} : { ariaLabelledBy: props.ariaLabelledBy }),
+    };
+
+  return h.submodel({
+    slotId: props.model.id,
+    model: props.model,
+    view: comboboxPrimitive.view,
+    viewInputs,
     toParentMessage: props.toParentMessage,
   });
 };
+
+export type ComboboxBundle<Value extends string> = Readonly<{
+  update: ReturnType<typeof ComboboxPrimitive.create<Value>>['update'];
+  combobox: <Item, Msg>(props: ComboboxProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html;
+}>;
+
+export const create = <Value extends string = string>(): ComboboxBundle<Value> => {
+  const primitive = ComboboxPrimitive.create<Value>();
+  return {
+    update: primitive.update,
+    combobox: (props, h) => renderCombobox(primitive, props, h),
+  };
+};
+
+const StringCombobox = create<string>();
+export const update = StringCombobox.update;
+export const combobox = StringCombobox.combobox;
 
 /*
    Minimal wiring:

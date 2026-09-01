@@ -799,15 +799,38 @@ test("select persists a typed OutMessage selection", async ({ page }) => {
 test("combobox filters items and persists its typed selection output", async ({
   page,
 }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/docs/components/combobox");
   const example = page.locator("#framework-search");
   const input = example.getByRole("combobox", { name: "Framework" });
   await input.fill("sve");
+  await page.keyboard.press("ArrowDown");
+  const activeDescendant = await input.getAttribute("aria-activedescendant");
+  expect(activeDescendant).toBeTruthy();
+  await expect(page.locator(`#${activeDescendant}`)).toHaveText(/SvelteKit/u);
   const option = page.getByRole("option", { name: "SvelteKit" });
   await expect(option).toBeVisible();
+  await expect(page.getByRole("listbox")).toHaveCSS("transition-property", "none");
   await option.click();
   await expect(input).toHaveValue("SvelteKit");
+  await expect(example.locator('input[type="hidden"][name="framework"]')).toHaveValue(
+    "svelte",
+  );
   await expect(example.locator("code")).toContainText("maybeSelection");
+
+  const emptyExample = page.locator("#no-results");
+  await expect(emptyExample.getByRole("status")).toHaveText(/No frameworks/u);
+
+  const readOnlyExample = page.locator("#read-only-rtl");
+  const readOnlyInput = readOnlyExample.getByRole("combobox", { name: "Framework" });
+  await expect(readOnlyExample.locator('[data-slot="command"]')).toHaveAttribute(
+    "dir",
+    "rtl",
+  );
+  await expect(readOnlyInput).toHaveAttribute("readonly", "");
+  await readOnlyInput.focus();
+  await page.keyboard.type("nuxt");
+  await expect(readOnlyInput).toHaveValue("");
 });
 
 test("command search commits a typed parent action", async ({ page }) => {

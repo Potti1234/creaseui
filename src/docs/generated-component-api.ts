@@ -857,16 +857,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "init: value"
     },
     {
-      "name": "create",
-      "kind": "value",
-      "signature": "create: value"
-    },
-    {
-      "name": "update",
-      "kind": "value",
-      "signature": "update: value"
-    },
-    {
       "name": "ComboboxSize",
       "kind": "type",
       "signature": "ComboboxSize = 'sm' | 'default'"
@@ -882,9 +872,24 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "ComboboxProps<Item, Value extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Value>; restingInputValue: string; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToValue: (item: Item) => Value; itemToLa…"
     },
     {
-      "name": "combobox",
+      "name": "ComboboxBundle",
+      "kind": "type",
+      "signature": "ComboboxBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ComboboxPrimitive.create<Value>>['update']; combobox: <Item, Msg>(props: ComboboxProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>"
+    },
+    {
+      "name": "create",
       "kind": "function",
-      "signature": "combobox<Item, Value extends string, Msg>(props: ComboboxProps<Item, Value, Msg>, h: HtmlBuilder<Msg>): Html"
+      "signature": "create<Value extends string = string>(): ComboboxBundle<Value>"
+    },
+    {
+      "name": "update",
+      "kind": "value",
+      "signature": "update: value"
+    },
+    {
+      "name": "combobox",
+      "kind": "value",
+      "signature": "combobox: value"
     }
   ],
   "command": [

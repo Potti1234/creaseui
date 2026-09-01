@@ -47,8 +47,6 @@ export type OutMessage<Value extends string = string> =
   ComboboxPrimitive.OutMessage<Value>;
 
 export const init = ComboboxPrimitive.init;
-export const create = ComboboxPrimitive.create;
-export const update = ComboboxPrimitive.create().update;
 
 const ROOT_CLASS = overlayStyles.root
 
@@ -92,16 +90,22 @@ export type ComboboxProps<Item, Value extends string, Msg> = Readonly<{
   triggerLayoutStyle?: ComponentLayoutStyle;
   size?: ComboboxSize;
   ariaLabel?: string;
+  ariaLabelledBy?: string;
+  isDisabled?: boolean;
+  isReadOnly?: boolean;
+  isInvalid?: boolean;
+  formName?: string;
+  direction?: 'ltr' | 'rtl';
   itemGroupKey?: (item: Item, index: number) => string;
   groupToHeading?: (groupKey: string) => string | undefined;
 }>;
 
-export const combobox = <Item, Value extends string, Msg>(
+const renderCombobox = <Item, Value extends string, Msg>(
+  comboboxPrimitive: ComboboxPrimitive.Bundle<Value>,
   props: ComboboxProps<Item, Value, Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
   const hc = h;
-  const comboboxPrimitive = ComboboxPrimitive.create<Value>();
   const itemForValue = (value: Value): Item | undefined =>
     props.items.find((item) => props.itemToValue(item) === value);
   const labelForValue = (value: Value): string => {
@@ -175,9 +179,17 @@ export const combobox = <Item, Value extends string, Msg>(
       ]),
       itemsScrollClassName: className(LIST_CLASS),
       backdropClassName: className(BACKDROP_CLASS),
+      backdropAttributes: childAttributes([hc.DataAttribute('slot', 'combobox-backdrop')]),
       className: className(ROOT_CLASS),
-      attributes: childAttributes([hc.DataAttribute('slot', 'command')]),
+      attributes: childAttributes([
+        hc.DataAttribute('slot', 'command'),
+        ...(props.direction === undefined ? [] : [hc.Dir(props.direction)]),
+      ]),
       anchor: themedAnchor({ placement: 'bottom-start', gap: 4 }),
+      isDisabled: props.isDisabled ?? false,
+      isReadOnly: props.isReadOnly ?? false,
+      isInvalid: props.isInvalid ?? false,
+      ...(props.formName === undefined ? {} : { formName: props.formName }),
       ...(props.itemGroupKey === undefined
         ? {}
         : {
@@ -208,10 +220,28 @@ export const combobox = <Item, Value extends string, Msg>(
             ]),
           }),
       ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
+      ...(props.ariaLabelledBy === undefined ? {} : { ariaLabelledBy: props.ariaLabelledBy }),
     },
     toParentMessage: props.toParentMessage,
   });
 };
+
+export type ComboboxBundle<Value extends string> = Readonly<{
+  update: ReturnType<typeof ComboboxPrimitive.create<Value>>['update'];
+  combobox: <Item, Msg>(props: ComboboxProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html;
+}>;
+
+export const create = <Value extends string = string>(): ComboboxBundle<Value> => {
+  const primitive = ComboboxPrimitive.create<Value>();
+  return {
+    update: primitive.update,
+    combobox: (props, h) => renderCombobox(primitive, props, h),
+  };
+};
+
+const StringCombobox = create<string>();
+export const update = StringCombobox.update;
+export const combobox = StringCombobox.combobox;
 
 /*
    Minimal wiring:
@@ -237,4 +267,3 @@ export const combobox = <Item, Value extends string, Msg>(
    //   placeholder: 'Search frameworks...',
    // })
 */
-

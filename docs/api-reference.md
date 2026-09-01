@@ -291,12 +291,13 @@ Source: [`src/ui/combobox.ts`](../src/ui/combobox.ts)
 | `OutMessage` | value | `OutMessage: value` |
 | `OutMessage` | type | `OutMessage<Value extends string = string> = ComboboxPrimitive.OutMessage<Value>` |
 | `init` | value | `init: value` |
-| `create` | value | `create: value` |
-| `update` | value | `update: value` |
 | `ComboboxSize` | type | `ComboboxSize = 'sm' \| 'default'` |
 | `ComboboxItemConfig` | type | `ComboboxItemConfig = Readonly<{ content?: Html \| string; searchText?: string; class?: string; isDisabled?: boolean; }>` |
 | `ComboboxProps` | type | `ComboboxProps<Item, Value extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Value>; restingInputValue: string; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToValue: (item: Item) => Value; itemToLa…` |
-| `combobox` | function | `combobox<Item, Value extends string, Msg>(props: ComboboxProps<Item, Value, Msg>, h: HtmlBuilder<Msg>): Html` |
+| `ComboboxBundle` | type | `ComboboxBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ComboboxPrimitive.create<Value>>['update']; combobox: <Item, Msg>(props: ComboboxProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` |
+| `create` | function | `create<Value extends string = string>(): ComboboxBundle<Value>` |
+| `update` | value | `update: value` |
+| `combobox` | value | `combobox: value` |
 
 ## Command
 

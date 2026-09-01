@@ -168,6 +168,19 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(stylex, /const listbox = ListboxPrimitive\.create\(\);/u)
   })
 
+  it('binds Combobox value types once and shares the canonical primitive behavior', () => {
+    const tailwind = readFileSync('src/ui/combobox.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/combobox.ts', 'utf8')
+
+    assert.match(tailwind, /Combobox as ComboboxPrimitive/u)
+    assert.match(stylex, /Combobox as ComboboxPrimitive/u)
+    assert.doesNotMatch(stylex, /from ['"]@\/ui\/combobox['"]/u)
+    assert.match(tailwind, /export const create = <Value extends string/u)
+    assert.match(stylex, /export const create = <Value extends string/u)
+    assert.doesNotMatch(tailwind, /const comboboxPrimitive = ComboboxPrimitive\.create<Value>\(\);/u)
+    assert.doesNotMatch(stylex, /const comboboxPrimitive = ComboboxPrimitive\.create<Value>\(\);/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

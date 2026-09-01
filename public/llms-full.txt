@@ -397,7 +397,7 @@ A shadcn-styled Combobox component for Foldkit.
 
 Source: `src/ui/combobox.ts`
 
-Examples: Framework search, Grouped frameworks
+Examples: Framework search, Grouped frameworks, No results, Read only RTL
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -406,12 +406,13 @@ Examples: Framework search, Grouped frameworks
 - `OutMessage: value` (value)
 - `OutMessage<Value extends string = string> = ComboboxPrimitive.OutMessage<Value>` (type)
 - `init: value` (value)
-- `create: value` (value)
-- `update: value` (value)
 - `ComboboxSize = 'sm' | 'default'` (type)
 - `ComboboxItemConfig = Readonly<{ content?: Html | string; searchText?: string; class?: string; isDisabled?: boolean; }>` (type)
 - `ComboboxProps<Item, Value extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Value>; restingInputValue: string; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToValue: (item: Item) => Value; itemToLa…` (type)
-- `combobox<Item, Value extends string, Msg>(props: ComboboxProps<Item, Value, Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `ComboboxBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ComboboxPrimitive.create<Value>>['update']; combobox: <Item, Msg>(props: ComboboxProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` (type)
+- `create<Value extends string = string>(): ComboboxBundle<Value>` (function)
+- `update: value` (value)
+- `combobox: value` (value)
 
 ### Command
 
