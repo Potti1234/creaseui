@@ -36,6 +36,21 @@ describe('StyleX component authoring contract', () => {
     }
   })
 
+  it('keeps Accordion behavior in the skin-neutral state module', () => {
+    const accordion = readFileSync('src/stylex/accordion.ts', 'utf8')
+    const viewInputs = accordion.slice(
+      accordion.indexOf('export type ViewInputs'),
+      accordion.indexOf('const itemDomId'),
+    )
+
+    assert.match(accordion, /from '@\/lib\/accordion-state'/u)
+    assert.doesNotMatch(accordion, /export const Model =/u)
+    assert.doesNotMatch(accordion, /export const update =/u)
+    assert.match(accordion, /defineView</u)
+    assert.doesNotMatch(viewInputs, /\b(?:style|class|className|unsafeStyle)\??\s*:/u)
+    assert.match(viewInputs, /layoutStyle\?: ComponentLayoutStyle/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

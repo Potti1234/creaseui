@@ -1,31 +1,70 @@
-import { Option, Schema as S } from 'effect';
-import type { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-
-import { Disclosure as DisclosurePrimitive } from '@foldkit/ui';
-
-import * as Icon from '@/lib/icon';
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineView } from 'foldkit/submodel'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
-import { overlayStyles } from './overlay-tokens.stylex'
+
+import { Disclosure as DisclosurePrimitive } from '@foldkit/ui'
+
+import * as Icon from '@/lib/icon'
+import * as AccordionBehavior from '@/lib/accordion-state'
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
 
+export {
+  AccordionType,
+  ChangedValue,
+  Message,
+  Model,
+  OutMessage,
+  ToggledItem,
+  init,
+  reflect,
+  update,
+} from '@/lib/accordion-state'
+export type {
+  AccordionInitItem,
+  AccordionItem,
+  InitConfig,
+  UpdateReturn,
+} from '@/lib/accordion-state'
+
 const styles = stylex.create({
-  content: { paddingBottom: '1rem', paddingTop: 0 },
-  icon: { color: tokens.mutedForeground, flexShrink: 0, height: '1rem', width: '1rem' },
-  item: { borderBottomColor: tokens.border, borderBottomStyle: 'solid', borderBottomWidth: 1 },
-  panel: { overflow: 'hidden', fontSize: '0.875rem', },
+  content: {
+    paddingBottom: '0.625rem',
+    paddingTop: 0,
+  },
+  icon: {
+    color: tokens.mutedForeground,
+    flexShrink: 0,
+    transform: 'rotate(0deg)',
+    transitionDuration: interactionTokens.motionModerate,
+    transitionProperty: 'transform',
+    transitionTimingFunction: interactionTokens.easingStandard,
+    height: '1rem',
+    marginTop: '0.125rem',
+    width: '1rem',
+  },
+  iconOpen: {
+    transform: 'rotate(180deg)',
+  },
+  item: {
+    borderBottomColor: tokens.border,
+    borderBottomStyle: 'solid',
+    borderBottomWidth: 1,
+  },
+  panel: {
+    overflow: 'hidden',
+    fontSize: '0.875rem',
+  },
   trigger: {
     borderColor: {
       default: tokens.transparent,
       ':focus-visible': tokens.ring,
     },
     gap: '1rem',
-    paddingBlock: '1rem',
+    paddingBlock: '0.625rem',
     alignItems: 'flex-start',
     backgroundColor: tokens.transparent,
     boxShadow: {
@@ -33,17 +72,24 @@ const styles = stylex.create({
       ':focus-visible': tokens.focusRingShadow,
     },
     color: tokens.foreground,
-    cursor: interactionTokens.cursorAction,
+    cursor: {
+      default: interactionTokens.cursorAction,
+      ':disabled': interactionTokens.cursorDisabled,
+    },
     display: 'flex',
     flexGrow: 1,
     fontSize: '0.875rem',
     fontWeight: 500,
     justifyContent: 'space-between',
+    opacity: { default: 1, ':disabled': 0.5 },
     outlineStyle: 'none',
     textAlign: 'left',
     textDecorationLine: { default: 'none', ':hover': 'underline' },
+    minHeight: '2.5rem',
   },
-  triggerRow: { display: 'flex' },
+  triggerRow: {
+    display: 'flex',
+  },
 })
 
 const isStaticStyle = (value: unknown): value is StaticStyles =>
@@ -51,226 +97,112 @@ const isStaticStyle = (value: unknown): value is StaticStyles =>
 const cn = (...values: ReadonlyArray<unknown>): string =>
   className(...values.filter(isStaticStyle))
 
-/* shadcn/ui Accordion composed from one foldkit Disclosure submodel per item.
-   Disclosure.animatePanel replaces Radix's accordion height keyframes with a
-   finite grid-row transition. */
+export type ViewInputs = Readonly<{
+  items: ReadonlyArray<AccordionBehavior.AccordionItem>
+  layoutStyle?: ComponentLayoutStyle
+  itemLayoutStyle?: ComponentLayoutStyle
+  triggerLayoutStyle?: ComponentLayoutStyle
+  contentLayoutStyle?: ComponentLayoutStyle
+}>
 
-export const AccordionType = S.Literals(['single', 'multiple']);
-export type AccordionType = typeof AccordionType.Type;
+const itemDomId = (accordionId: string, value: string): string =>
+  `${accordionId}-item-${encodeURIComponent(value)}`
 
-export const Model = S.Struct({
-  id: S.String,
-  type: AccordionType,
-  itemIds: S.Array(S.String),
-  openStates: S.Array(S.Boolean),
-});
-export type Model = typeof Model.Type;
-
-export const GotDisclosureMessage = m('GotDisclosureMessage', {
-  index: S.Number,
-  isOpen: S.Boolean,
-});
-
-export const Message = S.Union([GotDisclosureMessage]);
-export type Message = typeof Message.Type;
-
-export const ToggledItem = m('ToggledItem', {
-  value: S.String,
-  index: S.Number,
-  isOpen: S.Boolean,
-});
-
-export const OutMessage = S.Union([ToggledItem]);
-export type OutMessage = typeof OutMessage.Type;
-
-export type AccordionInitItem = Readonly<{
-  value: string;
-  isOpen?: boolean;
-}>;
-
-export type InitConfig = Readonly<{
-  id: string;
-  type?: AccordionType;
-  items: ReadonlyArray<AccordionInitItem>;
-}>;
-
-export const init = (config: InitConfig): Model => {
-  const type = config.type ?? 'single';
-  let hasOpenItem = false;
-
-  return {
-    id: config.id,
-    type,
-    itemIds: config.items.map((item) => item.value),
-    openStates: config.items.map((item) => {
-      const isOpen =
-        item.isOpen === true && (type === 'multiple' || hasOpenItem === false);
-
-      if (isOpen) {
-        hasOpenItem = true;
-      }
-
-      return isOpen;
-    }),
-  };
-};
-
-type UpdateReturn = readonly [
-  Model,
-  ReadonlyArray<Command.Command<Message>>,
-  Option.Option<OutMessage>,
-];
-
-export const update = (model: Model, message: Message): UpdateReturn => {
-  const item = model.openStates[message.index];
-  const value = model.itemIds[message.index];
-
-  if (item === undefined || value === undefined) {
-    return [model, [], Option.none()];
-  }
-
-  const openStates = model.openStates.map((current, index) => {
-    if (index === message.index) {
-      return message.isOpen;
-    }
-
-    return model.type === 'single' && message.isOpen ? false : current;
-  });
-
-  return [
-    { ...model, openStates },
-    [],
-    Option.some(
-      ToggledItem({ value, index: message.index, isOpen: message.isOpen }),
-    ),
-  ];
-};
-
-const ITEM_CLASS = styles.item
-
-const TRIGGER_CLASS = styles.trigger
-
-const ICON_CLASS = styles.icon
-
-const PANEL_CLASS = styles.panel
-const CONTENT_CLASS = styles.content
-
-export type AccordionItem = Readonly<{
-  value: string;
-  trigger: Html | string;
-  content: Html | string;
-  isDisabled?: boolean;
-}>;
-
-export type AccordionProps<Msg> = Readonly<{
-  model: Model;
-  toParentMessage: (message: Message) => Msg;
-  items: ReadonlyArray<AccordionItem>;
-  layoutStyle?: ComponentLayoutStyle;
-  itemLayoutStyle?: ComponentLayoutStyle;
-  triggerLayoutStyle?: ComponentLayoutStyle;
-  contentLayoutStyle?: ComponentLayoutStyle;
-}>;
-
-export const accordion = <Msg>(
-  props: AccordionProps<Msg>,
+const render = <Msg>(
+  model: AccordionBehavior.Model,
+  viewInputs: ViewInputs,
+  toMessage: (message: AccordionBehavior.Message) => Msg,
   h: HtmlBuilder<Msg>,
-): Html => {
-  return h.div(
+): Html =>
+  h.div(
     [
       h.DataAttribute('slot', 'accordion'),
-      ...(props.layoutStyle === undefined ? [] : [h.Class(cn(props.layoutStyle))]),
+      ...(viewInputs.layoutStyle === undefined
+        ? []
+        : [h.Class(cn(viewInputs.layoutStyle))]),
     ],
-    props.model.openStates.flatMap((isOpen, index) => {
-      const config = props.items[index];
+    viewInputs.items.map((item) => {
+      const isOpen = model.value.includes(item.value)
 
-      if (config === undefined || props.model.itemIds[index] !== config.value) {
-        return [];
-      }
-
-      return [
-        DisclosurePrimitive.view(
-          {
-            id: `${props.model.id}-item-${index}`,
-            isOpen,
-            onToggle: (nextIsOpen) =>
-              props.toParentMessage(
-                GotDisclosureMessage({ index, isOpen: nextIsOpen }),
-              ),
-            ...(config.isDisabled === undefined
-              ? {}
-              : { isDisabled: config.isDisabled }),
-            toView: ({ button, panel, animatePanel }) => {
-              return h.div(
-                [
-                  h.DataAttribute('slot', 'accordion-item'),
-                  h.Class(cn(ITEM_CLASS, props.itemLayoutStyle)),
-                ],
-                [
-                  h.h3(
-                    [h.Class(className(styles.triggerRow))],
-                    [
-                      h.button(
-                        [
-                          ...button,
-                          h.Type('button'),
-                          h.DataAttribute('slot', 'accordion-trigger'),
-                          h.Class(cn(TRIGGER_CLASS, props.triggerLayoutStyle)),
-                        ],
-                        [
-                          config.trigger,
-                          Icon.chevronDown<Msg>(
-                            {
-                              class: className(ICON_CLASS),
-                            },
-                            h,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  animatePanel(
-                    h.div(
+      return DisclosurePrimitive.view(
+        {
+          id: itemDomId(model.id, item.value),
+          isOpen,
+          onToggle: (nextIsOpen) =>
+            toMessage(
+              AccordionBehavior.ToggledItem({
+                value: item.value,
+                isOpen: nextIsOpen,
+              }),
+            ),
+          ...(item.isDisabled === undefined
+            ? {}
+            : { isDisabled: item.isDisabled }),
+          toView: ({ button, panel, animatePanel }) =>
+            h.div(
+              [
+                h.DataAttribute('slot', 'accordion-item'),
+                h.Class(cn(styles.item, viewInputs.itemLayoutStyle)),
+              ],
+              [
+                h.h3(
+                  [h.Class(className(styles.triggerRow))],
+                  [
+                    h.button(
                       [
-                        ...panel,
-                        h.DataAttribute('slot', 'accordion-content'),
-                        h.Class(className(PANEL_CLASS)),
+                        ...button,
+                        h.DataAttribute('slot', 'accordion-trigger'),
+                        h.Class(cn(styles.trigger, viewInputs.triggerLayoutStyle)),
                       ],
                       [
-                        h.div(
-                          [h.Class(cn(CONTENT_CLASS, props.contentLayoutStyle))],
-                          [config.content],
+                        item.trigger,
+                        Icon.chevronDown<Msg>(
+                          { class: cn(styles.icon, isOpen && styles.iconOpen) },
+                          h,
                         ),
                       ],
                     ),
+                  ],
+                ),
+                animatePanel(
+                  h.div(
+                    [
+                      ...panel,
+                      h.DataAttribute('slot', 'accordion-content'),
+                      h.Class(className(styles.panel)),
+                    ],
+                    [
+                      h.div(
+                        [h.Class(cn(styles.content, viewInputs.contentLayoutStyle))],
+                        [item.content],
+                      ),
+                    ],
                   ),
-                ],
-              );
-            },
-          },
-          h,
-        ),
-      ];
+                ),
+              ],
+            ),
+        },
+        h,
+      )
     }),
-  );
-};
+  )
 
-/*
-Minimal wiring:
-const model = init({
-  id: 'faq',
-  type: 'single',
-  items: [{ value: 'shipping' }, { value: 'returns' }],
-})
-const [nextModel, commands, maybeToggle] = update(model, message)
-accordion({
-  model,
-  toParentMessage: message => GotAccordionMessage({ message }),
-  items: [
-    { value: 'shipping', trigger: 'Shipping', content: shippingView },
-    { value: 'returns', trigger: 'Returns', content: returnsView },
-  ],
-})
-*/
+/** Canonical StyleX Submodel view. */
+export const view = defineView<
+  AccordionBehavior.Model,
+  AccordionBehavior.Message,
+  ViewInputs
+>((model, viewInputs, h) => render(model, viewInputs, (message) => message, h))
 
+/** @deprecated Embed `view` with `h.submodel`. */
+export type AccordionProps<Msg> = ViewInputs &
+  Readonly<{
+    model: AccordionBehavior.Model
+    toParentMessage: (message: AccordionBehavior.Message) => Msg
+  }>
 
+/** @deprecated Embed `view` with `h.submodel`. */
+export const accordion = <Msg>(
+  props: AccordionProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => render(props.model, props, props.toParentMessage, h)

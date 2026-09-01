@@ -161,11 +161,7 @@ const accordionInit = (id: string): Accordion.Model =>
   Accordion.init({
     id,
     type: 'single',
-    items: [
-      { value: 'item-0', isOpen: true },
-      { value: 'item-1' },
-      { value: 'item-2' },
-    ],
+    value: ['item-0'],
   });
 
 export const init = (): Model => ({
@@ -182,18 +178,19 @@ const questionList = (
   toParentMessage: (message: Accordion.Message) => Message,
   h: HtmlBuilder<Message>,
 ): Html =>
-  Accordion.accordion<Message>(
-    {
-      model,
-      toParentMessage,
+  h.submodel({
+    slotId: model.id,
+    model,
+    view: Accordion.view,
+    viewInputs: {
       items: questions.map((item, index) => ({
         value: `item-${index}`,
         trigger: item.q,
         content: item.a,
       })),
     },
-    h,
-  );
+    toParentMessage,
+  });
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
   card<Message>(
