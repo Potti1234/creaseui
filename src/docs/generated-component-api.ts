@@ -1540,7 +1540,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "DropdownMenuProps",
       "kind": "type",
-      "signature": "DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenuItemConfig<Item>; align?: D…"
+      "signature": "DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; triggerTabindex?: number; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenuI…"
     },
     {
       "name": "dropdownMenu",
@@ -2092,19 +2092,64 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
   ],
   "menubar": [
     {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = MenubarBehavior.Model"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = MenubarBehavior.Message"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "type",
+      "signature": "OutMessage = MenubarBehavior.OutMessage"
+    },
+    {
+      "name": "init",
+      "kind": "value",
+      "signature": "init: value"
+    },
+    {
+      "name": "update",
+      "kind": "value",
+      "signature": "update: value"
+    },
+    {
       "name": "MenubarMenu",
       "kind": "type",
-      "signature": "MenubarMenu<Item extends string, Msg> = Readonly<{ id: string; label: string; model: DropdownMenu.Model; toParentMessage: (message: DropdownMenu.Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Ite…"
+      "signature": "MenubarMenu<Item extends string, Msg> = Readonly<{ id: string label: string model: DropdownMenu.Model toParentMessage: (message: DropdownMenu.Message) => Msg items: ReadonlyArray<Item> itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Item> }>"
     },
     {
       "name": "MenubarProps",
       "kind": "type",
-      "signature": "MenubarProps<Item extends string, Msg> = Readonly<{ menus: ReadonlyArray<MenubarMenu<Item, Msg>>; /** Coordinated focus/open callback used for ArrowLeft/ArrowRight menubar navigation. */ onMove?: (index: number) => Msg; activeIndex?: number; ariaLabel?: strin…"
+      "signature": "MenubarProps<Item extends string, Msg> = SharedProps<Item, Msg> & Readonly<{ model: Model toParentMessage: (message: Message) => Msg }>"
     },
     {
       "name": "menubar",
       "kind": "function",
       "signature": "menubar<Item extends string, Msg>(props: MenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "menubar",
+      "kind": "function",
+      "signature": "menubar<Item extends string, Msg>(props: LegacyMenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "menubar",
+      "kind": "function",
+      "signature": "menubar<Item extends string, Msg>(props: MenubarProps<Item, Msg> | LegacyMenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "message-scroller": [

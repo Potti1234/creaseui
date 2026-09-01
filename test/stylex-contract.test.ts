@@ -280,6 +280,19 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(stylex, /export const Model/u)
   })
 
+  it('shares Menubar roving focus while delegating menu behavior', () => {
+    const behavior = readFileSync('src/lib/menubar.ts', 'utf8')
+    const tailwind = readFileSync('src/ui/menubar.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/menubar.ts', 'utf8')
+
+    assert.match(behavior, /FocusMenubarTrigger/u)
+    assert.match(tailwind, /@\/lib\/menubar/u)
+    assert.match(stylex, /@\/lib\/menubar/u)
+    assert.match(tailwind, /DropdownMenu\.dropdownMenu/u)
+    assert.match(stylex, /DropdownMenu\.dropdownMenu/u)
+    assert.doesNotMatch(stylex, /from ['"]@\/ui\/menubar['"]/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

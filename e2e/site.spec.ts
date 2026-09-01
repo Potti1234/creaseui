@@ -1079,13 +1079,40 @@ test("menubar documents independent targeted child models", async ({
   await example.getByRole("button", { name: "File" }).click();
   const menu = example.getByRole("menu", { name: "File" });
   await expect(menu).toBeVisible();
-  await expect(menu.getByRole("menuitem", { name: /Save/u })).toContainText(
-    "⌘S",
-  );
+  const save = menu.getByRole("menuitem", { name: /Save/u });
+  await expect(save).toContainText("⌘S");
+  await expect(save).toHaveAttribute("aria-disabled", "true");
   await expect(example.locator("code")).toContainText("GotMenuMessage");
-  await expect(example.locator("code")).toContainText("MovedMenu");
+  await expect(example.locator("code")).toContainText("Menubar.update");
+  const fileTrigger = example.getByRole("button", { name: "File" });
+  await fileTrigger.focus();
+  await page.keyboard.press("ArrowRight");
+  const editTrigger = example.getByRole("button", { name: "Edit" });
+  await expect(editTrigger).toBeFocused();
+  await expect(example.getByRole("menu", { name: "Edit" })).toBeVisible();
   await page.keyboard.press("Escape");
-  await expect(menu).toBeHidden();
+  await expect(example.getByRole("menu", { name: "Edit" })).toBeHidden();
+
+  const rtl = page.locator("#rtl-switching");
+  const rtlFile = rtl.getByRole("button", { name: "File" });
+  await rtlFile.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(rtl.getByRole("button", { name: "View" })).toBeFocused();
+  await page.keyboard.press("Escape");
+
+  const nested = page.locator("#disabled-submenu");
+  await nested.getByRole("button", { name: "File" }).click();
+  await page.keyboard.press("End");
+  const exportItem = nested.getByRole("menuitem", { name: /Export/u });
+  await expect(exportItem).toHaveAttribute("data-active", "true");
+  await page.keyboard.press("ArrowRight");
+  const submenu = nested.getByRole("menu", { name: /Export/u });
+  await expect(submenu).toBeVisible();
+  await page.keyboard.press("c");
+  await expect(submenu.getByRole("menuitem", { name: "CSV" })).toHaveAttribute(
+    "data-active",
+    "true",
+  );
 });
 
 test("sidebar documents persistence and toggles derived shell state", async ({

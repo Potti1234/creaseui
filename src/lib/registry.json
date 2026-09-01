@@ -236,6 +236,19 @@
           "target": "@lib/command.ts"
         }
       ]
+    },
+    {
+      "name": "menubar-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Menubar Focus Behavior",
+      "description": "Thin top-level roving-focus model and typed movement facts for coordinated dropdown menus.",
+      "files": [
+        {
+          "path": "menubar.ts",
+          "type": "registry:lib",
+          "target": "@lib/menubar.ts"
+        }
+      ]
     }
   ]
 }

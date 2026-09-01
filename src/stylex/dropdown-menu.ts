@@ -164,6 +164,7 @@ export type DropdownMenuProps<Item extends string, Msg> = Readonly<{
   toParentMessage: (message: Message) => Msg;
   trigger: Html | string;
   triggerLayoutStyle?: ComponentLayoutStyle;
+  triggerTabindex?: number;
   items: ReadonlyArray<Item>;
   itemToConfig: (item: Item) => DropdownMenuItemConfig<Item>;
   align?: DropdownMenuAlign;
@@ -420,6 +421,7 @@ export const dropdownMenu = <Item extends string, Msg>(
                 ),
               ]),
           h.DataAttribute('slot', 'dropdown-menu-trigger'),
+          ...(props.triggerTabindex === undefined ? [] : [h.Tabindex(props.triggerTabindex)]),
           ...(props.triggerLayoutStyle === undefined
             ? []
             : [h.Class(className(props.triggerLayoutStyle))]),

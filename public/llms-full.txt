@@ -611,7 +611,7 @@ Examples: Account actions, Destructive action, Submenu and disabled action, RTL 
 - `DropdownMenuItemConfig<Item extends string = string> = Readonly<{ label: Html | string; icon?: Html; shortcut?: Html | string; variant?: 'default' | 'destructive'; kind?: 'item' | 'checkbox' | 'radio'; isChecked?: boolean; isInset?: boolean; isDisabled?: bool…` (type)
 - `DropdownMenuSide = 'top' | 'right' | 'bottom' | 'left'` (type)
 - `DropdownMenuAlign = 'start' | 'center' | 'end'` (type)
-- `DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenuItemConfig<Item>; align?: D…` (type)
+- `DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; triggerTabindex?: number; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenuI…` (type)
 - `dropdownMenu<Item extends string, Msg>(props: DropdownMenuProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Empty
@@ -823,11 +823,20 @@ A shadcn-styled Menubar component for Foldkit.
 
 Source: `src/ui/menubar.ts`
 
-Examples: Coordinated menus, Shortcut hints
+Examples: Coordinated menus, Shortcut hints, RTL switching, Disabled submenu
 
-- `MenubarMenu<Item extends string, Msg> = Readonly<{ id: string; label: string; model: DropdownMenu.Model; toParentMessage: (message: DropdownMenu.Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Ite…` (type)
-- `MenubarProps<Item extends string, Msg> = Readonly<{ menus: ReadonlyArray<MenubarMenu<Item, Msg>>; /** Coordinated focus/open callback used for ArrowLeft/ArrowRight menubar navigation. */ onMove?: (index: number) => Msg; activeIndex?: number; ariaLabel?: strin…` (type)
+- `Model: value` (value)
+- `Model = MenubarBehavior.Model` (type)
+- `Message: value` (value)
+- `Message = MenubarBehavior.Message` (type)
+- `OutMessage = MenubarBehavior.OutMessage` (type)
+- `init: value` (value)
+- `update: value` (value)
+- `MenubarMenu<Item extends string, Msg> = Readonly<{ id: string label: string model: DropdownMenu.Model toParentMessage: (message: DropdownMenu.Message) => Msg items: ReadonlyArray<Item> itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Item> }>` (type)
+- `MenubarProps<Item extends string, Msg> = SharedProps<Item, Msg> & Readonly<{ model: Model toParentMessage: (message: Message) => Msg }>` (type)
 - `menubar<Item extends string, Msg>(props: MenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `menubar<Item extends string, Msg>(props: LegacyMenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `menubar<Item extends string, Msg>(props: MenubarProps<Item, Msg> | LegacyMenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Message Scroller
 

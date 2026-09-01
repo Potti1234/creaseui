@@ -480,7 +480,7 @@ Source: [`src/ui/dropdown-menu.ts`](../src/ui/dropdown-menu.ts)
 | `DropdownMenuItemConfig` | type | `DropdownMenuItemConfig<Item extends string = string> = Readonly<{ label: Html \| string; icon?: Html; shortcut?: Html \| string; variant?: 'default' \| 'destructive'; kind?: 'item' \| 'checkbox' \| 'radio'; isChecked?: boolean; isInset?: boolean; isDisabled?: bool…` |
 | `DropdownMenuSide` | type | `DropdownMenuSide = 'top' \| 'right' \| 'bottom' \| 'left'` |
 | `DropdownMenuAlign` | type | `DropdownMenuAlign = 'start' \| 'center' \| 'end'` |
-| `DropdownMenuProps` | type | `DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenuItemConfig<Item>; align?: D…` |
+| `DropdownMenuProps` | type | `DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; triggerTabindex?: number; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenuI…` |
 | `dropdownMenu` | function | `dropdownMenu<Item extends string, Msg>(props: DropdownMenuProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Empty
@@ -670,9 +670,18 @@ Source: [`src/ui/menubar.ts`](../src/ui/menubar.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `MenubarMenu` | type | `MenubarMenu<Item extends string, Msg> = Readonly<{ id: string; label: string; model: DropdownMenu.Model; toParentMessage: (message: DropdownMenu.Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Ite…` |
-| `MenubarProps` | type | `MenubarProps<Item extends string, Msg> = Readonly<{ menus: ReadonlyArray<MenubarMenu<Item, Msg>>; /** Coordinated focus/open callback used for ArrowLeft/ArrowRight menubar navigation. */ onMove?: (index: number) => Msg; activeIndex?: number; ariaLabel?: strin…` |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = MenubarBehavior.Model` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = MenubarBehavior.Message` |
+| `OutMessage` | type | `OutMessage = MenubarBehavior.OutMessage` |
+| `init` | value | `init: value` |
+| `update` | value | `update: value` |
+| `MenubarMenu` | type | `MenubarMenu<Item extends string, Msg> = Readonly<{ id: string label: string model: DropdownMenu.Model toParentMessage: (message: DropdownMenu.Message) => Msg items: ReadonlyArray<Item> itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Item> }>` |
+| `MenubarProps` | type | `MenubarProps<Item extends string, Msg> = SharedProps<Item, Msg> & Readonly<{ model: Model toParentMessage: (message: Message) => Msg }>` |
 | `menubar` | function | `menubar<Item extends string, Msg>(props: MenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` |
+| `menubar` | function | `menubar<Item extends string, Msg>(props: LegacyMenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` |
+| `menubar` | function | `menubar<Item extends string, Msg>(props: MenubarProps<Item, Msg> \| LegacyMenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Message Scroller
 
