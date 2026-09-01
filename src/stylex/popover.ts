@@ -93,7 +93,7 @@ export const popover = <Msg>(
             ),
             ...(isVisible
               ? [
-                  hp.div([...backdrop, hp.Class(className(BACKDROP_CLASS))], []),
+                  hp.div([...backdrop, hp.DataAttribute('slot', 'popover-backdrop'), hp.Class(className(BACKDROP_CLASS))], []),
                   hp.div(
                     [
                       ...panel,
@@ -125,4 +125,3 @@ popover({
   side: 'bottom',
 })
 */
-

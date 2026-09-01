@@ -33,10 +33,10 @@ export const close = DialogPrimitive.close;
 const DIALOG_CLASS = 'bg-transparent p-0 open:flex items-center justify-center';
 
 const OVERLAY_CLASS =
-  'fixed inset-0 z-50 bg-black/50 transition duration-200 ease-out data-[closed]:opacity-0';
+  'fixed inset-0 z-50 bg-black/50 transition duration-200 ease-out motion-reduce:transition-none data-[closed]:opacity-0';
 
 const CONTENT_CLASS =
-  'bg-background relative z-50 grid w-full max-w-[calc(100%-2rem)] gap-4 rounded-lg border p-6 shadow-lg sm:max-w-lg transition duration-200 ease-out data-[closed]:opacity-0 data-[closed]:scale-95';
+  'bg-background relative z-50 grid w-full max-w-[calc(100%-2rem)] gap-4 rounded-lg border p-6 shadow-lg sm:max-w-lg transition duration-200 ease-out motion-reduce:transition-none data-[closed]:opacity-0 data-[closed]:scale-95';
 
 const HEADER_CLASS = 'flex flex-col gap-2 text-center sm:text-left';
 

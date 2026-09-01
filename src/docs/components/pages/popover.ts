@@ -79,11 +79,11 @@ export const popoverPage = authoredPage({
   previewProgram,
   definition: {
     kind: 'submodel', description: 'Displays interactive content in a floating panel anchored to a trigger.',
-    architecture: 'Popover is a Foldkit child Model rendered with h.submodel. Its Message drives disclosure, anchored positioning, outside-click dismissal, focus movement, and animation commands.',
+    architecture: 'Popover directly wraps the canonical Foldkit interaction Submodel in both skins. Its child Model owns disclosure, anchor, dismissal, transition, and transient focus behavior; domain content remains per-render and visibility facts return through OutMessages.',
     apiHref: 'https://foldkit.dev/ui/popover',
     composition: 'Popover submodel\n├── trigger button / anchor\n├── optional backdrop\n└── positioned panel\n    └── interactive content',
     styling: 'Choose side and alignment as view configuration. The positioning engine can still flip or shift the panel to remain visible near viewport edges.',
-    accessibility: 'The primitive connects trigger state and panel behavior. Set contentFocus when the panel contains controls; Escape and outside interaction dismiss it and return focus appropriately.',
+    accessibility: 'The primitive connects trigger state and deterministic panel IDs. Set contentFocus when the panel contains controls; Escape and outside interaction dismiss it and restore focus. Collision-aware placement stays within the viewport, and both skins disable overlay transitions for reduced motion.',
     keyboard: [['Enter / Space', 'Opens or closes the anchored panel.'], ['Tab', 'Moves into interactive popover content when contentFocus is enabled.'], ['Escape', 'Closes the panel and restores trigger focus.']],
     examples: [
       { title: 'Interactive content', description: 'A bottom-start panel whose child update and effect commands are delegated by the parent.',  code: source('Interactive content', 'bottom', 'start') },

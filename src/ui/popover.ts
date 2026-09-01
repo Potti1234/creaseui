@@ -21,7 +21,7 @@ export const open = PopoverPrimitive.open;
 export const close = PopoverPrimitive.close;
 
 const CONTENT_CLASS =
-  'z-50 w-72 origin-(--radix-popover-content-transform-origin) rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-hidden data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 transition duration-200 ease-out data-[closed]:opacity-0 data-[closed]:scale-95';
+  'z-50 w-72 origin-(--radix-popover-content-transform-origin) rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-hidden data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 transition duration-200 ease-out motion-reduce:transition-none data-[closed]:opacity-0 data-[closed]:scale-95';
 
 const BACKDROP_CLASS = 'fixed inset-0 z-40';
 
@@ -80,7 +80,7 @@ export const popover = <Msg>(
             ),
             ...(isVisible
               ? [
-                  hp.div([...backdrop, hp.Class(BACKDROP_CLASS)], []),
+                  hp.div([...backdrop, hp.DataAttribute('slot', 'popover-backdrop'), hp.Class(BACKDROP_CLASS)], []),
                   hp.div(
                     [
                       ...panel,

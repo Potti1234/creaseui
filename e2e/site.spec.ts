@@ -691,9 +691,30 @@ test("popover delegates disclosure commands and restores trigger focus", async (
   // Foldkit's anchor layer portals positioned content outside the example article.
   const panel = page.locator('[data-slot="popover-content"]');
   await expect(panel).toBeVisible();
+  await expect(trigger).toHaveAttribute("id", "docs-popover-0-button");
+  await expect(trigger).toHaveAttribute("aria-controls", "docs-popover-0-panel");
+  await expect(panel).toHaveAttribute("id", "docs-popover-0-panel");
   await expect(panel).toContainText("Set the dimensions");
+  const panelBox = await panel.boundingBox();
+  const viewport = page.viewportSize();
+  expect(panelBox).not.toBeNull();
+  expect(viewport).not.toBeNull();
+  expect(panelBox!.x).toBeGreaterThanOrEqual(0);
+  expect(panelBox!.y).toBeGreaterThanOrEqual(0);
+  expect(panelBox!.x + panelBox!.width).toBeLessThanOrEqual(viewport!.width);
+  expect(panelBox!.y + panelBox!.height).toBeLessThanOrEqual(viewport!.height);
   await expect(example.locator("code")).toContainText("Command.mapMessages");
   await page.keyboard.press("Escape");
+  await expect(panel).toBeHidden();
+  await expect(trigger).toBeFocused();
+
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await trigger.click();
+  await expect(panel).toBeVisible();
+  await expect(panel).toHaveCSS("transition-property", "none");
+  await page.locator('[data-slot="popover-backdrop"]').click({
+    position: { x: 2, y: viewport!.height - 2 },
+  });
   await expect(panel).toBeHidden();
   await expect(trigger).toBeFocused();
 });
