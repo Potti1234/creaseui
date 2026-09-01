@@ -26,6 +26,7 @@ import * as ChartsRadial from "@/demo/charts/radial";
 import * as ChartsTooltip from "@/demo/charts/tooltip";
 import * as ChartsStyleX from "@/demo/charts-stylex/page";
 import * as ComponentCatalog from "@/docs/components/catalog";
+import "@/docs/components/stylex-integration";
 import * as Page from "@/app/page";
 import * as Icon from "@/lib/icon";
 import {

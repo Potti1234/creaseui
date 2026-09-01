@@ -1,8 +1,15 @@
 import * as stylex from "@stylexjs/stylex";
 import type { Html, HtmlBuilder } from "foldkit/html";
+import {
+  type ControlFieldProps as SharedControlFieldProps,
+  type FieldError,
+  fieldErrorMessages,
+  renderControlField,
+} from "@/lib/field";
 import type { ComponentLayoutStyle } from "./contracts";
 import { className } from "./style";
 import { tokens } from "./tokens.stylex";
+export type { ControlFieldParts, FieldError } from "@/lib/field";
 export type FieldVariants = Readonly<{
   orientation?: "vertical" | "horizontal" | "responsive" | null;
 }>;
@@ -133,6 +140,35 @@ export const fieldGroup = <Msg>(
   );
 export const fieldVariants = (o: FieldVariants = {}): string =>
   className(styles.field, styles[o.orientation ?? "vertical"]);
+export type ControlFieldProps<Msg> = SharedControlFieldProps<Msg> &
+  Readonly<{ layoutStyle?: ComponentLayoutStyle }>;
+export const controlField = <Msg>(
+  p: ControlFieldProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const orientation = p.orientation ?? "vertical";
+  return renderControlField(
+    p,
+    {
+      field: [
+        h.Class(
+          className(
+            styles.field,
+            styles[orientation],
+            (p.isInvalid === true || p.error !== undefined || fieldErrorMessages(p.errors).length > 0) && styles.invalid,
+            p.isDisabled && styles.disabled,
+            p.layoutStyle,
+          ),
+        ),
+      ],
+      label: [h.Class(className(styles.label))],
+      description: [h.Class(className(styles.description))],
+      error: [h.Class(className(styles.error))],
+      errorList: [h.Class(className(styles.errorList))],
+    },
+    h,
+  );
+};
 export type FieldProps = Slot &
   Readonly<{
     orientation?: FieldVariants["orientation"];
@@ -237,7 +273,6 @@ export const fieldSeparator = <Msg>(
     ],
   );
 };
-export type FieldError = Readonly<{ message?: string }> | undefined;
 export type FieldErrorProps = Readonly<{
   layoutStyle?: ComponentLayoutStyle;
   children?: ReadonlyArray<Html | string>;
@@ -248,13 +283,7 @@ export const fieldError = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   const children = p.children ?? [],
-    messages = [
-      ...new Set(
-        (p.errors ?? []).flatMap((error) =>
-          error?.message === undefined ? [] : [error.message],
-        ),
-      ),
-    ];
+    messages = fieldErrorMessages(p.errors);
   if (children.length === 0 && messages.length === 0) return h.empty;
   const content =
     children.length > 0
@@ -276,4 +305,3 @@ export const fieldError = <Msg>(
     content,
   );
 };
-

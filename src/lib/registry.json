@@ -119,6 +119,19 @@
           "target": "@lib/textarea.ts"
         }
       ]
+    },
+    {
+      "name": "field-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Field Behavior",
+      "description": "Skin-neutral deterministic field parts, validation normalization, and accessible controlled-field composition.",
+      "files": [
+        {
+          "path": "field.ts",
+          "type": "registry:lib",
+          "target": "@lib/field.ts"
+        }
+      ]
     }
   ]
 }

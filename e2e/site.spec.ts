@@ -1100,6 +1100,60 @@ test("controlled helper pages own and update compact local preview state", async
   await expect(code).toHaveValue("654321");
 });
 
+test("field guarantees linked parts and documents stale async validation", async ({
+  page,
+}) => {
+  await page.goto("/docs/components/field");
+
+  const anatomy = page
+    .locator("#anatomy")
+    .getByRole("textbox", { name: "Display name" });
+  await anatomy.fill("Ada Lovelace");
+  await expect(anatomy).toHaveValue("Ada Lovelace");
+  await expect(anatomy).toHaveAttribute(
+    "aria-describedby",
+    "docs-field-name-description",
+  );
+  await expect(page.locator("#docs-field-name-description")).toContainText(
+    "public profile",
+  );
+
+  const invalid = page
+    .locator("#validation-error")
+    .getByRole("textbox", { name: "Display name" });
+  await expect(invalid).toHaveAttribute("aria-invalid", "true");
+  await expect(invalid).toHaveAttribute(
+    "aria-describedby",
+    "docs-field-error-error",
+  );
+  await expect(page.locator("#docs-field-error-error")).toHaveRole("alert");
+
+  const asyncSection = page.locator("#async-validation");
+  const username = asyncSection.getByRole("textbox", { name: "Username" });
+  await expect(username).toHaveAttribute(
+    "aria-describedby",
+    "docs-field-username-description docs-field-username-error",
+  );
+  await username.fill("ada");
+  await expect(asyncSection.getByRole("alert")).toBeHidden();
+  await expect(asyncSection).toContainText(
+    "message.version === model.validationVersion",
+  );
+  await assertAccessible(page);
+
+  await page
+    .getByRole("group", { name: "Preview styling engine" })
+    .getByRole("button", { name: "StyleX" })
+    .click();
+  const stylexField = page.getByRole("textbox", { name: "Repository" });
+  await expect(stylexField).toHaveValue("creaseui");
+  await expect(stylexField).toHaveAttribute(
+    "aria-describedby",
+    "stylex-field-description",
+  );
+  await assertAccessible(page);
+});
+
 test("flagship documentation pages have no automated accessibility violations", async ({
   page,
 }) => {

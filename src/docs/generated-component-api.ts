@@ -1587,6 +1587,16 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
   ],
   "field": [
     {
+      "name": "ControlFieldParts",
+      "kind": "re-export",
+      "signature": "export { ControlFieldParts } from '@/lib/field'"
+    },
+    {
+      "name": "FieldError",
+      "kind": "re-export",
+      "signature": "export { FieldError } from '@/lib/field'"
+    },
+    {
       "name": "FieldSetProps",
       "kind": "type",
       "signature": "FieldSetProps = Slot & Readonly<{ isDisabled?: boolean }>"
@@ -1625,6 +1635,16 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "FieldVariants",
       "kind": "type",
       "signature": "FieldVariants = VariantProps<typeof fieldVariants>"
+    },
+    {
+      "name": "ControlFieldProps",
+      "kind": "type",
+      "signature": "ControlFieldProps<Msg> = SharedControlFieldProps<Msg> & Readonly<{ class?: string }>"
+    },
+    {
+      "name": "controlField",
+      "kind": "function",
+      "signature": "controlField<Msg>(props: ControlFieldProps<Msg>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "FieldProps",
@@ -1670,11 +1690,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "fieldSeparator",
       "kind": "function",
       "signature": "fieldSeparator<Msg>(props: FieldSeparatorProps = {}, h: HtmlBuilder<Msg>): Html"
-    },
-    {
-      "name": "FieldError",
-      "kind": "type",
-      "signature": "FieldError = Readonly<{ message?: string }> | undefined"
     },
     {
       "name": "FieldErrorProps",

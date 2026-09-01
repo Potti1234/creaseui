@@ -503,6 +503,8 @@ Source: [`src/ui/field.ts`](../src/ui/field.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
+| `ControlFieldParts` | re-export | `export { ControlFieldParts } from '@/lib/field'` |
+| `FieldError` | re-export | `export { FieldError } from '@/lib/field'` |
 | `FieldSetProps` | type | `FieldSetProps = Slot & Readonly<{ isDisabled?: boolean }>` |
 | `fieldSet` | function | `fieldSet<Msg>(props: FieldSetProps, h: HtmlBuilder<Msg>): Html` |
 | `FieldLegendProps` | type | `FieldLegendProps = Slot & Readonly<{ variant?: 'legend' \| 'label' }>` |
@@ -511,6 +513,8 @@ Source: [`src/ui/field.ts`](../src/ui/field.ts)
 | `fieldGroup` | function | `fieldGroup<Msg>(props: FieldGroupProps, h: HtmlBuilder<Msg>): Html` |
 | `fieldVariants` | value | `fieldVariants: value` |
 | `FieldVariants` | type | `FieldVariants = VariantProps<typeof fieldVariants>` |
+| `ControlFieldProps` | type | `ControlFieldProps<Msg> = SharedControlFieldProps<Msg> & Readonly<{ class?: string }>` |
+| `controlField` | function | `controlField<Msg>(props: ControlFieldProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `FieldProps` | type | `FieldProps = Slot & Readonly<{ orientation?: FieldVariants['orientation']; isInvalid?: boolean; isDisabled?: boolean; }>` |
 | `field` | function | `field<Msg>(props: FieldProps, h: HtmlBuilder<Msg>): Html` |
 | `fieldContent` | function | `fieldContent<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
@@ -520,7 +524,6 @@ Source: [`src/ui/field.ts`](../src/ui/field.ts)
 | `fieldDescription` | function | `fieldDescription<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
 | `FieldSeparatorProps` | type | `FieldSeparatorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html \| string>; }>` |
 | `fieldSeparator` | function | `fieldSeparator<Msg>(props: FieldSeparatorProps = {}, h: HtmlBuilder<Msg>): Html` |
-| `FieldError` | type | `FieldError = Readonly<{ message?: string }> \| undefined` |
 | `FieldErrorProps` | type | `FieldErrorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html \| string>; errors?: ReadonlyArray<FieldError>; }>` |
 | `fieldError` | function | `fieldError<Msg>(props: FieldErrorProps = {}, h: HtmlBuilder<Msg>): Html` |
 

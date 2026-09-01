@@ -82,6 +82,16 @@ describe('StyleX component authoring contract', () => {
     assert.match(stylex, /renderTextarea\(/u)
   })
 
+  it('keeps Field behavior in the skin-neutral behavior module', () => {
+    const tailwind = readFileSync('src/ui/field.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/field.ts', 'utf8')
+
+    assert.match(tailwind, /from '@\/lib\/field'/u)
+    assert.match(stylex, /from "@\/lib\/field"/u)
+    assert.doesNotMatch(stylex, /from ['"]@\/ui\/field['"]/u)
+    assert.match(stylex, /renderControlField\(/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

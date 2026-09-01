@@ -1,7 +1,15 @@
 import { type VariantProps, cva } from 'class-variance-authority';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 
+import {
+  type ControlFieldProps as SharedControlFieldProps,
+  type FieldError,
+  fieldErrorMessages,
+  renderControlField,
+} from '@/lib/field';
 import { cn } from '@/lib/utils';
+
+export type { ControlFieldParts, FieldError } from '@/lib/field';
 
 /* Ported from shadcn/ui field.tsx as structural foldkit view functions.
    Stateful selectors are adapted to foldkit's valueless data-disabled and
@@ -106,6 +114,27 @@ export const fieldVariants = cva(
 );
 
 export type FieldVariants = VariantProps<typeof fieldVariants>;
+
+export type ControlFieldProps<Msg> = SharedControlFieldProps<Msg> &
+  Readonly<{ class?: string }>;
+
+export const controlField = <Msg>(
+  props: ControlFieldProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const orientation = props.orientation ?? 'vertical';
+  return renderControlField(
+    props,
+    {
+      field: [h.Class(cn(fieldVariants({ orientation }), props.class))],
+      label: [h.Class(LABEL_CLASS)],
+      description: [h.Class('text-sm leading-normal font-normal text-muted-foreground')],
+      error: [h.Class('text-sm font-normal text-destructive')],
+      errorList: [h.Class('ml-4 flex list-disc flex-col gap-1')],
+    },
+    h,
+  );
+};
 
 export type FieldProps = Slot &
   Readonly<{
@@ -261,8 +290,6 @@ export const fieldSeparator = <Msg>(
   );
 };
 
-export type FieldError = Readonly<{ message?: string }> | undefined;
-
 export type FieldErrorProps = Readonly<{
   class?: string;
   children?: ReadonlyArray<Html | string>;
@@ -274,13 +301,7 @@ export const fieldError = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   const children = props.children ?? [];
-  const messages = [
-    ...new Set(
-      (props.errors ?? []).flatMap((error) =>
-        error?.message === undefined ? [] : [error.message],
-      ),
-    ),
-  ];
+  const messages = fieldErrorMessages(props.errors);
 
   if (children.length === 0 && messages.length === 0) {
     return h.empty;

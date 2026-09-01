@@ -638,6 +638,8 @@ Source: `src/ui/field.ts`
 
 Examples: Timed notification, Sticky error
 
+- `export { ControlFieldParts } from '@/lib/field'` (re-export)
+- `export { FieldError } from '@/lib/field'` (re-export)
 - `FieldSetProps = Slot & Readonly<{ isDisabled?: boolean }>` (type)
 - `fieldSet<Msg>(props: FieldSetProps, h: HtmlBuilder<Msg>): Html` (function)
 - `FieldLegendProps = Slot & Readonly<{ variant?: 'legend' | 'label' }>` (type)
@@ -646,6 +648,8 @@ Examples: Timed notification, Sticky error
 - `fieldGroup<Msg>(props: FieldGroupProps, h: HtmlBuilder<Msg>): Html` (function)
 - `fieldVariants: value` (value)
 - `FieldVariants = VariantProps<typeof fieldVariants>` (type)
+- `ControlFieldProps<Msg> = SharedControlFieldProps<Msg> & Readonly<{ class?: string }>` (type)
+- `controlField<Msg>(props: ControlFieldProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `FieldProps = Slot & Readonly<{ orientation?: FieldVariants['orientation']; isInvalid?: boolean; isDisabled?: boolean; }>` (type)
 - `field<Msg>(props: FieldProps, h: HtmlBuilder<Msg>): Html` (function)
 - `fieldContent<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
@@ -655,7 +659,6 @@ Examples: Timed notification, Sticky error
 - `fieldDescription<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
 - `FieldSeparatorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html | string>; }>` (type)
 - `fieldSeparator<Msg>(props: FieldSeparatorProps = {}, h: HtmlBuilder<Msg>): Html` (function)
-- `FieldError = Readonly<{ message?: string }> | undefined` (type)
 - `FieldErrorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html | string>; errors?: ReadonlyArray<FieldError>; }>` (type)
 - `fieldError<Msg>(props: FieldErrorProps = {}, h: HtmlBuilder<Msg>): Html` (function)
 

@@ -2057,6 +2057,7 @@
       "dependencies": [
         "class-variance-authority@^0.7.1",
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/field-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -2064,6 +2065,16 @@
         "Sticky error"
       ],
       "api": [
+        {
+          "name": "ControlFieldParts",
+          "kind": "re-export",
+          "signature": "export { ControlFieldParts } from '@/lib/field'"
+        },
+        {
+          "name": "FieldError",
+          "kind": "re-export",
+          "signature": "export { FieldError } from '@/lib/field'"
+        },
         {
           "name": "FieldSetProps",
           "kind": "type",
@@ -2103,6 +2114,16 @@
           "name": "FieldVariants",
           "kind": "type",
           "signature": "FieldVariants = VariantProps<typeof fieldVariants>"
+        },
+        {
+          "name": "ControlFieldProps",
+          "kind": "type",
+          "signature": "ControlFieldProps<Msg> = SharedControlFieldProps<Msg> & Readonly<{ class?: string }>"
+        },
+        {
+          "name": "controlField",
+          "kind": "function",
+          "signature": "controlField<Msg>(props: ControlFieldProps<Msg>, h: HtmlBuilder<Msg>): Html"
         },
         {
           "name": "FieldProps",
@@ -2148,11 +2169,6 @@
           "name": "fieldSeparator",
           "kind": "function",
           "signature": "fieldSeparator<Msg>(props: FieldSeparatorProps = {}, h: HtmlBuilder<Msg>): Html"
-        },
-        {
-          "name": "FieldError",
-          "kind": "type",
-          "signature": "FieldError = Readonly<{ message?: string }> | undefined"
         },
         {
           "name": "FieldErrorProps",
