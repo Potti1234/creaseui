@@ -292,6 +292,7 @@
       "title": "Checkbox",
       "description": "A shadcn-styled Checkbox component for Foldkit.",
       "registryDependencies": [
+        "Potti1234/creaseui/checkbox-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"

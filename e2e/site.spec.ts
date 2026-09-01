@@ -1100,6 +1100,50 @@ test("controlled helper pages own and update compact local preview state", async
   await expect(code).toHaveValue("654321");
 });
 
+test("checkbox shares controlled mixed, read-only, and form semantics", async ({
+  page,
+}) => {
+  await page.goto("/docs/components/checkbox");
+
+  const terms = page
+    .locator("#terms")
+    .getByRole("checkbox", { name: "Accept terms" });
+  const formValue = page.locator('#terms input[type="hidden"][name="terms"]');
+  await expect(terms).toHaveAttribute(
+    "aria-describedby",
+    "docs-checkbox-0-description",
+  );
+  await expect(formValue).toHaveValue("");
+  await terms.press("Space");
+  await expect(terms).toBeChecked();
+  await expect(formValue).toHaveValue("accepted");
+
+  await expect(
+    page.locator("#indeterminate").getByRole("checkbox", {
+      name: "Select all components",
+    }),
+  ).toHaveAttribute("aria-checked", "mixed");
+
+  const readOnly = page
+    .locator("#read-only")
+    .getByRole("checkbox", { name: "Account verified" });
+  await expect(readOnly).toHaveAttribute("aria-readonly", "true");
+  await readOnly.press("Space");
+  await expect(readOnly).toBeChecked();
+  await assertAccessible(page);
+
+  await page
+    .getByRole("group", { name: "Preview styling engine" })
+    .getByRole("button", { name: "StyleX" })
+    .click();
+  const stylexCheckbox = page.getByRole("checkbox", {
+    name: "Use semantic tokens",
+  });
+  await expect(stylexCheckbox).toBeChecked();
+  await expect(stylexCheckbox).not.toHaveAttribute("aria-describedby");
+  await assertAccessible(page);
+});
+
 test("field guarantees linked parts and documents stale async validation", async ({
   page,
 }) => {

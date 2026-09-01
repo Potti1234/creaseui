@@ -103,6 +103,16 @@ describe('StyleX component authoring contract', () => {
     assert.match(stylex, /renderErrorSummary\(/u)
   })
 
+  it('keeps Checkbox behavior in the skin-neutral behavior module', () => {
+    const tailwind = readFileSync('src/ui/checkbox.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/checkbox.ts', 'utf8')
+
+    assert.match(tailwind, /from '@\/lib\/checkbox'/u)
+    assert.match(stylex, /from '@\/lib\/checkbox'/u)
+    assert.doesNotMatch(stylex, /from ['"]@\/ui\/checkbox['"]/u)
+    assert.match(stylex, /renderCheckbox\(/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

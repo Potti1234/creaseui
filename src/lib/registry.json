@@ -145,6 +145,19 @@
           "target": "@lib/form.ts"
         }
       ]
+    },
+    {
+      "name": "checkbox-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Checkbox Behavior",
+      "description": "Skin-neutral controlled checkbox, mixed-state, read-only, labeling, and form-value semantics.",
+      "files": [
+        {
+          "path": "checkbox.ts",
+          "type": "registry:lib",
+          "target": "@lib/checkbox.ts"
+        }
+      ]
     }
   ]
 }

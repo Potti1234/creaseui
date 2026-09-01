@@ -377,7 +377,7 @@ Source: `src/ui/checkbox.ts`
 
 Examples: Timed notification, Sticky error
 
-- `CheckboxProps<Msg> = Readonly<{ id: string; isChecked: boolean; onToggle: (isChecked: boolean) => Msg; label: string; description?: string; isDisabled?: boolean; isIndeterminate?: boolean; name?: string; value?: string; class?: string; }>` (type)
+- `CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> & Readonly<{ class?: string }>` (type)
 - `checkbox<Msg>(props: CheckboxProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Collapsible

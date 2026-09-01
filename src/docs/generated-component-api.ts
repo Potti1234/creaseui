@@ -800,7 +800,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "CheckboxProps",
       "kind": "type",
-      "signature": "CheckboxProps<Msg> = Readonly<{ id: string; isChecked: boolean; onToggle: (isChecked: boolean) => Msg; label: string; description?: string; isDisabled?: boolean; isIndeterminate?: boolean; name?: string; value?: string; class?: string; }>"
+      "signature": "CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> & Readonly<{ class?: string }>"
     },
     {
       "name": "checkbox",

@@ -1,8 +1,10 @@
 import type { Html, HtmlBuilder } from 'foldkit/html';
 
-import { Checkbox as CheckboxPrimitive } from '@foldkit/ui';
-
 import * as Icon from '@/lib/icon';
+import {
+  type CheckboxBehaviorProps,
+  renderCheckbox,
+} from '@/lib/checkbox';
 import { cn } from '@/lib/utils';
 
 const CHECKBOX_CLASS =
@@ -16,77 +18,26 @@ const LABEL_CLASS =
 
 const DESCRIPTION_CLASS = 'text-muted-foreground text-sm';
 
-export type CheckboxProps<Msg> = Readonly<{
-  id: string;
-  isChecked: boolean;
-  onToggle: (isChecked: boolean) => Msg;
-  label: string;
-  description?: string;
-  isDisabled?: boolean;
-  isIndeterminate?: boolean;
-  name?: string;
-  value?: string;
-  class?: string;
-}>;
+export type CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> &
+  Readonly<{ class?: string }>;
 
 export const checkbox = <Msg>(
   props: CheckboxProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  return CheckboxPrimitive.view(
+  return renderCheckbox(
+    props,
     {
-      id: props.id,
-      isChecked: props.isChecked,
-      onToggle: props.onToggle,
-      isDisabled: props.isDisabled ?? false,
-      isIndeterminate: props.isIndeterminate ?? false,
-      ...(props.name === undefined ? {} : { name: props.name }),
-      ...(props.value === undefined ? {} : { value: props.value }),
-      toView: ({
-        checkbox: checkboxAttributes,
-        label,
-        description,
-        hiddenInput,
-      }) => {
-        return h.div(
-          [h.Class('flex items-start gap-2')],
-          [
-            h.button(
-              [
-                ...checkboxAttributes,
-                h.Type('button'),
-                h.DataAttribute('slot', 'checkbox'),
-                h.Class(cn(CHECKBOX_CLASS, props.class)),
-              ],
-              [
-                h.span(
-                  [
-                    h.DataAttribute('slot', 'checkbox-indicator'),
-                    h.Class(INDICATOR_CLASS),
-                  ],
-                  [Icon.check<Msg>({ class: 'size-3.5' }, h)],
-                ),
-              ],
-            ),
-            h.div(
-              [h.Class('grid gap-1.5')],
-              [
-                h.label([...label, h.Class(LABEL_CLASS)], [props.label]),
-                ...(props.description === undefined
-                  ? []
-                  : [
-                      h.p(
-                        [...description, h.Class(DESCRIPTION_CLASS)],
-                        [props.description],
-                      ),
-                    ]),
-              ],
-            ),
-            ...(props.name === undefined ? [] : [h.input([...hiddenInput])]),
-          ],
-        );
-      },
+      root: [h.Class('flex items-start gap-2')],
+      control: [h.Class(cn(CHECKBOX_CLASS, props.class))],
+      indicator: [h.Class(INDICATOR_CLASS)],
+      text: [h.Class('grid gap-1.5')],
+      label: [h.Class(LABEL_CLASS)],
+      description: [h.Class(DESCRIPTION_CLASS)],
     },
+    props.isIndeterminate === true
+      ? Icon.minus<Msg>({ class: 'size-3.5' }, h)
+      : Icon.check<Msg>({ class: 'size-3.5' }, h),
     h,
   );
 };

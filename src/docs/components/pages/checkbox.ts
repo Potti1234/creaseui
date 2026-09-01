@@ -10,9 +10,9 @@ const ToggledPreview = m('ToggledCheckboxPreview', { isChecked: S.Boolean });
 type PreviewMessage = typeof ToggledPreview.Type;
 const previewProgram = definePreviewProgram<PreviewModel, PreviewMessage>({
   Model: PreviewModel, Message: ToggledPreview,
-  init: index => ({ _docsPage: 'checkbox', isChecked: index === 2 }),
+  init: index => ({ _docsPage: 'checkbox', isChecked: index >= 2 }),
   update: (model, message) => [{ ...model, isChecked: message.isChecked }, []],
-  view: (index, model, h) => Checkbox.checkbox({ id: `docs-checkbox-${String(index)}`, isChecked: index === 2 ? true : model.isChecked, onToggle: isChecked => ToggledPreview({ isChecked }), label: index === 0 ? 'Accept terms' : index === 1 ? 'Select all components' : 'Managed by organization', ...(index === 0 ? { description: 'Required before creating the account.' } : {}), ...(index === 1 ? { isIndeterminate: true } : {}), ...(index === 2 ? { isDisabled: true } : {}) }, h),
+  view: (index, model, h) => Checkbox.checkbox({ id: `docs-checkbox-${String(index)}`, isChecked: model.isChecked, onToggle: isChecked => ToggledPreview({ isChecked }), label: index === 0 ? 'Accept terms' : index === 1 ? 'Select all components' : index === 2 ? 'Managed by organization' : 'Account verified', ...(index === 0 ? { description: 'Required before creating the account.', name: 'terms', value: 'accepted' } : {}), ...(index === 1 ? { isIndeterminate: true } : {}), ...(index === 2 ? { isDisabled: true } : {}), ...(index === 3 ? { isReadOnly: true, description: 'This status is supplied by your identity provider.' } : {}) }, h),
 });
 
 const source = (name: string, initialValue: boolean, config: string): string => controlledBooleanApplication({
@@ -23,6 +23,8 @@ const source = (name: string, initialValue: boolean, config: string): string => 
   isChecked: model.isAccepted,
   onToggle: isChecked => ToggledAcceptance({ isChecked }),
   label: 'Accept terms',
+  name: 'terms',
+  value: 'accepted',
   ${config}
 }, h),`,
 });
@@ -32,10 +34,10 @@ export const checkboxPage = authoredPage({
   previewProgram,
   definition: {
     kind: 'helper', description: 'Controls an independent boolean choice with linked labeling and optional form submission.',
-    architecture: 'Checkbox is a stateless controlled helper. Store the boolean in the parent Model and return a typed Message from onToggle.',
+    architecture: 'Checkbox is a stateless controlled helper over the Foldkit Checkbox primitive. Store checked and indeterminate policy in the parent Model and return a typed Message from onToggle; both visual skins use the same primitive adapter.',
     apiHref: 'https://foldkit.dev/ui/checkbox',
     styling: 'The indicator and focus state are supplied by the helper. Use description for consequences or additional context.',
-    accessibility: 'The label activates the control and checked, indeterminate, disabled, and invalid states are exposed through Foldkit’s attribute bundle.',
+    accessibility: 'The label activates the control. Checked, indeterminate, disabled, read-only, and invalid states are exposed through Foldkit’s attribute bundle, and aria-describedby is emitted only when the description exists.',
     keyboard: [['Space', 'Toggles the focused checkbox.']],
     examples: [
       {
@@ -52,6 +54,12 @@ export const checkboxPage = authoredPage({
         title: 'Disabled', description: 'Disabled state remains visible and labeled but cannot dispatch a toggle Message.',
 
         code: source('Disabled', true, `isDisabled: true,`),
+      },
+      {
+        title: 'Read only', description: 'Use read-only when the state remains relevant information but cannot be changed here.',
+
+        code: source('Read only', true, `isReadOnly: true,
+  description: 'This status is supplied by your identity provider.',`),
       },
     ],
   },

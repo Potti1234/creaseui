@@ -1066,6 +1066,7 @@
       "source": "src/ui/checkbox.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/checkbox",
       "dependencies": [
+        "Potti1234/creaseui/checkbox-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -1078,7 +1079,7 @@
         {
           "name": "CheckboxProps",
           "kind": "type",
-          "signature": "CheckboxProps<Msg> = Readonly<{ id: string; isChecked: boolean; onToggle: (isChecked: boolean) => Msg; label: string; description?: string; isDisabled?: boolean; isIndeterminate?: boolean; name?: string; value?: string; class?: string; }>"
+          "signature": "CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> & Readonly<{ class?: string }>"
         },
         {
           "name": "checkbox",

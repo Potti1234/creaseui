@@ -266,7 +266,7 @@ Source: [`src/ui/checkbox.ts`](../src/ui/checkbox.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `CheckboxProps` | type | `CheckboxProps<Msg> = Readonly<{ id: string; isChecked: boolean; onToggle: (isChecked: boolean) => Msg; label: string; description?: string; isDisabled?: boolean; isIndeterminate?: boolean; name?: string; value?: string; class?: string; }>` |
+| `CheckboxProps` | type | `CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> & Readonly<{ class?: string }>` |
 | `checkbox` | function | `checkbox<Msg>(props: CheckboxProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Collapsible
