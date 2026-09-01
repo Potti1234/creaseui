@@ -189,7 +189,11 @@ const codePanel = <Msg>(title: string, code: string, h: HtmlBuilder<Msg>): Html 
   h.section([h.Class('min-w-0 overflow-hidden rounded-xl border bg-card')], [
     h.div([h.Class('border-b px-4 py-3 text-xs font-medium')], [title]),
     h.pre(
-      [h.Class('overflow-x-auto p-4 text-xs leading-5 text-muted-foreground')],
+      [
+        h.Tabindex(0),
+        h.AriaLabel(`${title} code`),
+        h.Class('overflow-x-auto p-4 text-xs leading-5 text-muted-foreground'),
+      ],
       [h.code([], [code])],
     ),
   ])
