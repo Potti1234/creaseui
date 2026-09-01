@@ -33,6 +33,8 @@ export const init = PopoverPrimitive.init;
 export const update = PopoverPrimitive.update;
 export const open = PopoverPrimitive.open;
 export const close = PopoverPrimitive.close;
+export const RequestedOpen = PopoverPrimitive.RequestedOpen;
+export const RequestedClose = PopoverPrimitive.RequestedClose;
 
 const CONTENT_CLASS = styles.content
 

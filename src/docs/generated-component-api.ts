@@ -2255,14 +2255,19 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
   ],
   "navigation-menu": [
     {
+      "name": "NavigationMenuLayout",
+      "kind": "type",
+      "signature": "NavigationMenuLayout = 'inline' | 'scroll' | 'responsive'"
+    },
+    {
       "name": "navigationMenu",
       "kind": "function",
-      "signature": "navigationMenu<Msg>(props: Slot & Readonly<{ ariaLabel?: string }>, h: HtmlBuilder<Msg>): Html"
+      "signature": "navigationMenu<Msg>(props: Slot & Readonly<{ ariaLabel?: string; direction?: 'ltr' | 'rtl'; layout?: NavigationMenuLayout }>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "navigationMenuList",
       "kind": "function",
-      "signature": "navigationMenuList<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html"
+      "signature": "navigationMenuList<Msg>(props: Slot & Readonly<{ layout?: NavigationMenuLayout }>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "navigationMenuItem",
@@ -2277,7 +2282,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "NavigationMenuDisclosureProps",
       "kind": "type",
-      "signature": "NavigationMenuDisclosureProps<Msg> = Readonly<{ model: Popover.Model; toParentMessage: (message: Popover.Message) => Msg; label: string; content: Html | string; class?: string; ariaLabel?: string; }>"
+      "signature": "NavigationMenuDisclosureProps<Msg> = Readonly<{ model: Popover.Model; toParentMessage: (message: Popover.Message) => Msg; label: string; content: Html | string; class?: string; ariaLabel?: string; pointerIntent?: 'press' | 'hover-and-press'; }>"
     },
     {
       "name": "navigationMenuDisclosure",
@@ -2387,6 +2392,16 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "close",
       "kind": "value",
       "signature": "close: value"
+    },
+    {
+      "name": "RequestedOpen",
+      "kind": "value",
+      "signature": "RequestedOpen: value"
+    },
+    {
+      "name": "RequestedClose",
+      "kind": "value",
+      "signature": "RequestedClose: value"
     },
     {
       "name": "PopoverSide",

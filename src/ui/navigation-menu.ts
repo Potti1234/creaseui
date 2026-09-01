@@ -9,17 +9,21 @@ type Slot = Readonly<{
   children: ReadonlyArray<Html | string>;
 }>;
 
+export type NavigationMenuLayout = 'inline' | 'scroll' | 'responsive';
+
 export const navigationMenu = <Msg>(
-  props: Slot & Readonly<{ ariaLabel?: string }>,
+  props: Slot & Readonly<{ ariaLabel?: string; direction?: 'ltr' | 'rtl'; layout?: NavigationMenuLayout }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
   return h.nav(
     [
       h.DataAttribute('slot', 'navigation-menu'),
       h.AriaLabel(props.ariaLabel ?? 'Main'),
+      ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
+      h.DataAttribute('layout', props.layout ?? 'inline'),
       h.Class(
         cn(
-          'relative z-10 flex max-w-max flex-1 items-center justify-center',
+          'relative z-10 flex max-w-max flex-1 items-center justify-center data-[layout=scroll]:max-w-full data-[layout=scroll]:overflow-x-auto data-[layout=responsive]:max-w-full',
           props.class,
         ),
       ),
@@ -29,15 +33,16 @@ export const navigationMenu = <Msg>(
 };
 
 export const navigationMenuList = <Msg>(
-  props: Slot,
+  props: Slot & Readonly<{ layout?: NavigationMenuLayout }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
   return h.ul(
     [
       h.DataAttribute('slot', 'navigation-menu-list'),
+      h.DataAttribute('layout', props.layout ?? 'inline'),
       h.Class(
         cn(
-          'group flex flex-1 list-none items-center justify-center gap-1',
+          'group flex flex-1 list-none items-center justify-center gap-1 data-[layout=scroll]:min-w-max data-[layout=scroll]:justify-start data-[layout=responsive]:max-md:flex-col data-[layout=responsive]:max-md:items-stretch',
           props.class,
         ),
       ),
@@ -88,6 +93,7 @@ export type NavigationMenuDisclosureProps<Msg> = Readonly<{
   content: Html | string;
   class?: string;
   ariaLabel?: string;
+  pointerIntent?: 'press' | 'hover-and-press';
 }>;
 
 export const navigationMenuDisclosure = <Msg>(
@@ -102,13 +108,16 @@ export const navigationMenuDisclosure = <Msg>(
         [
           h.Class('flex items-center gap-1'),
           h.AriaLabel(props.ariaLabel ?? props.label),
+          ...(props.pointerIntent === 'hover-and-press' && !props.model.isOpen
+            ? [h.OnMouseEnter(props.toParentMessage(Popover.RequestedOpen()))]
+            : []),
         ],
         [
           props.label,
           Icon.chevronDown<Msg>(
             {
               class: cn(
-                'relative top-px size-3 transition-transform duration-200',
+                'relative top-px size-3 transition-transform duration-200 motion-reduce:transition-none',
                 props.model.isOpen ? 'rotate-180' : undefined,
               ),
             },

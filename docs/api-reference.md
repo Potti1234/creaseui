@@ -729,11 +729,12 @@ Source: [`src/ui/navigation-menu.ts`](../src/ui/navigation-menu.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `navigationMenu` | function | `navigationMenu<Msg>(props: Slot & Readonly<{ ariaLabel?: string }>, h: HtmlBuilder<Msg>): Html` |
-| `navigationMenuList` | function | `navigationMenuList<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
+| `NavigationMenuLayout` | type | `NavigationMenuLayout = 'inline' \| 'scroll' \| 'responsive'` |
+| `navigationMenu` | function | `navigationMenu<Msg>(props: Slot & Readonly<{ ariaLabel?: string; direction?: 'ltr' \| 'rtl'; layout?: NavigationMenuLayout }>, h: HtmlBuilder<Msg>): Html` |
+| `navigationMenuList` | function | `navigationMenuList<Msg>(props: Slot & Readonly<{ layout?: NavigationMenuLayout }>, h: HtmlBuilder<Msg>): Html` |
 | `navigationMenuItem` | function | `navigationMenuItem<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
 | `navigationMenuLink` | function | `navigationMenuLink<Msg>(props: Slot & Readonly<{ href: string; isActive?: boolean }>, h: HtmlBuilder<Msg>): Html` |
-| `NavigationMenuDisclosureProps` | type | `NavigationMenuDisclosureProps<Msg> = Readonly<{ model: Popover.Model; toParentMessage: (message: Popover.Message) => Msg; label: string; content: Html \| string; class?: string; ariaLabel?: string; }>` |
+| `NavigationMenuDisclosureProps` | type | `NavigationMenuDisclosureProps<Msg> = Readonly<{ model: Popover.Model; toParentMessage: (message: Popover.Message) => Msg; label: string; content: Html \| string; class?: string; ariaLabel?: string; pointerIntent?: 'press' \| 'hover-and-press'; }>` |
 | `navigationMenuDisclosure` | function | `navigationMenuDisclosure<Msg>(props: NavigationMenuDisclosureProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Pagination
@@ -769,6 +770,8 @@ Source: [`src/ui/popover.ts`](../src/ui/popover.ts)
 | `update` | value | `update: value` |
 | `open` | value | `open: value` |
 | `close` | value | `close: value` |
+| `RequestedOpen` | value | `RequestedOpen: value` |
+| `RequestedClose` | value | `RequestedClose: value` |
 | `PopoverSide` | type | `PopoverSide = 'top' \| 'right' \| 'bottom' \| 'left'` |
 | `PopoverAlign` | type | `PopoverAlign = 'start' \| 'center' \| 'end'` |
 | `PopoverProps` | type | `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; content: Html \| string; align?: PopoverAlign; side?: PopoverSide; class?: string; }>` |

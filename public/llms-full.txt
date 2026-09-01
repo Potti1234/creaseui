@@ -890,13 +890,14 @@ A shadcn-styled Navigation Menu component for Foldkit.
 
 Source: `src/ui/navigation-menu.ts`
 
-Examples: Semantic links, Popover disclosure
+Examples: Semantic links, Popover disclosure, Responsive fallback, RTL overflow
 
-- `navigationMenu<Msg>(props: Slot & Readonly<{ ariaLabel?: string }>, h: HtmlBuilder<Msg>): Html` (function)
-- `navigationMenuList<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
+- `NavigationMenuLayout = 'inline' | 'scroll' | 'responsive'` (type)
+- `navigationMenu<Msg>(props: Slot & Readonly<{ ariaLabel?: string; direction?: 'ltr' | 'rtl'; layout?: NavigationMenuLayout }>, h: HtmlBuilder<Msg>): Html` (function)
+- `navigationMenuList<Msg>(props: Slot & Readonly<{ layout?: NavigationMenuLayout }>, h: HtmlBuilder<Msg>): Html` (function)
 - `navigationMenuItem<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
 - `navigationMenuLink<Msg>(props: Slot & Readonly<{ href: string; isActive?: boolean }>, h: HtmlBuilder<Msg>): Html` (function)
-- `NavigationMenuDisclosureProps<Msg> = Readonly<{ model: Popover.Model; toParentMessage: (message: Popover.Message) => Msg; label: string; content: Html | string; class?: string; ariaLabel?: string; }>` (type)
+- `NavigationMenuDisclosureProps<Msg> = Readonly<{ model: Popover.Model; toParentMessage: (message: Popover.Message) => Msg; label: string; content: Html | string; class?: string; ariaLabel?: string; pointerIntent?: 'press' | 'hover-and-press'; }>` (type)
 - `navigationMenuDisclosure<Msg>(props: NavigationMenuDisclosureProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Pagination
@@ -936,6 +937,8 @@ Examples: Interactive content, Right aligned
 - `update: value` (value)
 - `open: value` (value)
 - `close: value` (value)
+- `RequestedOpen: value` (value)
+- `RequestedClose: value` (value)
 - `PopoverSide = 'top' | 'right' | 'bottom' | 'left'` (type)
 - `PopoverAlign = 'start' | 'center' | 'end'` (type)
 - `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; content: Html | string; align?: PopoverAlign; side?: PopoverSide; class?: string; }>` (type)

@@ -1030,18 +1030,43 @@ test("navigation menu distinguishes semantic links from stateful disclosures", a
   await expect(
     linksExample.getByRole("link", { name: "Home" }),
   ).toHaveAttribute("aria-current", "page");
+  await linksExample.getByRole("button", { name: "Reflect external route" }).click();
+  await expect(
+    linksExample.getByRole("link", { name: "Docs" }),
+  ).toHaveAttribute("aria-current", "page");
+  await expect(
+    linksExample.getByRole("link", { name: "Home" }),
+  ).not.toHaveAttribute("aria-current");
 
   const disclosureExample = page.locator("#popover-disclosure");
   const trigger = disclosureExample.getByRole("button", { name: "Products" });
-  await trigger.click();
+  await trigger.hover();
   const content = page.locator('[data-slot="popover-content"]');
-  await expect(content.getByRole("link", { name: "Analytics" })).toBeVisible();
+  const analytics = content.getByRole("link", { name: "Analytics" });
+  await expect(analytics).toBeVisible();
   await expect(disclosureExample.locator("code")).toContainText(
     "Popover.update",
   );
+  await analytics.hover();
+  await analytics.focus();
   await page.keyboard.press("Escape");
   await expect(content).toBeHidden();
   await expect(trigger).toBeFocused();
+
+  const responsiveList = page
+    .locator("#responsive-fallback")
+    .locator('[data-slot="navigation-menu-list"]');
+  const viewport = page.viewportSize();
+  await expect(responsiveList).toHaveCSS(
+    "flex-direction",
+    (viewport?.width ?? 1280) < 768 ? "column" : "row",
+  );
+
+  const overflow = page.locator("#rtl-overflow");
+  const overflowNav = overflow.getByRole("navigation", { name: "Primary" });
+  await expect(overflowNav).toHaveAttribute("dir", "rtl");
+  await expect(overflowNav).toHaveAttribute("data-layout", "scroll");
+  await expect(overflowNav).toHaveCSS("overflow-x", "auto");
 });
 
 test("menubar documents independent targeted child models", async ({

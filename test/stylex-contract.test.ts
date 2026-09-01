@@ -266,6 +266,20 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(stylex, /const commandPrimitive = ComboboxPrimitive\.create<Item>\(\)/u)
   })
 
+  it('keeps Navigation Menu route-free and disclosures on Popover behavior', () => {
+    const tailwind = readFileSync('src/ui/navigation-menu.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/navigation-menu.ts', 'utf8')
+
+    assert.match(tailwind, /import \* as Popover/u)
+    assert.match(stylex, /import \* as Popover/u)
+    assert.match(tailwind, /NavigationMenuLayout = 'inline' \| 'scroll' \| 'responsive'/u)
+    assert.match(stylex, /NavigationMenuLayout = 'inline' \| 'scroll' \| 'responsive'/u)
+    assert.match(tailwind, /Popover\.RequestedOpen/u)
+    assert.match(stylex, /Popover\.RequestedOpen/u)
+    assert.doesNotMatch(tailwind, /export const Model/u)
+    assert.doesNotMatch(stylex, /export const Model/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])
