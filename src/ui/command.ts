@@ -3,6 +3,7 @@ import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html';
 
 import { Combobox as ComboboxPrimitive } from '@foldkit/ui';
 
+import { filterCommandItems } from '@/lib/command';
 import * as Icon from '@/lib/icon';
 import { cn } from '@/lib/utils';
 
@@ -30,8 +31,7 @@ export type OutMessage<Item extends string = string> =
   ComboboxPrimitive.OutMessage<Item>;
 
 export const init = ComboboxPrimitive.init;
-export const create = ComboboxPrimitive.create;
-export const update = ComboboxPrimitive.create().update;
+export const update = ComboboxPrimitive.create<string>().update;
 
 const ROOT_CLASS =
   'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground';
@@ -82,6 +82,11 @@ export type CommandProps<Item extends string, Msg> = Readonly<{
   class?: string;
   itemGroupKey?: (item: Item, index: number) => string;
   groupToHeading?: (groupKey: string) => Html | string | undefined;
+  status?: 'ready' | 'loading';
+  loadingContent?: Html | string;
+  emptyContent?: Html | string;
+  maxVisibleItems?: number;
+  moreResultsContent?: (visible: number, total: number) => Html | string;
 }>;
 
 export const commandGroupHeading = <Msg>(
@@ -137,12 +142,12 @@ export const commandEmpty = <Msg>(
   );
 };
 
-export const command = <Item extends string, Msg>(
+const renderCommand = <Item extends string, Msg>(
+  commandPrimitive: ComboboxPrimitive.Bundle<Item>,
   props: CommandProps<Item, Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
   const hc = h;
-  const commandPrimitive = ComboboxPrimitive.create<Item>();
   const itemToSearchText = (item: Item): string => {
     const config = props.itemToConfig(item);
     return (
@@ -150,17 +155,19 @@ export const command = <Item extends string, Msg>(
       (typeof config.content === 'string' ? config.content : item)
     );
   };
-  const query = props.model.inputValue.trim().toLocaleLowerCase();
-  const isShowingSelectedLabel =
-    props.restingInputValue === props.model.inputValue;
-  const visibleItems = props.items.filter(
-    (item) =>
-      query === '' ||
-      isShowingSelectedLabel ||
-      itemToSearchText(item).toLocaleLowerCase().includes(query),
+  const filteredItems = filterCommandItems(
+    props.items,
+    props.model.inputValue,
+    props.restingInputValue,
+    itemToSearchText,
   );
+  const visibleItems = props.status === 'loading'
+    ? []
+    : props.maxVisibleItems === undefined
+      ? filteredItems
+      : filteredItems.slice(0, Math.max(0, props.maxVisibleItems));
 
-  return h.submodel({
+  const control = h.submodel({
     slotId: props.model.id,
     model: props.model,
     view: commandPrimitive.view,
@@ -236,8 +243,48 @@ export const command = <Item extends string, Msg>(
     },
     toParentMessage: props.toParentMessage,
   });
+
+  const statusContent = props.status === 'loading'
+    ? props.loadingContent ?? 'Loading commands…'
+    : visibleItems.length === 0
+      ? props.emptyContent ?? 'No commands found.'
+      : visibleItems.length < filteredItems.length
+        ? props.moreResultsContent?.(visibleItems.length, filteredItems.length) ??
+          `Showing ${String(visibleItems.length)} of ${String(filteredItems.length)} commands. Refine your search for more.`
+        : undefined;
+
+  return statusContent === undefined
+    ? control
+    : h.div([h.DataAttribute('slot', 'command-state')], [
+        control,
+        h.div(
+          [h.Role('status'), h.AriaLive('polite'), h.Class('py-6 text-center text-sm')],
+          [statusContent],
+        ),
+      ]);
 };
 
+export type CommandBundle<Item extends string> = Readonly<{
+  update: ComboboxPrimitive.Bundle<Item>['update'];
+  selectItem: ComboboxPrimitive.Bundle<Item>['selectItem'];
+  open: ComboboxPrimitive.Bundle<Item>['open'];
+  close: ComboboxPrimitive.Bundle<Item>['close'];
+  command: <Msg>(props: CommandProps<Item, Msg>, h: HtmlBuilder<Msg>) => Html;
+}>;
+
+export const create = <Item extends string = string>(): CommandBundle<Item> => {
+  const primitive = ComboboxPrimitive.create<Item>();
+  return {
+    update: primitive.update,
+    selectItem: primitive.selectItem,
+    open: primitive.open,
+    close: primitive.close,
+    command: (props, h) => renderCommand(primitive, props, h),
+  };
+};
+
+const StringCommand = create<string>();
+export const command = StringCommand.command;
 export const commandPalette = command;
 
 /*

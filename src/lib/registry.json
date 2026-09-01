@@ -223,6 +223,19 @@
           "target": "@lib/slider.ts"
         }
       ]
+    },
+    {
+      "name": "command-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Command Query Policy",
+      "description": "Skin-neutral command query normalization and application-provided search-text filtering.",
+      "files": [
+        {
+          "path": "command.ts",
+          "type": "registry:lib",
+          "target": "@lib/command.ts"
+        }
+      ]
     }
   ]
 }

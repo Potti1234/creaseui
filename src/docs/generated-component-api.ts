@@ -929,11 +929,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "init: value"
     },
     {
-      "name": "create",
-      "kind": "value",
-      "signature": "create: value"
-    },
-    {
       "name": "update",
       "kind": "value",
       "signature": "update: value"
@@ -969,9 +964,19 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "commandEmpty<Msg>(content: Html | string, className: string | undefined, h: HtmlBuilder<Msg>): Html"
     },
     {
-      "name": "command",
+      "name": "CommandBundle",
+      "kind": "type",
+      "signature": "CommandBundle<Item extends string> = Readonly<{ update: ComboboxPrimitive.Bundle<Item>['update']; selectItem: ComboboxPrimitive.Bundle<Item>['selectItem']; open: ComboboxPrimitive.Bundle<Item>['open']; close: ComboboxPrimitive.Bundle<Item>['close']; command: …"
+    },
+    {
+      "name": "create",
       "kind": "function",
-      "signature": "command<Item extends string, Msg>(props: CommandProps<Item, Msg>, h: HtmlBuilder<Msg>): Html"
+      "signature": "create<Item extends string = string>(): CommandBundle<Item>"
+    },
+    {
+      "name": "command",
+      "kind": "value",
+      "signature": "command: value"
     },
     {
       "name": "commandPalette",

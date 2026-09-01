@@ -914,11 +914,25 @@ test("command search commits a typed parent action", async ({ page }) => {
   await input.fill("sett");
   const option = page.getByRole("option", { name: /Settings/u });
   await expect(option).toBeVisible();
+  await input.press("ArrowDown");
+  await expect(input).toHaveAttribute("aria-activedescendant", /item/u);
   await option.click();
   await expect(input).toHaveValue("Settings");
   await expect(example.locator("code")).toContainText(
-    "selection._tag === 'Selected'",
+    "ApplicationCommand.update",
   );
+
+  await expect(page.locator("#no-results").getByRole("status")).toHaveText(
+    "No matching application commands.",
+  );
+  await expect(page.locator("#remote-loading").getByRole("status")).toHaveText(
+    "Loading remote commands…",
+  );
+  const large = page.locator("#large-result-policy");
+  const largeInput = large.getByRole("combobox", { name: "Application commands" });
+  await largeInput.focus();
+  await expect(page.getByRole("option")).toHaveCount(2);
+  await expect(large.getByRole("status")).toContainText("Showing 2 of 3 commands");
 });
 
 test("dropdown menu exposes typed selection wiring and keyboard behavior", async ({

@@ -1215,13 +1215,17 @@
       "source": "src/ui/command.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/command",
       "dependencies": [
+        "Potti1234/creaseui/command-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
         "Application commands",
-        "Grouped commands"
+        "Grouped commands",
+        "No results",
+        "Remote loading",
+        "Large result policy"
       ],
       "api": [
         {
@@ -1260,11 +1264,6 @@
           "signature": "init: value"
         },
         {
-          "name": "create",
-          "kind": "value",
-          "signature": "create: value"
-        },
-        {
           "name": "update",
           "kind": "value",
           "signature": "update: value"
@@ -1300,9 +1299,19 @@
           "signature": "commandEmpty<Msg>(content: Html | string, className: string | undefined, h: HtmlBuilder<Msg>): Html"
         },
         {
-          "name": "command",
+          "name": "CommandBundle",
+          "kind": "type",
+          "signature": "CommandBundle<Item extends string> = Readonly<{ update: ComboboxPrimitive.Bundle<Item>['update']; selectItem: ComboboxPrimitive.Bundle<Item>['selectItem']; open: ComboboxPrimitive.Bundle<Item>['open']; close: ComboboxPrimitive.Bundle<Item>['close']; command: …"
+        },
+        {
+          "name": "create",
           "kind": "function",
-          "signature": "command<Item extends string, Msg>(props: CommandProps<Item, Msg>, h: HtmlBuilder<Msg>): Html"
+          "signature": "create<Item extends string = string>(): CommandBundle<Item>"
+        },
+        {
+          "name": "command",
+          "kind": "value",
+          "signature": "command: value"
         },
         {
           "name": "commandPalette",

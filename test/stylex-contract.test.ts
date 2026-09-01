@@ -252,6 +252,20 @@ describe('StyleX component authoring contract', () => {
     assert.match(stylex, /Slider as SliderPrimitive/u)
   })
 
+  it('binds Command actions once and shares query policy', () => {
+    const behavior = readFileSync('src/lib/command.ts', 'utf8')
+    const tailwind = readFileSync('src/ui/command.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/command.ts', 'utf8')
+
+    assert.match(behavior, /export const filterCommandItems/u)
+    assert.match(tailwind, /@\/lib\/command/u)
+    assert.match(stylex, /@\/lib\/command/u)
+    assert.match(tailwind, /export const create = <Item extends string/u)
+    assert.match(stylex, /export const create = <Item extends string/u)
+    assert.doesNotMatch(tailwind, /const commandPrimitive = ComboboxPrimitive\.create<Item>\(\)/u)
+    assert.doesNotMatch(stylex, /const commandPrimitive = ComboboxPrimitive\.create<Item>\(\)/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

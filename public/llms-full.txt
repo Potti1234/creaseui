@@ -420,7 +420,7 @@ A shadcn-styled Command component for Foldkit.
 
 Source: `src/ui/command.ts`
 
-Examples: Application commands, Grouped commands
+Examples: Application commands, Grouped commands, No results, Remote loading, Large result policy
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -429,7 +429,6 @@ Examples: Application commands, Grouped commands
 - `OutMessage: value` (value)
 - `OutMessage<Item extends string = string> = ComboboxPrimitive.OutMessage<Item>` (type)
 - `init: value` (value)
-- `create: value` (value)
 - `update: value` (value)
 - `CommandItemConfig = Readonly<{ content: Html | string; searchText?: string; shortcut?: Html | string; class?: string; isDisabled?: boolean; }>` (type)
 - `CommandProps<Item extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Item>; restingInputValue: string; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => CommandItemConfig; plac…` (type)
@@ -437,7 +436,9 @@ Examples: Application commands, Grouped commands
 - `commandShortcut<Msg>(content: Html | string, className: string | undefined, h: HtmlBuilder<Msg>): Html` (function)
 - `commandSeparator<Msg>(className: string | undefined, h: HtmlBuilder<Msg>): Html` (function)
 - `commandEmpty<Msg>(content: Html | string, className: string | undefined, h: HtmlBuilder<Msg>): Html` (function)
-- `command<Item extends string, Msg>(props: CommandProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `CommandBundle<Item extends string> = Readonly<{ update: ComboboxPrimitive.Bundle<Item>['update']; selectItem: ComboboxPrimitive.Bundle<Item>['selectItem']; open: ComboboxPrimitive.Bundle<Item>['open']; close: ComboboxPrimitive.Bundle<Item>['close']; command: …` (type)
+- `create<Item extends string = string>(): CommandBundle<Item>` (function)
+- `command: value` (value)
 - `commandPalette: value` (value)
 
 ### Context Menu
