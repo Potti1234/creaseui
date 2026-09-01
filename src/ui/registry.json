@@ -5,8 +5,9 @@
       "name": "accordion",
       "type": "registry:ui",
       "title": "Accordion",
-      "description": "A shadcn-styled Accordion component for Foldkit.",
+      "description": "A Foldkit-native Accordion Submodel with stable value-based state and accessible Disclosure behavior.",
       "registryDependencies": [
+        "Potti1234/creaseui/accordion-state",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/sidebar-state",

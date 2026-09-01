@@ -54,12 +54,20 @@ export const chartLegend = <Msg>(
   props: ChartLegendProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
+  const variables = Object.entries(props.config).reduce<Record<string, string>>(
+    (result, [key, series]) =>
+      series.color === undefined
+        ? result
+        : { ...result, [`--color-${key}`]: series.color },
+    {},
+  );
   return h.div(
     [
       h.DataAttribute('slot', 'chart-legend'),
       h.Class(
         cn('flex flex-wrap items-center justify-center gap-4', props.class),
       ),
+      h.Style(variables),
     ],
     (props.series ?? Object.keys(props.config)).flatMap((key) => {
       const series = props.config[key];
@@ -341,6 +349,113 @@ export const areaChart = <Msg>(
               ],
               [],
             ),
+          ]),
+    ],
+  );
+};
+
+export type InteractiveAreaChartDatum = Readonly<{
+  label: string;
+  desktop: number;
+  mobile: number;
+}>;
+
+export type InteractiveAreaChartProps = Readonly<{
+  data: ReadonlyArray<InteractiveAreaChartDatum>;
+  ariaLabel?: string;
+  class?: string;
+}>;
+
+const interactivePoints = (
+  values: ReadonlyArray<number>,
+  maximum: number,
+): ReadonlyArray<Point> => {
+  const denominator = Math.max(values.length - 1, 1);
+  return values.map((value, index) => ({
+    x: 48 + (index / denominator) * 648,
+    y: 18 + ((maximum - Math.max(0, finite(value))) / maximum) * 202,
+  }));
+};
+
+const areaFillPath = (points: ReadonlyArray<Point>): string => {
+  const first = points[0];
+  const last = points[points.length - 1];
+  return first === undefined || last === undefined
+    ? ''
+    : `${smoothPath(points)} L ${last.x} 220 L ${first.x} 220 Z`;
+};
+
+export const interactiveAreaChart = <Msg>(
+  props: InteractiveAreaChartProps,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const values = props.data.flatMap((datum) => [
+    finite(datum.desktop),
+    finite(datum.mobile),
+  ]);
+  const rawMaximum = Math.max(1, ...values);
+  const maximum = Math.ceil(rawMaximum / 100) * 100;
+  const desktopPoints = interactivePoints(
+    props.data.map((datum) => datum.desktop),
+    maximum,
+  );
+  const mobilePoints = interactivePoints(
+    props.data.map((datum) => datum.mobile),
+    maximum,
+  );
+  const desktopLine = smoothPath(desktopPoints);
+  const mobileLine = smoothPath(mobilePoints);
+  const labelStep = Math.max(1, Math.ceil(props.data.length / 6));
+
+  return h.svg(
+    [
+      h.DataAttribute('slot', 'interactive-area-chart'),
+      h.Xmlns('http://www.w3.org/2000/svg'),
+      h.ViewBox('0 0 720 260'),
+      h.Role('img'),
+      h.AriaLabel(props.ariaLabel ?? 'Desktop and mobile visitors over time'),
+      h.Class(cn('block h-auto min-h-60 w-full', props.class)),
+    ],
+    [
+      h.defs(
+        [],
+        [
+          h.linearGradient(
+            [h.Id('foldkit-desktop-gradient'), h.X1('0'), h.Y1('0'), h.X2('0'), h.Y2('1')],
+            [
+              h.stop([h.Offset('0%'), h.StopColor('var(--chart-1)'), h.StopOpacity('0.32')], []),
+              h.stop([h.Offset('100%'), h.StopColor('var(--chart-1)'), h.StopOpacity('0.02')], []),
+            ],
+          ),
+          h.linearGradient(
+            [h.Id('foldkit-mobile-gradient'), h.X1('0'), h.Y1('0'), h.X2('0'), h.Y2('1')],
+            [
+              h.stop([h.Offset('0%'), h.StopColor('var(--chart-2)'), h.StopOpacity('0.26')], []),
+              h.stop([h.Offset('100%'), h.StopColor('var(--chart-2)'), h.StopOpacity('0.02')], []),
+            ],
+          ),
+        ],
+      ),
+      ...[0, 0.25, 0.5, 0.75, 1].flatMap((ratio) => {
+        const y = 18 + ratio * 202;
+        const label = Math.round(maximum * (1 - ratio));
+        return [
+          h.line([h.X1('48'), h.Y1(String(y)), h.X2('696'), h.Y2(String(y)), h.Stroke('var(--border)'), h.StrokeDasharray('3 4'), h.StrokeWidth('1')], []),
+          h.text([h.X('38'), h.Y(String(y + 4)), h.TextAnchor('end'), h.Fill('var(--muted-foreground)'), h.FontSize('10')], [String(label)]),
+        ];
+      }),
+      ...props.data.flatMap((datum, index) =>
+        index % labelStep === 0 || index === props.data.length - 1
+          ? [h.text([h.X(String(desktopPoints[index]?.x ?? 48)), h.Y('248'), h.TextAnchor('middle'), h.Fill('var(--muted-foreground)'), h.FontSize('10')], [datum.label])]
+          : [],
+      ),
+      ...(desktopLine === ''
+        ? []
+        : [
+            h.path([h.D(areaFillPath(desktopPoints)), h.Fill('url(#foldkit-desktop-gradient)')], []),
+            h.path([h.D(areaFillPath(mobilePoints)), h.Fill('url(#foldkit-mobile-gradient)')], []),
+            h.path([h.D(desktopLine), h.Fill('none'), h.Stroke('var(--chart-1)'), h.StrokeWidth('2.5'), h.StrokeLinecap('round'), h.StrokeLinejoin('round'), h.VectorEffect('non-scaling-stroke')], []),
+            h.path([h.D(mobileLine), h.Fill('none'), h.Stroke('var(--chart-2)'), h.StrokeWidth('2.5'), h.StrokeLinecap('round'), h.StrokeLinejoin('round'), h.VectorEffect('non-scaling-stroke')], []),
           ]),
     ],
   );

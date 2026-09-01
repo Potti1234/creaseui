@@ -34,7 +34,7 @@ export const authoredPage = (page: AuthoredPage): AuthoredPage => {
       const example = page.definition.examples[index];
       return example === undefined
         ? h.empty
-        : example.staticPreview?.({}, h as unknown as HtmlBuilder<never>) ?? h.empty;
+        : example.staticPreview?.({}, h) ?? h.empty;
     },
   });
   return { ...page, previewProgram };

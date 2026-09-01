@@ -29,6 +29,15 @@ export default tseslint.config(
         },
       ],
       '@typescript-eslint/no-import-type-side-effects': 'error',
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector:
+            "TSAsExpression > TSAsExpression[typeAnnotation.type='TSUnknownKeyword']",
+          message:
+            'Do not bypass type safety with `as unknown as`; model the conversion explicitly.',
+        },
+      ],
     },
   },
   {

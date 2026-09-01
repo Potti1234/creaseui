@@ -1,0 +1,32 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "categories": {
+    "correctness": "error"
+  },
+  "overrides": [
+    {
+      "files": ["src/demo/board-constrained.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              {
+                "name": "@stylexjs/stylex",
+                "message": "Compose this page with the constrained primitives; StyleX belongs inside the primitive implementation."
+              },
+              {
+                "name": "@/stylex/style",
+                "message": "The constrained page may not emit arbitrary StyleX class names."
+              },
+              {
+                "name": "@/lib/utils",
+                "message": "The constrained page may not merge arbitrary Tailwind classes."
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

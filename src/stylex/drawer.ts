@@ -24,7 +24,7 @@ const isStaticStyle = (value: unknown): value is StaticStyles =>
 const cn = (...values: ReadonlyArray<unknown>): string =>
   className(...values.filter(isStaticStyle))
 
-import { Option, Schema as S } from 'effect';
+﻿import { Option, Schema as S } from 'effect';
 import { Command } from 'foldkit';
 import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
@@ -333,6 +333,4 @@ export const drawer = <Msg>(
     ],
   );
 };
-
-
 

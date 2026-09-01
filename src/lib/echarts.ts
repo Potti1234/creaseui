@@ -297,7 +297,7 @@ const chartsByHostId = new Map<string, echarts.EChartsType>();
 
 // Dev-only escape hatch for debugging chart instances from the console/tests.
 if (import.meta.env.DEV) {
-  (window as unknown as Record<string, unknown>).__charts = chartsByHostId;
+  Object.assign(window, { __charts: chartsByHostId });
 }
 
 const applyOption = (
@@ -364,19 +364,24 @@ export const MountChart = Mount.define(
               const chart = echarts.init(element, undefined, {
                 renderer: 'canvas',
               });
-              const resizeObserver = new ResizeObserver(() => chart.resize());
+              let resizeFrame = 0;
+              const resizeObserver = new ResizeObserver(() => {
+                cancelAnimationFrame(resizeFrame);
+                resizeFrame = requestAnimationFrame(() => chart.resize());
+              });
               resizeObserver.observe(element);
               chartsByHostId.set(hostId, chart);
               applyOption(hostId, chart, variant);
-              return { chart, resizeObserver };
+              return { chart, resizeFrame: () => resizeFrame, resizeObserver };
             },
             catch: (error) =>
               error instanceof Error
                 ? error
                 : new Error(`Chart mount failed: ${error}`),
           }),
-          ({ chart, resizeObserver }) =>
+          ({ chart, resizeFrame, resizeObserver }) =>
             Effect.sync(() => {
+              cancelAnimationFrame(resizeFrame());
               resizeObserver.disconnect();
               chart.dispose();
               chartsByHostId.delete(hostId);

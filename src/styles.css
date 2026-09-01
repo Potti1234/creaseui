@@ -181,6 +181,11 @@
 .create-board-theme[data-icon-library='hugeicons'] .crease-preview-icon-hugeicons,
 .create-board-theme[data-icon-library='tabler'] .crease-preview-icon-tabler,
 .create-board-theme[data-icon-library='phosphor'] .crease-preview-icon-phosphor,
-.create-board-theme[data-icon-library='remixicon'] .crease-preview-icon-remixicon {
+.create-board-theme[data-icon-library='remixicon'] .crease-preview-icon-remixicon,
+[data-crease-board-theme][data-icon-library='lucide'] .crease-preview-icon-lucide,
+[data-crease-board-theme][data-icon-library='hugeicons'] .crease-preview-icon-hugeicons,
+[data-crease-board-theme][data-icon-library='tabler'] .crease-preview-icon-tabler,
+[data-crease-board-theme][data-icon-library='phosphor'] .crease-preview-icon-phosphor,
+[data-crease-board-theme][data-icon-library='remixicon'] .crease-preview-icon-remixicon {
   display: block;
 }

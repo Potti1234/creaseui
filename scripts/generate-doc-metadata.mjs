@@ -80,7 +80,7 @@ const apiFor = (file) => {
         name: statement.name.text,
         kind: 'function',
         signature: shorten(
-          `${statement.name.text}${typeParameters(statement, sourceFile)}(${parameters(statement, sourceFile)}): ${statement.type?.getText(sourceFile) ?? 'inferred'}`,
+          `${statement.name.text}${typeParameters(statement, sourceFile)}(${parameters(statement, sourceFile)}): ${normalize(statement.type?.getText(sourceFile) ?? 'inferred')}`,
         ),
       });
       continue;
@@ -97,8 +97,8 @@ const apiFor = (file) => {
           kind: callable ? 'function' : 'value',
           signature: shorten(
             callable
-              ? `${declaration.name.text}${typeParameters(initializer, sourceFile)}(${parameters(initializer, sourceFile)}): ${initializer.type?.getText(sourceFile) ?? 'inferred'}`
-              : `${declaration.name.text}: ${declaration.type?.getText(sourceFile) ?? 'value'}`,
+              ? `${declaration.name.text}${typeParameters(initializer, sourceFile)}(${parameters(initializer, sourceFile)}): ${normalize(initializer.type?.getText(sourceFile) ?? 'inferred')}`
+              : `${declaration.name.text}: ${normalize(declaration.type?.getText(sourceFile) ?? 'value')}`,
           ),
         });
       }

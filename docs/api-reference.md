@@ -8,22 +8,22 @@ Source: [`src/ui/accordion.ts`](../src/ui/accordion.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `AccordionType` | value | `AccordionType: value` |
-| `AccordionType` | type | `AccordionType = typeof AccordionType.Type` |
-| `Model` | value | `Model: value` |
-| `Model` | type | `Model = typeof Model.Type` |
-| `GotDisclosureMessage` | value | `GotDisclosureMessage: value` |
-| `Message` | value | `Message: value` |
-| `Message` | type | `Message = typeof Message.Type` |
-| `ToggledItem` | value | `ToggledItem: value` |
-| `OutMessage` | value | `OutMessage: value` |
-| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
-| `AccordionInitItem` | type | `AccordionInitItem = Readonly<{ value: string; isOpen?: boolean; }>` |
-| `InitConfig` | type | `InitConfig = Readonly<{ id: string; type?: AccordionType; items: ReadonlyArray<AccordionInitItem>; }>` |
-| `init` | function | `init(config: InitConfig): Model` |
-| `update` | function | `update(model: Model, message: Message): UpdateReturn` |
-| `AccordionItem` | type | `AccordionItem = Readonly<{ value: string; trigger: Html \| string; content: Html \| string; isDisabled?: boolean; }>` |
-| `AccordionProps` | type | `AccordionProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<AccordionItem>; class?: string; itemClass?: string; triggerClass?: string; contentClass?: string; }>` |
+| `AccordionType` | re-export | `export { AccordionType } from '@/lib/accordion-state'` |
+| `ChangedValue` | re-export | `export { ChangedValue } from '@/lib/accordion-state'` |
+| `Message` | re-export | `export { Message } from '@/lib/accordion-state'` |
+| `Model` | re-export | `export { Model } from '@/lib/accordion-state'` |
+| `OutMessage` | re-export | `export { OutMessage } from '@/lib/accordion-state'` |
+| `ToggledItem` | re-export | `export { ToggledItem } from '@/lib/accordion-state'` |
+| `init` | re-export | `export { init } from '@/lib/accordion-state'` |
+| `reflect` | re-export | `export { reflect } from '@/lib/accordion-state'` |
+| `update` | re-export | `export { update } from '@/lib/accordion-state'` |
+| `AccordionInitItem` | re-export | `export { AccordionInitItem } from '@/lib/accordion-state'` |
+| `AccordionItem` | re-export | `export { AccordionItem } from '@/lib/accordion-state'` |
+| `InitConfig` | re-export | `export { InitConfig } from '@/lib/accordion-state'` |
+| `UpdateReturn` | re-export | `export { UpdateReturn } from '@/lib/accordion-state'` |
+| `ViewInputs` | type | `ViewInputs = Readonly<{ items: ReadonlyArray<AccordionBehavior.AccordionItem>; class?: string; itemClass?: string; triggerClass?: string; contentClass?: string; }>` |
+| `view` | value | `view: value` |
+| `AccordionProps` | type | `AccordionProps<Msg> = ViewInputs & Readonly<{ model: AccordionBehavior.Model; toParentMessage: (message: AccordionBehavior.Message) => Msg; }>` |
 | `accordion` | function | `accordion<Msg>(props: AccordionProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Alert Dialog
@@ -254,6 +254,9 @@ Source: [`src/ui/chart.ts`](../src/ui/chart.ts)
 | `barChart` | function | `barChart<Msg>(props: BarChartProps, h: HtmlBuilder<Msg>): Html` |
 | `AreaChartProps` | type | `AreaChartProps = Readonly<{ data: ReadonlyArray<number>; class?: string; }>` |
 | `areaChart` | function | `areaChart<Msg>(props: AreaChartProps, h: HtmlBuilder<Msg>): Html` |
+| `InteractiveAreaChartDatum` | type | `InteractiveAreaChartDatum = Readonly<{ label: string; desktop: number; mobile: number; }>` |
+| `InteractiveAreaChartProps` | type | `InteractiveAreaChartProps = Readonly<{ data: ReadonlyArray<InteractiveAreaChartDatum>; ariaLabel?: string; class?: string; }>` |
+| `interactiveAreaChart` | function | `interactiveAreaChart<Msg>(props: InteractiveAreaChartProps, h: HtmlBuilder<Msg>): Html` |
 | `DonutChartProps` | type | `DonutChartProps = Readonly<{ value: number; max: number; label?: string; sublabel?: string; class?: string; }>` |
 | `donutChart` | function | `donutChart<Msg>(props: DonutChartProps, h: HtmlBuilder<Msg>): Html` |
 
@@ -537,11 +540,7 @@ Source: [`src/ui/form.ts`](../src/ui/form.ts)
 | `formDescription` | function | `formDescription<Msg>(props: FormDescriptionProps, h: HtmlBuilder<Msg>): Html` |
 | `FormMessageProps` | type | `FormMessageProps = Readonly<{ id?: string; class?: string; message?: string; errors?: ReadonlyArray<Field.FieldError>; }>` |
 | `formMessage` | function | `formMessage<Msg>(props: FormMessageProps = {}, h: HtmlBuilder<Msg>): Html` |
-| `formControlIds` | function | `formControlIds(id: string): Readonly<{
-  descriptionId: string;
-  messageId: string;
-  describedBy: string;
-}>` |
+| `formControlIds` | function | `formControlIds(id: string): Readonly<{ descriptionId: string; messageId: string; describedBy: string; }>` |
 
 ## Hover Card
 

@@ -3,7 +3,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html';
 export type DocsExample = Readonly<{
   title: string;
   description?: string;
-  staticPreview?: (model: Readonly<Record<string, never>>, h: HtmlBuilder<never>) => Html;
+  staticPreview?: <Message>(model: Readonly<Record<string, never>>, h: HtmlBuilder<Message>) => Html;
   code: string;
   previewClass?: string;
 }>;

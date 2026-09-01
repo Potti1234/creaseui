@@ -6,3 +6,4 @@ dist/
 .registry/
 playwright-report/
 test-results/
+/output/

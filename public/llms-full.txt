@@ -83,28 +83,28 @@
 
 ### Accordion
 
-A shadcn-styled Accordion component for Foldkit.
+A Foldkit-native Accordion Submodel with stable value-based state and accessible Disclosure behavior.
 
 Source: `src/ui/accordion.ts`
 
 Examples: Single disclosure, Multiple disclosures
 
-- `AccordionType: value` (value)
-- `AccordionType = typeof AccordionType.Type` (type)
-- `Model: value` (value)
-- `Model = typeof Model.Type` (type)
-- `GotDisclosureMessage: value` (value)
-- `Message: value` (value)
-- `Message = typeof Message.Type` (type)
-- `ToggledItem: value` (value)
-- `OutMessage: value` (value)
-- `OutMessage = typeof OutMessage.Type` (type)
-- `AccordionInitItem = Readonly<{ value: string; isOpen?: boolean; }>` (type)
-- `InitConfig = Readonly<{ id: string; type?: AccordionType; items: ReadonlyArray<AccordionInitItem>; }>` (type)
-- `init(config: InitConfig): Model` (function)
-- `update(model: Model, message: Message): UpdateReturn` (function)
-- `AccordionItem = Readonly<{ value: string; trigger: Html | string; content: Html | string; isDisabled?: boolean; }>` (type)
-- `AccordionProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<AccordionItem>; class?: string; itemClass?: string; triggerClass?: string; contentClass?: string; }>` (type)
+- `export { AccordionType } from '@/lib/accordion-state'` (re-export)
+- `export { ChangedValue } from '@/lib/accordion-state'` (re-export)
+- `export { Message } from '@/lib/accordion-state'` (re-export)
+- `export { Model } from '@/lib/accordion-state'` (re-export)
+- `export { OutMessage } from '@/lib/accordion-state'` (re-export)
+- `export { ToggledItem } from '@/lib/accordion-state'` (re-export)
+- `export { init } from '@/lib/accordion-state'` (re-export)
+- `export { reflect } from '@/lib/accordion-state'` (re-export)
+- `export { update } from '@/lib/accordion-state'` (re-export)
+- `export { AccordionInitItem } from '@/lib/accordion-state'` (re-export)
+- `export { AccordionItem } from '@/lib/accordion-state'` (re-export)
+- `export { InitConfig } from '@/lib/accordion-state'` (re-export)
+- `export { UpdateReturn } from '@/lib/accordion-state'` (re-export)
+- `ViewInputs = Readonly<{ items: ReadonlyArray<AccordionBehavior.AccordionItem>; class?: string; itemClass?: string; triggerClass?: string; contentClass?: string; }>` (type)
+- `view: value` (value)
+- `AccordionProps<Msg> = ViewInputs & Readonly<{ model: AccordionBehavior.Model; toParentMessage: (message: AccordionBehavior.Message) => Msg; }>` (type)
 - `accordion<Msg>(props: AccordionProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Alert Dialog
@@ -363,6 +363,9 @@ Examples: Monthly revenue, Traffic trend
 - `barChart<Msg>(props: BarChartProps, h: HtmlBuilder<Msg>): Html` (function)
 - `AreaChartProps = Readonly<{ data: ReadonlyArray<number>; class?: string; }>` (type)
 - `areaChart<Msg>(props: AreaChartProps, h: HtmlBuilder<Msg>): Html` (function)
+- `InteractiveAreaChartDatum = Readonly<{ label: string; desktop: number; mobile: number; }>` (type)
+- `InteractiveAreaChartProps = Readonly<{ data: ReadonlyArray<InteractiveAreaChartDatum>; ariaLabel?: string; class?: string; }>` (type)
+- `interactiveAreaChart<Msg>(props: InteractiveAreaChartProps, h: HtmlBuilder<Msg>): Html` (function)
 - `DonutChartProps = Readonly<{ value: number; max: number; label?: string; sublabel?: string; class?: string; }>` (type)
 - `donutChart<Msg>(props: DonutChartProps, h: HtmlBuilder<Msg>): Html` (function)
 
@@ -674,11 +677,7 @@ Examples: Newsletter signup, Validation feedback
 - `formDescription<Msg>(props: FormDescriptionProps, h: HtmlBuilder<Msg>): Html` (function)
 - `FormMessageProps = Readonly<{ id?: string; class?: string; message?: string; errors?: ReadonlyArray<Field.FieldError>; }>` (type)
 - `formMessage<Msg>(props: FormMessageProps = {}, h: HtmlBuilder<Msg>): Html` (function)
-- `formControlIds(id: string): Readonly<{
-  descriptionId: string;
-  messageId: string;
-  describedBy: string;
-}>` (function)
+- `formControlIds(id: string): Readonly<{ descriptionId: string; messageId: string; describedBy: string; }>` (function)
 
 ### Hover Card
 

@@ -9,11 +9,12 @@
     {
       "slug": "accordion",
       "title": "Accordion",
-      "description": "A shadcn-styled Accordion component for Foldkit.",
+      "description": "A Foldkit-native Accordion Submodel with stable value-based state and accessible Disclosure behavior.",
       "docs": "/docs/components/accordion",
       "source": "src/ui/accordion.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/accordion",
       "dependencies": [
+        "Potti1234/creaseui/accordion-state",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/sidebar-state",
@@ -26,83 +27,83 @@
       "api": [
         {
           "name": "AccordionType",
-          "kind": "value",
-          "signature": "AccordionType: value"
+          "kind": "re-export",
+          "signature": "export { AccordionType } from '@/lib/accordion-state'"
         },
         {
-          "name": "AccordionType",
-          "kind": "type",
-          "signature": "AccordionType = typeof AccordionType.Type"
-        },
-        {
-          "name": "Model",
-          "kind": "value",
-          "signature": "Model: value"
-        },
-        {
-          "name": "Model",
-          "kind": "type",
-          "signature": "Model = typeof Model.Type"
-        },
-        {
-          "name": "GotDisclosureMessage",
-          "kind": "value",
-          "signature": "GotDisclosureMessage: value"
+          "name": "ChangedValue",
+          "kind": "re-export",
+          "signature": "export { ChangedValue } from '@/lib/accordion-state'"
         },
         {
           "name": "Message",
-          "kind": "value",
-          "signature": "Message: value"
+          "kind": "re-export",
+          "signature": "export { Message } from '@/lib/accordion-state'"
         },
         {
-          "name": "Message",
-          "kind": "type",
-          "signature": "Message = typeof Message.Type"
+          "name": "Model",
+          "kind": "re-export",
+          "signature": "export { Model } from '@/lib/accordion-state'"
+        },
+        {
+          "name": "OutMessage",
+          "kind": "re-export",
+          "signature": "export { OutMessage } from '@/lib/accordion-state'"
         },
         {
           "name": "ToggledItem",
-          "kind": "value",
-          "signature": "ToggledItem: value"
-        },
-        {
-          "name": "OutMessage",
-          "kind": "value",
-          "signature": "OutMessage: value"
-        },
-        {
-          "name": "OutMessage",
-          "kind": "type",
-          "signature": "OutMessage = typeof OutMessage.Type"
-        },
-        {
-          "name": "AccordionInitItem",
-          "kind": "type",
-          "signature": "AccordionInitItem = Readonly<{ value: string; isOpen?: boolean; }>"
-        },
-        {
-          "name": "InitConfig",
-          "kind": "type",
-          "signature": "InitConfig = Readonly<{ id: string; type?: AccordionType; items: ReadonlyArray<AccordionInitItem>; }>"
+          "kind": "re-export",
+          "signature": "export { ToggledItem } from '@/lib/accordion-state'"
         },
         {
           "name": "init",
-          "kind": "function",
-          "signature": "init(config: InitConfig): Model"
+          "kind": "re-export",
+          "signature": "export { init } from '@/lib/accordion-state'"
+        },
+        {
+          "name": "reflect",
+          "kind": "re-export",
+          "signature": "export { reflect } from '@/lib/accordion-state'"
         },
         {
           "name": "update",
-          "kind": "function",
-          "signature": "update(model: Model, message: Message): UpdateReturn"
+          "kind": "re-export",
+          "signature": "export { update } from '@/lib/accordion-state'"
+        },
+        {
+          "name": "AccordionInitItem",
+          "kind": "re-export",
+          "signature": "export { AccordionInitItem } from '@/lib/accordion-state'"
         },
         {
           "name": "AccordionItem",
+          "kind": "re-export",
+          "signature": "export { AccordionItem } from '@/lib/accordion-state'"
+        },
+        {
+          "name": "InitConfig",
+          "kind": "re-export",
+          "signature": "export { InitConfig } from '@/lib/accordion-state'"
+        },
+        {
+          "name": "UpdateReturn",
+          "kind": "re-export",
+          "signature": "export { UpdateReturn } from '@/lib/accordion-state'"
+        },
+        {
+          "name": "ViewInputs",
           "kind": "type",
-          "signature": "AccordionItem = Readonly<{ value: string; trigger: Html | string; content: Html | string; isDisabled?: boolean; }>"
+          "signature": "ViewInputs = Readonly<{ items: ReadonlyArray<AccordionBehavior.AccordionItem>; class?: string; itemClass?: string; triggerClass?: string; contentClass?: string; }>"
+        },
+        {
+          "name": "view",
+          "kind": "value",
+          "signature": "view: value"
         },
         {
           "name": "AccordionProps",
           "kind": "type",
-          "signature": "AccordionProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<AccordionItem>; class?: string; itemClass?: string; triggerClass?: string; contentClass?: string; }>"
+          "signature": "AccordionProps<Msg> = ViewInputs & Readonly<{ model: AccordionBehavior.Model; toParentMessage: (message: AccordionBehavior.Message) => Msg; }>"
         },
         {
           "name": "accordion",
@@ -1028,6 +1029,21 @@
           "name": "areaChart",
           "kind": "function",
           "signature": "areaChart<Msg>(props: AreaChartProps, h: HtmlBuilder<Msg>): Html"
+        },
+        {
+          "name": "InteractiveAreaChartDatum",
+          "kind": "type",
+          "signature": "InteractiveAreaChartDatum = Readonly<{ label: string; desktop: number; mobile: number; }>"
+        },
+        {
+          "name": "InteractiveAreaChartProps",
+          "kind": "type",
+          "signature": "InteractiveAreaChartProps = Readonly<{ data: ReadonlyArray<InteractiveAreaChartDatum>; ariaLabel?: string; class?: string; }>"
+        },
+        {
+          "name": "interactiveAreaChart",
+          "kind": "function",
+          "signature": "interactiveAreaChart<Msg>(props: InteractiveAreaChartProps, h: HtmlBuilder<Msg>): Html"
         },
         {
           "name": "DonutChartProps",
@@ -2219,7 +2235,7 @@
         {
           "name": "formControlIds",
           "kind": "function",
-          "signature": "formControlIds(id: string): Readonly<{\n  descriptionId: string;\n  messageId: string;\n  describedBy: string;\n}>"
+          "signature": "formControlIds(id: string): Readonly<{ descriptionId: string; messageId: string; describedBy: string; }>"
         }
       ]
     },

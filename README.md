@@ -79,6 +79,9 @@ The registry guide also documents tag- and commit-pinned installs.
   configuration and reproducible installation proof.
 - [Create presets](docs/create-presets.md) documents generated style artifacts
   and the five real Foldkit icon adapters.
+- [Constrained StyleX](docs/stylex-agent-safe-design-system.md) documents the
+  Polar-inspired AI-safe design-system experiment, its enforcement model, and
+  the implementation learnings.
 - [Compatibility matrix](compatibility.json) records the framework and tooling
   versions used by the current validation suite.
 - [Upstream provenance](docs/provenance.md) records the projects this work builds

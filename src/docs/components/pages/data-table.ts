@@ -70,6 +70,9 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
       rows: payments,
       columns,
       rowKey: row => row.id,${filter ? "\n      filterText: row => `${row.status} ${row.email}`,\n      filterPlaceholder: 'Filter payments…'," : ''}
+      enableRowSelection: true,
+      enableColumnVisibility: true,
+      pageSizeOptions: [5, 10, 20],
       ariaLabel: 'Payments',
     }, h),
   ]),
@@ -84,17 +87,17 @@ const previewProgram = definePreviewProgram<DataTablePreviewModel, GotDataTableP
   Model: DataTablePreviewModel, Message: GotDataTablePreviewMessage,
   init: () => ({ _docsPage: 'data-table', table: DataTable.init(5) }),
   update: (model, message) => [{ ...model, table: DataTable.update(model.table, message.message) }, []],
-  view: (index, model, h) => DataTable.dataTable({ model: model.table, toParentMessage: message => GotDataTablePreviewMessage({ message }), rows: payments, columns: columns(), rowKey: row => row.id, ...(index === 1 ? { filterText: (row: Payment) => `${row.status} ${row.email}`, filterPlaceholder: 'Filter payments…' } : {}), ariaLabel: 'Payments' }, h),
+  view: (index, model, h) => DataTable.dataTable({ model: model.table, toParentMessage: message => GotDataTablePreviewMessage({ message }), rows: payments, columns: columns(), rowKey: row => row.id, ...(index === 1 ? { filterText: (row: Payment) => `${row.status} ${row.email}`, filterPlaceholder: 'Filter payments…' } : {}), enableRowSelection: true, enableColumnVisibility: true, pageSizeOptions: [5, 10, 20], ariaLabel: 'Payments' }, h),
 });
 
 export const dataTablePage = authoredPage({
   slug: 'data-table', title: 'Data Table', kind: 'recipe',
   previewProgram,
   definition: {
-    kind: 'recipe', description: 'A typed table recipe with filtering, sortable columns, formatting, and pagination.',
-    architecture: 'The application owns rows and typed column definitions. DataTable.Model stores only interaction state—filter text, sort choice, direction, page, and page size—and its pure update is delegated by the parent.',
+    kind: 'recipe', description: 'A typed, controlled data-grid recipe with filtering, sorting, selection, column visibility, formatting, and pagination.',
+    architecture: 'The application owns rows and typed column definitions. DataTable.Model stores interaction state—filter text, sort choice, page size, selected row keys, and hidden column keys—and its pure update is delegated by the parent.',
     apiHref: 'https://foldkit.dev/guide/state',
-    composition: 'Parent Model\n├── domain rows\n└── DataTable interaction Model\n    ├── filter query\n    ├── sort key + direction\n    └── page + page size\nView inputs\n└── typed columns, keys, formatting',
+    composition: 'Parent Model\n├── domain rows\n└── DataTable interaction Model\n    ├── filter query\n    ├── sort key + direction\n    ├── page + page size\n    ├── selected row keys\n    └── hidden column keys\nView inputs\n└── typed columns, keys, formatting',
     styling: 'Column definitions own alignment classes and cell formatting. The table keeps an overflow boundary; place it in a width-aware container on narrow screens.',
     accessibility: 'Use a descriptive table label, stable row keys, and text equivalents for formatted values. Sortable headers expose aria-sort and remain keyboard-operable buttons.',
     keyboard: [['Tab', 'Moves through the filter, sortable headers, and pagination controls.'], ['Enter / Space', 'Changes sort direction or activates pagination.']],

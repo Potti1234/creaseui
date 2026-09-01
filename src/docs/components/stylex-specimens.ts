@@ -97,14 +97,14 @@ export const catalogSpecimens = <Msg>(
   h: HtmlBuilder<Msg>,
 ): ReadonlyArray<Specimen> => {
   const noop = <Message>(_message: Message): Msg => noOpMessage
-  const accordionItems = [{ value: 'constraints', trigger: 'Why StyleX?', content: 'Static extraction narrows the styling grammar.', isOpen: true }]
-  const accordionModel = Accordion.init({ id: 'stylex-catalog-accordion', items: accordionItems })
+  const accordionItems = [{ value: 'constraints', trigger: 'Why StyleX?', content: 'Static extraction narrows the styling grammar.' }]
+  const accordionModel = Accordion.init({ id: 'stylex-catalog-accordion', value: ['constraints'] })
   const calendarModel = Calendar.init({ id: 'stylex-catalog-calendar', today: { year: 2026, month: 8, day: 25 }, initialViewDate: { year: 2026, month: 8, day: 25 } })
   const selectedDate = Option.some({ year: 2026, month: 8, day: 25 })
   const messageScrollerModel = MessageScroller.init('stylex-catalog-messages')
 
   return [
-    { name: 'accordion', note: 'Static open state', view: Accordion.accordion({ model: accordionModel, items: accordionItems, toParentMessage: noop }, h) },
+    { name: 'accordion', note: 'Static open state', view: h.submodel({ slotId: accordionModel.id, model: accordionModel, view: Accordion.view, viewInputs: { items: accordionItems }, toParentMessage: noop }) },
     { name: 'alert', note: 'Destructive variant', view: Alert.alert({ variant: 'destructive', children: [Alert.alertTitle({ children: ['Heads up'] }, h), Alert.alertDescription({ children: ['Agent constraints are enforced at lint time.'] }, h)] }, h) },
     { name: 'alert-dialog', note: 'Initialized closed modal', view: h.div([], [staticState('Confirmation dialog', 'Closed static-state specimen; behavior is covered in component docs.', h), AlertDialog.alertDialog({ model: AlertDialog.init({ id: 'stylex-catalog-alert-dialog', isAnimated: true }), toParentMessage: noop, title: 'Delete project?', description: 'This action cannot be undone.', actionLabel: 'Delete' }, h)]) },
     { name: 'aspect-ratio', note: '16:9 media frame', view: AspectRatio.aspectRatio({ ratio: 16 / 9, children: [h.div([h.Class('grid h-full place-items-center rounded-md bg-muted text-xs text-foreground')], ['16:9'])] }, h) },

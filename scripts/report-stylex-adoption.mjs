@@ -27,61 +27,79 @@ const stylexNames = names(
     'tokens.stylex',
   ]),
 )
-const paired = uiNames.filter((name) => stylexNames.includes(name))
-const boundaryFiles = fs
-  .readdirSync('src/stylex', { recursive: true, withFileTypes: true })
-  .filter((entry) => entry.isFile() && entry.name.endsWith('.ts'))
-  .map((entry) => path.join(entry.parentPath, entry.name))
-boundaryFiles.push('src/docs/components/stylex-specimens.ts')
+const cardNames = names('src/demo/cards')
+const stylexCardNames = names(
+  'src/demo/stylex-cards',
+  new Set([
+    'complex-card-tokens.stylex',
+    'foundations-card-tokens.stylex',
+    'interaction-card-tokens.stylex',
+  ]),
+)
+const paired = (left, right) => left.filter((name) => right.includes(name))
 
+const boundaryFiles = [
+  ...fs
+    .readdirSync('src/stylex', { recursive: true, withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.ts'))
+    .map((entry) => path.join(entry.parentPath, entry.name)),
+  ...fs
+    .readdirSync('src/demo/stylex-cards', { recursive: true, withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.ts'))
+    .map((entry) => path.join(entry.parentPath, entry.name)),
+  'src/demo/board-stylex.ts',
+  'src/demo/board-constrained.ts',
+]
 const boundarySource = boundaryFiles
   .map((file) => fs.readFileSync(file, 'utf8'))
   .join('\n')
+
+const primitiveFiles = ['box', 'grid', 'inline', 'stack', 'text']
+const constrainedSource = fs.readFileSync('src/demo/board-constrained.ts', 'utf8')
+const primitiveCalls = Object.fromEntries(
+  primitiveFiles.map((name) => [
+    name,
+    (constrainedSource.match(new RegExp(`\\b${name}\\(`, 'gu')) ?? []).length,
+  ]),
+)
 const manifest = JSON.parse(
   fs.readFileSync('src/stylex/fallbacks/manifest.json', 'utf8'),
 )
-const specimenSource = fs.readFileSync(
-  'src/docs/components/stylex-specimens.ts',
-  'utf8',
-)
-const specimenNames = new Set(
-  [...specimenSource.matchAll(/\{ name: '([^']+)'/gu)].map(
-    (match) => match[1],
-  ),
-)
 
 const report = {
-  mode: 'integrated-page-switch',
+  mode: 'parallel-experiment',
   interpretation:
-    'Coverage measures StyleX counterparts and integrated documentation specimens while Tailwind remains the default renderer.',
+    'Coverage measures available StyleX counterparts, not removal of Tailwind from the primary product.',
   components: {
     source: uiNames.length,
-    stylexCounterparts: paired.length,
-    paired: paired.length,
-    coveragePercent: Number(((paired.length / uiNames.length) * 100).toFixed(1)),
-  },
-  documentationSpecimens: {
-    source: uiNames.length,
-    stylexSpecimens: specimenNames.size,
+    stylexCounterparts: paired(uiNames, stylexNames).length,
+    paired: paired(uiNames, stylexNames).length,
     coveragePercent: Number(
-      ((specimenNames.size / uiNames.length) * 100).toFixed(1),
+      ((paired(uiNames, stylexNames).length / uiNames.length) * 100).toFixed(1),
+    ),
+  },
+  createCards: {
+    source: cardNames.length,
+    stylexCounterparts: paired(cardNames, stylexCardNames).length,
+    paired: paired(cardNames, stylexCardNames).length,
+    coveragePercent: Number(
+      ((paired(cardNames, stylexCardNames).length / cardNames.length) * 100).toFixed(1),
     ),
   },
   constrainedComposition: {
-    primitiveCount: ['box', 'grid', 'inline', 'stack', 'text'].length,
+    primitiveCount: primitiveFiles.length,
+    primitiveCalls,
   },
   guardrails: {
     boundaryFiles: boundaryFiles.length,
     cssFallbacks: manifest.fallbacks.length,
-    legacyUiImports: (boundarySource.match(/from\s+['"]@\/ui\//gu) ?? [])
-      .length,
+    legacyUiImports: (boundarySource.match(/from\s+['"]@\/ui\//gu) ?? []).length,
     suppressions: (
       boundarySource.match(
         /(?:eslint|oxlint)-disable|@ts-(?:expect-error|ignore)/gu,
       ) ?? []
     ).length,
-    unsafeBodyPortals: (boundarySource.match(/portal\s*:\s*true/gu) ?? [])
-      .length,
+    unsafeBodyPortals: (boundarySource.match(/portal\s*:\s*true/gu) ?? []).length,
   },
 }
 
@@ -91,13 +109,9 @@ if (process.argv.includes('--write')) {
   fs.writeFileSync(outputPath, serialized)
   console.log(`Wrote ${outputPath}`)
 } else {
-  const current = fs.existsSync(outputPath)
-    ? fs.readFileSync(outputPath, 'utf8')
-    : ''
+  const current = fs.existsSync(outputPath) ? fs.readFileSync(outputPath, 'utf8') : ''
   if (current !== serialized) {
-    console.error(
-      'StyleX adoption metrics drifted. Run npm run stylex:adoption:generate.',
-    )
+    console.error(`StyleX adoption metrics drifted. Run npm run stylex:adoption:generate.`)
     process.exitCode = 1
   } else {
     console.log(serialized.trim())

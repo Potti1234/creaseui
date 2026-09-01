@@ -1,0 +1,26 @@
+import * as stylex from '@stylexjs/stylex'
+
+export const boardTokens = stylex.defineVars({
+  boardBackground: 'var(--background)',
+  boardMuted: 'var(--muted)',
+  boardMutedForeground: 'var(--muted-foreground)',
+  border: 'rgb(255 255 255 / 0.1)',
+  error: 'oklch(0.704 0.191 22.216)',
+  focus: 'rgb(255 255 255 / 0.3)',
+  hover: 'rgb(255 255 255 / 0.06)',
+  markerChart: 'oklch(0.488 0.243 264.376)',
+  markerPrimary: 'oklch(0.922 0 0)',
+  markerZinc: 'oklch(0.705 0.015 286.067)',
+  panel: 'rgb(40 40 40)',
+  panelField: 'rgb(255 255 255 / 0.035)',
+  panelInput: 'rgb(0 0 0 / 0.2)',
+  panelPopover: 'rgb(58 58 58)',
+  panelRadius: '1rem',
+  panelInnerRadius: '0.75rem',
+  selected: 'rgb(255 255 255 / 0.15)',
+  success: 'oklch(0.627 0.194 149.214)',
+  text: 'white',
+  textMuted: 'rgb(255 255 255 / 0.8)',
+  textSubtle: 'rgb(255 255 255 / 0.35)',
+  transparent: 'transparent',
+})

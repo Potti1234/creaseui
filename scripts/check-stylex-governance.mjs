@@ -3,7 +3,10 @@ import path from 'node:path'
 
 const roots = [
   'src/stylex',
-  'src/docs/components/stylex-specimens.ts',
+  'src/demo/stylex-cards',
+  'src/demo/board-stylex.ts',
+  'src/demo/board-constrained.ts',
+  'src/demo/blocks-stylex',
 ]
 
 const files = roots.flatMap((root) => {

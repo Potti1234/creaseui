@@ -56,6 +56,19 @@
       ]
     },
     {
+      "name": "accordion-state",
+      "type": "registry:lib",
+      "title": "Foldkit Accordion State",
+      "description": "Skin-neutral stable-value Model, Message, update, reflect, and OutMessage behavior for Accordion renderers.",
+      "files": [
+        {
+          "path": "accordion-state.ts",
+          "type": "registry:lib",
+          "target": "@lib/accordion-state.ts"
+        }
+      ]
+    },
+    {
       "name": "sidebar-state",
       "type": "registry:lib",
       "title": "Foldkit Sidebar State",

@@ -1,6 +1,11 @@
+let nextAnimationFrameId = 0
+
 const browserWindow = {
-  requestAnimationFrame: (callback: FrameRequestCallback): number =>
-    setTimeout(() => callback(Date.now()), 0) as unknown as number,
+  requestAnimationFrame: (callback: FrameRequestCallback): number => {
+    const id = ++nextAnimationFrameId
+    setTimeout(() => callback(Date.now()), 0)
+    return id
+  },
 }
 
 Object.defineProperty(globalThis, 'window', {

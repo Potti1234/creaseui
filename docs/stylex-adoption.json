@@ -1,22 +1,30 @@
 {
-  "mode": "integrated-page-switch",
-  "interpretation": "Coverage measures StyleX counterparts and integrated documentation specimens while Tailwind remains the default renderer.",
+  "mode": "parallel-experiment",
+  "interpretation": "Coverage measures available StyleX counterparts, not removal of Tailwind from the primary product.",
   "components": {
     "source": 65,
     "stylexCounterparts": 65,
     "paired": 65,
     "coveragePercent": 100
   },
-  "documentationSpecimens": {
-    "source": 65,
-    "stylexSpecimens": 65,
+  "createCards": {
+    "source": 33,
+    "stylexCounterparts": 33,
+    "paired": 33,
     "coveragePercent": 100
   },
   "constrainedComposition": {
-    "primitiveCount": 5
+    "primitiveCount": 5,
+    "primitiveCalls": {
+      "box": 3,
+      "grid": 2,
+      "inline": 1,
+      "stack": 5,
+      "text": 4
+    }
   },
   "guardrails": {
-    "boundaryFiles": 96,
+    "boundaryFiles": 136,
     "cssFallbacks": 0,
     "legacyUiImports": 0,
     "suppressions": 0,

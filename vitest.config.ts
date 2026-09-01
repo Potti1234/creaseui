@@ -7,6 +7,9 @@ import { stylexCompilerOptions } from './stylex.config.js'
 
 export default defineConfig({
   plugins: [
+    // Vitest only needs StyleX's compile-time transform. The Vite adapter also
+    // installs dev-server CSS/HMR middleware whose polling timer cannot be
+    // closed in Vitest's middleware mode (StyleX issue #1533).
     stylex.rollup({
       ...stylexCompilerOptions,
       test: true,
