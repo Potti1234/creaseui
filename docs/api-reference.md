@@ -1058,16 +1058,17 @@ Source: [`src/ui/tabs.ts`](../src/ui/tabs.ts)
 | `Message` | value | `Message: value` |
 | `Message` | type | `Message = typeof Message.Type` |
 | `OutMessage` | value | `OutMessage: value` |
-| `OutMessage` | type | `OutMessage = TabsPrimitive.OutMessage<string>` |
+| `OutMessage` | type | `OutMessage<Value extends string = string> = TabsPrimitive.OutMessage<Value>` |
 | `init` | value | `init: value` |
-| `create` | value | `create: value` |
-| `update` | value | `update: value` |
 | `tabsListVariants` | value | `tabsListVariants: value` |
 | `TabsListVariants` | type | `TabsListVariants = VariantProps<typeof tabsListVariants>` |
 | `TabsOrientation` | type | `TabsOrientation = 'horizontal' \| 'vertical'` |
-| `TabConfig` | type | `TabConfig = Readonly<{ value: string; label: Html \| string; content: Html \| string; isDisabled?: boolean; }>` |
-| `TabsProps` | type | `TabsProps<Msg> = Readonly<{ model: Model; selectedValue: string; toParentMessage: (message: Message) => Msg; tabs: ReadonlyArray<TabConfig>; ariaLabel?: string; orientation?: TabsOrientation; activationMode?: TabsPrimitive.ActivationMode; variant?: TabsListVa…` |
-| `tabs` | function | `tabs<Msg>(props: TabsProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `TabConfig` | type | `TabConfig<Value extends string = string> = Readonly<{ value: Value; label: Html \| string; content: Html \| string; isDisabled?: boolean; }>` |
+| `TabsProps` | type | `TabsProps<Value extends string, Msg> = Readonly<{ model: Model; selectedValue: Value; toParentMessage: (message: Message) => Msg; tabs: ReadonlyArray<TabConfig<Value>>; ariaLabel?: string; orientation?: TabsOrientation; direction?: 'ltr' \| 'rtl'; variant?: Ta…` |
+| `TabsBundle` | type | `TabsBundle<Value extends string> = Readonly<{ update: ReturnType<typeof TabsPrimitive.create<Value>>['update']; tabs: <Msg>(props: TabsProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` |
+| `create` | function | `create<Value extends string = string>(): TabsBundle<Value>` |
+| `update` | value | `update: value` |
+| `tabs` | value | `tabs: value` |
 
 ## Textarea
 

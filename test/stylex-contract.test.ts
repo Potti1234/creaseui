@@ -197,6 +197,19 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(stylex, /window\.(?:innerWidth|innerHeight)/u)
   })
 
+  it('binds Tabs values once around the canonical roving-focus primitive', () => {
+    const tailwind = readFileSync('src/ui/tabs.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/tabs.ts', 'utf8')
+
+    assert.match(tailwind, /Tabs as TabsPrimitive/u)
+    assert.match(stylex, /Tabs as TabsPrimitive/u)
+    assert.match(tailwind, /export const create = <Value extends string/u)
+    assert.match(stylex, /export const create = <Value extends string/u)
+    assert.doesNotMatch(stylex, /from ['"]@\/ui\/tabs['"]/u)
+    assert.doesNotMatch(tailwind, /activationMode\?: TabsPrimitive\.ActivationMode/u)
+    assert.doesNotMatch(stylex, /activationMode\?: TabsPrimitive\.ActivationMode/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

@@ -478,6 +478,32 @@ test("authored tabs keep child instances and selected values independent", async
     "aria-selected",
     "true",
   );
+
+  const manual = page.locator("#manual-with-disabled-tab");
+  const accountTab = manual.getByRole("tab", { name: "Account" });
+  const billingTab = manual.getByRole("tab", { name: "Billing" });
+  await expect(manual.getByRole("tab", { name: "Security" })).toBeDisabled();
+  await accountTab.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(billingTab).toBeFocused();
+  await expect(accountTab).toHaveAttribute("aria-selected", "true");
+  await expect(billingTab).toHaveAttribute("aria-selected", "false");
+  await page.keyboard.press("Enter");
+  await expect(billingTab).toHaveAttribute("aria-selected", "true");
+  const panelId = await billingTab.getAttribute("aria-controls");
+  expect(panelId).toBeTruthy();
+  await expect(manual.locator(`#${panelId}`)).toHaveText(/invoices/u);
+
+  const rtl = page.locator("#rtl-route-value");
+  const rtlTabs = rtl.locator('[data-slot="tabs"]');
+  await expect(rtlTabs).toHaveAttribute("dir", "rtl");
+  const rtlSettings = rtl.getByRole("tab", { name: "Settings" });
+  await rtlSettings.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(rtl.getByRole("tab", { name: "Deployments" })).toHaveAttribute(
+    "aria-selected",
+    "true",
+  );
 });
 
 test("authored slider delegates keyboard changes and stores its output value", async ({

@@ -4352,22 +4352,12 @@
         {
           "name": "OutMessage",
           "kind": "type",
-          "signature": "OutMessage = TabsPrimitive.OutMessage<string>"
+          "signature": "OutMessage<Value extends string = string> = TabsPrimitive.OutMessage<Value>"
         },
         {
           "name": "init",
           "kind": "value",
           "signature": "init: value"
-        },
-        {
-          "name": "create",
-          "kind": "value",
-          "signature": "create: value"
-        },
-        {
-          "name": "update",
-          "kind": "value",
-          "signature": "update: value"
         },
         {
           "name": "tabsListVariants",
@@ -4387,17 +4377,32 @@
         {
           "name": "TabConfig",
           "kind": "type",
-          "signature": "TabConfig = Readonly<{ value: string; label: Html | string; content: Html | string; isDisabled?: boolean; }>"
+          "signature": "TabConfig<Value extends string = string> = Readonly<{ value: Value; label: Html | string; content: Html | string; isDisabled?: boolean; }>"
         },
         {
           "name": "TabsProps",
           "kind": "type",
-          "signature": "TabsProps<Msg> = Readonly<{ model: Model; selectedValue: string; toParentMessage: (message: Message) => Msg; tabs: ReadonlyArray<TabConfig>; ariaLabel?: string; orientation?: TabsOrientation; activationMode?: TabsPrimitive.ActivationMode; variant?: TabsListVa…"
+          "signature": "TabsProps<Value extends string, Msg> = Readonly<{ model: Model; selectedValue: Value; toParentMessage: (message: Message) => Msg; tabs: ReadonlyArray<TabConfig<Value>>; ariaLabel?: string; orientation?: TabsOrientation; direction?: 'ltr' | 'rtl'; variant?: Ta…"
+        },
+        {
+          "name": "TabsBundle",
+          "kind": "type",
+          "signature": "TabsBundle<Value extends string> = Readonly<{ update: ReturnType<typeof TabsPrimitive.create<Value>>['update']; tabs: <Msg>(props: TabsProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>"
+        },
+        {
+          "name": "create",
+          "kind": "function",
+          "signature": "create<Value extends string = string>(): TabsBundle<Value>"
+        },
+        {
+          "name": "update",
+          "kind": "value",
+          "signature": "update: value"
         },
         {
           "name": "tabs",
-          "kind": "function",
-          "signature": "tabs<Msg>(props: TabsProps<Msg>, h: HtmlBuilder<Msg>): Html"
+          "kind": "value",
+          "signature": "tabs: value"
         }
       ]
     },

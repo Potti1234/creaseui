@@ -1255,16 +1255,17 @@ Examples: Timed notification, Sticky error
 - `Message: value` (value)
 - `Message = typeof Message.Type` (type)
 - `OutMessage: value` (value)
-- `OutMessage = TabsPrimitive.OutMessage<string>` (type)
+- `OutMessage<Value extends string = string> = TabsPrimitive.OutMessage<Value>` (type)
 - `init: value` (value)
-- `create: value` (value)
-- `update: value` (value)
 - `tabsListVariants: value` (value)
 - `TabsListVariants = VariantProps<typeof tabsListVariants>` (type)
 - `TabsOrientation = 'horizontal' | 'vertical'` (type)
-- `TabConfig = Readonly<{ value: string; label: Html | string; content: Html | string; isDisabled?: boolean; }>` (type)
-- `TabsProps<Msg> = Readonly<{ model: Model; selectedValue: string; toParentMessage: (message: Message) => Msg; tabs: ReadonlyArray<TabConfig>; ariaLabel?: string; orientation?: TabsOrientation; activationMode?: TabsPrimitive.ActivationMode; variant?: TabsListVa…` (type)
-- `tabs<Msg>(props: TabsProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `TabConfig<Value extends string = string> = Readonly<{ value: Value; label: Html | string; content: Html | string; isDisabled?: boolean; }>` (type)
+- `TabsProps<Value extends string, Msg> = Readonly<{ model: Model; selectedValue: Value; toParentMessage: (message: Message) => Msg; tabs: ReadonlyArray<TabConfig<Value>>; ariaLabel?: string; orientation?: TabsOrientation; direction?: 'ltr' | 'rtl'; variant?: Ta…` (type)
+- `TabsBundle<Value extends string> = Readonly<{ update: ReturnType<typeof TabsPrimitive.create<Value>>['update']; tabs: <Msg>(props: TabsProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` (type)
+- `create<Value extends string = string>(): TabsBundle<Value>` (function)
+- `update: value` (value)
+- `tabs: value` (value)
 
 ### Textarea
 

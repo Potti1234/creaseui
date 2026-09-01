@@ -14,14 +14,10 @@ export type Model = typeof Model.Type;
 export const Message = TabsPrimitive.Message;
 export type Message = typeof Message.Type;
 export const OutMessage = TabsPrimitive.OutMessage;
-export type OutMessage = TabsPrimitive.OutMessage<string>;
+export type OutMessage<Value extends string = string> =
+  TabsPrimitive.OutMessage<Value>;
 
 export const init = TabsPrimitive.init;
-export const create = TabsPrimitive.create;
-
-const StringTabs = TabsPrimitive.create<string>();
-
-export const update = StringTabs.update;
 
 const TABS_CLASS =
   'group/tabs flex gap-2 data-[orientation=horizontal]:flex-col';
@@ -50,21 +46,21 @@ const CONTENT_CLASS = 'flex-1 outline-none';
 
 export type TabsOrientation = 'horizontal' | 'vertical';
 
-export type TabConfig = Readonly<{
-  value: string;
+export type TabConfig<Value extends string = string> = Readonly<{
+  value: Value;
   label: Html | string;
   content: Html | string;
   isDisabled?: boolean;
 }>;
 
-export type TabsProps<Msg> = Readonly<{
+export type TabsProps<Value extends string, Msg> = Readonly<{
   model: Model;
-  selectedValue: string;
+  selectedValue: Value;
   toParentMessage: (message: Message) => Msg;
-  tabs: ReadonlyArray<TabConfig>;
+  tabs: ReadonlyArray<TabConfig<Value>>;
   ariaLabel?: string;
   orientation?: TabsOrientation;
-  activationMode?: TabsPrimitive.ActivationMode;
+  direction?: 'ltr' | 'rtl';
   variant?: TabsListVariants['variant'];
   class?: string;
   listClass?: string;
@@ -72,20 +68,29 @@ export type TabsProps<Msg> = Readonly<{
   contentClass?: string;
 }>;
 
-export const tabs = <Msg>(props: TabsProps<Msg>, h: HtmlBuilder<Msg>): Html => {
+const renderTabs = <Value extends string, Msg>(
+  bundle: TabsPrimitive.Bundle<Value>,
+  props: TabsProps<Value, Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
   const orientation = props.orientation ?? 'horizontal';
   const variant = props.variant ?? 'default';
+  const orderedTabs =
+    props.direction === 'rtl' && orientation === 'horizontal'
+      ? [...props.tabs].reverse()
+      : props.tabs;
 
   return h.submodel({
     slotId: props.model.id,
     model: props.model,
-    view: StringTabs.view,
+    view: bundle.view,
     viewInputs: {
-      tabs: props.tabs.map((tab) => tab.value),
+      tabs: orderedTabs.map((tab) => tab.value),
       selectedValue: props.selectedValue,
       ariaLabel: props.ariaLabel ?? 'Tabs',
       orientation: orientation === 'horizontal' ? 'Horizontal' : 'Vertical',
-      isTabDisabled: (_value, index) => props.tabs[index]?.isDisabled ?? false,
+      isTabDisabled: (value) =>
+        props.tabs.find((tab) => tab.value === value)?.isDisabled ?? false,
       toView: ({ tablist, tabs: renderedTabs, activeIndex }) => {
         const ht = h;
 
@@ -93,6 +98,7 @@ export const tabs = <Msg>(props: TabsProps<Msg>, h: HtmlBuilder<Msg>): Html => {
           [
             ht.DataAttribute('slot', 'tabs'),
             ht.DataAttribute('orientation', orientation),
+            ...(props.direction === undefined ? [] : [ht.Dir(props.direction)]),
             ht.Class(cn(TABS_CLASS, props.class)),
           ],
           [
@@ -101,10 +107,13 @@ export const tabs = <Msg>(props: TabsProps<Msg>, h: HtmlBuilder<Msg>): Html => {
                 ...tablist,
                 ht.DataAttribute('slot', 'tabs-list'),
                 ht.DataAttribute('variant', variant),
+                ...(props.direction === 'rtl' && orientation === 'horizontal'
+                  ? [ht.Dir('ltr')]
+                  : []),
                 ht.Class(cn(tabsListVariants({ variant }), props.listClass)),
               ],
               renderedTabs.flatMap((tab) => {
-                const config = props.tabs[tab.index];
+                const config = props.tabs.find((candidate) => candidate.value === tab.value);
 
                 return config === undefined
                   ? []
@@ -113,6 +122,9 @@ export const tabs = <Msg>(props: TabsProps<Msg>, h: HtmlBuilder<Msg>): Html => {
                         [
                           ...tab.tab,
                           ht.DataAttribute('slot', 'tabs-trigger'),
+                          ...(props.direction === undefined
+                            ? []
+                            : [ht.Dir(props.direction)]),
                           ht.Class(cn(TRIGGER_CLASS, props.triggerClass)),
                         ],
                         [config.label],
@@ -121,7 +133,7 @@ export const tabs = <Msg>(props: TabsProps<Msg>, h: HtmlBuilder<Msg>): Html => {
               }),
             ),
             ...renderedTabs.flatMap((tab) => {
-              const config = props.tabs[tab.index];
+              const config = props.tabs.find((candidate) => candidate.value === tab.value);
 
               return config === undefined || tab.index !== activeIndex
                 ? []
@@ -143,6 +155,23 @@ export const tabs = <Msg>(props: TabsProps<Msg>, h: HtmlBuilder<Msg>): Html => {
     toParentMessage: props.toParentMessage,
   });
 };
+
+export type TabsBundle<Value extends string> = Readonly<{
+  update: ReturnType<typeof TabsPrimitive.create<Value>>['update'];
+  tabs: <Msg>(props: TabsProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html;
+}>;
+
+export const create = <Value extends string = string>(): TabsBundle<Value> => {
+  const bundle = TabsPrimitive.create<Value>();
+  return {
+    update: bundle.update,
+    tabs: (props, h) => renderTabs(bundle, props, h),
+  };
+};
+
+const StringTabs = create<string>();
+export const update = StringTabs.update;
+export const tabs = StringTabs.tabs;
 
 /*
 Minimal wiring:
