@@ -1127,6 +1127,7 @@
       "title": "Toggle Group",
       "description": "A shadcn-styled Toggle Group component for Foldkit.",
       "registryDependencies": [
+        "Potti1234/creaseui/toggle-group-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/toggle",
         "Potti1234/creaseui/utils"

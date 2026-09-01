@@ -197,6 +197,19 @@
           "target": "@lib/radio-group.ts"
         }
       ]
+    },
+    {
+      "name": "toggle-group-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Toggle Group Behavior",
+      "description": "Skin-neutral parent-owned single or multiple selection with primitive-owned roving focus, disabled-item traversal, and RTL semantics.",
+      "files": [
+        {
+          "path": "toggle-group.ts",
+          "type": "registry:lib",
+          "target": "@lib/toggle-group.ts"
+        }
+      ]
     }
   ]
 }

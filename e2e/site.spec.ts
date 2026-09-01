@@ -1216,10 +1216,30 @@ test("controlled helper pages own and update compact local preview state", async
 
   await page.goto("/docs/components/toggle-group");
   const right = page
-    .locator("#alignment")
+    .locator("#single-selection")
     .getByRole("button", { name: "Right" });
   await right.click();
   await expect(right).toHaveAttribute("aria-pressed", "true");
+  await page.keyboard.press("ArrowLeft");
+  await expect(page.getByRole("button", { name: "Center", exact: true }).first()).toBeFocused();
+  await expect(right).toHaveAttribute("aria-pressed", "true");
+  await page.keyboard.press("Space");
+  await expect(page.getByRole("button", { name: "Center", exact: true }).first()).toHaveAttribute("aria-pressed", "true");
+
+  const multiple = page.locator("#multiple-selection");
+  const multipleLeft = multiple.getByRole("button", { name: "Left" });
+  const multipleRight = multiple.getByRole("button", { name: "Right" });
+  await expect(multipleLeft).toHaveAttribute("aria-pressed", "true");
+  await multipleRight.click();
+  await expect(multipleLeft).toHaveAttribute("aria-pressed", "true");
+  await expect(multipleRight).toHaveAttribute("aria-pressed", "true");
+
+  const disabledGroup = page.locator("#disabled-item");
+  const disabledLeft = disabledGroup.getByRole("button", { name: "Left" });
+  const disabledRight = disabledGroup.getByRole("button", { name: "Right" });
+  await disabledLeft.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(disabledRight).toBeFocused();
 
   await page.goto("/docs/components/radio-group");
   const compact = page

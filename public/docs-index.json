@@ -205,6 +205,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/alert",
       "dependencies": [
         "class-variance-authority@^0.7.1",
+        "Potti1234/creaseui/toggle-group-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
       ],
@@ -4476,24 +4477,72 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Single selection",
+        "Multiple selection",
+        "RTL",
+        "Disabled item",
+        "Form policy"
       ],
       "api": [
         {
+          "name": "Message",
+          "kind": "re-export",
+          "signature": "export { Message } from "
+        },
+        {
+          "name": "Model",
+          "kind": "re-export",
+          "signature": "export { Model } from "
+        },
+        {
+          "name": "init",
+          "kind": "re-export",
+          "signature": "export { init } from "
+        },
+        {
+          "name": "OutMessage",
+          "kind": "re-export",
+          "signature": "export { OutMessage } from "
+        },
+        {
           "name": "ToggleGroupItem",
           "kind": "type",
-          "signature": "ToggleGroupItem = Readonly<{ value: string; children: ReadonlyArray<Html | string>; isDisabled?: boolean; class?: string; }>"
+          "signature": "ToggleGroupItem<Value extends string = string> = Readonly<{ value: Value children: ReadonlyArray<Html | string> ariaLabel?: string isDisabled?: boolean class?: string }>"
         },
         {
           "name": "ToggleGroupProps",
           "kind": "type",
-          "signature": "ToggleGroupProps<Msg> = Readonly<{ items: ReadonlyArray<ToggleGroupItem>; onToggle: (itemValue: string) => Msg; variant?: ToggleVariants['variant']; size?: ToggleVariants['size']; class?: string; }> & (SingleSelection | MultipleSelection)"
+          "signature": "ToggleGroupProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel: string items: ReadonlyArray<ToggleGroupItem<Value>> direction?: 'ltr' | 'rtl' arrangement?: 'joined' | 'wrapped' variant?: ToggleVarian…"
+        },
+        {
+          "name": "ToggleGroupBundle",
+          "kind": "type",
+          "signature": "ToggleGroupBundle<Value extends string> = Readonly<{ update: BehaviorBundle<Value>['update'] toggleGroup: <Msg>(props: ToggleGroupProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html }>"
+        },
+        {
+          "name": "create",
+          "kind": "function",
+          "signature": "create<Value extends string = string>(): ToggleGroupBundle<Value>"
+        },
+        {
+          "name": "update",
+          "kind": "value",
+          "signature": "update: value"
         },
         {
           "name": "toggleGroup",
           "kind": "function",
-          "signature": "toggleGroup<Msg>(props: ToggleGroupProps<Msg>, h: HtmlBuilder<Msg>): Html"
+          "signature": "toggleGroup<Msg, Value extends string = string>(props: LegacyToggleGroupProps<Value, Msg>, h: HtmlBuilder<Msg>): Html"
+        },
+        {
+          "name": "toggleGroup",
+          "kind": "function",
+          "signature": "toggleGroup<Value extends string, Msg>(props: ToggleGroupProps<Value, Msg>, h: HtmlBuilder<Msg>): Html"
+        },
+        {
+          "name": "toggleGroup",
+          "kind": "function",
+          "signature": "toggleGroup<Msg>(props: ToggleGroupProps<string, Msg> | LegacyToggleGroupProps<string, Msg>, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },

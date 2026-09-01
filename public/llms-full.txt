@@ -1295,11 +1295,20 @@ A shadcn-styled Toggle Group component for Foldkit.
 
 Source: `src/ui/toggle-group.ts`
 
-Examples: Timed notification, Sticky error
+Examples: Single selection, Multiple selection, RTL, Disabled item, Form policy
 
-- `ToggleGroupItem = Readonly<{ value: string; children: ReadonlyArray<Html | string>; isDisabled?: boolean; class?: string; }>` (type)
-- `ToggleGroupProps<Msg> = Readonly<{ items: ReadonlyArray<ToggleGroupItem>; onToggle: (itemValue: string) => Msg; variant?: ToggleVariants['variant']; size?: ToggleVariants['size']; class?: string; }> & (SingleSelection | MultipleSelection)` (type)
-- `toggleGroup<Msg>(props: ToggleGroupProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `export { Message } from ` (re-export)
+- `export { Model } from ` (re-export)
+- `export { init } from ` (re-export)
+- `export { OutMessage } from ` (re-export)
+- `ToggleGroupItem<Value extends string = string> = Readonly<{ value: Value children: ReadonlyArray<Html | string> ariaLabel?: string isDisabled?: boolean class?: string }>` (type)
+- `ToggleGroupProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel: string items: ReadonlyArray<ToggleGroupItem<Value>> direction?: 'ltr' | 'rtl' arrangement?: 'joined' | 'wrapped' variant?: ToggleVarian…` (type)
+- `ToggleGroupBundle<Value extends string> = Readonly<{ update: BehaviorBundle<Value>['update'] toggleGroup: <Msg>(props: ToggleGroupProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html }>` (type)
+- `create<Value extends string = string>(): ToggleGroupBundle<Value>` (function)
+- `update: value` (value)
+- `toggleGroup<Msg, Value extends string = string>(props: LegacyToggleGroupProps<Value, Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `toggleGroup<Value extends string, Msg>(props: ToggleGroupProps<Value, Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `toggleGroup<Msg>(props: ToggleGroupProps<string, Msg> | LegacyToggleGroupProps<string, Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Toggle
 

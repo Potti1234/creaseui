@@ -223,6 +223,21 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(stylex, /export const Model/u)
   })
 
+  it('binds Toggle Group values once around shared roving-focus behavior', () => {
+    const behavior = readFileSync('src/lib/toggle-group.ts', 'utf8')
+    const tailwind = readFileSync('src/ui/toggle-group.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/toggle-group.ts', 'utf8')
+
+    assert.match(behavior, /Tabs as TabsPrimitive/u)
+    assert.match(tailwind, /@\/lib\/toggle-group/u)
+    assert.match(stylex, /@\/lib\/toggle-group/u)
+    assert.match(tailwind, /export const create = <Value extends string/u)
+    assert.match(stylex, /export const create = <Value extends string/u)
+    assert.doesNotMatch(stylex, /from ['"]@\/ui\/toggle-group['"]/u)
+    assert.match(tailwind, /selectedValues/u)
+    assert.match(stylex, /selectedValues/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

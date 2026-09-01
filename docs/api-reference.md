@@ -1094,9 +1094,18 @@ Source: [`src/ui/toggle-group.ts`](../src/ui/toggle-group.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `ToggleGroupItem` | type | `ToggleGroupItem = Readonly<{ value: string; children: ReadonlyArray<Html \| string>; isDisabled?: boolean; class?: string; }>` |
-| `ToggleGroupProps` | type | `ToggleGroupProps<Msg> = Readonly<{ items: ReadonlyArray<ToggleGroupItem>; onToggle: (itemValue: string) => Msg; variant?: ToggleVariants['variant']; size?: ToggleVariants['size']; class?: string; }> & (SingleSelection \| MultipleSelection)` |
-| `toggleGroup` | function | `toggleGroup<Msg>(props: ToggleGroupProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `Message` | re-export | `export { Message } from ` |
+| `Model` | re-export | `export { Model } from ` |
+| `init` | re-export | `export { init } from ` |
+| `OutMessage` | re-export | `export { OutMessage } from ` |
+| `ToggleGroupItem` | type | `ToggleGroupItem<Value extends string = string> = Readonly<{ value: Value children: ReadonlyArray<Html \| string> ariaLabel?: string isDisabled?: boolean class?: string }>` |
+| `ToggleGroupProps` | type | `ToggleGroupProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel: string items: ReadonlyArray<ToggleGroupItem<Value>> direction?: 'ltr' \| 'rtl' arrangement?: 'joined' \| 'wrapped' variant?: ToggleVarian…` |
+| `ToggleGroupBundle` | type | `ToggleGroupBundle<Value extends string> = Readonly<{ update: BehaviorBundle<Value>['update'] toggleGroup: <Msg>(props: ToggleGroupProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html }>` |
+| `create` | function | `create<Value extends string = string>(): ToggleGroupBundle<Value>` |
+| `update` | value | `update: value` |
+| `toggleGroup` | function | `toggleGroup<Msg, Value extends string = string>(props: LegacyToggleGroupProps<Value, Msg>, h: HtmlBuilder<Msg>): Html` |
+| `toggleGroup` | function | `toggleGroup<Value extends string, Msg>(props: ToggleGroupProps<Value, Msg>, h: HtmlBuilder<Msg>): Html` |
+| `toggleGroup` | function | `toggleGroup<Msg>(props: ToggleGroupProps<string, Msg> \| LegacyToggleGroupProps<string, Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Toggle
 

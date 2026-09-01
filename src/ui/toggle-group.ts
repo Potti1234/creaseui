@@ -1,85 +1,177 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { Button as ButtonPrimitive } from '@foldkit/ui';
+import {
+  type Bundle as BehaviorBundle,
+  Message,
+  Model,
+  type OutMessage,
+  create as createBehavior,
+  init,
+} from '@/lib/toggle-group'
+import { cn } from '@/lib/utils'
+import { type ToggleVariants, toggleVariants } from '@/ui/toggle'
 
-import { cn } from '@/lib/utils';
-import { type ToggleVariants, toggleVariants } from '@/ui/toggle';
+export { Message, Model, init }
+export type { OutMessage }
 
-export type ToggleGroupItem = Readonly<{
-  value: string;
-  children: ReadonlyArray<Html | string>;
-  isDisabled?: boolean;
-  class?: string;
-}>;
+export type ToggleGroupItem<Value extends string = string> = Readonly<{
+  value: Value
+  children: ReadonlyArray<Html | string>
+  ariaLabel?: string
+  isDisabled?: boolean
+  class?: string
+}>
 
-type SingleSelection = Readonly<{
-  value: string;
-  values?: never;
-}>;
+type SingleSelection<Value extends string> = Readonly<{ value: Value; values?: never }>
+type MultipleSelection<Value extends string> = Readonly<{
+  value?: never
+  values: ReadonlyArray<Value>
+}>
 
-type MultipleSelection = Readonly<{
-  value?: never;
-  values: ReadonlyArray<string>;
-}>;
+export type ToggleGroupProps<Value extends string, Msg> = Readonly<{
+  model: Model
+  toParentMessage: (message: Message) => Msg
+  ariaLabel: string
+  items: ReadonlyArray<ToggleGroupItem<Value>>
+  direction?: 'ltr' | 'rtl'
+  arrangement?: 'joined' | 'wrapped'
+  variant?: ToggleVariants['variant']
+  size?: ToggleVariants['size']
+  class?: string
+}> & (SingleSelection<Value> | MultipleSelection<Value>)
 
-export type ToggleGroupProps<Msg> = Readonly<{
-  items: ReadonlyArray<ToggleGroupItem>;
-  onToggle: (itemValue: string) => Msg;
-  variant?: ToggleVariants['variant'];
-  size?: ToggleVariants['size'];
-  class?: string;
-}> &
-  (SingleSelection | MultipleSelection);
+type LegacyToggleGroupProps<Value extends string, Msg> = Readonly<{
+  items: ReadonlyArray<ToggleGroupItem<Value>>
+  onToggle: (value: Value) => Msg
+  ariaLabel?: string
+  direction?: 'ltr' | 'rtl'
+  arrangement?: 'joined' | 'wrapped'
+  variant?: ToggleVariants['variant']
+  size?: ToggleVariants['size']
+  class?: string
+}> & (SingleSelection<Value> | MultipleSelection<Value>)
 
 const GROUP_CLASS =
-  'group/toggle-group flex w-fit items-center gap-0 rounded-md data-[variant=outline]:shadow-xs';
-
+  'group/toggle-group flex w-fit items-center gap-0 rounded-md data-[variant=outline]:shadow-xs data-[arrangement=wrapped]:flex-wrap data-[arrangement=wrapped]:gap-1'
 const ITEM_CLASS =
-  'w-auto min-w-0 shrink-0 rounded-none px-3 shadow-none first:rounded-l-md last:rounded-r-md focus:z-10 focus-visible:z-10 data-[variant=outline]:border-l-0 first:data-[variant=outline]:border-l';
+  'w-auto min-w-0 shrink-0 rounded-none px-3 shadow-none first:rounded-l-md last:rounded-r-md focus:z-10 focus-visible:z-10 data-[variant=outline]:border-l-0 first:data-[variant=outline]:border-l group-data-[arrangement=wrapped]/toggle-group:rounded-md group-data-[arrangement=wrapped]/toggle-group:data-[variant=outline]:border-l'
 
-export const toggleGroup = <Msg>(
-  props: ToggleGroupProps<Msg>,
+const renderToggleGroup = <Value extends string, Msg>(
+  behavior: BehaviorBundle<Value>,
+  props: ToggleGroupProps<Value, Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const variant = props.variant ?? 'default';
-  const size = props.size ?? 'default';
-  const selectedValues =
-    props.values === undefined ? [props.value] : props.values;
+  const variant = props.variant ?? 'default'
+  const size = props.size ?? 'default'
+  const arrangement = props.arrangement ?? 'joined'
+  const selectedValues: ReadonlyArray<Value> =
+    props.values === undefined ? [props.value] : props.values
 
+  return behavior.render(
+    {
+      model: props.model,
+      toParentMessage: props.toParentMessage,
+      selectedValues,
+      items: props.items,
+      ariaLabel: props.ariaLabel,
+      ...(props.direction === undefined ? {} : { direction: props.direction }),
+    },
+    {
+      group: [
+        h.DataAttribute('slot', 'toggle-group'),
+        h.DataAttribute('variant', variant),
+        h.DataAttribute('size', size),
+        h.DataAttribute('arrangement', arrangement),
+        h.Class(cn(GROUP_CLASS, props.class)),
+      ],
+      item: () => [],
+    },
+    (item, ht) => {
+      const content = props.items.find((candidate) => candidate.value === item.value)
+      return content === undefined
+        ? ht.empty
+        : ht.button(
+            [
+              ...item.attributes,
+              ht.DataAttribute('slot', 'toggle-group-item'),
+              ht.DataAttribute('variant', variant),
+              ht.DataAttribute('size', size),
+              ht.AriaPressed(item.isPressed ? 'true' : 'false'),
+              ...(props.direction === undefined ? [] : [ht.Dir(props.direction)]),
+              ...(content.ariaLabel === undefined ? [] : [ht.AriaLabel(content.ariaLabel)]),
+              ht.Class(cn(toggleVariants({ variant, size }), ITEM_CLASS, content.class)),
+            ],
+            [...content.children],
+          )
+    },
+    h,
+  )
+}
+
+const renderLegacyToggleGroup = <Value extends string, Msg>(
+  props: LegacyToggleGroupProps<Value, Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const variant = props.variant ?? 'default'
+  const size = props.size ?? 'default'
+  const arrangement = props.arrangement ?? 'joined'
+  const selectedValues: ReadonlyArray<Value> = props.values === undefined ? [props.value] : props.values
   return h.div(
     [
+      h.Role('group'),
+      ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
+      ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
       h.DataAttribute('slot', 'toggle-group'),
       h.DataAttribute('variant', variant),
       h.DataAttribute('size', size),
-      h.DataAttribute('spacing', '0'),
+      h.DataAttribute('arrangement', arrangement),
       h.Class(cn(GROUP_CLASS, props.class)),
     ],
-    props.items.map((item) =>
-      ButtonPrimitive.view(
-        {
-          onClick: props.onToggle(item.value),
-          isDisabled: item.isDisabled ?? false,
-          type: 'button',
-          toView: ({ button }) =>
-            h.button(
-              [
-                ...button,
-                h.DataAttribute('slot', 'toggle-group-item'),
-                h.DataAttribute('variant', variant),
-                h.DataAttribute('size', size),
-                h.DataAttribute('spacing', '0'),
-                h.AriaPressed(
-                  selectedValues.includes(item.value) ? 'true' : 'false',
-                ),
-                h.Class(
-                  cn(toggleVariants({ variant, size }), ITEM_CLASS, item.class),
-                ),
-              ],
-              [...item.children],
-            ),
-        },
-        h,
-      ),
-    ),
-  );
-};
+    props.items.map((item) => h.button(
+      [
+        h.Type('button'),
+        h.OnClick(props.onToggle(item.value)),
+        h.Disabled(item.isDisabled ?? false),
+        h.AriaPressed(selectedValues.includes(item.value) ? 'true' : 'false'),
+        ...(item.ariaLabel === undefined ? [] : [h.AriaLabel(item.ariaLabel)]),
+        h.DataAttribute('slot', 'toggle-group-item'),
+        h.DataAttribute('variant', variant),
+        h.DataAttribute('size', size),
+        h.Class(cn(toggleVariants({ variant, size }), ITEM_CLASS, item.class)),
+      ],
+      [...item.children],
+    )),
+  )
+}
+
+export type ToggleGroupBundle<Value extends string> = Readonly<{
+  update: BehaviorBundle<Value>['update']
+  toggleGroup: <Msg>(props: ToggleGroupProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html
+}>
+
+export const create = <Value extends string = string>(): ToggleGroupBundle<Value> => {
+  const behavior = createBehavior<Value>()
+  return {
+    update: behavior.update,
+    toggleGroup: (props, h) => renderToggleGroup(behavior, props, h),
+  }
+}
+
+const StringToggleGroup = create<string>()
+export const update = StringToggleGroup.update
+export function toggleGroup<Msg, Value extends string = string>(
+  props: LegacyToggleGroupProps<Value, Msg>,
+  h: HtmlBuilder<Msg>,
+): Html
+export function toggleGroup<Value extends string, Msg>(
+  props: ToggleGroupProps<Value, Msg>,
+  h: HtmlBuilder<Msg>,
+): Html
+export function toggleGroup<Msg>(
+  props: ToggleGroupProps<string, Msg> | LegacyToggleGroupProps<string, Msg>,
+  h: HtmlBuilder<Msg>,
+): Html {
+  return 'model' in props
+    ? StringToggleGroup.toggleGroup(props, h)
+    : renderLegacyToggleGroup(props, h)
+}
