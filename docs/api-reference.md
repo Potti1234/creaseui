@@ -533,8 +533,13 @@ Source: [`src/ui/form.ts`](../src/ui/form.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `FormProps` | type | `FormProps<Msg> = Slot & Readonly<{ onSubmit?: Msg; ariaLabel?: string }>` |
+| `FormError` | re-export | `export { FormError } from '@/lib/form'` |
+| `FormMethod` | re-export | `export { FormMethod } from '@/lib/form'` |
+| `formControlIds` | re-export | `export { formControlIds } from '@/lib/form'` |
+| `FormProps` | type | `FormProps<Msg> = FormBehaviorProps<Msg> & Readonly<{ class?: string }>` |
 | `form` | function | `form<Msg>(props: FormProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `ErrorSummaryProps` | type | `ErrorSummaryProps = SharedErrorSummaryProps & Readonly<{ class?: string }>` |
+| `errorSummary` | function | `errorSummary<Msg>(props: ErrorSummaryProps, h: HtmlBuilder<Msg>): Html` |
 | `FormItemProps` | type | `FormItemProps = Slot & Readonly<{ id: string; isInvalid?: boolean; isDisabled?: boolean }>` |
 | `formItem` | function | `formItem<Msg>(props: FormItemProps, h: HtmlBuilder<Msg>): Html` |
 | `FormLabelProps` | type | `FormLabelProps = Slot & Readonly<{ for: string }>` |
@@ -543,7 +548,6 @@ Source: [`src/ui/form.ts`](../src/ui/form.ts)
 | `formDescription` | function | `formDescription<Msg>(props: FormDescriptionProps, h: HtmlBuilder<Msg>): Html` |
 | `FormMessageProps` | type | `FormMessageProps = Readonly<{ id?: string; class?: string; message?: string; errors?: ReadonlyArray<Field.FieldError>; }>` |
 | `formMessage` | function | `formMessage<Msg>(props: FormMessageProps = {}, h: HtmlBuilder<Msg>): Html` |
-| `formControlIds` | function | `formControlIds(id: string): Readonly<{ descriptionId: string; messageId: string; describedBy: string; }>` |
 
 ## Hover Card
 

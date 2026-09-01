@@ -92,6 +92,17 @@ describe('StyleX component authoring contract', () => {
     assert.match(stylex, /renderControlField\(/u)
   })
 
+  it('keeps Form behavior in the skin-neutral behavior module', () => {
+    const tailwind = readFileSync('src/ui/form.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/form.ts', 'utf8')
+
+    assert.match(tailwind, /from '@\/lib\/form'/u)
+    assert.match(stylex, /from '@\/lib\/form'/u)
+    assert.doesNotMatch(stylex, /from ['"]@\/ui\/form['"]/u)
+    assert.match(stylex, /renderForm\(/u)
+    assert.match(stylex, /renderErrorSummary\(/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

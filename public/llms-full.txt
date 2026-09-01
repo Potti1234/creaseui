@@ -668,10 +668,15 @@ A shadcn-styled Form component for Foldkit.
 
 Source: `src/ui/form.ts`
 
-Examples: Newsletter signup, Validation feedback
+Examples: Newsletter signup, Error summary, Async validation
 
-- `FormProps<Msg> = Slot & Readonly<{ onSubmit?: Msg; ariaLabel?: string }>` (type)
+- `export { FormError } from '@/lib/form'` (re-export)
+- `export { FormMethod } from '@/lib/form'` (re-export)
+- `export { formControlIds } from '@/lib/form'` (re-export)
+- `FormProps<Msg> = FormBehaviorProps<Msg> & Readonly<{ class?: string }>` (type)
 - `form<Msg>(props: FormProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `ErrorSummaryProps = SharedErrorSummaryProps & Readonly<{ class?: string }>` (type)
+- `errorSummary<Msg>(props: ErrorSummaryProps, h: HtmlBuilder<Msg>): Html` (function)
 - `FormItemProps = Slot & Readonly<{ id: string; isInvalid?: boolean; isDisabled?: boolean }>` (type)
 - `formItem<Msg>(props: FormItemProps, h: HtmlBuilder<Msg>): Html` (function)
 - `FormLabelProps = Slot & Readonly<{ for: string }>` (type)
@@ -680,7 +685,6 @@ Examples: Newsletter signup, Validation feedback
 - `formDescription<Msg>(props: FormDescriptionProps, h: HtmlBuilder<Msg>): Html` (function)
 - `FormMessageProps = Readonly<{ id?: string; class?: string; message?: string; errors?: ReadonlyArray<Field.FieldError>; }>` (type)
 - `formMessage<Msg>(props: FormMessageProps = {}, h: HtmlBuilder<Msg>): Html` (function)
-- `formControlIds(id: string): Readonly<{ descriptionId: string; messageId: string; describedBy: string; }>` (function)
 
 ### Hover Card
 

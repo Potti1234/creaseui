@@ -529,6 +529,7 @@
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/field",
+        "Potti1234/creaseui/form-behavior",
         "Potti1234/creaseui/utils"
       ],
       "files": [

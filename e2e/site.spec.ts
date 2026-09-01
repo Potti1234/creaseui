@@ -1154,6 +1154,61 @@ test("field guarantees linked parts and documents stale async validation", async
   await assertAccessible(page);
 });
 
+test("form preserves native metadata and focuses linked validation feedback", async ({
+  page,
+}) => {
+  await page.goto("/docs/components/form");
+
+  const newsletter = page
+    .locator("#newsletter-signup")
+    .getByRole("textbox", { name: "Email" });
+  await expect(newsletter).toHaveAttribute("name", "email");
+  await expect(newsletter).toHaveAttribute("type", "email");
+  await expect(newsletter).toHaveAttribute("autocomplete", "email");
+
+  const signIn = page.locator("#error-summary").getByRole("form", {
+    name: "Account sign in",
+  });
+  const signInEmail = signIn.getByRole("textbox", { name: "Email" });
+  const password = signIn.getByLabel("Password");
+  await expect(password).toHaveAttribute("name", "password");
+  await expect(password).toHaveAttribute("autocomplete", "current-password");
+  await signIn.getByRole("button", { name: "Sign in" }).click();
+
+  const summary = signIn.getByRole("alert", {
+    name: "Fix the following error",
+  });
+  await expect(summary).toBeFocused();
+  await expect(summary.getByRole("link", { name: "Enter a valid email address." })).toHaveAttribute(
+    "href",
+    "#docs-form-sign-in-email",
+  );
+  await expect(signInEmail).toHaveAttribute("aria-invalid", "true");
+  await expect(signInEmail).toHaveAttribute(
+    "aria-describedby",
+    "docs-form-sign-in-email-error",
+  );
+
+  await expect(page.locator("#async-validation")).toContainText(
+    "message.version === model.validationVersion",
+  );
+  await assertAccessible(page);
+
+  await page
+    .getByRole("group", { name: "Preview styling engine" })
+    .getByRole("button", { name: "StyleX" })
+    .click();
+  const stylexForm = page.getByRole("form", { name: "Catalog form" });
+  const project = stylexForm.getByRole("textbox", { name: "Project name" });
+  await expect(project).toHaveValue("creaseui");
+  await expect(project).toHaveAttribute("name", "project");
+  await expect(project).toHaveAttribute(
+    "aria-describedby",
+    "stylex-form-input-description",
+  );
+  await assertAccessible(page);
+});
+
 test("flagship documentation pages have no automated accessibility violations", async ({
   page,
 }) => {

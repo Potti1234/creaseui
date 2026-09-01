@@ -132,6 +132,19 @@
           "target": "@lib/field.ts"
         }
       ]
+    },
+    {
+      "name": "form-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Form Behavior",
+      "description": "Skin-neutral native form attributes, deterministic support IDs, and focusable linked error-summary composition.",
+      "files": [
+        {
+          "path": "form.ts",
+          "type": "registry:lib",
+          "target": "@lib/form.ts"
+        }
+      ]
     }
   ]
 }

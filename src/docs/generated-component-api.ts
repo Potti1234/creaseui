@@ -1704,14 +1704,39 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
   ],
   "form": [
     {
+      "name": "FormError",
+      "kind": "re-export",
+      "signature": "export { FormError } from '@/lib/form'"
+    },
+    {
+      "name": "FormMethod",
+      "kind": "re-export",
+      "signature": "export { FormMethod } from '@/lib/form'"
+    },
+    {
+      "name": "formControlIds",
+      "kind": "re-export",
+      "signature": "export { formControlIds } from '@/lib/form'"
+    },
+    {
       "name": "FormProps",
       "kind": "type",
-      "signature": "FormProps<Msg> = Slot & Readonly<{ onSubmit?: Msg; ariaLabel?: string }>"
+      "signature": "FormProps<Msg> = FormBehaviorProps<Msg> & Readonly<{ class?: string }>"
     },
     {
       "name": "form",
       "kind": "function",
       "signature": "form<Msg>(props: FormProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "ErrorSummaryProps",
+      "kind": "type",
+      "signature": "ErrorSummaryProps = SharedErrorSummaryProps & Readonly<{ class?: string }>"
+    },
+    {
+      "name": "errorSummary",
+      "kind": "function",
+      "signature": "errorSummary<Msg>(props: ErrorSummaryProps, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "FormItemProps",
@@ -1752,11 +1777,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "formMessage",
       "kind": "function",
       "signature": "formMessage<Msg>(props: FormMessageProps = {}, h: HtmlBuilder<Msg>): Html"
-    },
-    {
-      "name": "formControlIds",
-      "kind": "function",
-      "signature": "formControlIds(id: string): Readonly<{ descriptionId: string; messageId: string; describedBy: string; }>"
     }
   ],
   "hover-card": [

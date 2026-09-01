@@ -1,27 +1,39 @@
 import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import * as Field from '@/ui/field';
+import {
+  type ErrorSummaryProps as SharedErrorSummaryProps,
+  type FormBehaviorProps,
+  renderErrorSummary,
+  renderForm,
+} from '@/lib/form';
 import { cn } from '@/lib/utils';
+
+export type { FormError, FormMethod } from '@/lib/form';
+export { formControlIds } from '@/lib/form';
 
 type Slot = Readonly<{
   class?: string;
   children: ReadonlyArray<Html | string>;
 }>;
 
-export type FormProps<Msg> = Slot &
-  Readonly<{ onSubmit?: Msg; ariaLabel?: string }>;
+export type FormProps<Msg> = FormBehaviorProps<Msg> & Readonly<{ class?: string }>;
 
 export const form = <Msg>(props: FormProps<Msg>, h: HtmlBuilder<Msg>): Html => {
-  return h.form(
-    [
-      h.DataAttribute('slot', 'form'),
-      ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
-      ...(props.onSubmit === undefined ? [] : [h.OnSubmit(props.onSubmit)]),
-      h.Class(cn('space-y-6', props.class)),
-    ],
-    [...props.children],
-  );
+  return renderForm(props, [h.Class(cn('space-y-6', props.class))], h);
 };
+
+export type ErrorSummaryProps = SharedErrorSummaryProps & Readonly<{ class?: string }>;
+
+export const errorSummary = <Msg>(
+  props: ErrorSummaryProps,
+  h: HtmlBuilder<Msg>,
+): Html => renderErrorSummary(props, {
+  root: [h.Class(cn('rounded-lg border border-destructive/40 bg-destructive/5 p-4 text-sm', props.class))],
+  title: [h.Class('font-medium text-foreground')],
+  list: [h.Class('mt-2 list-disc space-y-1 pl-5')],
+  link: [h.Class('text-foreground underline underline-offset-4')],
+}, h);
 
 export type FormItemProps = Slot &
   Readonly<{ id: string; isInvalid?: boolean; isDisabled?: boolean }>;
@@ -99,20 +111,4 @@ export const formMessage = <Msg>(
         [h.Id(props.id), h.DataAttribute('slot', 'form-message')],
         [content],
       );
-};
-
-export const formControlIds = (
-  id: string,
-): Readonly<{
-  descriptionId: string;
-  messageId: string;
-  describedBy: string;
-}> => {
-  const descriptionId = `${id}-description`;
-  const messageId = `${id}-message`;
-  return {
-    descriptionId,
-    messageId,
-    describedBy: `${descriptionId} ${messageId}`,
-  };
 };
