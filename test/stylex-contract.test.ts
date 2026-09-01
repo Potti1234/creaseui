@@ -133,6 +133,17 @@ describe('StyleX component authoring contract', () => {
     assert.match(stylex, /renderRadioGroup\(/u)
   })
 
+  it('keeps both Dialog skins on the canonical Foldkit submodel', () => {
+    const tailwind = readFileSync('src/ui/dialog.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/dialog.ts', 'utf8')
+
+    assert.match(tailwind, /Dialog as DialogPrimitive/u)
+    assert.match(stylex, /Dialog as DialogPrimitive/u)
+    assert.doesNotMatch(stylex, /from ['"]@\/ui\/dialog['"]/u)
+    assert.match(tailwind, /view: DialogPrimitive\.view/u)
+    assert.match(stylex, /view: DialogPrimitive\.view/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

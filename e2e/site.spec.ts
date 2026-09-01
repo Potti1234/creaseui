@@ -568,6 +568,15 @@ test("dialog traps focus, closes with Escape, and restores its trigger", async (
   await trigger.click();
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
+  await expect(dialog).toHaveAttribute("id", "docs-dialog-0");
+  await expect(dialog).toHaveAttribute(
+    "aria-labelledby",
+    "docs-dialog-0-dialog-title",
+  );
+  await expect(dialog).toHaveAttribute(
+    "aria-describedby",
+    "docs-dialog-0-dialog-description",
+  );
   await expect(dialog.getByRole("button", { name: "Cancel" })).toBeFocused();
   await expect(dialog.locator('[data-slot="dialog-header"]')).toBeVisible();
   await expect(dialog.locator('[data-slot="dialog-title"]')).toHaveText(
@@ -585,6 +594,23 @@ test("dialog traps focus, closes with Escape, and restores its trigger", async (
   await page.keyboard.press("Escape");
   await expect(dialog).toBeHidden();
   await expect(trigger).toBeFocused();
+
+  await trigger.click();
+  await expect(dialog).toBeVisible();
+  await dialog.locator(":scope > div").first().click({ position: { x: 2, y: 2 } });
+  await expect(dialog).toBeHidden();
+  await expect(trigger).toBeFocused();
+
+  const compactExample = page.locator("#compact-confirmation");
+  const compactTrigger = compactExample.getByRole("button", {
+    name: "Review change",
+  });
+  await compactTrigger.click();
+  const compactDialog = page.getByRole("dialog");
+  await expect(compactDialog).toHaveAttribute("id", "docs-dialog-1");
+  await expect(compactDialog.getByRole("button", { name: "Close" })).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(compactTrigger).toBeFocused();
 });
 
 test("alert dialog confirmation emits a domain message and closes", async ({

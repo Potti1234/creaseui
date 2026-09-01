@@ -116,11 +116,11 @@ export const dialogPage = authoredPage({
   previewProgram,
   definition: {
     kind: 'submodel', description: 'Opens focused content in a modal surface with focus trapping, restoration, dismissal, and optional transitions.',
-    architecture: 'Dialog is a child submodel. Programmatic open and child update both return Commands for focus and animation timing; always map them back through the wrapper Message instead of discarding them.',
+    architecture: 'Dialog directly wraps the canonical Foldkit interaction Submodel in both skins. Programmatic open and child update return Commands for focus, stack hygiene, and animation timing; always map them through the wrapper Message instead of discarding them. Each instance requires its own stable id and child Model.',
     apiHref: 'https://foldkit.dev/ui/dialog',
     composition: 'Trigger (parent Message)\nDialog submodel\n└── panel\n    ├── header / title / description\n    ├── content\n    ├── footer\n    └── close action',
     styling: 'Use dialogs for focused tasks that can be completed or cancelled in place. Keep content short enough that the modal context remains understandable.',
-    accessibility: 'Foldkit owns native dialog semantics, accessible title/description IDs, focus trapping, Escape dismissal, and trigger focus restoration. Claim initialFocusAttributes on the intended first control when needed.',
+    accessibility: 'Foldkit owns native dialog semantics, deterministic title/description IDs, stack-aware focus trapping, Escape and backdrop dismissal, and trigger focus restoration. Claim initialFocusAttributes on the intended first control. Overlay transitions honor reduced motion in both skins.',
     keyboard: [['Tab / Shift+Tab', 'Cycles focus within the open dialog.'], ['Escape', 'Closes the dialog and restores trigger focus.']],
     examples: [
       {
