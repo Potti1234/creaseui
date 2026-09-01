@@ -1167,6 +1167,27 @@ test("breadcrumb renders semantic route parts, collapse, and RTL", async ({ page
   await expect(rtl.locator('[data-slot="breadcrumb-separator"] svg').first()).toHaveCSS("rotate", "180deg");
 });
 
+test("alert requires explicit severity and announcement policy", async ({ page }) => {
+  await page.goto("/docs/components/alert");
+  const staticInfo = page.locator("#static-information").locator('[data-slot="alert"]');
+  await expect(staticInfo).toHaveAttribute("data-severity", "info");
+  await expect(staticInfo).not.toHaveAttribute("role");
+  await expect(staticInfo.locator('[data-slot="alert-icon"]')).toHaveAttribute("aria-hidden", "true");
+
+  const success = page.locator("#polite-success").getByRole("status");
+  await expect(success).toHaveAttribute("aria-live", "polite");
+  await expect(success).toHaveAttribute("data-severity", "success");
+
+  const warning = page.locator("#long-warning").getByRole("status");
+  await expect(warning).toHaveAttribute("data-severity", "warning");
+  await expect(warning.locator('[data-slot="alert-title"]')).toContainText("Storage nearly full");
+  await expect(warning.locator('[data-slot="alert-description"]')).toContainText("additional logs and source maps");
+
+  const error = page.locator("#urgent-error").getByRole("alert");
+  await expect(error).toHaveAttribute("aria-live", "assertive");
+  await expect(error).toHaveAttribute("data-severity", "error");
+});
+
 test("sidebar documents persistence and toggles derived shell state", async ({
   page,
 }) => {

@@ -135,12 +135,14 @@ A shadcn-styled Alert component for Foldkit.
 
 Source: `src/ui/alert.ts`
 
-Examples: Timed notification, Sticky error
+Examples: Static information, Polite success, Long warning, Urgent error
 
+- `export * from '@/lib/alert'` (re-export)
 - `alertVariants: value` (value)
 - `AlertVariants = VariantProps<typeof alertVariants>` (type)
-- `AlertProps = Slot & Readonly<{ variant?: AlertVariants['variant']; }>` (type)
+- `AlertProps = Slot & Readonly<{ variant?: AlertVariants['variant']; severity?: AlertSeverity; announcement: AlertAnnouncement; }>` (type)
 - `alert<Msg>(props: AlertProps, h: HtmlBuilder<Msg>): Html` (function)
+- `alertIcon<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
 - `alertTitle<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
 - `alertDescription<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
 

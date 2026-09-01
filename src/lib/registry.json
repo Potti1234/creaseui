@@ -275,6 +275,19 @@
           "target": "@lib/breadcrumb.ts"
         }
       ]
+    },
+    {
+      "name": "alert-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Alert Semantics",
+      "description": "Finite severity and explicit static, polite status, or assertive alert announcement policy.",
+      "files": [
+        {
+          "path": "alert.ts",
+          "type": "registry:lib",
+          "target": "@lib/alert.ts"
+        }
+      ]
     }
   ]
 }

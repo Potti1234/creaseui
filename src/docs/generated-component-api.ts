@@ -157,6 +157,11 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
   ],
   "alert": [
     {
+      "name": "*",
+      "kind": "re-export",
+      "signature": "export * from '@/lib/alert'"
+    },
+    {
       "name": "alertVariants",
       "kind": "value",
       "signature": "alertVariants: value"
@@ -169,12 +174,17 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "AlertProps",
       "kind": "type",
-      "signature": "AlertProps = Slot & Readonly<{ variant?: AlertVariants['variant']; }>"
+      "signature": "AlertProps = Slot & Readonly<{ variant?: AlertVariants['variant']; severity?: AlertSeverity; announcement: AlertAnnouncement; }>"
     },
     {
       "name": "alert",
       "kind": "function",
       "signature": "alert<Msg>(props: AlertProps, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "alertIcon",
+      "kind": "function",
+      "signature": "alertIcon<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "alertTitle",

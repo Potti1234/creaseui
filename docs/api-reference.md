@@ -52,10 +52,12 @@ Source: [`src/ui/alert.ts`](../src/ui/alert.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
+| `*` | re-export | `export * from '@/lib/alert'` |
 | `alertVariants` | value | `alertVariants: value` |
 | `AlertVariants` | type | `AlertVariants = VariantProps<typeof alertVariants>` |
-| `AlertProps` | type | `AlertProps = Slot & Readonly<{ variant?: AlertVariants['variant']; }>` |
+| `AlertProps` | type | `AlertProps = Slot & Readonly<{ variant?: AlertVariants['variant']; severity?: AlertSeverity; announcement: AlertAnnouncement; }>` |
 | `alert` | function | `alert<Msg>(props: AlertProps, h: HtmlBuilder<Msg>): Html` |
+| `alertIcon` | function | `alertIcon<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
 | `alertTitle` | function | `alertTitle<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
 | `alertDescription` | function | `alertDescription<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
 

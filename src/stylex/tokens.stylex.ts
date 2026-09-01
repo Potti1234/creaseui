@@ -13,6 +13,9 @@ export const tokens = stylex.defineVars({
   accent: 'var(--accent)',
   accentForeground: 'var(--accent-foreground)',
   destructive: 'var(--destructive)',
+  alertInfo: 'var(--primary)',
+  alertSuccess: 'var(--chart-2)',
+  alertWarning: 'var(--chart-4)',
   destructiveForeground: 'oklch(0.985 0 0)',
   destructiveHover: 'color-mix(in oklab, var(--destructive) 90%, transparent)',
   destructiveSurface: 'var(--stylex-destructive-surface)',
@@ -36,4 +39,3 @@ export const tokens = stylex.defineVars({
   transparent: 'transparent',
   backdrop: 'rgb(0 0 0 / 0.5)',
 })
-

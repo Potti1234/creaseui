@@ -205,14 +205,22 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/alert",
       "dependencies": [
         "class-variance-authority@^0.7.1",
+        "Potti1234/creaseui/alert-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Static information",
+        "Polite success",
+        "Long warning",
+        "Urgent error"
       ],
       "api": [
+        {
+          "name": "*",
+          "kind": "re-export",
+          "signature": "export * from '@/lib/alert'"
+        },
         {
           "name": "alertVariants",
           "kind": "value",
@@ -226,12 +234,17 @@
         {
           "name": "AlertProps",
           "kind": "type",
-          "signature": "AlertProps = Slot & Readonly<{ variant?: AlertVariants['variant']; }>"
+          "signature": "AlertProps = Slot & Readonly<{ variant?: AlertVariants['variant']; severity?: AlertSeverity; announcement: AlertAnnouncement; }>"
         },
         {
           "name": "alert",
           "kind": "function",
           "signature": "alert<Msg>(props: AlertProps, h: HtmlBuilder<Msg>): Html"
+        },
+        {
+          "name": "alertIcon",
+          "kind": "function",
+          "signature": "alertIcon<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html"
         },
         {
           "name": "alertTitle",

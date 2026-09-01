@@ -4,6 +4,8 @@ import type { ComponentLayoutStyle } from "./contracts";
 import { className } from "./style";
 import { tokens } from "./tokens.stylex";
 import { foundationTokens } from "./foundations-tokens.stylex";
+import { alertSemantics, type AlertAnnouncement, type AlertSeverity } from '@/lib/alert'
+export * from '@/lib/alert'
 
 export type AlertVariants = Readonly<{
   variant?: "default" | "destructive" | null;
@@ -25,13 +27,18 @@ const styles = stylex.create({
     columnGap: "0.75rem",
     display: "grid",
     fontSize: "0.875rem",
-    gridTemplateColumns: "0 1fr",
+    gridTemplateColumns: "1rem 1fr",
     position: "relative",
     rowGap: "0.125rem",
     width: "100%",
   },
   default: { color: tokens.cardForeground },
   destructive: { color: tokens.destructive },
+  info: { color: tokens.alertInfo },
+  success: { color: tokens.alertSuccess },
+  warning: { color: tokens.alertWarning },
+  error: { color: tokens.destructive },
+  icon: { gridRow: 'span 2', gridColumnStart: '1', height: '1rem', width: '1rem' },
   title: {
     overflow: "hidden",
     fontWeight: 500,
@@ -51,22 +58,27 @@ const styles = stylex.create({
 export const alertVariants = (options: AlertVariants = {}): string =>
   className(styles.root, styles[options.variant ?? "default"]);
 export type AlertProps = Slot &
-  Readonly<{ variant?: AlertVariants["variant"] }>;
-export const alert = <Msg>(props: AlertProps, h: HtmlBuilder<Msg>): Html =>
-  h.div(
+  Readonly<{ variant?: AlertVariants["variant"]; severity?: AlertSeverity; announcement: AlertAnnouncement }>;
+export const alert = <Msg>(props: AlertProps, h: HtmlBuilder<Msg>): Html => {
+  const severity = props.severity ?? (props.variant === 'destructive' ? 'error' : 'info')
+  const semantics = alertSemantics(props.announcement)
+  return h.div(
     [
       h.DataAttribute("slot", "alert"),
-      h.Role("alert"),
+      h.DataAttribute('severity', severity),
+      ...(semantics.role === undefined ? [] : [h.Role(semantics.role)]),
+      ...(semantics.live === undefined ? [] : [h.AriaLive(semantics.live)]),
       h.Class(
         className(
           styles.root,
-          styles[props.variant ?? "default"],
+          styles[severity],
           props.layoutStyle,
         ),
       ),
     ],
     [...props.children],
-  );
+  )}
+export const alertIcon = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => h.div([h.DataAttribute('slot', 'alert-icon'), h.AriaHidden(true), h.Class(className(styles.icon, props.layoutStyle))], [...props.children])
 export const alertTitle = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html =>
   h.div(
     [
@@ -83,4 +95,3 @@ export const alertDescription = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html =>
     ],
     [...props.children],
   );
-
