@@ -9,7 +9,7 @@ const previewProgram = interactionPreviewProgram('button', (index, interaction, 
     case 0: return Button.button({ onClick: interaction, children: ['Button'] }, h);
     case 1: return h.div([h.Class('flex flex-wrap items-center justify-center gap-3')], [Button.button({ onClick: interaction, children: ['Primary'] }, h), Button.button({ variant: 'secondary', onClick: interaction, children: ['Secondary'] }, h), Button.button({ variant: 'outline', onClick: interaction, children: ['Outline'] }, h), Button.button({ variant: 'ghost', onClick: interaction, children: ['Ghost'] }, h), Button.button({ variant: 'destructive', onClick: interaction, children: ['Delete'] }, h)]);
     case 2: return h.div([h.Class('flex flex-wrap items-center justify-center gap-3')], [Button.button({ size: 'sm', onClick: interaction, children: ['Small'] }, h), Button.button({ onClick: interaction, children: ['Default'] }, h), Button.button({ size: 'lg', onClick: interaction, children: ['Large'] }, h), Button.button({ size: 'icon', onClick: interaction, children: ['+'] }, h)]);
-    case 3: return Button.button({ isDisabled: true, children: [Spinner.spinner({ class: 'size-4' }, h), 'Please wait'] }, h);
+    case 3: return Button.button({ isLoading: true, loadingContent: [Spinner.spinner({ class: 'size-4' }, h)], children: ['Save changes'] }, h);
     case 4: return ButtonGroup.buttonGroup({ children: [Button.button({ variant: 'outline', onClick: interaction, children: ['Back'] }, h), Button.button({ variant: 'outline', onClick: interaction, children: ['Next'] }, h)] }, h);
     case 5: return Button.buttonLink({ href: 'https://foldkit.dev', target: '_blank', children: ['Foldkit docs ↗'] }, h);
     default: return h.div([h.Dir('rtl')], [Button.button({ onClick: interaction, children: ['التالي', '←'] }, h)]);
@@ -39,12 +39,12 @@ export const buttonPage = authoredPage({
     description:
       'Triggers an action or navigates to another resource with shadcn-compatible variants and native button semantics.',
     architecture:
-      'Button is a stateless render helper. Dispatch an application Message through onClick and call Button.button directly inside view; it needs no child Model, update delegation, or h.submodel boundary.',
+      'Button is a stateless render helper. The parent owns action and loading state; children, icons, labels, variants, and sizes are per-render inputs; there is no child Model or lifecycle resource. Both skins use the same native behavior and semantic slots, so call Button.button directly inside view without h.submodel.',
     apiHref: 'https://foldkit.dev/ui/button',
     styling:
       'Variants and sizes are source-owned class recipes. Extend buttonVariants or edit the installed module when the application needs a durable visual variant; use class for a one-off layout adjustment.',
     accessibility:
-      'Button preserves native button semantics, defaults to type="button", exposes disabled state through Foldkit’s accessible attributes, and keeps visible keyboard focus treatment.',
+      'Button preserves native button semantics, defaults to type="button", uses the native disabled attribute together with Foldkit’s accessible state attributes, and keeps the accessible name stable while loading content is hidden from assistive technology. Button links remain native anchors.',
     keyboard: [
       ['Enter', 'Activates the focused button.'],
       ['Space', 'Activates the focused button.'],
@@ -102,8 +102,9 @@ export const buttonPage = authoredPage({
         code: source(
           'Loading',
           `Button.button({
-  isDisabled: true,
-  children: [Spinner.spinner({ class: 'size-4' }, h), 'Please wait'],
+  isLoading: true,
+  loadingContent: [Spinner.spinner({ class: 'size-4' }, h)],
+  children: ['Save changes'],
 }, h),`,
           `import * as Spinner from '@/ui/spinner'`,
         ),

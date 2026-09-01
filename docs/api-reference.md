@@ -171,9 +171,9 @@ Source: [`src/ui/button.ts`](../src/ui/button.ts)
 | --- | --- | --- |
 | `buttonVariants` | value | `buttonVariants: value` |
 | `ButtonVariants` | type | `ButtonVariants = VariantProps<typeof buttonVariants>` |
-| `ButtonProps` | type | `ButtonProps<Msg> = Readonly<{ children: ReadonlyArray<Html \| string>; onClick?: Msg; variant?: ButtonVariants['variant']; size?: ButtonVariants['size']; isDisabled?: boolean; type?: 'button' \| 'submit' \| 'reset'; class?: string; slot?: string; dataSize?: stri…` |
+| `ButtonProps` | type | `ButtonProps<Msg> = ButtonBehaviorProps<Msg> & Readonly<{ variant?: ButtonVariants['variant']; size?: ButtonVariants['size']; class?: string; }>` |
 | `button` | function | `button<Msg>(props: ButtonProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-| `ButtonLinkProps` | type | `ButtonLinkProps = Readonly<{ children: ReadonlyArray<Html \| string>; href: string; variant?: ButtonVariants['variant']; size?: ButtonVariants['size']; class?: string; target?: '_blank' \| '_self'; }>` |
+| `ButtonLinkProps` | type | `ButtonLinkProps = ButtonLinkBehaviorProps & Readonly<{ variant?: ButtonVariants['variant']; size?: ButtonVariants['size']; class?: string; }>` |
 | `buttonLink` | function | `buttonLink<Msg>(props: ButtonLinkProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Calendar

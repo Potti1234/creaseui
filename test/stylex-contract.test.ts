@@ -51,6 +51,17 @@ describe('StyleX component authoring contract', () => {
     assert.match(viewInputs, /layoutStyle\?: ComponentLayoutStyle/u)
   })
 
+  it('keeps Button behavior in the skin-neutral behavior module', () => {
+    const tailwind = readFileSync('src/ui/button.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/button.ts', 'utf8')
+
+    assert.match(tailwind, /from '@\/lib\/button'/u)
+    assert.match(stylex, /from '@\/lib\/button'/u)
+    assert.doesNotMatch(stylex, /from '@\/ui\/button'/u)
+    assert.match(stylex, /renderButton\(/u)
+    assert.match(stylex, /renderButtonLink\(/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

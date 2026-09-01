@@ -490,7 +490,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ButtonProps",
       "kind": "type",
-      "signature": "ButtonProps<Msg> = Readonly<{ children: ReadonlyArray<Html | string>; onClick?: Msg; variant?: ButtonVariants['variant']; size?: ButtonVariants['size']; isDisabled?: boolean; type?: 'button' | 'submit' | 'reset'; class?: string; slot?: string; dataSize?: stri…"
+      "signature": "ButtonProps<Msg> = ButtonBehaviorProps<Msg> & Readonly<{ variant?: ButtonVariants['variant']; size?: ButtonVariants['size']; class?: string; }>"
     },
     {
       "name": "button",
@@ -500,7 +500,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ButtonLinkProps",
       "kind": "type",
-      "signature": "ButtonLinkProps = Readonly<{ children: ReadonlyArray<Html | string>; href: string; variant?: ButtonVariants['variant']; size?: ButtonVariants['size']; class?: string; target?: '_blank' | '_self'; }>"
+      "signature": "ButtonLinkProps = ButtonLinkBehaviorProps & Readonly<{ variant?: ButtonVariants['variant']; size?: ButtonVariants['size']; class?: string; }>"
     },
     {
       "name": "buttonLink",

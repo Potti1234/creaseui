@@ -1,8 +1,12 @@
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { Button as ButtonPrimitive } from '@foldkit/ui'
-
+import {
+  type ButtonBehaviorProps,
+  type ButtonLinkBehaviorProps,
+  renderButton,
+  renderButtonLink,
+} from '@/lib/button'
 import type {
   Assert,
   ButtonSize,
@@ -144,57 +148,23 @@ const sizes = stylex.create({
 type _VariantMapIsExhaustive = Assert<HasExactlyKeys<typeof variants, ButtonVariant>>
 type _SizeMapIsExhaustive = Assert<HasExactlyKeys<typeof sizes, ButtonSize>>
 
-export type ButtonProps<Msg> = Readonly<{
-  children: ReadonlyArray<Html | string>
-  onClick?: Msg
+export type ButtonProps<Msg> = ButtonBehaviorProps<Msg> & Readonly<{
   variant?: ButtonVariant
   size?: ButtonSize
-  isDisabled?: boolean
-  type?: 'button' | 'submit' | 'reset'
-  slot?: string
-  dataSize?: string
   /** Parent-layout positioning only. Add visual choices as named variants. */
   layoutStyle?: ComponentLayoutStyle
 }>
 
 export const button = <Msg>(props: ButtonProps<Msg>, h: HtmlBuilder<Msg>): Html =>
-  ButtonPrimitive.view(
-    {
-      ...(props.onClick === undefined ? {} : { onClick: props.onClick }),
-      isDisabled: props.isDisabled ?? false,
-      type: props.type ?? 'button',
-      toView: ({ button: attributes }) =>
-        h.button(
-          [
-            ...attributes,
-            ...(props.slot === undefined
-              ? []
-              : [h.DataAttribute('slot', props.slot)]),
-            ...(props.dataSize === undefined
-              ? []
-              : [h.DataAttribute('size', props.dataSize)]),
-            h.Class(
-              className(
-                base.root,
-                variants[props.variant ?? 'default'],
-                sizes[props.size ?? 'default'],
-                props.isDisabled && base.disabled,
-                props.layoutStyle,
-              ),
-            ),
-          ],
-          [...props.children],
-        ),
-    },
+  renderButton(
+    props,
+    [h.Class(className(base.root, variants[props.variant ?? 'default'], sizes[props.size ?? 'default'], (props.isDisabled === true || props.isLoading === true) && base.disabled, props.layoutStyle))],
     h,
   )
 
-export type ButtonLinkProps = Readonly<{
-  children: ReadonlyArray<Html | string>
-  href: string
+export type ButtonLinkProps = ButtonLinkBehaviorProps & Readonly<{
   variant?: ButtonVariant
   size?: ButtonSize
-  target?: '_blank' | '_self'
   /** Parent-layout positioning only. Add visual choices as named variants. */
   layoutStyle?: ComponentLayoutStyle
 }>
@@ -203,20 +173,8 @@ export const buttonLink = <Msg>(
   props: ButtonLinkProps,
   h: HtmlBuilder<Msg>,
 ): Html =>
-  h.a(
-    [
-      h.Href(props.href),
-      ...(props.target === undefined ? [] : [h.Target(props.target)]),
-      ...(props.target === '_blank' ? [h.Rel('noopener noreferrer')] : []),
-      h.Class(
-        className(
-          base.root,
-          variants[props.variant ?? 'default'],
-          sizes[props.size ?? 'default'],
-          props.layoutStyle,
-        ),
-      ),
-    ],
-    [...props.children],
+  renderButtonLink(
+    props,
+    [h.Class(className(base.root, variants[props.variant ?? 'default'], sizes[props.size ?? 'default'], props.layoutStyle))],
+    h,
   )
-

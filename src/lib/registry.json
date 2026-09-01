@@ -80,6 +80,19 @@
           "target": "@lib/sidebar-state.ts"
         }
       ]
+    },
+    {
+      "name": "button-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Button Behavior",
+      "description": "Skin-neutral native button and link semantics, loading behavior, and semantic content slots shared by Crease renderers.",
+      "files": [
+        {
+          "path": "button.ts",
+          "type": "registry:lib",
+          "target": "@lib/button.ts"
+        }
+      ]
     }
   ]
 }

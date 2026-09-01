@@ -1,9 +1,13 @@
 ﻿import { type VariantProps, cva } from 'class-variance-authority';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 
-import { Button as ButtonPrimitive } from '@foldkit/ui';
-
 import { cn } from '@/lib/utils';
+import {
+  type ButtonBehaviorProps,
+  type ButtonLinkBehaviorProps,
+  renderButton,
+  renderButtonLink,
+} from '@/lib/button';
 
 /* Ported from shadcn/ui button.tsx. The cva config is copied verbatim except:
    - `disabled:` variants became `data-[disabled]:` + `aria-disabled:` because
@@ -42,82 +46,36 @@ export const buttonVariants = cva(
 
 export type ButtonVariants = VariantProps<typeof buttonVariants>;
 
-export type ButtonProps<Msg> = Readonly<{
-  children: ReadonlyArray<Html | string>;
-  onClick?: Msg;
+export type ButtonProps<Msg> = ButtonBehaviorProps<Msg> & Readonly<{
   variant?: ButtonVariants['variant'];
   size?: ButtonVariants['size'];
-  isDisabled?: boolean;
-  type?: 'button' | 'submit' | 'reset';
   class?: string;
-  slot?: string;
-  dataSize?: string;
 }>;
 
 export const button = <Msg>(
   props: ButtonProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  return ButtonPrimitive.view(
-    {
-      ...(props.onClick === undefined ? {} : { onClick: props.onClick }),
-      isDisabled: props.isDisabled ?? false,
-      type: props.type ?? 'button',
-      toView: ({ button: buttonAttributes }) =>
-        h.button(
-          [
-            ...buttonAttributes,
-            ...(props.slot === undefined
-              ? []
-              : [h.DataAttribute('slot', props.slot)]),
-            ...(props.dataSize === undefined
-              ? []
-              : [h.DataAttribute('size', props.dataSize)]),
-            h.Class(
-              cn(
-                buttonVariants({
-                  variant: props.variant ?? 'default',
-                  size: props.size ?? 'default',
-                }),
-                props.class,
-              ),
-            ),
-          ],
-          [...props.children],
-        ),
-    },
+  return renderButton(
+    props,
+    [h.Class(cn(buttonVariants({ variant: props.variant ?? 'default', size: props.size ?? 'default' }), props.class))],
     h,
   );
 };
 
-export type ButtonLinkProps = Readonly<{
-  children: ReadonlyArray<Html | string>;
-  href: string;
+export type ButtonLinkProps = ButtonLinkBehaviorProps & Readonly<{
   variant?: ButtonVariants['variant'];
   size?: ButtonVariants['size'];
   class?: string;
-  target?: '_blank' | '_self';
 }>;
 
 export const buttonLink = <Msg>(
   props: ButtonLinkProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  return h.a(
-    [
-      h.Href(props.href),
-      ...(props.target === undefined ? [] : [h.Target(props.target)]),
-      ...(props.target === '_blank' ? [h.Rel('noopener noreferrer')] : []),
-      h.Class(
-        cn(
-          buttonVariants({
-            variant: props.variant ?? 'default',
-            size: props.size ?? 'default',
-          }),
-          props.class,
-        ),
-      ),
-    ],
-    [...props.children],
+  return renderButtonLink(
+    props,
+    [h.Class(cn(buttonVariants({ variant: props.variant ?? 'default', size: props.size ?? 'default' }), props.class))],
+    h,
   );
 };

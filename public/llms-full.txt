@@ -272,9 +272,9 @@ Examples: Timed notification, Sticky error
 
 - `buttonVariants: value` (value)
 - `ButtonVariants = VariantProps<typeof buttonVariants>` (type)
-- `ButtonProps<Msg> = Readonly<{ children: ReadonlyArray<Html | string>; onClick?: Msg; variant?: ButtonVariants['variant']; size?: ButtonVariants['size']; isDisabled?: boolean; type?: 'button' | 'submit' | 'reset'; class?: string; slot?: string; dataSize?: stri…` (type)
+- `ButtonProps<Msg> = ButtonBehaviorProps<Msg> & Readonly<{ variant?: ButtonVariants['variant']; size?: ButtonVariants['size']; class?: string; }>` (type)
 - `button<Msg>(props: ButtonProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-- `ButtonLinkProps = Readonly<{ children: ReadonlyArray<Html | string>; href: string; variant?: ButtonVariants['variant']; size?: ButtonVariants['size']; class?: string; target?: '_blank' | '_self'; }>` (type)
+- `ButtonLinkProps = ButtonLinkBehaviorProps & Readonly<{ variant?: ButtonVariants['variant']; size?: ButtonVariants['size']; class?: string; }>` (type)
 - `buttonLink<Msg>(props: ButtonLinkProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Calendar
