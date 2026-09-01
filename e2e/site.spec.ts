@@ -902,12 +902,14 @@ test("dropdown menu exposes typed selection wiring and keyboard behavior", async
 test("context menu anchors at the secondary-click target and skips disabled items", async ({
   page,
 }) => {
+  await page.setViewportSize({ width: 360, height: 720 });
   await page.goto("/docs/components/context-menu");
   const example = page.locator("#browser-actions");
   const target = example.getByRole("button", { name: "Right click here" });
-  await target.click({ button: "right", position: { x: 80, y: 60 } });
+  await target.click({ button: "right", position: { x: 10, y: 20 } });
   const menu = example.getByRole("menu");
   await expect(menu).toBeVisible();
+  const firstX = (await menu.boundingBox())?.x ?? 0;
   await expect(menu.getByRole("menuitem", { name: "Forward" })).toHaveAttribute(
     "aria-disabled",
     "true",
@@ -917,6 +919,16 @@ test("context menu anchors at the secondary-click target and skips disabled item
   );
   await page.keyboard.press("Escape");
   await expect(menu).toBeHidden();
+  await target.click({ button: "right", position: { x: 270, y: 120 } });
+  const bounds = await menu.boundingBox();
+  expect(bounds).not.toBeNull();
+  expect(bounds?.x ?? 999).toBeGreaterThan(firstX);
+  expect((bounds?.x ?? 0) + (bounds?.width ?? 0)).toBeLessThanOrEqual(356);
+  expect((bounds?.y ?? 0) + (bounds?.height ?? 0)).toBeLessThanOrEqual(716);
+  await page.keyboard.press("Escape");
+  await target.focus();
+  await page.keyboard.press("Shift+F10");
+  await expect(menu).toBeVisible();
 });
 
 test("navigation menu distinguishes semantic links from stateful disclosures", async ({

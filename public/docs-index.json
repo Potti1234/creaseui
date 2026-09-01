@@ -1324,7 +1324,8 @@
       ],
       "examples": [
         "Browser actions",
-        "Disabled action"
+        "Disabled action",
+        "Keyboard activation"
       ],
       "api": [
         {

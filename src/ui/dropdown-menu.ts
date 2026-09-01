@@ -429,7 +429,7 @@ export const dropdownMenu = <Item extends string, Msg>(
           ...(props.triggerClass === undefined
             ? []
             : [h.Class(props.triggerClass)]),
-          h.OnKeyDownPreventDefault((key) => {
+          h.OnKeyDownPreventDefault((key, modifiers) => {
             const message = props.model.isOpen
               ? menuKey(
                   props.model,
@@ -438,6 +438,9 @@ export const dropdownMenu = <Item extends string, Msg>(
                   key,
                   props.direction,
                 )
+              : props.openOnContextMenu === true &&
+                  (key === 'ContextMenu' || (key === 'F10' && modifiers.shiftKey))
+                ? Opened()
               : key === 'ArrowDown' || key === 'ArrowUp' || key === 'Enter' || key === ' '
                 ? Opened()
                 : undefined;
@@ -471,8 +474,8 @@ export const dropdownMenu = <Item extends string, Msg>(
                   ? [
                       h.Style({
                         position: 'fixed',
-                        left: `${Math.max(4, Math.min(anchorX, window.innerWidth - 164))}px`,
-                        top: `${Math.max(4, Math.min(anchorY, window.innerHeight - 48))}px`,
+                        left: `clamp(4px, ${String(anchorX)}px, calc(100vw - 164px))`,
+                        top: `clamp(4px, ${String(anchorY)}px, calc(100vh - 48px))`,
                         maxHeight: 'calc(100vh - 8px)',
                       }),
                     ]

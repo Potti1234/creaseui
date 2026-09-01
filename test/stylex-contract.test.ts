@@ -193,6 +193,8 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/dropdown-menu['"]/u)
     assert.doesNotMatch(tailwind, /const enabled = items/u)
     assert.doesNotMatch(stylex, /const enabled = items/u)
+    assert.doesNotMatch(tailwind, /window\.(?:innerWidth|innerHeight)/u)
+    assert.doesNotMatch(stylex, /window\.(?:innerWidth|innerHeight)/u)
   })
 
   it('keeps the public layout override deliberately narrow', () => {

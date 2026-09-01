@@ -29,6 +29,7 @@ export type ContextMenuProps<Item extends string, Msg> = Readonly<{
   itemToConfig: (item: Item) => ContextMenuItemConfig<Item>;
   ariaLabel?: string;
   layoutStyle?: ComponentLayoutStyle;
+  direction?: 'ltr' | 'rtl';
 }>;
 
 export const contextMenu = <Item extends string, Msg>(
@@ -43,6 +44,7 @@ export const contextMenu = <Item extends string, Msg>(
       items: props.items,
       itemToConfig: props.itemToConfig,
       openOnContextMenu: true,
+      ...(props.direction === undefined ? {} : { direction: props.direction }),
       ...(props.layoutStyle === undefined
         ? {}
         : { triggerLayoutStyle: props.layoutStyle }),

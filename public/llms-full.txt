@@ -446,7 +446,7 @@ A shadcn-styled Context Menu component for Foldkit.
 
 Source: `src/ui/context-menu.ts`
 
-Examples: Browser actions, Disabled action
+Examples: Browser actions, Disabled action, Keyboard activation
 
 - `Model: value` (value)
 - `Model = DropdownMenu.Model` (type)

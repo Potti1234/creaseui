@@ -77,15 +77,16 @@ export const contextMenuPage = authoredPage({
   previewProgram,
   definition: {
     kind: 'submodel', description: 'Opens a typed action menu at the pointer coordinates of a secondary click.',
-    architecture: 'Context Menu reuses the Dropdown Menu Model and typed update, adding contextmenu coordinate anchoring. The parent must still consume Selected output and map any returned Commands.',
+    architecture: 'Context Menu is a thin adapter over the shared Dropdown Menu behavior and typed factory. Pointer coordinates are transient child state; CSS viewport clamps position the menu without reading browser globals during render. The parent consumes Selected output and maps returned Commands.',
     apiHref: 'https://foldkit.dev/ui/menu',
     composition: 'Context target\n└── secondary-click Message with x/y\n    └── menu child Model\n        ├── coordinate anchor\n        ├── active item\n        └── typed selection output',
     styling: 'Use context menus as accelerators, not the only route to important actions. The dashed preview target makes the activation region explicit.',
-    accessibility: 'A pointer context menu needs equivalent visible controls elsewhere. Once open, the menu remains fully keyboard navigable and Escape dismissible.',
+    accessibility: 'A pointer context menu needs equivalent visible controls elsewhere. The focused target supports Shift+F10 and the Context Menu key; once open, disabled traversal, typeahead, selection, and Escape reuse the shared menu behavior.',
     keyboard: [['Shift+F10 / context-menu key', 'Browsers may dispatch the context-menu event from the focused target.'], ['Arrow Up / Down', 'Moves among enabled actions.'], ['Enter', 'Selects the active action.'], ['Escape', 'Closes the menu.']],
     examples: [
       { title: 'Browser actions', description: 'Secondary-click coordinates live in the child model; the chosen action returns to the parent.', code: source('Browser actions') },
       { title: 'Disabled action', description: 'Disabled entries are skipped by pointer and keyboard navigation.', code: source('Disabled action') },
+      { title: 'Keyboard activation', description: 'Shift+F10 or the Context Menu key opens the same action model without requiring pointer coordinates.', code: source('Keyboard activation') },
     ],
   },
 });
