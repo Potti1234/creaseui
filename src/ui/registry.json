@@ -837,6 +837,7 @@
       "title": "Radio Group",
       "description": "A shadcn-styled Radio Group component for Foldkit.",
       "registryDependencies": [
+        "Potti1234/creaseui/radio-group-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"

@@ -123,6 +123,16 @@ describe('StyleX component authoring contract', () => {
     assert.match(stylex, /renderSwitch\(/u)
   })
 
+  it('keeps Radio Group behavior in the skin-neutral behavior module', () => {
+    const tailwind = readFileSync('src/ui/radio-group.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/radio-group.ts', 'utf8')
+
+    assert.match(tailwind, /from '@\/lib\/radio-group'/u)
+    assert.match(stylex, /from '@\/lib\/radio-group'/u)
+    assert.doesNotMatch(stylex, /from ['"]@\/ui\/radio-group['"]/u)
+    assert.match(stylex, /renderRadioGroup\(/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

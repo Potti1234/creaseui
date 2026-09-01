@@ -39,6 +39,7 @@ export type Message = typeof Message.Type`,
       selectedValue: Option.some(model.density),
       toParentMessage: message => GotRadioGroupMessage({ message }),
       ariaLabel: 'Interface density',
+      name: 'density',
       ${config}
     }, h),
   ]),
@@ -65,7 +66,7 @@ const previewProgram = definePreviewProgram<PreviewModel, PreviewMessage>({
     const [radioGroup, commands, maybeSelection] = RadioGroup.update(model.radioGroup, message.message);
     return [{ ...model, radioGroup, value: Option.match(maybeSelection, { onNone: () => model.value, onSome: selection => selection.value }) }, Command.mapMessages(commands, child => GotRadioGroupMessage({ message: child }))];
   },
-  view: (index, model, h) => RadioGroup.radioGroup({ model: model.radioGroup, selectedValue: Option.some(model.value), toParentMessage: message => GotRadioGroupMessage({ message }), ariaLabel: 'Interface density', ...(index === 1 ? { isDisabled: true, options: options.map(({ value, label }) => ({ value, label })) } : { options }) }, h),
+  view: (index, model, h) => RadioGroup.radioGroup({ model: model.radioGroup, selectedValue: Option.some(model.value), toParentMessage: message => GotRadioGroupMessage({ message }), ariaLabel: 'Interface density', name: 'density', ...(index === 1 ? { isDisabled: true, options: options.map(({ value, label }) => ({ value, label })) } : index === 2 ? { isReadOnly: true, options } : index === 3 ? { direction: 'rtl' as const, orientation: 'Horizontal' as const, options: options.map((option, optionIndex) => ({ ...option, isDisabled: optionIndex === 2 })) } : { options }) }, h),
 });
 
 export const radioGroupPage = authoredPage({
@@ -73,10 +74,10 @@ export const radioGroupPage = authoredPage({
   previewProgram,
   definition: {
     kind: 'submodel', description: 'Chooses exactly one value from a visible set of mutually exclusive options.',
-    architecture: 'Radio Group is a Foldkit Submodel. The parent owns the selected Option<string>, delegates child Messages through update, and stores the Selected OutMessage value.',
+    architecture: 'Radio Group is a thin Foldkit interaction Submodel. The child owns only roving focus; the parent owns the selected Option<string>, delegates child Messages through update, and stores the Selected OutMessage value. Both skins render through one shared primitive adapter.',
     apiHref: 'https://foldkit.dev/ui/radio-group',
     styling: 'Keep the full choice set visible. Descriptions are useful when labels alone do not explain the consequence of each choice.',
-    accessibility: 'ariaLabel names the group, each option has a linked label, and an optional name emits the hidden input needed for native form submission.',
+    accessibility: 'ariaLabel names the group, each option has a linked label and only present descriptions are referenced. An optional name emits the hidden form value. Read-only groups remain navigable without committing a new selection.',
     keyboard: [['Arrow keys', 'Moves selection and focus within the group.'], ['Space', 'Selects the focused option.']],
     examples: [
       {
@@ -96,6 +97,27 @@ export const radioGroupPage = authoredPage({
     { value: 'default', label: 'Default' },
     { value: 'comfortable', label: 'Comfortable' },
     { value: 'compact', label: 'Compact' },
+  ],`),
+      },
+      {
+        title: 'Read only', description: 'Allow focus navigation while preventing an externally managed selection from changing.',
+
+        code: source('Read only', `isReadOnly: true,
+  options: [
+    { value: 'default', label: 'Default' },
+    { value: 'comfortable', label: 'Comfortable' },
+    { value: 'compact', label: 'Compact' },
+  ],`),
+      },
+      {
+        title: 'RTL and disabled option', description: 'Mirror horizontal arrow behavior and disable only choices that are unavailable.',
+
+        code: source('RTL and disabled option', `direction: 'rtl',
+  orientation: 'Horizontal',
+  options: [
+    { value: 'default', label: 'Default' },
+    { value: 'comfortable', label: 'Comfortable' },
+    { value: 'compact', label: 'Compact', isDisabled: true },
   ],`),
       },
     ],

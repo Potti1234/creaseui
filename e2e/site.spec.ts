@@ -1197,6 +1197,58 @@ test("switch shares controlled read-only form and RTL semantics", async ({
   await assertAccessible(page);
 });
 
+test("radio group isolates roving focus from parent-owned selection", async ({
+  page,
+}) => {
+  await page.goto("/docs/components/radio-group");
+
+  const density = page.locator("#density");
+  const comfortable = density.getByRole("radio", { name: /Comfortable/u });
+  const compact = density.getByRole("radio", { name: /Compact/u });
+  const hiddenValue = density.locator(
+    'input[type="hidden"][name="density"]',
+  );
+  await expect(comfortable).toBeChecked();
+  await expect(hiddenValue).toHaveValue("comfortable");
+  await comfortable.press("ArrowDown");
+  await expect(compact).toBeChecked();
+  await expect(hiddenValue).toHaveValue("compact");
+
+  const readOnly = page.locator("#read-only");
+  const readOnlyComfortable = readOnly.getByRole("radio", {
+    name: /Comfortable/u,
+  });
+  const readOnlyCompact = readOnly.getByRole("radio", { name: /Compact/u });
+  await readOnlyComfortable.focus();
+  await readOnlyComfortable.press("ArrowDown");
+  await expect(readOnlyComfortable).toBeChecked();
+  await expect(readOnlyCompact).toBeFocused();
+
+  const rtl = page.locator("#rtl-and-disabled-option");
+  const rtlGroup = rtl.getByRole("radiogroup", { name: "Interface density" });
+  const rtlComfortable = rtl.getByRole("radio", { name: /Comfortable/u });
+  const rtlDefault = rtl.getByRole("radio", { name: /Default/u });
+  const rtlCompact = rtl.getByRole("radio", { name: /Compact/u });
+  await expect(rtlGroup).toHaveAttribute("dir", "rtl");
+  await expect(rtlCompact).toHaveAttribute("aria-disabled", "true");
+  await rtlComfortable.press("ArrowRight");
+  await expect(rtlDefault).toBeChecked();
+  await assertAccessible(page);
+
+  await page
+    .getByRole("group", { name: "Preview styling engine" })
+    .getByRole("button", { name: "StyleX" })
+    .click();
+  const stylexGroup = page.getByRole("radiogroup", {
+    name: "Constraint level",
+  });
+  await expect(stylexGroup.getByRole("radio", { name: "Strict" })).toBeChecked();
+  await expect(stylexGroup.getByRole("radio", { name: "Flexible" })).not.toHaveAttribute(
+    "aria-describedby",
+  );
+  await assertAccessible(page);
+});
+
 test("field guarantees linked parts and documents stale async validation", async ({
   page,
 }) => {

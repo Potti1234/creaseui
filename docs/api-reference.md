@@ -787,15 +787,13 @@ Source: [`src/ui/radio-group.ts`](../src/ui/radio-group.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `RadioGroupOption` | type | `RadioGroupOption = Readonly<{ value: string; label: string; description?: string; }>` |
-| `RadioGroupProps` | type | `RadioGroupProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; selectedValue: Option.Option<string>; ariaLabel: string; options: ReadonlyArray<RadioGroupOption>; isDisabled?: boolean; name?: string; orientation?: RadioGroupPrimiti…` |
-| `Model` | value | `Model: value` |
-| `Model` | type | `Model = typeof Model.Type` |
-| `Message` | value | `Message: value` |
-| `Message` | type | `Message = typeof Message.Type` |
-| `OutMessage` | type | `OutMessage = RadioGroupPrimitive.OutMessage<string>` |
-| `init` | value | `init: value` |
-| `update` | value | `update: value` |
+| `RadioGroupOption` | re-export | `export { RadioGroupOption } from '@/lib/radio-group'` |
+| `RadioGroupProps` | type | `RadioGroupProps<Msg> = RadioGroupBehaviorProps<Msg> & Readonly<{ class?: string; }>` |
+| `Message` | re-export | `export { Message } from ` |
+| `Model` | re-export | `export { Model } from ` |
+| `init` | re-export | `export { init } from ` |
+| `update` | re-export | `export { update } from ` |
+| `OutMessage` | re-export | `export { OutMessage } from ` |
 | `radioGroup` | function | `radioGroup<Msg>(props: RadioGroupProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Resizable

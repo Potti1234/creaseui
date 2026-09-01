@@ -2414,48 +2414,38 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
   "radio-group": [
     {
       "name": "RadioGroupOption",
-      "kind": "type",
-      "signature": "RadioGroupOption = Readonly<{ value: string; label: string; description?: string; }>"
+      "kind": "re-export",
+      "signature": "export { RadioGroupOption } from '@/lib/radio-group'"
     },
     {
       "name": "RadioGroupProps",
       "kind": "type",
-      "signature": "RadioGroupProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; selectedValue: Option.Option<string>; ariaLabel: string; options: ReadonlyArray<RadioGroupOption>; isDisabled?: boolean; name?: string; orientation?: RadioGroupPrimiti…"
-    },
-    {
-      "name": "Model",
-      "kind": "value",
-      "signature": "Model: value"
-    },
-    {
-      "name": "Model",
-      "kind": "type",
-      "signature": "Model = typeof Model.Type"
+      "signature": "RadioGroupProps<Msg> = RadioGroupBehaviorProps<Msg> & Readonly<{ class?: string; }>"
     },
     {
       "name": "Message",
-      "kind": "value",
-      "signature": "Message: value"
+      "kind": "re-export",
+      "signature": "export { Message } from "
     },
     {
-      "name": "Message",
-      "kind": "type",
-      "signature": "Message = typeof Message.Type"
-    },
-    {
-      "name": "OutMessage",
-      "kind": "type",
-      "signature": "OutMessage = RadioGroupPrimitive.OutMessage<string>"
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from "
     },
     {
       "name": "init",
-      "kind": "value",
-      "signature": "init: value"
+      "kind": "re-export",
+      "signature": "export { init } from "
     },
     {
       "name": "update",
-      "kind": "value",
-      "signature": "update: value"
+      "kind": "re-export",
+      "signature": "export { update } from "
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from "
     },
     {
       "name": "radioGroup",

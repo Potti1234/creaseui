@@ -171,6 +171,19 @@
           "target": "@lib/switch.ts"
         }
       ]
+    },
+    {
+      "name": "radio-group-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Radio Group Behavior",
+      "description": "Skin-neutral parent-owned selection with primitive-owned roving focus, read-only, disabled-option, form, and RTL semantics.",
+      "files": [
+        {
+          "path": "radio-group.ts",
+          "type": "registry:lib",
+          "target": "@lib/radio-group.ts"
+        }
+      ]
     }
   ]
 }

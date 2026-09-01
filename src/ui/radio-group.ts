@@ -1,9 +1,15 @@
-import type { Option } from 'effect';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 
-import { RadioGroup as RadioGroupPrimitive } from '@foldkit/ui';
-
 import * as Icon from '@/lib/icon';
+import {
+  type RadioGroupBehaviorProps,
+  Message,
+  Model,
+  type OutMessage,
+  init,
+  renderRadioGroup,
+  update,
+} from '@/lib/radio-group';
 import { cn } from '@/lib/utils';
 
 const GROUP_CLASS = 'grid gap-3';
@@ -18,123 +24,30 @@ const LABEL_CLASS = 'text-sm leading-none font-medium select-none';
 
 const DESCRIPTION_CLASS = 'text-muted-foreground text-sm';
 
-export type RadioGroupOption = Readonly<{
-  value: string;
-  label: string;
-  description?: string;
-}>;
+export type { RadioGroupOption } from '@/lib/radio-group';
 
-export type RadioGroupProps<Msg> = Readonly<{
-  model: Model;
-  toParentMessage: (message: Message) => Msg;
-  selectedValue: Option.Option<string>;
-  ariaLabel: string;
-  options: ReadonlyArray<RadioGroupOption>;
-  isDisabled?: boolean;
-  name?: string;
-  orientation?: RadioGroupPrimitive.Orientation;
+export type RadioGroupProps<Msg> = RadioGroupBehaviorProps<Msg> & Readonly<{
   class?: string;
 }>;
 
-export const Model = RadioGroupPrimitive.Model;
-export type Model = typeof Model.Type;
-export const Message = RadioGroupPrimitive.Message;
-export type Message = typeof Message.Type;
-export type OutMessage = RadioGroupPrimitive.OutMessage<string>;
-export const init = RadioGroupPrimitive.init;
-const StringRadioGroup = RadioGroupPrimitive.create<string>();
-export const update = StringRadioGroup.update;
+export { Message, Model, init, update };
+export type { OutMessage };
 
 export const radioGroup = <Msg>(
   props: RadioGroupProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  return h.submodel({
-    slotId: props.model.id,
-    model: props.model,
-    view: StringRadioGroup.view,
-    viewInputs: {
-      selectedValue: props.selectedValue,
-      options: props.options.map((option) => option.value),
-      ariaLabel: props.ariaLabel,
-      isDisabled: props.isDisabled ?? false,
-      ...(props.name === undefined ? {} : { name: props.name }),
-      ...(props.orientation === undefined
-        ? {}
-        : { orientation: props.orientation }),
-      toView: ({ group, options, hiddenInput }) => {
-        return h.div(
-          [
-            ...group,
-            h.DataAttribute('slot', 'radio-group'),
-            h.Class(cn(GROUP_CLASS, props.class)),
-          ],
-          [
-            ...options.map((option) => {
-              const content = props.options[option.index];
-
-              if (content === undefined) {
-                return h.span([], []);
-              }
-
-              return h.div(
-                [h.Class('flex items-start gap-2')],
-                [
-                  h.button(
-                    [
-                      ...option.option,
-                      h.Type('button'),
-                      h.DataAttribute('slot', 'radio-group-item'),
-                      h.Class(ITEM_CLASS),
-                    ],
-                    [
-                      h.span(
-                        [
-                          h.DataAttribute('slot', 'radio-group-indicator'),
-                          h.Class(INDICATOR_CLASS),
-                        ],
-                        [
-                          Icon.circleIcon<Msg>(
-                            {
-                              class:
-                                'absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 fill-primary',
-                            },
-                            h,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  h.div(
-                    [h.Class('grid gap-1.5')],
-                    [
-                      h.label(
-                        [...option.label, h.Class(LABEL_CLASS)],
-                        [content.label],
-                      ),
-                      ...(content.description === undefined
-                        ? []
-                        : [
-                            h.p(
-                              [
-                                ...option.description,
-                                h.Class(DESCRIPTION_CLASS),
-                              ],
-                              [content.description],
-                            ),
-                          ]),
-                    ],
-                  ),
-                ],
-              );
-            }),
-            ...(props.name === undefined ? [] : [h.input([...hiddenInput])]),
-          ],
-        );
-      },
-    },
-    toParentMessage: props.toParentMessage,
-  });
+  return renderRadioGroup(props, {
+    group: [h.Class(cn(GROUP_CLASS, props.class))],
+    row: [h.Class('flex items-start gap-2')],
+    item: () => [h.Class(ITEM_CLASS)],
+    indicator: [h.Class(INDICATOR_CLASS)],
+    text: [h.Class('grid gap-1.5')],
+    label: [h.Class(LABEL_CLASS)],
+    description: [h.Class(DESCRIPTION_CLASS)],
+  }, (isSelected, indicatorH) => isSelected
+    ? Icon.circleIcon<Msg>({ class: 'absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 fill-primary' }, indicatorH)
+    : indicatorH.empty, h);
 };
 
 /*
