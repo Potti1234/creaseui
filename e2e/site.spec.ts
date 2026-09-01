@@ -1141,6 +1141,32 @@ test("pagination keeps routing and in-place actions parent controlled", async ({
   await expect(boundary.getByRole("button", { name: "Page 2, current page" })).toHaveAttribute("aria-current", "page");
 });
 
+test("breadcrumb renders semantic route parts, collapse, and RTL", async ({ page }) => {
+  await page.goto("/docs/components/breadcrumb");
+
+  const current = page.locator("#current-path");
+  const nav = current.getByRole("navigation", { name: "Breadcrumb" });
+  await expect(nav.locator("ol")).toBeVisible();
+  await expect(nav.getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
+  const pageName = nav.locator('[data-slot="breadcrumb-page"]');
+  await expect(pageName).toHaveAttribute("aria-current", "page");
+  await expect(pageName).not.toHaveAttribute("role", "link");
+  await expect(nav.locator('[data-slot="breadcrumb-separator"]').first()).toHaveAttribute("aria-hidden", "true");
+
+  const collapsed = page.locator("#collapsed-middle");
+  await expect(collapsed.getByText("2 omitted levels", { exact: true })).toHaveCSS("position", "absolute");
+  await expect(collapsed.getByRole("link", { name: "Workspace" })).toHaveCount(0);
+  await expect(collapsed.getByRole("link", { name: "Crease UI" })).toBeVisible();
+
+  const longLabel = page.locator("#long-resource-label").locator('[data-slot="breadcrumb-page"]');
+  await expect(longLabel).toContainText("A-very-long-unbroken-resource-name");
+  await expect(longLabel).toHaveCSS("overflow-wrap", "break-word");
+
+  const rtl = page.locator("#rtl-separator").getByRole("navigation", { name: "مسار الصفحة" });
+  await expect(rtl).toHaveAttribute("dir", "rtl");
+  await expect(rtl.locator('[data-slot="breadcrumb-separator"] svg').first()).toHaveCSS("rotate", "180deg");
+});
+
 test("sidebar documents persistence and toggles derived shell state", async ({
   page,
 }) => {

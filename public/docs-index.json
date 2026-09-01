@@ -477,20 +477,27 @@
       "source": "src/ui/breadcrumb.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/breadcrumb",
       "dependencies": [
+        "Potti1234/creaseui/breadcrumb-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
         "Current path",
-        "Collapsed path",
-        "Custom separator"
+        "Collapsed middle",
+        "Long resource label",
+        "RTL separator"
       ],
       "api": [
         {
+          "name": "*",
+          "kind": "re-export",
+          "signature": "export * from '@/lib/breadcrumb'"
+        },
+        {
           "name": "BreadcrumbProps",
           "kind": "type",
-          "signature": "BreadcrumbProps = Slot"
+          "signature": "BreadcrumbProps = Slot & Readonly<{ ariaLabel?: string; direction?: 'ltr' | 'rtl'; }>"
         },
         {
           "name": "breadcrumb",
@@ -525,7 +532,7 @@
         {
           "name": "BreadcrumbSeparatorProps",
           "kind": "type",
-          "signature": "BreadcrumbSeparatorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html | string>; }>"
+          "signature": "BreadcrumbSeparatorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html | string>; direction?: 'ltr' | 'rtl'; }>"
         },
         {
           "name": "breadcrumbSeparator",
@@ -533,9 +540,19 @@
           "signature": "breadcrumbSeparator<Msg>(props: BreadcrumbSeparatorProps = {}, h: HtmlBuilder<Msg>): Html"
         },
         {
+          "name": "BreadcrumbTrailProps",
+          "kind": "type",
+          "signature": "BreadcrumbTrailProps = Readonly<{ items: ReadonlyArray<BreadcrumbTrailItem>; maxItems?: number; ariaLabel?: string; direction?: 'ltr' | 'rtl'; separator?: ReadonlyArray<Html | string>; class?: string; }>"
+        },
+        {
+          "name": "breadcrumbTrail",
+          "kind": "function",
+          "signature": "breadcrumbTrail<Msg>(props: BreadcrumbTrailProps, h: HtmlBuilder<Msg>): Html"
+        },
+        {
           "name": "BreadcrumbEllipsisProps",
           "kind": "type",
-          "signature": "BreadcrumbEllipsisProps = Readonly<{ class?: string; }>"
+          "signature": "BreadcrumbEllipsisProps = Readonly<{ class?: string; label?: string; }>"
         },
         {
           "name": "breadcrumbEllipsis",

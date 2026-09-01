@@ -347,9 +347,14 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
   ],
   "breadcrumb": [
     {
+      "name": "*",
+      "kind": "re-export",
+      "signature": "export * from '@/lib/breadcrumb'"
+    },
+    {
       "name": "BreadcrumbProps",
       "kind": "type",
-      "signature": "BreadcrumbProps = Slot"
+      "signature": "BreadcrumbProps = Slot & Readonly<{ ariaLabel?: string; direction?: 'ltr' | 'rtl'; }>"
     },
     {
       "name": "breadcrumb",
@@ -384,7 +389,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "BreadcrumbSeparatorProps",
       "kind": "type",
-      "signature": "BreadcrumbSeparatorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html | string>; }>"
+      "signature": "BreadcrumbSeparatorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html | string>; direction?: 'ltr' | 'rtl'; }>"
     },
     {
       "name": "breadcrumbSeparator",
@@ -392,9 +397,19 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "breadcrumbSeparator<Msg>(props: BreadcrumbSeparatorProps = {}, h: HtmlBuilder<Msg>): Html"
     },
     {
+      "name": "BreadcrumbTrailProps",
+      "kind": "type",
+      "signature": "BreadcrumbTrailProps = Readonly<{ items: ReadonlyArray<BreadcrumbTrailItem>; maxItems?: number; ariaLabel?: string; direction?: 'ltr' | 'rtl'; separator?: ReadonlyArray<Html | string>; class?: string; }>"
+    },
+    {
+      "name": "breadcrumbTrail",
+      "kind": "function",
+      "signature": "breadcrumbTrail<Msg>(props: BreadcrumbTrailProps, h: HtmlBuilder<Msg>): Html"
+    },
+    {
       "name": "BreadcrumbEllipsisProps",
       "kind": "type",
-      "signature": "BreadcrumbEllipsisProps = Readonly<{ class?: string; }>"
+      "signature": "BreadcrumbEllipsisProps = Readonly<{ class?: string; label?: string; }>"
     },
     {
       "name": "breadcrumbEllipsis",

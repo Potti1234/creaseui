@@ -123,16 +123,19 @@ Source: [`src/ui/breadcrumb.ts`](../src/ui/breadcrumb.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `BreadcrumbProps` | type | `BreadcrumbProps = Slot` |
+| `*` | re-export | `export * from '@/lib/breadcrumb'` |
+| `BreadcrumbProps` | type | `BreadcrumbProps = Slot & Readonly<{ ariaLabel?: string; direction?: 'ltr' \| 'rtl'; }>` |
 | `breadcrumb` | function | `breadcrumb<Msg>(props: BreadcrumbProps, h: HtmlBuilder<Msg>): Html` |
 | `breadcrumbList` | function | `breadcrumbList<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
 | `breadcrumbItem` | function | `breadcrumbItem<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
 | `BreadcrumbLinkProps` | type | `BreadcrumbLinkProps = Slot & Readonly<{ href: string; }>` |
 | `breadcrumbLink` | function | `breadcrumbLink<Msg>(props: BreadcrumbLinkProps, h: HtmlBuilder<Msg>): Html` |
 | `breadcrumbPage` | function | `breadcrumbPage<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
-| `BreadcrumbSeparatorProps` | type | `BreadcrumbSeparatorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html \| string>; }>` |
+| `BreadcrumbSeparatorProps` | type | `BreadcrumbSeparatorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html \| string>; direction?: 'ltr' \| 'rtl'; }>` |
 | `breadcrumbSeparator` | function | `breadcrumbSeparator<Msg>(props: BreadcrumbSeparatorProps = {}, h: HtmlBuilder<Msg>): Html` |
-| `BreadcrumbEllipsisProps` | type | `BreadcrumbEllipsisProps = Readonly<{ class?: string; }>` |
+| `BreadcrumbTrailProps` | type | `BreadcrumbTrailProps = Readonly<{ items: ReadonlyArray<BreadcrumbTrailItem>; maxItems?: number; ariaLabel?: string; direction?: 'ltr' \| 'rtl'; separator?: ReadonlyArray<Html \| string>; class?: string; }>` |
+| `breadcrumbTrail` | function | `breadcrumbTrail<Msg>(props: BreadcrumbTrailProps, h: HtmlBuilder<Msg>): Html` |
+| `BreadcrumbEllipsisProps` | type | `BreadcrumbEllipsisProps = Readonly<{ class?: string; label?: string; }>` |
 | `breadcrumbEllipsis` | function | `breadcrumbEllipsis<Msg>(props: BreadcrumbEllipsisProps = {}, h: HtmlBuilder<Msg>): Html` |
 
 ## Bubble

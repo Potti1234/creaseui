@@ -262,6 +262,19 @@
           "target": "@lib/pagination.ts"
         }
       ]
+    },
+    {
+      "name": "breadcrumb-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Breadcrumb Trail Policy",
+      "description": "Typed route parts and deterministic middle-ancestor collapse without navigation state.",
+      "files": [
+        {
+          "path": "breadcrumb.ts",
+          "type": "registry:lib",
+          "target": "@lib/breadcrumb.ts"
+        }
+      ]
     }
   ]
 }

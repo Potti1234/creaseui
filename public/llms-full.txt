@@ -216,18 +216,21 @@ A shadcn-styled Breadcrumb component for Foldkit.
 
 Source: `src/ui/breadcrumb.ts`
 
-Examples: Current path, Collapsed path, Custom separator
+Examples: Current path, Collapsed middle, Long resource label, RTL separator
 
-- `BreadcrumbProps = Slot` (type)
+- `export * from '@/lib/breadcrumb'` (re-export)
+- `BreadcrumbProps = Slot & Readonly<{ ariaLabel?: string; direction?: 'ltr' | 'rtl'; }>` (type)
 - `breadcrumb<Msg>(props: BreadcrumbProps, h: HtmlBuilder<Msg>): Html` (function)
 - `breadcrumbList<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
 - `breadcrumbItem<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
 - `BreadcrumbLinkProps = Slot & Readonly<{ href: string; }>` (type)
 - `breadcrumbLink<Msg>(props: BreadcrumbLinkProps, h: HtmlBuilder<Msg>): Html` (function)
 - `breadcrumbPage<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
-- `BreadcrumbSeparatorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html | string>; }>` (type)
+- `BreadcrumbSeparatorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html | string>; direction?: 'ltr' | 'rtl'; }>` (type)
 - `breadcrumbSeparator<Msg>(props: BreadcrumbSeparatorProps = {}, h: HtmlBuilder<Msg>): Html` (function)
-- `BreadcrumbEllipsisProps = Readonly<{ class?: string; }>` (type)
+- `BreadcrumbTrailProps = Readonly<{ items: ReadonlyArray<BreadcrumbTrailItem>; maxItems?: number; ariaLabel?: string; direction?: 'ltr' | 'rtl'; separator?: ReadonlyArray<Html | string>; class?: string; }>` (type)
+- `breadcrumbTrail<Msg>(props: BreadcrumbTrailProps, h: HtmlBuilder<Msg>): Html` (function)
+- `BreadcrumbEllipsisProps = Readonly<{ class?: string; label?: string; }>` (type)
 - `breadcrumbEllipsis<Msg>(props: BreadcrumbEllipsisProps = {}, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Bubble

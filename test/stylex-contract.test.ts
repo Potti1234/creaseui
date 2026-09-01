@@ -308,6 +308,20 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/pagination['"]/u)
   })
 
+  it('shares Breadcrumb route-part and collapse policy without state', () => {
+    const behavior = readFileSync('src/lib/breadcrumb.ts', 'utf8')
+    const tailwind = readFileSync('src/ui/breadcrumb.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/breadcrumb.ts', 'utf8')
+
+    assert.match(behavior, /export type BreadcrumbTrailItem/u)
+    assert.match(behavior, /export const collapseBreadcrumbItems/u)
+    assert.match(tailwind, /@\/lib\/breadcrumb/u)
+    assert.match(stylex, /@\/lib\/breadcrumb/u)
+    assert.doesNotMatch(tailwind, /export const Model/u)
+    assert.doesNotMatch(stylex, /export const Model/u)
+    assert.doesNotMatch(stylex, /from ['"]@\/ui\/breadcrumb['"]/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])
