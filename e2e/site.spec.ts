@@ -687,12 +687,12 @@ test("dialog traps focus, closes with Escape, and restores its trigger", async (
   await expect(compactTrigger).toBeFocused();
 });
 
-test("alert dialog confirmation emits a domain message and closes", async ({
+test("alert dialog emits decisions and keeps async consequences parent owned", async ({
   page,
 }) => {
   await page.goto("/docs/components/alert-dialog");
 
-  const example = page.locator("#delete-project");
+  const example = page.locator("#async-deletion");
   const trigger = example.getByRole("button", {
     name: "Delete project",
     exact: true,
@@ -700,14 +700,28 @@ test("alert dialog confirmation emits a domain message and closes", async ({
   await trigger.click();
   const alertDialog = page.getByRole("alertdialog");
   await expect(alertDialog).toBeVisible();
+  await expect(alertDialog.getByRole("button", { name: "Cancel" })).toBeFocused();
+  await page.locator('[data-slot="alert-dialog-overlay"]').click({ position: { x: 5, y: 5 } });
+  await expect(alertDialog).toBeVisible();
   const confirm = alertDialog.getByRole("button", {
-    name: "Delete",
+    name: "Delete project",
     exact: true,
   });
   await confirm.click();
+  await expect(alertDialog.getByRole("button", { name: "Deleting…" })).toBeDisabled();
   await expect(alertDialog).toBeHidden();
   await expect(example.getByRole("status")).toHaveText("Project deleted.");
   await expect(trigger).toBeFocused();
+
+  const compact = page.locator("#compact-decision");
+  const compactTrigger = compact.getByRole("button", { name: "Leave workspace", exact: true });
+  await compactTrigger.click();
+  const compactDialog = page.getByRole("alertdialog");
+  await expect(compactDialog.getByRole("button", { name: "Stay" })).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(compactDialog).toBeHidden();
+  await expect(compact.getByRole("status")).toHaveText("No action taken.");
+  await expect(compactTrigger).toBeFocused();
 });
 
 test("sheet compound parts preserve focus and accessible structure", async ({

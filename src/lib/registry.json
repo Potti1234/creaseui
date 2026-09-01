@@ -288,6 +288,19 @@
           "target": "@lib/alert.ts"
         }
       ]
+    },
+    {
+      "name": "alert-dialog-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Alert Dialog Decision Behavior",
+      "description": "Canonical Dialog behavior wrapped with explicit confirm and cancel decision facts.",
+      "files": [
+        {
+          "path": "alert-dialog.ts",
+          "type": "registry:lib",
+          "target": "@lib/alert-dialog.ts"
+        }
+      ]
     }
   ]
 }

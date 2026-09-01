@@ -90,54 +90,9 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
   ],
   "alert-dialog": [
     {
-      "name": "Model",
-      "kind": "value",
-      "signature": "Model: value"
-    },
-    {
-      "name": "Model",
-      "kind": "type",
-      "signature": "Model = typeof Model.Type"
-    },
-    {
-      "name": "Message",
-      "kind": "value",
-      "signature": "Message: value"
-    },
-    {
-      "name": "Message",
-      "kind": "type",
-      "signature": "Message = typeof Message.Type"
-    },
-    {
-      "name": "OutMessage",
-      "kind": "value",
-      "signature": "OutMessage: value"
-    },
-    {
-      "name": "OutMessage",
-      "kind": "type",
-      "signature": "OutMessage = typeof OutMessage.Type"
-    },
-    {
-      "name": "init",
-      "kind": "value",
-      "signature": "init: value"
-    },
-    {
-      "name": "update",
-      "kind": "value",
-      "signature": "update: value"
-    },
-    {
-      "name": "open",
-      "kind": "value",
-      "signature": "open: value"
-    },
-    {
-      "name": "close",
-      "kind": "value",
-      "signature": "close: value"
+      "name": "*",
+      "kind": "re-export",
+      "signature": "export * from '@/lib/alert-dialog'"
     },
     {
       "name": "AlertDialogSlots",
@@ -147,7 +102,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "AlertDialogProps",
       "kind": "type",
-      "signature": "AlertDialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; media?: ReadonlyArray<Html | string>; actionLabel: string; onAction?: Msg; cancelLabel?: string; size?: 'default' | 'sm'; actionC…"
+      "signature": "AlertDialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description: string; media?: ReadonlyArray<Html | string>; actionLabel: string; cancelLabel?: string; pendingLabel?: string; isPending?: boolean; size?…"
     },
     {
       "name": "alertDialog",

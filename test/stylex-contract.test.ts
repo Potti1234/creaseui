@@ -336,6 +336,20 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(stylex, /export const Model/u)
   })
 
+  it('keeps Alert Dialog decisions on canonical Dialog behavior', () => {
+    const behavior = readFileSync('src/lib/alert-dialog.ts', 'utf8')
+    const tailwind = readFileSync('src/ui/alert-dialog.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/alert-dialog.ts', 'utf8')
+
+    assert.match(behavior, /import \{ Dialog \} from '@foldkit\/ui'/u)
+    assert.match(behavior, /ConfirmedAlertDialog/u)
+    assert.match(behavior, /CancelledAlertDialog/u)
+    assert.match(tailwind, /@\/lib\/alert-dialog/u)
+    assert.match(stylex, /@\/lib\/alert-dialog/u)
+    assert.match(tailwind, /DialogPrimitive\.view/u)
+    assert.match(stylex, /DialogPrimitive\.view/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

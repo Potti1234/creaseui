@@ -32,18 +32,9 @@ Source: [`src/ui/alert-dialog.ts`](../src/ui/alert-dialog.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `Model` | value | `Model: value` |
-| `Model` | type | `Model = typeof Model.Type` |
-| `Message` | value | `Message: value` |
-| `Message` | type | `Message = typeof Message.Type` |
-| `OutMessage` | value | `OutMessage: value` |
-| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
-| `init` | value | `init: value` |
-| `update` | value | `update: value` |
-| `open` | value | `open: value` |
-| `close` | value | `close: value` |
+| `*` | re-export | `export * from '@/lib/alert-dialog'` |
 | `AlertDialogSlots` | type | `AlertDialogSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; }>` |
-| `AlertDialogProps` | type | `AlertDialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; media?: ReadonlyArray<Html \| string>; actionLabel: string; onAction?: Msg; cancelLabel?: string; size?: 'default' \| 'sm'; actionC…` |
+| `AlertDialogProps` | type | `AlertDialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description: string; media?: ReadonlyArray<Html \| string>; actionLabel: string; cancelLabel?: string; pendingLabel?: string; isPending?: boolean; size?…` |
 | `alertDialog` | function | `alertDialog<Msg>(props: AlertDialogProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Alert

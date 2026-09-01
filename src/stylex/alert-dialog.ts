@@ -8,6 +8,8 @@ import { overlayStyles } from './overlay-tokens.stylex'
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
+import { GotDialogMessage, RequestedCancel, RequestedConfirm, type Message, type Model } from '@/lib/alert-dialog'
+export * from '@/lib/alert-dialog'
 
 const styles = stylex.create({
   action: {
@@ -46,18 +48,6 @@ const cn = (...values: ReadonlyArray<unknown>): string =>
    the overlay intentionally omits the primitive backdrop click handler so an
    alert dialog can only be dismissed by an explicit action or Escape. */
 
-export const Model = DialogPrimitive.Model;
-export type Model = typeof Model.Type;
-export const Message = DialogPrimitive.Message;
-export type Message = typeof Message.Type;
-export const OutMessage = DialogPrimitive.OutMessage;
-export type OutMessage = typeof OutMessage.Type;
-
-export const init = DialogPrimitive.init;
-export const update = DialogPrimitive.update;
-export const open = DialogPrimitive.open;
-export const close = DialogPrimitive.close;
-
 const DIALOG_CLASS = overlayStyles.dialog
 
 const OVERLAY_CLASS = overlayStyles.overlay
@@ -82,11 +72,12 @@ export type AlertDialogProps<Msg> = Readonly<{
   model: Model;
   toParentMessage: (message: Message) => Msg;
   title: string;
-  description?: string;
+  description: string;
   media?: ReadonlyArray<Html | string>;
   actionLabel: string;
-  onAction?: Msg;
   cancelLabel?: string;
+  pendingLabel?: string;
+  isPending?: boolean;
   size?: 'default' | 'sm';
   actionLayoutStyle?: ComponentLayoutStyle;
   cancelLayoutStyle?: ComponentLayoutStyle;
@@ -107,7 +98,7 @@ export const alertDialog = <Msg>(
       toView: ({
         dialog: dialogAttributes,
         panel,
-        closeButton,
+        initialFocus,
         isVisible,
       }: DialogPrimitive.RenderInfo) => {
         const hd = h;
@@ -191,23 +182,14 @@ export const alertDialog = <Msg>(
                           ],
                           [props.title],
                         ),
-                        ...(props.description === undefined
-                          ? []
-                          : [
-                              hd.p(
-                                [
-                                  hd.Id(
-                                    DialogPrimitive.descriptionId(props.model),
-                                  ),
-                                  hd.DataAttribute(
-                                    'slot',
-                                    'alert-dialog-description',
-                                  ),
-                                  hd.Class(className(DESCRIPTION_CLASS)),
-                                ],
-                                [props.description],
-                              ),
-                            ]),
+                        hd.p(
+                          [
+                            hd.Id(DialogPrimitive.descriptionId(props.model)),
+                            hd.DataAttribute('slot', 'alert-dialog-description'),
+                            hd.Class(className(DESCRIPTION_CLASS)),
+                          ],
+                          [props.description],
+                        ),
                       ],
                     ),
                     hd.div(
@@ -218,8 +200,10 @@ export const alertDialog = <Msg>(
                       [
                         hd.button(
                           [
-                            ...closeButton,
+                            ...initialFocus,
+                            hd.OnClick(props.toParentMessage(RequestedCancel())),
                             hd.Type('button'),
+                            hd.Disabled(props.isPending ?? false),
                             hd.DataAttribute('slot', 'alert-dialog-cancel'),
                             hd.Class(
                               cn(
@@ -232,10 +216,10 @@ export const alertDialog = <Msg>(
                         ),
                         hd.button(
                           [
-                            ...(props.onAction === undefined
-                              ? closeButton
-                              : [hd.OnClick(props.onAction)]),
+                            hd.OnClick(props.toParentMessage(RequestedConfirm())),
                             hd.Type('button'),
+                            hd.Disabled(props.isPending ?? false),
+                            hd.AriaBusy(props.isPending ?? false),
                             hd.DataAttribute('slot', 'alert-dialog-action'),
                             hd.Class(
                               cn(
@@ -244,7 +228,7 @@ export const alertDialog = <Msg>(
                               ),
                             ),
                           ],
-                          [props.actionLabel],
+                          [props.isPending === true ? props.pendingLabel ?? props.actionLabel : props.actionLabel],
                         ),
                       ],
                     ),
@@ -255,7 +239,7 @@ export const alertDialog = <Msg>(
         );
       },
     },
-    toParentMessage: props.toParentMessage,
+    toParentMessage: message => props.toParentMessage(GotDialogMessage({ message })),
   });
 };
 
@@ -271,4 +255,3 @@ alertDialog({
   actionLabel: 'Continue',
 })
 */
-
