@@ -4225,7 +4225,7 @@
         {
           "name": "SwitchProps",
           "kind": "type",
-          "signature": "SwitchProps<Msg> = Readonly<{ id: string; isChecked: boolean; onToggle: (isChecked: boolean) => Msg; label: string; description?: string; size?: SwitchSize; isDisabled?: boolean; name?: string; value?: string; class?: string; }>"
+          "signature": "SwitchProps<Msg> = SwitchBehaviorProps<Msg> & Readonly<{ size?: SwitchSize; class?: string; }>"
         },
         {
           "name": "switchControl",
@@ -4399,6 +4399,7 @@
       "source": "src/ui/textarea.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/textarea",
       "dependencies": [
+        "Potti1234/creaseui/switch-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/textarea-behavior",
         "Potti1234/creaseui/utils"

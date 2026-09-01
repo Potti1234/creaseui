@@ -113,6 +113,16 @@ describe('StyleX component authoring contract', () => {
     assert.match(stylex, /renderCheckbox\(/u)
   })
 
+  it('keeps Switch behavior in the skin-neutral behavior module', () => {
+    const tailwind = readFileSync('src/ui/switch.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/switch.ts', 'utf8')
+
+    assert.match(tailwind, /from '@\/lib\/switch'/u)
+    assert.match(stylex, /from '@\/lib\/switch'/u)
+    assert.doesNotMatch(stylex, /from ['"]@\/ui\/switch['"]/u)
+    assert.match(stylex, /renderSwitch\(/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

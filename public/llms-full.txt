@@ -1221,7 +1221,7 @@ Source: `src/ui/switch.ts`
 Examples: Timed notification, Sticky error
 
 - `SwitchSize = 'sm' | 'default'` (type)
-- `SwitchProps<Msg> = Readonly<{ id: string; isChecked: boolean; onToggle: (isChecked: boolean) => Msg; label: string; description?: string; size?: SwitchSize; isDisabled?: boolean; name?: string; value?: string; class?: string; }>` (type)
+- `SwitchProps<Msg> = SwitchBehaviorProps<Msg> & Readonly<{ size?: SwitchSize; class?: string; }>` (type)
 - `switchControl<Msg>(props: SwitchProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `export { switchControl as switch } from ` (re-export)
 

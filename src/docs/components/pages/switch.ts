@@ -12,7 +12,7 @@ const previewProgram = definePreviewProgram<PreviewModel, PreviewMessage>({
   Model: PreviewModel, Message: ToggledPreview,
   init: index => ({ _docsPage: 'switch', isChecked: index !== 1 }),
   update: (model, message) => [{ ...model, isChecked: message.isChecked }, []],
-  view: (index, model, h) => Switch.switchControl({ id: `docs-switch-${String(index)}`, isChecked: index === 2 ? true : model.isChecked, onToggle: isChecked => ToggledPreview({ isChecked }), label: index === 0 ? 'Notifications' : index === 1 ? 'Compact mode' : 'Security scanning', ...(index === 0 ? { description: 'Receive build and deployment updates.' } : {}), ...(index === 1 ? { size: 'sm' as const } : {}), ...(index === 2 ? { isDisabled: true, description: 'Required by your organization.' } : {}) }, h),
+  view: (index, model, h) => Switch.switchControl({ id: `docs-switch-${String(index)}`, isChecked: model.isChecked, onToggle: isChecked => ToggledPreview({ isChecked }), label: index === 0 ? 'Notifications' : index === 1 ? 'Compact mode' : index === 2 ? 'Security scanning' : index === 3 ? 'Account verified' : 'واجهة عربية', ...(index === 0 ? { description: 'Receive build and deployment updates.', name: 'notifications', value: 'enabled' } : {}), ...(index === 1 ? { size: 'sm' as const } : {}), ...(index === 2 ? { isDisabled: true, description: 'Required by your organization.' } : {}), ...(index === 3 ? { isReadOnly: true, description: 'Supplied by your identity provider.' } : {}), ...(index === 4 ? { direction: 'rtl' as const, description: 'The thumb follows the inline direction.' } : {}) }, h),
 });
 
 const source = (name: string, initialValue: boolean, config: string): string => controlledBooleanApplication({
@@ -23,6 +23,8 @@ const source = (name: string, initialValue: boolean, config: string): string => 
   isChecked: model.notificationsEnabled,
   onToggle: isChecked => ToggledNotifications({ isChecked }),
   label: 'Notifications',
+  name: 'notifications',
+  value: 'enabled',
   ${config}
 }, h),`,
 });
@@ -32,10 +34,10 @@ export const switchPage = authoredPage({
   previewProgram,
   definition: {
     kind: 'helper', description: 'Controls an immediate on/off setting with a visible label and optional description.',
-    architecture: 'Switch is a stateless controlled helper. The parent Model owns the setting and onToggle returns the next boolean in a domain Message.',
+    architecture: 'Switch is a stateless controlled helper over the Foldkit Switch primitive. The parent Model owns the setting and onToggle returns the next boolean in a domain Message; both skins use one semantic adapter.',
     apiHref: 'https://foldkit.dev/ui/switch',
     styling: 'Use the small size only in dense settings lists. Prefer Checkbox when the choice belongs to a submitted form rather than applying immediately.',
-    accessibility: 'Switch exposes switch semantics, checked state, linked label and description, and a focusable disabled state.',
+    accessibility: 'Switch exposes switch semantics, checked state, linked optional description, and focusable disabled or read-only state. Use direction for an explicit RTL subtree so the thumb travels in the inline direction.',
     keyboard: [['Space', 'Toggles the focused switch.']],
     examples: [
       {
@@ -53,6 +55,17 @@ export const switchPage = authoredPage({
 
         code: source('Disabled', true, `isDisabled: true,
   description: 'Required by your organization.',`),
+      },
+      {
+        title: 'Read only', description: 'Keep an externally managed state focusable and understandable without allowing changes.',
+
+        code: source('Read only', true, `isReadOnly: true,
+  description: 'Supplied by your identity provider.',`),
+      },
+      {
+        title: 'RTL', description: 'Mirror thumb travel when the switch is rendered in a right-to-left subtree.',
+
+        code: source('RTL', true, `direction: 'rtl',`),
       },
     ],
   },

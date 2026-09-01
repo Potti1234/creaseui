@@ -3257,7 +3257,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "SwitchProps",
       "kind": "type",
-      "signature": "SwitchProps<Msg> = Readonly<{ id: string; isChecked: boolean; onToggle: (isChecked: boolean) => Msg; label: string; description?: string; size?: SwitchSize; isDisabled?: boolean; name?: string; value?: string; class?: string; }>"
+      "signature": "SwitchProps<Msg> = SwitchBehaviorProps<Msg> & Readonly<{ size?: SwitchSize; class?: string; }>"
     },
     {
       "name": "switchControl",

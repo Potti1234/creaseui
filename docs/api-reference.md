@@ -1028,7 +1028,7 @@ Source: [`src/ui/switch.ts`](../src/ui/switch.ts)
 | Export | Kind | Signature |
 | --- | --- | --- |
 | `SwitchSize` | type | `SwitchSize = 'sm' \| 'default'` |
-| `SwitchProps` | type | `SwitchProps<Msg> = Readonly<{ id: string; isChecked: boolean; onToggle: (isChecked: boolean) => Msg; label: string; description?: string; size?: SwitchSize; isDisabled?: boolean; name?: string; value?: string; class?: string; }>` |
+| `SwitchProps` | type | `SwitchProps<Msg> = SwitchBehaviorProps<Msg> & Readonly<{ size?: SwitchSize; class?: string; }>` |
 | `switchControl` | function | `switchControl<Msg>(props: SwitchProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `switch` | re-export | `export { switchControl as switch } from ` |
 

@@ -1144,6 +1144,59 @@ test("checkbox shares controlled mixed, read-only, and form semantics", async ({
   await assertAccessible(page);
 });
 
+test("switch shares controlled read-only form and RTL semantics", async ({
+  page,
+}) => {
+  await page.goto("/docs/components/switch");
+
+  const notifications = page
+    .locator("#notifications")
+    .getByRole("switch", { name: "Notifications" });
+  const formValue = page.locator(
+    '#notifications input[type="hidden"][name="notifications"]',
+  );
+  await expect(notifications).toHaveAttribute(
+    "aria-describedby",
+    "docs-switch-0-description",
+  );
+  await expect(formValue).toHaveValue("enabled");
+  await notifications.press("Space");
+  await expect(notifications).not.toBeChecked();
+  await expect(formValue).toHaveValue("");
+
+  const readOnly = page
+    .locator("#read-only")
+    .getByRole("switch", { name: "Account verified" });
+  await expect(readOnly).toHaveAttribute("aria-readonly", "true");
+  await readOnly.press("Space");
+  await expect(readOnly).toBeChecked();
+
+  const rtlSection = page.locator("#rtl");
+  const rtlField = rtlSection.locator('[data-slot="switch-field"]');
+  const rtlTrack = rtlSection.getByRole("switch", { name: "واجهة عربية" });
+  const rtlThumb = rtlTrack.locator('[data-slot="switch-thumb"]');
+  await expect(rtlField).toHaveAttribute("dir", "rtl");
+  const [trackBox, thumbBox] = await Promise.all([
+    rtlTrack.boundingBox(),
+    rtlThumb.boundingBox(),
+  ]);
+  expect(trackBox).not.toBeNull();
+  expect(thumbBox).not.toBeNull();
+  expect(thumbBox!.x + thumbBox!.width / 2).toBeLessThan(
+    trackBox!.x + trackBox!.width / 2,
+  );
+  await assertAccessible(page);
+
+  await page
+    .getByRole("group", { name: "Preview styling engine" })
+    .getByRole("button", { name: "StyleX" })
+    .click();
+  const stylexSwitch = page.getByRole("switch", { name: "Strict linting" });
+  await expect(stylexSwitch).toBeChecked();
+  await expect(stylexSwitch).not.toHaveAttribute("aria-describedby");
+  await assertAccessible(page);
+});
+
 test("field guarantees linked parts and documents stale async validation", async ({
   page,
 }) => {
