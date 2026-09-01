@@ -142,7 +142,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                             },
                             h,
                           ),
-                          Select.select<Ticker, Ticker, Message>(
+                          TickerSelect.select<Ticker, Message>(
                             {
                               model: model.tickerSelect,
                               maybeSelectedValue: Option.some(

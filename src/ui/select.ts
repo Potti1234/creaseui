@@ -32,14 +32,12 @@ export type OutMessage<Value extends string = string> =
   ListboxPrimitive.OutMessage<Value>;
 
 export const init = ListboxPrimitive.init;
-export const create = ListboxPrimitive.create;
-export const update = ListboxPrimitive.create().update;
 
 const TRIGGER_CLASS =
   "flex w-fit items-center justify-between gap-2 rounded-md border border-input bg-transparent px-2.5 py-1.5 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground data-[size=default]:h-8 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground";
 
 const CONTENT_CLASS =
-  'relative z-50 w-(--button-width) min-w-[8rem] overflow-x-hidden overflow-y-auto rounded-md border bg-popover text-popover-foreground shadow-md transition duration-200 ease-out data-[closed]:opacity-0 data-[closed]:scale-95';
+  'relative z-50 w-(--button-width) min-w-[8rem] overflow-x-hidden overflow-y-auto rounded-md border bg-popover text-popover-foreground shadow-md transition duration-200 ease-out motion-reduce:transition-none data-[closed]:opacity-0 data-[closed]:scale-95';
 
 const VIEWPORT_CLASS = 'w-full scroll-my-1 p-1';
 
@@ -82,20 +80,25 @@ export type SelectProps<Item, Value extends string, Msg> = Readonly<{
   size?: SelectSize;
   ariaLabel?: string;
   isDisabled?: boolean;
+  isReadOnly?: boolean;
+  isInvalid?: boolean;
+  name?: string;
+  form?: string;
+  direction?: 'ltr' | 'rtl';
   itemGroupKey?: (item: Item, index: number) => string;
   groupToHeading?: (groupKey: string) => string | undefined;
 }>;
 
-export const select = <Item, Value extends string, Msg>(
+const renderSelect = <Item, Value extends string, Msg>(
+  listbox: ListboxPrimitive.Bundle<Value, Value>,
   props: SelectProps<Item, Value, Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
   const hs = h;
-  const listbox = ListboxPrimitive.create();
   const values = props.items.map(props.itemToValue);
-  const itemForValue = (value: string): Item | undefined =>
+  const itemForValue = (value: Value): Item | undefined =>
     props.items.find((item) => props.itemToValue(item) === value);
-  const labelForValue = (value: string): string => {
+  const labelForValue = (value: Value): string => {
     const item = itemForValue(value);
     return item === undefined ? value : props.itemToLabel(item);
   };
@@ -104,7 +107,7 @@ export const select = <Item, Value extends string, Msg>(
     onSome: labelForValue,
   });
 
-  const viewInputs: ListboxPrimitive.ViewInputs<string> = {
+  const viewInputs: ListboxPrimitive.ViewInputs<Value, Value> = {
     maybeSelectedValue: props.maybeSelectedValue,
     items: values,
     itemToValue: (value) => value,
@@ -153,6 +156,10 @@ export const select = <Item, Value extends string, Msg>(
     ),
     buttonClassName: cn(TRIGGER_CLASS, props.triggerClass),
     isDisabled: props.isDisabled ?? false,
+    isReadOnly: props.isReadOnly ?? false,
+    isInvalid: props.isInvalid ?? false,
+    ...(props.name === undefined ? {} : { name: props.name }),
+    ...(props.form === undefined ? {} : { form: props.form }),
     buttonAttributes: childAttributes([
       hs.DataAttribute('slot', 'select-trigger'),
       hs.DataAttribute('size', props.size ?? 'default'),
@@ -166,12 +173,16 @@ export const select = <Item, Value extends string, Msg>(
     ]),
     itemsScrollClassName: VIEWPORT_CLASS,
     backdropClassName: BACKDROP_CLASS,
+    backdropAttributes: childAttributes([hs.DataAttribute('slot', 'select-backdrop')]),
     anchor: ANCHOR,
-    attributes: childAttributes([hs.DataAttribute('slot', 'select')]),
+    attributes: childAttributes([
+      hs.DataAttribute('slot', 'select'),
+      ...(props.direction === undefined ? [] : [hs.Dir(props.direction)]),
+    ]),
     ...(props.itemGroupKey === undefined
       ? {}
       : {
-          itemGroupKey: (value: string, index: number): string => {
+          itemGroupKey: (value: Value, index: number): string => {
             const item = itemForValue(value);
             return item === undefined
               ? ''
@@ -200,14 +211,34 @@ export const select = <Item, Value extends string, Msg>(
     ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
   };
 
+  // TypeScript cannot reduce Foldkit's conditional SubmodelConfig while
+  // Value is still generic; every field remains independently typed above.
+  // eslint-disable-next-line no-restricted-syntax
   return h.submodel<typeof listbox.view>({
     slotId: props.model.id,
     model: props.model,
     view: listbox.view,
     viewInputs,
     toParentMessage: props.toParentMessage,
-  });
+  } as unknown as Parameters<typeof h.submodel<typeof listbox.view>>[0]);
 };
+
+export type SelectBundle<Value extends string> = Readonly<{
+  update: ReturnType<typeof ListboxPrimitive.create<Value, Value>>['update'];
+  select: <Item, Msg>(props: SelectProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html;
+}>;
+
+export const create = <Value extends string = string>(): SelectBundle<Value> => {
+  const listbox = ListboxPrimitive.create<Value, Value>();
+  return {
+    update: listbox.update,
+    select: (props, h) => renderSelect(listbox, props, h),
+  };
+};
+
+const StringSelect = create<string>();
+export const update = StringSelect.update;
+export const select = StringSelect.select;
 
 /*
    Minimal wiring:
@@ -224,7 +255,7 @@ export const select = <Item, Value extends string, Msg>(
    //   ColorSelect.update(model.colorSelect, message)
    //
    // View:
-   // select<Color, Color['value'], AppMessage>({
+   // ColorSelect.select<Color, AppMessage>({
    //   model: model.colorSelect,
    //   toParentMessage: message => GotColorSelectMessage({ message }),
    //   items: colors,

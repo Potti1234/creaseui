@@ -753,19 +753,47 @@ test("tooltip opens from keyboard focus and dismisses without moving focus", asy
 });
 
 test("select persists a typed OutMessage selection", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/docs/components/select");
   const example = page.locator("#typed-selection");
   const trigger = example.getByRole("button", { name: "Fruit" });
+  const controls = await trigger.getAttribute("aria-controls");
+  expect(controls).toBeTruthy();
   await trigger.click();
-  const listbox = page.getByRole("listbox");
+  const listbox = page.locator(`#${controls}`);
   await expect(listbox).toBeVisible();
+  await expect(listbox).toHaveAttribute("role", "listbox");
+  await expect(listbox).toHaveCSS("transition-property", "none");
   await page.getByRole("option", { name: "Banana" }).click();
   await expect(trigger).toContainText("Banana");
   await expect(listbox).toBeHidden();
+  await expect(example.locator('input[type="hidden"][name="fruit"]')).toHaveValue(
+    "banana",
+  );
   await expect(example.locator("code")).toContainText("maybeSelection");
   await expect(example.locator("code")).toContainText(
     "selection._tag === 'Selected'",
   );
+
+  const disabledExample = page.locator("#disabled-option");
+  const disabledTrigger = disabledExample.getByRole("button", { name: "Fruit" });
+  await disabledTrigger.click();
+  const disabledOption = page.getByRole("option", { name: "Banana" });
+  await expect(disabledOption).toHaveAttribute("aria-disabled", "true");
+  await disabledOption.click({ force: true });
+  await expect(disabledTrigger).toContainText("Apple");
+
+  await page.keyboard.press("Escape");
+  const readOnlyExample = page.locator("#read-only-rtl");
+  const readOnlyTrigger = readOnlyExample.getByRole("button", { name: "Fruit" });
+  await expect(readOnlyExample.locator('[data-slot="select"]')).toHaveAttribute(
+    "dir",
+    "rtl",
+  );
+  await readOnlyTrigger.click();
+  await page.keyboard.press("End");
+  await page.keyboard.press("Enter");
+  await expect(readOnlyTrigger).toContainText("Apple");
 });
 
 test("combobox filters items and persists its typed selection output", async ({

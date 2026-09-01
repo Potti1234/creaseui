@@ -2624,16 +2624,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "init: value"
     },
     {
-      "name": "create",
-      "kind": "value",
-      "signature": "create: value"
-    },
-    {
-      "name": "update",
-      "kind": "value",
-      "signature": "update: value"
-    },
-    {
       "name": "SelectSize",
       "kind": "type",
       "signature": "SelectSize = 'sm' | 'default'"
@@ -2649,9 +2639,24 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "SelectProps<Item, Value extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Value>; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToValue: (item: Item) => Value; itemToLabel: (item: Item) => string; …"
     },
     {
-      "name": "select",
+      "name": "SelectBundle",
+      "kind": "type",
+      "signature": "SelectBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ListboxPrimitive.create<Value, Value>>['update']; select: <Item, Msg>(props: SelectProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>"
+    },
+    {
+      "name": "create",
       "kind": "function",
-      "signature": "select<Item, Value extends string, Msg>(props: SelectProps<Item, Value, Msg>, h: HtmlBuilder<Msg>): Html"
+      "signature": "create<Value extends string = string>(): SelectBundle<Value>"
+    },
+    {
+      "name": "update",
+      "kind": "value",
+      "signature": "update: value"
+    },
+    {
+      "name": "select",
+      "kind": "value",
+      "signature": "select: value"
     }
   ],
   "separator": [

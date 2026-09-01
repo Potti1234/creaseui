@@ -1017,7 +1017,7 @@ A shadcn-styled Select component for Foldkit.
 
 Source: `src/ui/select.ts`
 
-Examples: Typed selection, Grouped fruit
+Examples: Typed selection, Grouped fruit, Disabled option, Read only RTL
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -1026,12 +1026,13 @@ Examples: Typed selection, Grouped fruit
 - `OutMessage: value` (value)
 - `OutMessage<Value extends string = string> = ListboxPrimitive.OutMessage<Value>` (type)
 - `init: value` (value)
-- `create: value` (value)
-- `update: value` (value)
 - `SelectSize = 'sm' | 'default'` (type)
 - `SelectItemConfig = Readonly<{ content?: Html | string; searchText?: string; class?: string; isDisabled?: boolean; }>` (type)
 - `SelectProps<Item, Value extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Value>; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToValue: (item: Item) => Value; itemToLabel: (item: Item) => string; …` (type)
-- `select<Item, Value extends string, Msg>(props: SelectProps<Item, Value, Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `SelectBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ListboxPrimitive.create<Value, Value>>['update']; select: <Item, Msg>(props: SelectProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` (type)
+- `create<Value extends string = string>(): SelectBundle<Value>` (function)
+- `update: value` (value)
+- `select: value` (value)
 
 ### Separator
 

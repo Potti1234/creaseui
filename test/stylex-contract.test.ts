@@ -155,6 +155,19 @@ describe('StyleX component authoring contract', () => {
     assert.match(stylex, /view: PopoverPrimitive\.view/u)
   })
 
+  it('binds Select value types once and shares the canonical Listbox behavior', () => {
+    const tailwind = readFileSync('src/ui/select.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/select.ts', 'utf8')
+
+    assert.match(tailwind, /Listbox as ListboxPrimitive/u)
+    assert.match(stylex, /Listbox as ListboxPrimitive/u)
+    assert.doesNotMatch(stylex, /from ['"]@\/ui\/select['"]/u)
+    assert.match(tailwind, /export const create = <Value extends string/u)
+    assert.match(stylex, /export const create = <Value extends string/u)
+    assert.doesNotMatch(tailwind, /const listbox = ListboxPrimitive\.create\(\);/u)
+    assert.doesNotMatch(stylex, /const listbox = ListboxPrimitive\.create\(\);/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

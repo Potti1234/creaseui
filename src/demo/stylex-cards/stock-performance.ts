@@ -150,7 +150,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                             },
                             h,
                           ),
-                          h.div([h.Class(className(styles.full))], [Select.select<Ticker, Ticker, Message>(
+                          h.div([h.Class(className(styles.full))], [TickerSelect.select<Ticker, Message>(
                             {
                               model: model.tickerSelect,
                               maybeSelectedValue: Option.some(

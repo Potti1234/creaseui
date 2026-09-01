@@ -849,12 +849,13 @@ Source: [`src/ui/select.ts`](../src/ui/select.ts)
 | `OutMessage` | value | `OutMessage: value` |
 | `OutMessage` | type | `OutMessage<Value extends string = string> = ListboxPrimitive.OutMessage<Value>` |
 | `init` | value | `init: value` |
-| `create` | value | `create: value` |
-| `update` | value | `update: value` |
 | `SelectSize` | type | `SelectSize = 'sm' \| 'default'` |
 | `SelectItemConfig` | type | `SelectItemConfig = Readonly<{ content?: Html \| string; searchText?: string; class?: string; isDisabled?: boolean; }>` |
 | `SelectProps` | type | `SelectProps<Item, Value extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Value>; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToValue: (item: Item) => Value; itemToLabel: (item: Item) => string; …` |
-| `select` | function | `select<Item, Value extends string, Msg>(props: SelectProps<Item, Value, Msg>, h: HtmlBuilder<Msg>): Html` |
+| `SelectBundle` | type | `SelectBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ListboxPrimitive.create<Value, Value>>['update']; select: <Item, Msg>(props: SelectProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` |
+| `create` | function | `create<Value extends string = string>(): SelectBundle<Value>` |
+| `update` | value | `update: value` |
+| `select` | value | `select: value` |
 
 ## Separator
 
