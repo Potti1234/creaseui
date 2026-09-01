@@ -3071,12 +3071,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "SliderProps",
       "kind": "type",
-      "signature": "SliderProps<Msg> = Readonly<{ model: Model; value: number; toParentMessage: (message: Message) => Msg; label?: string; ariaLabel?: string; formatValue?: (value: number) => string; isDisabled?: boolean; name?: string; class?: string; }>"
+      "signature": "SliderProps<Msg> = Readonly<{ model: Model; value: number; toParentMessage: (message: Message) => Msg; label?: string; ariaLabel?: string; formatValue?: (value: number) => string; isDisabled?: boolean; isReadOnly?: boolean; name?: string; class?: string; }>"
     },
     {
       "name": "RangeSliderProps",
       "kind": "type",
-      "signature": "RangeSliderProps<Msg> = Readonly<{ values: readonly [number, number]; min: number; max: number; step?: number; onInput: (values: readonly [number, number]) => Msg; orientation?: 'horizontal' | 'vertical'; ariaLabels?: readonly [string, string]; isDisabled?: b…"
+      "signature": "RangeSliderProps<Msg> = Readonly<{ values: readonly [number, number]; min: number; max: number; step?: number; onInput: (values: readonly [number, number]) => Msg; orientation?: 'horizontal' | 'vertical'; direction?: 'ltr' | 'rtl'; ariaLabels?: readonly [stri…"
     },
     {
       "name": "rangeSlider",

@@ -1158,8 +1158,8 @@ Examples: Timed notification, Sticky error
 - `subscriptions: value` (value)
 - `subscriptionsForRoot: value` (value)
 - `fractionOfValue: value` (value)
-- `SliderProps<Msg> = Readonly<{ model: Model; value: number; toParentMessage: (message: Message) => Msg; label?: string; ariaLabel?: string; formatValue?: (value: number) => string; isDisabled?: boolean; name?: string; class?: string; }>` (type)
-- `RangeSliderProps<Msg> = Readonly<{ values: readonly [number, number]; min: number; max: number; step?: number; onInput: (values: readonly [number, number]) => Msg; orientation?: 'horizontal' | 'vertical'; ariaLabels?: readonly [string, string]; isDisabled?: b…` (type)
+- `SliderProps<Msg> = Readonly<{ model: Model; value: number; toParentMessage: (message: Message) => Msg; label?: string; ariaLabel?: string; formatValue?: (value: number) => string; isDisabled?: boolean; isReadOnly?: boolean; name?: string; class?: string; }>` (type)
+- `RangeSliderProps<Msg> = Readonly<{ values: readonly [number, number]; min: number; max: number; step?: number; onInput: (values: readonly [number, number]) => Msg; orientation?: 'horizontal' | 'vertical'; direction?: 'ltr' | 'rtl'; ariaLabels?: readonly [stri…` (type)
 - `rangeSlider<Msg>(props: RangeSliderProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `slider<Msg>(props: SliderProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 

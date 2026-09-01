@@ -971,8 +971,8 @@ Source: [`src/ui/slider.ts`](../src/ui/slider.ts)
 | `subscriptions` | value | `subscriptions: value` |
 | `subscriptionsForRoot` | value | `subscriptionsForRoot: value` |
 | `fractionOfValue` | value | `fractionOfValue: value` |
-| `SliderProps` | type | `SliderProps<Msg> = Readonly<{ model: Model; value: number; toParentMessage: (message: Message) => Msg; label?: string; ariaLabel?: string; formatValue?: (value: number) => string; isDisabled?: boolean; name?: string; class?: string; }>` |
-| `RangeSliderProps` | type | `RangeSliderProps<Msg> = Readonly<{ values: readonly [number, number]; min: number; max: number; step?: number; onInput: (values: readonly [number, number]) => Msg; orientation?: 'horizontal' \| 'vertical'; ariaLabels?: readonly [string, string]; isDisabled?: b…` |
+| `SliderProps` | type | `SliderProps<Msg> = Readonly<{ model: Model; value: number; toParentMessage: (message: Message) => Msg; label?: string; ariaLabel?: string; formatValue?: (value: number) => string; isDisabled?: boolean; isReadOnly?: boolean; name?: string; class?: string; }>` |
+| `RangeSliderProps` | type | `RangeSliderProps<Msg> = Readonly<{ values: readonly [number, number]; min: number; max: number; step?: number; onInput: (values: readonly [number, number]) => Msg; orientation?: 'horizontal' \| 'vertical'; direction?: 'ltr' \| 'rtl'; ariaLabels?: readonly [stri…` |
 | `rangeSlider` | function | `rangeSlider<Msg>(props: RangeSliderProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `slider` | function | `slider<Msg>(props: SliderProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 

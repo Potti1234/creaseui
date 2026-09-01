@@ -210,6 +210,19 @@
           "target": "@lib/toggle-group.ts"
         }
       ]
+    },
+    {
+      "name": "slider-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Slider Range Policy",
+      "description": "Skin-neutral bound, step, two-thumb ordering, and range update normalization.",
+      "files": [
+        {
+          "path": "slider.ts",
+          "type": "registry:lib",
+          "target": "@lib/slider.ts"
+        }
+      ]
     }
   ]
 }

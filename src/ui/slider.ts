@@ -2,6 +2,7 @@
 
 import { Slider as SliderPrimitive } from '@foldkit/ui';
 
+import { normalizeRange, normalizeRangeValues, updateRangeValue } from '@/lib/slider';
 import { cn } from '@/lib/utils';
 
 export const Model = SliderPrimitive.Model;
@@ -44,6 +45,7 @@ export type SliderProps<Msg> = Readonly<{
   ariaLabel?: string;
   formatValue?: (value: number) => string;
   isDisabled?: boolean;
+  isReadOnly?: boolean;
   name?: string;
   class?: string;
 }>;
@@ -55,8 +57,11 @@ export type RangeSliderProps<Msg> = Readonly<{
   step?: number;
   onInput: (values: readonly [number, number]) => Msg;
   orientation?: 'horizontal' | 'vertical';
+  direction?: 'ltr' | 'rtl';
   ariaLabels?: readonly [string, string];
+  formatValue?: (value: number, index: 0 | 1) => string;
   isDisabled?: boolean;
+  isReadOnly?: boolean;
   name?: string;
   class?: string;
 }>;
@@ -67,41 +72,36 @@ export const rangeSlider = <Msg>(
   props: RangeSliderProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const lower = Math.max(
-    props.min,
-    Math.min(props.values[0], props.values[1], props.max),
-  );
-  const upper = Math.min(
-    props.max,
-    Math.max(props.values[0], props.values[1], props.min),
-  );
-  const span = Math.max(props.max - props.min, 1);
-  const start = ((lower - props.min) / span) * 100;
-  const end = ((upper - props.min) / span) * 100;
+  const range = normalizeRange(props.min, props.max, props.step);
+  const [lower, upper] = normalizeRangeValues(props.values, range);
+  const span = Math.max(range.max - range.min, 1);
+  const start = ((lower - range.min) / span) * 100;
+  const end = ((upper - range.min) / span) * 100;
   const orientation = props.orientation ?? 'horizontal';
   const input = (index: 0 | 1, value: number): Html =>
     h.input([
       h.Type('range'),
-      h.Min(String(props.min)),
-      h.Max(String(props.max)),
-      h.Step(String(props.step ?? 1)),
+      h.Min(String(range.min)),
+      h.Max(String(range.max)),
+      h.Step(String(range.step)),
       h.Value(String(value)),
       h.AriaLabel(
         props.ariaLabels?.[index] ??
           (index === 0 ? 'Minimum value' : 'Maximum value'),
       ),
+      ...(props.formatValue === undefined
+        ? []
+        : [h.AriaValuetext(props.formatValue(value, index))]),
+      ...(props.isReadOnly === true ? [h.AriaReadonly(true)] : []),
       h.Disabled(props.isDisabled ?? false),
       ...(props.name === undefined
         ? []
         : [h.Name(`${props.name}[${String(index)}]`)]),
-      h.OnInput((next) => {
-        const number = Number(next);
-        return props.onInput(
-          index === 0
-            ? [Math.min(number, upper), upper]
-            : [lower, Math.max(number, lower)],
-        );
-      }),
+      h.OnInput((next) => props.onInput(
+        props.isReadOnly === true
+          ? [lower, upper]
+          : updateRangeValue([lower, upper], index, Number(next), range),
+      )),
       h.Class(
         cn(
           'absolute m-0 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-primary [&::-webkit-slider-thumb]:bg-white',
@@ -115,6 +115,9 @@ export const rangeSlider = <Msg>(
     [
       h.DataAttribute('slot', 'slider'),
       h.DataAttribute('orientation', orientation),
+      ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
+      ...(props.isDisabled === true ? [h.DataAttribute('disabled', '')] : []),
+      ...(props.isReadOnly === true ? [h.DataAttribute('readonly', '')] : []),
       h.Class(
         cn(
           'relative touch-none select-none data-[disabled]:opacity-50',
@@ -176,6 +179,7 @@ export const slider = <Msg>(
     viewInputs: {
       value: props.value,
       isDisabled: props.isDisabled ?? false,
+      isReadOnly: props.isReadOnly ?? false,
       ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
       ...(props.formatValue === undefined
         ? {}

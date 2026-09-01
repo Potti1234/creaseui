@@ -516,7 +516,55 @@ test("authored slider delegates keyboard changes and stores its output value", a
   await slider.focus();
   await page.keyboard.press("ArrowRight");
   await expect(slider).toHaveAttribute("aria-valuenow", "51");
+  await expect(slider).toHaveAttribute("aria-valuetext", "51 percent");
   await expect(example).toContainText("Current value: 51");
+
+  const track = example.locator('[data-slot="slider-track"]');
+  const box = await track.boundingBox();
+  const thumbBox = await slider.boundingBox();
+  expect(box).not.toBeNull();
+  expect(thumbBox).not.toBeNull();
+  if (box !== null && thumbBox !== null) {
+    await page.mouse.move(thumbBox.x + thumbBox.width / 2, thumbBox.y + thumbBox.height / 2);
+    await page.mouse.down();
+    await page.waitForTimeout(50);
+    await page.mouse.move(box.x + box.width * 0.8, box.y + box.height / 2);
+    await expect(slider).not.toHaveAttribute("aria-valuenow", "51");
+    await page.keyboard.press("Escape");
+    await page.mouse.up();
+    await expect(slider).toHaveAttribute("aria-valuenow", "51");
+  }
+
+  const readOnly = page
+    .locator("#read-only-value")
+    .getByRole("slider", { name: "Managed volume" });
+  await expect(readOnly).toHaveAttribute("aria-readonly", "true");
+  await readOnly.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(readOnly).toHaveAttribute("aria-valuenow", "65");
+
+  const rtlRange = page.locator("#rtl-price-range");
+  const minimum = rtlRange.getByRole("slider", { name: "Minimum price" });
+  const maximum = rtlRange.getByRole("slider", { name: "Maximum price" });
+  await expect(minimum).toHaveAttribute("aria-valuetext", "$25");
+  await minimum.focus();
+  await page.keyboard.press("End");
+  await expect(minimum).toHaveValue("75");
+  await expect(maximum).toHaveValue("75");
+
+  const verticalMinimum = page
+    .locator("#vertical-range")
+    .getByRole("slider", { name: "Minimum price" });
+  await verticalMinimum.focus();
+  await page.keyboard.press("ArrowUp");
+  await expect(verticalMinimum).toHaveValue("26");
+
+  const normalized = page
+    .locator("#normalized-bounds")
+    .getByRole("slider", { name: "Minimum price" });
+  await expect(normalized).toHaveAttribute("min", "0");
+  await expect(normalized).toHaveAttribute("max", "100");
+  await expect(normalized).toHaveAttribute("step", "1");
 });
 
 test("authored resizable instances keep axis-specific child state independent", async ({
