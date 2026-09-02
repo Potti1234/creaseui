@@ -1635,6 +1635,34 @@ test("controlled helper pages own and update compact local preview state", async
   await expect(code).toHaveValue("654321");
 });
 
+test("collapsible preserves controlled linkage, external changes, and disabled policy", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/docs/components/collapsible");
+  const example = page.locator("#details");
+  await example.getByRole("button", { name: "Open details externally" }).click();
+
+  const trigger = example.locator('[data-slot="collapsible-trigger"]');
+  await expect(trigger).toHaveAccessibleName("Hide details");
+  const controls = await trigger.getAttribute("aria-controls");
+  expect(controls).toBeTruthy();
+  await expect(page.locator(`#${controls}`)).toBeVisible();
+  await expect(page.locator(`#${controls}`)).toHaveCSS("transition-duration", "0s");
+
+  await trigger.focus();
+  await page.keyboard.press("Space");
+  await expect(trigger).toHaveAttribute("aria-expanded", "false");
+  await expect(trigger).toHaveAccessibleName("Show details");
+  await page.keyboard.press("Enter");
+  await expect(trigger).toHaveAttribute("aria-expanded", "true");
+  await trigger.click();
+  await trigger.click();
+  await expect(trigger).toHaveAttribute("aria-expanded", "true");
+
+  const disabled = page.locator("#disabled").getByRole("button", { name: "Unavailable details" });
+  await expect(disabled).toBeDisabled();
+  await expect(disabled).toHaveAttribute("aria-expanded", "false");
+});
+
 test("checkbox shares controlled mixed, read-only, and form semantics", async ({
   page,
 }) => {

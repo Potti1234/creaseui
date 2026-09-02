@@ -172,6 +172,18 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/drawer['"]/u)
   })
 
+  it('keeps Collapsible controlled on canonical Disclosure in both skins', () => {
+    const tailwind = readFileSync('src/ui/collapsible.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/collapsible.ts', 'utf8')
+
+    for (const source of [tailwind, stylex]) {
+      assert.match(source, /DisclosurePrimitive\.view/u)
+      assert.match(source, /isOpen: props\.isOpen/u)
+      assert.match(source, /onToggle: props\.onToggle/u)
+      assert.doesNotMatch(source, /export const Model/u)
+    }
+  })
+
   it('keeps both Popover skins on the canonical Foldkit submodel', () => {
     const tailwind = readFileSync('src/ui/popover.ts', 'utf8')
     const stylex = readFileSync('src/stylex/popover.ts', 'utf8')
