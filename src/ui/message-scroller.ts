@@ -1,83 +1,19 @@
-import { Effect, Schema as S, Stream } from 'effect';
-import { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import * as Subscription from 'foldkit/subscription';
 
 import * as Icon from '@/lib/icon';
+import * as MessageScrollerBehavior from '@/lib/message-scroller';
 import { cn } from '@/lib/utils';
 
-export const Model = S.Struct({
-  id: S.String,
-  scrollTop: S.Number,
-  scrollHeight: S.Number,
-  clientHeight: S.Number,
-});
-export type Model = typeof Model.Type;
-
-export const Scrolled = m('Scrolled', {
-  scrollTop: S.Number,
-  scrollHeight: S.Number,
-  clientHeight: S.Number,
-});
-export const RequestedScroll = m('RequestedScroll', {
-  direction: S.Literals(['start', 'end']),
-});
-export const CompletedMessageScrollerScrollTo = m(
-  'CompletedMessageScrollerScrollTo',
-);
-export const Message = S.Union([
-  Scrolled,
-  RequestedScroll,
-  CompletedMessageScrollerScrollTo,
-]);
-export type Message = typeof Message.Type;
-
-export const init = (id: string): Model => ({
-  id,
-  scrollTop: 0,
-  scrollHeight: 0,
-  clientHeight: 0,
-});
-
-const ScrollTo = Command.define('MessageScrollerScrollTo', {
-  args: { id: S.String, direction: S.Literals(['start', 'end']) },
-  messages: [CompletedMessageScrollerScrollTo],
-  execute: ({ id, direction }) =>
-    Effect.sync(() => {
-      const viewport = document.getElementById(`${id}-viewport`);
-      if (viewport instanceof HTMLElement) {
-        viewport.scrollTo({
-          top: direction === 'start' ? 0 : viewport.scrollHeight,
-          behavior: 'smooth',
-        });
-      }
-    }).pipe(Effect.as(CompletedMessageScrollerScrollTo())),
-});
-
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
-
-export const update = (model: Model, message: Message): UpdateReturn => {
-  switch (message._tag) {
-    case 'Scrolled':
-      return [
-        {
-          ...model,
-          scrollTop: message.scrollTop,
-          scrollHeight: message.scrollHeight,
-          clientHeight: message.clientHeight,
-        },
-        [],
-      ];
-    case 'RequestedScroll':
-      return [
-        model,
-        [ScrollTo({ id: model.id, direction: message.direction })],
-      ];
-    case 'CompletedMessageScrollerScrollTo':
-      return [model, []];
-  }
-};
+export const Model = MessageScrollerBehavior.Model;
+export type Model = MessageScrollerBehavior.Model;
+export const Scrolled = MessageScrollerBehavior.Scrolled;
+export const ObservedViewport = MessageScrollerBehavior.ObservedViewport;
+export const RequestedScroll = MessageScrollerBehavior.RequestedScroll;
+export const CompletedMessageScrollerScrollTo = MessageScrollerBehavior.CompletedMessageScrollerScrollTo;
+export const Message = MessageScrollerBehavior.Message;
+export type Message = MessageScrollerBehavior.Message;
+export const init = MessageScrollerBehavior.init;
+export const update = MessageScrollerBehavior.update;
 
 type ChildrenProps = Readonly<{
   children: ReadonlyArray<Html | string>;
@@ -114,31 +50,16 @@ export const messageScrollerViewport = <Msg>(
     [
       h.Id(`${props.model.id}-viewport`),
       h.DataAttribute('slot', 'message-scroller-viewport'),
+      h.DataAttribute('pending-scroll', String(!props.model.isReady || props.model.pendingScrollVersion._tag === 'Some')),
+      h.DataAttribute('following', String(props.model.isFollowing)),
+      h.DataAttribute('new-messages', String(props.model.hasNewMessages)),
       h.Class(
         cn(
-          'size-full min-h-0 min-w-0 overflow-y-auto overscroll-contain',
+          'size-full min-h-0 min-w-0 overflow-y-auto overscroll-contain data-[pending-scroll=true]:invisible',
           props.class,
         ),
       ),
-      h.OnMount({
-        name: `message-scroller-${props.model.id}`,
-        f: (element) =>
-          element instanceof HTMLElement
-            ? Subscription.fromEvent<Event, Msg>({
-                target: element,
-                type: 'scroll',
-                toMessage: () =>
-                  props.toParentMessage(
-                    Scrolled({
-                      scrollTop: element.scrollTop,
-                      scrollHeight: element.scrollHeight,
-                      clientHeight: element.clientHeight,
-                    }),
-                  ),
-                options: { passive: true },
-              })
-            : Stream.empty,
-      }),
+      h.OnMount(MessageScrollerBehavior.viewportMount(props.toParentMessage)),
     ],
     [...props.children],
   );

@@ -2231,12 +2231,17 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "Model",
       "kind": "type",
-      "signature": "Model = typeof Model.Type"
+      "signature": "Model = MessageScrollerBehavior.Model"
     },
     {
       "name": "Scrolled",
       "kind": "value",
       "signature": "Scrolled: value"
+    },
+    {
+      "name": "ObservedViewport",
+      "kind": "value",
+      "signature": "ObservedViewport: value"
     },
     {
       "name": "RequestedScroll",
@@ -2256,17 +2261,17 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "Message",
       "kind": "type",
-      "signature": "Message = typeof Message.Type"
+      "signature": "Message = MessageScrollerBehavior.Message"
     },
     {
       "name": "init",
-      "kind": "function",
-      "signature": "init(id: string): Model"
+      "kind": "value",
+      "signature": "init: value"
     },
     {
       "name": "update",
-      "kind": "function",
-      "signature": "update(model: Model, message: Message): UpdateReturn"
+      "kind": "value",
+      "signature": "update: value"
     },
     {
       "name": "messageScroller",

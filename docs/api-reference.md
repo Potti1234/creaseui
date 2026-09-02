@@ -704,14 +704,15 @@ Source: [`src/ui/message-scroller.ts`](../src/ui/message-scroller.ts)
 | Export | Kind | Signature |
 | --- | --- | --- |
 | `Model` | value | `Model: value` |
-| `Model` | type | `Model = typeof Model.Type` |
+| `Model` | type | `Model = MessageScrollerBehavior.Model` |
 | `Scrolled` | value | `Scrolled: value` |
+| `ObservedViewport` | value | `ObservedViewport: value` |
 | `RequestedScroll` | value | `RequestedScroll: value` |
 | `CompletedMessageScrollerScrollTo` | value | `CompletedMessageScrollerScrollTo: value` |
 | `Message` | value | `Message: value` |
-| `Message` | type | `Message = typeof Message.Type` |
-| `init` | function | `init(id: string): Model` |
-| `update` | function | `update(model: Model, message: Message): UpdateReturn` |
+| `Message` | type | `Message = MessageScrollerBehavior.Message` |
+| `init` | value | `init: value` |
+| `update` | value | `update: value` |
 | `messageScroller` | function | `messageScroller<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `messageScrollerViewport` | function | `messageScrollerViewport<Msg>(props: ChildrenProps & Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; }>, h: HtmlBuilder<Msg>): Html` |
 | `messageScrollerContent` | function | `messageScrollerContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |

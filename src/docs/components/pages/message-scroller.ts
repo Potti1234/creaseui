@@ -83,7 +83,7 @@ export const messageScrollerPage = authoredPage({
   previewProgram,
   definition: {
     kind: 'submodel', description: 'Tracks a conversation viewport and offers an accessible jump control when content exists beyond an edge.',
-    architecture: 'The Model stores measured scrollTop, scrollHeight, and clientHeight. An OnMount subscription emits Scrolled from the real viewport; RequestedScroll returns a DOM scroll Command that the parent must map.',
+    architecture: 'The Model separates viewport measurements, follow mode, and the new-message fact. A mount-scoped adapter owns scroll, mutation, and resize observation; RequestedScroll returns a versioned, reduced-motion-aware DOM Command that the parent maps.',
     apiHref: 'https://foldkit.dev/guide/subscriptions',
     composition: 'Message Scroller container\n├── viewport (mount-scoped scroll subscription)\n│   └── content\n│       └── keyed/message items + optional anchor\n└── start/end button (derived active state → scroll Command)',
     styling: 'Give the viewport a bounded height and keep message items structurally stable. The jump button derives visibility from measurements rather than being hidden by consumer CSS.',

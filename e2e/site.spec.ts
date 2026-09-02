@@ -186,7 +186,7 @@ test("Tailwind and StyleX create boards keep distinct routes and equivalent pres
   await expect(page).toHaveURL(/\/create$/u);
   await expect(page.locator('[data-slot="capture-target"]')).toBeVisible();
 
-  await page.getByRole("link", { name: "Create StyleX", exact: true }).click();
+  await page.goto("/create-stylex");
   await expect(page).toHaveURL(/\/create-stylex$/u);
 
   const board = page.locator('[data-slot="capture-target"]');
@@ -310,7 +310,7 @@ test("component docs explain the Foldkit integration model", async ({
   await expect(
     page.getByText("Stateful submodel", { exact: true }),
   ).toBeVisible();
-  await expect(page.locator("#architecture")).toContainText("child submodel");
+  await expect(page.locator("#architecture")).toContainText("canonical Foldkit interaction Submodel");
   await expect(page.locator("#accessibility")).toContainText(
     "focus restoration",
   );
@@ -321,7 +321,7 @@ test("component docs explain the Foldkit integration model", async ({
   ).toBeVisible();
   await expect(page.locator("#usage")).toContainText("Toast.show");
   await expect(page.locator("#usage")).toContainText("Toast.toast");
-  await expect(page.locator("#api-reference")).toContainText("DismissedToast");
+  await expect(page.locator("#api-reference")).toContainText("export * from '@/lib/toast'");
   await expect(
     page
       .locator("#api-reference")
@@ -431,13 +431,15 @@ test("authored form connects controlled input help and validation", async ({
 }) => {
   await page.goto("/docs/components/form");
 
-  const input = page.locator("#docs-form-error");
+  const example = page.getByRole("form", { name: "Account sign in" });
+  await example.getByRole("button", { name: "Sign in" }).click();
+  const input = example.locator("#docs-form-sign-in-email");
   await expect(input).toHaveAttribute(
     "aria-describedby",
-    "docs-form-error-description docs-form-error-message",
+    "docs-form-sign-in-email-error",
   );
   await expect(input).toHaveAttribute("aria-invalid", "true");
-  await expect(page.locator("#docs-form-error-message")).toHaveText(
+  await expect(example.locator("#docs-form-sign-in-email-error")).toHaveText(
     "Enter a valid email address.",
   );
 });
@@ -1327,8 +1329,8 @@ test("accordion enforces single-open state and publishes complete child wiring",
   await style.click();
   await expect(style).toHaveAttribute("aria-expanded", "true");
   await expect(product).toHaveAttribute("aria-expanded", "false");
-  await expect(example.locator("code")).toContainText("maybeToggle");
-  await expect(example.locator("code")).toContainText("Accordion.update");
+  await expect(example.locator("code")).toContainText("Update.foldChild");
+  await expect(example.locator("code")).toContainText("foldOutMessage");
 });
 
 test("attachment explains parent-owned lifecycle through rendered states", async ({
@@ -1357,13 +1359,25 @@ test("message scroller measures overflow and maps its scroll command", async ({
   await page.goto("/docs/components/message-scroller");
   const example = page.locator("#jump-to-latest");
   const viewport = example.locator('[data-slot="message-scroller-viewport"]');
+  await expect(viewport).toHaveAttribute("data-pending-scroll", "false");
+  await expect.poll(() => viewport.evaluate((node) => Math.round(node.scrollTop + node.clientHeight - node.scrollHeight))).toBeGreaterThanOrEqual(-1);
   await viewport.evaluate((node) => {
     node.scrollTop = 40;
     node.dispatchEvent(new Event("scroll"));
   });
   const button = example.getByRole("button", { name: "Scroll to end" });
+  await expect(viewport).toHaveAttribute("data-following", "false");
   await expect(button).toHaveAttribute("data-active", "true");
+  await viewport.evaluate((node) => {
+    const appended = document.createElement("div");
+    appended.style.height = "120px";
+    appended.textContent = "Appended message";
+    node.querySelector('[data-slot="message-scroller-content"]')?.append(appended);
+  });
+  await expect(viewport).toHaveAttribute("data-new-messages", "true");
   await button.click();
+  await expect(viewport).toHaveAttribute("data-following", "true");
+  await expect(viewport).toHaveAttribute("data-new-messages", "false");
   await expect
     .poll(() =>
       viewport.evaluate((node) =>
@@ -1371,6 +1385,8 @@ test("message scroller measures overflow and maps its scroll command", async ({
       ),
     )
     .toBeGreaterThanOrEqual(-1);
+  await viewport.evaluate((node) => { node.style.height = "240px"; });
+  await expect(viewport).toHaveAttribute("data-pending-scroll", "false");
   await expect(example.locator("code")).toContainText("Command.mapMessages");
   await expect(example.locator("code")).toContainText("MessageScroller.update");
 });

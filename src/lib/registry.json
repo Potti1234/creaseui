@@ -405,6 +405,19 @@
       ]
     },
     {
+      "name": "message-scroller-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Message Scroller Behavior",
+      "description": "Mount-scoped viewport observation with follow mode, new-message state, reduced-motion scrolling, and observer cleanup.",
+      "files": [
+        {
+          "path": "message-scroller.ts",
+          "type": "registry:lib",
+          "target": "@lib/message-scroller.ts"
+        }
+      ]
+    },
+    {
       "name": "toast-behavior",
       "type": "registry:lib",
       "title": "Foldkit Notification Behavior",

@@ -1105,6 +1105,7 @@
       "title": "Textarea",
       "description": "A shadcn-styled Textarea component for Foldkit.",
       "registryDependencies": [
+        "Potti1234/creaseui/message-scroller-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/textarea-behavior",
         "Potti1234/creaseui/utils"
