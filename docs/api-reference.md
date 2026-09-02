@@ -237,6 +237,21 @@ Source: [`src/ui/chart.ts`](../src/ui/chart.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
+| `EChartProps` | type | `EChartProps<Msg> = Omit<ECharts.ChartProps<Msg>, 'accessibleAlternative'> & Readonly<{ accessibleAlternative: Html }>` |
+| `ChartMessage` | type | `ChartMessage = ECharts.ChartMessage` |
+| `ChartTheme` | type | `ChartTheme = ECharts.ChartTheme` |
+| `OptionBuilder` | type | `OptionBuilder = ECharts.OptionBuilder` |
+| `ChartMessage` | value | `ChartMessage: value` |
+| `SyncChart` | value | `SyncChart: value` |
+| `areaGradient` | value | `areaGradient: value` |
+| `categoryAxis` | value | `categoryAxis: value` |
+| `colorWithOpacity` | value | `colorWithOpacity: value` |
+| `compactGrid` | value | `compactGrid: value` |
+| `registerChart` | value | `registerChart: value` |
+| `shadcnLegend` | value | `shadcnLegend: value` |
+| `shadcnTooltip` | value | `shadcnTooltip: value` |
+| `valueAxis` | value | `valueAxis: value` |
+| `eChart` | function | `eChart<Msg>(props: EChartProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `ChartSeriesConfig` | type | `ChartSeriesConfig = Readonly<{ label?: Html \| string; color?: string; icon?: Html; }>` |
 | `ChartConfig` | type | `ChartConfig = Readonly<Record<string, ChartSeriesConfig>>` |
 | `ChartContainerProps` | type | `ChartContainerProps = Readonly<{ config: ChartConfig; children: ReadonlyArray<Html \| string>; class?: string; ariaLabel?: string; }>` |

@@ -65,7 +65,7 @@ Chart.registerChart(HOSTS.serviceLatency, (theme) => barOption(theme, [120, 142,
 type ToMessage<Message> = (message: Chart.ChartMessage) => Message
 
 const render = <Message>(hostId: string, ariaLabel: string, toMessage: ToMessage<Message>, h: HtmlBuilder<Message>, size?: Chart.EChartSize): Html =>
-  Chart.eChart({ ariaLabel, hostId, ...(size === undefined ? {} : { size }), toMessage }, h)
+  Chart.eChart({ accessibleAlternative: h.p([], [ariaLabel]), ariaLabel, hostId, ...(size === undefined ? {} : { size }), toMessage }, h)
 
 export const executiveRevenueChart = <Message>(toMessage: ToMessage<Message>, h: HtmlBuilder<Message>): Html => render(HOSTS.executiveRevenue, 'Area chart of executive revenue trend', toMessage, h)
 export const executiveCustomerChart = <Message>(toMessage: ToMessage<Message>, h: HtmlBuilder<Message>): Html => render(HOSTS.executiveCustomers, 'Bar chart of new customer growth', toMessage, h)

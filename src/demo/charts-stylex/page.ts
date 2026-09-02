@@ -129,7 +129,7 @@ const SPECS: ReadonlyArray<ChartSpec> = [
 ]
 
 const chartCard = (spec: ChartSpec, h: HtmlBuilder<Message>): Html =>
-  section({ children: [Chart.eChart({ ariaLabel: `${spec.title}: ${spec.description}`, hostId: spec.hostId, ...(spec.size === undefined ? {} : { size: spec.size }), toMessage: (message) => message }, h)], description: spec.description, heading: spec.title, surface: 'card' }, h)
+  section({ children: [Chart.eChart({ accessibleAlternative: h.p([], [`${spec.title}: ${spec.description}`]), ariaLabel: `${spec.title}: ${spec.description}`, hostId: spec.hostId, ...(spec.size === undefined ? {} : { size: spec.size }), toMessage: (message) => message }, h)], description: spec.description, heading: spec.title, surface: 'card' }, h)
 
 export const view = (_model: Model, h: HtmlBuilder<Message>): Html =>
   box({

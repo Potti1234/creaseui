@@ -223,7 +223,7 @@ describe('component catalog coverage', () => {
 
   it('keeps static page previews in route-local models', () => {
     const chart = initCatalog('chart')
-    assert.deepEqual(chart.examples, [{ _docsPage: 'chart' }, { _docsPage: 'chart' }])
+    assert.deepEqual(chart.examples, [{ _docsPage: 'chart', variant: 'month' }, { _docsPage: 'chart', variant: 'month' }, { _docsPage: 'chart', variant: 'month' }, { _docsPage: 'chart', variant: 'month' }])
     assert.ok(!('dialog' in (chart.examples[0] ?? {})))
     for (const page of Object.values(authoredPages)) {
       if (page.previewMode !== 'static') continue

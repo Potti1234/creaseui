@@ -344,8 +344,23 @@ A shadcn-styled Chart component for Foldkit.
 
 Source: `src/ui/chart.ts`
 
-Examples: Monthly revenue, Traffic trend
+Examples: Monthly revenue, Traffic trend, ECharts lifecycle, Lifecycle states
 
+- `EChartProps<Msg> = Omit<ECharts.ChartProps<Msg>, 'accessibleAlternative'> & Readonly<{ accessibleAlternative: Html }>` (type)
+- `ChartMessage = ECharts.ChartMessage` (type)
+- `ChartTheme = ECharts.ChartTheme` (type)
+- `OptionBuilder = ECharts.OptionBuilder` (type)
+- `ChartMessage: value` (value)
+- `SyncChart: value` (value)
+- `areaGradient: value` (value)
+- `categoryAxis: value` (value)
+- `colorWithOpacity: value` (value)
+- `compactGrid: value` (value)
+- `registerChart: value` (value)
+- `shadcnLegend: value` (value)
+- `shadcnTooltip: value` (value)
+- `valueAxis: value` (value)
+- `eChart<Msg>(props: EChartProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `ChartSeriesConfig = Readonly<{ label?: Html | string; color?: string; icon?: Html; }>` (type)
 - `ChartConfig = Readonly<Record<string, ChartSeriesConfig>>` (type)
 - `ChartContainerProps = Readonly<{ config: ChartConfig; children: ReadonlyArray<Html | string>; class?: string; ariaLabel?: string; }>` (type)

@@ -686,6 +686,81 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
   ],
   "chart": [
     {
+      "name": "EChartProps",
+      "kind": "type",
+      "signature": "EChartProps<Msg> = Omit<ECharts.ChartProps<Msg>, 'accessibleAlternative'> & Readonly<{ accessibleAlternative: Html }>"
+    },
+    {
+      "name": "ChartMessage",
+      "kind": "type",
+      "signature": "ChartMessage = ECharts.ChartMessage"
+    },
+    {
+      "name": "ChartTheme",
+      "kind": "type",
+      "signature": "ChartTheme = ECharts.ChartTheme"
+    },
+    {
+      "name": "OptionBuilder",
+      "kind": "type",
+      "signature": "OptionBuilder = ECharts.OptionBuilder"
+    },
+    {
+      "name": "ChartMessage",
+      "kind": "value",
+      "signature": "ChartMessage: value"
+    },
+    {
+      "name": "SyncChart",
+      "kind": "value",
+      "signature": "SyncChart: value"
+    },
+    {
+      "name": "areaGradient",
+      "kind": "value",
+      "signature": "areaGradient: value"
+    },
+    {
+      "name": "categoryAxis",
+      "kind": "value",
+      "signature": "categoryAxis: value"
+    },
+    {
+      "name": "colorWithOpacity",
+      "kind": "value",
+      "signature": "colorWithOpacity: value"
+    },
+    {
+      "name": "compactGrid",
+      "kind": "value",
+      "signature": "compactGrid: value"
+    },
+    {
+      "name": "registerChart",
+      "kind": "value",
+      "signature": "registerChart: value"
+    },
+    {
+      "name": "shadcnLegend",
+      "kind": "value",
+      "signature": "shadcnLegend: value"
+    },
+    {
+      "name": "shadcnTooltip",
+      "kind": "value",
+      "signature": "shadcnTooltip: value"
+    },
+    {
+      "name": "valueAxis",
+      "kind": "value",
+      "signature": "valueAxis: value"
+    },
+    {
+      "name": "eChart",
+      "kind": "function",
+      "signature": "eChart<Msg>(props: EChartProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
       "name": "ChartSeriesConfig",
       "kind": "type",
       "signature": "ChartSeriesConfig = Readonly<{ label?: Html | string; color?: string; icon?: Html; }>"

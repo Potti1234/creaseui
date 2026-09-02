@@ -296,7 +296,7 @@ export const registerChart = (hostId: string, builder: OptionBuilder): void => {
 const chartsByHostId = new Map<string, echarts.EChartsType>();
 
 // Dev-only escape hatch for debugging chart instances from the console/tests.
-if (import.meta.env.DEV) {
+if (import.meta.env?.DEV === true && typeof window !== 'undefined') {
   Object.assign(window, { __charts: chartsByHostId });
 }
 
@@ -400,8 +400,11 @@ export const MountChart = Mount.define(
 export type ChartProps<Msg> = Readonly<{
   hostId: string;
   ariaLabel: string;
+  accessibleAlternative?: Html;
   toMessage: (message: ChartMessage) => Msg;
   variant?: string;
+  state?: 'ready' | 'loading' | 'empty' | 'error';
+  statusText?: string;
   class?: string;
 }>;
 
@@ -409,18 +412,47 @@ export const chart = <Msg>(
   props: ChartProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
+  const state = props.state ?? 'ready';
+  const statusText = props.statusText ?? (
+    state === 'loading' ? 'Loading chart…' :
+    state === 'empty' ? 'No chart data available.' :
+    state === 'error' ? 'Chart could not be loaded.' : ''
+  );
   return h.div(
     [
-      h.Class(cn('aspect-video w-full', props.class)),
-      h.Role('img'),
-      h.AriaLabel(props.ariaLabel),
-      h.OnMount(
-        Mount.mapMessage(
-          MountChart({ hostId: props.hostId, variant: props.variant ?? '' }),
-          props.toMessage,
-        ),
+      h.DataAttribute('slot', 'echart-region'),
+      h.Class(cn('w-full', props.class)),
+    ],
+    [
+      ...(state === 'ready'
+        ? [h.div(
+            [
+              h.DataAttribute('slot', 'echart'),
+              h.Class('aspect-video w-full'),
+              h.Role('img'),
+              h.AriaLabel(props.ariaLabel),
+              h.OnMount(
+                Mount.mapMessage(
+                  MountChart({ hostId: props.hostId, variant: props.variant ?? '' }),
+                  props.toMessage,
+                ),
+              ),
+            ],
+            [],
+          )]
+        : [h.p(
+            [
+              h.DataAttribute('slot', `echart-${state}`),
+              h.Role(state === 'error' ? 'alert' : 'status'),
+              ...(state === 'loading' ? [h.AriaBusy(true)] : []),
+              h.Class('flex aspect-video w-full items-center justify-center text-sm text-muted-foreground'),
+            ],
+            [statusText],
+          )]),
+      h.div(
+        [h.DataAttribute('slot', 'echart-accessible-alternative'), h.Class(state === 'ready' ? 'sr-only' : 'mt-3')],
+        [props.accessibleAlternative ?? h.p([], [props.ariaLabel])],
       ),
     ],
-    [],
   );
 };

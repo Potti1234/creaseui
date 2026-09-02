@@ -278,6 +278,7 @@
       "title": "Chart",
       "description": "A shadcn-styled Chart component for Foldkit.",
       "registryDependencies": [
+        "Potti1234/creaseui/echarts-adapter",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
       ],

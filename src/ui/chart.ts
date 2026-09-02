@@ -1,6 +1,23 @@
 import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import { cn } from '@/lib/utils';
+import * as ECharts from '@/lib/echarts';
+
+export type EChartProps<Msg> = Omit<ECharts.ChartProps<Msg>, 'accessibleAlternative'> & Readonly<{ accessibleAlternative: Html }>;
+export type ChartMessage = ECharts.ChartMessage;
+export type ChartTheme = ECharts.ChartTheme;
+export type OptionBuilder = ECharts.OptionBuilder;
+export const ChartMessage = ECharts.ChartMessage;
+export const SyncChart = ECharts.SyncChart;
+export const areaGradient = ECharts.areaGradient;
+export const categoryAxis = ECharts.categoryAxis;
+export const colorWithOpacity = ECharts.colorWithOpacity;
+export const compactGrid = ECharts.compactGrid;
+export const registerChart = ECharts.registerChart;
+export const shadcnLegend = ECharts.shadcnLegend;
+export const shadcnTooltip = ECharts.shadcnTooltip;
+export const valueAxis = ECharts.valueAxis;
+export const eChart = <Msg>(props: EChartProps<Msg>, h: HtmlBuilder<Msg>): Html => ECharts.chart(props, h);
 
 /* Framework-native chart composition. The small SVG renderers below remain
    dependency-free; `chartContainer`, legend, and tooltip provide the shared

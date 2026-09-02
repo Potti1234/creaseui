@@ -6,6 +6,7 @@ import * as ECharts from '@/lib/echarts'
 
 import type { ComponentLayoutStyle } from '../contracts'
 import { className } from '../style'
+import { tokens } from '../tokens.stylex'
 
 export type ChartMessage = ECharts.ChartMessage
 export const ChartMessage = ECharts.ChartMessage
@@ -25,11 +26,14 @@ export type EChartSize = 'default' | 'compact' | 'square' | 'wide'
 
 export type EChartProps<Message> = Readonly<{
   ariaLabel: string
+  accessibleAlternative: Html
   hostId: string
   layoutStyle?: ComponentLayoutStyle
   size?: EChartSize
   toMessage: (message: ChartMessage) => Message
   variant?: string
+  state?: 'ready' | 'loading' | 'empty' | 'error'
+  statusText?: string
 }>
 
 const styles = stylex.create({
@@ -45,6 +49,9 @@ const styles = stylex.create({
     display: 'block',
     width: '100%',
   },
+  alternative: { marginTop: '0.75rem' },
+  alternativeHidden: { overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', clipPath: 'inset(50%)', position: 'absolute', whiteSpace: 'nowrap', height: '1px', width: '1px', },
+  status: { alignItems: 'center', color: tokens.mutedForeground, display: 'flex', fontSize: '0.875rem', justifyContent: 'center' },
   square: {
     marginInline: 'auto',
     aspectRatio: '1 / 1',
@@ -63,8 +70,11 @@ const sizeStyles = {
   wide: styles.wide,
 } as const
 
-export const eChart = <Message>(props: EChartProps<Message>, h: HtmlBuilder<Message>): Html =>
-  h.div(
+export const eChart = <Message>(props: EChartProps<Message>, h: HtmlBuilder<Message>): Html => {
+  const state = props.state ?? 'ready'
+  const statusText = props.statusText ?? (state === 'loading' ? 'Loading chart…' : state === 'empty' ? 'No chart data available.' : state === 'error' ? 'Chart could not be loaded.' : '')
+  return h.div([h.DataAttribute('slot', 'echart-region')], [
+    ...(state === 'ready' ? [h.div(
     [
       h.DataAttribute('slot', 'echart'),
       h.Role('img'),
@@ -76,4 +86,7 @@ export const eChart = <Message>(props: EChartProps<Message>, h: HtmlBuilder<Mess
       )),
     ],
     [],
-  )
+    )] : [h.p([h.DataAttribute('slot', `echart-${state}`), h.Role(state === 'error' ? 'alert' : 'status'), ...(state === 'loading' ? [h.AriaBusy(true)] : []), h.Class(className(styles.host, styles.status, sizeStyles[props.size ?? 'default']))], [statusText])]),
+    h.div([h.DataAttribute('slot', 'echart-accessible-alternative'), h.Class(className(state === 'ready' ? styles.alternativeHidden : styles.alternative))], [props.accessibleAlternative]),
+  ])
+}

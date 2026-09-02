@@ -1468,6 +1468,21 @@ test("chart documents pure Foldkit SVG recipes with complete source", async ({
     "Visitors",
   );
   await expect(bars.locator("code")).toContainText("Runtime.makeApplication");
+
+  const lifecycle = page.locator("#echarts-lifecycle");
+  await expect(lifecycle.locator('[data-slot="echart"] canvas')).toHaveCount(1);
+  await expect(lifecycle.locator('[data-slot="echart-accessible-alternative"]')).toContainText("Revenue values shown in the chart.");
+  await lifecycle.getByRole("button", { name: "Show quarters" }).click();
+  await expect(lifecycle.getByRole("button", { name: "Show months" })).toBeVisible();
+  await expect(lifecycle.locator('[data-slot="echart"] canvas')).toHaveCount(1);
+
+  const states = page.locator("#lifecycle-states");
+  await expect(states.getByRole("status")).toHaveCount(2);
+  await expect(states.getByRole("alert")).toContainText("Revenue could not be loaded.");
+  await expect(states.locator('[data-slot="echart"]')).toHaveCount(0);
+
+  await page.goto("/docs/components/button");
+  await expect.poll(() => page.evaluate(() => (window as Window & { __charts?: Map<string, unknown> }).__charts?.size ?? 0)).toBe(0);
 });
 
 test("data table filters and sorts through its interaction model", async ({
