@@ -158,6 +158,20 @@ describe('StyleX component authoring contract', () => {
     }
   })
 
+  it('shares Drawer drag physics while retaining canonical Dialog behavior', () => {
+    const behavior = readFileSync('src/lib/drawer.ts', 'utf8')
+    const tailwind = readFileSync('src/ui/drawer.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/drawer.ts', 'utf8')
+
+    assert.match(behavior, /import \{ Dialog \} from '@foldkit\/ui'/u)
+    assert.match(behavior, /SnapDecision/u)
+    assert.match(behavior, /dragVelocity/u)
+    assert.match(behavior, /CancelledDrawerDrag/u)
+    assert.match(tailwind, /@\/lib\/drawer/u)
+    assert.match(stylex, /@\/lib\/drawer/u)
+    assert.doesNotMatch(stylex, /from ['"]@\/ui\/drawer['"]/u)
+  })
+
   it('keeps both Popover skins on the canonical Foldkit submodel', () => {
     const tailwind = readFileSync('src/ui/popover.ts', 'utf8')
     const stylex = readFileSync('src/stylex/popover.ts', 'utf8')

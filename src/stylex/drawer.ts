@@ -9,7 +9,7 @@ const styles = stylex.create({
     display: 'flex',
     flexDirection: 'column',
     position: 'fixed',
-    transitionDuration: interactionTokens.motionModerate,
+    transitionDuration: { default: interactionTokens.motionModerate, '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone },
     zIndex: 50,
   },
   handleHorizontal: { height: '0.5rem', marginBlock: '1rem', marginInline: 'auto', width: '6.25rem' },
@@ -24,13 +24,12 @@ const isStaticStyle = (value: unknown): value is StaticStyles =>
 const cn = (...values: ReadonlyArray<unknown>): string =>
   className(...values.filter(isStaticStyle))
 
-﻿import { Option, Schema as S } from 'effect';
-import { Command } from 'foldkit';
+import { Option } from 'effect';
 import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
 
 import { Dialog as DialogPrimitive } from '@foldkit/ui';
 
+import * as DrawerBehavior from '@/lib/drawer'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
@@ -39,88 +38,22 @@ import { className } from './style'
 import { tokens } from './tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
 
-export const Model = S.Struct({
-  dialog: DialogPrimitive.Model,
-  dragStart: S.Option(S.Number),
-  dragOffset: S.Number,
-});
+export const Model = DrawerBehavior.Model;
 export type Model = typeof Model.Type;
-export const GotDialogMessage = m('GotDialogMessage', {
-  message: DialogPrimitive.Message,
-});
-export const StartedDrag = m('StartedDrag', { position: S.Number });
-export const Dragged = m('Dragged', { offset: S.Number });
-export const EndedDrag = m('EndedDrag');
-export const Message = S.Union([
-  GotDialogMessage,
-  StartedDrag,
-  Dragged,
-  EndedDrag,
-]);
+export const GotDialogMessage = DrawerBehavior.GotDialogMessage;
+export const StartedDrag = DrawerBehavior.StartedDrag;
+export const Dragged = DrawerBehavior.Dragged;
+export const EndedDrag = DrawerBehavior.EndedDrag;
+export const CancelledDrag = DrawerBehavior.CancelledDrag;
+export const Message = DrawerBehavior.Message;
 export type Message = typeof Message.Type;
-export const OutMessage = DialogPrimitive.OutMessage;
+export const OutMessage = DrawerBehavior.OutMessage;
 export type OutMessage = typeof OutMessage.Type;
 
-export const init = (config: DialogPrimitive.InitConfig): Model => ({
-  dialog: DialogPrimitive.init(config),
-  dragStart: Option.none(),
-  dragOffset: 0,
-});
-type UpdateReturn = readonly [
-  Model,
-  ReadonlyArray<Command.Command<Message>>,
-  Option.Option<OutMessage>,
-];
-
-const mapDialogResult = (
-  model: Model,
-  result: ReturnType<typeof DialogPrimitive.update>,
-): UpdateReturn => {
-  const [dialog, commands, out] = result;
-  return [
-    { ...model, dialog },
-    Command.mapMessages(commands, (message) => GotDialogMessage({ message })),
-    out,
-  ];
-};
-
-export const update = (model: Model, message: Message): UpdateReturn => {
-  switch (message._tag) {
-    case 'GotDialogMessage':
-      return mapDialogResult(
-        model,
-        DialogPrimitive.update(model.dialog, message.message),
-      );
-    case 'StartedDrag':
-      return [
-        { ...model, dragStart: Option.some(message.position), dragOffset: 0 },
-        [],
-        Option.none(),
-      ];
-    case 'Dragged':
-      return [
-        { ...model, dragOffset: Math.max(0, message.offset) },
-        [],
-        Option.none(),
-      ];
-    case 'EndedDrag':
-      return model.dragOffset >= 120
-        ? mapDialogResult(
-            { ...model, dragStart: Option.none(), dragOffset: 0 },
-            DialogPrimitive.close(model.dialog),
-          )
-        : [
-            { ...model, dragStart: Option.none(), dragOffset: 0 },
-            [],
-            Option.none(),
-          ];
-  }
-};
-
-export const open = (model: Model): UpdateReturn =>
-  mapDialogResult(model, DialogPrimitive.open(model.dialog));
-export const close = (model: Model): UpdateReturn =>
-  mapDialogResult(model, DialogPrimitive.close(model.dialog));
+export const init = DrawerBehavior.init;
+export const update = DrawerBehavior.update;
+export const open = DrawerBehavior.open;
+export const close = DrawerBehavior.close;
 
 const OVERLAY_CLASS = overlayStyles.overlay
 const HEADER_CLASS = overlayStyles.header
@@ -175,15 +108,6 @@ export const drawer = <Msg>(
   return h.div(
     [
       h.DataAttribute('slot', 'drawer-root'),
-      h.OnPointerDown((_type, button, x, y) =>
-        button === 0
-          ? Option.some(
-              props.toParentMessage(
-                StartedDrag({ position: axisPosition(direction, x, y) }),
-              ),
-            )
-          : Option.none(),
-      ),
       h.OnPointerMove((x, y) =>
         start === undefined
           ? Option.none()
@@ -195,6 +119,7 @@ export const drawer = <Msg>(
                     start,
                     axisPosition(direction, x, y),
                   ),
+                  timeStamp: performance.now(),
                 }),
               ),
             ),
@@ -203,6 +128,11 @@ export const drawer = <Msg>(
         start === undefined
           ? Option.none()
           : Option.some(props.toParentMessage(EndedDrag())),
+      ),
+      h.OnPointerLeave(() =>
+        start === undefined
+          ? Option.none()
+          : Option.some(props.toParentMessage(CancelledDrag())),
       ),
     ],
     [
@@ -259,7 +189,13 @@ export const drawer = <Msg>(
                         hd.div(
                           [
                             hd.DataAttribute('slot', 'drawer-handle'),
+                            hd.DataAttribute('drag-phase', props.model.dragPhase),
                             hd.AriaHidden(true),
+                            hd.OnPointerDown((_type, button, x, y, timeStamp) =>
+                              button === 0
+                                ? Option.some(props.toParentMessage(StartedDrag({ position: axisPosition(direction, x, y), timeStamp })))
+                                : Option.none(),
+                            ),
                             hd.Class(
                               cn(
                                 overlayStyles.media,

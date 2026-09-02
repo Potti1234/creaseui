@@ -303,6 +303,19 @@
       ]
     },
     {
+      "name": "drawer-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Drawer Interaction Behavior",
+      "description": "Canonical Dialog composition with finite drag phase, snap decisions, velocity, threshold, and cancellation policy.",
+      "files": [
+        {
+          "path": "drawer.ts",
+          "type": "registry:lib",
+          "target": "@lib/drawer.ts"
+        }
+      ]
+    },
+    {
       "name": "hover-card-behavior",
       "type": "registry:lib",
       "title": "Foldkit Hover Card Interaction Behavior",

@@ -1321,6 +1321,11 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "EndedDrag: value"
     },
     {
+      "name": "CancelledDrag",
+      "kind": "value",
+      "signature": "CancelledDrag: value"
+    },
+    {
       "name": "Message",
       "kind": "value",
       "signature": "Message: value"
@@ -1342,23 +1347,23 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     },
     {
       "name": "init",
-      "kind": "function",
-      "signature": "init(config: DialogPrimitive.InitConfig): Model"
+      "kind": "value",
+      "signature": "init: value"
     },
     {
       "name": "update",
-      "kind": "function",
-      "signature": "update(model: Model, message: Message): UpdateReturn"
+      "kind": "value",
+      "signature": "update: value"
     },
     {
       "name": "open",
-      "kind": "function",
-      "signature": "open(model: Model): UpdateReturn"
+      "kind": "value",
+      "signature": "open: value"
     },
     {
       "name": "close",
-      "kind": "function",
-      "signature": "close(model: Model): UpdateReturn"
+      "kind": "value",
+      "signature": "close: value"
     },
     {
       "name": "DrawerDirection",

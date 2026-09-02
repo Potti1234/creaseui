@@ -430,14 +430,15 @@ Source: [`src/ui/drawer.ts`](../src/ui/drawer.ts)
 | `StartedDrag` | value | `StartedDrag: value` |
 | `Dragged` | value | `Dragged: value` |
 | `EndedDrag` | value | `EndedDrag: value` |
+| `CancelledDrag` | value | `CancelledDrag: value` |
 | `Message` | value | `Message: value` |
 | `Message` | type | `Message = typeof Message.Type` |
 | `OutMessage` | value | `OutMessage: value` |
 | `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
-| `init` | function | `init(config: DialogPrimitive.InitConfig): Model` |
-| `update` | function | `update(model: Model, message: Message): UpdateReturn` |
-| `open` | function | `open(model: Model): UpdateReturn` |
-| `close` | function | `close(model: Model): UpdateReturn` |
+| `init` | value | `init: value` |
+| `update` | value | `update: value` |
+| `open` | value | `open: value` |
+| `close` | value | `close: value` |
 | `DrawerDirection` | type | `DrawerDirection = 'top' \| 'right' \| 'bottom' \| 'left'` |
 | `DrawerSlots` | type | `DrawerSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; }>` |
 | `DrawerProps` | type | `DrawerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; content?: (slots: DrawerSlots) => ReadonlyArray<Html>; footer?: (slots: DrawerSlots) => ReadonlyArray<Html>; direction?: DrawerDirecti…` |

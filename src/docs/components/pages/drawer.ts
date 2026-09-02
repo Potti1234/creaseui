@@ -96,12 +96,12 @@ export const drawerPage = authoredPage({
   previewProgram,
   definition: {
     kind: 'submodel', description: 'Presents a dismissible task panel that can be dragged away from any screen edge.',
-    architecture: 'Drawer owns a nested Dialog Model plus drag start and offset state. The parent delegates every Drawer.Message and maps the returned Commands so focus and animation effects run.',
+    architecture: 'Drawer composes the canonical Dialog Model with a shared finite drag phase and snap decision. Offset and velocity remain transient child state; threshold, fling, cancellation, focus, and animation Commands all flow through Drawer.update.',
     apiHref: 'https://foldkit.dev/ui/drawer',
     composition: 'Trigger (parent Message)\nDrawer submodel\n├── modal dialog lifecycle\n├── drag gesture state\n└── panel\n    ├── handle\n    ├── title / description\n    ├── content\n    └── footer actions',
-    styling: 'Bottom drawers work well on touch-first layouts. Side drawers suit wider screens. Keep the drag direction aligned with the configured edge and constrain long content explicitly.',
+    styling: 'Bottom drawers work well on touch-first layouts. Side drawers suit wider screens. Only transform is updated during a drag, and reduced-motion mode removes the settling transition.',
     accessibility: 'The nested Dialog supplies naming, focus containment, Escape dismissal, and trigger focus restoration. The drag handle is decorative; every workflow still needs ordinary keyboard-operable close controls.',
-    keyboard: [['Tab / Shift+Tab', 'Moves through controls while focus remains in the drawer.'], ['Escape', 'Closes the drawer and restores focus to its trigger.'], ['Pointer drag', 'Dragging at least 120px toward the configured edge dismisses the drawer.']],
+    keyboard: [['Tab / Shift+Tab', 'Moves through controls while focus remains in the drawer.'], ['Escape', 'Closes the drawer and restores focus to its trigger.'], ['Pointer drag', 'Dragging at least 120px, or making a deliberate fast fling, dismisses the drawer; cancellation returns to open.']],
     examples: [
       { title: 'Activity goal', description: 'A complete bottom drawer with content, footer controls, and swipe-to-dismiss state.',  code: source('Activity goal', 'bottom') },
       { title: 'Side drawer', description: 'The same child integration can present a compact task from the right edge.',  code: source('Side drawer', 'right') },

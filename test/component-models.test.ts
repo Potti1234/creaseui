@@ -210,11 +210,12 @@ describe('stateful component models', () => {
     const model = Drawer.init({ id: 'filters', isAnimated: true });
     const [started] = Drawer.update(
       model,
-      Drawer.StartedDrag({ position: 20 }),
+      Drawer.StartedDrag({ position: 20, timeStamp: 0 }),
     );
-    const [dragged] = Drawer.update(started, Drawer.Dragged({ offset: 80 }));
+    const [dragged] = Drawer.update(started, Drawer.Dragged({ offset: 80, timeStamp: 200 }));
     const [settled] = Drawer.update(dragged, Drawer.EndedDrag());
     assert.equal(settled.dragOffset, 0);
     assert.equal(Option.isNone(settled.dragStart), true);
+    assert.equal(settled.snapDecision, 'ReturnOpen');
   });
 });

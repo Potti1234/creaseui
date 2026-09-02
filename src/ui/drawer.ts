@@ -1,97 +1,30 @@
-﻿import { Option, Schema as S } from 'effect';
-import { Command } from 'foldkit';
+﻿import { Option } from 'effect';
 import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
 
 import { Dialog as DialogPrimitive } from '@foldkit/ui';
 
+import * as DrawerBehavior from '@/lib/drawer';
 import { cn } from '@/lib/utils';
 
-export const Model = S.Struct({
-  dialog: DialogPrimitive.Model,
-  dragStart: S.Option(S.Number),
-  dragOffset: S.Number,
-});
+export const Model = DrawerBehavior.Model;
 export type Model = typeof Model.Type;
-export const GotDialogMessage = m('GotDialogMessage', {
-  message: DialogPrimitive.Message,
-});
-export const StartedDrag = m('StartedDrag', { position: S.Number });
-export const Dragged = m('Dragged', { offset: S.Number });
-export const EndedDrag = m('EndedDrag');
-export const Message = S.Union([
-  GotDialogMessage,
-  StartedDrag,
-  Dragged,
-  EndedDrag,
-]);
+export const GotDialogMessage = DrawerBehavior.GotDialogMessage;
+export const StartedDrag = DrawerBehavior.StartedDrag;
+export const Dragged = DrawerBehavior.Dragged;
+export const EndedDrag = DrawerBehavior.EndedDrag;
+export const CancelledDrag = DrawerBehavior.CancelledDrag;
+export const Message = DrawerBehavior.Message;
 export type Message = typeof Message.Type;
-export const OutMessage = DialogPrimitive.OutMessage;
+export const OutMessage = DrawerBehavior.OutMessage;
 export type OutMessage = typeof OutMessage.Type;
 
-export const init = (config: DialogPrimitive.InitConfig): Model => ({
-  dialog: DialogPrimitive.init(config),
-  dragStart: Option.none(),
-  dragOffset: 0,
-});
-type UpdateReturn = readonly [
-  Model,
-  ReadonlyArray<Command.Command<Message>>,
-  Option.Option<OutMessage>,
-];
-
-const mapDialogResult = (
-  model: Model,
-  result: ReturnType<typeof DialogPrimitive.update>,
-): UpdateReturn => {
-  const [dialog, commands, out] = result;
-  return [
-    { ...model, dialog },
-    Command.mapMessages(commands, (message) => GotDialogMessage({ message })),
-    out,
-  ];
-};
-
-export const update = (model: Model, message: Message): UpdateReturn => {
-  switch (message._tag) {
-    case 'GotDialogMessage':
-      return mapDialogResult(
-        model,
-        DialogPrimitive.update(model.dialog, message.message),
-      );
-    case 'StartedDrag':
-      return [
-        { ...model, dragStart: Option.some(message.position), dragOffset: 0 },
-        [],
-        Option.none(),
-      ];
-    case 'Dragged':
-      return [
-        { ...model, dragOffset: Math.max(0, message.offset) },
-        [],
-        Option.none(),
-      ];
-    case 'EndedDrag':
-      return model.dragOffset >= 120
-        ? mapDialogResult(
-            { ...model, dragStart: Option.none(), dragOffset: 0 },
-            DialogPrimitive.close(model.dialog),
-          )
-        : [
-            { ...model, dragStart: Option.none(), dragOffset: 0 },
-            [],
-            Option.none(),
-          ];
-  }
-};
-
-export const open = (model: Model): UpdateReturn =>
-  mapDialogResult(model, DialogPrimitive.open(model.dialog));
-export const close = (model: Model): UpdateReturn =>
-  mapDialogResult(model, DialogPrimitive.close(model.dialog));
+export const init = DrawerBehavior.init;
+export const update = DrawerBehavior.update;
+export const open = DrawerBehavior.open;
+export const close = DrawerBehavior.close;
 
 const OVERLAY_CLASS =
-  'fixed inset-0 z-50 bg-black/50 transition duration-200 ease-out data-[closed]:opacity-0';
+  'fixed inset-0 z-50 bg-black/50 transition duration-200 ease-out data-[closed]:opacity-0 motion-reduce:transition-none';
 const HEADER_CLASS =
   'flex flex-col gap-0.5 p-4 text-center md:gap-1.5 md:text-left';
 const FOOTER_CLASS = 'mt-auto flex flex-col gap-2 p-4';
@@ -126,7 +59,7 @@ const offsetFrom = (
     : current - start;
 const contentClass = (direction: DrawerDirection): string =>
   cn(
-    'group/drawer-content fixed z-50 flex flex-col border bg-background transition-[transform] duration-200 ease-out',
+    'group/drawer-content fixed z-50 flex flex-col border bg-background transition-[transform] duration-200 ease-out motion-reduce:transition-none',
     direction === 'bottom' &&
       'inset-x-0 bottom-0 mt-24 max-h-[80vh] rounded-t-lg border-t',
     direction === 'top' &&
@@ -157,15 +90,6 @@ export const drawer = <Msg>(
   return h.div(
     [
       h.DataAttribute('slot', 'drawer-root'),
-      h.OnPointerDown((_type, button, x, y) =>
-        button === 0
-          ? Option.some(
-              props.toParentMessage(
-                StartedDrag({ position: axisPosition(direction, x, y) }),
-              ),
-            )
-          : Option.none(),
-      ),
       h.OnPointerMove((x, y) =>
         start === undefined
           ? Option.none()
@@ -177,6 +101,7 @@ export const drawer = <Msg>(
                     start,
                     axisPosition(direction, x, y),
                   ),
+                  timeStamp: performance.now(),
                 }),
               ),
             ),
@@ -185,6 +110,11 @@ export const drawer = <Msg>(
         start === undefined
           ? Option.none()
           : Option.some(props.toParentMessage(EndedDrag())),
+      ),
+      h.OnPointerLeave(() =>
+        start === undefined
+          ? Option.none()
+          : Option.some(props.toParentMessage(CancelledDrag())),
       ),
     ],
     [
@@ -243,10 +173,16 @@ export const drawer = <Msg>(
                         hd.div(
                           [
                             hd.DataAttribute('slot', 'drawer-handle'),
+                            hd.DataAttribute('drag-phase', props.model.dragPhase),
                             hd.AriaHidden(true),
+                            hd.OnPointerDown((_type, button, x, y, timeStamp) =>
+                              button === 0
+                                ? Option.some(props.toParentMessage(StartedDrag({ position: axisPosition(direction, x, y), timeStamp })))
+                                : Option.none(),
+                            ),
                             hd.Class(
                               cn(
-                                'shrink-0 rounded-full bg-muted',
+                                'shrink-0 touch-none rounded-full bg-muted',
                                 direction === 'top' || direction === 'bottom'
                                   ? 'mx-auto my-4 h-2 w-[100px]'
                                   : 'my-auto h-[100px] w-2',

@@ -807,6 +807,35 @@ test("popover delegates disclosure commands and restores trigger focus", async (
   await expect(trigger).toBeFocused();
 });
 
+test("drawer handle supports mouse cancellation and touch threshold dismissal", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/docs/components/drawer");
+  const example = page.locator("#activity-goal");
+  const trigger = example.getByRole("button", { name: "Open bottom drawer" });
+  await trigger.click();
+
+  const drawer = page.getByRole("dialog");
+  const root = example.locator('[data-slot="drawer-root"]');
+  const panel = drawer.locator('[data-slot="drawer-content"]');
+  let handle = drawer.locator('[data-slot="drawer-handle"]');
+  await expect(panel).toHaveCSS("transition-property", "none");
+
+  await handle.dispatchEvent("pointerdown", { pointerType: "mouse", button: 0, screenX: 100, screenY: 100 });
+  handle = drawer.locator('[data-slot="drawer-handle"]');
+  await expect(handle).toHaveAttribute("data-drag-phase", "Dragging");
+  await root.dispatchEvent("pointermove", { pointerType: "mouse", screenX: 100, screenY: 150 });
+  await root.dispatchEvent("pointerleave", { pointerType: "mouse" });
+  await expect(drawer).toBeVisible();
+  await expect(drawer.locator('[data-slot="drawer-handle"]')).toHaveAttribute("data-drag-phase", "Idle");
+
+  handle = drawer.locator('[data-slot="drawer-handle"]');
+  await handle.dispatchEvent("pointerdown", { pointerType: "touch", button: 0, screenX: 100, screenY: 100 });
+  await root.dispatchEvent("pointermove", { pointerType: "touch", screenX: 100, screenY: 240 });
+  await root.dispatchEvent("pointerup", { pointerType: "touch", screenX: 100, screenY: 240 });
+  await expect(drawer).toBeHidden();
+  await expect(trigger).toBeFocused();
+});
+
 test("sheet renders every edge from view input with Dialog focus behavior", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/docs/components/sheet");

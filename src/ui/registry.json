@@ -457,7 +457,8 @@
       "description": "A shadcn-styled Drawer component for Foldkit.",
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/drawer-behavior"
       ],
       "files": [
         {
