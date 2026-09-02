@@ -19,6 +19,12 @@ const styles = stylex.create({
   empty: { color: tokens.mutedForeground },
   panel: { padding: 0, width: 'auto' },
   trigger: { fontWeight: 400, justifyContent: 'flex-start', textAlign: 'left', width: '15rem' },
+  field: { gap: '0.5rem', display: 'grid' },
+  fieldRow: { gap: '0.5rem', alignItems: 'center', display: 'flex', flexWrap: 'wrap' },
+  input: { borderColor: tokens.border, borderRadius: tokens.controlRadius, borderStyle: 'solid', borderWidth: 1, paddingInline: '0.75rem', backgroundColor: tokens.background, flexGrow: 1, fontSize: '0.875rem', height: '2.5rem', minWidth: 0 },
+  inputLabel: { fontSize: '0.875rem', fontWeight: 500 },
+  error: { color: tokens.destructive, fontSize: '0.875rem' },
+  mobileDialog: { position: { default: null, '@media (max-width: 639px)': 'fixed' }, bottom: { default: null, '@media (max-width: 639px)': '0.75rem' }, left: { default: null, '@media (max-width: 639px)': '0.75rem' }, right: { default: null, '@media (max-width: 639px)': '0.75rem' }, top: { default: null, '@media (max-width: 639px)': 'auto' }, width: { default: null, '@media (max-width: 639px)': 'auto' } },
 })
 
 const isStaticStyle = (value: unknown): value is StaticStyles =>
@@ -60,6 +66,7 @@ const PANEL_CLASS = styles.panel
 
 const BACKDROP_CLASS = overlayStyles.backdrop
 
+type DatePickerTextInput<Msg> = Readonly<{ query: string; onQueryInput: (value: string) => Msg; inputLabel: string; parseError?: string }> | Readonly<{ query?: never; onQueryInput?: never; inputLabel?: never; parseError?: never }>
 export type DatePickerProps<Msg> = Readonly<{
   model: Model;
   maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>;
@@ -74,7 +81,8 @@ export type DatePickerProps<Msg> = Readonly<{
   triggerLayoutStyle?: ComponentLayoutStyle;
   panelLayoutStyle?: ComponentLayoutStyle;
   calendarLayoutStyle?: ComponentLayoutStyle;
-}>;
+  mobilePresentation?: 'dialog' | 'popover';
+}> & DatePickerTextInput<Msg>;
 
 export const datePicker = <Msg>(
   props: DatePickerProps<Msg>,
@@ -87,7 +95,7 @@ export const datePicker = <Msg>(
     ((date: FoldkitCalendar.CalendarDate): string =>
       FoldkitCalendar.formatLong(date, props.model.calendar.locale));
 
-  return h.submodel({
+  const picker = h.submodel({
     slotId: props.model.id,
     model: props.model,
     view: DatePickerPrimitive.view,
@@ -127,9 +135,10 @@ export const datePicker = <Msg>(
       triggerAttributes: childAttributes([
         hd.DataAttribute('slot', 'popover-trigger'),
       ]),
-      panelClassName: cn(overlayStyles.panel, PANEL_CLASS, props.panelLayoutStyle),
+      panelClassName: cn(overlayStyles.panel, PANEL_CLASS, props.mobilePresentation === 'popover' ? undefined : styles.mobileDialog, props.panelLayoutStyle),
       panelAttributes: childAttributes([
         hd.DataAttribute('slot', 'popover-content'),
+        hd.Role('dialog'),
       ]),
       backdropClassName: className(BACKDROP_CLASS),
       ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
@@ -139,6 +148,9 @@ export const datePicker = <Msg>(
     },
     toParentMessage: props.toParentMessage,
   });
+  if (props.query === undefined) return picker;
+  const inputId = `${props.model.id}-input`; const errorId = `${props.model.id}-error`;
+  return h.div([h.DataAttribute('slot', 'date-picker-field'), h.DataAttribute('mobile-presentation', props.mobilePresentation ?? 'dialog'), h.Class(className(styles.field))], [h.label([h.For(inputId), h.Class(className(styles.inputLabel))], [props.inputLabel]), h.div([h.Class(className(styles.fieldRow))], [h.input([h.Id(inputId), h.Type('text'), h.Value(props.query), h.OnInput(props.onQueryInput), h.AriaInvalid(props.parseError !== undefined), ...(props.parseError === undefined ? [] : [h.AriaDescribedBy(errorId)]), h.Placeholder('YYYY-MM-DD'), h.Class(className(styles.input))]), picker]), ...(props.parseError === undefined ? [] : [h.p([h.Id(errorId), h.Role('alert'), h.Class(className(styles.error))], [props.parseError])])]);
 };
 
 /*
@@ -159,4 +171,3 @@ export const datePicker = <Msg>(
    //   toParentMessage: message => GotDatePickerMessage({ message }),
    // })
 */
-

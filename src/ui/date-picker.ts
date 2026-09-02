@@ -40,9 +40,21 @@ export const triggerId = DatePickerPrimitive.triggerId;
 const TRIGGER_CLASS = 'w-[240px] justify-start text-left font-normal';
 
 const PANEL_CLASS =
-  'z-50 w-auto rounded-md border bg-popover p-0 text-popover-foreground shadow-md outline-hidden transition duration-200 ease-out data-[closed]:opacity-0 data-[closed]:scale-95';
+  'z-50 w-auto rounded-md border bg-popover p-0 text-popover-foreground shadow-md outline-hidden transition duration-200 ease-out data-[closed]:opacity-0 data-[closed]:scale-95 max-sm:!fixed max-sm:!inset-x-3 max-sm:!bottom-3 max-sm:!top-auto max-sm:!w-auto max-sm:!transform-none max-sm:!z-[100]';
 
-const BACKDROP_CLASS = 'fixed inset-0 z-40';
+const BACKDROP_CLASS = 'fixed inset-0 z-40 max-sm:z-[90]';
+
+type DatePickerTextInput<Msg> = Readonly<{
+  query: string;
+  onQueryInput: (value: string) => Msg;
+  inputLabel: string;
+  parseError?: string;
+}> | Readonly<{
+  query?: never;
+  onQueryInput?: never;
+  inputLabel?: never;
+  parseError?: never;
+}>;
 
 export type DatePickerProps<Msg> = Readonly<{
   model: Model;
@@ -58,7 +70,8 @@ export type DatePickerProps<Msg> = Readonly<{
   triggerClass?: string;
   panelClass?: string;
   calendarClass?: string;
-}>;
+  mobilePresentation?: 'dialog' | 'popover';
+}> & DatePickerTextInput<Msg>;
 
 export const datePicker = <Msg>(
   props: DatePickerProps<Msg>,
@@ -71,7 +84,7 @@ export const datePicker = <Msg>(
     ((date: FoldkitCalendar.CalendarDate): string =>
       FoldkitCalendar.formatLong(date, props.model.calendar.locale));
 
-  return h.submodel({
+  const picker = h.submodel({
     slotId: props.model.id,
     model: props.model,
     view: DatePickerPrimitive.view,
@@ -109,9 +122,10 @@ export const datePicker = <Msg>(
       triggerAttributes: childAttributes([
         hd.DataAttribute('slot', 'popover-trigger'),
       ]),
-      panelClassName: cn(PANEL_CLASS, props.panelClass),
+      panelClassName: cn(props.mobilePresentation === 'popover' ? PANEL_CLASS.replaceAll(/max-sm:[^ ]+ ?/g, '') : PANEL_CLASS, props.panelClass),
       panelAttributes: childAttributes([
         hd.DataAttribute('slot', 'popover-content'),
+        hd.Role('dialog'),
       ]),
       backdropClassName: BACKDROP_CLASS,
       ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
@@ -121,6 +135,18 @@ export const datePicker = <Msg>(
     },
     toParentMessage: props.toParentMessage,
   });
+
+  if (props.query === undefined) return picker;
+  const inputId = `${props.model.id}-input`;
+  const errorId = `${props.model.id}-error`;
+  return h.div([h.DataAttribute('slot', 'date-picker-field'), h.DataAttribute('mobile-presentation', props.mobilePresentation ?? 'dialog'), h.Class('grid gap-2')], [
+    h.label([h.For(inputId), h.Class('text-sm font-medium')], [props.inputLabel]),
+    h.div([h.Class('flex flex-wrap items-center gap-2')], [
+      h.input([h.Id(inputId), h.Type('text'), h.Value(props.query), h.OnInput(props.onQueryInput), h.AriaInvalid(props.parseError !== undefined), ...(props.parseError === undefined ? [] : [h.AriaDescribedBy(errorId)]), h.Placeholder('YYYY-MM-DD'), h.Class('h-10 min-w-0 flex-1 rounded-md border bg-background px-3 text-sm')]),
+      picker,
+    ]),
+    ...(props.parseError === undefined ? [] : [h.p([h.Id(errorId), h.Role('alert'), h.Class('text-sm text-destructive')], [props.parseError])]),
+  ]);
 };
 
 /*

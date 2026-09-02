@@ -72,21 +72,42 @@ export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>
 });
 
 const GotDatePickerPreviewMessage = m('GotDatePickerPreviewMessage', { message: DatePicker.Message });
-type GotDatePickerPreviewMessage = typeof GotDatePickerPreviewMessage.Type;
-const DatePickerPreviewModel = S.Struct({ _docsPage: S.Literal('date-picker'), datePicker: DatePicker.Model, selectedDate: S.Option(FoldkitCalendar.CalendarDate) });
+const ChangedDateQuery = m('ChangedDatePickerQuery', { value: S.String });
+const LoadedExternalDate = m('LoadedExternalDate');
+const DatePickerPreviewMessage = S.Union([GotDatePickerPreviewMessage, ChangedDateQuery, LoadedExternalDate]);
+type DatePickerPreviewMessage = typeof DatePickerPreviewMessage.Type;
+const DatePickerPreviewModel = S.Struct({ _docsPage: S.Literal('date-picker'), datePicker: DatePicker.Model, selectedDate: S.Option(FoldkitCalendar.CalendarDate), query: S.String, parseError: S.NullOr(S.String) });
 type DatePickerPreviewModel = typeof DatePickerPreviewModel.Type;
-const previewProgram = definePreviewProgram<DatePickerPreviewModel, GotDatePickerPreviewMessage>({
-  Model: DatePickerPreviewModel, Message: GotDatePickerPreviewMessage,
+const encodeDate = S.encodeSync(FoldkitCalendar.CalendarDateFromIsoString);
+const parseDate = (value: string): Option.Option<FoldkitCalendar.CalendarDate> => {
+  try { return Option.some(S.decodeUnknownSync(FoldkitCalendar.CalendarDateFromIsoString)(value)); }
+  catch { return Option.none(); }
+};
+const previewProgram = definePreviewProgram<DatePickerPreviewModel, DatePickerPreviewMessage>({
+  Model: DatePickerPreviewModel, Message: DatePickerPreviewMessage,
   init: index => {
     const initialDate = { year: 2026, month: 7, day: 18 };
-    return { _docsPage: 'date-picker', datePicker: DatePicker.init({ id: `docs-date-picker-${String(index)}`, today: { year: 2026, month: 7, day: 28 }, initialViewDate: initialDate, isAnimated: true }), selectedDate: index === 0 ? Option.some(initialDate) : Option.none() };
+    const selectedDate = index === 0 ? Option.some(initialDate) : Option.none<FoldkitCalendar.CalendarDate>();
+    return { _docsPage: 'date-picker', datePicker: DatePicker.init({ id: `docs-date-picker-${String(index)}`, today: FoldkitCalendar.fromDateInZone(new Date('2026-07-28T12:00:00Z'), 'Europe/Berlin'), initialViewDate: initialDate, isAnimated: true }), selectedDate, query: Option.match(selectedDate, { onNone: () => '', onSome: encodeDate }), parseError: null };
   },
   update: (model, message) => {
+    if (message._tag === 'ChangedDatePickerQuery') {
+      const maybeDate = parseDate(message.value);
+      return [Option.match(maybeDate, { onNone: () => ({ ...model, query: message.value, parseError: message.value === '' ? null : 'Enter a real date as YYYY-MM-DD.' }), onSome: date => ({ ...model, datePicker: DatePicker.focusDate(model.datePicker, date), selectedDate: Option.some(date), query: message.value, parseError: null }) }), []];
+    }
+    if (message._tag === 'LoadedExternalDate') {
+      const date = { year: 2026, month: 8, day: 12 };
+      return [{ ...model, datePicker: DatePicker.focusDate(model.datePicker, date), selectedDate: Option.some(date), query: encodeDate(date), parseError: null }, []];
+    }
     const [datePicker, commands, maybeOutput] = DatePicker.update(model.datePicker, message.message);
     const selectedDate = Option.match(maybeOutput, { onNone: () => model.selectedDate, onSome: output => output._tag === 'SelectedDate' ? Option.some(output.date) : output._tag === 'ClearedDate' ? Option.none() : model.selectedDate });
-    return [{ ...model, datePicker, selectedDate }, Command.mapMessages(commands, next => GotDatePickerPreviewMessage({ message: next }))];
+    const query = Option.match(maybeOutput, { onNone: () => model.query, onSome: output => output._tag === 'SelectedDate' ? encodeDate(output.date) : output._tag === 'ClearedDate' ? '' : model.query });
+    return [{ ...model, datePicker, selectedDate, query, parseError: null }, Command.mapMessages(commands, next => GotDatePickerPreviewMessage({ message: next }))];
   },
-  view: (index, model, h) => DatePicker.datePicker({ model: model.datePicker, maybeSelectedDate: model.selectedDate, toParentMessage: message => GotDatePickerPreviewMessage({ message }), name: index === 0 ? 'dueDate' : 'newDueDate', ariaLabel: index === 0 ? 'Change due date' : 'Choose a new due date', placeholder: 'Pick a due date' }, h),
+  view: (index, model, h) => h.form([h.OnSubmit(LoadedExternalDate({}))], [
+    DatePicker.datePicker({ model: model.datePicker, maybeSelectedDate: model.selectedDate, query: model.query, onQueryInput: value => ChangedDateQuery({ value }), inputLabel: 'Due date (YYYY-MM-DD)', ...(model.parseError === null ? {} : { parseError: model.parseError }), toParentMessage: message => GotDatePickerPreviewMessage({ message }), name: index === 0 ? 'dueDate' : 'newDueDate', ariaLabel: index === 0 ? 'Change due date' : 'Choose a new due date', placeholder: 'Pick a due date', mobilePresentation: 'dialog' }, h),
+    h.button([h.Type('button'), h.OnClick(LoadedExternalDate({})), h.Class('mt-3 rounded-md border px-3 py-2 text-sm')], ['Load saved date']),
+  ]),
 });
 
 export const datePickerPage = authoredPage({
@@ -94,7 +115,7 @@ export const datePickerPage = authoredPage({
   previewProgram,
   definition: {
     kind: 'submodel', description: 'Combines an anchored disclosure with Calendar to select a date.',
-    architecture: 'DatePicker is one nested child Model: its disclosure state contains a Calendar Model. The parent maps child Commands and owns the optional selected date returned by SelectedDate or ClearedDate outputs.',
+    architecture: 'DatePicker is one nested child Model: its disclosure state contains a Calendar Model. The parent owns the committed date, text query, and parsing policy; focusDate synchronizes the child’s transient displayed month after valid typed or external updates.',
     apiHref: 'https://foldkit.dev/ui/date-picker',
     composition: 'Parent Model\n├── selectedDate (domain state)\n└── DatePicker Model\n    ├── popover disclosure + positioning\n    └── Calendar Model\n        └── focus and navigation state',
     styling: 'Trigger, panel, and calendar classes are separate view inputs. Preserve the compact trigger label and avoid constraining the panel below the calendar’s usable width.',

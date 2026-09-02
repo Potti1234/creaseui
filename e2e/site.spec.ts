@@ -1452,13 +1452,32 @@ test("date picker composes disclosure and calendar into one child model", async 
   page.on("pageerror", (error) => pageErrors.push(error.message));
   await page.goto("/docs/components/date-picker");
   const example = page.locator("#existing-value");
+  const input = example.getByLabel("Due date (YYYY-MM-DD)");
+  const hiddenInput = example.locator('input[name="dueDate"]');
+  await expect(hiddenInput).toHaveValue("2026-07-18");
+  await input.fill("2026-08-05");
+  await expect(hiddenInput).toHaveValue("2026-08-05");
+  await input.fill("2026-02-30");
+  await expect(example.getByRole("alert")).toContainText("YYYY-MM-DD");
+  await expect(hiddenInput).toHaveValue("2026-08-05");
+  await example.getByRole("button", { name: "Load saved date" }).click();
+  await expect(input).toHaveValue("2026-08-12");
+  await expect(hiddenInput).toHaveValue("2026-08-12");
   const trigger = example.getByRole("button", { name: "Change due date" });
   await trigger.click();
+  const panel = page.locator('[data-slot="popover-content"]');
+  await expect(panel).toHaveAttribute("role", "dialog");
+  await expect(panel).toContainText("August 2026");
+  if ((page.viewportSize()?.width ?? 1000) < 640) {
+    await expect(panel).toHaveCSS("position", "fixed");
+  }
   const day = page
     .locator('[data-slot="popover-content"]')
-    .getByRole("button", { name: "Monday, July 20, 2026" });
+    .getByRole("button", { name: "Thursday, August 20, 2026" });
   await day.click();
-  await expect(trigger).toContainText("July 20, 2026");
+  await expect(trigger).toContainText("August 20, 2026");
+  await expect(input).toHaveValue("2026-08-20");
+  await expect(hiddenInput).toHaveValue("2026-08-20");
   await expect(page.locator('[data-slot="popover-content"]')).toBeHidden();
   await expect(example.locator("code")).toContainText("ClearedDate");
   await expect(example.locator("code")).toContainText("Command.mapMessages");
