@@ -11,6 +11,7 @@ export const table = <Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html => {
   return h.div(
     [
       h.DataAttribute('slot', 'table-container'),
+      h.Tabindex(0),
       h.Class('relative w-full overflow-x-auto'),
     ],
     [

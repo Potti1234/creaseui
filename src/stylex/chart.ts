@@ -1,10 +1,27 @@
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
+import * as ECharts from '@/lib/echarts'
 import type { ComponentLayoutStyle } from './contracts'
 import { complexTokens } from './complex-tokens.stylex'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
+
+export type EChartProps<Msg> = Omit<ECharts.ChartProps<Msg>, 'accessibleAlternative'> & Readonly<{ accessibleAlternative: Html }>
+export type ChartMessage = ECharts.ChartMessage
+export type ChartTheme = ECharts.ChartTheme
+export type OptionBuilder = ECharts.OptionBuilder
+export const ChartMessage = ECharts.ChartMessage
+export const SyncChart = ECharts.SyncChart
+export const areaGradient = ECharts.areaGradient
+export const categoryAxis = ECharts.categoryAxis
+export const colorWithOpacity = ECharts.colorWithOpacity
+export const compactGrid = ECharts.compactGrid
+export const registerChart = ECharts.registerChart
+export const shadcnLegend = ECharts.shadcnLegend
+export const shadcnTooltip = ECharts.shadcnTooltip
+export const valueAxis = ECharts.valueAxis
+export const eChart = <Msg>(props: EChartProps<Msg>, h: HtmlBuilder<Msg>): Html => ECharts.chart(props, h)
 
 export type ChartSeriesConfig = Readonly<{ label?: Html | string; color?: string; icon?: Html }>
 export type ChartConfig = Readonly<Record<string, ChartSeriesConfig>>
@@ -138,4 +155,3 @@ export const interactiveAreaChart = <Msg>(
 
 export type DonutChartProps = Readonly<{ value: number; max: number; label?: string; size?: 'default' | 'compact'; sublabel?: string; layoutStyle?: ComponentLayoutStyle }>
 export const donutChart = <Msg>(props: DonutChartProps, h: HtmlBuilder<Msg>): Html => { const maximum = finite(props.max); const ratio = maximum <= 0 ? 0 : Math.min(1, Math.max(0, finite(props.value) / maximum)); const circumference = 2 * Math.PI * 42; const dash = ratio * circumference; return h.svg([h.DataAttribute('slot', 'chart'), h.Xmlns('http://www.w3.org/2000/svg'), h.ViewBox('0 0 120 120'), h.Role('img'), h.AriaLabel(props.label ?? `${Math.round(ratio * 100)}% of ${String(Math.max(0, maximum))}`), h.Class(className(styles.donut, props.size === 'compact' && styles.donutCompact, props.layoutStyle))], [h.circle([h.Cx('60'), h.Cy('60'), h.R('42'), h.Fill('none'), h.Stroke('var(--chart-1)'), h.StrokeWidth('16')], []), h.circle([h.Cx('60'), h.Cy('60'), h.R('42'), h.Fill('none'), h.Stroke('var(--chart-2)'), h.StrokeWidth('16'), h.StrokeDasharray(`${dash} ${circumference - dash}`), h.StrokeLinecap('butt'), h.Transform('rotate(-90 60 60)')], []), ...(props.label === undefined ? [] : [h.text([h.X('60'), h.Y(props.sublabel === undefined ? '60' : '54'), h.TextAnchor('middle'), h.DominantBaseline('middle'), h.Fill('var(--foreground)'), h.FontSize('14'), h.FontWeight('700')], [props.label])]), ...(props.sublabel === undefined ? [] : [h.text([h.X('60'), h.Y('70'), h.TextAnchor('middle'), h.DominantBaseline('middle'), h.Fill('var(--muted-foreground)'), h.FontSize('6')], [props.sublabel])])]) }
-

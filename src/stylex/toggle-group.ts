@@ -36,11 +36,17 @@ type SharedProps<Value extends string> = Readonly<{
   size?: ToggleVariants['size']
   layoutStyle?: ComponentLayoutStyle
 }> & (SingleSelection<Value> | MultipleSelection<Value>)
-export type ToggleGroupProps<Value extends string, Msg> = SharedProps<Value> & Readonly<{
+export type ToggleGroupProps<Value extends string, Msg> = Readonly<{
   model: Model
   toParentMessage: (message: Message) => Msg
   ariaLabel: string
-}>
+  items: ReadonlyArray<ToggleGroupItem<Value>>
+  direction?: 'ltr' | 'rtl'
+  arrangement?: 'joined' | 'wrapped'
+  variant?: ToggleVariants['variant']
+  size?: ToggleVariants['size']
+  layoutStyle?: ComponentLayoutStyle
+}> & (SingleSelection<Value> | MultipleSelection<Value>)
 type LegacyToggleGroupProps<Value extends string, Msg> = SharedProps<Value> & Readonly<{
   onToggle: (value: Value) => Msg
 }>

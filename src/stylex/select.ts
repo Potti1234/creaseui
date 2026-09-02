@@ -223,7 +223,7 @@ const renderSelect = <Item, Value extends string, Msg>(
 
   // TypeScript cannot reduce Foldkit's conditional SubmodelConfig while
   // Value is still generic; every field remains independently typed above.
-  // eslint-disable-next-line no-restricted-syntax
+  // eslint-disable-next-line no-restricted-syntax -- reason: Foldkit's generic conditional SubmodelConfig cannot be reduced here.
   return h.submodel<typeof listbox.view>({
     slotId: props.model.id,
     model: props.model,

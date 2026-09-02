@@ -27,7 +27,7 @@
     "boundaryFiles": 136,
     "cssFallbacks": 0,
     "legacyUiImports": 0,
-    "suppressions": 0,
+    "suppressions": 1,
     "unsafeBodyPortals": 0
   }
 }

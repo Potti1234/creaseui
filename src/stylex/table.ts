@@ -22,7 +22,7 @@ const styles = stylex.create({
 })
 
 export const table = <Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html =>
-  h.div([h.DataAttribute('slot', 'table-container'), h.Class(className(styles.container))], [
+  h.div([h.DataAttribute('slot', 'table-container'), h.Tabindex(0), h.Class(className(styles.container))], [
     h.table([h.DataAttribute('slot', 'table'), h.Class(className(styles.table, props.layoutStyle))], [...props.children]),
   ])
 

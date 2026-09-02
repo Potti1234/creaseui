@@ -104,6 +104,7 @@ const named =
 export const arrowLeft = named('arrow-left');
 export const arrowRight = named('arrow-right');
 export const arrowDown = named('arrow-down');
+export const arrowUp = named('arrow-up');
 export const calendarIcon = named('calendar');
 export const check = named('check');
 export const chevronDown = named('chevron-down');

@@ -16,6 +16,7 @@ import * as HoverCardBehavior from '@/lib/hover-card'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
+import { themedAnchor } from './overlay-boundary'
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
 
@@ -107,7 +108,7 @@ export const hoverCard = <Msg>(
         [
           h.Id(panelId),
           h.DataAttribute('slot', 'hover-card-content'),
-          h.OnMount(Mount.mapMessage(TooltipPrimitive.AnchorTooltip({ buttonId: triggerId, anchor: { placement: PLACEMENTS[props.side ?? 'bottom'][props.align ?? 'center'], gap: 8, portal: false } }), () => props.toParentMessage(CompletedAnchor()))),
+          h.OnMount(Mount.mapMessage(TooltipPrimitive.AnchorTooltip({ buttonId: triggerId, anchor: themedAnchor({ placement: PLACEMENTS[props.side ?? 'bottom'][props.align ?? 'center'], gap: 8, portal: false }) }), () => props.toParentMessage(CompletedAnchor()))),
           h.Class(
             cn(
               CONTENT_CLASS,

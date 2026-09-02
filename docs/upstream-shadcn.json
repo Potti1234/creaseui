@@ -1,8 +1,8 @@
 {
   "$schema": "./upstream-shadcn.schema.json",
   "repository": "https://github.com/shadcn-ui/ui",
-  "commit": "41bbc12cfd39ed8d9cb8da04275479ee7ecc0612",
-  "date": "2026-08-11",
+  "commit": "71e50952fbb7eda2c992660d36cd58671a2edf42",
+  "date": "2026-09-02",
   "registryPath": "apps/v4/registry/new-york-v4/ui/_registry.ts",
   "components": [
     "accordion",
@@ -219,7 +219,7 @@
     },
     {
       "path": "apps/v4/registry/new-york-v4/ui/message-scroller.tsx",
-      "sha": "ab8a157fdfcce36956f7b65a87b0311b42328108"
+      "sha": "16091daedaed1cb320d20457792a19085b22acf3"
     },
     {
       "path": "apps/v4/registry/new-york-v4/ui/message.tsx",

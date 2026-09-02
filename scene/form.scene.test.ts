@@ -50,6 +50,8 @@ const verifyRenderer = (name: string, Form: FormModule, Input: InputModule, Butt
         Scene.expect(Scene.role('form', { name: 'Account sign in' })).toExist(),
         Scene.submit(Scene.role('form', { name: 'Account sign in' })),
         Scene.expectHandled(),
+        Scene.Mount.expectHas({ name: 'focus-form-error-summary-sign-in-errors' }),
+        Scene.Mount.resolve({ name: 'focus-form-error-summary-sign-in-errors' }, { _tag: 'Submitted' }),
         Scene.expect(Scene.role('alert')).toHaveId('sign-in-errors'),
         Scene.expect(Scene.text('Enter your email.')).toHaveAttr('href', '#sign-in-email'),
       )

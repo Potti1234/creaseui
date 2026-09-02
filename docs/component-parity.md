@@ -1,7 +1,7 @@
 # Component parity
 
-Verified against [`shadcn-ui/ui@41bbc12c`](https://github.com/shadcn-ui/ui/tree/41bbc12cfd39ed8d9cb8da04275479ee7ecc0612)
-on 2026-08-11.
+Verified against [`shadcn-ui/ui@71e50952`](https://github.com/shadcn-ui/ui/tree/71e50952fbb7eda2c992660d36cd58671a2edf42)
+on 2026-09-02.
 
 Crease UI contains all 62 items in the recorded `new-york-v4` UI registry.
 It additionally ships three documented recipes:

@@ -12,8 +12,8 @@ projects:
 
 The initial prototype was assembled from the public shadcn/ui site and registry
 during July 2026. The catalog and documentation were subsequently audited and
-refreshed against shadcn/ui commit `41bbc12cfd39ed8d9cb8da04275479ee7ecc0612`
-on 2026-08-11. That reference
+refreshed against shadcn/ui commit `71e50952fbb7eda2c992660d36cd58671a2edf42`
+on 2026-09-02. That reference
 records the comparison baseline; Crease remains an independent Foldkit-native
 implementation rather than a byte-for-byte port.
 
