@@ -820,8 +820,31 @@ test("hover card is available to keyboard focus and closes after blur", async ({
   await expect(panel).toBeVisible();
   await expect(trigger).toHaveAttribute("aria-expanded", "true");
   await expect(example.locator("code")).toContainText("closeDelay");
+  await expect(example.locator("code")).toContainText("showDelay");
+  await page.keyboard.press("Escape");
+  await expect(panel).toBeHidden();
+  await expect(trigger).toBeFocused();
   await page.getByRole("link", { name: "crease/ui" }).focus();
   await expect(panel).toBeHidden({ timeout: 2_000 });
+});
+
+test("hover card survives pointer crossing and supports touch fallback", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/docs/components/hover-card");
+  const example = page.locator("#profile-preview");
+  const trigger = example.getByRole("button", { name: "Preview the Foldkit profile" });
+  const panel = example.locator('[data-slot="hover-card-content"]');
+
+  await trigger.hover();
+  await expect(panel).toBeVisible();
+  await panel.hover();
+  await page.waitForTimeout(200);
+  await expect(panel).toBeVisible();
+  await page.mouse.move(0, 0);
+  await expect(panel).toBeHidden({ timeout: 2_000 });
+
+  await trigger.evaluate((element) => element.dispatchEvent(new PointerEvent("pointerdown", { pointerType: "touch", bubbles: true })));
+  await expect(panel).toBeVisible();
 });
 
 test("tooltip opens from keyboard focus and dismisses without moving focus", async ({

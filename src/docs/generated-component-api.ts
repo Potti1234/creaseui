@@ -1791,6 +1791,36 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "Left: value"
     },
     {
+      "name": "Focused",
+      "kind": "value",
+      "signature": "Focused: value"
+    },
+    {
+      "name": "Blurred",
+      "kind": "value",
+      "signature": "Blurred: value"
+    },
+    {
+      "name": "PressedEscape",
+      "kind": "value",
+      "signature": "PressedEscape: value"
+    },
+    {
+      "name": "PressedPointer",
+      "kind": "value",
+      "signature": "PressedPointer: value"
+    },
+    {
+      "name": "CompletedAnchor",
+      "kind": "value",
+      "signature": "CompletedAnchor: value"
+    },
+    {
+      "name": "CompletedWaitBeforeShowingHoverCard",
+      "kind": "value",
+      "signature": "CompletedWaitBeforeShowingHoverCard: value"
+    },
+    {
       "name": "CompletedWaitBeforeClosingHoverCard",
       "kind": "value",
       "signature": "CompletedWaitBeforeClosingHoverCard: value"
@@ -1808,22 +1838,27 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "InitConfig",
       "kind": "type",
-      "signature": "InitConfig = Readonly<{ id: string; closeDelay?: number; showDelay?: number; }>"
+      "signature": "InitConfig = HoverCardBehavior.InitConfig"
     },
     {
       "name": "init",
-      "kind": "function",
-      "signature": "init(config: InitConfig): Model"
+      "kind": "value",
+      "signature": "init: value"
     },
     {
       "name": "update",
-      "kind": "function",
-      "signature": "update(model: Model, message: Message): UpdateReturn"
+      "kind": "value",
+      "signature": "update: value"
     },
     {
       "name": "reflectShowDelay",
-      "kind": "function",
-      "signature": "reflectShowDelay(model: Model, _showDelay: number): Model"
+      "kind": "value",
+      "signature": "reflectShowDelay: value"
+    },
+    {
+      "name": "reflectCloseDelay",
+      "kind": "value",
+      "signature": "reflectCloseDelay: value"
     },
     {
       "name": "HoverCardSide",

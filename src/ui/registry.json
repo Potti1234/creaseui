@@ -553,7 +553,8 @@
       "description": "A shadcn-styled Hover Card component for Foldkit.",
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/hover-card-behavior"
       ],
       "files": [
         {

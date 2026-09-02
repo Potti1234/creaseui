@@ -1,78 +1,31 @@
-import { Effect, Schema as S } from 'effect';
-import { Command } from 'foldkit';
+import { Option } from 'effect';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
+import * as Mount from 'foldkit/mount';
+import { Tooltip as TooltipPrimitive } from '@foldkit/ui';
 
+import * as HoverCardBehavior from '@/lib/hover-card';
 import { cn } from '@/lib/utils';
 
-export const Model = S.Struct({
-  id: S.String,
-  isOpen: S.Boolean,
-  closeVersion: S.Number,
-  closeDelay: S.Number,
-});
+export const Model = HoverCardBehavior.Model;
 export type Model = typeof Model.Type;
 
-export const Entered = m('Entered');
-export const Left = m('Left');
-export const CompletedWaitBeforeClosingHoverCard = m(
-  'CompletedWaitBeforeClosingHoverCard',
-  {
-    version: S.Number,
-  },
-);
-export const Message = S.Union([
-  Entered,
-  Left,
-  CompletedWaitBeforeClosingHoverCard,
-]);
+export const Entered = HoverCardBehavior.Entered;
+export const Left = HoverCardBehavior.Left;
+export const Focused = HoverCardBehavior.Focused;
+export const Blurred = HoverCardBehavior.Blurred;
+export const PressedEscape = HoverCardBehavior.PressedEscape;
+export const PressedPointer = HoverCardBehavior.PressedPointer;
+export const CompletedAnchor = HoverCardBehavior.CompletedAnchor;
+export const CompletedWaitBeforeShowingHoverCard = HoverCardBehavior.CompletedWaitBeforeShowingHoverCard;
+export const CompletedWaitBeforeClosingHoverCard = HoverCardBehavior.CompletedWaitBeforeClosingHoverCard;
+export const Message = HoverCardBehavior.Message;
 export type Message = typeof Message.Type;
 
-export type InitConfig = Readonly<{
-  id: string;
-  closeDelay?: number;
-  showDelay?: number;
-}>;
-export const init = (config: InitConfig): Model => ({
-  id: config.id,
-  isOpen: false,
-  closeVersion: 0,
-  closeDelay: Math.max(0, config.closeDelay ?? 150),
-});
-
-const WaitBeforeClosing = Command.define('WaitBeforeClosingHoverCard', {
-  args: { version: S.Number, delay: S.Number },
-  messages: [CompletedWaitBeforeClosingHoverCard],
-  execute: ({ version, delay }) =>
-    Effect.sleep(`${delay} millis`).pipe(
-      Effect.as(CompletedWaitBeforeClosingHoverCard({ version })),
-    ),
-});
-
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
-export const update = (model: Model, message: Message): UpdateReturn => {
-  switch (message._tag) {
-    case 'Entered':
-      return [
-        { ...model, isOpen: true, closeVersion: model.closeVersion + 1 },
-        [],
-      ];
-    case 'Left': {
-      const version = model.closeVersion + 1;
-      return [
-        { ...model, closeVersion: version },
-        [WaitBeforeClosing({ version, delay: model.closeDelay })],
-      ];
-    }
-    case 'CompletedWaitBeforeClosingHoverCard':
-      return message.version === model.closeVersion
-        ? [{ ...model, isOpen: false }, []]
-        : [model, []];
-  }
-};
-
-export const reflectShowDelay = (model: Model, _showDelay: number): Model =>
-  model;
+export type InitConfig = HoverCardBehavior.InitConfig;
+export const init = HoverCardBehavior.init;
+export const update = HoverCardBehavior.update;
+export const reflectShowDelay = HoverCardBehavior.reflectShowDelay;
+export const reflectCloseDelay = HoverCardBehavior.reflectCloseDelay;
 
 const CONTENT_CLASS =
   'absolute z-50 w-64 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-hidden transition duration-150 data-[closed]:pointer-events-none data-[closed]:scale-95 data-[closed]:opacity-0';
@@ -80,24 +33,12 @@ const CONTENT_CLASS =
 export type HoverCardSide = 'top' | 'right' | 'bottom' | 'left';
 export type HoverCardAlign = 'start' | 'center' | 'end';
 
-const positionClass = (side: HoverCardSide, align: HoverCardAlign): string => {
-  const sideClass = {
-    top: 'bottom-full mb-2',
-    right: 'left-full ml-2',
-    bottom: 'top-full mt-2',
-    left: 'right-full mr-2',
-  }[side];
-  const alignClass =
-    side === 'top' || side === 'bottom'
-      ? {
-          start: 'left-0',
-          center: 'left-1/2 -translate-x-1/2',
-          end: 'right-0',
-        }[align]
-      : { start: 'top-0', center: 'top-1/2 -translate-y-1/2', end: 'bottom-0' }[
-          align
-        ];
-  return `${sideClass} ${alignClass}`;
+type Placement = NonNullable<TooltipPrimitive.AnchorConfig['placement']>;
+const PLACEMENTS: Readonly<Record<HoverCardSide, Readonly<Record<HoverCardAlign, Placement>>>> = {
+  top: { start: 'top-start', center: 'top', end: 'top-end' },
+  right: { start: 'right-start', center: 'right', end: 'right-end' },
+  bottom: { start: 'bottom-start', center: 'bottom', end: 'bottom-end' },
+  left: { start: 'left-start', center: 'left', end: 'left-end' },
 };
 
 export type HoverCardProps<Msg> = Readonly<{
@@ -118,6 +59,7 @@ export const hoverCard = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   const panelId = `${props.model.id}-content`;
+  const triggerId = `${props.model.id}-trigger`;
   const disabled = props.isDisabled ?? false;
   const enter = props.toParentMessage(Entered());
   const leave = props.toParentMessage(Left());
@@ -133,11 +75,14 @@ export const hoverCard = <Msg>(
       h.button(
         [
           h.Type('button'),
+          h.Id(triggerId),
           h.Disabled(disabled),
           h.AriaExpanded(props.model.isOpen),
           h.AriaControls(panelId),
-          h.OnFocus(enter),
-          h.OnBlur(leave),
+          h.OnFocus(props.toParentMessage(Focused())),
+          h.OnBlur(props.toParentMessage(Blurred())),
+          h.OnPointerDown(pointerType => Option.some(props.toParentMessage(PressedPointer({ pointerType })))),
+          h.OnKeyDownPreventDefault(key => key === 'Escape' && props.model.isOpen ? Option.some(props.toParentMessage(PressedEscape())) : Option.none()),
           ...(props.ariaLabel === undefined
             ? []
             : [h.AriaLabel(props.ariaLabel)]),
@@ -146,25 +91,20 @@ export const hoverCard = <Msg>(
         ],
         [props.trigger],
       ),
-      h.div(
+      ...(props.model.isOpen ? [h.div(
         [
           h.Id(panelId),
           h.DataAttribute('slot', 'hover-card-content'),
-          h.DataAttribute('closed', String(!props.model.isOpen)),
-          h.AriaHidden(!props.model.isOpen),
-          h.Hidden(!props.model.isOpen),
-          h.OnFocus(enter),
-          h.OnBlur(leave),
+          h.OnMount(Mount.mapMessage(TooltipPrimitive.AnchorTooltip({ buttonId: triggerId, anchor: { placement: PLACEMENTS[props.side ?? 'bottom'][props.align ?? 'center'], gap: 8, portal: false } }), () => props.toParentMessage(CompletedAnchor()))),
           h.Class(
             cn(
               CONTENT_CLASS,
-              positionClass(props.side ?? 'bottom', props.align ?? 'center'),
               props.class,
             ),
           ),
         ],
         [props.content],
-      ),
+      )] : []),
     ],
   );
 };

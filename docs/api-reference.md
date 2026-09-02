@@ -557,13 +557,20 @@ Source: [`src/ui/hover-card.ts`](../src/ui/hover-card.ts)
 | `Model` | type | `Model = typeof Model.Type` |
 | `Entered` | value | `Entered: value` |
 | `Left` | value | `Left: value` |
+| `Focused` | value | `Focused: value` |
+| `Blurred` | value | `Blurred: value` |
+| `PressedEscape` | value | `PressedEscape: value` |
+| `PressedPointer` | value | `PressedPointer: value` |
+| `CompletedAnchor` | value | `CompletedAnchor: value` |
+| `CompletedWaitBeforeShowingHoverCard` | value | `CompletedWaitBeforeShowingHoverCard: value` |
 | `CompletedWaitBeforeClosingHoverCard` | value | `CompletedWaitBeforeClosingHoverCard: value` |
 | `Message` | value | `Message: value` |
 | `Message` | type | `Message = typeof Message.Type` |
-| `InitConfig` | type | `InitConfig = Readonly<{ id: string; closeDelay?: number; showDelay?: number; }>` |
-| `init` | function | `init(config: InitConfig): Model` |
-| `update` | function | `update(model: Model, message: Message): UpdateReturn` |
-| `reflectShowDelay` | function | `reflectShowDelay(model: Model, _showDelay: number): Model` |
+| `InitConfig` | type | `InitConfig = HoverCardBehavior.InitConfig` |
+| `init` | value | `init: value` |
+| `update` | value | `update: value` |
+| `reflectShowDelay` | value | `reflectShowDelay: value` |
+| `reflectCloseDelay` | value | `reflectCloseDelay: value` |
 | `HoverCardSide` | type | `HoverCardSide = 'top' \| 'right' \| 'bottom' \| 'left'` |
 | `HoverCardAlign` | type | `HoverCardAlign = 'start' \| 'center' \| 'end'` |
 | `HoverCardProps` | type | `HoverCardProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; content: Html \| string; align?: HoverCardAlign; side?: HoverCardSide; isDisabled?: boolean; ariaLabel?: string; triggerClass?: string; class?: s…` |

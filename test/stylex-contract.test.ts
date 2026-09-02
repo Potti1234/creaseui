@@ -380,6 +380,20 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/tooltip['"]/u)
   })
 
+  it('shares Hover Card ownership and versioned delay behavior across skins', () => {
+    const behavior = readFileSync('src/lib/hover-card.ts', 'utf8')
+    const tailwind = readFileSync('src/ui/hover-card.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/hover-card.ts', 'utf8')
+
+    assert.match(behavior, /WaitBeforeShowingHoverCard/u)
+    assert.match(behavior, /WaitBeforeClosingHoverCard/u)
+    assert.match(tailwind, /@\/lib\/hover-card/u)
+    assert.match(stylex, /@\/lib\/hover-card/u)
+    assert.match(tailwind, /AnchorTooltip/u)
+    assert.match(stylex, /AnchorTooltip/u)
+    assert.doesNotMatch(stylex, /from ['"]@\/ui\/hover-card['"]/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

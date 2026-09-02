@@ -156,9 +156,13 @@ describe('stateful component models', () => {
   });
 
   it('keeps hover cards open when a stale close delay completes', () => {
-    const [opened] = HoverCard.update(
+    const [hovering] = HoverCard.update(
       HoverCard.init({ id: 'profile' }),
       HoverCard.Entered(),
+    );
+    const [opened] = HoverCard.update(
+      hovering,
+      HoverCard.CompletedWaitBeforeShowingHoverCard({ version: hovering.showVersion }),
     );
     const [leaving] = HoverCard.update(opened, HoverCard.Left());
     const staleVersion = leaving.closeVersion;

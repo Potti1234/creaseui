@@ -303,6 +303,19 @@
       ]
     },
     {
+      "name": "hover-card-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Hover Card Interaction Behavior",
+      "description": "Shared pointer, focus, touch, and dismissal ownership with versioned open and close delays.",
+      "files": [
+        {
+          "path": "hover-card.ts",
+          "type": "registry:lib",
+          "target": "@lib/hover-card.ts"
+        }
+      ]
+    },
+    {
       "name": "tooltip-behavior",
       "type": "registry:lib",
       "title": "Foldkit Tooltip Interaction Behavior",

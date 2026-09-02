@@ -22,7 +22,7 @@ export type Model = typeof Model.Type`,
 export const Message = S.Union([GotHoverCardMessage])
 export type Message = typeof Message.Type`,
   init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { hoverCard: HoverCard.init({ id: 'foldkit-profile', closeDelay: 150 }) },
+  { hoverCard: HoverCard.init({ id: 'foldkit-profile', showDelay: 200, closeDelay: 150 }) },
   [],
 ]`,
   update: `export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
@@ -62,7 +62,7 @@ type HoverCardPreviewModel = typeof HoverCardPreviewModel.Type;
 const previewProgram = definePreviewProgram<HoverCardPreviewModel, GotHoverCardPreviewMessage>({
   Model: HoverCardPreviewModel,
   Message: GotHoverCardPreviewMessage,
-  init: index => ({ _docsPage: 'hover-card', hoverCard: HoverCard.init({ id: `docs-hover-card-${String(index)}`, closeDelay: 150 }) }),
+  init: index => ({ _docsPage: 'hover-card', hoverCard: HoverCard.init({ id: `docs-hover-card-${String(index)}`, showDelay: 200, closeDelay: 150 }) }),
   update: (model, message) => {
     const [hoverCard, commands] = HoverCard.update(model.hoverCard, message.message);
     return [{ ...model, hoverCard }, Command.mapMessages(commands, next => GotHoverCardPreviewMessage({ message: next }))];
@@ -75,11 +75,11 @@ export const hoverCardPage = authoredPage({
   previewProgram,
   definition: {
     kind: 'submodel', description: 'Reveals supplementary preview information when a pointer or keyboard focus rests on a trigger.',
-    architecture: 'Hover Card keeps disclosure and a versioned close delay in a child Model. The delayed Command must be mapped back to the child so stale leave events cannot close a newly re-entered card.',
+    architecture: 'Hover Card keeps pointer and focus ownership plus versioned show and close delays in one shared child Model. Both delayed Commands map back to the child so stale completions cannot override a re-entered or refocused card.',
     apiHref: 'https://foldkit.dev/ui/hover-card',
     composition: 'Hover Card child state\n├── focusable trigger\n└── non-modal preview panel',
     styling: 'Use concise, read-only content and leave enough room around the anchor. Hover cards should enrich an existing target, never hide an action required to complete a task.',
-    accessibility: 'The trigger is a real button and opens on focus as well as hover. The panel is supplemental rather than modal; users can continue through the page without interacting with it.',
+    accessibility: 'The trigger is a real button and opens on focus as well as hover, with a touch press fallback. The supplemental panel is non-modal, does not move or trap focus, and closes on Escape.',
     keyboard: [['Tab', 'Focusing the trigger reveals the card.'], ['Shift+Tab / Tab away', 'Schedules the card to close after its configured delay.'], ['Pointer hover', 'Keeps the card open while the pointer crosses from trigger to content.']],
     examples: [
       { title: 'Profile preview', description: 'Focus and hover share one child update path with a race-safe delayed close command.',  code: source('Profile preview', 'bottom') },
