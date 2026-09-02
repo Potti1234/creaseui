@@ -17,7 +17,7 @@ export const tablePage = authoredPage({
     examples: [
       {
         title: 'Component Inventory', description: 'Render one header row and map domain records into body rows.',
-        staticPreview: (_model, h) => Table.table({ class: 'max-w-xl', children: [Table.tableCaption({ children: ['Foldkit ownership by component.'] }, h), Table.tableHeader({ children: [Table.tableRow({ children: [Table.tableHead({ children: ['Component'] }, h), Table.tableHead({ children: ['State'] }, h)] }, h)] }, h), Table.tableBody({ children: rows.map(([name, state]) => Table.tableRow({ children: [Table.tableCell({ class: 'font-medium', children: [name] }, h), Table.tableCell({ children: [state] }, h)] }, h)) }, h)] }, h),
+        staticPreview: (_model, h) => Table.table({ class: 'max-w-xl', children: [Table.tableCaption({ children: ['Foldkit ownership by component.'] }, h), Table.tableHeader({ children: [Table.tableRow({ children: [Table.tableHead({ children: ['Component'] }, h), Table.tableHead({ children: ['State'] }, h)] }, h)] }, h), Table.tableBody({ children: rows.map(([name, state]) => Table.tableRow({ children: [Table.tableHead({ scope: 'row', class: 'font-medium', children: [name] }, h), Table.tableCell({ children: [state] }, h)] }, h)) }, h)] }, h),
         code: source('Component Inventory', `Table.table({ children: [
   Table.tableCaption({ children: ['Foldkit ownership by component.'] }, h),
   Table.tableHeader({ children: [
@@ -32,7 +32,7 @@ export const tablePage = authoredPage({
     { name: 'Dialog', state: 'Stateful' },
   ].map(row =>
     Table.tableRow({ children: [
-      Table.tableCell({ children: [row.name] }, h),
+      Table.tableHead({ scope: 'row', children: [row.name] }, h),
       Table.tableCell({ children: [row.state] }, h),
     ] }, h),
   ) }, h),
@@ -54,6 +54,24 @@ export const tablePage = authoredPage({
       Table.tableCell({ class: 'text-right', children: ['65'] }, h),
     ] }, h),
   ] }, h),
+] }, h),`),
+      },
+      {
+        title: 'Dense overflow', description: 'Dense native cells remain inside a horizontally scrollable container on narrow screens.',
+        staticPreview: (_model, h) => Table.table({ class: 'min-w-[44rem] text-xs', children: [Table.tableCaption({ children: ['Deployment inventory with intentionally wide columns.'] }, h), Table.tableHeader({ children: [Table.tableRow({ children: ['Service', 'Owner', 'Region', 'Status', 'Last deployment'].map(label => Table.tableHead({ class: 'h-8 p-1', children: [label] }, h)) }, h)] }, h), Table.tableBody({ children: [Table.tableRow({ children: [Table.tableHead({ scope: 'row', class: 'p-1', children: ['Documentation'] }, h), ...['Platform', 'Europe', 'Healthy', 'Today at 10:42'].map(value => Table.tableCell({ class: 'p-1', children: [value] }, h))] }, h)] }, h)] }, h),
+        code: source('Dense overflow', `Table.table({ class: 'min-w-[44rem] text-xs', children: [
+  Table.tableCaption({ children: ['Deployment inventory with intentionally wide columns.'] }, h),
+  Table.tableHeader({ children: [Table.tableRow({ children: ['Service', 'Owner', 'Region', 'Status', 'Last deployment'].map(label => Table.tableHead({ children: [label] }, h)) }, h)] }, h),
+  Table.tableBody({ children: [Table.tableRow({ children: [Table.tableHead({ scope: 'row', children: ['Documentation'] }, h), ...['Platform', 'Europe', 'Healthy', 'Today at 10:42'].map(value => Table.tableCell({ children: [value] }, h))] }, h)] }, h),
+] }, h),`),
+      },
+      {
+        title: 'Empty body', description: 'An empty collection stays a real table with one explanatory spanning cell.',
+        staticPreview: (_model, h) => Table.table({ class: 'max-w-xl', children: [Table.tableCaption({ children: ['Filtered component inventory.'] }, h), Table.tableHeader({ children: [Table.tableRow({ children: [Table.tableHead({ children: ['Component'] }, h), Table.tableHead({ children: ['State'] }, h)] }, h)] }, h), Table.tableBody({ children: [Table.tableRow({ children: [Table.tableCell({ colspan: 2, class: 'h-24 text-center text-muted-foreground', children: ['No components match this filter.'] }, h)] }, h)] }, h)] }, h),
+        code: source('Empty body', `Table.table({ children: [
+  Table.tableCaption({ children: ['Filtered component inventory.'] }, h),
+  Table.tableHeader({ children: [Table.tableRow({ children: [Table.tableHead({ children: ['Component'] }, h), Table.tableHead({ children: ['State'] }, h)] }, h)] }, h),
+  Table.tableBody({ children: [Table.tableRow({ children: [Table.tableCell({ colspan: 2, children: ['No components match this filter.'] }, h)] }, h)] }, h),
 ] }, h),`),
       },
     ],

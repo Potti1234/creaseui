@@ -1039,8 +1039,10 @@ Source: [`src/ui/table.ts`](../src/ui/table.ts)
 | `tableBody` | value | `tableBody: value` |
 | `tableFooter` | value | `tableFooter: value` |
 | `tableRow` | value | `tableRow: value` |
-| `tableHead` | value | `tableHead: value` |
-| `tableCell` | value | `tableCell: value` |
+| `TableHeadProps` | type | `TableHeadProps = SlotProps & Readonly<{ scope?: 'col' \| 'row' }>` |
+| `tableHead` | function | `tableHead<Msg>(props: TableHeadProps, h: HtmlBuilder<Msg>): Html` |
+| `TableCellProps` | type | `TableCellProps = SlotProps & Readonly<{ colspan?: number }>` |
+| `tableCell` | function | `tableCell<Msg>(props: TableCellProps, h: HtmlBuilder<Msg>): Html` |
 | `tableCaption` | value | `tableCaption: value` |
 
 ## Tabs

@@ -1737,6 +1737,24 @@ test("message exposes live author metadata and parent-owned keyboard actions", a
   expect(await row.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
 });
 
+test("table preserves native captions, scoped headers, overflow, and empty rows", async ({ page }) => {
+  await page.goto("/docs/components/table");
+  const inventory = page.locator("#component-inventory").getByRole("table", { name: "Foldkit ownership by component." });
+  await expect(inventory.getByRole("columnheader", { name: "Component" })).toHaveAttribute("scope", "col");
+  await expect(inventory.getByRole("rowheader", { name: "Accordion" })).toHaveAttribute("scope", "row");
+  await expect(inventory.getByRole("cell", { name: "Stateful" }).first()).toBeVisible();
+
+  const denseExample = page.locator("#dense-overflow");
+  const denseContainer = denseExample.locator('[data-slot="table-container"]');
+  await expect(denseExample.getByRole("table", { name: "Deployment inventory with intentionally wide columns." })).toBeVisible();
+  expect(await denseContainer.evaluate(element => element.scrollWidth > element.clientWidth)).toBe(true);
+
+  const empty = page.locator("#empty-body").getByRole("table", { name: "Filtered component inventory." });
+  const emptyCell = empty.getByRole("cell", { name: "No components match this filter." });
+  await expect(emptyCell).toHaveAttribute("colspan", "2");
+  await expect(empty.getByRole("row")).toHaveCount(2);
+});
+
 test("checkbox shares controlled mixed, read-only, and form semantics", async ({
   page,
 }) => {

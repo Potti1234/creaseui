@@ -229,6 +229,17 @@ describe('StyleX component authoring contract', () => {
     }
   })
 
+  it('keeps Table native, stateless, and semantically scoped in both skins', () => {
+    for (const path of ['src/ui/table.ts', 'src/stylex/table.ts']) {
+      const source = readFileSync(path, 'utf8')
+      assert.match(source, /h\.table/u)
+      assert.match(source, /h\.caption/u)
+      assert.match(source, /h\.Scope\(props\.scope \?\? 'col'\)/u)
+      assert.match(source, /h\.Colspan/u)
+      assert.doesNotMatch(source, /export const Model/u)
+    }
+  })
+
   it('keeps both Popover skins on the canonical Foldkit submodel', () => {
     const tailwind = readFileSync('src/ui/popover.ts', 'utf8')
     const stylex = readFileSync('src/stylex/popover.ts', 'utf8')

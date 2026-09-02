@@ -79,17 +79,13 @@ export const tableRow = tablePart(
   'border-b transition-colors hover:bg-muted/50 has-aria-expanded:bg-muted/50 data-[selected]:bg-muted',
 );
 
-export const tableHead = tablePart(
-  'th',
-  'table-head',
-  'h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
-);
+export type TableHeadProps = SlotProps & Readonly<{ scope?: 'col' | 'row' }>;
+export const tableHead = <Msg>(props: TableHeadProps, h: HtmlBuilder<Msg>): Html =>
+  h.th([h.Scope(props.scope ?? 'col'), h.DataAttribute('slot', 'table-head'), h.Class(cn('h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]', props.class))], [...props.children]);
 
-export const tableCell = tablePart(
-  'td',
-  'table-cell',
-  'p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
-);
+export type TableCellProps = SlotProps & Readonly<{ colspan?: number }>;
+export const tableCell = <Msg>(props: TableCellProps, h: HtmlBuilder<Msg>): Html =>
+  h.td([...(props.colspan === undefined ? [] : [h.Colspan(props.colspan)]), h.DataAttribute('slot', 'table-cell'), h.Class(cn('p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]', props.class))], [...props.children]);
 
 export const tableCaption = tablePart(
   'caption',

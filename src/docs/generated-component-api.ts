@@ -3277,14 +3277,24 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "tableRow: value"
     },
     {
+      "name": "TableHeadProps",
+      "kind": "type",
+      "signature": "TableHeadProps = SlotProps & Readonly<{ scope?: 'col' | 'row' }>"
+    },
+    {
       "name": "tableHead",
-      "kind": "value",
-      "signature": "tableHead: value"
+      "kind": "function",
+      "signature": "tableHead<Msg>(props: TableHeadProps, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "TableCellProps",
+      "kind": "type",
+      "signature": "TableCellProps = SlotProps & Readonly<{ colspan?: number }>"
     },
     {
       "name": "tableCell",
-      "kind": "value",
-      "signature": "tableCell: value"
+      "kind": "function",
+      "signature": "tableCell<Msg>(props: TableCellProps, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "tableCaption",

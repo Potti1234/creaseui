@@ -44,7 +44,8 @@ export const tableHeader = tablePart('thead', 'table-header', styles.header)
 export const tableBody = tablePart('tbody', 'table-body', styles.body)
 export const tableFooter = tablePart('tfoot', 'table-footer', styles.footer)
 export const tableRow = tablePart('tr', 'table-row', styles.row)
-export const tableHead = tablePart('th', 'table-head', styles.head)
-export const tableCell = tablePart('td', 'table-cell', styles.cell)
+export type TableHeadProps = SlotProps & Readonly<{ scope?: 'col' | 'row' }>
+export const tableHead = <Msg>(props: TableHeadProps, h: HtmlBuilder<Msg>): Html => h.th([h.Scope(props.scope ?? 'col'), h.DataAttribute('slot', 'table-head'), h.Class(className(styles.head, props.layoutStyle))], [...props.children])
+export type TableCellProps = SlotProps & Readonly<{ colspan?: number }>
+export const tableCell = <Msg>(props: TableCellProps, h: HtmlBuilder<Msg>): Html => h.td([...(props.colspan === undefined ? [] : [h.Colspan(props.colspan)]), h.DataAttribute('slot', 'table-cell'), h.Class(className(styles.cell, props.layoutStyle))], [...props.children])
 export const tableCaption = tablePart('caption', 'table-caption', styles.caption)
-

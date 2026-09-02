@@ -1234,8 +1234,10 @@ Examples: Timed notification, Sticky error
 - `tableBody: value` (value)
 - `tableFooter: value` (value)
 - `tableRow: value` (value)
-- `tableHead: value` (value)
-- `tableCell: value` (value)
+- `TableHeadProps = SlotProps & Readonly<{ scope?: 'col' | 'row' }>` (type)
+- `tableHead<Msg>(props: TableHeadProps, h: HtmlBuilder<Msg>): Html` (function)
+- `TableCellProps = SlotProps & Readonly<{ colspan?: number }>` (type)
+- `tableCell<Msg>(props: TableCellProps, h: HtmlBuilder<Msg>): Html` (function)
 - `tableCaption: value` (value)
 
 ### Tabs
