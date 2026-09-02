@@ -99,7 +99,7 @@ export const inputOtp = <Msg>(
                         h.div(
                           [
                             h.Class(
-                              'h-4 w-px animate-caret-blink bg-foreground duration-1000',
+                              'h-4 w-px animate-caret-blink bg-foreground duration-1000 motion-reduce:animate-none',
                             ),
                           ],
                           [],

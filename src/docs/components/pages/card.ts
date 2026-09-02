@@ -19,7 +19,7 @@ export const cardPage = authoredPage({
       {
         title: 'Article', description: 'Use the article element for a self-contained item with its own heading.',
         staticPreview: (_model, h) => Card.card({ element: 'article', class: 'w-full max-w-sm', children: [
-          Card.cardHeader({ children: [Card.cardTitle({ children: ['Release notes'] }, h), Card.cardDescription({ children: ['Crease UI 0.1.0'] }, h)] }, h),
+          Card.cardHeader({ children: [Card.cardTitle({ element: 'h2', children: ['Release notes'] }, h), Card.cardDescription({ children: ['Crease UI 0.1.0'] }, h)] }, h),
           Card.cardContent({ children: ['A source-owned component library for Foldkit applications.'] }, h),
         ] }, h),
         code: source('Article', `Card.card({
@@ -27,7 +27,7 @@ export const cardPage = authoredPage({
   class: 'w-full max-w-sm',
   children: [
     Card.cardHeader({ children: [
-      Card.cardTitle({ children: ['Release notes'] }, h),
+      Card.cardTitle({ element: 'h2', children: ['Release notes'] }, h),
       Card.cardDescription({ children: ['Crease UI 0.1.0'] }, h),
     ] }, h),
     Card.cardContent({ children: ['A source-owned component library for Foldkit applications.'] }, h),

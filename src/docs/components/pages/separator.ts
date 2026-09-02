@@ -8,10 +8,10 @@ export const separatorPage = authoredPage({
   slug: 'separator', title: 'Separator', kind: 'helper',
   previewMode: 'static',
   definition: {
-    kind: 'helper', description: 'Visually separates adjacent content without adding semantic structure.',
-    architecture: 'Separator is a stateless decorative helper. Content grouping belongs in semantic parent elements.',
+    kind: 'helper', description: 'Separates adjacent content visually or as an explicit semantic boundary.',
+    architecture: 'Separator is stateless. It defaults to decorative role none; decorative: false opts into the separator role when the boundary conveys structure.',
     apiHref: 'https://foldkit.dev/ui/overview',
-    accessibility: 'The separator is hidden from the accessibility tree with role="none" because it is purely visual.',
+    accessibility: 'Keep decorative separators out of the accessibility tree. Use decorative: false only when the boundary itself conveys organization.',
     examples: [
       {
         title: 'Horizontal', description: 'Divide vertically stacked regions with a full-width rule.',
@@ -24,10 +24,10 @@ export const separatorPage = authoredPage({
       },
       {
         title: 'Vertical', description: 'Give a vertical separator an explicit height through its parent or class.',
-        staticPreview: (_model, h) => h.div([h.Class('flex h-5 items-center gap-4')], ['Docs', Separator.separator({ orientation: 'vertical' }, h), 'API']),
+        staticPreview: (_model, h) => h.div([h.Class('flex h-5 items-center gap-4')], ['Docs', Separator.separator({ orientation: 'vertical', decorative: false }, h), 'API']),
         code: source('Vertical', `h.div([h.Class('flex h-5 items-center gap-4')], [
   'Docs',
-  Separator.separator({ orientation: 'vertical' }, h),
+  Separator.separator({ orientation: 'vertical', decorative: false }, h),
   'API',
 ]),`),
       },

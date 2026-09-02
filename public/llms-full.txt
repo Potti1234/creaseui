@@ -313,7 +313,8 @@ Examples: Timed notification, Sticky error
 - `CardProps = Slot & Readonly<{ element?: 'div' | 'section' | 'article'; }>` (type)
 - `card<Msg>(props: CardProps, h: HtmlBuilder<Msg>): Html` (function)
 - `cardHeader: value` (value)
-- `cardTitle: value` (value)
+- `CardTitleProps = Slot & Readonly<{ element?: 'h2' | 'h3' | 'h4' }>` (type)
+- `cardTitle<Msg>(props: CardTitleProps, h: HtmlBuilder<Msg>): Html` (function)
 - `cardDescription: value` (value)
 - `cardAction: value` (value)
 - `cardContent: value` (value)
@@ -813,7 +814,7 @@ Source: `src/ui/label.ts`
 
 Examples: Timed notification, Sticky error
 
-- `LabelProps = Readonly<{ for?: string; class?: string; children: ReadonlyArray<Html | string>; }>` (type)
+- `LabelProps = Readonly<{ for?: string; isRequired?: boolean; isDisabled?: boolean; class?: string; children: ReadonlyArray<Html | string>; }>` (type)
 - `label<Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Marker
@@ -825,7 +826,8 @@ Source: `src/ui/marker.ts`
 Examples: Timed notification, Sticky error
 
 - `markerVariants: value` (value)
-- `marker<Msg>(props: ChildrenProps & Readonly<{ variant?: VariantProps<typeof markerVariants>['variant'] }>, h: HtmlBuilder<Msg>): Html` (function)
+- `MarkerPurpose = 'annotation' | 'status' | 'decorative'` (type)
+- `marker<Msg>(props: ChildrenProps & Readonly<{ variant?: VariantProps<typeof markerVariants>['variant']; purpose?: MarkerPurpose; ariaLabel?: string }>, h: HtmlBuilder<Msg>): Html` (function)
 - `markerIcon<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 - `markerContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 
@@ -1073,7 +1075,7 @@ Source: `src/ui/separator.ts`
 
 Examples: Timed notification, Sticky error
 
-- `SeparatorProps = Readonly<{ orientation?: 'horizontal' | 'vertical'; class?: string; }>` (type)
+- `SeparatorProps = Readonly<{ orientation?: 'horizontal' | 'vertical'; decorative?: boolean; class?: string; }>` (type)
 - `separator<Msg>(props: SeparatorProps = {}, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Sheet

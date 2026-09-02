@@ -10,7 +10,7 @@ export const labelPage = authoredPage({
     kind: 'helper', description: 'Associates visible text with a form control.',
     architecture: 'Label is a stateless native label helper. Controlled input values and change Messages remain in the parent application.',
     apiHref: 'https://foldkit.dev/ui/input',
-    accessibility: 'Set for to the exact id of the associated control. Placeholder text is not a replacement for a visible label.',
+    accessibility: 'Set for to the exact control id. isRequired and isDisabled mirror presentation; native required and disabled semantics remain on the control.',
     examples: [
       {
         title: 'Input Label', description: 'Match the label for value to the input id.',

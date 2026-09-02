@@ -22,17 +22,22 @@ type ChildrenProps = Readonly<{
   children: ReadonlyArray<Html | string>;
   class?: string;
 }>;
+export type MarkerPurpose = 'annotation' | 'status' | 'decorative';
 
 export const marker = <Msg>(
   props: ChildrenProps &
-    Readonly<{ variant?: VariantProps<typeof markerVariants>['variant'] }>,
+    Readonly<{ variant?: VariantProps<typeof markerVariants>['variant']; purpose?: MarkerPurpose; ariaLabel?: string }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
   const variant = props.variant ?? 'default';
+  const purpose = props.purpose ?? 'annotation';
   return h.div(
     [
       h.DataAttribute('slot', 'marker'),
       h.DataAttribute('variant', variant ?? 'default'),
+      h.DataAttribute('purpose', purpose),
+      ...(purpose === 'decorative' ? [h.Role('none'), h.AriaHidden(true)] : [h.Role(purpose === 'status' ? 'status' : 'note')]),
+      ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
       h.Class(cn(markerVariants({ variant }), props.class)),
     ],
     [...props.children],

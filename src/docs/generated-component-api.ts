@@ -607,9 +607,14 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "cardHeader: value"
     },
     {
+      "name": "CardTitleProps",
+      "kind": "type",
+      "signature": "CardTitleProps = Slot & Readonly<{ element?: 'h2' | 'h3' | 'h4' }>"
+    },
+    {
       "name": "cardTitle",
-      "kind": "value",
-      "signature": "cardTitle: value"
+      "kind": "function",
+      "signature": "cardTitle<Msg>(props: CardTitleProps, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "cardDescription",
@@ -2120,7 +2125,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "LabelProps",
       "kind": "type",
-      "signature": "LabelProps = Readonly<{ for?: string; class?: string; children: ReadonlyArray<Html | string>; }>"
+      "signature": "LabelProps = Readonly<{ for?: string; isRequired?: boolean; isDisabled?: boolean; class?: string; children: ReadonlyArray<Html | string>; }>"
     },
     {
       "name": "label",
@@ -2135,9 +2140,14 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "markerVariants: value"
     },
     {
+      "name": "MarkerPurpose",
+      "kind": "type",
+      "signature": "MarkerPurpose = 'annotation' | 'status' | 'decorative'"
+    },
+    {
       "name": "marker",
       "kind": "function",
-      "signature": "marker<Msg>(props: ChildrenProps & Readonly<{ variant?: VariantProps<typeof markerVariants>['variant'] }>, h: HtmlBuilder<Msg>): Html"
+      "signature": "marker<Msg>(props: ChildrenProps & Readonly<{ variant?: VariantProps<typeof markerVariants>['variant']; purpose?: MarkerPurpose; ariaLabel?: string }>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "markerIcon",
@@ -2818,7 +2828,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "SeparatorProps",
       "kind": "type",
-      "signature": "SeparatorProps = Readonly<{ orientation?: 'horizontal' | 'vertical'; class?: string; }>"
+      "signature": "SeparatorProps = Readonly<{ orientation?: 'horizontal' | 'vertical'; decorative?: boolean; class?: string; }>"
     },
     {
       "name": "separator",

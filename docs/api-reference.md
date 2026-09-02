@@ -208,7 +208,8 @@ Source: [`src/ui/card.ts`](../src/ui/card.ts)
 | `CardProps` | type | `CardProps = Slot & Readonly<{ element?: 'div' \| 'section' \| 'article'; }>` |
 | `card` | function | `card<Msg>(props: CardProps, h: HtmlBuilder<Msg>): Html` |
 | `cardHeader` | value | `cardHeader: value` |
-| `cardTitle` | value | `cardTitle: value` |
+| `CardTitleProps` | type | `CardTitleProps = Slot & Readonly<{ element?: 'h2' \| 'h3' \| 'h4' }>` |
+| `cardTitle` | function | `cardTitle<Msg>(props: CardTitleProps, h: HtmlBuilder<Msg>): Html` |
 | `cardDescription` | value | `cardDescription: value` |
 | `cardAction` | value | `cardAction: value` |
 | `cardContent` | value | `cardContent: value` |
@@ -662,7 +663,7 @@ Source: [`src/ui/label.ts`](../src/ui/label.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `LabelProps` | type | `LabelProps = Readonly<{ for?: string; class?: string; children: ReadonlyArray<Html \| string>; }>` |
+| `LabelProps` | type | `LabelProps = Readonly<{ for?: string; isRequired?: boolean; isDisabled?: boolean; class?: string; children: ReadonlyArray<Html \| string>; }>` |
 | `label` | function | `label<Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Marker
@@ -672,7 +673,8 @@ Source: [`src/ui/marker.ts`](../src/ui/marker.ts)
 | Export | Kind | Signature |
 | --- | --- | --- |
 | `markerVariants` | value | `markerVariants: value` |
-| `marker` | function | `marker<Msg>(props: ChildrenProps & Readonly<{ variant?: VariantProps<typeof markerVariants>['variant'] }>, h: HtmlBuilder<Msg>): Html` |
+| `MarkerPurpose` | type | `MarkerPurpose = 'annotation' \| 'status' \| 'decorative'` |
+| `marker` | function | `marker<Msg>(props: ChildrenProps & Readonly<{ variant?: VariantProps<typeof markerVariants>['variant']; purpose?: MarkerPurpose; ariaLabel?: string }>, h: HtmlBuilder<Msg>): Html` |
 | `markerIcon` | function | `markerIcon<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `markerContent` | function | `markerContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 
@@ -894,7 +896,7 @@ Source: [`src/ui/separator.ts`](../src/ui/separator.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `SeparatorProps` | type | `SeparatorProps = Readonly<{ orientation?: 'horizontal' \| 'vertical'; class?: string; }>` |
+| `SeparatorProps` | type | `SeparatorProps = Readonly<{ orientation?: 'horizontal' \| 'vertical'; decorative?: boolean; class?: string; }>` |
 | `separator` | function | `separator<Msg>(props: SeparatorProps = {}, h: HtmlBuilder<Msg>): Html` |
 
 ## Sheet

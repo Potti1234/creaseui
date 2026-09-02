@@ -87,9 +87,16 @@ export const card = <Msg>(props: CardProps, h: HtmlBuilder<Msg>): Html => {
 }
 
 export const cardHeader = slot('card-header', styles.header)
-export const cardTitle = slot('card-title', styles.title)
+export type CardTitleProps = Slot & Readonly<{ element?: 'h2' | 'h3' | 'h4' }>
+export const cardTitle = <Msg>(props: CardTitleProps, h: HtmlBuilder<Msg>): Html => {
+  const attributes = [h.DataAttribute('slot', 'card-title'), h.Class(className(styles.title, props.layoutStyle))]
+  switch (props.element ?? 'h3') {
+    case 'h2': return h.h2(attributes, [...props.children])
+    case 'h4': return h.h4(attributes, [...props.children])
+    default: return h.h3(attributes, [...props.children])
+  }
+}
 export const cardDescription = slot('card-description', styles.description)
 export const cardAction = slot('card-action', styles.action)
 export const cardContent = slot('card-content', styles.content)
 export const cardFooter = slot('card-footer', styles.footer)
-

@@ -53,7 +53,15 @@ export const cardHeader = slotDiv(
   '@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1 px-4 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-4',
 );
 
-export const cardTitle = slotDiv('card-title', 'leading-none font-semibold');
+export type CardTitleProps = Slot & Readonly<{ element?: 'h2' | 'h3' | 'h4' }>;
+export const cardTitle = <Msg>(props: CardTitleProps, h: HtmlBuilder<Msg>): Html => {
+  const attributes = [h.DataAttribute('slot', 'card-title'), h.Class(cn('leading-none font-semibold', props.class))];
+  switch (props.element ?? 'h3') {
+    case 'h2': return h.h2(attributes, [...props.children]);
+    case 'h4': return h.h4(attributes, [...props.children]);
+    default: return h.h3(attributes, [...props.children]);
+  }
+};
 
 export const cardDescription = slotDiv(
   'card-description',

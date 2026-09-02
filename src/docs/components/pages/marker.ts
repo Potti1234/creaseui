@@ -13,7 +13,7 @@ export const markerPage = authoredPage({
     apiHref: 'https://foldkit.dev/ui/overview',
     composition: 'Marker → MarkerIcon / MarkerContent',
     styling: 'Choose separator for a centered label between rules or border for a conventional section boundary.',
-    accessibility: 'Marker text should describe the boundary in words. Decorative icons are hidden by MarkerIcon and must not carry unique meaning.',
+    accessibility: 'Choose purpose explicitly: annotation maps to note, status uses a polite live status, and decorative hides the whole marker. MarkerIcon is always decorative.',
     examples: [
       {
         title: 'Separator', description: 'Separate groups in a timeline with a centered textual marker.',

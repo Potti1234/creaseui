@@ -1515,6 +1515,29 @@ test("chart documents pure Foldkit SVG recipes with complete source", async ({
   await expect.poll(() => page.evaluate(() => (window as Window & { __charts?: Map<string, unknown> }).__charts?.size ?? 0)).toBe(0);
 });
 
+test("presentational helpers preserve native semantics and controlled OTP state", async ({ page }) => {
+  await page.goto("/docs/components/card");
+  await expect(page.locator("#article").getByRole("article").getByRole("heading", { level: 2, name: "Release notes" })).toBeVisible();
+
+  await page.goto("/docs/components/separator");
+  await expect(page.locator("#horizontal").getByRole("separator")).toHaveCount(0);
+  await expect(page.locator("#vertical").getByRole("separator")).toHaveAttribute("aria-orientation", "vertical");
+
+  await page.goto("/docs/components/label");
+  const email = page.locator("#docs-email");
+  await page.locator('#input-label label[data-slot="label"]').click();
+  await expect(email).toBeFocused();
+
+  await page.goto("/docs/components/input-otp");
+  const code = page.getByRole("textbox", { name: "Verification code" });
+  await code.fill("12a345678");
+  await expect(code).toHaveValue("12345");
+  await code.fill("12345678");
+  await expect(code).toHaveValue("123456");
+  await expect(code).toHaveAttribute("autocomplete", "one-time-code");
+  await expect(page.locator("#six-digit-code [data-slot=\"input-otp-group\"]")).toHaveAttribute("aria-hidden", "true");
+});
+
 test("data table filters and sorts through its interaction model", async ({
   page,
 }) => {
