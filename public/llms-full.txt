@@ -467,7 +467,7 @@ A shadcn-styled Data Table component for Foldkit.
 
 Source: `src/ui/data-table.ts`
 
-Examples: Sortable payments, Filter and paginate
+Examples: Sortable payments, Filter and paginate, Server-owned query
 
 - `export * from '@/lib/data-table-state'` (re-export)
 - `DataTableColumn<Row> = Readonly<{ key: string; header: string; cell: (row: Row) => Html | string; sortValue?: (row: Row) => string | number; isHideable?: boolean; class?: string; }>` (type)

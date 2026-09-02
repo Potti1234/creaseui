@@ -1408,13 +1408,16 @@
       "source": "src/ui/data-table.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/data-table",
       "dependencies": [
+        "Potti1234/creaseui/data-table-mechanics",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/table",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
         "Sortable payments",
-        "Filter and paginate"
+        "Filter and paginate",
+        "Server-owned query"
       ],
       "api": [
         {

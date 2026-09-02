@@ -385,8 +385,10 @@
       "title": "Data Table",
       "description": "A shadcn-styled Data Table component for Foldkit.",
       "registryDependencies": [
+        "Potti1234/creaseui/data-table-mechanics",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/table",
         "Potti1234/creaseui/utils"
       ],
       "files": [

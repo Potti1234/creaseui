@@ -1480,6 +1480,12 @@ test("data table filters and sorts through its interaction model", async ({
   await expect(amountHeader).toHaveAttribute("aria-sort", "ascending");
   await sortable.getByRole("button", { name: "Amount" }).click();
   await expect(amountHeader).toHaveAttribute("aria-sort", "descending");
+  await sortable
+    .getByRole("checkbox", { name: "Select all rows on this page" })
+    .click();
+  await expect(sortable).toContainText("5 of 6 rows selected.");
+  await sortable.locator("button").filter({ hasText: /^Next$/ }).click();
+  await expect(sortable).toContainText("Page 2 of 2");
 
   const filtered = page.locator("#filter-and-paginate");
   await filtered
@@ -1488,6 +1494,10 @@ test("data table filters and sorts through its interaction model", async ({
   await expect(filtered.getByRole("row")).toHaveCount(2);
   await expect(filtered).toContainText("r@example.com");
   await expect(filtered.locator("code")).toContainText("DataTable.update");
+
+  const server = page.locator("#server-owned-query");
+  await expect(server).toContainText("Page 1 of 9");
+  await expect(server.locator("code")).toContainText("mode: 'server'");
 });
 
 test("controlled helper pages own and update compact local preview state", async ({

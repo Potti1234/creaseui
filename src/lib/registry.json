@@ -316,6 +316,27 @@
       ]
     },
     {
+      "name": "data-table-mechanics",
+      "type": "registry:lib",
+      "title": "Data Table Mechanics",
+      "description": "Serializable Foldkit feature state and a deterministic framework-neutral TanStack row projection for client and server-owned data tables.",
+      "dependencies": [
+        "@tanstack/table-core@8.21.3"
+      ],
+      "files": [
+        {
+          "path": "data-table-state.ts",
+          "type": "registry:lib",
+          "target": "@lib/data-table-state.ts"
+        },
+        {
+          "path": "data-table-adapter.ts",
+          "type": "registry:lib",
+          "target": "@lib/data-table-adapter.ts"
+        }
+      ]
+    },
+    {
       "name": "drawer-behavior",
       "type": "registry:lib",
       "title": "Foldkit Drawer Interaction Behavior",

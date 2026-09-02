@@ -2,8 +2,10 @@ import type { Html, HtmlBuilder } from 'foldkit/html';
 import { Checkbox as CheckboxPrimitive } from '@foldkit/ui';
 
 import { ChangedPage, ChangedPageSize, Filtered, Sorted, ToggledColumn, ToggledRow, ToggledRows, type Message, type Model } from '@/lib/data-table-state';
+import { projectDataTable, type DataTableMode } from '@/lib/data-table-adapter';
 import * as Icon from '@/lib/icon';
 import { cn } from '@/lib/utils';
+import * as Table from '@/ui/table';
 
 export * from '@/lib/data-table-state';
 
@@ -26,21 +28,16 @@ export type DataTableProps<Row, Msg> = Readonly<{
   filterPlaceholder?: string;
   emptyText?: string;
   ariaLabel?: string;
+  id?: string;
   enableRowSelection?: boolean;
   enableColumnVisibility?: boolean;
   isRowSelectable?: (row: Row) => boolean;
   rowSelectionLabel?: (row: Row) => string;
   pageSizeOptions?: ReadonlyArray<number>;
+  mode?: DataTableMode;
+  rowCount?: number;
   class?: string;
 }>;
-
-const compare = (left: string | number, right: string | number): number =>
-  typeof left === 'number' && typeof right === 'number'
-    ? left - right
-    : String(left).localeCompare(String(right), undefined, {
-        numeric: true,
-        sensitivity: 'base',
-      });
 
 const selectionControl = <Msg>(
   props: Readonly<{
@@ -93,54 +90,28 @@ export const dataTable = <Row, Msg>(
   props: DataTableProps<Row, Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const query = props.model.filter.trim().toLocaleLowerCase();
-  const filtered =
-    query === '' || props.filterText === undefined
-      ? [...props.rows]
-      : props.rows.filter(
-          (row) =>
-            props.filterText?.(row).toLocaleLowerCase().includes(query) ===
-            true,
-        );
-  const sortColumn = props.columns.find(
-    (column) => column.key === props.model.sortKey,
-  );
-  const sorted =
-    sortColumn?.sortValue === undefined
-      ? filtered
-      : [...filtered].sort(
-          (left, right) =>
-            compare(
-              sortColumn.sortValue?.(left) ?? '',
-              sortColumn.sortValue?.(right) ?? '',
-            ) * (props.model.sortDirection === 'ascending' ? 1 : -1),
-        );
-  const pageCount = Math.max(
-    1,
-    Math.ceil(sorted.length / props.model.pageSize),
-  );
-  const page = Math.min(props.model.page, pageCount - 1);
-  const visible = sorted.slice(
-    page * props.model.pageSize,
-    (page + 1) * props.model.pageSize,
-  );
+  const instanceId = props.id ?? `data-table-${(props.ariaLabel ?? 'rows').toLocaleLowerCase().replaceAll(/[^a-z0-9]+/g, '-')}`;
+  const projection = projectDataTable({
+    columns: props.columns,
+    ...(props.filterText === undefined ? {} : { filterText: props.filterText }),
+    ...(props.isRowSelectable === undefined ? {} : { isRowSelectable: props.isRowSelectable }),
+    ...(props.mode === undefined ? {} : { mode: props.mode }),
+    model: props.model,
+    ...(props.rowCount === undefined ? {} : { rowCount: props.rowCount }),
+    rowKey: props.rowKey,
+    rows: props.rows,
+  });
+  const { filteredRowCount, page, pageCount, rows: visible, selectableRowKeys: selectableKeys, selectedRowCount: selectedCount } = projection;
   const hiddenKeys = new Set(props.model.hiddenColumnKeys);
   const visibleColumns = props.columns.filter(
     (column) => !hiddenKeys.has(column.key),
   );
   const selectedKeys = new Set(props.model.selectedRowKeys);
-  const selectableRows = visible.filter(
-    (row) => props.isRowSelectable?.(row) ?? true,
-  );
-  const selectableKeys = selectableRows.map(props.rowKey);
   const selectedOnPage = selectableKeys.filter((key) => selectedKeys.has(key));
   const allOnPageSelected =
     selectableKeys.length > 0 && selectedOnPage.length === selectableKeys.length;
   const someOnPageSelected =
     selectedOnPage.length > 0 && !allOnPageSelected;
-  const selectedCount = props.rows
-    .map(props.rowKey)
-    .filter((key) => selectedKeys.has(key)).length;
   const columnCount =
     visibleColumns.length + (props.enableRowSelection === true ? 1 : 0);
   const pageSizes = [
@@ -240,17 +211,9 @@ export const dataTable = <Row, Msg>(
       h.div(
         [h.Class('overflow-hidden rounded-md border')],
         [
-          h.table(
-            [
-              h.DataAttribute('slot', 'table'),
-              h.Class('w-full caption-bottom text-sm'),
-            ],
-            [
-              h.thead(
-                [h.Class('[&_tr]:border-b')],
-                [
-                  h.tr(
-                    [],
+          Table.table({ class: 'w-full', children: [
+              Table.tableHeader({ children: [
+                  Table.tableRow({ children:
                     [
                       ...(props.enableRowSelection === true
                         ? [
@@ -259,7 +222,7 @@ export const dataTable = <Row, Msg>(
                               [
                                 selectionControl(
                                   {
-                                    id: 'data-table-select-page',
+                                    id: `${instanceId}-select-page`,
                                     label: allOnPageSelected
                                       ? 'Deselect all rows on this page'
                                       : 'Select all rows on this page',
@@ -327,12 +290,9 @@ export const dataTable = <Row, Msg>(
                       ),
                       ),
                     ],
-                  ),
-                ],
-              ),
-              h.tbody(
-                [h.Class('[&_tr:last-child]:border-0')],
-                visible.length === 0
+                  }, h),
+                ] }, h),
+              Table.tableBody({ children: visible.length === 0
                   ? [
                       h.tr(
                         [],
@@ -372,7 +332,7 @@ export const dataTable = <Row, Msg>(
                                   [
                                     selectionControl(
                                       {
-                                        id: `data-table-row-${key}`,
+                                        id: `${instanceId}-row-${key}`,
                                         label:
                                           props.rowSelectionLabel?.(row) ??
                                           `Select row ${key}`,
@@ -408,9 +368,8 @@ export const dataTable = <Row, Msg>(
                         ],
                       );
                     }),
-              ),
-            ],
-          ),
+              }, h),
+            ] }, h),
         ],
       ),
       h.div(
@@ -420,8 +379,8 @@ export const dataTable = <Row, Msg>(
             [h.Class('text-sm text-muted-foreground')],
             [
               props.enableRowSelection === true
-                ? `${selectedCount} of ${filtered.length} row${filtered.length === 1 ? '' : 's'} selected.`
-                : `${filtered.length} row${filtered.length === 1 ? '' : 's'}`,
+                ? `${selectedCount} of ${filteredRowCount} row${filteredRowCount === 1 ? '' : 's'} selected.`
+                : `${filteredRowCount} row${filteredRowCount === 1 ? '' : 's'}`,
             ],
           ),
           h.div(
@@ -429,14 +388,14 @@ export const dataTable = <Row, Msg>(
             [
               h.label(
                 [
-                  h.For('data-table-page-size'),
+                  h.For(`${instanceId}-page-size`),
                   h.Class('text-sm text-muted-foreground'),
                 ],
                 ['Rows per page'],
               ),
               h.select(
                 [
-                  h.Id('data-table-page-size'),
+                  h.Id(`${instanceId}-page-size`),
                   h.Value(String(props.model.pageSize)),
                   h.OnChange((value) =>
                     props.toParentMessage(
@@ -514,4 +473,3 @@ export const dataTable = <Row, Msg>(
     ],
   );
 };
-
