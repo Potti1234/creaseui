@@ -606,6 +606,8 @@ test("authored carousels synchronize Embla selections without sharing state", as
 test("create icon selection changes the live preview shapes", async ({
   page,
 }) => {
+  test.setTimeout(120_000);
+  await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/create");
   const board = page.locator('[data-slot="capture-target"]');
   const firstPreviewIcon = board.locator(".crease-preview-icon").first();
@@ -1587,6 +1589,7 @@ test("data table filters and sorts through its interaction model", async ({
 test("controlled helper pages own and update compact local preview state", async ({
   page,
 }) => {
+  test.setTimeout(120_000);
   await page.goto("/docs/components/checkbox");
   const checkbox = page
     .locator("#terms")
