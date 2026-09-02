@@ -7,7 +7,12 @@ const source = (name: string, viewBody: string): string =>
     componentName: 'Empty', componentSlug: 'empty', exampleName: name, viewBody,
     componentImports: `import * as Button from '@/ui/button'`,
   });
-const previewProgram = interactionPreviewProgram('empty', (index, interaction, h) => Empty.empty({ class: `w-full max-w-xl${index === 0 ? ' border' : ''}`, children: [Empty.emptyHeader({ children: index === 0 ? [Empty.emptyMedia({ variant: 'icon', children: ['+'] }, h), Empty.emptyTitle({ children: ['No projects yet'] }, h), Empty.emptyDescription({ children: ['Create a project to start shipping with Crease UI.'] }, h)] : [Empty.emptyTitle({ children: ['No matching components'] }, h), Empty.emptyDescription({ children: ['Try a different search or clear the current filters.'] }, h)] }, h), Empty.emptyContent({ children: [Button.button({ ...(index === 1 ? { variant: 'outline' as const } : {}), onClick: interaction, children: [index === 0 ? 'Create project' : 'Clear filters'] }, h)] }, h)] }, h));
+const previewProgram = interactionPreviewProgram('empty', (index, interaction, h) => {
+  const titles = ['No projects yet', 'No matching components', 'Could not load projects', 'Access required'] as const;
+  const descriptions = ['Create a project to start shipping with Crease UI.', 'Try a different search or clear the current filters.', 'The project service did not respond. Your existing data is unchanged; retry when the connection is available.', 'Ask a workspace administrator for permission to view this area. This request does not change your current access.'] as const;
+  const actions = ['Create project', 'Clear filters', 'Retry', 'Request access'] as const;
+  return Empty.empty({ class: `w-full max-w-xl${index === 0 ? ' border' : ''}`, children: [Empty.emptyHeader({ children: [Empty.emptyMedia({ variant: 'icon', children: [index === 2 ? '!' : index === 3 ? '×' : '+'] }, h), Empty.emptyTitle({ children: [titles[index] ?? titles[0]] }, h), Empty.emptyDescription({ children: [descriptions[index] ?? descriptions[0]] }, h)] }, h), Empty.emptyContent({ children: [Button.button({ ...(index === 1 ? { variant: 'outline' as const } : {}), onClick: interaction, children: [actions[index] ?? actions[0]] }, h)] }, h)] }, h);
+});
 
 export const emptyPage = authoredPage({
   slug: 'empty', title: 'Empty', kind: 'recipe',
@@ -51,6 +56,32 @@ export const emptyPage = authoredPage({
     Empty.emptyContent({ children: [
       Button.button({ variant: 'outline', onClick: ClickedExample(), children: ['Clear filters'] }, h),
     ] }, h),
+  ],
+}, h),`),
+      },
+      {
+        title: 'Error recovery', description: 'Explain the failure without implying data loss and offer a retry Message.',
+        code: source('Error recovery', `Empty.empty({
+  class: 'w-full max-w-xl',
+  children: [
+    Empty.emptyHeader({ children: [
+      Empty.emptyTitle({ children: ['Could not load projects'] }, h),
+      Empty.emptyDescription({ children: ['The project service did not respond. Your existing data is unchanged.'] }, h),
+    ] }, h),
+    Empty.emptyContent({ children: [Button.button({ onClick: ClickedExample(), children: ['Retry'] }, h)] }, h),
+  ],
+}, h),`),
+      },
+      {
+        title: 'Permission denied', description: 'Name the missing access and provide a parent-owned request action.',
+        code: source('Permission denied', `Empty.empty({
+  class: 'w-full max-w-xl',
+  children: [
+    Empty.emptyHeader({ children: [
+      Empty.emptyTitle({ children: ['Access required'] }, h),
+      Empty.emptyDescription({ children: ['Ask a workspace administrator for permission to view this area.'] }, h),
+    ] }, h),
+    Empty.emptyContent({ children: [Button.button({ onClick: ClickedExample(), children: ['Request access'] }, h)] }, h),
   ],
 }, h),`),
       },

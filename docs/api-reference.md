@@ -492,7 +492,7 @@ Source: [`src/ui/empty.ts`](../src/ui/empty.ts)
 | `EmptyMediaVariants` | type | `EmptyMediaVariants = VariantProps<typeof emptyMediaVariants>` |
 | `EmptyMediaProps` | type | `EmptyMediaProps = SlotProps & Readonly<{ variant?: EmptyMediaVariants['variant']; }>` |
 | `emptyMedia` | function | `emptyMedia<Msg>(props: EmptyMediaProps, h: HtmlBuilder<Msg>): Html` |
-| `emptyTitle` | value | `emptyTitle: value` |
+| `emptyTitle` | function | `emptyTitle<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` |
 | `emptyDescription` | value | `emptyDescription: value` |
 | `emptyContent` | value | `emptyContent: value` |
 
@@ -714,12 +714,15 @@ Source: [`src/ui/message.ts`](../src/ui/message.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `messageGroup` | function | `messageGroup<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
-| `message` | function | `message<Msg>(props: ChildrenProps & Readonly<{ align?: 'start' \| 'end' }>, h: HtmlBuilder<Msg>): Html` |
+| `messageGroup` | function | `messageGroup<Msg>(props: MessageGroupProps, h: HtmlBuilder<Msg>): Html` |
+| `message` | function | `message<Msg>(props: ChildrenProps & Readonly<{ align?: 'start' \| 'end'; announcement?: 'none' \| 'status'; ariaLabel?: string }>, h: HtmlBuilder<Msg>): Html` |
 | `messageAvatar` | function | `messageAvatar<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `messageContent` | function | `messageContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `messageHeader` | function | `messageHeader<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
+| `messageAuthor` | function | `messageAuthor<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `messageFooter` | function | `messageFooter<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
+| `messageMetadata` | function | `messageMetadata<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
+| `messageActions` | function | `messageActions<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Native Select
 

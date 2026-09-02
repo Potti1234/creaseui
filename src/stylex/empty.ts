@@ -99,10 +99,10 @@ export const emptyMedia = <Msg>(
     ],
     [...props.children],
   );
-export const emptyTitle = slotDiv("empty-title", styles.title);
+export const emptyTitle = <Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html =>
+  h.h2([h.DataAttribute('slot', 'empty-title'), h.Class(className(styles.title, props.layoutStyle))], [...props.children]);
 export const emptyDescription = slotDiv(
   "empty-description",
   styles.description,
 );
 export const emptyContent = slotDiv("empty-content", styles.content);
-

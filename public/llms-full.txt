@@ -625,7 +625,7 @@ Examples: Timed notification, Sticky error
 - `EmptyMediaVariants = VariantProps<typeof emptyMediaVariants>` (type)
 - `EmptyMediaProps = SlotProps & Readonly<{ variant?: EmptyMediaVariants['variant']; }>` (type)
 - `emptyMedia<Msg>(props: EmptyMediaProps, h: HtmlBuilder<Msg>): Html` (function)
-- `emptyTitle: value` (value)
+- `emptyTitle<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
 - `emptyDescription: value` (value)
 - `emptyContent: value` (value)
 
@@ -873,12 +873,15 @@ Source: `src/ui/message.ts`
 
 Examples: Timed notification, Sticky error
 
-- `messageGroup<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
-- `message<Msg>(props: ChildrenProps & Readonly<{ align?: 'start' | 'end' }>, h: HtmlBuilder<Msg>): Html` (function)
+- `messageGroup<Msg>(props: MessageGroupProps, h: HtmlBuilder<Msg>): Html` (function)
+- `message<Msg>(props: ChildrenProps & Readonly<{ align?: 'start' | 'end'; announcement?: 'none' | 'status'; ariaLabel?: string }>, h: HtmlBuilder<Msg>): Html` (function)
 - `messageAvatar<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 - `messageContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 - `messageHeader<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+- `messageAuthor<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 - `messageFooter<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+- `messageMetadata<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+- `messageActions<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Native Select
 

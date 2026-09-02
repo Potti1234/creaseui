@@ -65,10 +65,8 @@ export const emptyMedia = <Msg>(
   );
 };
 
-export const emptyTitle = slotDiv(
-  'empty-title',
-  'text-lg font-medium tracking-tight',
-);
+export const emptyTitle = <Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html =>
+  h.h2([h.DataAttribute('slot', 'empty-title'), h.Class(cn('text-lg font-medium tracking-tight', props.class))], [...props.children]);
 
 export const emptyDescription = slotDiv(
   'empty-description',

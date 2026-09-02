@@ -6,6 +6,7 @@ type ChildrenProps = Readonly<{
   children: ReadonlyArray<Html | string>;
   class?: string;
 }>;
+type MessageGroupProps = ChildrenProps & Readonly<{ ariaLabel?: string; live?: 'off' | 'polite' }>;
 
 const part = <Msg>(
   slot: string,
@@ -20,12 +21,17 @@ const part = <Msg>(
 };
 
 export const messageGroup = <Msg>(
-  props: ChildrenProps,
+  props: MessageGroupProps,
   h: HtmlBuilder<Msg>,
-): Html => part<Msg>('message-group', 'flex min-w-0 flex-col gap-2', props, h);
+): Html => h.div([
+  h.DataAttribute('slot', 'message-group'),
+  ...(props.live === undefined || props.live === 'off' ? [] : [h.Role('log'), h.AriaLive('polite')]),
+  ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
+  h.Class(cn('flex min-w-0 flex-col gap-2', props.class)),
+], [...props.children]);
 
 export const message = <Msg>(
-  props: ChildrenProps & Readonly<{ align?: 'start' | 'end' }>,
+  props: ChildrenProps & Readonly<{ align?: 'start' | 'end'; announcement?: 'none' | 'status'; ariaLabel?: string }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
   const align = props.align ?? 'start';
@@ -33,6 +39,8 @@ export const message = <Msg>(
     [
       h.DataAttribute('slot', 'message'),
       h.DataAttribute('align', align),
+      ...(props.announcement === 'status' ? [h.Role('status'), h.AriaLive('polite')] : []),
+      ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
       h.Class(
         cn(
           'group/message relative flex w-full min-w-0 gap-2 text-sm data-[align=end]:flex-row-reverse',
@@ -74,6 +82,8 @@ export const messageHeader = <Msg>(
     props,
     h,
   );
+export const messageAuthor = <Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html =>
+  part<Msg>('message-author', 'flex max-w-full min-w-0 items-center px-3 text-xs font-medium text-muted-foreground', props, h);
 export const messageFooter = <Msg>(
   props: ChildrenProps,
   h: HtmlBuilder<Msg>,
@@ -84,3 +94,7 @@ export const messageFooter = <Msg>(
     props,
     h,
   );
+export const messageMetadata = <Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html =>
+  part<Msg>('message-metadata', 'flex max-w-full min-w-0 items-center px-3 text-xs font-medium text-muted-foreground', props, h);
+export const messageActions = <Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html =>
+  part<Msg>('message-actions', 'flex max-w-full min-w-0 items-center gap-2 px-3 text-xs', props, h);

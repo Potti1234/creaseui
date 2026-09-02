@@ -1566,8 +1566,8 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     },
     {
       "name": "emptyTitle",
-      "kind": "value",
-      "signature": "emptyTitle: value"
+      "kind": "function",
+      "signature": "emptyTitle<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "emptyDescription",
@@ -2248,12 +2248,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "messageGroup",
       "kind": "function",
-      "signature": "messageGroup<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html"
+      "signature": "messageGroup<Msg>(props: MessageGroupProps, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "message",
       "kind": "function",
-      "signature": "message<Msg>(props: ChildrenProps & Readonly<{ align?: 'start' | 'end' }>, h: HtmlBuilder<Msg>): Html"
+      "signature": "message<Msg>(props: ChildrenProps & Readonly<{ align?: 'start' | 'end'; announcement?: 'none' | 'status'; ariaLabel?: string }>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "messageAvatar",
@@ -2271,9 +2271,24 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "messageHeader<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html"
     },
     {
+      "name": "messageAuthor",
+      "kind": "function",
+      "signature": "messageAuthor<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html"
+    },
+    {
       "name": "messageFooter",
       "kind": "function",
       "signature": "messageFooter<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "messageMetadata",
+      "kind": "function",
+      "signature": "messageMetadata<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "messageActions",
+      "kind": "function",
+      "signature": "messageActions<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "native-select": [

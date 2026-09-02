@@ -10,6 +10,7 @@ type ChildrenProps = Readonly<{
   children: ReadonlyArray<Html | string>
   layoutStyle?: ComponentLayoutStyle
 }>
+type MessageGroupProps = ChildrenProps & Readonly<{ ariaLabel?: string; live?: 'off' | 'polite' }>
 
 const styles = stylex.create({
   avatar: {
@@ -62,17 +63,18 @@ const styles = stylex.create({
     minWidth: 0,
     width: '100%',
   },
+  actions: { gap: '0.5rem', paddingInline: '0.75rem', alignItems: 'center', display: 'flex', fontSize: '0.75rem', maxWidth: '100%', minWidth: 0 },
 })
 
 const part = <Msg>(slot: string, style: StaticStyles, props: ChildrenProps, h: HtmlBuilder<Msg>): Html =>
   h.div([h.DataAttribute('slot', slot), h.Class(className(style, props.layoutStyle))], [...props.children])
 
-export const messageGroup = <Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html => part('message-group', styles.group, props, h)
+export const messageGroup = <Msg>(props: MessageGroupProps, h: HtmlBuilder<Msg>): Html => h.div([h.DataAttribute('slot', 'message-group'), ...(props.live === undefined || props.live === 'off' ? [] : [h.Role('log'), h.AriaLive('polite')]), ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]), h.Class(className(styles.group, props.layoutStyle))], [...props.children])
 
-export const message = <Msg>(props: ChildrenProps & Readonly<{ align?: 'start' | 'end' }>, h: HtmlBuilder<Msg>): Html => {
+export const message = <Msg>(props: ChildrenProps & Readonly<{ align?: 'start' | 'end'; announcement?: 'none' | 'status'; ariaLabel?: string }>, h: HtmlBuilder<Msg>): Html => {
   const align = props.align ?? 'start'
   return h.div(
-    [h.DataAttribute('slot', 'message'), h.DataAttribute('align', align), h.Class(className(styles.message, align === 'end' && styles.end, props.layoutStyle))],
+    [h.DataAttribute('slot', 'message'), h.DataAttribute('align', align), ...(props.announcement === 'status' ? [h.Role('status'), h.AriaLive('polite')] : []), ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]), h.Class(className(styles.message, align === 'end' && styles.end, props.layoutStyle))],
     [...props.children],
   )
 }
@@ -80,5 +82,7 @@ export const message = <Msg>(props: ChildrenProps & Readonly<{ align?: 'start' |
 export const messageAvatar = <Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html => part('message-avatar', styles.avatar, props, h)
 export const messageContent = <Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html => part('message-content', styles.content, props, h)
 export const messageHeader = <Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html => part('message-header', styles.header, props, h)
+export const messageAuthor = <Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html => part('message-author', styles.header, props, h)
 export const messageFooter = <Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html => part('message-footer', styles.footer, props, h)
-
+export const messageMetadata = <Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html => part('message-metadata', styles.footer, props, h)
+export const messageActions = <Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html => part('message-actions', styles.actions, props, h)

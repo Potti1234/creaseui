@@ -212,6 +212,23 @@ describe('StyleX component authoring contract', () => {
     }
   })
 
+  it('keeps Empty and Message as stateless semantic compositions', () => {
+    for (const path of ['src/ui/empty.ts', 'src/stylex/empty.ts']) {
+      const source = readFileSync(path, 'utf8')
+      assert.match(source, /emptyTitle/u)
+      assert.match(source, /h\.h2/u)
+      assert.doesNotMatch(source, /export const Model/u)
+    }
+    for (const path of ['src/ui/message.ts', 'src/stylex/message.ts']) {
+      const source = readFileSync(path, 'utf8')
+      assert.match(source, /messageAuthor/u)
+      assert.match(source, /messageMetadata/u)
+      assert.match(source, /messageActions/u)
+      assert.match(source, /announcement\?: 'none' \| 'status'/u)
+      assert.doesNotMatch(source, /export const Model/u)
+    }
+  })
+
   it('keeps both Popover skins on the canonical Foldkit submodel', () => {
     const tailwind = readFileSync('src/ui/popover.ts', 'utf8')
     const stylex = readFileSync('src/stylex/popover.ts', 'utf8')

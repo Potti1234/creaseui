@@ -1706,6 +1706,37 @@ test("skeleton and spinner expose explicit loading semantics with reduced motion
   await expect(namedStatus.getByRole("img")).toHaveCount(0);
 });
 
+test("empty variants preserve heading structure, action order, and responsive copy", async ({ page }) => {
+  await page.goto("/docs/components/empty");
+  for (const [id, heading, action] of [["create-first-item", "No projects yet", "Create project"], ["no-results", "No matching components", "Clear filters"], ["error-recovery", "Could not load projects", "Retry"], ["permission-denied", "Access required", "Request access"]] as const) {
+    const example = page.locator(`#${id}`);
+    await expect(example.getByRole("heading", { level: 2, name: heading })).toBeVisible();
+    const button = example.getByRole("button", { name: action });
+    await button.focus();
+    await expect(button).toBeFocused();
+    await page.keyboard.press("Enter");
+    expect(await example.locator('[data-slot="empty"]')).toHaveCount(1);
+    const width = await example.locator('[data-slot="empty-description"]').evaluate(element => element.getBoundingClientRect().width);
+    expect(width).toBeLessThanOrEqual(await example.evaluate(element => element.getBoundingClientRect().width));
+  }
+});
+
+test("message exposes live author metadata and parent-owned keyboard actions", async ({ page }) => {
+  await page.goto("/docs/components/message");
+  await expect(page.locator("#incoming").locator('[data-slot="message-author"]')).toHaveText("Ada");
+  await expect(page.locator("#outgoing").locator('[data-slot="message-metadata"]')).toHaveText("Delivered");
+
+  const recovery = page.locator("#live-recovery");
+  await expect(recovery.getByRole("log", { name: "Project conversation" })).toBeVisible();
+  await expect(recovery.getByRole("status", { name: "New message from Ada" })).toBeVisible();
+  const action = recovery.getByRole("button", { name: "Retry delivery" });
+  await action.focus();
+  await page.keyboard.press("Enter");
+  await expect(action).toBeFocused();
+  const row = recovery.locator('[data-slot="message"]');
+  expect(await row.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+});
+
 test("checkbox shares controlled mixed, read-only, and form semantics", async ({
   page,
 }) => {
