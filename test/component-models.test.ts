@@ -16,13 +16,13 @@ import * as Sonner from '../src/ui/sonner.ts';
 describe('stateful component models', () => {
   it('bounds carousel navigation at the available slides', () => {
     const model = Carousel.init('gallery', 3);
-    assert.equal(Carousel.update(model, Carousel.Previous()).index, 0);
+    assert.equal(Carousel.update(model, Carousel.WentTo({ index: -99 })).index, 0);
     assert.equal(
       Carousel.update(model, Carousel.WentTo({ index: 99 })).index,
       2,
     );
     assert.equal(
-      Carousel.update({ ...model, index: 1 }, Carousel.Next()).index,
+      Carousel.update({ ...model, index: 1 }, Carousel.WentTo({ index: 99 })).index,
       2,
     );
   });

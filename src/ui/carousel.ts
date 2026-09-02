@@ -1,59 +1,22 @@
-import EmblaCarousel, {
-  type EmblaOptionsType,
-  type EmblaPluginType,
-} from 'embla-carousel';
-import { Effect, Queue, Schema as S, Stream } from 'effect';
+import type { EmblaPluginType } from 'embla-carousel';
+import { Stream } from 'effect';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
 
+import * as CarouselBehavior from '@/lib/carousel';
 import * as Icon from '@/lib/icon';
 import { cn } from '@/lib/utils';
 
-export const Model = S.Struct({
-  id: S.String,
-  index: S.Number,
-  count: S.Number,
-});
-export type Model = typeof Model.Type;
-export const Previous = m('Previous');
-export const Next = m('Next');
-export const WentTo = m('WentTo', { index: S.Number });
-export const Message = S.Union([Previous, Next, WentTo]);
-export type Message = typeof Message.Type;
-
-export const init = (id: string, count: number, index = 0): Model => ({
-  id,
-  count: Math.max(0, count),
-  index: Math.max(0, Math.min(index, count - 1)),
-});
-
-export const update = (model: Model, message: Message): Model => {
-  if (model.count === 0) return model;
-  switch (message._tag) {
-    case 'Previous':
-      return { ...model, index: Math.max(0, model.index - 1) };
-    case 'Next':
-      return { ...model, index: Math.min(model.count - 1, model.index + 1) };
-    case 'WentTo':
-      return {
-        ...model,
-        index: Math.max(0, Math.min(message.index, model.count - 1)),
-      };
-  }
-};
+export * from '@/lib/carousel';
 
 export type CarouselProps<Msg> = Readonly<{
-  model: Model;
-  toParentMessage: (message: Message) => Msg;
+  model: CarouselBehavior.Model;
+  toParentMessage: (message: CarouselBehavior.Message) => Msg;
   items: ReadonlyArray<Html | string>;
   ariaLabel?: string;
   orientation?: 'horizontal' | 'vertical';
   loop?: boolean;
   /** Additional Embla options. Component-level options take precedence. */
-  options?: Omit<
-    EmblaOptionsType,
-    'axis' | 'direction' | 'loop' | 'slidesToScroll'
-  >;
+  options?: CarouselBehavior.CarouselRuntimeOptions;
   /** Embla plugins, such as Autoplay or Wheel Gestures. */
   plugins?: ReadonlyArray<EmblaPluginType>;
   /** Number of slides advanced by the controls. */
@@ -102,7 +65,7 @@ export const carousel = <Msg>(
             name: `embla-carousel-${props.model.id}`,
             f: (element) =>
               element instanceof HTMLElement
-                ? emblaStream({
+                ? CarouselBehavior.mountCarousel({
                     viewport: element,
                     orientation: vertical ? 'vertical' : 'horizontal',
                     direction: element.closest('[dir="rtl"]') ? 'rtl' : 'ltr',
@@ -111,7 +74,7 @@ export const carousel = <Msg>(
                     initialIndex: props.model.index,
                     keyboardNavigation: props.keyboardNavigation !== false,
                     plugins: props.plugins ?? [],
-                    options: props.options,
+                    ...(props.options === undefined ? {} : { options: props.options }),
                     toMessage: props.toParentMessage,
                   })
                 : Stream.empty,
@@ -177,89 +140,6 @@ export const carousel = <Msg>(
 
 const clampPercent = (value: number): number =>
   Math.max(1, Math.min(100, value));
-
-const emblaStream = <Msg>(props: Readonly<{
-  viewport: HTMLElement;
-  orientation: 'horizontal' | 'vertical';
-  direction: 'ltr' | 'rtl';
-  loop: boolean;
-  slidesToScroll: number;
-  initialIndex: number;
-  keyboardNavigation: boolean;
-  plugins: ReadonlyArray<EmblaPluginType>;
-  options?: CarouselProps<Msg>['options'];
-  toMessage: (message: Message) => Msg;
-}>): Stream.Stream<Msg> =>
-  Stream.callback((queue) =>
-    Effect.acquireRelease(
-      Effect.sync(() => {
-        const root = props.viewport.parentElement;
-        const previousButton = root?.querySelector<HTMLElement>(
-          '[data-slot="carousel-previous"]',
-        );
-        const nextButton = root?.querySelector<HTMLElement>(
-          '[data-slot="carousel-next"]',
-        );
-        const api = EmblaCarousel(
-          props.viewport,
-          {
-            ...props.options,
-            axis: props.orientation === 'vertical' ? 'y' : 'x',
-            direction: props.direction,
-            loop: props.loop,
-            slidesToScroll: props.slidesToScroll,
-            startIndex: props.initialIndex,
-          },
-          [...props.plugins],
-        );
-        const emitSelection = () =>
-          Queue.offerUnsafe(
-            queue,
-            props.toMessage(WentTo({ index: api.selectedScrollSnap() })),
-          );
-        const updateButtons = () => {
-          if (previousButton instanceof HTMLButtonElement) {
-            previousButton.disabled = !api.canScrollPrev();
-          }
-          if (nextButton instanceof HTMLButtonElement) {
-            nextButton.disabled = !api.canScrollNext();
-          }
-        };
-        const previous = () => api.scrollPrev();
-        const next = () => api.scrollNext();
-        const onKeyDown = (event: KeyboardEvent) => {
-          if (!props.keyboardNavigation) return;
-          const previousKey =
-            props.orientation === 'vertical' ? 'ArrowUp' : 'ArrowLeft';
-          const nextKey =
-            props.orientation === 'vertical' ? 'ArrowDown' : 'ArrowRight';
-          if (event.key === previousKey) api.scrollPrev();
-          else if (event.key === nextKey) api.scrollNext();
-          else if (event.key === 'Home') api.scrollTo(0);
-          else if (event.key === 'End')
-            api.scrollTo(api.scrollSnapList().length - 1);
-          else return;
-          event.preventDefault();
-        };
-
-        previousButton?.addEventListener('click', previous);
-        nextButton?.addEventListener('click', next);
-        props.viewport.addEventListener('keydown', onKeyDown);
-        api.on('select', emitSelection);
-        api.on('select', updateButtons);
-        api.on('reInit', updateButtons);
-        updateButtons();
-
-        return () => {
-          previousButton?.removeEventListener('click', previous);
-          nextButton?.removeEventListener('click', next);
-          props.viewport.removeEventListener('keydown', onKeyDown);
-          api.destroy();
-        };
-      }),
-      (cleanup) => Effect.sync(cleanup),
-    ).pipe(Effect.flatMap(() => Effect.never)),
-  );
 
 const carouselButton = <Msg>(
   props: Readonly<{

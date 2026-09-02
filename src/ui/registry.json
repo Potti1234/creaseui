@@ -256,10 +256,8 @@
       "type": "registry:ui",
       "title": "Carousel",
       "description": "A shadcn-styled Carousel component for Foldkit.",
-      "dependencies": [
-        "embla-carousel@^8.6.0"
-      ],
       "registryDependencies": [
+        "Potti1234/creaseui/carousel-lifecycle",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"

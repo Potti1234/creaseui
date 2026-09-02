@@ -337,6 +337,22 @@
       ]
     },
     {
+      "name": "carousel-lifecycle",
+      "type": "registry:lib",
+      "title": "Foldkit Carousel Lifecycle",
+      "description": "The exclusive mounted Embla resource, observed selection state, keyboard policy, reduced-motion policy, and cleanup for both Carousel skins.",
+      "dependencies": [
+        "embla-carousel@^8.6.0"
+      ],
+      "files": [
+        {
+          "path": "carousel.ts",
+          "type": "registry:lib",
+          "target": "@lib/carousel.ts"
+        }
+      ]
+    },
+    {
       "name": "drawer-behavior",
       "type": "registry:lib",
       "title": "Foldkit Drawer Interaction Behavior",

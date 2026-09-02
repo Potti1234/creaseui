@@ -869,7 +869,7 @@
       "source": "src/ui/carousel.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/carousel",
       "dependencies": [
-        "embla-carousel@^8.6.0",
+        "Potti1234/creaseui/carousel-lifecycle",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -880,54 +880,14 @@
       ],
       "api": [
         {
-          "name": "Model",
-          "kind": "value",
-          "signature": "Model: value"
-        },
-        {
-          "name": "Model",
-          "kind": "type",
-          "signature": "Model = typeof Model.Type"
-        },
-        {
-          "name": "Previous",
-          "kind": "value",
-          "signature": "Previous: value"
-        },
-        {
-          "name": "Next",
-          "kind": "value",
-          "signature": "Next: value"
-        },
-        {
-          "name": "WentTo",
-          "kind": "value",
-          "signature": "WentTo: value"
-        },
-        {
-          "name": "Message",
-          "kind": "value",
-          "signature": "Message: value"
-        },
-        {
-          "name": "Message",
-          "kind": "type",
-          "signature": "Message = typeof Message.Type"
-        },
-        {
-          "name": "init",
-          "kind": "function",
-          "signature": "init(id: string, count: number, index = 0): Model"
-        },
-        {
-          "name": "update",
-          "kind": "function",
-          "signature": "update(model: Model, message: Message): Model"
+          "name": "*",
+          "kind": "re-export",
+          "signature": "export * from '@/lib/carousel'"
         },
         {
           "name": "CarouselProps",
           "kind": "type",
-          "signature": "CarouselProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Html | string>; ariaLabel?: string; orientation?: 'horizontal' | 'vertical'; loop?: boolean; /** Additional Embla options. Component-level options t…"
+          "signature": "CarouselProps<Msg> = Readonly<{ model: CarouselBehavior.Model; toParentMessage: (message: CarouselBehavior.Message) => Msg; items: ReadonlyArray<Html | string>; ariaLabel?: string; orientation?: 'horizontal' | 'vertical'; loop?: boolean; /** Additional Embla …"
         },
         {
           "name": "carousel",
@@ -944,6 +904,7 @@
       "source": "src/ui/chart.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/chart",
       "dependencies": [
+        "Potti1234/creaseui/echarts-adapter",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
       ],
@@ -2149,7 +2110,6 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/field",
       "dependencies": [
         "class-variance-authority@^0.7.1",
-        "Potti1234/creaseui/echarts-adapter",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/field-behavior",
         "Potti1234/creaseui/utils"

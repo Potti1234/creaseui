@@ -172,6 +172,18 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/drawer['"]/u)
   })
 
+  it('keeps Embla lifecycle ownership shared across both Carousel skins', () => {
+    const behavior = readFileSync('src/lib/carousel.ts', 'utf8')
+    const tailwind = readFileSync('src/ui/carousel.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/carousel.ts', 'utf8')
+    assert.match(behavior, /Effect\.acquireRelease/u)
+    assert.match(behavior, /api\.destroy/u)
+    assert.match(tailwind, /CarouselBehavior\.mountCarousel/u)
+    assert.match(stylex, /CarouselBehavior\.mountCarousel/u)
+    assert.doesNotMatch(tailwind, /EmblaCarousel\(/u)
+    assert.doesNotMatch(stylex, /EmblaCarousel\(/u)
+  })
+
   it('keeps Collapsible controlled on canonical Disclosure in both skins', () => {
     const tailwind = readFileSync('src/ui/collapsible.ts', 'utf8')
     const stylex = readFileSync('src/stylex/collapsible.ts', 'utf8')

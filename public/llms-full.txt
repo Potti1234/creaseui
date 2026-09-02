@@ -326,16 +326,8 @@ Source: `src/ui/carousel.ts`
 
 Examples: Timed notification, Sticky error
 
-- `Model: value` (value)
-- `Model = typeof Model.Type` (type)
-- `Previous: value` (value)
-- `Next: value` (value)
-- `WentTo: value` (value)
-- `Message: value` (value)
-- `Message = typeof Message.Type` (type)
-- `init(id: string, count: number, index = 0): Model` (function)
-- `update(model: Model, message: Message): Model` (function)
-- `CarouselProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Html | string>; ariaLabel?: string; orientation?: 'horizontal' | 'vertical'; loop?: boolean; /** Additional Embla options. Component-level options t…` (type)
+- `export * from '@/lib/carousel'` (re-export)
+- `CarouselProps<Msg> = Readonly<{ model: CarouselBehavior.Model; toParentMessage: (message: CarouselBehavior.Message) => Msg; items: ReadonlyArray<Html | string>; ariaLabel?: string; orientation?: 'horizontal' | 'vertical'; loop?: boolean; /** Additional Embla …` (type)
 - `carousel<Msg>(props: CarouselProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Chart

@@ -219,16 +219,8 @@ Source: [`src/ui/carousel.ts`](../src/ui/carousel.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `Model` | value | `Model: value` |
-| `Model` | type | `Model = typeof Model.Type` |
-| `Previous` | value | `Previous: value` |
-| `Next` | value | `Next: value` |
-| `WentTo` | value | `WentTo: value` |
-| `Message` | value | `Message: value` |
-| `Message` | type | `Message = typeof Message.Type` |
-| `init` | function | `init(id: string, count: number, index = 0): Model` |
-| `update` | function | `update(model: Model, message: Message): Model` |
-| `CarouselProps` | type | `CarouselProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Html \| string>; ariaLabel?: string; orientation?: 'horizontal' \| 'vertical'; loop?: boolean; /** Additional Embla options. Component-level options t…` |
+| `*` | re-export | `export * from '@/lib/carousel'` |
+| `CarouselProps` | type | `CarouselProps<Msg> = Readonly<{ model: CarouselBehavior.Model; toParentMessage: (message: CarouselBehavior.Message) => Msg; items: ReadonlyArray<Html \| string>; ariaLabel?: string; orientation?: 'horizontal' \| 'vertical'; loop?: boolean; /** Additional Embla …` |
 | `carousel` | function | `carousel<Msg>(props: CarouselProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Chart

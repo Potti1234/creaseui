@@ -629,54 +629,14 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
   ],
   "carousel": [
     {
-      "name": "Model",
-      "kind": "value",
-      "signature": "Model: value"
-    },
-    {
-      "name": "Model",
-      "kind": "type",
-      "signature": "Model = typeof Model.Type"
-    },
-    {
-      "name": "Previous",
-      "kind": "value",
-      "signature": "Previous: value"
-    },
-    {
-      "name": "Next",
-      "kind": "value",
-      "signature": "Next: value"
-    },
-    {
-      "name": "WentTo",
-      "kind": "value",
-      "signature": "WentTo: value"
-    },
-    {
-      "name": "Message",
-      "kind": "value",
-      "signature": "Message: value"
-    },
-    {
-      "name": "Message",
-      "kind": "type",
-      "signature": "Message = typeof Message.Type"
-    },
-    {
-      "name": "init",
-      "kind": "function",
-      "signature": "init(id: string, count: number, index = 0): Model"
-    },
-    {
-      "name": "update",
-      "kind": "function",
-      "signature": "update(model: Model, message: Message): Model"
+      "name": "*",
+      "kind": "re-export",
+      "signature": "export * from '@/lib/carousel'"
     },
     {
       "name": "CarouselProps",
       "kind": "type",
-      "signature": "CarouselProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Html | string>; ariaLabel?: string; orientation?: 'horizontal' | 'vertical'; loop?: boolean; /** Additional Embla options. Component-level options t…"
+      "signature": "CarouselProps<Msg> = Readonly<{ model: CarouselBehavior.Model; toParentMessage: (message: CarouselBehavior.Message) => Msg; items: ReadonlyArray<Html | string>; ariaLabel?: string; orientation?: 'horizontal' | 'vertical'; loop?: boolean; /** Additional Embla …"
     },
     {
       "name": "carousel",
