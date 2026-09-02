@@ -1118,6 +1118,7 @@ Source: [`src/ui/tooltip.ts`](../src/ui/tooltip.ts)
 | `init` | value | `init: value` |
 | `update` | value | `update: value` |
 | `reflectShowDelay` | value | `reflectShowDelay: value` |
+| `reflectCloseDelay` | value | `reflectCloseDelay: value` |
 | `TooltipSide` | type | `TooltipSide = 'top' \| 'right' \| 'bottom' \| 'left'` |
 | `TooltipAlign` | type | `TooltipAlign = 'start' \| 'center' \| 'end'` |
 | `TooltipProps` | type | `TooltipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; content: Html \| string; align?: TooltipAlign; side?: TooltipSide; isDisabled?: boolean; ariaLabel?: string; triggerClass?: string; class?: string;…` |

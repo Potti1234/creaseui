@@ -3474,6 +3474,11 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "reflectShowDelay: value"
     },
     {
+      "name": "reflectCloseDelay",
+      "kind": "value",
+      "signature": "reflectCloseDelay: value"
+    },
+    {
       "name": "TooltipSide",
       "kind": "type",
       "signature": "TooltipSide = 'top' | 'right' | 'bottom' | 'left'"

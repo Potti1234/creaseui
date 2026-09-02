@@ -1314,7 +1314,7 @@ A shadcn-styled Tooltip component for Foldkit.
 
 Source: `src/ui/tooltip.ts`
 
-Examples: Delayed label, Side label
+Examples: Delayed label, Side label, Disabled trigger
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -1325,6 +1325,7 @@ Examples: Delayed label, Side label
 - `init: value` (value)
 - `update: value` (value)
 - `reflectShowDelay: value` (value)
+- `reflectCloseDelay: value` (value)
 - `TooltipSide = 'top' | 'right' | 'bottom' | 'left'` (type)
 - `TooltipAlign = 'start' | 'center' | 'end'` (type)
 - `TooltipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; content: Html | string; align?: TooltipAlign; side?: TooltipSide; isDisabled?: boolean; ariaLabel?: string; triggerClass?: string; class?: string;…` (type)

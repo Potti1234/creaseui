@@ -303,6 +303,19 @@
       ]
     },
     {
+      "name": "tooltip-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Tooltip Interaction Behavior",
+      "description": "Shared hover and focus ownership with command-based open and close delays and stale-timer protection.",
+      "files": [
+        {
+          "path": "tooltip.ts",
+          "type": "registry:lib",
+          "target": "@lib/tooltip.ts"
+        }
+      ]
+    },
+    {
       "name": "toast-behavior",
       "type": "registry:lib",
       "title": "Foldkit Notification Behavior",

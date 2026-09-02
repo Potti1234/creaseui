@@ -884,6 +884,36 @@ test("select persists a typed OutMessage selection", async ({ page }) => {
   await expect(readOnlyTrigger).toContainText("Apple");
 });
 
+test("tooltip rejects stale hover timers and pointer-induced touch focus", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/docs/components/tooltip");
+  const example = page.locator("#delayed-label");
+  const trigger = example.getByRole("button", { name: "Add item to library" });
+  const panel = page.locator('[data-slot="tooltip-content"]');
+
+  await trigger.hover();
+  await page.mouse.move(0, 0);
+  await page.waitForTimeout(500);
+  await expect(panel).toBeHidden();
+
+  await trigger.evaluate((element) => {
+    element.dispatchEvent(new PointerEvent("pointerdown", { pointerType: "touch", bubbles: true }));
+    element.focus();
+  });
+  await expect(panel).toBeHidden();
+  await expect(example.locator("code")).toContainText("closeDelay");
+
+  const disabled = page.locator("#disabled-trigger").getByRole("button", {
+    name: "Unavailable action",
+  });
+  await expect(disabled).toBeDisabled();
+  await disabled.hover();
+  await page.waitForTimeout(500);
+  await expect(panel).toBeHidden();
+});
+
 test("combobox filters items and persists its typed selection output", async ({
   page,
 }) => {

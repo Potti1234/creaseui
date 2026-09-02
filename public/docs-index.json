@@ -4539,11 +4539,13 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/tooltip",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/tooltip-behavior"
       ],
       "examples": [
         "Delayed label",
-        "Side label"
+        "Side label",
+        "Disabled trigger"
       ],
       "api": [
         {
@@ -4590,6 +4592,11 @@
           "name": "reflectShowDelay",
           "kind": "value",
           "signature": "reflectShowDelay: value"
+        },
+        {
+          "name": "reflectCloseDelay",
+          "kind": "value",
+          "signature": "reflectCloseDelay: value"
         },
         {
           "name": "TooltipSide",

@@ -366,6 +366,20 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(stylex, /Command\.define/u)
   })
 
+  it('shares Tooltip ownership and versioned delay behavior across skins', () => {
+    const behavior = readFileSync('src/lib/tooltip.ts', 'utf8')
+    const tailwind = readFileSync('src/ui/tooltip.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/tooltip.ts', 'utf8')
+
+    assert.match(behavior, /WaitBeforeShowingTooltip/u)
+    assert.match(behavior, /WaitBeforeClosingTooltip/u)
+    assert.match(behavior, /showVersion/u)
+    assert.match(behavior, /closeVersion/u)
+    assert.match(tailwind, /@\/lib\/tooltip/u)
+    assert.match(stylex, /@\/lib\/tooltip/u)
+    assert.doesNotMatch(stylex, /from ['"]@\/ui\/tooltip['"]/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

@@ -1,7 +1,10 @@
 ﻿import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import { Tooltip as TooltipPrimitive } from '@foldkit/ui';
+import { Option } from 'effect';
+import * as Mount from 'foldkit/mount';
 
+import * as TooltipBehavior from '@/lib/tooltip';
 import { cn } from '@/lib/utils';
 
 /* Ported from shadcn/ui tooltip.tsx on top of foldkit Tooltip.
@@ -9,16 +12,17 @@ import { cn } from '@/lib/utils';
    Foldkit's floating anchor may flip a panel to avoid collisions. The arrow is
    styled from the anchor's runtime data-placement, so it follows that flip. */
 
-export const Model = TooltipPrimitive.Model;
+export const Model = TooltipBehavior.Model;
 export type Model = typeof Model.Type;
-export const Message = TooltipPrimitive.Message;
+export const Message = TooltipBehavior.Message;
 export type Message = typeof Message.Type;
-export const OutMessage = TooltipPrimitive.OutMessage;
+export const OutMessage = TooltipBehavior.OutMessage;
 export type OutMessage = typeof OutMessage.Type;
 
-export const init = TooltipPrimitive.init;
-export const update = TooltipPrimitive.update;
-export const reflectShowDelay = TooltipPrimitive.reflectShowDelay;
+export const init = TooltipBehavior.init;
+export const update = TooltipBehavior.update;
+export const reflectShowDelay = TooltipBehavior.reflectShowDelay;
+export const reflectCloseDelay = TooltipBehavior.reflectCloseDelay;
 
 const CONTENT_CLASS =
   'relative z-50 w-fit !overflow-y-visible rounded-md bg-primary px-3 py-1.5 text-xs text-balance text-primary-foreground';
@@ -68,55 +72,48 @@ export const tooltip = <Msg>(
   const side = props.side ?? 'top';
   const placement = PLACEMENTS[side][props.align ?? 'center'];
 
-  return h.submodel({
-    slotId: props.model.id,
-    model: props.model,
-    view: TooltipPrimitive.view,
-    viewInputs: {
-      anchor: {
+  const triggerId = `${props.model.id}-trigger`;
+  const panelId = `${props.model.id}-panel`;
+  const disabled = props.isDisabled ?? false;
+  const send = props.toParentMessage;
+  const anchor = {
         placement,
         gap: props.gap ?? 4,
         ...(props.offset === undefined ? {} : { offset: props.offset }),
         ...(props.portal === undefined ? {} : { portal: props.portal }),
-      },
-      ...(props.isDisabled === undefined
-        ? {}
-        : { isDisabled: props.isDisabled }),
-      ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
-      toView: ({ trigger, panel, isVisible }) => {
-        const ht = h;
-
-        return ht.div(
-          [ht.DataAttribute('slot', 'tooltip')],
+      };
+  return h.div(
+          [h.DataAttribute('slot', 'tooltip')],
           [
-            ht.button(
+            h.button(
               [
-                ...trigger,
-                ht.DataAttribute('slot', 'tooltip-trigger'),
+                h.Id(triggerId), h.Type('button'), h.AriaDescribedBy(panelId), h.Disabled(disabled),
+                ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
+                ...(disabled ? [] : [h.OnMouseEnter(send(TooltipBehavior.EnteredTrigger())), h.OnMouseLeave(send(TooltipBehavior.LeftTrigger())), h.OnFocus(send(TooltipBehavior.FocusedTrigger())), h.OnBlur(send(TooltipBehavior.BlurredTrigger())), h.OnPointerDown(() => Option.some(send(TooltipBehavior.PressedPointerOnTrigger()))), h.OnKeyDownPreventDefault(key => key === 'Escape' && props.model.isOpen ? Option.some(send(TooltipBehavior.PressedEscape())) : Option.none())]),
+                h.DataAttribute('slot', 'tooltip-trigger'),
                 ...(props.triggerClass === undefined
                   ? []
-                  : [ht.Class(cn(props.triggerClass))]),
+                  : [h.Class(cn(props.triggerClass))]),
               ],
               [props.trigger],
             ),
-            ...(isVisible
+            ...(props.model.isOpen
               ? [
-                  ht.div(
+                  h.div(
                     [
-                      ...panel,
-                      ht.DataAttribute('slot', 'tooltip-content'),
-                      ht.Class(cn(CONTENT_CLASS, 'group', props.class)),
+                      h.Id(panelId), h.Role('tooltip'), h.Style({ position: 'absolute', margin: '0', visibility: 'hidden', pointerEvents: 'none' }),
+                      h.OnMount(Mount.mapMessage(TooltipPrimitive.AnchorTooltip({ buttonId: triggerId, anchor }), () => send(TooltipBehavior.CompletedAnchor()))),
+                      h.DataAttribute('open', ''), h.DataAttribute('slot', 'tooltip-content'),
+                      h.Class(cn(CONTENT_CLASS, 'group', props.class)),
                     ],
                     [
                       props.content,
                       ...(props.showArrow === false
                         ? []
                         : [
-                            ht.span(
+                            h.span(
                               [
-                                ht.AriaHidden(true),
-                                ht.DataAttribute('slot', 'tooltip-arrow'),
-                                ht.Class(ARROW_CLASS),
+                                h.AriaHidden(true), h.DataAttribute('slot', 'tooltip-arrow'), h.Class(ARROW_CLASS),
                               ],
                               [],
                             ),
@@ -127,10 +124,6 @@ export const tooltip = <Msg>(
               : []),
           ],
         );
-      },
-    },
-    toParentMessage: props.toParentMessage,
-  });
 };
 
 /*
