@@ -178,6 +178,7 @@ Source: [`src/ui/calendar.ts`](../src/ui/calendar.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
+| `*` | re-export | `export * from '@/lib/calendar'` |
 | `Model` | value | `Model: value` |
 | `Model` | type | `Model = typeof Model.Type` |
 | `Message` | value | `Message: value` |
@@ -193,9 +194,9 @@ Source: [`src/ui/calendar.ts`](../src/ui/calendar.ts)
 | `reflectDisabledDates` | value | `reflectDisabledDates: value` |
 | `reflectDisabledDaysOfWeek` | value | `reflectDisabledDaysOfWeek: value` |
 | `dropToDays` | value | `dropToDays: value` |
-| `CalendarViewOptions` | type | `CalendarViewOptions = Readonly<{ class?: string; }>` |
+| `CalendarViewOptions` | type | `CalendarViewOptions = Readonly<{ class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarBehavior.CalendarRange; }>` |
 | `calendarView` | function | `calendarView<Msg>(attributes: CalendarPrimitive.CalendarAttributes, options: CalendarViewOptions, h: HtmlBuilder<Msg>): Html` |
-| `CalendarProps` | type | `CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; class?: string; previousMonthLabel?: string; nextMonthLabel?: string; previousYearsPageLabel?: string; ne…` |
+| `CalendarProps` | type | `CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarBehavior.CalendarRange; previousMonthLabel?: s…` |
 | `calendar` | function | `calendar<Msg>(props: CalendarProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Card

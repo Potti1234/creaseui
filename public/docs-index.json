@@ -696,6 +696,7 @@
       "source": "src/ui/calendar.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/calendar",
       "dependencies": [
+        "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -703,9 +704,16 @@
       ],
       "examples": [
         "Selected date",
-        "Roomier cells"
+        "Roomier cells",
+        "Parent-owned range",
+        "Locale zone and RTL"
       ],
       "api": [
+        {
+          "name": "*",
+          "kind": "re-export",
+          "signature": "export * from '@/lib/calendar'"
+        },
         {
           "name": "Model",
           "kind": "value",
@@ -784,7 +792,7 @@
         {
           "name": "CalendarViewOptions",
           "kind": "type",
-          "signature": "CalendarViewOptions = Readonly<{ class?: string; }>"
+          "signature": "CalendarViewOptions = Readonly<{ class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; }>"
         },
         {
           "name": "calendarView",
@@ -794,7 +802,7 @@
         {
           "name": "CalendarProps",
           "kind": "type",
-          "signature": "CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; class?: string; previousMonthLabel?: string; nextMonthLabel?: string; previousYearsPageLabel?: string; ne…"
+          "signature": "CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; previousMonthLabel?: s…"
         },
         {
           "name": "calendar",

@@ -353,6 +353,19 @@
       ]
     },
     {
+      "name": "calendar-range",
+      "type": "registry:lib",
+      "title": "Calendar Range Policy",
+      "description": "Pure parent-owned range normalization and explicit instant-to-calendar-date time-zone conversion for Calendar recipes.",
+      "files": [
+        {
+          "path": "calendar.ts",
+          "type": "registry:lib",
+          "target": "@lib/calendar.ts"
+        }
+      ]
+    },
+    {
       "name": "drawer-behavior",
       "type": "registry:lib",
       "title": "Foldkit Drawer Interaction Behavior",

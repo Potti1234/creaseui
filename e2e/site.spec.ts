@@ -1432,6 +1432,17 @@ test("calendar emits selection while retaining child navigation state", async ({
   await expect(day.locator("..")).toHaveAttribute("data-selected", "");
   await expect(example.locator("code")).toContainText("maybeOutput");
   await expect(example.locator("code")).toContainText("SelectedDate");
+  await expect(calendar.getByRole("button", { name: "Sunday, July 19, 2026" })).toBeDisabled();
+
+  const range = page.locator("#parent-owned-range").locator('[data-slot="calendar"]');
+  await expect(range.getByRole("button", { name: "Tuesday, July 14, 2026" }).locator("..")).toHaveAttribute("data-range", "start");
+  await expect(range.getByRole("button", { name: "Friday, July 17, 2026" }).locator("..")).toHaveAttribute("data-range", "middle");
+  await expect(range.getByRole("button", { name: "Monday, July 20, 2026" }).locator("..")).toHaveAttribute("data-range", "end");
+
+  const localized = page.locator("#locale-zone-and-rtl").locator('[data-slot="calendar"]');
+  await expect(localized).toHaveAttribute("dir", "rtl");
+  await expect(localized).toContainText("Juli 2026");
+  await expect(localized).toContainText("Mo");
 });
 
 test("date picker composes disclosure and calendar into one child model", async ({

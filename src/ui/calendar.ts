@@ -5,9 +5,12 @@ import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html';
 
 import { Calendar as CalendarPrimitive } from '@foldkit/ui';
 
+import * as CalendarBehavior from '@/lib/calendar';
 import * as Icon from '@/lib/icon';
 import { buttonVariants } from '@/ui/button';
 import { cn } from '@/lib/utils';
+
+export * from '@/lib/calendar';
 
 /* Ported from shadcn/ui calendar.tsx on top of foldkit's Calendar submodel.
 
@@ -65,7 +68,7 @@ const WEEKDAY_CLASS =
 const WEEK_CLASS = 'mt-2 flex w-full';
 
 const DAY_CELL_CLASS =
-  'group/day relative aspect-square size-(--cell-size) p-0 text-center select-none data-[today]:rounded-md data-[today]:bg-accent data-[today]:text-accent-foreground data-[outside-month]:text-muted-foreground data-[disabled]:text-muted-foreground data-[disabled]:opacity-50';
+  'group/day relative aspect-square size-(--cell-size) p-0 text-center select-none data-[today]:rounded-md data-[today]:bg-accent data-[today]:text-accent-foreground data-[outside-month]:text-muted-foreground data-[disabled]:text-muted-foreground data-[disabled]:opacity-50 data-[range=middle]:rounded-none data-[range=middle]:bg-accent data-[range=start]:rounded-l-md data-[range=start]:bg-accent data-[range=end]:rounded-r-md data-[range=end]:bg-accent data-[range=single]:rounded-md data-[range=single]:bg-accent';
 
 const DAY_BUTTON_CLASS = cn(
   buttonVariants({ variant: 'ghost', size: 'icon' }),
@@ -84,17 +87,20 @@ const PICKER_BUTTON_CLASS = cn(
 
 export type CalendarViewOptions = Readonly<{
   class?: string;
+  direction?: 'ltr' | 'rtl';
+  range?: CalendarBehavior.CalendarRange;
 }>;
 
 const navigationButton = <Msg>(
   attributes: ReadonlyArray<ChildAttribute>,
   direction: 'previous' | 'next',
+  rtl: boolean,
   h: HtmlBuilder<Msg>,
 ): Html => {
   return h.button(
     [...attributes, h.Class(NAV_BUTTON_CLASS)],
     [
-      direction === 'previous'
+      (direction === 'previous') !== rtl
         ? Icon.chevronLeft({ class: 'size-4' }, h)
         : Icon.chevronRight({ class: 'size-4' }, h),
     ],
@@ -109,6 +115,7 @@ const daysView = <Msg>(
   return h.div(
     [
       ...attributes.root,
+      ...(options.direction === undefined ? [] : [h.Dir(options.direction)]),
       h.DataAttribute('slot', 'calendar'),
       h.Class(cn(ROOT_CLASS, options.class)),
     ],
@@ -119,8 +126,8 @@ const daysView = <Msg>(
           h.div(
             [h.Class(NAV_CLASS)],
             [
-              navigationButton(attributes.previousMonthButton, 'previous', h),
-              navigationButton(attributes.nextMonthButton, 'next', h),
+              navigationButton(attributes.previousMonthButton, 'previous', options.direction === 'rtl', h),
+              navigationButton(attributes.nextMonthButton, 'next', options.direction === 'rtl', h),
             ],
           ),
           h.div(
@@ -156,7 +163,7 @@ const daysView = <Msg>(
                   [...week.attributes, h.Class(WEEK_CLASS)],
                   week.cells.map((cell) =>
                     h.div(
-                      [...cell.cellAttributes, h.Class(DAY_CELL_CLASS)],
+                      [...cell.cellAttributes, h.DataAttribute('range', CalendarBehavior.rangePosition(cell.date, options.range)), h.Class(DAY_CELL_CLASS)],
                       [
                         h.button(
                           [...cell.buttonAttributes, h.Class(DAY_BUTTON_CLASS)],
@@ -183,6 +190,7 @@ const monthsView = <Msg>(
   return h.div(
     [
       ...attributes.root,
+      ...(options.direction === undefined ? [] : [h.Dir(options.direction)]),
       h.DataAttribute('slot', 'calendar'),
       h.Class(cn(ROOT_CLASS, options.class)),
     ],
@@ -234,6 +242,7 @@ const yearsView = <Msg>(
   return h.div(
     [
       ...attributes.root,
+      ...(options.direction === undefined ? [] : [h.Dir(options.direction)]),
       h.DataAttribute('slot', 'calendar'),
       h.Class(cn(ROOT_CLASS, options.class)),
     ],
@@ -244,8 +253,8 @@ const yearsView = <Msg>(
           h.div(
             [h.Class(NAV_CLASS)],
             [
-              navigationButton(attributes.previousPageButton, 'previous', h),
-              navigationButton(attributes.nextPageButton, 'next', h),
+              navigationButton(attributes.previousPageButton, 'previous', options.direction === 'rtl', h),
+              navigationButton(attributes.nextPageButton, 'next', options.direction === 'rtl', h),
             ],
           ),
           h.div(
@@ -300,6 +309,8 @@ export type CalendarProps<Msg> = Readonly<{
   maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>;
   toParentMessage: (message: Message) => Msg;
   class?: string;
+  direction?: 'ltr' | 'rtl';
+  range?: CalendarBehavior.CalendarRange;
   previousMonthLabel?: string;
   nextMonthLabel?: string;
   previousYearsPageLabel?: string;
@@ -321,7 +332,7 @@ export const calendar = <Msg>(
       toView: (attributes) =>
         calendarView(
           attributes,
-          props.class === undefined ? {} : { class: props.class },
+          { ...(props.class === undefined ? {} : { class: props.class }), ...(props.direction === undefined ? {} : { direction: props.direction }), ...(props.range === undefined ? {} : { range: props.range }) },
           h,
         ),
       ...(props.previousMonthLabel === undefined
