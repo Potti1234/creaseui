@@ -3659,7 +3659,9 @@
       ],
       "examples": [
         "Compound layout",
-        "Bottom task"
+        "Bottom task",
+        "Top sheet",
+        "Left sheet"
       ],
       "api": [
         {

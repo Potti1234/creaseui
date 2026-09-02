@@ -144,6 +144,20 @@ describe('StyleX component authoring contract', () => {
     assert.match(stylex, /view: DialogPrimitive\.view/u)
   })
 
+  it('keeps Sheet as a render-only specialization of Dialog in both skins', () => {
+    const tailwind = readFileSync('src/ui/sheet.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/sheet.ts', 'utf8')
+
+    for (const source of [tailwind, stylex]) {
+      assert.match(source, /Model = DialogPrimitive\.Model/u)
+      assert.match(source, /update = DialogPrimitive\.update/u)
+      assert.match(source, /open = DialogPrimitive\.open/u)
+      assert.match(source, /close = DialogPrimitive\.close/u)
+      assert.match(source, /side\?: SheetSide/u)
+      assert.doesNotMatch(source, /S\.Struct/u)
+    }
+  })
+
   it('keeps both Popover skins on the canonical Foldkit submodel', () => {
     const tailwind = readFileSync('src/ui/popover.ts', 'utf8')
     const stylex = readFileSync('src/stylex/popover.ts', 'utf8')

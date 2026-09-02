@@ -32,10 +32,10 @@ const DIALOG_CLASS: Readonly<Record<SheetSide, string>> = {
 };
 
 const OVERLAY_CLASS =
-  'fixed inset-0 z-50 bg-black/50 transition duration-200 ease-out data-[closed]:opacity-0';
+  'fixed inset-0 z-50 bg-black/50 transition duration-200 ease-out data-[closed]:opacity-0 motion-reduce:transition-none';
 
 const CONTENT_CLASS =
-  'relative z-50 flex flex-col gap-4 bg-background shadow-lg transition ease-in-out duration-500 data-[closed]:duration-300';
+  'relative z-50 flex flex-col gap-4 bg-background shadow-lg transition ease-in-out duration-500 data-[closed]:duration-300 motion-reduce:transition-none';
 
 const SIDE_CLASS: Readonly<Record<SheetSide, string>> = {
   right: 'h-full w-3/4 border-l data-[closed]:translate-x-full sm:max-w-sm',

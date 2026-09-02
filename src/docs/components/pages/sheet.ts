@@ -89,8 +89,10 @@ const previewProgram = definePreviewProgram<SheetPreviewModel, SheetPreviewMessa
     return [{ ...model, sheet }, Command.mapMessages(commands, next => GotSheetPreviewMessage({ message: next }))];
   },
   view: (index, model, h) => {
-    const side: Sheet.SheetSide = index === 0 ? 'right' : 'bottom';
-    const title = index === 0 ? 'Edit profile' : 'Quick settings';
+    const sides: ReadonlyArray<Sheet.SheetSide> = ['right', 'bottom', 'top', 'left'];
+    const titles = ['Edit profile', 'Quick settings', 'Command palette', 'Workspace navigation'] as const;
+    const side = sides[index] ?? 'right';
+    const title = titles[index] ?? 'Edit profile';
     return h.div([], [Button.button({ variant: 'outline', onClick: OpenedSheetPreview(), children: [`Open ${side} sheet`] }, h), Sheet.sheet({ model: model.sheet, toParentMessage: message => GotSheetPreviewMessage({ message }), side, title, description: 'Update the settings, then save or cancel.', content: () => [h.div([h.Class('px-4 text-sm')], ['Sheet content remains ordinary Foldkit Html.'])], footer: slots => [h.button([...slots.closeButton, ...slots.initialFocusAttributes(), h.Type('button'), h.Class('rounded-md border px-4 py-2 text-sm')], ['Cancel']), h.button([...slots.closeButton, h.Type('button'), h.Class('rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground')], ['Save'])] }, h)]);
   },
 });
@@ -109,6 +111,8 @@ export const sheetPage = authoredPage({
     examples: [
       { title: 'Compound layout', description: 'Compose content and footer controls while Foldkit owns the modal lifecycle.',  code: source('Compound layout', 'right', 'Edit profile') },
       { title: 'Bottom task', description: 'Changing the edge is view configuration; the child integration remains identical.',  code: source('Bottom task', 'bottom', 'Quick settings') },
+      { title: 'Top sheet', description: 'Top placement uses the same Dialog behavior and focus lifecycle.', code: source('Top sheet', 'top', 'Command palette') },
+      { title: 'Left sheet', description: 'Left placement remains a render-time choice rather than model state.', code: source('Left sheet', 'left', 'Workspace navigation') },
     ],
   },
 });

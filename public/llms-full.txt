@@ -1070,7 +1070,7 @@ A shadcn-styled Sheet component for Foldkit.
 
 Source: `src/ui/sheet.ts`
 
-Examples: Compound layout, Bottom task
+Examples: Compound layout, Bottom task, Top sheet, Left sheet
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)

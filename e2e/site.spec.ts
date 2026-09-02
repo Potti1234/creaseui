@@ -807,6 +807,25 @@ test("popover delegates disclosure commands and restores trigger focus", async (
   await expect(trigger).toBeFocused();
 });
 
+test("sheet renders every edge from view input with Dialog focus behavior", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/docs/components/sheet");
+
+  for (const [id, side] of [["compound-layout", "right"], ["bottom-task", "bottom"], ["top-sheet", "top"], ["left-sheet", "left"]] as const) {
+    const example = page.locator(`#${id}`);
+    const trigger = example.getByRole("button", { name: `Open ${side} sheet` });
+    await trigger.click();
+    const sheet = page.getByRole("dialog");
+    const panel = sheet.locator('[data-slot="sheet-content"]');
+    await expect(panel).toBeVisible();
+    await expect(sheet.getByRole("button", { name: "Cancel" })).toBeFocused();
+    await expect(panel).toHaveCSS("transition-property", "none");
+    await page.keyboard.press("Escape");
+    await expect(sheet).toBeHidden();
+    await expect(trigger).toBeFocused();
+  }
+});
+
 test("hover card is available to keyboard focus and closes after blur", async ({
   page,
 }) => {
