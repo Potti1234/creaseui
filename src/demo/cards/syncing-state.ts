@@ -30,7 +30,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
                           emptyMedia(
                             {
                               variant: 'icon',
-                              children: [spinner({}, h)],
+                              children: [spinner({ isDecorative: true }, h)],
                             },
                             h,
                           ),

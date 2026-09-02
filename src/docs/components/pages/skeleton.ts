@@ -16,18 +16,18 @@ export const skeletonPage = authoredPage({
     examples: [
       {
         title: 'Profile', description: 'Mirror the avatar and text geometry of the eventual profile row.',
-        staticPreview: (_model, h) => h.div([h.Class('flex items-center gap-4')], [
-          Skeleton.skeleton({ class: 'size-12 rounded-full' }, h),
+        staticPreview: (_model, h) => h.div([h.Role('status'), h.AriaBusy(true), h.AriaLabel('Loading profile'), h.Class('flex items-center gap-4')], [
+          Skeleton.skeleton({ shape: 'circle', size: 'lg' }, h),
           h.div([h.Class('space-y-2')], [
-            Skeleton.skeleton({ class: 'h-4 w-48' }, h),
-            Skeleton.skeleton({ class: 'h-4 w-32' }, h),
+            Skeleton.skeleton({ shape: 'text', size: 'md', class: 'w-48' }, h),
+            Skeleton.skeleton({ shape: 'text', size: 'md' }, h),
           ]),
         ]),
-        code: source('Profile', `h.div([h.Class('flex items-center gap-4')], [
-  Skeleton.skeleton({ class: 'size-12 rounded-full' }, h),
+        code: source('Profile', `h.div([h.Role('status'), h.AriaBusy(true), h.AriaLabel('Loading profile'), h.Class('flex items-center gap-4')], [
+  Skeleton.skeleton({ shape: 'circle', size: 'lg' }, h),
   h.div([h.Class('space-y-2')], [
-    Skeleton.skeleton({ class: 'h-4 w-48' }, h),
-    Skeleton.skeleton({ class: 'h-4 w-32' }, h),
+    Skeleton.skeleton({ shape: 'text', size: 'md', class: 'w-48' }, h),
+    Skeleton.skeleton({ shape: 'text', size: 'md' }, h),
   ]),
 ]),`),
       },

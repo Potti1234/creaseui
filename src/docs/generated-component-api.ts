@@ -3089,7 +3089,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "SkeletonProps",
       "kind": "type",
-      "signature": "SkeletonProps = Readonly<{ class?: string; }>"
+      "signature": "SkeletonProps = Readonly<{ shape?: 'text' | 'rectangle' | 'circle'; size?: 'sm' | 'md' | 'lg'; class?: string; }>"
     },
     {
       "name": "skeleton",
@@ -3205,12 +3205,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "SpinnerProps",
       "kind": "type",
-      "signature": "SpinnerProps = Readonly<{ class?: string; }>"
+      "signature": "SpinnerProps = SpinnerAccessibility & Readonly<{ size?: 'sm' | 'md' | 'lg'; tone?: 'current' | 'muted' | 'primary'; class?: string; }>"
     },
     {
       "name": "spinner",
       "kind": "function",
-      "signature": "spinner<Msg>(props: SpinnerProps = {}, h: HtmlBuilder<Msg>): Html"
+      "signature": "spinner<Msg>(props: SpinnerProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "switch": [

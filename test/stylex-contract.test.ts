@@ -195,6 +195,23 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(stylex, /export const Model/u)
   })
 
+  it('keeps Skeleton and Spinner presentational with finite visual vocabularies', () => {
+    for (const path of ['src/ui/skeleton.ts', 'src/stylex/skeleton.ts']) {
+      const source = readFileSync(path, 'utf8')
+      assert.match(source, /'text' \| 'rectangle' \| 'circle'/u)
+      assert.match(source, /'sm' \| 'md' \| 'lg'/u)
+      assert.match(source, /AriaHidden\(true\)/u)
+      assert.doesNotMatch(source, /export const Model/u)
+    }
+    for (const path of ['src/ui/spinner.ts', 'src/stylex/spinner.ts']) {
+      const source = readFileSync(path, 'utf8')
+      assert.match(source, /isDecorative: true/u)
+      assert.match(source, /'sm' \| 'md' \| 'lg'/u)
+      assert.match(source, /'current' \| 'muted' \| 'primary'/u)
+      assert.doesNotMatch(source, /export const Model/u)
+    }
+  })
+
   it('keeps both Popover skins on the canonical Foldkit submodel', () => {
     const tailwind = readFileSync('src/ui/popover.ts', 'utf8')
     const stylex = readFileSync('src/stylex/popover.ts', 'utf8')

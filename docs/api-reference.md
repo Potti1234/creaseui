@@ -968,7 +968,7 @@ Source: [`src/ui/skeleton.ts`](../src/ui/skeleton.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `SkeletonProps` | type | `SkeletonProps = Readonly<{ class?: string; }>` |
+| `SkeletonProps` | type | `SkeletonProps = Readonly<{ shape?: 'text' \| 'rectangle' \| 'circle'; size?: 'sm' \| 'md' \| 'lg'; class?: string; }>` |
 | `skeleton` | function | `skeleton<Msg>(props: SkeletonProps = {}, h: HtmlBuilder<Msg>): Html` |
 
 ## Slider
@@ -1011,8 +1011,8 @@ Source: [`src/ui/spinner.ts`](../src/ui/spinner.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `SpinnerProps` | type | `SpinnerProps = Readonly<{ class?: string; }>` |
-| `spinner` | function | `spinner<Msg>(props: SpinnerProps = {}, h: HtmlBuilder<Msg>): Html` |
+| `SpinnerProps` | type | `SpinnerProps = SpinnerAccessibility & Readonly<{ size?: 'sm' \| 'md' \| 'lg'; tone?: 'current' \| 'muted' \| 'primary'; class?: string; }>` |
+| `spinner` | function | `spinner<Msg>(props: SpinnerProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Switch
 

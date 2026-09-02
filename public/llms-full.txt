@@ -1153,7 +1153,7 @@ Source: `src/ui/skeleton.ts`
 
 Examples: Timed notification, Sticky error
 
-- `SkeletonProps = Readonly<{ class?: string; }>` (type)
+- `SkeletonProps = Readonly<{ shape?: 'text' | 'rectangle' | 'circle'; size?: 'sm' | 'md' | 'lg'; class?: string; }>` (type)
 - `skeleton<Msg>(props: SkeletonProps = {}, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Slider
@@ -1202,8 +1202,8 @@ Source: `src/ui/spinner.ts`
 
 Examples: Timed notification, Sticky error
 
-- `SpinnerProps = Readonly<{ class?: string; }>` (type)
-- `spinner<Msg>(props: SpinnerProps = {}, h: HtmlBuilder<Msg>): Html` (function)
+- `SpinnerProps = SpinnerAccessibility & Readonly<{ size?: 'sm' | 'md' | 'lg'; tone?: 'current' | 'muted' | 'primary'; class?: string; }>` (type)
+- `spinner<Msg>(props: SpinnerProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Switch
 

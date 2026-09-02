@@ -1684,6 +1684,28 @@ test("progress normalizes custom ranges and reduced-motion indeterminate state",
   expect(await narrow.evaluate(element => element.getBoundingClientRect().width)).toBeLessThanOrEqual(100);
 });
 
+test("skeleton and spinner expose explicit loading semantics with reduced motion", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/docs/components/skeleton");
+  const profile = page.locator("#profile");
+  await expect(profile.getByRole("status", { name: "Loading profile" })).toHaveAttribute("aria-busy", "true");
+  const skeletons = profile.locator('[data-slot="skeleton"]');
+  await expect(skeletons).toHaveCount(3);
+  for (const skeleton of await skeletons.all()) {
+    await expect(skeleton).toHaveAttribute("aria-hidden", "true");
+    await expect(skeleton).toHaveCSS("animation-name", "none");
+  }
+
+  await page.goto("/docs/components/spinner");
+  const standalone = page.locator("#default").getByRole("img", { name: "Loading content" });
+  await expect(standalone).toHaveCSS("animation-name", "none");
+  const namedStatus = page.locator("#with-label").getByRole("status");
+  await expect(namedStatus).toContainText("Saving changes");
+  const decorative = namedStatus.locator("svg");
+  await expect(decorative).toHaveAttribute("aria-hidden", "true");
+  await expect(namedStatus.getByRole("img")).toHaveCount(0);
+});
+
 test("checkbox shares controlled mixed, read-only, and form semantics", async ({
   page,
 }) => {
