@@ -350,6 +350,22 @@ describe('StyleX component authoring contract', () => {
     assert.match(stylex, /DialogPrimitive\.view/u)
   })
 
+  it('keeps Toast and Sonner on one versioned notification behavior', () => {
+    const behavior = readFileSync('src/lib/toast.ts', 'utf8')
+    const tailwind = readFileSync('src/ui/sonner.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/sonner.ts', 'utf8')
+    const toast = readFileSync('src/ui/toast.ts', 'utf8')
+
+    assert.match(behavior, /timerVersion/u)
+    assert.match(behavior, /export const updateToast/u)
+    assert.match(behavior, /ActivatedToast/u)
+    assert.match(tailwind, /@\/lib\/toast/u)
+    assert.match(stylex, /@\/lib\/toast/u)
+    assert.match(toast, /@\/ui\/sonner/u)
+    assert.doesNotMatch(tailwind, /Command\.define/u)
+    assert.doesNotMatch(stylex, /Command\.define/u)
+  })
+
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
     const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])

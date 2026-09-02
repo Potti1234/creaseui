@@ -16,7 +16,7 @@ const previewProgram = definePreviewProgram<SonnerPreviewModel, SonnerPreviewMes
   Model: SonnerPreviewModel, Message: SonnerPreviewMessage,
   init: index => ({ _docsPage: 'sonner', exampleIndex: index, notifications: Sonner.init({ id: `docs-sonner-${String(index)}` }) }),
   update: (model, message) => {
-    const [notifications, commands] = message._tag === 'ShowedSonnerPreview' ? Sonner.show(model.notifications, model.exampleIndex === 0 ? Sonner.success({ title: 'Event has been created', description: 'Sunday at 9:00 AM', duration: '4 seconds' }) : Sonner.error({ title: 'Could not save changes', description: 'Try again in a moment.', sticky: true })) : Sonner.update(model.notifications, message.message);
+    const [notifications, commands] = message._tag === 'ShowedSonnerPreview' ? Sonner.show(model.notifications, model.exampleIndex === 0 ? Sonner.success({ title: 'Event has been created', description: 'Sunday at 9:00 AM', duration: '700 millis' }) : Sonner.error({ title: 'Could not save changes', description: 'Try again in a moment.', actionLabel: 'Retry', sticky: true })) : Sonner.update(model.notifications, message.message);
     return [{ ...model, notifications }, Command.mapMessages(commands, next => GotSonnerPreviewMessage({ message: next }))];
   },
   view: (_index, model, h) => h.div([], [Button.button({ onClick: ShowedSonnerPreview(), children: ['Show sonner'] }, h), Sonner.sonner({ model: model.notifications, toParentMessage: message => GotSonnerPreviewMessage({ message }), ariaLabel: 'Sonner notifications' }, h)]),

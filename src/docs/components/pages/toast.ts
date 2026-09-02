@@ -16,7 +16,7 @@ const previewProgram = definePreviewProgram<ToastPreviewModel, ToastPreviewMessa
   Model: ToastPreviewModel, Message: ToastPreviewMessage,
   init: index => ({ _docsPage: 'toast', exampleIndex: index, notifications: Toast.init({ id: `docs-toast-${String(index)}` }) }),
   update: (model, message) => {
-    const [notifications, commands] = message._tag === 'ShowedToastPreview' ? Toast.show(model.notifications, model.exampleIndex === 0 ? Toast.success({ title: 'Event has been created', description: 'Sunday at 9:00 AM', duration: '4 seconds' }) : Toast.error({ title: 'Could not save changes', description: 'Try again in a moment.', sticky: true })) : Toast.update(model.notifications, message.message);
+    const [notifications, commands] = message._tag === 'ShowedToastPreview' ? Toast.show(model.notifications, model.exampleIndex === 0 ? Toast.success({ title: 'Event has been created', description: 'Sunday at 9:00 AM', duration: '700 millis' }) : Toast.error({ title: 'Could not save changes', description: 'Try again in a moment.', actionLabel: 'Retry', sticky: true })) : Toast.update(model.notifications, message.message);
     return [{ ...model, notifications }, Command.mapMessages(commands, next => GotToastPreviewMessage({ message: next }))];
   },
   view: (_index, model, h) => h.div([], [Button.button({ onClick: ShowedToastPreview(), children: ['Show toast'] }, h), Toast.toast({ model: model.notifications, toParentMessage: message => GotToastPreviewMessage({ message }), ariaLabel: 'Toast notifications' }, h)]),

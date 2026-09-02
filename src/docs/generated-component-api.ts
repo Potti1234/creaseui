@@ -3146,144 +3146,14 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
   ],
   "sonner": [
     {
-      "name": "ToastPayload",
-      "kind": "value",
-      "signature": "ToastPayload: value"
-    },
-    {
-      "name": "ToastPayload",
-      "kind": "type",
-      "signature": "ToastPayload = typeof ToastPayload.Type"
-    },
-    {
-      "name": "Variant",
-      "kind": "value",
-      "signature": "Variant: value"
-    },
-    {
-      "name": "Variant",
-      "kind": "type",
-      "signature": "Variant = typeof Variant.Type"
-    },
-    {
-      "name": "Entry",
-      "kind": "value",
-      "signature": "Entry: value"
-    },
-    {
-      "name": "Entry",
-      "kind": "type",
-      "signature": "Entry = typeof Entry.Type"
-    },
-    {
-      "name": "Model",
-      "kind": "value",
-      "signature": "Model: value"
-    },
-    {
-      "name": "Model",
-      "kind": "type",
-      "signature": "Model = typeof Model.Type"
-    },
-    {
-      "name": "Dismissed",
-      "kind": "value",
-      "signature": "Dismissed: value"
-    },
-    {
-      "name": "CompletedWaitBeforeDismissingSonner",
-      "kind": "value",
-      "signature": "CompletedWaitBeforeDismissingSonner: value"
-    },
-    {
-      "name": "Message",
-      "kind": "value",
-      "signature": "Message: value"
-    },
-    {
-      "name": "Message",
-      "kind": "type",
-      "signature": "Message = typeof Message.Type"
-    },
-    {
-      "name": "DismissedToast",
-      "kind": "value",
-      "signature": "DismissedToast: value"
-    },
-    {
-      "name": "OutMessage",
-      "kind": "value",
-      "signature": "OutMessage: value"
-    },
-    {
-      "name": "OutMessage",
-      "kind": "type",
-      "signature": "OutMessage = typeof OutMessage.Type"
-    },
-    {
-      "name": "init",
-      "kind": "function",
-      "signature": "init(config: Readonly<{ id: string }>): Model"
-    },
-    {
-      "name": "update",
-      "kind": "function",
-      "signature": "update(model: Model, message: Message): UpdateReturn"
-    },
-    {
-      "name": "ToastInput",
-      "kind": "type",
-      "signature": "ToastInput = Readonly<{ title: string; description?: string; actionLabel?: string; duration?: Duration.Input; sticky?: boolean; }>"
-    },
-    {
-      "name": "ShowInput",
-      "kind": "type",
-      "signature": "ShowInput = ToastInput & Readonly<{ variant: Variant }>"
-    },
-    {
-      "name": "success",
-      "kind": "function",
-      "signature": "success(input: ToastInput): ShowInput"
-    },
-    {
-      "name": "error",
-      "kind": "function",
-      "signature": "error(input: ToastInput): ShowInput"
-    },
-    {
-      "name": "info",
-      "kind": "function",
-      "signature": "info(input: ToastInput): ShowInput"
-    },
-    {
-      "name": "warning",
-      "kind": "function",
-      "signature": "warning(input: ToastInput): ShowInput"
-    },
-    {
-      "name": "show",
-      "kind": "function",
-      "signature": "show(model: Model, input: ShowInput): UpdateReturn"
-    },
-    {
-      "name": "dismiss",
-      "kind": "function",
-      "signature": "dismiss(model: Model, id: string): UpdateReturn"
-    },
-    {
-      "name": "dismissAll",
-      "kind": "function",
-      "signature": "dismissAll(model: Model): UpdateReturn"
-    },
-    {
-      "name": "Added",
-      "kind": "value",
-      "signature": "Added: value"
+      "name": "*",
+      "kind": "re-export",
+      "signature": "export * from '@/lib/toast'"
     },
     {
       "name": "SonnerProps",
       "kind": "type",
-      "signature": "SonnerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; actionToMessage?: (entry: Entry) => Msg; ariaLabel?: string; class?: string; entryClass?: string; }>"
+      "signature": "SonnerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel?: string pausePolicy?: 'none' | 'pointer' class?: string entryClass?: string }>"
     },
     {
       "name": "sonner",

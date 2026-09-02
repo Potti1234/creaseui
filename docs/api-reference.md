@@ -993,34 +993,8 @@ Source: [`src/ui/sonner.ts`](../src/ui/sonner.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `ToastPayload` | value | `ToastPayload: value` |
-| `ToastPayload` | type | `ToastPayload = typeof ToastPayload.Type` |
-| `Variant` | value | `Variant: value` |
-| `Variant` | type | `Variant = typeof Variant.Type` |
-| `Entry` | value | `Entry: value` |
-| `Entry` | type | `Entry = typeof Entry.Type` |
-| `Model` | value | `Model: value` |
-| `Model` | type | `Model = typeof Model.Type` |
-| `Dismissed` | value | `Dismissed: value` |
-| `CompletedWaitBeforeDismissingSonner` | value | `CompletedWaitBeforeDismissingSonner: value` |
-| `Message` | value | `Message: value` |
-| `Message` | type | `Message = typeof Message.Type` |
-| `DismissedToast` | value | `DismissedToast: value` |
-| `OutMessage` | value | `OutMessage: value` |
-| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
-| `init` | function | `init(config: Readonly<{ id: string }>): Model` |
-| `update` | function | `update(model: Model, message: Message): UpdateReturn` |
-| `ToastInput` | type | `ToastInput = Readonly<{ title: string; description?: string; actionLabel?: string; duration?: Duration.Input; sticky?: boolean; }>` |
-| `ShowInput` | type | `ShowInput = ToastInput & Readonly<{ variant: Variant }>` |
-| `success` | function | `success(input: ToastInput): ShowInput` |
-| `error` | function | `error(input: ToastInput): ShowInput` |
-| `info` | function | `info(input: ToastInput): ShowInput` |
-| `warning` | function | `warning(input: ToastInput): ShowInput` |
-| `show` | function | `show(model: Model, input: ShowInput): UpdateReturn` |
-| `dismiss` | function | `dismiss(model: Model, id: string): UpdateReturn` |
-| `dismissAll` | function | `dismissAll(model: Model): UpdateReturn` |
-| `Added` | value | `Added: value` |
-| `SonnerProps` | type | `SonnerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; actionToMessage?: (entry: Entry) => Msg; ariaLabel?: string; class?: string; entryClass?: string; }>` |
+| `*` | re-export | `export * from '@/lib/toast'` |
+| `SonnerProps` | type | `SonnerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel?: string pausePolicy?: 'none' \| 'pointer' class?: string entryClass?: string }>` |
 | `sonner` | function | `sonner<Msg>(props: SonnerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Spinner

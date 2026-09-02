@@ -27,9 +27,8 @@ import * as ${config.namespace} from '@/ui/${config.slug}'`,
     model: `export const Model = S.Struct({ notifications: ${config.namespace}.Model, maybeLastDismissedTitle: S.Option(S.String) })
 export type Model = typeof Model.Type`,
     messages: `export const ClickedShow = m('ClickedShow${config.title}${example.replaceAll(/[^a-zA-Z0-9]/g, '')}')
-export const ClickedAction = m('Clicked${config.title}Action${example.replaceAll(/[^a-zA-Z0-9]/g, '')}', { id: S.String })
 export const GotNotificationMessage = m('Got${config.title}Message${example.replaceAll(/[^a-zA-Z0-9]/g, '')}', { message: ${config.namespace}.Message })
-export const Message = S.Union([ClickedShow, ClickedAction, GotNotificationMessage])
+export const Message = S.Union([ClickedShow, GotNotificationMessage])
 export type Message = typeof Message.Type`,
     init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
   { notifications: ${config.namespace}.init({ id: '${config.slug}-demo' }), maybeLastDismissedTitle: Option.none() },
@@ -63,8 +62,6 @@ export const update = (model: Model, message: Message): readonly [Model, Readonl
         sticky: ${String(sticky)},
         duration: '4 seconds',
       })))
-    case 'Clicked${config.title}Action${example.replaceAll(/[^a-zA-Z0-9]/g, '')}':
-      return mapNotifications(model, ${config.namespace}.dismiss(model.notifications, message.id))
     case 'Got${config.title}Message${example.replaceAll(/[^a-zA-Z0-9]/g, '')}':
       return mapNotifications(model, ${config.namespace}.update(model.notifications, message.message))
   }
@@ -76,7 +73,6 @@ export const update = (model: Model, message: Message): readonly [Model, Readonl
     ${config.namespace}.${config.slug}({
       model: model.notifications,
       toParentMessage: message => GotNotificationMessage({ message }),
-      actionToMessage: entry => ClickedAction({ id: entry.id }),
       ariaLabel: '${config.title} notifications',
     }, h),
   ]),
@@ -86,7 +82,7 @@ export const update = (model: Model, message: Message): readonly [Model, Readonl
 
 export const notificationDefinition = (config: NotificationConfig): PageDefinition => ({
   kind: config.kind, description: config.description,
-  architecture: `${config.title} owns an ordered Entry collection and next id. show may return a delayed-dismiss Command; update/dismiss may emit DismissedToast output. The parent maps Commands and handles action clicks as domain Messages.`,
+  architecture: `${config.title} uses the canonical notification Model. show and updateToast issue versioned delay Commands; stale completions are ignored. ActivatedToast and DismissedToast OutMessages keep application consequences in the parent.`,
   usage: `const [notifications, commands] = ${config.namespace}.show(
   model.notifications,
   { title: 'Saved', variant: 'Success' },
@@ -103,6 +99,6 @@ ${config.namespace}.${config.slug}({
   keyboard: [['Tab', 'Moves to an action or dismiss button in a visible notification.'], ['Enter / Space', 'Runs the focused action or dismisses the entry.']],
   examples: [
     { title: 'Timed notification', description: 'Showing a non-sticky entry returns a delay Command that is mapped through the parent Message.',  code: application(config, 'Timed notification', 'Success', false) },
-    { title: 'Sticky error', description: 'A sticky error remains until its action or dismiss control emits a parent-handled Message.',  code: application(config, 'Sticky error', 'Error', true) },
+    { title: 'Sticky error', description: 'A sticky error remains until its action or dismiss control emits a typed parent-handled fact.',  code: application(config, 'Sticky error', 'Error', true) },
   ],
 });

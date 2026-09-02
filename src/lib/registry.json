@@ -301,6 +301,19 @@
           "target": "@lib/alert-dialog.ts"
         }
       ]
+    },
+    {
+      "name": "toast-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Notification Behavior",
+      "description": "Canonical keyed notification queue with versioned timers, typed actions, and pause/resume policy.",
+      "files": [
+        {
+          "path": "toast.ts",
+          "type": "registry:lib",
+          "target": "@lib/toast.ts"
+        }
+      ]
     }
   ]
 }

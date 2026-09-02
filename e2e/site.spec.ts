@@ -1286,10 +1286,27 @@ for (const route of ["sonner", "toast"] as const) {
     });
     const alert = viewport.getByRole("alert");
     await expect(alert).toContainText("Could not save changes");
+    await alert.getByRole("button", { name: "Retry" }).click();
+    await expect(alert).toBeHidden();
+    await example.getByRole("button", { name: `Show ${route}` }).click();
+    await expect(alert).toBeVisible();
     await alert.getByRole("button", { name: "Dismiss notification" }).click();
     await expect(alert).toBeHidden();
     await expect(example.locator("code")).toContainText("Command.mapMessages");
     await expect(example.locator("code")).toContainText(".show(");
+
+    const timed = page.locator("#timed-notification");
+    const show = timed.getByRole("button", { name: `Show ${route}` });
+    await show.click();
+    await show.click();
+    const statuses = viewport.getByRole("status");
+    await expect(statuses).toHaveCount(2);
+    await statuses.first().hover();
+    await page.waitForTimeout(850);
+    await expect(statuses).toHaveCount(1);
+    await statuses.first().hover();
+    await page.mouse.move(0, 0);
+    await expect(statuses).toHaveCount(0, { timeout: 1500 });
   });
 }
 
