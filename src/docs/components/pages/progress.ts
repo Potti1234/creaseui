@@ -17,13 +17,18 @@ export const progressPage = authoredPage({
     examples: [
       {
         title: 'Determinate', description: 'Pass a numeric percentage when total work is known.',
-        staticPreview: (_model, h) => Progress.progress({ value: 64, class: 'max-w-md' }, h),
-        code: source('Determinate', `Progress.progress({ value: 64, class: 'max-w-md' }, h),`),
+        staticPreview: (_model, h) => Progress.progress({ value: 64, max: 80, ariaLabel: 'Upload progress', valueText: '64 of 80 files', class: 'max-w-md' }, h),
+        code: source('Determinate', `Progress.progress({ value: 64, max: 80, ariaLabel: 'Upload progress', valueText: '64 of 80 files', class: 'max-w-md' }, h),`),
       },
       {
         title: 'Indeterminate', description: 'Pass null while work is active but its total cannot be measured.',
-        staticPreview: (_model, h) => Progress.progress({ value: null, class: 'max-w-md' }, h),
-        code: source('Indeterminate', `Progress.progress({ value: null, class: 'max-w-md' }, h),`),
+        staticPreview: (_model, h) => Progress.progress({ value: null, ariaLabel: 'Loading report', valueText: 'Loading', class: 'max-w-md' }, h),
+        code: source('Indeterminate', `Progress.progress({ value: null, ariaLabel: 'Loading report', valueText: 'Loading', class: 'max-w-md' }, h),`),
+      },
+      {
+        title: 'Narrow range', description: 'A compact track still reports its normalized custom range.',
+        staticPreview: (_model, h) => Progress.progress({ value: 3, max: 4, ariaLabel: 'Setup progress', valueText: '3 of 4 steps', class: 'w-24' }, h),
+        code: source('Narrow range', `Progress.progress({ value: 3, max: 4, ariaLabel: 'Setup progress', valueText: '3 of 4 steps', class: 'w-24' }, h),`),
       },
     ],
   },

@@ -1663,6 +1663,27 @@ test("collapsible preserves controlled linkage, external changes, and disabled p
   await expect(disabled).toHaveAttribute("aria-expanded", "false");
 });
 
+test("progress normalizes custom ranges and reduced-motion indeterminate state", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/docs/components/progress");
+
+  const determinate = page.locator("#determinate").getByRole("progressbar", { name: "Upload progress" });
+  await expect(determinate).toHaveAttribute("aria-valuemin", "0");
+  await expect(determinate).toHaveAttribute("aria-valuemax", "80");
+  await expect(determinate).toHaveAttribute("aria-valuenow", "64");
+  await expect(determinate).toHaveAttribute("aria-valuetext", "64 of 80 files");
+
+  const indeterminate = page.locator("#indeterminate").getByRole("progressbar", { name: "Loading report" });
+  await expect(indeterminate).not.toHaveAttribute("aria-valuenow", /.+/u);
+  await expect(indeterminate).toHaveAttribute("data-state", "indeterminate");
+  await expect(indeterminate.locator('[data-slot="progress-indicator"]')).toHaveCSS("animation-name", "none");
+
+  const narrow = page.locator("#narrow-range").getByRole("progressbar", { name: "Setup progress" });
+  await expect(narrow).toHaveAttribute("aria-valuemax", "4");
+  await expect(narrow).toHaveAttribute("aria-valuenow", "3");
+  expect(await narrow.evaluate(element => element.getBoundingClientRect().width)).toBeLessThanOrEqual(100);
+});
+
 test("checkbox shares controlled mixed, read-only, and form semantics", async ({
   page,
 }) => {

@@ -798,7 +798,7 @@ Source: [`src/ui/progress.ts`](../src/ui/progress.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `ProgressProps` | type | `ProgressProps = Readonly<{ /** `null` renders an indeterminate progress indicator. */ value: number \| null; class?: string; }>` |
+| `ProgressProps` | type | `ProgressProps = Readonly<{ /** `null` renders an indeterminate progress indicator. */ value: number \| null; max?: number; ariaLabel?: string; valueText?: string; class?: string; }>` |
 | `progress` | function | `progress<Msg>(props: ProgressProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Radio Group

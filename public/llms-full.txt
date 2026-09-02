@@ -967,7 +967,7 @@ Source: `src/ui/progress.ts`
 
 Examples: Timed notification, Sticky error
 
-- `ProgressProps = Readonly<{ /** `null` renders an indeterminate progress indicator. */ value: number | null; class?: string; }>` (type)
+- `ProgressProps = Readonly<{ /** `null` renders an indeterminate progress indicator. */ value: number | null; max?: number; ariaLabel?: string; valueText?: string; class?: string; }>` (type)
 - `progress<Msg>(props: ProgressProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Radio Group

@@ -303,6 +303,19 @@
       ]
     },
     {
+      "name": "progress-normalization",
+      "type": "registry:lib",
+      "title": "Progress Normalization",
+      "description": "Pure bounded current/max and indeterminate normalization shared by both Progress skins.",
+      "files": [
+        {
+          "path": "progress.ts",
+          "type": "registry:lib",
+          "target": "@lib/progress.ts"
+        }
+      ]
+    },
+    {
       "name": "drawer-behavior",
       "type": "registry:lib",
       "title": "Foldkit Drawer Interaction Behavior",

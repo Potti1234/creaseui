@@ -5,6 +5,9 @@ import { foundationTokens } from "./foundations-tokens.stylex";
 import { className } from "./style";
 import { tokens } from "./tokens.stylex";
 import { interactionTokens } from './interaction-tokens.stylex.const'
+import { normalizeProgress } from '@/lib/progress'
+
+const indeterminateFrames = stylex.keyframes({ "0%": { transform: "translateX(-100%)" }, "100%": { transform: "translateX(100%)" } })
 
 const styles = stylex.create({
   root: {
@@ -18,7 +21,7 @@ const styles = stylex.create({
   indicator: {
     flex: "1",
     backgroundColor: tokens.primary,
-    transitionDuration: interactionTokens.motionFast,
+    transitionDuration: { default: interactionTokens.motionFast, '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone },
     transitionProperty: "transform",
     height: "100%",
     width: "100%",
@@ -26,35 +29,31 @@ const styles = stylex.create({
   indeterminate: {
     animationDuration: interactionTokens.motionLoopMedium,
     animationIterationCount: "infinite",
-    animationName: stylex.keyframes({
-      "0%": { transform: "translateX(-100%)" },
-      "100%": { transform: "translateX(100%)" },
-    }),
+    animationName: { default: indeterminateFrames, '@media (prefers-reduced-motion: reduce)': 'none' },
     animationTimingFunction: interactionTokens.easingStandard,
   },
 });
 export type ProgressProps = Readonly<{
   value: number | null;
+  max?: number;
   ariaLabel?: string;
+  valueText?: string;
   layoutStyle?: ComponentLayoutStyle;
 }>;
 export const progress = <Msg>(
   props: ProgressProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const value =
-    props.value === null ? null : Math.min(100, Math.max(0, props.value));
+  const normalized = normalizeProgress(props.value, props.max);
   return h.div(
     [
       h.Role("progressbar"),
       h.AriaValuemin(0),
-      h.AriaValuemax(100),
+      h.AriaValuemax(normalized.max),
       ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
-      ...(value === null ? [] : [h.AriaValuenow(value)]),
-      h.DataAttribute(
-        "state",
-        value === null ? "indeterminate" : "determinate",
-      ),
+      ...(props.valueText === undefined ? [] : [h.AriaValuetext(props.valueText)]),
+      ...(normalized.value === null ? [] : [h.AriaValuenow(normalized.value)]),
+      h.DataAttribute("state", normalized.state),
       h.DataAttribute("slot", "progress"),
       h.Class(className(styles.root, props.layoutStyle)),
     ],
@@ -63,13 +62,13 @@ export const progress = <Msg>(
         [
           h.DataAttribute("slot", "progress-indicator"),
           h.Class(
-            className(styles.indicator, value === null && styles.indeterminate),
+            className(styles.indicator, normalized.value === null && styles.indeterminate),
           ),
           h.Style({
             transform:
-              value === null
+              normalized.percentage === null
                 ? "translateX(-60%)"
-                : `translateX(-${100 - value}%)`,
+                : `translateX(-${100 - normalized.percentage}%)`,
           }),
         ],
         [],
@@ -77,5 +76,4 @@ export const progress = <Msg>(
     ],
   );
 };
-
 

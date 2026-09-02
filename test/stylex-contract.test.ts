@@ -184,6 +184,17 @@ describe('StyleX component authoring contract', () => {
     }
   })
 
+  it('shares stateless Progress normalization across both skins', () => {
+    const behavior = readFileSync('src/lib/progress.ts', 'utf8')
+    const tailwind = readFileSync('src/ui/progress.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/progress.ts', 'utf8')
+    assert.match(behavior, /normalizeProgress/u)
+    assert.match(tailwind, /@\/lib\/progress/u)
+    assert.match(stylex, /@\/lib\/progress/u)
+    assert.doesNotMatch(tailwind, /export const Model/u)
+    assert.doesNotMatch(stylex, /export const Model/u)
+  })
+
   it('keeps both Popover skins on the canonical Foldkit submodel', () => {
     const tailwind = readFileSync('src/ui/popover.ts', 'utf8')
     const stylex = readFileSync('src/stylex/popover.ts', 'utf8')

@@ -2503,7 +2503,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ProgressProps",
       "kind": "type",
-      "signature": "ProgressProps = Readonly<{ /** `null` renders an indeterminate progress indicator. */ value: number | null; class?: string; }>"
+      "signature": "ProgressProps = Readonly<{ /** `null` renders an indeterminate progress indicator. */ value: number | null; max?: number; ariaLabel?: string; valueText?: string; class?: string; }>"
     },
     {
       "name": "progress",
