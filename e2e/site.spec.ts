@@ -1310,6 +1310,16 @@ for (const route of ["sonner", "toast"] as const) {
   });
 }
 
+test("sonner documents the canonical async and imperative migration", async ({ page }) => {
+  await page.goto("/docs/components/sonner");
+  const asyncExample = page.locator("#async-save-migration");
+  await expect(asyncExample.locator("code")).toContainText("Command.define('Save'");
+  await expect(asyncExample.locator("code")).toContainText("Sonner.updateToast");
+  const migration = page.locator("#imperative-api-migration");
+  await expect(migration).toContainText("intentionally unsupported");
+  await expect(migration.locator("code")).not.toContainText("toast.promise");
+});
+
 test("calendar emits selection while retaining child navigation state", async ({
   page,
 }) => {

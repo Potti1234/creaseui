@@ -1180,7 +1180,7 @@ A shadcn-styled Sonner component for Foldkit.
 
 Source: `src/ui/sonner.ts`
 
-Examples: Timed notification, Sticky error
+Examples: Async save migration, Imperative API migration
 
 - `export * from '@/lib/toast'` (re-export)
 - `SonnerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel?: string pausePolicy?: 'none' | 'pointer' class?: string entryClass?: string }>` (type)
