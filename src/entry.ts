@@ -1,5 +1,7 @@
 import { Runtime } from 'foldkit'
 
+import '@/docs/components/stylex-integration'
+
 import {
   ChangedUrl,
   ClickedLink,
