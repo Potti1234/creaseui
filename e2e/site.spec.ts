@@ -1321,6 +1321,22 @@ test("alert requires explicit severity and announcement policy", async ({ page }
   );
 });
 
+test("aspect ratio keeps authored examples and geometry across renderers", async ({ page }) => {
+  await page.goto("/docs/components/aspect-ratio");
+  const video = page.locator("#video").locator('[data-slot="aspect-ratio"]');
+  const square = page.locator("#square").locator('[data-slot="aspect-ratio"]');
+  await expect(video).toHaveCSS("aspect-ratio", "1.77778 / 1");
+  await expect(square).toHaveCSS("aspect-ratio", "1 / 1");
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(page.locator("#video")).toBeVisible();
+  await expect(page.locator("#square")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#video code")).toContainText("@/stylex/aspect-ratio");
+  await expect(video).toHaveCSS("aspect-ratio", "1.77778 / 1");
+  await expect(square).toHaveCSS("aspect-ratio", "1 / 1");
+});
+
 test("sidebar documents persistence and toggles derived shell state", async ({
   page,
 }) => {
