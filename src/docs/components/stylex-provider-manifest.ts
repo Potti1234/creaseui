@@ -19,6 +19,7 @@ import { inputOtpStyleXPreview } from '@/docs/components/pages/input-otp/stylex'
 import { textareaStyleXPreview } from '@/docs/components/pages/textarea/stylex';
 import { toggleStyleXPreview } from '@/docs/components/pages/toggle/stylex';
 import { toggleGroupStyleXPreview } from '@/docs/components/pages/toggle-group/stylex';
+import { checkboxStyleXPreview } from '@/docs/components/pages/checkbox/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -40,3 +41,4 @@ installStyleXExamplePreviewProvider('input-otp', inputOtpStyleXPreview);
 installStyleXExamplePreviewProvider('textarea', textareaStyleXPreview);
 installStyleXExamplePreviewProvider('toggle', toggleStyleXPreview);
 installStyleXExamplePreviewProvider('toggle-group', toggleGroupStyleXPreview);
+installStyleXExamplePreviewProvider('checkbox', checkboxStyleXPreview);

@@ -2183,11 +2183,16 @@ test("checkbox shares controlled mixed, read-only, and form semantics", async ({
     .getByRole("group", { name: "Preview styling engine" })
     .getByRole("button", { name: "StyleX" })
     .click();
-  const stylexCheckbox = page.getByRole("checkbox", {
-    name: "Use semantic tokens",
-  });
-  await expect(stylexCheckbox).toBeChecked();
-  await expect(stylexCheckbox).not.toHaveAttribute("aria-describedby");
+  for (const id of ["terms", "indeterminate", "disabled", "read-only"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#terms code")).toContainText("@/stylex/checkbox");
+  await expect(terms).toBeChecked();
+  await terms.press("Space");
+  await expect(terms).not.toBeChecked();
+  await expect(formValue).toHaveValue("");
+  await expect(readOnly).toBeChecked();
   await assertAccessible(page);
 });
 
