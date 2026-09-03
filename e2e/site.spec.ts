@@ -486,6 +486,25 @@ test("button preserves authored state and semantics across renderers", async ({ 
   await expect(page.locator("#as-link").getByRole("link", { name: "Foldkit docs ↗" })).toHaveAttribute("target", "_blank");
 });
 
+test("button group preserves orientation and shared action state across renderers", async ({ page }) => {
+  await page.goto("/docs/components/button-group");
+  const horizontal = page.locator("#pagination-actions");
+  const current = horizontal.getByRole("button", { name: "Current (0)" });
+  await current.click();
+  await expect(horizontal.getByRole("button", { name: "Current (1)" })).toBeVisible();
+  await expect(horizontal.getByRole("group")).toHaveAttribute("data-orientation", "horizontal");
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(horizontal).toBeVisible();
+  await expect(page.locator("#vertical-tools")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(horizontal.locator("code")).toContainText("@/stylex/button-group");
+  await expect(horizontal.getByRole("button", { name: "Current (1)" })).toBeVisible();
+  await horizontal.getByRole("button", { name: "Next" }).click();
+  await expect(horizontal.getByRole("button", { name: "Current (2)" })).toBeVisible();
+  await expect(page.locator("#vertical-tools").getByRole("group")).toHaveAttribute("data-orientation", "vertical");
+});
+
 test("authored tabs keep child instances and selected values independent", async ({
   page,
 }) => {
