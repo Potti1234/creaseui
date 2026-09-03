@@ -87,7 +87,7 @@ const previewProgram = definePreviewProgram<DataTablePreviewModel, GotDataTableP
   Model: DataTablePreviewModel, Message: GotDataTablePreviewMessage,
   init: () => ({ _docsPage: 'data-table', table: DataTable.init(5) }),
   update: (model, message) => [{ ...model, table: DataTable.update(model.table, message.message) }, []],
-  view: (index, model, h) => DataTable.dataTable({ id: `payments-${index + 1}`, model: model.table, toParentMessage: message => GotDataTablePreviewMessage({ message }), rows: payments, columns: columns(), rowKey: row => row.id, ...(index === 1 ? { filterText: (row: Payment) => `${row.status} ${row.email}`, filterPlaceholder: 'Filter payments…' } : {}), ...(index === 2 ? { mode: 'server' as const, rowCount: 42 } : {}), enableRowSelection: true, enableColumnVisibility: true, pageSizeOptions: [5, 10, 20], ariaLabel: 'Payments' }, h),
+  view: (index, model, h) => DataTable.dataTable({ model: model.table, toParentMessage: message => GotDataTablePreviewMessage({ message }), rows: payments, columns: columns(), rowKey: row => row.id, ...(index === 1 ? { filterText: (row: Payment) => `${row.status} ${row.email}`, filterPlaceholder: 'Filter payments…' } : {}), enableRowSelection: true, enableColumnVisibility: true, pageSizeOptions: [5, 10, 20], ariaLabel: 'Payments' }, h),
 });
 
 export const dataTablePage = authoredPage({
@@ -104,7 +104,7 @@ export const dataTablePage = authoredPage({
     examples: [
       { title: 'Sortable payments', description: 'Typed columns provide renderers and comparable values while update owns sort direction and page reset.',  code: source('Sortable payments', 5, false), previewClass: 'justify-stretch' },
       { title: 'Filter and paginate', description: 'Filtering derives from parent-owned rows, resets the current page, and paginates the resulting collection.',  code: source('Filter and paginate', 5, true), previewClass: 'justify-stretch' },
-      { title: 'Server-owned query', description: 'Set mode to server when the parent supplies an externally queried page. The adapter preserves the records exactly and uses rowCount only for pagination bounds.', code: source('Server-owned query', 5, true).replace("ariaLabel: 'Payments',", "mode: 'server',\n      rowCount: 42,\n      ariaLabel: 'Payments',"), previewClass: 'justify-stretch' },
     ],
   },
 });
+

@@ -16,11 +16,12 @@ export const complexTokens = stylex.defineVars({
   chart4: 'var(--chart-4)',
   chart5: 'var(--chart-5)',
   mutedSurface: 'color-mix(in oklab, var(--muted) 50%, transparent)',
+  opaqueMutedSurface: 'color-mix(in oklab, var(--muted) 50%, var(--background))',
   accentSurface: 'color-mix(in oklab, var(--accent) 50%, transparent)',
+  opaqueAccentSurface: 'color-mix(in oklab, var(--accent) 50%, var(--background))',
   focusOutline: '1px solid var(--ring)',
   resizeShadow: '0 0 0 1px var(--ring)',
   smallRadius: '2px',
   overlaySurface: 'color-mix(in oklab, var(--foreground) 50%, transparent)',
   transparent: 'transparent',
 })
-

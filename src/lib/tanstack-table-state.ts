@@ -7,6 +7,22 @@ export type Sort = typeof Sort.Type
 export const Density = S.Literals(['comfortable', 'compact'])
 export type Density = typeof Density.Type
 
+export const ColumnFilterKind = S.Literals(['text', 'enum', 'datetime', 'number'])
+export type ColumnFilterKind = typeof ColumnFilterKind.Type
+export const NumberFilterOperator = S.Literals(['eq', 'gte', 'lte', 'between'])
+export type NumberFilterOperator = typeof NumberFilterOperator.Type
+export const ColumnFilter = S.Struct({
+  columnId: S.String,
+  kind: ColumnFilterKind,
+  value: S.String,
+  secondaryValue: S.String,
+  values: S.Array(S.String),
+  operator: NumberFilterOperator,
+})
+export type ColumnFilter = typeof ColumnFilter.Type
+export const ColumnWidth = S.Struct({ columnId: S.String, width: S.Number })
+export type ColumnWidth = typeof ColumnWidth.Type
+
 export const Model = S.Struct({
   globalFilter: S.String,
   statusFilter: S.String,
@@ -22,6 +38,23 @@ export const Model = S.Struct({
   expandedRowIds: S.Array(S.String),
   titleWidth: S.Number,
   density: Density,
+  columnFilters: S.Array(ColumnFilter),
+  columnWidths: S.Array(ColumnWidth),
+  layoutVersion: S.Number,
+  openFilterColumnId: S.String,
+  filterDraft: S.String,
+  filterSecondaryDraft: S.String,
+  filterOperator: NumberFilterOperator,
+  dateCustomOpen: S.Boolean,
+  calendarMonthOffset: S.Number,
+  enumSearch: S.String,
+  layoutMenuOpen: S.Boolean,
+  activeFiltersMenuOpen: S.Boolean,
+  pageSizeMenuOpen: S.Boolean,
+  pageSizeDraft: S.String,
+  resizingColumnId: S.String,
+  resizeStartX: S.Number,
+  resizeStartWidth: S.Number,
 })
 export type Model = typeof Model.Type
 
@@ -40,6 +73,43 @@ export const ToggledGrouping = m('ToggledTanStackGrouping', { columnId: S.String
 export const ToggledExpanded = m('ToggledTanStackExpanded', { rowId: S.String })
 export const ChangedTitleWidth = m('ChangedTanStackTitleWidth', { width: S.Number })
 export const ChangedDensity = m('ChangedTanStackDensity', { density: Density })
+export const ChangedColumnFilter = m('ChangedTanStackColumnFilter', { filter: ColumnFilter })
+export const ClearedColumnFilter = m('ClearedTanStackColumnFilter', { columnId: S.String })
+export const ClearedColumnFilters = m('ClearedTanStackColumnFilters')
+export const ResizedColumn = m('ResizedTanStackColumn', { columnId: S.String, width: S.Number })
+export const ResetColumnWidths = m('ResetTanStackColumnWidths')
+export const ResetTableLayout = m('ResetTanStackTableLayout', {
+  columnOrder: S.Array(S.String),
+  pinnedColumnIds: S.Array(S.String),
+})
+export const ToggledFilterPopover = m('ToggledTanStackFilterPopover', { columnId: S.String, draft: S.String, secondaryDraft: S.String, operator: NumberFilterOperator })
+export const ChangedFilterDraft = m('ChangedTanStackFilterDraft', { value: S.String })
+export const ChangedFilterSecondaryDraft = m('ChangedTanStackFilterSecondaryDraft', { value: S.String })
+export const ChangedDateRangeDraft = m('ChangedTanStackDateRangeDraft', { from: S.String, to: S.String })
+export const ChangedFilterOperator = m('ChangedTanStackFilterOperator', { operator: NumberFilterOperator })
+export const ChangedDateCustomOpen = m('ChangedTanStackDateCustomOpen', { isOpen: S.Boolean })
+export const ShiftedCalendarMonth = m('ShiftedTanStackCalendarMonth', { delta: S.Number })
+export const ChangedEnumSearch = m('ChangedTanStackEnumSearch', { value: S.String })
+export const AppliedTextFilter = m('AppliedTanStackTextFilter', { columnId: S.String })
+export const AppliedColumnFilter = m('AppliedTanStackColumnFilter', { filter: ColumnFilter })
+export const ClearedFilterPopover = m('ClearedTanStackFilterPopover', { columnId: S.String })
+export const ToggledLayoutMenu = m('ToggledTanStackLayoutMenu')
+export const ToggledActiveFiltersMenu = m('ToggledTanStackActiveFiltersMenu')
+export const ToggledPageSizeMenu = m('ToggledTanStackPageSizeMenu')
+export const ChangedPageSizeDraft = m('ChangedTanStackPageSizeDraft', { value: S.String })
+export const CommittedPageSize = m('CommittedTanStackPageSize', { pageSize: S.Number })
+export const StartedColumnResize = m('StartedTanStackColumnResize', { columnId: S.String, screenX: S.Number, width: S.Number })
+export const DraggedColumnResize = m('DraggedTanStackColumnResize', { screenX: S.Number })
+export const EndedColumnResize = m('EndedTanStackColumnResize')
+export const ClosedTableOverlays = m('ClosedTanStackTableOverlays')
+export const ResetTableView = m('ResetTanStackTableView')
+export const RestoredTableLayout = m('RestoredTanStackTableLayout', {
+  columnOrder: S.Array(S.String),
+  hiddenColumnIds: S.Array(S.String),
+  pinnedColumnIds: S.Array(S.String),
+  columnWidths: S.Array(ColumnWidth),
+  layoutVersion: S.Number,
+})
 export const ResetTable = m('ResetTanStackTable')
 
 export const Message = S.Union([
@@ -58,6 +128,34 @@ export const Message = S.Union([
   ToggledExpanded,
   ChangedTitleWidth,
   ChangedDensity,
+  ChangedColumnFilter,
+  ClearedColumnFilter,
+  ClearedColumnFilters,
+  ResizedColumn,
+  ResetColumnWidths,
+  ResetTableLayout,
+  ToggledFilterPopover,
+  ChangedFilterDraft,
+  ChangedFilterSecondaryDraft,
+  ChangedDateRangeDraft,
+  ChangedFilterOperator,
+  ChangedDateCustomOpen,
+  ShiftedCalendarMonth,
+  ChangedEnumSearch,
+  AppliedTextFilter,
+  AppliedColumnFilter,
+  ClearedFilterPopover,
+  ToggledLayoutMenu,
+  ToggledActiveFiltersMenu,
+  ToggledPageSizeMenu,
+  ChangedPageSizeDraft,
+  CommittedPageSize,
+  StartedColumnResize,
+  DraggedColumnResize,
+  EndedColumnResize,
+  ClosedTableOverlays,
+  ResetTableView,
+  RestoredTableLayout,
   ResetTable,
 ])
 export type Message = typeof Message.Type
@@ -69,6 +167,7 @@ export type InitOptions = Readonly<{
   pageSize?: number
   pinnedColumnIds?: ReadonlyArray<string>
   sorting?: ReadonlyArray<Sort>
+  layoutVersion?: number
 }>
 
 export const init = (options: InitOptions = {}): Model => ({
@@ -86,6 +185,23 @@ export const init = (options: InitOptions = {}): Model => ({
   expandedRowIds: [],
   titleWidth: 280,
   density: 'comfortable',
+  columnFilters: [],
+  columnWidths: [],
+  layoutVersion: options.layoutVersion ?? 1,
+  openFilterColumnId: '',
+  filterDraft: '',
+  filterSecondaryDraft: '',
+  filterOperator: 'eq',
+  dateCustomOpen: false,
+  calendarMonthOffset: 0,
+  enumSearch: '',
+  layoutMenuOpen: false,
+  activeFiltersMenuOpen: false,
+  pageSizeMenuOpen: false,
+  pageSizeDraft: String(options.pageSize ?? 8),
+  resizingColumnId: '',
+  resizeStartX: 0,
+  resizeStartWidth: 0,
 })
 
 const membership = (values: ReadonlyArray<string>, value: string, included: boolean): ReadonlyArray<string> =>
@@ -100,6 +216,11 @@ const move = (values: ReadonlyArray<string>, value: string, direction: 'left' | 
   return next
 }
 
+const pinFirst = (columnOrder: ReadonlyArray<string>, pinnedColumnIds: ReadonlyArray<string>): ReadonlyArray<string> => {
+  const pinned = new Set(pinnedColumnIds)
+  return [...columnOrder.filter((id) => pinned.has(id)), ...columnOrder.filter((id) => !pinned.has(id))]
+}
+
 export const update = (model: Model, message: Message): Model => {
   switch (message._tag) {
     case 'ChangedTanStackGlobalFilter': return { ...model, globalFilter: message.value, pageIndex: 0 }
@@ -109,17 +230,73 @@ export const update = (model: Model, message: Message): Model => {
     case 'ChangedTanStackPageSize': return { ...model, pageIndex: 0, pageSize: Math.max(1, message.pageSize) }
     case 'ToggledTanStackRow': return { ...model, selectedRowIds: membership(model.selectedRowIds, message.rowId, message.isSelected) }
     case 'ToggledTanStackRows': return { ...model, selectedRowIds: message.rowIds.reduce((ids, id) => membership(ids, id, message.isSelected), model.selectedRowIds) }
-    case 'ToggledTanStackColumn': return { ...model, hiddenColumnIds: membership(model.hiddenColumnIds, message.columnId, !message.isVisible) }
+    case 'ToggledTanStackColumn': return { ...model, hiddenColumnIds: membership(model.hiddenColumnIds, message.columnId, !message.isVisible), pinnedColumnIds: message.isVisible ? model.pinnedColumnIds : model.pinnedColumnIds.filter((id) => id !== message.columnId) }
     case 'MovedTanStackColumn': return { ...model, columnOrder: move(model.columnOrder, message.columnId, message.direction) }
-    case 'ToggledTanStackColumnPin': return { ...model, pinnedColumnIds: membership(model.pinnedColumnIds, message.columnId, !model.pinnedColumnIds.includes(message.columnId)) }
+    case 'ToggledTanStackColumnPin': {
+      const pinnedColumnIds = membership(model.pinnedColumnIds, message.columnId, !model.pinnedColumnIds.includes(message.columnId))
+      return { ...model, pinnedColumnIds, columnOrder: pinFirst(model.columnOrder, pinnedColumnIds) }
+    }
     case 'ToggledTanStackRowPin': return { ...model, pinnedRowIds: membership(model.pinnedRowIds, message.rowId, !model.pinnedRowIds.includes(message.rowId)) }
     case 'ToggledTanStackGrouping': return { ...model, expandedRowIds: [], grouping: membership(model.grouping, message.columnId, !model.grouping.includes(message.columnId)) }
     case 'ToggledTanStackExpanded': return { ...model, expandedRowIds: membership(model.expandedRowIds, message.rowId, !model.expandedRowIds.includes(message.rowId)) }
     case 'ChangedTanStackTitleWidth': return { ...model, titleWidth: Math.min(440, Math.max(200, message.width)) }
     case 'ChangedTanStackDensity': return { ...model, density: message.density }
-    case 'ResetTanStackTable': return init()
+    case 'ChangedTanStackColumnFilter': return { ...model, pageIndex: 0, columnFilters: [...model.columnFilters.filter((filter) => filter.columnId !== message.filter.columnId), message.filter] }
+    case 'ClearedTanStackColumnFilter': return { ...model, pageIndex: 0, columnFilters: model.columnFilters.filter((filter) => filter.columnId !== message.columnId) }
+    case 'ClearedTanStackColumnFilters': return { ...model, pageIndex: 0, columnFilters: [] }
+    case 'ResizedTanStackColumn': return { ...model, titleWidth: message.columnId === 'title' ? message.width : model.titleWidth, columnWidths: [...model.columnWidths.filter((entry) => entry.columnId !== message.columnId), { columnId: message.columnId, width: Math.min(960, Math.max(60, message.width)) }] }
+    case 'ResetTanStackColumnWidths': return { ...model, titleWidth: 280, columnWidths: [] }
+    case 'ResetTanStackTableLayout': return { ...model, hiddenColumnIds: [], columnOrder: message.columnOrder, pinnedColumnIds: message.pinnedColumnIds, columnWidths: [], titleWidth: 280 }
+    case 'ToggledTanStackFilterPopover': return { ...model, openFilterColumnId: model.openFilterColumnId === message.columnId ? '' : message.columnId, filterDraft: message.draft, filterSecondaryDraft: message.secondaryDraft, filterOperator: message.operator, dateCustomOpen: false, enumSearch: '', layoutMenuOpen: false, activeFiltersMenuOpen: false, pageSizeMenuOpen: false }
+    case 'ChangedTanStackFilterDraft': return { ...model, filterDraft: message.value }
+    case 'ChangedTanStackFilterSecondaryDraft': return { ...model, filterSecondaryDraft: message.value }
+    case 'ChangedTanStackDateRangeDraft': return { ...model, filterDraft: message.from, filterSecondaryDraft: message.to }
+    case 'ChangedTanStackFilterOperator': return { ...model, filterOperator: message.operator }
+    case 'ChangedTanStackDateCustomOpen': return { ...model, dateCustomOpen: message.isOpen, calendarMonthOffset: message.isOpen ? 0 : model.calendarMonthOffset }
+    case 'ShiftedTanStackCalendarMonth': return { ...model, calendarMonthOffset: Math.min(0, model.calendarMonthOffset + message.delta) }
+    case 'ChangedTanStackEnumSearch': return { ...model, enumSearch: message.value }
+    case 'AppliedTanStackTextFilter': return { ...model, pageIndex: 0, openFilterColumnId: '', columnFilters: model.filterDraft === '' ? model.columnFilters.filter((filter) => filter.columnId !== message.columnId) : [...model.columnFilters.filter((filter) => filter.columnId !== message.columnId), columnFilter(message.columnId, 'text', { value: model.filterDraft })] }
+    case 'AppliedTanStackColumnFilter': return { ...model, pageIndex: 0, openFilterColumnId: '', columnFilters: [...model.columnFilters.filter((filter) => filter.columnId !== message.filter.columnId), message.filter] }
+    case 'ClearedTanStackFilterPopover': return { ...model, pageIndex: 0, openFilterColumnId: '', columnFilters: model.columnFilters.filter((filter) => filter.columnId !== message.columnId) }
+    case 'ToggledTanStackLayoutMenu': return { ...model, layoutMenuOpen: !model.layoutMenuOpen, openFilterColumnId: '', activeFiltersMenuOpen: false, pageSizeMenuOpen: false }
+    case 'ToggledTanStackActiveFiltersMenu': return { ...model, activeFiltersMenuOpen: !model.activeFiltersMenuOpen, openFilterColumnId: '', layoutMenuOpen: false, pageSizeMenuOpen: false }
+    case 'ToggledTanStackPageSizeMenu': return { ...model, pageSizeMenuOpen: !model.pageSizeMenuOpen, pageSizeDraft: String(model.pageSize), openFilterColumnId: '', layoutMenuOpen: false, activeFiltersMenuOpen: false }
+    case 'ChangedTanStackPageSizeDraft': return { ...model, pageSizeDraft: message.value }
+    case 'CommittedTanStackPageSize': return { ...model, pageIndex: 0, pageSize: Math.max(1, message.pageSize), pageSizeDraft: String(Math.max(1, message.pageSize)), pageSizeMenuOpen: false }
+    case 'StartedTanStackColumnResize': return { ...model, resizingColumnId: message.columnId, resizeStartX: message.screenX, resizeStartWidth: message.width }
+    case 'DraggedTanStackColumnResize': {
+      if (model.resizingColumnId === '') return model
+      const width = Math.min(960, Math.max(60, model.resizeStartWidth + message.screenX - model.resizeStartX))
+      return { ...model, titleWidth: model.resizingColumnId === 'title' ? width : model.titleWidth, columnWidths: [...model.columnWidths.filter((entry) => entry.columnId !== model.resizingColumnId), { columnId: model.resizingColumnId, width }] }
+    }
+    case 'EndedTanStackColumnResize': return { ...model, resizingColumnId: '', resizeStartX: 0, resizeStartWidth: 0 }
+    case 'ClosedTanStackTableOverlays': return { ...model, openFilterColumnId: '', dateCustomOpen: false, layoutMenuOpen: false, activeFiltersMenuOpen: false, pageSizeMenuOpen: false }
+    case 'ResetTanStackTableView': return { ...model, sorting: [], pageIndex: 0, columnFilters: [], columnWidths: [], titleWidth: 280, openFilterColumnId: '', activeFiltersMenuOpen: false }
+    case 'RestoredTanStackTableLayout': return message.layoutVersion !== model.layoutVersion ? model : { ...model, columnOrder: message.columnOrder, hiddenColumnIds: message.hiddenColumnIds, pinnedColumnIds: message.pinnedColumnIds, columnWidths: message.columnWidths, titleWidth: message.columnWidths.find((entry) => entry.columnId === 'title')?.width ?? model.titleWidth }
+    case 'ResetTanStackTable': return { ...init(), layoutVersion: model.layoutVersion }
   }
 }
+
+export const columnFilter = (
+  columnId: string,
+  kind: ColumnFilterKind,
+  options: Partial<Pick<ColumnFilter, 'value' | 'secondaryValue' | 'values' | 'operator'>> = {},
+): ColumnFilter => ({
+  columnId,
+  kind,
+  value: options.value ?? '',
+  secondaryValue: options.secondaryValue ?? '',
+  values: options.values ?? [],
+  operator: options.operator ?? 'eq',
+})
+
+export const layoutSnapshot = (model: Model) => ({
+  columnOrder: model.columnOrder,
+  hiddenColumnIds: model.hiddenColumnIds,
+  pinnedColumnIds: model.pinnedColumnIds,
+  columnWidths: model.columnWidths,
+  layoutVersion: model.layoutVersion,
+})
 
 export const nextSorting = (sorting: ReadonlyArray<Sort>, columnId: string): ReadonlyArray<Sort> => {
   const current = sorting.find((sort) => sort.id === columnId)
@@ -127,3 +304,4 @@ export const nextSorting = (sorting: ReadonlyArray<Sort>, columnId: string): Rea
   if (!current.desc) return sorting.map((sort) => sort.id === columnId ? { ...sort, desc: true } : sort)
   return sorting.filter((sort) => sort.id !== columnId)
 }
+

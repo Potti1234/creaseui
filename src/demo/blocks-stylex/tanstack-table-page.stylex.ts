@@ -22,5 +22,7 @@ export const styles = stylex.create({
   },
   featureGrid: { gap: '1rem', display: 'grid', gridTemplateColumns: { default: 'minmax(0, 1fr)', '@media (min-width: 900px)': 'repeat(3, minmax(0, 1fr))' } },
   priorityHigh: { color: tokens.destructive, fontWeight: 600 },
+  persistenceMount: { display: 'none' },
   titleCell: { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
 })
+

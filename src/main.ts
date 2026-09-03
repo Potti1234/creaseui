@@ -26,7 +26,6 @@ import * as ChartsRadial from "@/demo/charts/radial";
 import * as ChartsTooltip from "@/demo/charts/tooltip";
 import * as ChartsStyleX from "@/demo/charts-stylex/page";
 import * as ComponentCatalog from "@/docs/components/catalog";
-import "@/docs/components/stylex-integration";
 import * as Page from "@/app/page";
 import * as Icon from "@/lib/icon";
 import {
@@ -276,10 +275,12 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       GotTanStackTableMessage: ({ message: childMessage }) => {
         if (model.page._tag !== "BlocksStyleXTablePage") return [model, []];
         const currentPage = model.page;
-        const [table] = TanStackTablePage.update(currentPage.table, childMessage);
+        const [table, commands] = TanStackTablePage.update(currentPage.table, childMessage);
         return [
           evo(model, { page: () => evo(currentPage, { table: () => table }) }),
-          [],
+          Command.mapMessages(commands, (next) =>
+            GotTanStackTableMessage({ message: next }),
+          ),
         ];
       },
 
@@ -491,6 +492,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
 const inactiveBoard = Board.init();
 const inactiveBoardStyleX = BoardStyleX.init();
 const inactiveCatalogDocs = ComponentCatalog.init();
+const inactiveTanStackTablePage = TanStackTablePage.init();
 
 // Both boards compose the same slider subscription names. Prefix the StyleX
 // record here so Foldkit can host both without weakening duplicate-key checks.
@@ -532,6 +534,14 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
         ? model.page.docs
         : inactiveCatalogDocs,
     toParentMessage: (message) => GotCatalogDocsMessage({ message }),
+  }),
+  Subscription.lift(TanStackTablePage.subscriptions)<Model, Message>({
+    toChildModel: (model) =>
+      model.page._tag === "BlocksStyleXTablePage"
+        ? model.page.table
+        : inactiveTanStackTablePage,
+    toParentMessage: (message) => GotTanStackTableMessage({ message }),
+    when: (model) => model.page._tag === "BlocksStyleXTablePage",
   }),
 );
 
@@ -1134,3 +1144,4 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
       : h.div([], [header(model, h), pageView(model, h)]),
   };
 };
+
