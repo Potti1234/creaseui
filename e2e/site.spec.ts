@@ -1402,6 +1402,25 @@ test("label keeps native control association across renderers", async ({ page })
   await expect(email).toBeFocused();
 });
 
+test("marker keeps authored variants and annotation semantics across renderers", async ({ page }) => {
+  await page.goto("/docs/components/marker");
+  const separator = page.locator("#separator").locator('[data-slot="marker"]');
+  const withIcon = page.locator("#with-icon").locator('[data-slot="marker"]');
+  await expect(separator).toHaveAttribute("data-variant", "separator");
+  await expect(separator).toHaveAttribute("role", "note");
+  await expect(withIcon.locator('[data-slot="marker-icon"]')).toHaveAttribute("aria-hidden", "true");
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(page.locator("#separator")).toBeVisible();
+  await expect(page.locator("#with-icon")).toBeVisible();
+  await expect(page.locator("#border")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#separator code")).toContainText("@/stylex/marker");
+  await expect(separator).toHaveAttribute("data-variant", "separator");
+  await expect(separator).toHaveAttribute("role", "note");
+  await expect(withIcon.locator('[data-slot="marker-icon"]')).toHaveAttribute("aria-hidden", "true");
+});
+
 test("sidebar documents persistence and toggles derived shell state", async ({
   page,
 }) => {

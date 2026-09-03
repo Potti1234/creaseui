@@ -7,6 +7,7 @@ import { badgeStyleXPreview } from '@/docs/components/pages/badge/stylex';
 import { breadcrumbStyleXPreview } from '@/docs/components/pages/breadcrumb/stylex';
 import { kbdStyleXPreview } from '@/docs/components/pages/kbd/stylex';
 import { labelStyleXPreview } from '@/docs/components/pages/label/stylex';
+import { markerStyleXPreview } from '@/docs/components/pages/marker/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -16,3 +17,4 @@ installStyleXExamplePreviewProvider('badge', badgeStyleXPreview);
 installStyleXExamplePreviewProvider('breadcrumb', breadcrumbStyleXPreview);
 installStyleXExamplePreviewProvider('kbd', kbdStyleXPreview);
 installStyleXExamplePreviewProvider('label', labelStyleXPreview);
+installStyleXExamplePreviewProvider('marker', markerStyleXPreview);
