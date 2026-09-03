@@ -23,6 +23,7 @@ import { checkboxStyleXPreview } from '@/docs/components/pages/checkbox/stylex';
 import { switchStyleXPreview } from '@/docs/components/pages/switch/stylex';
 import { radioGroupStyleXPreview } from '@/docs/components/pages/radio-group/stylex';
 import { nativeSelectStyleXPreview } from '@/docs/components/pages/native-select/stylex';
+import { progressStyleXPreview } from '@/docs/components/pages/progress/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -48,3 +49,4 @@ installStyleXExamplePreviewProvider('checkbox', checkboxStyleXPreview);
 installStyleXExamplePreviewProvider('switch', switchStyleXPreview);
 installStyleXExamplePreviewProvider('radio-group', radioGroupStyleXPreview);
 installStyleXExamplePreviewProvider('native-select', nativeSelectStyleXPreview);
+installStyleXExamplePreviewProvider('progress', progressStyleXPreview);

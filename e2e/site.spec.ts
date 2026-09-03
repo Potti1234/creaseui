@@ -2072,6 +2072,19 @@ test("progress normalizes custom ranges and reduced-motion indeterminate state",
   await expect(narrow).toHaveAttribute("aria-valuemax", "4");
   await expect(narrow).toHaveAttribute("aria-valuenow", "3");
   expect(await narrow.evaluate(element => element.getBoundingClientRect().width)).toBeLessThanOrEqual(100);
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["determinate", "indeterminate", "narrow-range"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#determinate code")).toContainText(
+    "@/stylex/progress",
+  );
+  await expect(determinate).toHaveAttribute("aria-valuenow", "64");
+  await expect(indeterminate).not.toHaveAttribute("aria-valuenow", /.+/u);
+  await expect(indeterminate.locator('[data-slot="progress-indicator"]')).toHaveCSS("animation-name", "none");
+  expect(await narrow.evaluate(element => element.getBoundingClientRect().width)).toBeLessThanOrEqual(100);
 });
 
 test("skeleton and spinner expose explicit loading semantics with reduced motion", async ({ page }) => {
