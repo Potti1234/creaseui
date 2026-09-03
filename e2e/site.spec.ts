@@ -2300,13 +2300,24 @@ test("radio group isolates roving focus from parent-owned selection", async ({
     .getByRole("group", { name: "Preview styling engine" })
     .getByRole("button", { name: "StyleX" })
     .click();
-  const stylexGroup = page.getByRole("radiogroup", {
-    name: "Constraint level",
-  });
-  await expect(stylexGroup.getByRole("radio", { name: "Strict" })).toBeChecked();
-  await expect(stylexGroup.getByRole("radio", { name: "Flexible" })).not.toHaveAttribute(
-    "aria-describedby",
+  for (const id of [
+    "density",
+    "disabled-group",
+    "read-only",
+    "rtl-and-disabled-option",
+  ]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#density code")).toContainText(
+    "@/stylex/radio-group",
   );
+  await expect(rtlDefault).toBeChecked();
+  await expect(hiddenValue).toHaveValue("compact");
+  await compact.press("ArrowUp");
+  await expect(comfortable).toBeChecked();
+  await expect(hiddenValue).toHaveValue("comfortable");
+  await expect(readOnlyComfortable).toBeChecked();
   await assertAccessible(page);
 });
 
