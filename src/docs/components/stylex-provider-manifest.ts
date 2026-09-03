@@ -17,6 +17,7 @@ import { buttonGroupStyleXPreview } from '@/docs/components/pages/button-group/s
 import { inputStyleXPreview } from '@/docs/components/pages/input/stylex';
 import { inputOtpStyleXPreview } from '@/docs/components/pages/input-otp/stylex';
 import { textareaStyleXPreview } from '@/docs/components/pages/textarea/stylex';
+import { toggleStyleXPreview } from '@/docs/components/pages/toggle/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -36,3 +37,4 @@ installStyleXExamplePreviewProvider('button-group', buttonGroupStyleXPreview);
 installStyleXExamplePreviewProvider('input', inputStyleXPreview);
 installStyleXExamplePreviewProvider('input-otp', inputOtpStyleXPreview);
 installStyleXExamplePreviewProvider('textarea', textareaStyleXPreview);
+installStyleXExamplePreviewProvider('toggle', toggleStyleXPreview);

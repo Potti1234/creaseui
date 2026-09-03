@@ -1860,6 +1860,17 @@ test("controlled helper pages own and update compact local preview state", async
       .getByRole("button", { name: "Bold formatting" }),
   ).toBeVisible();
 
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["formatting", "outline", "disabled", "compact-named-control"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#formatting code")).toContainText("@/stylex/toggle");
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-pressed", "false");
+  await expect(disabledToggle).toBeDisabled();
+
   await page.goto("/docs/components/toggle-group");
   const right = page
     .locator("#single-selection")
