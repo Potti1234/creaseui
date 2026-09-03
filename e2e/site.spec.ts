@@ -2243,9 +2243,18 @@ test("switch shares controlled read-only form and RTL semantics", async ({
     .getByRole("group", { name: "Preview styling engine" })
     .getByRole("button", { name: "StyleX" })
     .click();
-  const stylexSwitch = page.getByRole("switch", { name: "Strict linting" });
-  await expect(stylexSwitch).toBeChecked();
-  await expect(stylexSwitch).not.toHaveAttribute("aria-describedby");
+  for (const id of ["notifications", "small", "disabled", "read-only", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#notifications code")).toContainText(
+    "@/stylex/switch",
+  );
+  await expect(notifications).not.toBeChecked();
+  await notifications.press("Space");
+  await expect(notifications).toBeChecked();
+  await expect(formValue).toHaveValue("enabled");
+  await expect(readOnly).toBeChecked();
   await assertAccessible(page);
 });
 

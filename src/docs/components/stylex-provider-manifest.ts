@@ -20,6 +20,7 @@ import { textareaStyleXPreview } from '@/docs/components/pages/textarea/stylex';
 import { toggleStyleXPreview } from '@/docs/components/pages/toggle/stylex';
 import { toggleGroupStyleXPreview } from '@/docs/components/pages/toggle-group/stylex';
 import { checkboxStyleXPreview } from '@/docs/components/pages/checkbox/stylex';
+import { switchStyleXPreview } from '@/docs/components/pages/switch/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -42,3 +43,4 @@ installStyleXExamplePreviewProvider('textarea', textareaStyleXPreview);
 installStyleXExamplePreviewProvider('toggle', toggleStyleXPreview);
 installStyleXExamplePreviewProvider('toggle-group', toggleGroupStyleXPreview);
 installStyleXExamplePreviewProvider('checkbox', checkboxStyleXPreview);
+installStyleXExamplePreviewProvider('switch', switchStyleXPreview);
