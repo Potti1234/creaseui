@@ -1421,6 +1421,22 @@ test("marker keeps authored variants and annotation semantics across renderers",
   await expect(withIcon.locator('[data-slot="marker-icon"]')).toHaveAttribute("aria-hidden", "true");
 });
 
+test("separator keeps decorative and semantic boundaries across renderers", async ({ page }) => {
+  await page.goto("/docs/components/separator");
+  const horizontal = page.locator("#horizontal");
+  const vertical = page.locator("#vertical");
+  await expect(horizontal.getByRole("separator")).toHaveCount(0);
+  await expect(vertical.getByRole("separator")).toHaveAttribute("aria-orientation", "vertical");
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(horizontal).toBeVisible();
+  await expect(vertical).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(horizontal.locator("code")).toContainText("@/stylex/separator");
+  await expect(horizontal.getByRole("separator")).toHaveCount(0);
+  await expect(vertical.getByRole("separator")).toHaveAttribute("aria-orientation", "vertical");
+});
+
 test("sidebar documents persistence and toggles derived shell state", async ({
   page,
 }) => {
