@@ -1951,6 +1951,18 @@ test("controlled helper pages own and update compact local preview state", async
   });
   expect(submittedNotes).toBe("First line\nSecond line");
 
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["message", "invalid", "disabled", "form-and-resize"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#message code")).toContainText("@/stylex/textarea");
+  await expect(message).toHaveValue("A complete Foldkit example.");
+  await message.fill("Styled with StyleX.");
+  await expect(message).toHaveValue("Styled with StyleX.");
+  await expect(deploymentNotes).toHaveAttribute("readonly", "");
+  await expect(deploymentNotes).toHaveAttribute("data-resize", "none");
+
   await page.goto("/docs/components/input-group");
   const url = page.locator("#url-prefix").getByRole("textbox");
   await url.fill("crease.dev");
