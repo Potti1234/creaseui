@@ -716,7 +716,7 @@ test("dialog traps focus, closes with Escape, and restores its trigger", async (
   const trigger = example.getByRole("button", { name: "Open profile" });
 
   await trigger.click();
-  const dialog = page.getByRole("dialog");
+  const dialog = page.locator("#docs-dialog-0");
   await expect(dialog).toBeVisible();
   await expect(dialog).toHaveAttribute("id", "docs-dialog-0");
   await expect(dialog).toHaveAttribute(
@@ -751,12 +751,24 @@ test("dialog traps focus, closes with Escape, and restores its trigger", async (
   await expect(dialog).toBeHidden();
   await expect(trigger).toBeFocused();
 
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(page.locator("#edit-profile")).toBeVisible();
+  await expect(page.locator("#compact-confirmation")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(example.locator("code")).toContainText("@/stylex/dialog");
+  await trigger.click();
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole("button", { name: "Cancel" })).toBeFocused();
+  await dialog.getByRole("button", { name: "Cancel" }).click();
+  await expect(dialog).toBeHidden();
+  await expect(trigger).toBeFocused();
+
   const compactExample = page.locator("#compact-confirmation");
   const compactTrigger = compactExample.getByRole("button", {
     name: "Review change",
   });
   await compactTrigger.click();
-  const compactDialog = page.getByRole("dialog");
+  const compactDialog = page.locator("#docs-dialog-1");
   await expect(compactDialog).toHaveAttribute("id", "docs-dialog-1");
   await expect(compactDialog.getByRole("button", { name: "Close" })).toBeFocused();
   await page.keyboard.press("Escape");

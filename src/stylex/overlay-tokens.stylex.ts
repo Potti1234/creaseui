@@ -48,7 +48,7 @@ export const overlayStyles = stylex.create({
     borderColor: tokens.transparent,
     alignItems: 'center',
     backgroundColor: tokens.transparent,
-    display: 'flex',
+    display: { default: 'none', ':is([open])': 'flex' },
     justifyContent: 'center',
   },
   footer: {
@@ -278,4 +278,3 @@ export const overlayStyles = stylex.create({
     width: '100%',
   },
 })
-

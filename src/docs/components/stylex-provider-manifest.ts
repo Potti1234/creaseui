@@ -26,6 +26,7 @@ import { nativeSelectStyleXPreview } from '@/docs/components/pages/native-select
 import { progressStyleXPreview } from '@/docs/components/pages/progress/stylex';
 import { sliderStyleXPreview } from '@/docs/components/pages/slider/stylex';
 import { collapsibleStyleXPreview } from '@/docs/components/pages/collapsible/stylex';
+import { dialogStyleXPreview } from '@/docs/components/pages/dialog/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -54,3 +55,4 @@ installStyleXExamplePreviewProvider('native-select', nativeSelectStyleXPreview);
 installStyleXExamplePreviewProvider('progress', progressStyleXPreview);
 installStyleXExamplePreviewProvider('slider', sliderStyleXPreview);
 installStyleXExamplePreviewProvider('collapsible', collapsibleStyleXPreview);
+installStyleXExamplePreviewProvider('dialog', dialogStyleXPreview);
