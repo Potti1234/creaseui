@@ -1898,6 +1898,30 @@ test("controlled helper pages own and update compact local preview state", async
   await page.keyboard.press("ArrowRight");
   await expect(disabledRight).toBeFocused();
 
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of [
+    "single-selection",
+    "multiple-selection",
+    "rtl",
+    "disabled-item",
+    "form-policy",
+  ]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#single-selection code")).toContainText(
+    "@/stylex/toggle-group",
+  );
+  await expect(right).toHaveAttribute("aria-pressed", "false");
+  await right.click();
+  await expect(right).toHaveAttribute("aria-pressed", "true");
+  await multiple.getByRole("button", { name: "Center" }).click();
+  await expect(multiple.getByRole("button", { name: "Center" })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  await expect(disabledGroup.getByRole("button", { name: "Center" })).toBeDisabled();
+
   await page.goto("/docs/components/radio-group");
   const compact = page
     .locator("#density")
