@@ -1936,6 +1936,20 @@ test("controlled helper pages own and update compact local preview state", async
   await fruit.selectOption("blueberry");
   await expect(fruit).toHaveValue("blueberry");
 
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(page.locator("#labeled-fruit")).toBeVisible();
+  await expect(page.locator("#grouped-options")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#labeled-fruit code")).toContainText(
+    "@/stylex/native-select",
+  );
+  await expect(fruit).toHaveValue("blueberry");
+  await fruit.selectOption("banana");
+  await expect(fruit).toHaveValue("banana");
+  await expect(
+    page.locator('#grouped-options optgroup[label="Europe"]'),
+  ).toBeAttached();
+
   await page.goto("/docs/components/input");
   const email = page.locator("#email").getByRole("textbox", { name: "Email" });
   await email.fill("docs@crease.dev");

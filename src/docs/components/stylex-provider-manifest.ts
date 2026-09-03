@@ -22,6 +22,7 @@ import { toggleGroupStyleXPreview } from '@/docs/components/pages/toggle-group/s
 import { checkboxStyleXPreview } from '@/docs/components/pages/checkbox/stylex';
 import { switchStyleXPreview } from '@/docs/components/pages/switch/stylex';
 import { radioGroupStyleXPreview } from '@/docs/components/pages/radio-group/stylex';
+import { nativeSelectStyleXPreview } from '@/docs/components/pages/native-select/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -46,3 +47,4 @@ installStyleXExamplePreviewProvider('toggle-group', toggleGroupStyleXPreview);
 installStyleXExamplePreviewProvider('checkbox', checkboxStyleXPreview);
 installStyleXExamplePreviewProvider('switch', switchStyleXPreview);
 installStyleXExamplePreviewProvider('radio-group', radioGroupStyleXPreview);
+installStyleXExamplePreviewProvider('native-select', nativeSelectStyleXPreview);
