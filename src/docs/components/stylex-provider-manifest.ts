@@ -9,6 +9,7 @@ import { kbdStyleXPreview } from '@/docs/components/pages/kbd/stylex';
 import { labelStyleXPreview } from '@/docs/components/pages/label/stylex';
 import { markerStyleXPreview } from '@/docs/components/pages/marker/stylex';
 import { separatorStyleXPreview } from '@/docs/components/pages/separator/stylex';
+import { skeletonStyleXPreview } from '@/docs/components/pages/skeleton/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -20,3 +21,4 @@ installStyleXExamplePreviewProvider('kbd', kbdStyleXPreview);
 installStyleXExamplePreviewProvider('label', labelStyleXPreview);
 installStyleXExamplePreviewProvider('marker', markerStyleXPreview);
 installStyleXExamplePreviewProvider('separator', separatorStyleXPreview);
+installStyleXExamplePreviewProvider('skeleton', skeletonStyleXPreview);

@@ -1943,6 +1943,14 @@ test("skeleton and spinner expose explicit loading semantics with reduced motion
     await expect(skeleton).toHaveCSS("animation-name", "none");
   }
 
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(page.locator("#profile")).toBeVisible();
+  await expect(page.locator("#card")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#profile code")).toContainText("@/stylex/skeleton");
+  await expect(profile.getByRole("status", { name: "Loading profile" })).toHaveAttribute("aria-busy", "true");
+  await expect(profile.locator('[data-slot="skeleton"]')).toHaveCount(3);
+
   await page.goto("/docs/components/spinner");
   const standalone = page.locator("#default").getByRole("img", { name: "Loading content" });
   await expect(standalone).toHaveCSS("animation-name", "none");
