@@ -13,6 +13,7 @@ import {
   Message as CatalogMessage,
 } from '../src/docs/components/catalog.ts'
 import { authoredPages } from '../src/docs/components/pages/index.ts'
+import { rendererExamplesAreInParity } from '../src/docs/components/page-definition.ts'
 
 const registry = JSON.parse(readFileSync('src/ui/registry.json', 'utf8')) as {
   items: ReadonlyArray<{
@@ -70,6 +71,19 @@ const registrySlugs = registry.items
   .sort()
 
 describe('component catalog coverage', () => {
+  it('keeps every migrated page\'s renderer examples in parity', () => {
+    for (const page of Object.values(authoredPages)) {
+      const stylexExamples = page.definition.stylexExamples
+      if (stylexExamples === undefined) continue
+
+      assert.equal(
+        rendererExamplesAreInParity(page.slug, page.definition.examples, stylexExamples),
+        true,
+        `${page.slug} renderer examples drifted`,
+      )
+    }
+  })
+
   it('documents every registry UI item and no stale component routes', () => {
     assert.deepEqual(documentedSlugs, registrySlugs)
   })

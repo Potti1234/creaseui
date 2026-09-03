@@ -1,9 +1,10 @@
 import type { Html, HtmlBuilder } from 'foldkit/html';
 
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
 import { accordionItems } from '@/docs/components/pages/accordion/shared';
 import * as Accordion from '@/stylex/accordion';
 
-export const accordionStyleXPreview = <Msg>(
+export const accordionStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

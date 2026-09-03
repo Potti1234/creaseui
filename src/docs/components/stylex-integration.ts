@@ -1,11 +1,9 @@
 import {
-  installStyleXExamplePreviewProvider,
   installStyleXSpecimenProvider,
 } from '@/docs/components/catalog'
 import {
   catalogSpecimens,
 } from '@/docs/components/stylex-specimens'
-import { accordionStyleXPreview } from '@/docs/components/pages/accordion/stylex'
+import '@/docs/components/stylex-provider-manifest'
 
 installStyleXSpecimenProvider(catalogSpecimens)
-installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview)

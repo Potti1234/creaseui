@@ -6,7 +6,11 @@ import { defineView } from 'foldkit/submodel';
 
 import { componentPage, componentTitle, example } from '@/docs/component-page';
 import * as CopyFeedback from '@/docs/copy-feedback';
-import type { ComponentKind, PageDefinitions } from '@/docs/components/page-definition';
+import type {
+  ComponentKind,
+  PageDefinitions,
+  StyleXExamplePreviewProvider,
+} from '@/docs/components/page-definition';
 import { componentApi } from '@/docs/generated-component-api';
 import { authoredPages } from '@/docs/components/pages';
 import { RoutedDocsPreviewMessage } from '@/docs/components/pages/authored-page';
@@ -15,13 +19,6 @@ type StyleXSpecimenProvider = <Msg>(
   noOpMessage: Msg,
   h: HtmlBuilder<Msg>,
 ) => ReadonlyArray<StyleXSpecimen>;
-type StyleXExamplePreviewProvider = <Msg>(
-  exampleIndex: number,
-  model: unknown,
-  onMessageJson: (messageJson: string) => Msg,
-  h: HtmlBuilder<Msg>,
-) => Html | undefined;
-
 let stylexSpecimenProvider: StyleXSpecimenProvider | undefined;
 const stylexExamplePreviewProviders = new Map<
   string,
@@ -266,6 +263,14 @@ export const view = (
       )
     : undefined;
   const stylexExamples = definition.stylexExamples;
+  const stylexExamplePreviewProvider = stylexExamplePreviewProviders.get(slug);
+  if (
+    model.renderer === 'stylex' &&
+    stylexExamples !== undefined &&
+    stylexExamplePreviewProvider === undefined
+  ) {
+    throw new Error(`Missing registered StyleX example preview provider for ${slug}`);
+  }
   const authoredExamples =
     model.renderer === 'stylex' && stylexExamples !== undefined
       ? stylexExamples
@@ -303,7 +308,7 @@ export const view = (
           const exampleModel = model.examples[index] ?? program.init(index);
           const stylexPreview =
             model.renderer === 'stylex' && stylexExamples !== undefined
-              ? stylexExamplePreviewProviders.get(slug)?.(
+              ? stylexExamplePreviewProvider?.(
                   index,
                   exampleModel,
                   messageJson => GotExampleMessage({
