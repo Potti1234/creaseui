@@ -2071,6 +2071,17 @@ test("collapsible preserves controlled linkage, external changes, and disabled p
   await trigger.click();
   await expect(trigger).toHaveAttribute("aria-expanded", "true");
 
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["details", "open-by-default", "disabled"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(example.locator("code")).toContainText("@/stylex/collapsible");
+  await expect(trigger).toHaveAttribute("aria-expanded", "true");
+  await expect(trigger).toHaveAccessibleName("Hide details");
+  await trigger.click();
+  await expect(trigger).toHaveAttribute("aria-expanded", "false");
+
   const disabled = page.locator("#disabled").getByRole("button", { name: "Unavailable details" });
   await expect(disabled).toBeDisabled();
   await expect(disabled).toHaveAttribute("aria-expanded", "false");

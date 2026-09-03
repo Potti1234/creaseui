@@ -25,6 +25,7 @@ import { radioGroupStyleXPreview } from '@/docs/components/pages/radio-group/sty
 import { nativeSelectStyleXPreview } from '@/docs/components/pages/native-select/stylex';
 import { progressStyleXPreview } from '@/docs/components/pages/progress/stylex';
 import { sliderStyleXPreview } from '@/docs/components/pages/slider/stylex';
+import { collapsibleStyleXPreview } from '@/docs/components/pages/collapsible/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -52,3 +53,4 @@ installStyleXExamplePreviewProvider('radio-group', radioGroupStyleXPreview);
 installStyleXExamplePreviewProvider('native-select', nativeSelectStyleXPreview);
 installStyleXExamplePreviewProvider('progress', progressStyleXPreview);
 installStyleXExamplePreviewProvider('slider', sliderStyleXPreview);
+installStyleXExamplePreviewProvider('collapsible', collapsibleStyleXPreview);
