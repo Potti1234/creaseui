@@ -1387,6 +1387,21 @@ test("kbd keeps semantic key notation across renderers", async ({ page }) => {
   await expect(page.locator("#shortcut").locator("kbd[data-slot=\"kbd-group\"]")).toBeVisible();
 });
 
+test("label keeps native control association across renderers", async ({ page }) => {
+  await page.goto("/docs/components/label");
+  const email = page.locator("#docs-email");
+  await page.locator('#input-label label[data-slot="label"]').click();
+  await expect(email).toBeFocused();
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(page.locator("#input-label")).toBeVisible();
+  await expect(page.locator("#supporting-text")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#input-label code")).toContainText("@/stylex/label");
+  await page.locator('#input-label label[data-slot="label"]').click();
+  await expect(email).toBeFocused();
+});
+
 test("sidebar documents persistence and toggles derived shell state", async ({
   page,
 }) => {
