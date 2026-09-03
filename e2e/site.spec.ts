@@ -801,6 +801,13 @@ test("alert dialog emits decisions and keeps async consequences parent owned", a
   await expect(example.getByRole("status")).toHaveText("Project deleted.");
   await expect(trigger).toBeFocused();
 
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(page.locator("#async-deletion")).toBeVisible();
+  await expect(page.locator("#compact-decision")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(example.locator("code")).toContainText("@/stylex/alert-dialog");
+  await expect(example.getByRole("status")).toHaveText("Project deleted.");
+
   const compact = page.locator("#compact-decision");
   const compactTrigger = compact.getByRole("button", { name: "Leave workspace", exact: true });
   await compactTrigger.click();
