@@ -15,6 +15,7 @@ import { typographyStyleXPreview } from '@/docs/components/pages/typography/styl
 import { buttonStyleXPreview } from '@/docs/components/pages/button/stylex';
 import { buttonGroupStyleXPreview } from '@/docs/components/pages/button-group/stylex';
 import { inputStyleXPreview } from '@/docs/components/pages/input/stylex';
+import { inputOtpStyleXPreview } from '@/docs/components/pages/input-otp/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -32,3 +33,4 @@ installStyleXExamplePreviewProvider('typography', typographyStyleXPreview);
 installStyleXExamplePreviewProvider('button', buttonStyleXPreview);
 installStyleXExamplePreviewProvider('button-group', buttonGroupStyleXPreview);
 installStyleXExamplePreviewProvider('input', inputStyleXPreview);
+installStyleXExamplePreviewProvider('input-otp', inputOtpStyleXPreview);

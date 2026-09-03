@@ -425,6 +425,7 @@ ${config.viewBody.split('\n').map((line) => `    ${line}`).join('\n')}
 export const controlledStringApplication = (config: Readonly<{
   componentName: string;
   componentSlug: string;
+  renderer?: 'tailwind' | 'stylex';
   exampleName: string;
   field: string;
   initialValue: string;
@@ -443,7 +444,7 @@ import { Command, Runtime, Subscription } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { m } from 'foldkit/message'
 
-import * as ${config.componentName} from '@/ui/${config.componentSlug}'${
+import * as ${config.componentName} from '@/${config.renderer === 'stylex' ? 'stylex' : 'ui'}/${config.componentSlug}'${
       config.componentImports === undefined ? '' : `\n${config.componentImports}`
     }`,
     model: `export const Model = S.Struct({ ${config.field}: S.String })

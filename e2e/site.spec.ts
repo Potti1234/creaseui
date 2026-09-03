@@ -1761,6 +1761,19 @@ test("presentational helpers preserve native semantics and controlled OTP state"
   await expect(code).toHaveValue("123456");
   await expect(code).toHaveAttribute("autocomplete", "one-time-code");
   await expect(page.locator("#six-digit-code [data-slot=\"input-otp-group\"]")).toHaveAttribute("aria-hidden", "true");
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["six-digit-code", "grouped-code", "alphanumeric"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#six-digit-code code")).toContainText("@/stylex/input-otp");
+  await expect(code).toHaveValue("123456");
+  await code.fill("98x7654");
+  await expect(code).toHaveValue("98765");
+  const inviteCode = page.getByRole("textbox", { name: "Invite code" });
+  await inviteCode.fill("aZ-19");
+  await expect(inviteCode).toHaveValue("Z19");
 });
 
 test("data table filters and sorts through its interaction model", async ({
