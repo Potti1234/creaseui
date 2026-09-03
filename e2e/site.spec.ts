@@ -454,6 +454,16 @@ test("avatar delegates image lifecycle into its documented child model", async (
   await expect(image).toBeVisible();
   await expect(image).not.toHaveAttribute("data-loading", "");
   await expect(example.locator('[data-slot="avatar-fallback"]')).toHaveCount(0);
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(page.locator("#image-lifecycle")).toBeVisible();
+  await expect(page.locator("#initials-only")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#image-lifecycle code")).toContainText(
+    "@/stylex/avatar",
+  );
+  await expect(example.getByRole("img", { name: "Ada Lovelace" })).toBeVisible();
+  await expect(example.locator('[data-slot="avatar-fallback"]')).toHaveCount(0);
 });
 
 test("authored tabs keep child instances and selected values independent", async ({
