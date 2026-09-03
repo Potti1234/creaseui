@@ -466,6 +466,26 @@ test("avatar delegates image lifecycle into its documented child model", async (
   await expect(example.locator('[data-slot="avatar-fallback"]')).toHaveCount(0);
 });
 
+test("button preserves authored state and semantics across renderers", async ({ page }) => {
+  await page.goto("/docs/components/button");
+  const basic = page.locator("#basic");
+  const basicButton = basic.getByRole("button", { name: "Clicked 0 times" });
+  await basicButton.click();
+  await expect(basic.getByRole("button", { name: "Clicked 1 times" })).toBeVisible();
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["basic", "variants", "sizes", "loading", "button-group", "as-link", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(basic.locator("code")).toContainText("@/stylex/button");
+  await expect(basic.getByRole("button", { name: "Clicked 1 times" })).toBeVisible();
+  await basic.getByRole("button", { name: "Clicked 1 times" }).click();
+  await expect(basic.getByRole("button", { name: "Clicked 2 times" })).toBeVisible();
+  await expect(page.locator("#loading").getByRole("button", { name: "Save changes" })).toBeDisabled();
+  await expect(page.locator("#as-link").getByRole("link", { name: "Foldkit docs ↗" })).toHaveAttribute("target", "_blank");
+});
+
 test("authored tabs keep child instances and selected values independent", async ({
   page,
 }) => {

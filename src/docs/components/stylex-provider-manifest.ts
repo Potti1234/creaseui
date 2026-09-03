@@ -12,6 +12,7 @@ import { separatorStyleXPreview } from '@/docs/components/pages/separator/stylex
 import { skeletonStyleXPreview } from '@/docs/components/pages/skeleton/stylex';
 import { spinnerStyleXPreview } from '@/docs/components/pages/spinner/stylex';
 import { typographyStyleXPreview } from '@/docs/components/pages/typography/stylex';
+import { buttonStyleXPreview } from '@/docs/components/pages/button/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -26,3 +27,4 @@ installStyleXExamplePreviewProvider('separator', separatorStyleXPreview);
 installStyleXExamplePreviewProvider('skeleton', skeletonStyleXPreview);
 installStyleXExamplePreviewProvider('spinner', spinnerStyleXPreview);
 installStyleXExamplePreviewProvider('typography', typographyStyleXPreview);
+installStyleXExamplePreviewProvider('button', buttonStyleXPreview);

@@ -147,6 +147,7 @@ export const interactionPreviewProgram = <const Slug extends string>(
     exampleIndex: number,
     interaction: InteractedPreview,
     h: HtmlBuilder<InteractedPreview>,
+    interactionCount: number,
   ) => Html,
 ): ErasedPreviewProgram => {
   const Model = S.Struct({ _docsPage: S.Literal(slug), interactionCount: S.Number });
@@ -156,7 +157,12 @@ export const interactionPreviewProgram = <const Slug extends string>(
     Message: InteractedPreview,
     init: () => ({ _docsPage: slug, interactionCount: 0 }),
     update: model => [{ ...model, interactionCount: model.interactionCount + 1 }, []],
-    view: (index, _model, h) => render(index, InteractedPreview(), h),
+    view: (index, model, h) => render(
+      index,
+      InteractedPreview(),
+      h,
+      model.interactionCount,
+    ),
   });
 };
 
@@ -231,6 +237,7 @@ Runtime.run(
 export const statelessComponentApplication = (config: Readonly<{
   componentName: string;
   componentSlug: string;
+  renderer?: 'tailwind' | 'stylex';
   exampleName: string;
   componentImports?: string;
   viewBody: string;
@@ -242,7 +249,7 @@ import { Command, Runtime, Subscription } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { m } from 'foldkit/message'
 
-import * as ${config.componentName} from '@/ui/${config.componentSlug}'${
+import * as ${config.componentName} from '@/${config.renderer === 'stylex' ? 'stylex' : 'ui'}/${config.componentSlug}'${
       config.componentImports === undefined ? '' : `\n${config.componentImports}`
     }`,
     model: `export const Model = S.Struct({
