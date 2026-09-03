@@ -1437,6 +1437,24 @@ test("separator keeps decorative and semantic boundaries across renderers", asyn
   await expect(vertical.getByRole("separator")).toHaveAttribute("aria-orientation", "vertical");
 });
 
+test("typography keeps semantic prose examples across renderers", async ({ page }) => {
+  await page.goto("/docs/components/typography");
+  const article = page.locator("#article");
+  await expect(article.getByRole("heading", { level: 2, name: "Foldkit architecture" })).toBeVisible();
+  await expect(page.locator("#inline-code").locator("code[data-slot=\"typography-inline-code\"]")).toHaveText("h.submodel");
+  await expect(page.locator("#quotation").locator("blockquote")).toBeVisible();
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(article).toBeVisible();
+  await expect(page.locator("#inline-code")).toBeVisible();
+  await expect(page.locator("#quotation")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(article.locator("code")).toContainText("@/stylex/typography");
+  await expect(article.getByRole("heading", { level: 2, name: "Foldkit architecture" })).toBeVisible();
+  await expect(page.locator("#inline-code").locator("code[data-slot=\"typography-inline-code\"]")).toHaveText("h.submodel");
+  await expect(page.locator("#quotation").locator("blockquote")).toBeVisible();
+});
+
 test("sidebar documents persistence and toggles derived shell state", async ({
   page,
 }) => {
