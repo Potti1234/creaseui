@@ -10,6 +10,7 @@ import { labelStyleXPreview } from '@/docs/components/pages/label/stylex';
 import { markerStyleXPreview } from '@/docs/components/pages/marker/stylex';
 import { separatorStyleXPreview } from '@/docs/components/pages/separator/stylex';
 import { skeletonStyleXPreview } from '@/docs/components/pages/skeleton/stylex';
+import { spinnerStyleXPreview } from '@/docs/components/pages/spinner/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -22,3 +23,4 @@ installStyleXExamplePreviewProvider('label', labelStyleXPreview);
 installStyleXExamplePreviewProvider('marker', markerStyleXPreview);
 installStyleXExamplePreviewProvider('separator', separatorStyleXPreview);
 installStyleXExamplePreviewProvider('skeleton', skeletonStyleXPreview);
+installStyleXExamplePreviewProvider('spinner', spinnerStyleXPreview);

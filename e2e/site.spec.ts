@@ -1959,6 +1959,14 @@ test("skeleton and spinner expose explicit loading semantics with reduced motion
   const decorative = namedStatus.locator("svg");
   await expect(decorative).toHaveAttribute("aria-hidden", "true");
   await expect(namedStatus.getByRole("img")).toHaveCount(0);
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(page.locator("#default")).toBeVisible();
+  await expect(page.locator("#with-label")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#default code")).toContainText("@/stylex/spinner");
+  await expect(page.locator("#default").getByRole("img", { name: "Loading content" })).toHaveCSS("animation-name", "none");
+  await expect(page.locator("#with-label").getByRole("status")).toContainText("Saving changes");
 });
 
 test("empty variants preserve heading structure, action order, and responsive copy", async ({ page }) => {
