@@ -616,6 +616,29 @@ test("authored slider delegates keyboard changes and stores its output value", a
   await expect(normalized).toHaveAttribute("min", "0");
   await expect(normalized).toHaveAttribute("max", "100");
   await expect(normalized).toHaveAttribute("step", "1");
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of [
+    "controlled-volume",
+    "read-only-value",
+    "rtl-price-range",
+    "vertical-range",
+    "normalized-bounds",
+  ]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#controlled-volume code")).toContainText(
+    "@/stylex/slider",
+  );
+  await expect(slider).toHaveAttribute("aria-valuenow", "51");
+  await slider.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(slider).toHaveAttribute("aria-valuenow", "52");
+  await expect(example).toContainText("Current value: 52");
+  await expect(readOnly).toHaveAttribute("aria-valuenow", "65");
+  await expect(minimum).toHaveValue("75");
+  await expect(normalized).toHaveAttribute("step", "1");
 });
 
 test("authored resizable instances keep axis-specific child state independent", async ({

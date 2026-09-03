@@ -24,6 +24,7 @@ import { switchStyleXPreview } from '@/docs/components/pages/switch/stylex';
 import { radioGroupStyleXPreview } from '@/docs/components/pages/radio-group/stylex';
 import { nativeSelectStyleXPreview } from '@/docs/components/pages/native-select/stylex';
 import { progressStyleXPreview } from '@/docs/components/pages/progress/stylex';
+import { sliderStyleXPreview } from '@/docs/components/pages/slider/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -50,3 +51,4 @@ installStyleXExamplePreviewProvider('switch', switchStyleXPreview);
 installStyleXExamplePreviewProvider('radio-group', radioGroupStyleXPreview);
 installStyleXExamplePreviewProvider('native-select', nativeSelectStyleXPreview);
 installStyleXExamplePreviewProvider('progress', progressStyleXPreview);
+installStyleXExamplePreviewProvider('slider', sliderStyleXPreview);
