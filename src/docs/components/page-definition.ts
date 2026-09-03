@@ -20,6 +20,7 @@ export type DocsSection = Readonly<{
 export type PageDefinition = Readonly<{
   description: string;
   examples: ReadonlyArray<DocsExample>;
+  stylexExamples?: ReadonlyArray<DocsExample>;
   kind?: ComponentKind;
   architecture?: string;
   usage?: string;

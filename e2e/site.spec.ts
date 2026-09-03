@@ -1333,6 +1333,26 @@ test("accordion enforces single-open state and publishes complete child wiring",
   await expect(product).toHaveAttribute("aria-expanded", "false");
   await expect(example.locator("code")).toContainText("Update.foldChild");
   await expect(example.locator("code")).toContainText("foldOutMessage");
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(page.locator("#single-disclosure")).toBeVisible();
+  await expect(page.locator("#multiple-disclosures")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#single-disclosure code")).toContainText(
+    "@/stylex/accordion",
+  );
+
+  const stylexExample = page.locator("#single-disclosure");
+  const stylexProduct = stylexExample.getByRole("button", {
+    name: "Is it accessible?",
+  });
+  const stylexStyle = stylexExample.getByRole("button", {
+    name: "Is it styled?",
+  });
+  await expect(stylexProduct).toHaveAttribute("aria-expanded", "false");
+  await stylexProduct.click();
+  await expect(stylexProduct).toHaveAttribute("aria-expanded", "true");
+  await expect(stylexStyle).toHaveAttribute("aria-expanded", "false");
 });
 
 test("attachment explains parent-owned lifecycle through rendered states", async ({

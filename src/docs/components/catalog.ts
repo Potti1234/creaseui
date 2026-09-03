@@ -15,13 +15,30 @@ type StyleXSpecimenProvider = <Msg>(
   noOpMessage: Msg,
   h: HtmlBuilder<Msg>,
 ) => ReadonlyArray<StyleXSpecimen>;
+type StyleXExamplePreviewProvider = <Msg>(
+  exampleIndex: number,
+  model: unknown,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+) => Html | undefined;
 
 let stylexSpecimenProvider: StyleXSpecimenProvider | undefined;
+const stylexExamplePreviewProviders = new Map<
+  string,
+  StyleXExamplePreviewProvider
+>();
 
 export const installStyleXSpecimenProvider = (
   provider: StyleXSpecimenProvider,
 ): void => {
   stylexSpecimenProvider = provider;
+};
+
+export const installStyleXExamplePreviewProvider = (
+  slug: string,
+  provider: StyleXExamplePreviewProvider,
+): void => {
+  stylexExamplePreviewProviders.set(slug, provider);
 };
 
 const definitions: PageDefinitions = {
@@ -248,8 +265,14 @@ export const view = (
         (specimen) => specimen.name === slug,
       )
     : undefined;
+  const stylexExamples = definition.stylexExamples;
+  const authoredExamples =
+    model.renderer === 'stylex' && stylexExamples !== undefined
+      ? stylexExamples
+      : definition.examples;
+  const authoredProgram = authoredPages[slug]?.previewProgram;
   const renderedExamples =
-    model.renderer === 'stylex' && stylexSpecimen !== undefined
+    model.renderer === 'stylex' && stylexExamples === undefined && stylexSpecimen !== undefined
       ? [
           example<Message>(
             {
@@ -268,14 +291,28 @@ export const view = (
             h,
           ),
         ]
-      : definition.examples.map((config, index) => {
+      : authoredExamples.map((config, index) => {
           const exampleCode = config.code;
-          const program = authoredPages[slug]?.previewProgram;
+          const program = authoredProgram;
           if (program === undefined)
             throw new Error(`Missing preview program for ${slug}`);
           const previewView = defineView<unknown, RoutedDocsPreviewMessage>(
             (exampleModel, h) => program.view(index, exampleModel, h),
           );
+
+          const exampleModel = model.examples[index] ?? program.init(index);
+          const stylexPreview =
+            model.renderer === 'stylex' && stylexExamples !== undefined
+              ? stylexExamplePreviewProviders.get(slug)?.(
+                  index,
+                  exampleModel,
+                  messageJson => GotExampleMessage({
+                    index,
+                    message: RoutedDocsPreviewMessage({ messageJson }),
+                  }),
+                  h,
+                )
+              : undefined;
 
           return example<Message>(
             {
@@ -283,13 +320,15 @@ export const view = (
               ...(config.description === undefined
                 ? {}
                 : { description: config.description }),
-              preview: h.submodel({
-                slotId: `docs-${slug}-example-${String(index)}`,
-                model: model.examples[index] ?? program.init(index),
-                view: previewView,
-                toParentMessage: (message): Message =>
-                  GotExampleMessage({ index, message }),
-              }),
+              preview:
+                stylexPreview ??
+                h.submodel({
+                  slotId: `docs-${slug}-example-${String(index)}`,
+                  model: exampleModel,
+                  view: previewView,
+                  toParentMessage: (message): Message =>
+                    GotExampleMessage({ index, message }),
+                }),
               code: exampleCode,
               onCopy: CopyFeedback.ClickedCopyCode({ code: exampleCode }),
               isCopied: model.copiedCode === exampleCode,
@@ -324,9 +363,9 @@ export const view = (
       copiedCode: model.copiedCode,
       onCopyCode: (code) => CopyFeedback.ClickedCopyCode({ code }),
       exampleTitles:
-        model.renderer === 'stylex'
+        model.renderer === 'stylex' && stylexExamples === undefined
           ? ['StyleX specimen']
-          : definition.examples.map((example) => example.title),
+          : authoredExamples.map((example) => example.title),
       sidebarScrolled: CopyFeedback.ObservedSidebarScroll(),
       renderer: model.renderer,
       onRendererChange: (renderer) => ChangedRenderer({ renderer }),
