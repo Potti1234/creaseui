@@ -11,5 +11,4 @@ const styles = stylex.create({
   group: { gap: '0.25rem', alignItems: 'center', display: 'inline-flex', },
 })
 export const kbd = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => h.kbd([h.DataAttribute('slot', 'kbd'), h.Class(className(styles.key, props.layoutStyle))], [...props.children])
-export const kbdGroup = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => h.span([h.DataAttribute('slot', 'kbd-group'), h.Class(className(styles.group, props.layoutStyle))], [...props.children])
-
+export const kbdGroup = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => h.kbd([h.DataAttribute('slot', 'kbd-group'), h.Class(className(styles.group, props.layoutStyle))], [...props.children])

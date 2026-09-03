@@ -1373,6 +1373,20 @@ test("badge keeps authored variants across renderers", async ({ page }) => {
   await expect(variants.getByText("Blocked", { exact: true }).first()).toBeVisible();
 });
 
+test("kbd keeps semantic key notation across renderers", async ({ page }) => {
+  await page.goto("/docs/components/kbd");
+  await expect(page.locator("#key").locator('[data-slot="kbd"]')).toHaveText("Esc");
+  await expect(page.locator("#shortcut").locator("kbd[data-slot=\"kbd-group\"]")).toBeVisible();
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(page.locator("#key")).toBeVisible();
+  await expect(page.locator("#shortcut")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#key code")).toContainText("@/stylex/kbd");
+  await expect(page.locator("#key").locator('[data-slot="kbd"]')).toHaveText("Esc");
+  await expect(page.locator("#shortcut").locator("kbd[data-slot=\"kbd-group\"]")).toBeVisible();
+});
+
 test("sidebar documents persistence and toggles derived shell state", async ({
   page,
 }) => {
