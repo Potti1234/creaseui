@@ -1305,6 +1305,20 @@ test("alert requires explicit severity and announcement policy", async ({ page }
   const error = page.locator("#urgent-error").getByRole("alert");
   await expect(error).toHaveAttribute("aria-live", "assertive");
   await expect(error).toHaveAttribute("data-severity", "error");
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(page.locator("#static-information")).toBeVisible();
+  await expect(page.locator("#polite-success")).toBeVisible();
+  await expect(page.locator("#long-warning")).toBeVisible();
+  await expect(page.locator("#urgent-error")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#static-information code")).toContainText(
+    "@/stylex/alert",
+  );
+  await expect(page.locator("#polite-success").getByRole("status")).toHaveAttribute(
+    "aria-live",
+    "polite",
+  );
 });
 
 test("sidebar documents persistence and toggles derived shell state", async ({
