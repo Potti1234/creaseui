@@ -336,9 +336,11 @@ ${config.viewBody
 export const controlledTextApplication = (config: Readonly<{
   componentName: 'Input' | 'Textarea';
   componentSlug: 'input' | 'textarea';
+  renderer?: 'tailwind' | 'stylex';
   exampleName: string;
   field: string;
   initialValue: string;
+  componentImports?: string;
   viewBody: string;
 }>): string =>
   foldkitApplication({
@@ -348,7 +350,9 @@ import { Command, Runtime, Subscription } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { m } from 'foldkit/message'
 
-import * as ${config.componentName} from '@/ui/${config.componentSlug}'`,
+import * as ${config.componentName} from '@/${config.renderer === 'stylex' ? 'stylex' : 'ui'}/${config.componentSlug}'${
+      config.componentImports === undefined ? '' : `\n${config.componentImports}`
+    }`,
     model: `export const Model = S.Struct({ ${config.field}: S.String })
 export type Model = typeof Model.Type`,
     messages: `export const Changed${config.componentName} = m('Changed${config.componentName}${config.exampleName.replaceAll(/[^a-zA-Z0-9]/g, '')}', { value: S.String })

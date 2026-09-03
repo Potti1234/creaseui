@@ -1906,6 +1906,18 @@ test("controlled helper pages own and update compact local preview state", async
   await expect(readOnlyEmail).toHaveAttribute("form", "profile");
   await expect(readOnlyEmail).not.toHaveAttribute("aria-describedby");
 
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["email", "invalid", "disabled", "native-form-attributes"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#email code")).toContainText("@/stylex/input");
+  await expect(email).toHaveValue("docs@crease.dev");
+  await email.fill("stylex@crease.dev");
+  await expect(email).toHaveValue("stylex@crease.dev");
+  await expect(page.locator("#disabled").getByRole("textbox", { name: "Workspace" })).toBeDisabled();
+  await expect(readOnlyEmail).toHaveAttribute("readonly", "");
+
   await page.goto("/docs/components/textarea");
   const message = page
     .locator("#message")

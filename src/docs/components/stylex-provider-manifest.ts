@@ -14,6 +14,7 @@ import { spinnerStyleXPreview } from '@/docs/components/pages/spinner/stylex';
 import { typographyStyleXPreview } from '@/docs/components/pages/typography/stylex';
 import { buttonStyleXPreview } from '@/docs/components/pages/button/stylex';
 import { buttonGroupStyleXPreview } from '@/docs/components/pages/button-group/stylex';
+import { inputStyleXPreview } from '@/docs/components/pages/input/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -30,3 +31,4 @@ installStyleXExamplePreviewProvider('spinner', spinnerStyleXPreview);
 installStyleXExamplePreviewProvider('typography', typographyStyleXPreview);
 installStyleXExamplePreviewProvider('button', buttonStyleXPreview);
 installStyleXExamplePreviewProvider('button-group', buttonGroupStyleXPreview);
+installStyleXExamplePreviewProvider('input', inputStyleXPreview);
