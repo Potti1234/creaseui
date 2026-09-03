@@ -1347,6 +1347,21 @@ test("aspect ratio keeps authored examples and geometry across renderers", async
   await expect(square).toHaveCSS("aspect-ratio", "1 / 1");
 });
 
+test("badge keeps authored variants across renderers", async ({ page }) => {
+  await page.goto("/docs/components/badge");
+  const variants = page.locator("#variants");
+  await expect(variants.getByText("Default", { exact: true }).first()).toBeVisible();
+  await expect(variants.getByText("Blocked", { exact: true }).first()).toBeVisible();
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(page.locator("#variants")).toBeVisible();
+  await expect(page.locator("#status")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#variants code")).toContainText("@/stylex/badge");
+  await expect(variants.getByText("Default", { exact: true }).first()).toBeVisible();
+  await expect(variants.getByText("Blocked", { exact: true }).first()).toBeVisible();
+});
+
 test("sidebar documents persistence and toggles derived shell state", async ({
   page,
 }) => {
