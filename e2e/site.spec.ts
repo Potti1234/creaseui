@@ -1294,6 +1294,17 @@ test("breadcrumb renders semantic route parts, collapse, and RTL", async ({ page
   const rtl = page.locator("#rtl-separator").getByRole("navigation", { name: "مسار الصفحة" });
   await expect(rtl).toHaveAttribute("dir", "rtl");
   await expect(rtl.locator('[data-slot="breadcrumb-separator"] svg').first()).toHaveCSS("rotate", "180deg");
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(page.locator("#current-path")).toBeVisible();
+  await expect(page.locator("#collapsed-middle")).toBeVisible();
+  await expect(page.locator("#long-resource-label")).toBeVisible();
+  await expect(page.locator("#rtl-separator")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#current-path code")).toContainText("@/stylex/breadcrumb");
+  await expect(current.getByRole("navigation", { name: "Breadcrumb" })).toBeVisible();
+  await expect(collapsed.getByText("2 omitted levels", { exact: true })).toHaveCSS("position", "absolute");
+  await expect(page.locator("#rtl-separator").getByRole("navigation", { name: "مسار الصفحة" })).toHaveAttribute("dir", "rtl");
 });
 
 test("alert requires explicit severity and announcement policy", async ({ page }) => {
