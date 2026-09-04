@@ -46,6 +46,7 @@ import { cardStyleXPreview } from '@/docs/components/pages/card/stylex';
 import { emptyStyleXPreview } from '@/docs/components/pages/empty/stylex';
 import { itemStyleXPreview } from '@/docs/components/pages/item/stylex';
 import { messageStyleXPreview } from '@/docs/components/pages/message/stylex';
+import { messageScrollerStyleXPreview } from '@/docs/components/pages/message-scroller/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -94,3 +95,4 @@ installStyleXExamplePreviewProvider('card', cardStyleXPreview);
 installStyleXExamplePreviewProvider('empty', emptyStyleXPreview);
 installStyleXExamplePreviewProvider('item', itemStyleXPreview);
 installStyleXExamplePreviewProvider('message', messageStyleXPreview);
+installStyleXExamplePreviewProvider('message-scroller', messageScrollerStyleXPreview);

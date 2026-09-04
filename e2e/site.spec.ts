@@ -1742,6 +1742,10 @@ test("message scroller measures overflow and maps its scroll command", async ({
   page,
 }) => {
   await page.goto("/docs/components/message-scroller");
+  await page.getByRole("button", { name: "StyleX" }).click();
+  await expect(page.locator("#jump-to-latest")).toBeVisible();
+  await expect(page.locator("#jump-to-beginning")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
   const example = page.locator("#jump-to-latest");
   const viewport = example.locator('[data-slot="message-scroller-viewport"]');
   await expect(viewport).toHaveAttribute("data-pending-scroll", "false");
@@ -1774,6 +1778,7 @@ test("message scroller measures overflow and maps its scroll command", async ({
   await expect(viewport).toHaveAttribute("data-pending-scroll", "false");
   await expect(example.locator("code")).toContainText("Command.mapMessages");
   await expect(example.locator("code")).toContainText("MessageScroller.update");
+  await expect(example.locator("code")).toContainText("@/stylex/message-scroller");
 });
 
 for (const route of ["sonner", "toast"] as const) {
