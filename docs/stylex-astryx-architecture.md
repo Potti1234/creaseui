@@ -187,7 +187,6 @@ their StyleX regions must remain accessible and horizontally contained.
 The same bridge now powers every chart inside the Astryx-inspired dashboard
 blocks. Their earlier lightweight SVG area, bar, and donut placeholders have
 been replaced with seven mounted ECharts instances, without changing the
-semantic region recipes. A dedicated `/charts-stylex` route provides an
-eight-example gallery covering default and stacked area, grouped and
-horizontal bar, multi-line, donut, radar, and radial variants.
-
+semantic region recipes. The StyleX renderer on `/charts/:section` provides a
+complete 70-example gallery across area, bar, line, pie, radar, radial, and
+tooltip sections.

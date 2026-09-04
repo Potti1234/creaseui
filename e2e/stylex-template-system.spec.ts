@@ -84,13 +84,25 @@ test('StyleX analytics block mounts every Apache ECharts family', async ({ page 
   expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.clientWidth + 1)
 })
 
-test('dedicated StyleX charts page mounts all constrained chart variants', async ({ page }) => {
-  await page.goto('/charts-stylex')
+test('unified charts routes expose the complete constrained StyleX gallery', async ({ page }) => {
+  await page.goto('/charts/area')
+  await page
+    .getByRole('group', { name: 'Charts renderer' })
+    .getByRole('button', { name: 'StyleX' })
+    .click()
 
   const pageRoot = page.locator('[data-page="charts-stylex"]')
-  await expect(pageRoot.getByRole('heading', { level: 1, name: 'Beautiful charts, constrained by design' })).toBeVisible()
-  await expect(pageRoot.locator('[data-slot="echart"]')).toHaveCount(8)
-  await expect(pageRoot.locator('canvas')).toHaveCount(8)
+  await expect(pageRoot.getByRole('heading', { level: 1, name: 'Beautiful Charts & Graphs' })).toBeVisible()
+  await expect(pageRoot.locator('[data-slot="echart"]')).toHaveCount(10)
+  await expect(pageRoot.locator('canvas')).toHaveCount(10)
+  const areaRange = pageRoot.getByRole('group', { name: 'Area range' })
+  await areaRange.getByRole('button', { name: '7d' }).click()
+  await expect(areaRange.getByRole('button', { name: '7d' })).toHaveAttribute('aria-pressed', 'true')
+
+  const renderer = page.getByRole('group', { name: 'Charts renderer' })
+  await renderer.getByRole('button', { name: 'Tailwind' }).click()
+  await renderer.getByRole('button', { name: 'StyleX' }).click()
+  await expect(areaRange.getByRole('button', { name: '7d' })).toHaveAttribute('aria-pressed', 'true')
 
   const accessibility = await new AxeBuilder({ page }).include('[data-page="charts-stylex"]').analyze()
   expect(accessibility.violations.filter(({ impact }) => impact === 'serious' || impact === 'critical')).toEqual([])
@@ -98,4 +110,23 @@ test('dedicated StyleX charts page mounts all constrained chart variants', async
   await page.setViewportSize({ height: 900, width: 390 })
   const metrics = await pageRoot.evaluate((element) => ({ clientWidth: element.clientWidth, scrollWidth: element.scrollWidth }))
   expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.clientWidth + 1)
+
+  const sections = [
+    ['Bar Charts', 'bar', 10],
+    ['Line Charts', 'line', 10],
+    ['Pie Charts', 'pie', 11],
+    ['Radar Charts', 'radar', 14],
+    ['Radial Charts', 'radial', 6],
+    ['Tooltip', 'tooltip', 9],
+  ] as const
+  for (const [label, section, count] of sections) {
+    await pageRoot.getByRole('link', { name: label, exact: true }).click()
+    await expect(page).toHaveURL(new RegExp(`/charts/${section}$`, 'u'))
+    await expect(page.getByRole('group', { name: 'Charts renderer' }).getByRole('button', { name: 'StyleX' })).toHaveAttribute('aria-pressed', 'true')
+    await expect(pageRoot.locator('[data-slot="echart"]')).toHaveCount(count)
+    await expect(pageRoot.locator('canvas')).toHaveCount(count)
+  }
+
+  await page.goto('/charts-stylex')
+  await expect(page.getByText('No page at /charts-stylex.')).toBeVisible()
 })

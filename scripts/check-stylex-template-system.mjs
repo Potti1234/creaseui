@@ -43,9 +43,9 @@ assert.match(source.charts, /export const chartAnalyticsDashboard\b/u, 'missing 
 for (const family of ['AREA_HOST', 'BAR_HOST', 'LINE_HOST', 'PIE_HOST', 'RADAR_HOST', 'RADIAL_HOST']) {
   assert.match(source.charts, new RegExp(`\\b${family}\\b`, 'u'), `missing ECharts family ${family}`)
 }
-assert.match(source.chartsPage, /export const view\b/u, 'missing dedicated StyleX charts page')
-for (const family of ['area', 'areaStacked', 'bar', 'barHorizontal', 'line', 'pie', 'radar', 'radial']) {
-  assert.match(source.chartsPage, new RegExp(`\\b${family}: 'stylex-gallery-`, 'u'), `missing StyleX chart page family ${family}`)
+assert.match(source.chartsPage, /export const view\b/u, 'missing StyleX charts renderer')
+for (const family of ['area', 'bar', 'line', 'pie', 'radar', 'radial', 'tooltip']) {
+  assert.match(source.chartsPage, new RegExp(`\\b${family}: specs\\('${family}'`, 'u'), `missing StyleX chart page family ${family}`)
 }
 assert.match(source.layout, /pageHeader[\s\S]*padding: densitySpace/u)
 assert.match(source.layout, /pageFooter[\s\S]*padding: densitySpace/u)

@@ -47,7 +47,6 @@ export const SIDEBAR_BLOCK_IDS: ReadonlyArray<string> = [
 export const HomeRoute = r("Home");
 export const CreateRoute = r("Create");
 export const ChartsRoute = r("Charts", { section: S.String });
-export const ChartsStyleXRoute = r("ChartsStyleX");
 export const BlocksIndexRoute = r("BlocksIndex");
 export const BlocksStyleXRoute = r("BlocksStyleX");
 export const BlocksStyleXTableRoute = r("BlocksStyleXTable");
@@ -59,7 +58,6 @@ export const AppRoute = S.Union([
   HomeRoute,
   CreateRoute,
   ChartsRoute,
-  ChartsStyleXRoute,
   BlocksIndexRoute,
   BlocksStyleXRoute,
   BlocksStyleXTableRoute,
@@ -71,7 +69,6 @@ export const AppRoute = S.Union([
 export type HomeRoute = typeof HomeRoute.Type;
 export type CreateRoute = typeof CreateRoute.Type;
 export type ChartsRoute = typeof ChartsRoute.Type;
-export type ChartsStyleXRoute = typeof ChartsStyleXRoute.Type;
 export type BlocksIndexRoute = typeof BlocksIndexRoute.Type;
 export type BlocksStyleXRoute = typeof BlocksStyleXRoute.Type;
 export type BlocksStyleXTableRoute = typeof BlocksStyleXTableRoute.Type;
@@ -88,11 +85,6 @@ const chartsRouter = pipe(
   literal("charts"),
   slash(string("section")),
   Route.mapTo(ChartsRoute),
-);
-
-const chartsStyleXRouter = pipe(
-  literal("charts-stylex"),
-  Route.mapTo(ChartsStyleXRoute),
 );
 
 const blocksIndexRouter = pipe(
@@ -129,7 +121,6 @@ const componentDocsRouter = pipe(
 const routeParser = Route.oneOf(
   createRouter,
   chartsRouter,
-  chartsStyleXRouter,
   blockRouter,
   blocksIndexRouter,
   blocksStyleXTableRouter,
@@ -149,8 +140,6 @@ export const createPath = (): string => createRouter();
 
 export const chartsPath = (section: ChartSection): string =>
   chartsRouter({ section });
-
-export const chartsStyleXPath = (): string => chartsStyleXRouter();
 
 export const blocksIndexPath = (): string => blocksIndexRouter();
 

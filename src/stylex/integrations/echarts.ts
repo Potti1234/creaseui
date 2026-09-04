@@ -20,6 +20,7 @@ export const compactGrid = ECharts.compactGrid
 export const registerChart = ECharts.registerChart
 export const shadcnLegend = ECharts.shadcnLegend
 export const shadcnTooltip = ECharts.shadcnTooltip
+export const SyncChart = ECharts.SyncChart
 export const valueAxis = ECharts.valueAxis
 
 export type EChartSize = 'default' | 'compact' | 'square' | 'wide'

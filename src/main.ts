@@ -34,7 +34,6 @@ import {
   blocksStyleXPath,
   blocksStyleXTablePath,
   chartsPath,
-  chartsStyleXPath,
   componentDocsPath,
   createPath,
   homePath,
@@ -73,6 +72,9 @@ export const ClickedThemeToggle = m("ClickedThemeToggle");
 export const CompletedApplyTheme = m("CompletedApplyTheme");
 export const IgnoredBlocksPreviewInput = m("IgnoredBlocksPreviewInput");
 export const ChangedCreateRenderer = m("ChangedCreateRenderer", {
+  renderer: Page.CreateRenderer,
+});
+export const ChangedChartsRenderer = m("ChangedChartsRenderer", {
   renderer: Page.CreateRenderer,
 });
 export const GotBoardMessage = m("GotBoardMessage", { message: Board.Message });
@@ -128,6 +130,7 @@ export const Message = S.Union([
   CompletedApplyTheme,
   IgnoredBlocksPreviewInput,
   ChangedCreateRenderer,
+  ChangedChartsRenderer,
   GotBoardMessage,
   GotBoardStyleXMessage,
   GotBlocksMessage,
@@ -208,6 +211,17 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         ];
       },
 
+      ChangedChartsRenderer: ({ renderer }) => {
+        if (model.page._tag !== "ChartsPage") return [model, []];
+        const currentPage = model.page;
+        return [
+          evo(model, {
+            page: () => evo(currentPage, { renderer: () => renderer }),
+          }),
+          [],
+        ];
+      },
+
       ClickedThemeToggle: () => {
         const isDark = !model.isDark;
         return [evo(model, { isDark: () => isDark }), [ApplyTheme({ isDark })]];
@@ -225,13 +239,20 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           }),
         ),
 
-      ChangedUrl: ({ url }) => [
-        evo(model, {
-          route: () => urlToAppRoute(url),
-          page: () => Page.init(urlToAppRoute(url)),
-        }),
-        [],
-      ],
+      ChangedUrl: ({ url }) => {
+        const route = urlToAppRoute(url);
+        const page =
+          model.page._tag === "ChartsPage" && route._tag === "Charts"
+            ? model.page
+            : Page.init(route);
+        return [
+          evo(model, {
+            route: () => route,
+            page: () => page,
+          }),
+          [],
+        ];
+      },
 
       GotBoardMessage: ({ message: childMessage }) => {
         if (model.page._tag !== "CreatePage") return [model, []];
@@ -448,14 +469,19 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       },
 
       GotChartsStyleXMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== "ChartsStyleXPage") return [model, []];
+        if (model.page._tag !== "ChartsPage") return [model, []];
         const currentPage = model.page;
-        const [charts] = ChartsStyleX.update(currentPage.charts, childMessage);
+        const [charts, commands] = ChartsStyleX.update(
+          currentPage.styleXCharts,
+          childMessage,
+        );
         return [
           evo(model, {
-            page: () => evo(currentPage, { charts: () => charts }),
+            page: () => evo(currentPage, { styleXCharts: () => charts }),
           }),
-          [],
+          Command.mapMessages(commands, (next) =>
+            GotChartsStyleXMessage({ message: next }),
+          ),
         ];
       },
 
@@ -598,6 +624,36 @@ const createRendererSwitcher = (
     ),
   );
 
+const chartsRendererSwitcher = (
+  page: typeof Page.Charts.Type,
+  h: HtmlBuilder<Message>,
+): Html =>
+  h.div(
+    [
+      h.Role("group"),
+      h.AriaLabel("Charts renderer"),
+      h.Class("flex items-center rounded-md border bg-muted/40 p-0.5"),
+    ],
+    (["tailwind", "stylex"] as const).map((renderer) =>
+      h.button(
+        [
+          h.Type("button"),
+          h.OnClick(ChangedChartsRenderer({ renderer })),
+          h.AriaPressed(page.renderer === renderer ? "true" : "false"),
+          h.Class(
+            cn(
+              "min-h-8 rounded-[5px] px-2.5 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring/50",
+              page.renderer === renderer
+                ? "bg-background text-foreground shadow-xs"
+                : "text-muted-foreground hover:text-foreground",
+            ),
+          ),
+        ],
+        [renderer === "tailwind" ? "Tailwind" : "StyleX"],
+      ),
+    ),
+  );
+
 const header = (model: Model, h: HtmlBuilder<Message>): Html => {
   const isCharts = model.route._tag === "Charts";
 
@@ -639,13 +695,9 @@ const header = (model: Model, h: HtmlBuilder<Message>): Html => {
             "hidden sm:inline-flex",
             h,
           ),
-          headerLink(
-            chartsStyleXPath(),
-            "Charts StyleX",
-            model.route._tag === "ChartsStyleX",
-            "hidden lg:inline-flex",
-            h,
-          ),
+          ...(model.page._tag === "ChartsPage"
+            ? [chartsRendererSwitcher(model.page, h)]
+            : []),
           headerLink(
             blocksIndexPath(),
             "Blocks",
@@ -698,13 +750,6 @@ const header = (model: Model, h: HtmlBuilder<Message>): Html => {
                     chartsPath("area"),
                     "Charts",
                     isCharts,
-                    "rounded-md px-3 py-2 hover:bg-accent",
-                    h,
-                  ),
-                  headerLink(
-                    chartsStyleXPath(),
-                    "Charts StyleX",
-                    model.route._tag === "ChartsStyleX",
                     "rounded-md px-3 py-2 hover:bg-accent",
                     h,
                   ),
@@ -834,7 +879,8 @@ const chartsTooltipView = defineView<
 >(ChartsTooltip.view);
 const chartsStyleXView = defineView<
   ChartsStyleX.Model,
-  ChartsStyleX.Message
+  ChartsStyleX.Message,
+  ChartSection
 >(ChartsStyleX.view);
 
 const chartsSectionView = (
@@ -844,6 +890,16 @@ const chartsSectionView = (
 ): Html => {
   if (model.page._tag !== "ChartsPage") return h.empty;
   const page = model.page;
+  if (page.renderer === "stylex") {
+    return h.submodel({
+      slotId: `charts-stylex-${section}`,
+      model: page.styleXCharts,
+      view: chartsStyleXView,
+      viewInputs: section,
+      toParentMessage: (message: ChartsStyleX.Message): Message =>
+        GotChartsStyleXMessage({ message }),
+    });
+  }
   return M.value(section).pipe(
     M.withReturnType<Html>(),
     M.when("area", () =>
@@ -1011,23 +1067,10 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
       Charts: ({ section }) =>
         isChartSection(section)
           ? keyed(
-              `page-charts-${section}`,
+              `page-charts-${section}-${model.page._tag === "ChartsPage" ? model.page.renderer : "missing"}`,
               chartsSectionView(model, section, h),
             )
           : keyed("page-not-found", notFoundView(`/charts/${section}`, h)),
-      ChartsStyleX: () =>
-        model.page._tag === "ChartsStyleXPage"
-          ? keyed(
-              "page-charts-stylex",
-              h.submodel({
-                slotId: "charts-stylex",
-                model: model.page.charts,
-                view: chartsStyleXView,
-                toParentMessage: (message: ChartsStyleX.Message): Message =>
-                  GotChartsStyleXMessage({ message }),
-              }),
-            )
-          : keyed("page-not-found", notFoundView(chartsStyleXPath(), h)),
       BlocksIndex: () => keyed("page-blocks-index", BlocksIndexPage.view(h)),
       BlocksStyleX: () =>
         model.page._tag === "BlocksStyleXPage"

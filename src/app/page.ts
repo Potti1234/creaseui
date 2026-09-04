@@ -35,6 +35,7 @@ export const BlocksStyleXTable = ts("BlocksStyleXTablePage", {
 });
 export const Block = ts("BlockPage", { blocks: BlocksFeature.Model });
 export const Charts = ts("ChartsPage", {
+  renderer: CreateRenderer,
   area: ChartsArea.Model,
   bar: ChartsBar.Model,
   line: ChartsLine.Model,
@@ -42,9 +43,7 @@ export const Charts = ts("ChartsPage", {
   radar: ChartsRadar.Model,
   radial: ChartsRadial.Model,
   tooltip: ChartsTooltip.Model,
-});
-export const ChartsStyleXPage = ts("ChartsStyleXPage", {
-  charts: ChartsStyleX.Model,
+  styleXCharts: ChartsStyleX.Model,
 });
 export const CatalogDocs = ts("CatalogDocsPage", {
   docs: ComponentCatalog.Model,
@@ -59,7 +58,6 @@ export const Page = S.Union([
   BlocksStyleXTable,
   Block,
   Charts,
-  ChartsStyleXPage,
   CatalogDocs,
   NotFound,
 ]);
@@ -78,6 +76,7 @@ export const init = (route: AppRoute): Page =>
         }),
       Charts: () =>
         Charts({
+          renderer: "tailwind",
           area: ChartsArea.init(),
           bar: ChartsBar.init(),
           line: ChartsLine.init(),
@@ -85,8 +84,8 @@ export const init = (route: AppRoute): Page =>
           radar: ChartsRadar.init(),
           radial: ChartsRadial.init(),
           tooltip: ChartsTooltip.init(),
+          styleXCharts: ChartsStyleX.init(),
         }),
-      ChartsStyleX: () => ChartsStyleXPage({ charts: ChartsStyleX.init() }),
       BlocksIndex: () => BlocksIndex(),
       BlocksStyleX: () => BlocksStyleX({ table: BlocksStyleXFeature.init() }),
       BlocksStyleXTable: () => BlocksStyleXTable({ table: TanStackTableFeature.init() }),

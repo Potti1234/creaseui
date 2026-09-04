@@ -14,7 +14,7 @@ export type GridProps = Readonly<{
   align?: 'start' | 'center' | 'stretch'
   as?: LayoutElement
   children: PrimitiveChildren
-  columns?: 'one' | 'two' | 'four' | 'sidebar' | 'sidebarWide' | 'appShell' | 'appShellWide' | 'masterDetail' | 'loginSplit' | 'createBoard'
+  columns?: 'one' | 'two' | 'four' | 'gallery' | 'sidebar' | 'sidebarWide' | 'appShell' | 'appShellWide' | 'masterDetail' | 'loginSplit' | 'createBoard'
   data?: PrimitiveData
   gap?: ResponsiveSpaceToken
   padding?: ResponsiveSpaceToken
@@ -32,6 +32,7 @@ const styles = stylex.create({
   columnsAppShell: { gridTemplateColumns: { default: 'minmax(0, 1fr)', '@media (min-width: 768px)': `${semanticLayoutTokens.navigationStandard} minmax(0, 1fr)` } },
   columnsAppShellWide: { gridTemplateColumns: { default: 'minmax(0, 1fr)', '@media (min-width: 768px)': `${semanticLayoutTokens.navigationWide} minmax(0, 1fr)` } },
   columnsFour: { gridTemplateColumns: { default: 'minmax(0, 1fr)', '@media (min-width: 1100px)': 'repeat(4, minmax(0, 1fr))', '@media (min-width: 700px) and (max-width: 1099px)': 'repeat(2, minmax(0, 1fr))', } },
+  columnsGallery: { gridTemplateColumns: { default: 'minmax(0, 1fr)', '@media (min-width: 1024px)': 'repeat(3, minmax(0, 1fr))', '@media (min-width: 700px) and (max-width: 1023px)': 'repeat(2, minmax(0, 1fr))' } },
   columnsLoginSplit: { gridTemplateColumns: { default: 'minmax(0, 1fr)', '@media (min-width: 900px)': 'minmax(0, 1fr) minmax(0, 1fr)' } },
   columnsMasterDetail: { gridTemplateColumns: { default: 'minmax(0, 1fr)', '@media (min-width: 1024px)': `minmax(0, 1fr) ${semanticLayoutTokens.panelComfortable}` } },
   columnsOne: { gridTemplateColumns: 'minmax(0, 1fr)' },
@@ -48,7 +49,7 @@ const styles = stylex.create({
 
 export const grid = <Message>(props: GridProps, h: HtmlBuilder<Message>): Html => {
   const align = props.align === undefined ? [] : [{ center: styles.alignCenter, start: styles.alignStart, stretch: styles.alignStretch }[props.align]]
-  const columns = props.columns === undefined ? [] : [{ appShell: styles.columnsAppShell, appShellWide: styles.columnsAppShellWide, createBoard: styles.columnsCreateBoard, four: styles.columnsFour, loginSplit: styles.columnsLoginSplit, masterDetail: styles.columnsMasterDetail, one: styles.columnsOne, sidebar: styles.columnsSidebar, sidebarWide: styles.columnsSidebarWide, two: styles.columnsTwo }[props.columns]]
+  const columns = props.columns === undefined ? [] : [{ appShell: styles.columnsAppShell, appShellWide: styles.columnsAppShellWide, createBoard: styles.columnsCreateBoard, four: styles.columnsFour, gallery: styles.columnsGallery, loginSplit: styles.columnsLoginSplit, masterDetail: styles.columnsMasterDetail, one: styles.columnsOne, sidebar: styles.columnsSidebar, sidebarWide: styles.columnsSidebarWide, two: styles.columnsTwo }[props.columns]]
   const surface = props.surface === undefined ? [] : [{ canvas: styles.surfaceCanvas, muted: styles.surfaceMuted, none: styles.surfaceNone }[props.surface]]
   const width = props.width === undefined ? [] : [{ auto: styles.widthAuto, createBoard: styles.widthCreateBoard, full: styles.widthFull }[props.width]]
   return primitiveElement(
@@ -58,4 +59,3 @@ export const grid = <Message>(props: GridProps, h: HtmlBuilder<Message>): Html =
     h,
   )
 }
-

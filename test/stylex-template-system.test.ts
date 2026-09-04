@@ -51,4 +51,17 @@ describe('Astryx-inspired constrained template system', () => {
     })
     for (const name of ['dashboardShell', 'metricGrid', 'section', 'tableRegion', 'toolbar']) assert.equal(calls.has(name), true)
   })
+
+  it('matches every Tailwind chart section and example count', () => {
+    const chartsSource = readFileSync('src/demo/charts-stylex/page.ts', 'utf8')
+    const expected = { area: 10, bar: 10, line: 10, pie: 11, radar: 14, radial: 6, tooltip: 9 } as const
+    const ids = new Set<string>()
+    for (const [section, count] of Object.entries(expected)) {
+      const body = chartsSource.match(new RegExp(`${section}: specs\\('${section}', \\[([\\s\\S]*?)\\]\\s*(?:, '[^']+')?\\),`, 'u'))?.[1] ?? ''
+      const entries = [...body.matchAll(/\['([^']+)', '[^']+'\]/gu)]
+      assert.equal(entries.length, count, `${section} StyleX examples`)
+      for (const entry of entries) ids.add(`${section}-${entry[1] ?? ''}`)
+    }
+    assert.equal(ids.size, 70)
+  })
 })
