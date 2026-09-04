@@ -2306,6 +2306,8 @@ test("skeleton and spinner expose explicit loading semantics with reduced motion
 
 test("empty variants preserve heading structure, action order, and responsive copy", async ({ page }) => {
   await page.goto("/docs/components/empty");
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
   for (const [id, heading, action] of [["create-first-item", "No projects yet", "Create project"], ["no-results", "No matching components", "Clear filters"], ["error-recovery", "Could not load projects", "Retry"], ["permission-denied", "Access required", "Request access"]] as const) {
     const example = page.locator(`#${id}`);
     await expect(example.getByRole("heading", { level: 2, name: heading })).toBeVisible();
@@ -2317,6 +2319,7 @@ test("empty variants preserve heading structure, action order, and responsive co
     const width = await example.locator('[data-slot="empty-description"]').evaluate(element => element.getBoundingClientRect().width);
     expect(width).toBeLessThanOrEqual(await example.evaluate(element => element.getBoundingClientRect().width));
   }
+  await expect(page.locator("#create-first-item code")).toContainText("@/stylex/empty");
 });
 
 test("message exposes live author metadata and parent-owned keyboard actions", async ({ page }) => {

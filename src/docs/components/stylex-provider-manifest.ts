@@ -43,6 +43,7 @@ import { commandStyleXPreview } from '@/docs/components/pages/command/stylex';
 import { attachmentStyleXPreview } from '@/docs/components/pages/attachment/stylex';
 import { bubbleStyleXPreview } from '@/docs/components/pages/bubble/stylex';
 import { cardStyleXPreview } from '@/docs/components/pages/card/stylex';
+import { emptyStyleXPreview } from '@/docs/components/pages/empty/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -88,3 +89,4 @@ installStyleXExamplePreviewProvider('command', commandStyleXPreview);
 installStyleXExamplePreviewProvider('attachment', attachmentStyleXPreview);
 installStyleXExamplePreviewProvider('bubble', bubbleStyleXPreview);
 installStyleXExamplePreviewProvider('card', cardStyleXPreview);
+installStyleXExamplePreviewProvider('empty', emptyStyleXPreview);
