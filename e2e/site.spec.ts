@@ -1195,6 +1195,12 @@ test("dropdown menu exposes typed selection wiring and keyboard behavior", async
   page,
 }) => {
   await page.goto("/docs/components/dropdown-menu");
+  await page.getByRole("button", { name: "StyleX" }).click();
+  await expect(page.locator("#account-actions")).toBeVisible();
+  await expect(page.locator("#destructive-action")).toBeVisible();
+  await expect(page.locator("#submenu-and-disabled-action")).toBeVisible();
+  await expect(page.locator("#rtl-submenu")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
   const example = page.locator("#account-actions");
   const trigger = example.getByRole("button", { name: "Open account menu" });
   await expect(trigger).toHaveAttribute("aria-controls", "docs-dropdown-0-content");
@@ -1210,6 +1216,7 @@ test("dropdown menu exposes typed selection wiring and keyboard behavior", async
   await expect(example.locator("code")).toContainText(
     "DropdownMenu.create<Action>()",
   );
+  await expect(example.locator("code")).toContainText("@/stylex/dropdown-menu");
 
   const submenuExample = page.locator("#submenu-and-disabled-action");
   const submenuTrigger = submenuExample.getByRole("button", {
@@ -1237,8 +1244,14 @@ test("dropdown menu exposes typed selection wiring and keyboard behavior", async
     "rtl",
   );
   await rtlTrigger.focus();
+  await expect(rtlTrigger).toBeFocused();
   await page.keyboard.press("Enter");
+  await expect(rtlExample.getByRole("menu")).toHaveCount(1);
   await page.keyboard.press("s");
+  await expect(rtlExample.getByRole("menuitem", { name: /Settings/u })).toHaveAttribute(
+    "data-active",
+    "true",
+  );
   await page.keyboard.press("ArrowLeft");
   await expect(rtlExample.getByRole("menu")).toHaveCount(2);
 });

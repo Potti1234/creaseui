@@ -307,16 +307,20 @@ export const view = (
 
           const exampleModel = model.examples[index] ?? program.init(index);
           const stylexPreview =
-            model.renderer === 'stylex' && stylexExamples !== undefined
-              ? stylexExamplePreviewProvider?.(
-                  index,
-                  exampleModel,
-                  messageJson => GotExampleMessage({
-                    index,
-                    message: RoutedDocsPreviewMessage({ messageJson }),
-                  }),
-                  h,
-                )
+            model.renderer === 'stylex' && stylexExamples !== undefined && stylexExamplePreviewProvider !== undefined
+              ? h.submodel({
+                  slotId: `docs-${slug}-stylex-example-${String(index)}`,
+                  model: exampleModel,
+                  view: defineView<unknown, RoutedDocsPreviewMessage>(
+                    (stylexModel, stylexBuilder) => stylexExamplePreviewProvider(
+                      index,
+                      stylexModel,
+                      messageJson => RoutedDocsPreviewMessage({ messageJson }),
+                      stylexBuilder,
+                    ) ?? stylexBuilder.div([], []),
+                  ),
+                  toParentMessage: (message): Message => GotExampleMessage({ index, message }),
+                })
               : undefined;
 
           return example<Message>(
