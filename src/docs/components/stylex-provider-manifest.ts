@@ -59,6 +59,7 @@ import { dataTableStyleXPreview } from '@/docs/components/pages/data-table/style
 import { datePickerStyleXPreview } from '@/docs/components/pages/date-picker/stylex';
 import { directionStyleXPreview } from '@/docs/components/pages/direction/stylex';
 import { fieldStyleXPreview } from '@/docs/components/pages/field/stylex';
+import { formStyleXPreview } from '@/docs/components/pages/form/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -120,3 +121,4 @@ installStyleXExamplePreviewProvider('data-table', dataTableStyleXPreview);
 installStyleXExamplePreviewProvider('date-picker', datePickerStyleXPreview);
 installStyleXExamplePreviewProvider('direction', directionStyleXPreview);
 installStyleXExamplePreviewProvider('field', fieldStyleXPreview);
+installStyleXExamplePreviewProvider('form', formStyleXPreview);

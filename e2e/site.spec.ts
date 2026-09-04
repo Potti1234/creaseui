@@ -2752,14 +2752,14 @@ test("form preserves native metadata and focuses linked validation feedback", as
     .getByRole("group", { name: "Preview styling engine" })
     .getByRole("button", { name: "StyleX" })
     .click();
-  const stylexForm = page.getByRole("form", { name: "Catalog form" });
-  const project = stylexForm.getByRole("textbox", { name: "Project name" });
-  await expect(project).toHaveValue("creaseui");
-  await expect(project).toHaveAttribute("name", "project");
-  await expect(project).toHaveAttribute(
-    "aria-describedby",
-    "stylex-form-input-description",
-  );
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  for (const id of ["newsletter-signup", "error-summary", "async-validation"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#newsletter-signup code")).toContainText("@/stylex/form");
+  await expect(newsletter).toHaveAttribute("name", "email");
+  await expect(signInEmail).toHaveAttribute("aria-invalid", "true");
+  await expect(signIn.getByRole("alert", { name: "Fix the following error" })).toBeVisible();
   await assertAccessible(page);
 });
 
