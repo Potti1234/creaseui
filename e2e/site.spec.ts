@@ -54,6 +54,11 @@ test("landing content, theme, accessibility, and desktop visuals", async ({
   await expect(
     page.getByRole("button", { name: "Switch to light mode" }),
   ).toBeVisible();
+  await expect(
+    page
+      .getByRole("button", { name: "Switch to light mode" })
+      .locator(".lucide-moon > *"),
+  ).not.toHaveCount(0);
   await attachPage(page, testInfo, "landing-dark-desktop");
 });
 
