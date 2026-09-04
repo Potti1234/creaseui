@@ -1348,6 +1348,12 @@ test("menubar documents independent targeted child models", async ({
   page,
 }) => {
   await page.goto("/docs/components/menubar");
+  await page.getByRole("button", { name: "StyleX" }).click();
+  await expect(page.locator("#coordinated-menus")).toBeVisible();
+  await expect(page.locator("#shortcut-hints")).toBeVisible();
+  await expect(page.locator("#rtl-switching")).toBeVisible();
+  await expect(page.locator("#disabled-submenu")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
   const example = page.locator("#coordinated-menus");
   const menubar = example.getByRole("menubar", { name: "Application menu" });
   await expect(menubar).toBeVisible();
@@ -1359,6 +1365,7 @@ test("menubar documents independent targeted child models", async ({
   await expect(save).toHaveAttribute("aria-disabled", "true");
   await expect(example.locator("code")).toContainText("GotMenuMessage");
   await expect(example.locator("code")).toContainText("Menubar.update");
+  await expect(example.locator("code")).toContainText("@/stylex/menubar");
   const fileTrigger = example.getByRole("button", { name: "File" });
   await fileTrigger.focus();
   await page.keyboard.press("ArrowRight");

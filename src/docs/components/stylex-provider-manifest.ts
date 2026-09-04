@@ -35,6 +35,7 @@ import { hoverCardStyleXPreview } from '@/docs/components/pages/hover-card/style
 import { tooltipStyleXPreview } from '@/docs/components/pages/tooltip/stylex';
 import { dropdownMenuStyleXPreview } from '@/docs/components/pages/dropdown-menu/stylex';
 import { contextMenuStyleXPreview } from '@/docs/components/pages/context-menu/stylex';
+import { menubarStyleXPreview } from '@/docs/components/pages/menubar/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -72,3 +73,4 @@ installStyleXExamplePreviewProvider('hover-card', hoverCardStyleXPreview);
 installStyleXExamplePreviewProvider('tooltip', tooltipStyleXPreview);
 installStyleXExamplePreviewProvider('dropdown-menu', dropdownMenuStyleXPreview);
 installStyleXExamplePreviewProvider('context-menu', contextMenuStyleXPreview);
+installStyleXExamplePreviewProvider('menubar', menubarStyleXPreview);
