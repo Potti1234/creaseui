@@ -1864,6 +1864,12 @@ test("calendar emits selection while retaining child navigation state", async ({
   page,
 }) => {
   await page.goto("/docs/components/calendar");
+  await page.getByRole("button", { name: "StyleX" }).click();
+  await expect(page.locator("#selected-date")).toBeVisible();
+  await expect(page.locator("#roomier-cells")).toBeVisible();
+  await expect(page.locator("#parent-owned-range")).toBeVisible();
+  await expect(page.locator("#locale-zone-and-rtl")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
   const example = page.locator("#selected-date");
   const calendar = example.locator('[data-slot="calendar"]');
   const day = calendar.getByRole("button", { name: "Monday, July 20, 2026" });
@@ -1882,6 +1888,7 @@ test("calendar emits selection while retaining child navigation state", async ({
   await expect(localized).toHaveAttribute("dir", "rtl");
   await expect(localized).toContainText("Juli 2026");
   await expect(localized).toContainText("Mo");
+  await expect(example.locator("code")).toContainText("@/stylex/calendar");
 });
 
 test("date picker composes disclosure and calendar into one child model", async ({

@@ -52,6 +52,7 @@ import { scrollAreaStyleXPreview } from '@/docs/components/pages/scroll-area/sty
 import { resizableStyleXPreview } from '@/docs/components/pages/resizable/stylex';
 import { tabsStyleXPreview } from '@/docs/components/pages/tabs/stylex';
 import { tableStyleXPreview } from '@/docs/components/pages/table/stylex';
+import { calendarStyleXPreview } from '@/docs/components/pages/calendar/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -106,3 +107,4 @@ installStyleXExamplePreviewProvider('scroll-area', scrollAreaStyleXPreview);
 installStyleXExamplePreviewProvider('resizable', resizableStyleXPreview);
 installStyleXExamplePreviewProvider('tabs', tabsStyleXPreview);
 installStyleXExamplePreviewProvider('table', tableStyleXPreview);
+installStyleXExamplePreviewProvider('calendar', calendarStyleXPreview);
