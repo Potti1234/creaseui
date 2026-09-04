@@ -41,6 +41,7 @@ import { selectStyleXPreview } from '@/docs/components/pages/select/stylex';
 import { comboboxStyleXPreview } from '@/docs/components/pages/combobox/stylex';
 import { commandStyleXPreview } from '@/docs/components/pages/command/stylex';
 import { attachmentStyleXPreview } from '@/docs/components/pages/attachment/stylex';
+import { bubbleStyleXPreview } from '@/docs/components/pages/bubble/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -84,3 +85,4 @@ installStyleXExamplePreviewProvider('select', selectStyleXPreview);
 installStyleXExamplePreviewProvider('combobox', comboboxStyleXPreview);
 installStyleXExamplePreviewProvider('command', commandStyleXPreview);
 installStyleXExamplePreviewProvider('attachment', attachmentStyleXPreview);
+installStyleXExamplePreviewProvider('bubble', bubbleStyleXPreview);

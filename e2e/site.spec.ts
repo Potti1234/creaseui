@@ -1710,6 +1710,20 @@ test("attachment explains parent-owned lifecycle through rendered states", async
   await expect(example.locator("code")).toContainText("@/stylex/attachment");
 });
 
+test("bubble preserves conversational alignment, tone, and reactions", async ({ page }) => {
+  await page.goto("/docs/components/bubble");
+  await page.getByRole("button", { name: "StyleX" }).click();
+  await expect(page.locator("#conversation")).toBeVisible();
+  await expect(page.locator("#reaction")).toBeVisible();
+  await expect(page.locator("#error")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#conversation [data-slot=bubble]")).toHaveCount(2);
+  await expect(page.locator("#conversation [data-align=end]")).toContainText("Yes —");
+  await expect(page.locator("#reaction [data-slot=bubble-reactions]")).toHaveText("👍 3");
+  await expect(page.locator("#error [data-variant=destructive]")).toContainText("Message could not be sent.");
+  await expect(page.locator("#conversation code")).toContainText("@/stylex/bubble");
+});
+
 test("message scroller measures overflow and maps its scroll command", async ({
   page,
 }) => {
