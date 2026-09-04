@@ -1940,6 +1940,12 @@ test("chart documents pure Foldkit SVG recipes with complete source", async ({
   page,
 }) => {
   await page.goto("/docs/components/chart");
+  await page.getByRole("button", { name: "StyleX" }).click();
+  await expect(page.locator("#monthly-revenue")).toBeVisible();
+  await expect(page.locator("#traffic-trend")).toBeVisible();
+  await expect(page.locator("#echarts-lifecycle")).toBeVisible();
+  await expect(page.locator("#lifecycle-states")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
   const bars = page.locator("#monthly-revenue");
   await expect(bars.getByRole("img", { name: "Bar chart" })).toBeVisible();
   await expect(bars.locator("rect")).toHaveCount(6);
@@ -1949,6 +1955,7 @@ test("chart documents pure Foldkit SVG recipes with complete source", async ({
     "Visitors",
   );
   await expect(bars.locator("code")).toContainText("Runtime.makeApplication");
+  await expect(bars.locator("code")).toContainText("@/stylex/chart");
 
   const lifecycle = page.locator("#echarts-lifecycle");
   await expect(lifecycle.locator('[data-slot="echart"] canvas')).toHaveCount(1);
