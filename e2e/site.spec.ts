@@ -645,6 +645,10 @@ test("authored resizable instances keep axis-specific child state independent", 
   page,
 }) => {
   await page.goto("/docs/components/resizable");
+  await page.getByRole("button", { name: "StyleX" }).click();
+  await expect(page.locator("#editor-and-preview")).toBeVisible();
+  await expect(page.locator("#vertical-split")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
 
   const horizontal = page.locator("#editor-and-preview").getByRole("separator");
   const vertical = page.locator("#vertical-split").getByRole("separator");
@@ -657,6 +661,7 @@ test("authored resizable instances keep axis-specific child state independent", 
   await page.keyboard.press("ArrowDown");
   await expect(vertical).toHaveAttribute("aria-valuenow", "42");
   await expect(horizontal).toHaveAttribute("aria-valuenow", "52");
+  await expect(page.locator("#editor-and-preview code")).toContainText("@/stylex/resizable");
 });
 
 test("authored carousels synchronize Embla selections without sharing state", async ({
