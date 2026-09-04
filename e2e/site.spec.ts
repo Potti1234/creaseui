@@ -1932,6 +1932,17 @@ test("date picker composes disclosure and calendar into one child model", async 
   await expect(page.locator('[data-slot="popover-content"]')).toBeHidden();
   await expect(example.locator("code")).toContainText("ClearedDate");
   await expect(example.locator("code")).toContainText("Command.mapMessages");
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["existing-value", "empty-value"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(example.locator("code")).toContainText("@/stylex/date-picker");
+  await expect(input).toHaveValue("2026-08-20");
+  await expect(hiddenInput).toHaveValue("2026-08-20");
+  await trigger.click();
+  await expect(page.locator('[data-slot="popover-content"]')).toContainText("August 2026");
+  await page.keyboard.press("Escape");
   await page.waitForTimeout(100);
   expect(pageErrors).toEqual([]);
 });
