@@ -1403,7 +1403,7 @@ test("menubar documents independent targeted child models", async ({
   const example = page.locator("#coordinated-menus");
   const menubar = example.getByRole("menubar", { name: "Application menu" });
   await expect(menubar).toBeVisible();
-  await example.getByRole("button", { name: "File" }).click();
+  await example.getByRole("menuitem", { name: "File" }).click();
   const menu = example.getByRole("menu", { name: "File" });
   await expect(menu).toBeVisible();
   const save = menu.getByRole("menuitem", { name: /Save/u });
@@ -1412,24 +1412,24 @@ test("menubar documents independent targeted child models", async ({
   await expect(example.locator("code")).toContainText("GotMenuMessage");
   await expect(example.locator("code")).toContainText("Menubar.update");
   await expect(example.locator("code")).toContainText("@/stylex/menubar");
-  const fileTrigger = example.getByRole("button", { name: "File" });
+  const fileTrigger = example.getByRole("menuitem", { name: "File" });
   await fileTrigger.focus();
   await page.keyboard.press("ArrowRight");
-  const editTrigger = example.getByRole("button", { name: "Edit" });
+  const editTrigger = example.getByRole("menuitem", { name: "Edit" });
   await expect(editTrigger).toBeFocused();
   await expect(example.getByRole("menu", { name: "Edit" })).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(example.getByRole("menu", { name: "Edit" })).toBeHidden();
 
   const rtl = page.locator("#rtl-switching");
-  const rtlFile = rtl.getByRole("button", { name: "File" });
+  const rtlFile = rtl.getByRole("menuitem", { name: "File" });
   await rtlFile.focus();
   await page.keyboard.press("ArrowRight");
-  await expect(rtl.getByRole("button", { name: "View" })).toBeFocused();
+  await expect(rtl.getByRole("menuitem", { name: "View" })).toBeFocused();
   await page.keyboard.press("Escape");
 
   const nested = page.locator("#disabled-submenu");
-  await nested.getByRole("button", { name: "File" }).click();
+  await nested.getByRole("menuitem", { name: "File" }).click();
   await page.keyboard.press("End");
   const exportItem = nested.getByRole("menuitem", { name: /Export/u });
   await expect(exportItem).toHaveAttribute("data-active", "true");
