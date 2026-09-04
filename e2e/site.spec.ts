@@ -1428,6 +1428,12 @@ test("menubar documents independent targeted child models", async ({
 
 test("pagination keeps routing and in-place actions parent controlled", async ({ page }) => {
   await page.goto("/docs/components/pagination");
+  await page.getByRole("button", { name: "StyleX" }).click();
+  await expect(page.locator("#addressable-pages")).toBeVisible();
+  await expect(page.locator("#in-place-results")).toBeVisible();
+  await expect(page.locator("#compact-neighborhood")).toBeVisible();
+  await expect(page.locator("#disabled-boundary")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
 
   const links = page.locator("#addressable-pages");
   const current = links.getByRole("link", { name: "Page 6, current page" });
@@ -1443,6 +1449,7 @@ test("pagination keeps routing and in-place actions parent controlled", async ({
   const compact = page.locator("#compact-neighborhood");
   await expect(compact.locator('[data-slot="pagination-link"][aria-label^="Go to page"], [data-slot="pagination-link"][aria-label^="Page "]')).toHaveCount(3);
   await expect(compact.locator('[data-slot="pagination-ellipsis"]')).toHaveCount(2);
+  await expect(links.locator("code")).toContainText("@/stylex/pagination");
 
   const boundary = page.locator("#disabled-boundary");
   const previous = boundary.getByRole("button", { name: "Go to previous page" });
