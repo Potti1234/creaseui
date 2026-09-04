@@ -1745,6 +1745,20 @@ test("item preserves semantic collections and structured metadata", async ({ pag
   await expect(page.locator("#collection code")).toContainText("@/stylex/item");
 });
 
+test("scroll area preserves labeled native overflow on both axes", async ({ page }) => {
+  await page.goto("/docs/components/scroll-area");
+  await page.getByRole("button", { name: "StyleX" }).click();
+  await expect(page.locator("#vertical")).toBeVisible();
+  await expect(page.locator("#horizontal")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  const vertical = page.getByLabel("Component list");
+  const horizontal = page.getByLabel("Release versions");
+  expect(await vertical.evaluate(element => element.scrollHeight > element.clientHeight)).toBe(true);
+  expect(await horizontal.evaluate(element => element.scrollWidth > element.clientWidth)).toBe(true);
+  await expect(vertical).toHaveAttribute("tabindex", "0");
+  await expect(page.locator("#vertical code")).toContainText("@/stylex/scroll-area");
+});
+
 test("message scroller measures overflow and maps its scroll command", async ({
   page,
 }) => {

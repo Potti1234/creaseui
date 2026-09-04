@@ -1,0 +1,5 @@
+import type { Html, HtmlBuilder } from 'foldkit/html';
+import { scrollAreaFixtures, scrollAreaItems } from '@/docs/components/pages/scroll-area/shared';
+import * as ScrollArea from '@/ui/scroll-area';
+export type ScrollAreaStaticPreview = <Msg>(model: Readonly<Record<string, never>>, h: HtmlBuilder<Msg>) => Html;
+export const scrollAreaTailwindPreviews: ReadonlyArray<ScrollAreaStaticPreview> = scrollAreaFixtures.map((fixture) => <Msg>(_model: Readonly<Record<string, never>>, h: HtmlBuilder<Msg>) => fixture.orientation === 'vertical' ? ScrollArea.scrollArea({ orientation: 'vertical', ariaLabel: 'Component list', class: 'h-56 w-72 rounded-md border p-3', children: scrollAreaItems.map(item => h.div([h.Class('border-b py-2 text-sm last:border-0')], [item])) }, h) : ScrollArea.scrollArea({ orientation: 'horizontal', ariaLabel: 'Release versions', class: 'w-80 rounded-md border p-4', children: [h.div([h.Class('flex w-max gap-3')], scrollAreaItems.slice(0, 8).map(item => h.span([h.Class('rounded-md bg-muted px-3 py-2 text-sm')], [item])))] }, h));
