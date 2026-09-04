@@ -840,6 +840,13 @@ test("sheet compound parts preserve focus and accessible structure", async ({
   await page.keyboard.press("Escape");
   await expect(sheet).toBeHidden();
   await expect(trigger).toBeFocused();
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["compound-layout", "bottom-task", "top-sheet", "left-sheet"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(example.locator("code")).toContainText("@/stylex/sheet");
 });
 
 test("drawer documents its child model and preserves modal focus behavior", async ({
@@ -953,6 +960,7 @@ test("drawer handle supports mouse cancellation and touch threshold dismissal", 
 test("sheet renders every edge from view input with Dialog focus behavior", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/docs/components/sheet");
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
 
   for (const [id, side] of [["compound-layout", "right"], ["bottom-task", "bottom"], ["top-sheet", "top"], ["left-sheet", "left"]] as const) {
     const example = page.locator(`#${id}`);

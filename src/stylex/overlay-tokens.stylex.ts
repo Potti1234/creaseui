@@ -173,7 +173,10 @@ export const overlayStyles = stylex.create({
       default: interactionTokens.motionModerate,
       '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
     },
-    transitionProperty: 'opacity',
+    transitionProperty: {
+      default: 'opacity',
+      '@media (prefers-reduced-motion: reduce)': 'none',
+    },
     transitionTimingFunction: interactionTokens.easingStandard,
     zIndex: 50,
   },
@@ -193,7 +196,10 @@ export const overlayStyles = stylex.create({
       default: interactionTokens.motionModerate,
       '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
     },
-    transitionProperty: 'opacity, transform',
+    transitionProperty: {
+      default: 'opacity, transform',
+      '@media (prefers-reduced-motion: reduce)': 'none',
+    },
     transitionTimingFunction: interactionTokens.easingStandard,
     zIndex: 50,
     maxWidth: 'calc(100% - 2rem)',
