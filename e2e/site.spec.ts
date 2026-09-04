@@ -2043,6 +2043,18 @@ test("data table filters and sorts through its interaction model", async ({
   const server = page.locator("#server-owned-query");
   await expect(server).toContainText("Page 1 of 9");
   await expect(server.locator("code")).toContainText("mode: 'server'");
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["sortable-payments", "filter-and-paginate", "server-owned-query"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(sortable.locator("code")).toContainText("@/stylex/data-table");
+  await expect(amountHeader).toHaveAttribute("aria-sort", "descending");
+  await expect(sortable).toContainText("Page 2 of 2");
+  await expect(filtered.getByRole("searchbox", { name: "Filter payments…" })).toHaveValue("failed");
+  await expect(filtered).toContainText("r@example.com");
+  await expect(server).toContainText("Page 1 of 9");
 });
 
 test("controlled helper pages own and update compact local preview state", async ({

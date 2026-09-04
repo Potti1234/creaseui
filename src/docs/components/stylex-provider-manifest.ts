@@ -55,6 +55,7 @@ import { tableStyleXPreview } from '@/docs/components/pages/table/stylex';
 import { calendarStyleXPreview } from '@/docs/components/pages/calendar/stylex';
 import { carouselStyleXPreview } from '@/docs/components/pages/carousel/stylex';
 import { chartStyleXPreview } from '@/docs/components/pages/chart/stylex';
+import { dataTableStyleXPreview } from '@/docs/components/pages/data-table/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -112,3 +113,4 @@ installStyleXExamplePreviewProvider('table', tableStyleXPreview);
 installStyleXExamplePreviewProvider('calendar', calendarStyleXPreview);
 installStyleXExamplePreviewProvider('carousel', carouselStyleXPreview);
 installStyleXExamplePreviewProvider('chart', chartStyleXPreview);
+installStyleXExamplePreviewProvider('data-table', dataTableStyleXPreview);
