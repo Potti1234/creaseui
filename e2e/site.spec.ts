@@ -986,6 +986,10 @@ test("hover card is available to keyboard focus and closes after blur", async ({
   page,
 }) => {
   await page.goto("/docs/components/hover-card");
+  await page.getByRole("button", { name: "StyleX" }).click();
+  await expect(page.locator("#profile-preview")).toBeVisible();
+  await expect(page.locator("#side-placement")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
   const example = page.locator("#profile-preview");
   const trigger = example.getByRole("button", {
     name: "Preview the Foldkit profile",
@@ -996,6 +1000,7 @@ test("hover card is available to keyboard focus and closes after blur", async ({
   await expect(trigger).toHaveAttribute("aria-expanded", "true");
   await expect(example.locator("code")).toContainText("closeDelay");
   await expect(example.locator("code")).toContainText("showDelay");
+  await expect(example.locator("code")).toContainText("@/stylex/hover-card");
   await page.keyboard.press("Escape");
   await expect(panel).toBeHidden();
   await expect(trigger).toBeFocused();
@@ -1006,12 +1011,14 @@ test("hover card is available to keyboard focus and closes after blur", async ({
 test("hover card survives pointer crossing and supports touch fallback", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/docs/components/hover-card");
+  await page.getByRole("button", { name: "StyleX" }).click();
   const example = page.locator("#profile-preview");
   const trigger = example.getByRole("button", { name: "Preview the Foldkit profile" });
   const panel = example.locator('[data-slot="hover-card-content"]');
 
   await trigger.hover();
   await expect(panel).toBeVisible();
+  await expect(panel).toHaveCSS("transition-property", "none");
   await panel.hover();
   await page.waitForTimeout(200);
   await expect(panel).toBeVisible();

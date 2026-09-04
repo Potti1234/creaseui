@@ -31,6 +31,7 @@ import { alertDialogStyleXPreview } from '@/docs/components/pages/alert-dialog/s
 import { drawerStyleXPreview } from '@/docs/components/pages/drawer/stylex';
 import { sheetStyleXPreview } from '@/docs/components/pages/sheet/stylex';
 import { popoverStyleXPreview } from '@/docs/components/pages/popover/stylex';
+import { hoverCardStyleXPreview } from '@/docs/components/pages/hover-card/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -64,3 +65,4 @@ installStyleXExamplePreviewProvider('alert-dialog', alertDialogStyleXPreview);
 installStyleXExamplePreviewProvider('drawer', drawerStyleXPreview);
 installStyleXExamplePreviewProvider('sheet', sheetStyleXPreview);
 installStyleXExamplePreviewProvider('popover', popoverStyleXPreview);
+installStyleXExamplePreviewProvider('hover-card', hoverCardStyleXPreview);
