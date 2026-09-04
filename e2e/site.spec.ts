@@ -1672,6 +1672,14 @@ test("sidebar documents persistence and toggles derived shell state", async ({
   await expect(provider).toHaveAttribute("data-state", "collapsed");
   await expect(example.locator("code")).toContainText("Sidebar.shortcut");
   await expect(example.locator("code")).toContainText("Command.mapMessages");
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(page.locator("#persistent-shell")).toBeVisible();
+  await expect(page.locator("#static-structure")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(provider).toHaveAttribute("data-state", "collapsed");
+  await expect(example.locator("code")).toContainText("@/stylex/sidebar");
+  await example.locator('[data-slot="sidebar-trigger"]').click();
+  await expect(provider).toHaveAttribute("data-state", "expanded");
 });
 
 test("accordion enforces single-open state and publishes complete child wiring", async ({

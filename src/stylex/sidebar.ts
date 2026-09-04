@@ -67,6 +67,7 @@ const styles = stylex.create({
   root: { color: complexTokens.sidebarForeground, position: 'relative' },
   separator: { marginInline: '0.5rem', backgroundColor: complexTokens.sidebarBorder, flexShrink: 0, height: 1, },
   sidebarContainer: { display: { default: 'none', '@media (min-width: 768px)': 'flex' }, position: 'fixed', transitionDuration: interactionTokens.motionModerate, transitionProperty: 'left, right, width, transform', zIndex: 10, bottom: 0, height: '100svh', left: 0, top: 0, width: '16rem', },
+  sidebarContainerContained: { position: 'absolute', height: '100%' },
   skeleton: { gap: '0.5rem', paddingInline: '0.5rem', alignItems: 'center', display: 'flex', height: '2rem', },
   skeletonIcon: { borderRadius: tokens.controlRadius, backgroundColor: complexTokens.sidebarAccent, height: '1rem', width: '1rem', },
   skeletonText: { borderRadius: tokens.controlRadius,
@@ -91,14 +92,14 @@ const slotDiv = (slot: string, sidebarPart: string, base: StaticStyles) => <Msg>
 export type SidebarProviderProps = Slot & Readonly<{ state?: SidebarState }>
 export const sidebarProvider = <Msg>(props: SidebarProviderProps, h: HtmlBuilder<Msg>): Html => h.div([h.DataAttribute('slot', 'sidebar-wrapper'), h.DataAttribute('state', props.state ?? 'expanded'), h.Style({ '--sidebar-width': '16rem', '--sidebar-width-icon': '3rem' }), h.Class(className(styles.wrapper, props.layoutStyle))], [...props.children])
 
-export type SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; surface?: 'default' | 'transparent'; isMobileOpen?: boolean; onMobileDismiss?: Msg }>
+export type SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; surface?: 'default' | 'transparent'; presentation?: 'application' | 'contained'; isMobileOpen?: boolean; onMobileDismiss?: Msg }>
 export const sidebar = <Msg>(props: SidebarProps<Msg>, h: HtmlBuilder<Msg>): Html => {
   const state = props.state ?? 'expanded'; const side = props.side ?? 'left'; const variant = props.variant ?? 'sidebar'; const collapsible = props.collapsible ?? 'offcanvas'
   if (collapsible === 'none') return h.div([h.DataAttribute('slot', 'sidebar'), h.Class(className(styles.panel, props.surface === 'transparent' && styles.panelTransparent, props.layoutStyle))], [...props.children])
   const collapsed = state === 'collapsed'
   return h.div([h.DataAttribute('state', state), h.DataAttribute('collapsible', collapsed ? collapsible : ''), h.DataAttribute('variant', variant), h.DataAttribute('side', side), h.DataAttribute('slot', 'sidebar'), h.Class(className(styles.root, props.layoutStyle))], [
     ...((props.isMobileOpen ?? false) ? [h.button([h.Type('button'), h.AriaLabel('Close sidebar'), ...(props.onMobileDismiss === undefined ? [] : [h.OnClick(props.onMobileDismiss)]), h.Class(className(styles.backdrop))], []), h.aside([h.DataAttribute('slot', 'sidebar-mobile'), h.AriaLabel('Sidebar'), h.Class(className(styles.mobile, side === 'right' && styles.right))], [...props.children])] : []),
-    h.div([h.DataAttribute('slot', 'sidebar-container'), h.Class(className(styles.sidebarContainer, side === 'right' && styles.right, collapsed && collapsible === 'offcanvas' && (side === 'right' ? styles.collapsedOffcanvasRight : styles.collapsedOffcanvas), collapsed && collapsible === 'icon' && styles.collapsedIcon))], [h.div([h.DataAttribute('sidebar', 'sidebar'), h.DataAttribute('slot', 'sidebar-inner'), h.Class(className(styles.inner))], [...props.children])]),
+    h.div([h.DataAttribute('slot', 'sidebar-container'), h.Class(className(styles.sidebarContainer, props.presentation === 'contained' && styles.sidebarContainerContained, side === 'right' && styles.right, collapsed && collapsible === 'offcanvas' && (side === 'right' ? styles.collapsedOffcanvasRight : styles.collapsedOffcanvas), collapsed && collapsible === 'icon' && styles.collapsedIcon))], [h.div([h.DataAttribute('sidebar', 'sidebar'), h.DataAttribute('slot', 'sidebar-inner'), h.Class(className(styles.inner))], [...props.children])]),
   ])
 }
 
@@ -139,4 +140,3 @@ export const sidebarMenuSub = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => h
 export const sidebarMenuSubItem = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => h.li([h.DataAttribute('slot', 'sidebar-menu-sub-item'), h.DataAttribute('sidebar', 'menu-sub-item'), h.Class(className(styles.menuItem, props.layoutStyle))], [...props.children])
 export type SidebarMenuSubButtonProps<Msg> = Readonly<{ children: ReadonlyArray<Html | string>; href?: string; onClick?: Msg; size?: 'sm' | 'md'; isActive?: boolean; layoutStyle?: ComponentLayoutStyle }>
 export const sidebarMenuSubButton = <Msg>(props: SidebarMenuSubButtonProps<Msg>, h: HtmlBuilder<Msg>): Html => { const size = props.size ?? 'md'; return h.a([h.DataAttribute('slot', 'sidebar-menu-sub-button'), h.DataAttribute('sidebar', 'menu-sub-button'), h.DataAttribute('size', size), ...((props.isActive ?? false) ? [h.DataAttribute('active', '')] : []), ...(props.href === undefined ? [] : [h.Href(props.href)]), ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]), h.Class(className(styles.subButton, size === 'sm' ? styles.subSm : styles.subMd, props.isActive === true && styles.menuButtonActive, props.layoutStyle))], [...props.children]) }
-
