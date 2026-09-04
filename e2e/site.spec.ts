@@ -893,7 +893,12 @@ test("popover delegates disclosure commands and restores trigger focus", async (
   page,
 }) => {
   await page.goto("/docs/components/popover");
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
   const example = page.locator("#interactive-content");
+  await expect(example).toBeVisible();
+  await expect(page.locator("#right-aligned")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(example.locator("code")).toContainText("@/stylex/popover");
   const trigger = example.getByRole("button", { name: "Open dimensions" });
   await trigger.click();
   // Foldkit's anchor layer portals positioned content outside the example article.
