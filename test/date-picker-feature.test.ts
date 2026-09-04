@@ -17,7 +17,7 @@ test('both date picker skins expose controlled text and mobile presentation seam
 })
 
 test('the docs parent owns parsing, committed state, and external reflection', () => {
-  const source = read('src/docs/components/pages/date-picker.ts')
+  const source = read('src/docs/components/pages/date-picker/tailwind.ts')
   assert.match(source, /CalendarDateFromIsoString/)
   assert.match(source, /ChangedDatePickerQuery/)
   assert.match(source, /DatePicker\.focusDate/)
