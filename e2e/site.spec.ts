@@ -1869,6 +1869,14 @@ for (const route of ["sonner", "toast"] as const) {
       await expect(example.locator("code")).toContainText("@/stylex/sonner");
       await example.getByRole("button", { name: "Show sonner" }).click();
       await expect(viewport.getByRole("alert")).toContainText("Could not save changes");
+    } else {
+      await page.getByRole("button", { name: "StyleX", exact: true }).click();
+      await expect(page.locator("#timed-notification")).toBeVisible();
+      await expect(page.locator("#sticky-error")).toBeVisible();
+      await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+      await expect(example.locator("code")).toContainText("@/stylex/toast");
+      await example.getByRole("button", { name: "Show toast" }).click();
+      await expect(viewport.getByRole("alert")).toContainText("Could not save changes");
     }
   });
 }
