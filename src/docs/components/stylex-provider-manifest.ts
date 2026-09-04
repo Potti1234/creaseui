@@ -32,6 +32,7 @@ import { drawerStyleXPreview } from '@/docs/components/pages/drawer/stylex';
 import { sheetStyleXPreview } from '@/docs/components/pages/sheet/stylex';
 import { popoverStyleXPreview } from '@/docs/components/pages/popover/stylex';
 import { hoverCardStyleXPreview } from '@/docs/components/pages/hover-card/stylex';
+import { tooltipStyleXPreview } from '@/docs/components/pages/tooltip/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -66,3 +67,4 @@ installStyleXExamplePreviewProvider('drawer', drawerStyleXPreview);
 installStyleXExamplePreviewProvider('sheet', sheetStyleXPreview);
 installStyleXExamplePreviewProvider('popover', popoverStyleXPreview);
 installStyleXExamplePreviewProvider('hover-card', hoverCardStyleXPreview);
+installStyleXExamplePreviewProvider('tooltip', tooltipStyleXPreview);

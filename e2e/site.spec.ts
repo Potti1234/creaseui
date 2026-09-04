@@ -1033,6 +1033,11 @@ test("tooltip opens from keyboard focus and dismisses without moving focus", asy
   page,
 }) => {
   await page.goto("/docs/components/tooltip");
+  await page.getByRole("button", { name: "StyleX" }).click();
+  await expect(page.locator("#delayed-label")).toBeVisible();
+  await expect(page.locator("#side-label")).toBeVisible();
+  await expect(page.locator("#disabled-trigger")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
   const example = page.locator("#delayed-label");
   const trigger = example.getByRole("button", { name: "Add item to library" });
   await trigger.focus();
@@ -1040,6 +1045,7 @@ test("tooltip opens from keyboard focus and dismisses without moving focus", asy
   await expect(panel).toBeVisible();
   await expect(panel).toHaveText(/Add to library/u);
   await expect(example.locator("code")).toContainText("Command.mapMessages");
+  await expect(example.locator("code")).toContainText("@/stylex/tooltip");
   await page.keyboard.press("Escape");
   await expect(panel).toBeHidden();
   await expect(trigger).toBeFocused();
@@ -1094,6 +1100,7 @@ test("tooltip rejects stale hover timers and pointer-induced touch focus", async
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/docs/components/tooltip");
+  await page.getByRole("button", { name: "StyleX" }).click();
   const example = page.locator("#delayed-label");
   const trigger = example.getByRole("button", { name: "Add item to library" });
   const panel = page.locator('[data-slot="tooltip-content"]');
