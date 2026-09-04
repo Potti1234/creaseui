@@ -14,9 +14,10 @@ For full pages, prefer the semantic region components (`appShell`,
 template metadata, and evaluation workflow are documented in
 [`docs/stylex-astryx-architecture.md`](../../../docs/stylex-astryx-architecture.md).
 
-The `/create-constrained` route deliberately shares the same Elm model,
-messages, subscriptions, card specification, preset theme, and leaf StyleX
-components as `/create-stylex`. Only its board composition changes.
+The StyleX renderer available from the `/create` switcher deliberately shares
+the same Elm model, messages, subscriptions, card specification, preset theme,
+and leaf StyleX components. Only its board composition differs from the
+Tailwind renderer.
 
 ## Authoring contract
 
@@ -43,4 +44,3 @@ components as `/create-stylex`. Only its board composition changes.
 The StyleX ESLint plugin remains necessary inside primitive implementations for
 valid styles, semantic paint tokens, property ordering, shorthands, and theme
 file rules. Oxlint does not natively replace those StyleX-specific checks.
-

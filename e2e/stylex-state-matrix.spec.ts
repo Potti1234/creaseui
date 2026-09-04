@@ -69,7 +69,11 @@ test('StyleX interaction and theme state matrix', async ({ page }, testInfo) => 
   matrix.dark = await visualState(button)
   expect(matrix.dark.backgroundColor).not.toBe(matrix.rest.backgroundColor)
 
-  await page.goto('/create-constrained')
+  await page.goto('/create')
+  await page
+    .getByRole('group', { name: 'Create renderer' })
+    .getByRole('button', { name: 'StyleX' })
+    .click()
   const themeScope = page.locator('[data-crease-board-theme]')
   await expect(themeScope).toBeVisible()
   const disclosure = themeScope.locator('button[aria-haspopup]').first()

@@ -156,15 +156,16 @@ test("create preset shuffle updates executable output", async ({ page }) => {
   ).toBeVisible();
 });
 
-test("Tailwind and StyleX create boards keep distinct routes and equivalent preset controls", async ({
+test("Create switches between Tailwind and StyleX on one route", async ({
   page,
 }) => {
   await page.goto("/create");
   await expect(page).toHaveURL(/\/create$/u);
   await expect(page.locator('[data-slot="capture-target"]')).toBeVisible();
 
-  await page.goto("/create-stylex");
-  await expect(page).toHaveURL(/\/create-stylex$/u);
+  const renderer = page.getByRole("group", { name: "Create renderer" });
+  await renderer.getByRole("button", { name: "StyleX" }).click();
+  await expect(page).toHaveURL(/\/create$/u);
 
   const board = page.locator('[data-slot="capture-target"]');
   const token = page.getByText(/^--preset b/u);
@@ -182,42 +183,42 @@ test("Tailwind and StyleX create boards keep distinct routes and equivalent pres
   await expect(
     page.getByRole("button", { name: "Copy Registry JSON" }),
   ).toBeVisible();
+
+  await renderer.getByRole("button", { name: "Tailwind" }).click();
+  await expect(page.locator('[data-primitive-box]')).toHaveCount(0);
+  await renderer.getByRole("button", { name: "StyleX" }).click();
+  await expect(token).not.toHaveText(applied ?? "");
 });
 
-test("constrained primitives preserve the StyleX create board geometry", async ({
+test("StyleX Create uses the constrained board composition", async ({
   page,
 }) => {
-  test.slow();
-  const boardMetrics = async () =>
-    page.locator('[data-slot="capture-target"]').evaluate((element) => {
-      const bounds = element.getBoundingClientRect();
-      const grid = element.querySelector('[data-primitive-board-grid]') ?? element;
-      const style = getComputedStyle(grid);
-      const rootStyle = getComputedStyle(element);
-      return {
-        childCount: grid.children.length,
-        columns: style.gridTemplateColumns,
-        gap: style.gap,
-        padding: rootStyle.padding,
-        width: bounds.width,
-        x: bounds.x,
-        y: bounds.y,
-      };
-    });
-
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto("/create-stylex");
-  const baseline = await boardMetrics();
-
-  await page.goto("/create-constrained");
+  await page.goto("/create");
+  await page
+    .getByRole("group", { name: "Create renderer" })
+    .getByRole("button", { name: "StyleX" })
+    .click();
   await expect(page.getByRole("main")).toBeVisible();
   await expect(page.getByText("Contribution History", { exact: true })).toBeVisible();
-  expect(await boardMetrics()).toEqual(baseline);
+  await expect(page.locator('[data-primitive-box]')).toBeVisible();
+  await expect(page.locator('[data-primitive-board-grid]')).toBeVisible();
+});
+
+test("legacy Create variant routes are removed", async ({ page }) => {
+  for (const path of ["/create-stylex", "/create-constrained"]) {
+    await page.goto(path);
+    await expect(page.getByText(`No page at ${path}.`)).toBeVisible();
+  }
 });
 
 test("primitive inspector updates every constrained primitive", async ({ page }) => {
   test.slow();
-  await page.goto("/create-constrained");
+  await page.goto("/create");
+  await page
+    .getByRole("group", { name: "Create renderer" })
+    .getByRole("button", { name: "StyleX" })
+    .click();
   const board = page.locator('[data-primitive-box]');
   await expect(board).toBeVisible();
 

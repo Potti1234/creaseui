@@ -37,8 +37,6 @@ import {
   chartsStyleXPath,
   componentDocsPath,
   createPath,
-  createConstrainedPath,
-  createStyleXPath,
   homePath,
   isChartSection,
   urlToAppRoute,
@@ -74,6 +72,9 @@ export const ChangedUrl = m("ChangedUrl", { url: Url });
 export const ClickedThemeToggle = m("ClickedThemeToggle");
 export const CompletedApplyTheme = m("CompletedApplyTheme");
 export const IgnoredBlocksPreviewInput = m("IgnoredBlocksPreviewInput");
+export const ChangedCreateRenderer = m("ChangedCreateRenderer", {
+  renderer: Page.CreateRenderer,
+});
 export const GotBoardMessage = m("GotBoardMessage", { message: Board.Message });
 export const GotBoardStyleXMessage = m("GotBoardStyleXMessage", {
   message: BoardStyleX.Message,
@@ -126,6 +127,7 @@ export const Message = S.Union([
   ClickedThemeToggle,
   CompletedApplyTheme,
   IgnoredBlocksPreviewInput,
+  ChangedCreateRenderer,
   GotBoardMessage,
   GotBoardStyleXMessage,
   GotBlocksMessage,
@@ -195,6 +197,17 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       CompletedApplyTheme: () => [model, []],
       IgnoredBlocksPreviewInput: () => [model, []],
 
+      ChangedCreateRenderer: ({ renderer }) => {
+        if (model.page._tag !== "CreatePage") return [model, []];
+        const currentPage = model.page;
+        return [
+          evo(model, {
+            page: () => evo(currentPage, { renderer: () => renderer }),
+          }),
+          [],
+        ];
+      },
+
       ClickedThemeToggle: () => {
         const isDark = !model.isDark;
         return [evo(model, { isDark: () => isDark }), [ApplyTheme({ isDark })]];
@@ -223,10 +236,13 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       GotBoardMessage: ({ message: childMessage }) => {
         if (model.page._tag !== "CreatePage") return [model, []];
         const currentPage = model.page;
-        const [board, commands] = Board.update(currentPage.board, childMessage);
+        const [board, commands] = Board.update(
+          currentPage.tailwindBoard,
+          childMessage,
+        );
         return [
           evo(model, {
-            page: () => evo(currentPage, { board: () => board }),
+            page: () => evo(currentPage, { tailwindBoard: () => board }),
           }),
           Command.mapMessages(commands, (next) =>
             GotBoardMessage({ message: next }),
@@ -296,19 +312,15 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       },
 
       GotBoardStyleXMessage: ({ message: childMessage }) => {
-        if (
-          model.page._tag !== "CreateStyleXPage" &&
-          model.page._tag !== "CreateConstrainedPage"
-        )
-          return [model, []];
+        if (model.page._tag !== "CreatePage") return [model, []];
         const currentPage = model.page;
         const [board, commands] = BoardStyleX.update(
-          currentPage.board,
+          currentPage.styleXBoard,
           childMessage,
         );
         return [
           evo(model, {
-            page: () => evo(currentPage, { board: () => board }),
+            page: () => evo(currentPage, { styleXBoard: () => board }),
           }),
           Command.mapMessages(commands, (next) =>
             GotBoardStyleXMessage({ message: next }),
@@ -493,19 +505,21 @@ const boardStyleXSubscriptions = {
 export const subscriptions = Subscription.aggregate<Model, Message>()(
   Subscription.lift(Board.subscriptions)<Model, Message>({
     toChildModel: (model) =>
-      model.page._tag === "CreatePage" ? model.page.board : inactiveBoard,
+      model.page._tag === "CreatePage"
+        ? model.page.tailwindBoard
+        : inactiveBoard,
     toParentMessage: (message) => GotBoardMessage({ message }),
+    when: (model) =>
+      model.page._tag === "CreatePage" && model.page.renderer === "tailwind",
   }),
   Subscription.lift(boardStyleXSubscriptions)<Model, Message>({
     toChildModel: (model) =>
-      model.page._tag === "CreateStyleXPage" ||
-      model.page._tag === "CreateConstrainedPage"
-        ? model.page.board
+      model.page._tag === "CreatePage"
+        ? model.page.styleXBoard
         : inactiveBoardStyleX,
     toParentMessage: (message) => GotBoardStyleXMessage({ message }),
     when: (model) =>
-      model.page._tag === "CreateStyleXPage" ||
-      model.page._tag === "CreateConstrainedPage",
+      model.page._tag === "CreatePage" && model.page.renderer === "stylex",
   }),
   Subscription.lift(ComponentCatalog.subscriptions)<Model, Message>({
     toChildModel: (model) =>
@@ -548,6 +562,42 @@ const headerLink = (
   );
 };
 
+const createRendererSwitcher = (
+  page: typeof Page.Create.Type,
+  className: string,
+  h: HtmlBuilder<Message>,
+): Html =>
+  h.div(
+    [
+      h.Role("group"),
+      h.AriaLabel("Create renderer"),
+      h.Class(
+        cn(
+          "items-center rounded-md border bg-muted/40 p-0.5",
+          className,
+        ),
+      ),
+    ],
+    (["tailwind", "stylex"] as const).map((renderer) =>
+      h.button(
+        [
+          h.Type("button"),
+          h.OnClick(ChangedCreateRenderer({ renderer })),
+          h.AriaPressed(page.renderer === renderer ? "true" : "false"),
+          h.Class(
+            cn(
+              "min-h-8 rounded-[5px] px-2.5 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring/50",
+              page.renderer === renderer
+                ? "bg-background text-foreground shadow-xs"
+                : "text-muted-foreground hover:text-foreground",
+            ),
+          ),
+        ],
+        [renderer === "tailwind" ? "Tailwind" : "StyleX"],
+      ),
+    ),
+  );
+
 const header = (model: Model, h: HtmlBuilder<Message>): Html => {
   const isCharts = model.route._tag === "Charts";
 
@@ -569,7 +619,7 @@ const header = (model: Model, h: HtmlBuilder<Message>): Html => {
             componentDocsPath("accordion"),
             "Docs",
             model.route._tag === "ComponentDocs",
-            "",
+            "hidden sm:inline-flex",
             h,
           ),
           headerLink(
@@ -579,20 +629,9 @@ const header = (model: Model, h: HtmlBuilder<Message>): Html => {
             "hidden sm:inline-flex",
             h,
           ),
-          headerLink(
-            createStyleXPath(),
-            "Create StyleX",
-            model.route._tag === "CreateStyleX",
-            "hidden sm:inline-flex",
-            h,
-          ),
-          headerLink(
-            createConstrainedPath(),
-            "Create Constrained",
-            model.route._tag === "CreateConstrained",
-            "hidden lg:inline-flex",
-            h,
-          ),
+          ...(model.page._tag === "CreatePage"
+            ? [createRendererSwitcher(model.page, "flex", h)]
+            : []),
           headerLink(
             chartsPath("area"),
             "Charts",
@@ -652,20 +691,6 @@ const header = (model: Model, h: HtmlBuilder<Message>): Html => {
                     createPath(),
                     "Create",
                     model.route._tag === "Create",
-                    "rounded-md px-3 py-2 hover:bg-accent",
-                    h,
-                  ),
-                  headerLink(
-                    createStyleXPath(),
-                    "Create StyleX",
-                    model.route._tag === "CreateStyleX",
-                    "rounded-md px-3 py-2 hover:bg-accent",
-                    h,
-                  ),
-                  headerLink(
-                    createConstrainedPath(),
-                    "Create Constrained",
-                    model.route._tag === "CreateConstrained",
                     "rounded-md px-3 py-2 hover:bg-accent",
                     h,
                   ),
@@ -748,9 +773,6 @@ const header = (model: Model, h: HtmlBuilder<Message>): Html => {
 /* Page views are plain (model) => Html functions; wrap them once as
    SubmodelViews so h.submodel can embed them with message lifting. */
 const boardView = defineView<Board.Model, Board.Message>(Board.view);
-const boardStyleXView = defineView<BoardStyleX.Model, BoardStyleX.Message>(
-  BoardStyleX.view,
-);
 const boardConstrainedView = defineView<
   BoardConstrained.Model,
   BoardConstrained.Message
@@ -964,46 +986,28 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
           : keyed("page-not-found", notFoundView("/", h)),
       Create: () =>
         model.page._tag === "CreatePage"
-          ? keyed(
-              "page-create",
-              h.submodel({
-                slotId: "create-board",
-                model: model.page.board,
-                view: boardView,
-                toParentMessage: (message: Board.Message): Message =>
-                  GotBoardMessage({ message }),
-              }),
-            )
+          ? model.page.renderer === "tailwind"
+            ? keyed(
+                "page-create-tailwind",
+                h.submodel({
+                  slotId: "create-board-tailwind",
+                  model: model.page.tailwindBoard,
+                  view: boardView,
+                  toParentMessage: (message: Board.Message): Message =>
+                    GotBoardMessage({ message }),
+                }),
+              )
+            : keyed(
+                "page-create-stylex",
+                h.submodel({
+                  slotId: "create-board-stylex",
+                  model: model.page.styleXBoard,
+                  view: boardConstrainedView,
+                  toParentMessage: (message: BoardConstrained.Message): Message =>
+                    GotBoardStyleXMessage({ message }),
+                }),
+              )
           : keyed("page-not-found", notFoundView(createPath(), h)),
-      CreateStyleX: () =>
-        model.page._tag === "CreateStyleXPage"
-          ? keyed(
-              "page-create-stylex",
-              h.submodel({
-                slotId: "create-board-stylex",
-                model: model.page.board,
-                view: boardStyleXView,
-                toParentMessage: (message: BoardStyleX.Message): Message =>
-                  GotBoardStyleXMessage({ message }),
-              }),
-            )
-          : keyed("page-not-found", notFoundView(createStyleXPath(), h)),
-      CreateConstrained: () =>
-        model.page._tag === "CreateConstrainedPage"
-          ? keyed(
-              "page-create-constrained",
-              h.submodel({
-                slotId: "create-board-constrained",
-                model: model.page.board,
-                view: boardConstrainedView,
-                toParentMessage: (message: BoardConstrained.Message): Message =>
-                  GotBoardStyleXMessage({ message }),
-              }),
-            )
-          : keyed(
-              "page-not-found",
-              notFoundView(createConstrainedPath(), h),
-            ),
       Charts: ({ section }) =>
         isChartSection(section)
           ? keyed(

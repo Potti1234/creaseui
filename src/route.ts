@@ -46,8 +46,6 @@ export const SIDEBAR_BLOCK_IDS: ReadonlyArray<string> = [
 
 export const HomeRoute = r("Home");
 export const CreateRoute = r("Create");
-export const CreateStyleXRoute = r("CreateStyleX");
-export const CreateConstrainedRoute = r("CreateConstrained");
 export const ChartsRoute = r("Charts", { section: S.String });
 export const ChartsStyleXRoute = r("ChartsStyleX");
 export const BlocksIndexRoute = r("BlocksIndex");
@@ -60,8 +58,6 @@ export const NotFoundRoute = r("NotFound", { path: S.String });
 export const AppRoute = S.Union([
   HomeRoute,
   CreateRoute,
-  CreateStyleXRoute,
-  CreateConstrainedRoute,
   ChartsRoute,
   ChartsStyleXRoute,
   BlocksIndexRoute,
@@ -74,8 +70,6 @@ export const AppRoute = S.Union([
 
 export type HomeRoute = typeof HomeRoute.Type;
 export type CreateRoute = typeof CreateRoute.Type;
-export type CreateStyleXRoute = typeof CreateStyleXRoute.Type;
-export type CreateConstrainedRoute = typeof CreateConstrainedRoute.Type;
 export type ChartsRoute = typeof ChartsRoute.Type;
 export type ChartsStyleXRoute = typeof ChartsStyleXRoute.Type;
 export type BlocksIndexRoute = typeof BlocksIndexRoute.Type;
@@ -89,16 +83,6 @@ export type AppRoute = typeof AppRoute.Type;
 const homeRouter = pipe(Route.root, Route.mapTo(HomeRoute));
 
 const createRouter = pipe(literal("create"), Route.mapTo(CreateRoute));
-
-const createStyleXRouter = pipe(
-  literal("create-stylex"),
-  Route.mapTo(CreateStyleXRoute),
-);
-
-const createConstrainedRouter = pipe(
-  literal("create-constrained"),
-  Route.mapTo(CreateConstrainedRoute),
-);
 
 const chartsRouter = pipe(
   literal("charts"),
@@ -144,8 +128,6 @@ const componentDocsRouter = pipe(
 
 const routeParser = Route.oneOf(
   createRouter,
-  createStyleXRouter,
-  createConstrainedRouter,
   chartsRouter,
   chartsStyleXRouter,
   blockRouter,
@@ -164,10 +146,6 @@ export const urlToAppRoute = Route.parseUrlWithFallback(
 export const homePath = (): string => homeRouter();
 
 export const createPath = (): string => createRouter();
-
-export const createStyleXPath = (): string => createStyleXRouter();
-
-export const createConstrainedPath = (): string => createConstrainedRouter();
 
 export const chartsPath = (section: ChartSection): string =>
   chartsRouter({ section });

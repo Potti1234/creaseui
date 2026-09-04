@@ -5,7 +5,6 @@ import * as BlocksFeature from "@/demo/blocks/registry";
 import * as BlocksStyleXFeature from "@/demo/blocks-stylex/featured-page";
 import * as TanStackTableFeature from "@/demo/blocks-stylex/tanstack-table-page";
 import * as BoardFeature from "@/demo/board";
-import * as BoardStyleX from "@/demo/board-stylex";
 import * as BoardConstrained from "@/demo/board-constrained";
 import * as LandingFeature from "@/demo/landing";
 import * as ChartsArea from "@/demo/charts/area";
@@ -20,12 +19,12 @@ import * as ComponentCatalog from "@/docs/components/catalog";
 import type { AppRoute } from "@/route";
 
 export const Landing = ts("LandingPage", { landing: LandingFeature.Model });
-export const Create = ts("CreatePage", { board: BoardFeature.Model });
-export const CreateStyleX = ts("CreateStyleXPage", {
-  board: BoardStyleX.Model,
-});
-export const CreateConstrained = ts("CreateConstrainedPage", {
-  board: BoardConstrained.Model,
+export const CreateRenderer = S.Literals(["tailwind", "stylex"]);
+export type CreateRenderer = typeof CreateRenderer.Type;
+export const Create = ts("CreatePage", {
+  renderer: CreateRenderer,
+  tailwindBoard: BoardFeature.Model,
+  styleXBoard: BoardConstrained.Model,
 });
 export const BlocksIndex = ts("BlocksIndexPage");
 export const BlocksStyleX = ts("BlocksStyleXPage", {
@@ -55,8 +54,6 @@ export const NotFound = ts("NotFoundPage");
 export const Page = S.Union([
   Landing,
   Create,
-  CreateStyleX,
-  CreateConstrained,
   BlocksIndex,
   BlocksStyleX,
   BlocksStyleXTable,
@@ -73,10 +70,12 @@ export const init = (route: AppRoute): Page =>
     M.withReturnType<Page>(),
     M.tagsExhaustive({
       Home: () => Landing({ landing: LandingFeature.init() }),
-      Create: () => Create({ board: BoardFeature.init() }),
-      CreateStyleX: () => CreateStyleX({ board: BoardStyleX.init() }),
-      CreateConstrained: () =>
-        CreateConstrained({ board: BoardConstrained.init() }),
+      Create: () =>
+        Create({
+          renderer: "tailwind",
+          tailwindBoard: BoardFeature.init(),
+          styleXBoard: BoardConstrained.init(),
+        }),
       Charts: () =>
         Charts({
           area: ChartsArea.init(),

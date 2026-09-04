@@ -2,8 +2,8 @@
 
 Status: implemented experiment  
 Last verified: 2026-08-28  
-Demonstration route: `/create-constrained`  
-Reference routes: `/create` and `/create-stylex`
+Demonstration route: `/create` with the StyleX renderer selected
+Reference renderer: Tailwind in the same `/create` switcher
 
 ## Executive summary
 
@@ -213,15 +213,15 @@ models, messages, update behavior, subscriptions, and public exports were kept
 equivalent to the original card implementations while their component imports
 and visual styling moved to StyleX.
 
-Three routes make the comparison explicit:
+The `/create` renderer switcher makes the comparison explicit without
+duplicating pages:
 
-| Route | Purpose |
+| Renderer | Purpose |
 | --- | --- |
-| `/create` | Original Tailwind/Create reference. |
-| `/create-stylex` | Full StyleX component and card implementation using the initial board composition. |
-| `/create-constrained` | Same StyleX components, same Elm state, and same board data, composed through the five closed primitives. |
+| Tailwind | Original Create reference. |
+| StyleX | Same Create behavior, with StyleX components composed through the five closed primitives. |
 
-The constrained page does not fork product behavior. It reuses the StyleX
+The StyleX renderer does not fork product behavior. It reuses the StyleX
 board model, messages, reducers, commands, subscriptions, preset theme, sprite
 definitions, and card specification. Only the composition boundary changes.
 
@@ -509,10 +509,10 @@ becoming an undocumented precedent.
 
 ### Preserve behavior separately from styling
 
-Keeping the same Elm models and reducers for `/create-stylex` and
-`/create-constrained` made the experiment trustworthy. Differences could be
-attributed to composition and styling rather than to a second implementation
-of the application behavior.
+Keeping the same Elm models and reducers in the `/create` StyleX renderer made
+the experiment trustworthy. Differences could be attributed to composition
+and styling rather than to a second implementation of the application
+behavior.
 
 ### Visual parity and authoring safety are separate goals
 
