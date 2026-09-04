@@ -34,6 +34,7 @@ import { popoverStyleXPreview } from '@/docs/components/pages/popover/stylex';
 import { hoverCardStyleXPreview } from '@/docs/components/pages/hover-card/stylex';
 import { tooltipStyleXPreview } from '@/docs/components/pages/tooltip/stylex';
 import { dropdownMenuStyleXPreview } from '@/docs/components/pages/dropdown-menu/stylex';
+import { contextMenuStyleXPreview } from '@/docs/components/pages/context-menu/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -70,3 +71,4 @@ installStyleXExamplePreviewProvider('popover', popoverStyleXPreview);
 installStyleXExamplePreviewProvider('hover-card', hoverCardStyleXPreview);
 installStyleXExamplePreviewProvider('tooltip', tooltipStyleXPreview);
 installStyleXExamplePreviewProvider('dropdown-menu', dropdownMenuStyleXPreview);
+installStyleXExamplePreviewProvider('context-menu', contextMenuStyleXPreview);

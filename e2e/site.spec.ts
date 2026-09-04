@@ -1261,6 +1261,11 @@ test("context menu anchors at the secondary-click target and skips disabled item
 }) => {
   await page.setViewportSize({ width: 360, height: 720 });
   await page.goto("/docs/components/context-menu");
+  await page.getByRole("button", { name: "StyleX" }).click();
+  await expect(page.locator("#browser-actions")).toBeVisible();
+  await expect(page.locator("#disabled-action")).toBeVisible();
+  await expect(page.locator("#keyboard-activation")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
   const example = page.locator("#browser-actions");
   const target = example.getByRole("button", { name: "Right click here" });
   await target.click({ button: "right", position: { x: 10, y: 20 } });
@@ -1274,6 +1279,7 @@ test("context menu anchors at the secondary-click target and skips disabled item
   await expect(example.locator("code")).toContainText(
     "ContextMenu.create<Action>()",
   );
+  await expect(example.locator("code")).toContainText("@/stylex/context-menu");
   await page.keyboard.press("Escape");
   await expect(menu).toBeHidden();
   await target.click({ button: "right", position: { x: 270, y: 120 } });
