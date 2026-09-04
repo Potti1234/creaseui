@@ -1860,6 +1860,16 @@ for (const route of ["sonner", "toast"] as const) {
     await statuses.first().hover();
     await page.mouse.move(0, 0);
     await expect(statuses).toHaveCount(0, { timeout: 1500 });
+    if (route === "sonner") {
+      await page.getByRole("button", { name: "StyleX", exact: true }).click();
+      for (const id of ["timed-notification", "sticky-error", "async-save-migration", "imperative-api-migration"]) {
+        await expect(page.locator(`#${id}`)).toBeVisible();
+      }
+      await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+      await expect(example.locator("code")).toContainText("@/stylex/sonner");
+      await example.getByRole("button", { name: "Show sonner" }).click();
+      await expect(viewport.getByRole("alert")).toContainText("Could not save changes");
+    }
   });
 }
 

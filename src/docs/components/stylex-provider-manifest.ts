@@ -62,6 +62,7 @@ import { fieldStyleXPreview } from '@/docs/components/pages/field/stylex';
 import { formStyleXPreview } from '@/docs/components/pages/form/stylex';
 import { inputGroupStyleXPreview } from '@/docs/components/pages/input-group/stylex';
 import { sidebarStyleXPreview } from '@/docs/components/pages/sidebar/stylex';
+import { sonnerStyleXPreview } from '@/docs/components/pages/sonner/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -126,3 +127,4 @@ installStyleXExamplePreviewProvider('field', fieldStyleXPreview);
 installStyleXExamplePreviewProvider('form', formStyleXPreview);
 installStyleXExamplePreviewProvider('input-group', inputGroupStyleXPreview);
 installStyleXExamplePreviewProvider('sidebar', sidebarStyleXPreview);
+installStyleXExamplePreviewProvider('sonner', sonnerStyleXPreview);

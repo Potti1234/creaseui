@@ -5,7 +5,7 @@ import type { PageDefinition } from '@/docs/components/page-definition';
 import type { ComponentKind } from '@/docs/components/page-definition';
 import type * as Sonner from '@/ui/sonner';
 
-type NotificationConfig = Readonly<{
+export type NotificationConfig = Readonly<{
   slug: 'sonner' | 'toast';
   title: 'Sonner' | 'Toast';
   namespace: 'Sonner' | 'Toast';
@@ -13,7 +13,7 @@ type NotificationConfig = Readonly<{
   kind: ComponentKind;
 }>;
 
-const application = (config: NotificationConfig, example: string, variant: Sonner.Variant, sticky: boolean): string => {
+const application = (config: NotificationConfig, example: string, variant: Sonner.Variant, sticky: boolean, renderer: 'tailwind' | 'stylex'): string => {
   const factory = variant.toLowerCase();
   return foldkitApplication({
     title: `${config.title} — ${example}`,
@@ -22,8 +22,8 @@ import { Command, Runtime, Subscription } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { m } from 'foldkit/message'
 
-import * as Button from '@/ui/button'
-import * as ${config.namespace} from '@/ui/${config.slug}'`,
+import * as Button from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/button'
+import * as ${config.namespace} from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/${config.slug}'`,
     model: `export const Model = S.Struct({ notifications: ${config.namespace}.Model, maybeLastDismissedTitle: S.Option(S.String) })
 export type Model = typeof Model.Type`,
     messages: `export const ClickedShow = m('ClickedShow${config.title}${example.replaceAll(/[^a-zA-Z0-9]/g, '')}')
@@ -68,7 +68,7 @@ export const update = (model: Model, message: Message): readonly [Model, Readonl
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${config.title} — ${example}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([], [
     Button.button({ onClick: ClickedShow(), children: ['Show ${config.title.toLowerCase()}'] }, h),
     ${config.namespace}.${config.slug}({
       model: model.notifications,
@@ -79,6 +79,11 @@ export const update = (model: Model, message: Message): readonly [Model, Readonl
 })`,
   });
 };
+
+export const notificationExamples = (config: NotificationConfig, renderer: 'tailwind' | 'stylex') => [
+  { title: 'Timed notification', description: 'Showing a non-sticky entry returns a delay Command that is mapped through the parent Message.', code: application(config, 'Timed notification', 'Success', false, renderer) },
+  { title: 'Sticky error', description: 'A sticky error remains until its action or dismiss control emits a typed parent-handled fact.', code: application(config, 'Sticky error', 'Error', true, renderer) },
+] as const;
 
 export const notificationDefinition = (config: NotificationConfig): PageDefinition => ({
   kind: config.kind, description: config.description,
@@ -97,8 +102,5 @@ ${config.namespace}.${config.slug}({
   styling: 'The fixed viewport stacks keyed notifications. Prefer brief titles, useful descriptions, and one clear action; sticky notifications require an obvious dismissal route.',
   accessibility: 'The viewport is a named polite live region. Error entries use alert while other variants use status. Actions and dismiss controls are real, labeled buttons.',
   keyboard: [['Tab', 'Moves to an action or dismiss button in a visible notification.'], ['Enter / Space', 'Runs the focused action or dismisses the entry.']],
-  examples: [
-    { title: 'Timed notification', description: 'Showing a non-sticky entry returns a delay Command that is mapped through the parent Message.',  code: application(config, 'Timed notification', 'Success', false) },
-    { title: 'Sticky error', description: 'A sticky error remains until its action or dismiss control emits a typed parent-handled fact.',  code: application(config, 'Sticky error', 'Error', true) },
-  ],
+  examples: notificationExamples(config, 'tailwind'),
 });
