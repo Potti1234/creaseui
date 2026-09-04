@@ -1179,6 +1179,13 @@ test("combobox filters items and persists its typed selection output", async ({
 
 test("command search commits a typed parent action", async ({ page }) => {
   await page.goto("/docs/components/command");
+  await page.getByRole("button", { name: "StyleX" }).click();
+  await expect(page.locator("#application-commands")).toBeVisible();
+  await expect(page.locator("#grouped-commands")).toBeVisible();
+  await expect(page.locator("#no-results")).toBeVisible();
+  await expect(page.locator("#remote-loading")).toBeVisible();
+  await expect(page.locator("#large-result-policy")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
   const example = page.locator("#application-commands");
   const input = example.getByRole("combobox", { name: "Application commands" });
   await input.fill("sett");
@@ -1191,6 +1198,7 @@ test("command search commits a typed parent action", async ({ page }) => {
   await expect(example.locator("code")).toContainText(
     "ApplicationCommand.update",
   );
+  await expect(example.locator("code")).toContainText("@/stylex/command");
 
   await expect(page.locator("#no-results").getByRole("status")).toHaveText(
     "No matching application commands.",
