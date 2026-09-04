@@ -1138,6 +1138,12 @@ test("combobox filters items and persists its typed selection output", async ({
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/docs/components/combobox");
+  await page.getByRole("button", { name: "StyleX" }).click();
+  await expect(page.locator("#framework-search")).toBeVisible();
+  await expect(page.locator("#grouped-frameworks")).toBeVisible();
+  await expect(page.locator("#no-results")).toBeVisible();
+  await expect(page.locator("#read-only-rtl")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
   const example = page.locator("#framework-search");
   const input = example.getByRole("combobox", { name: "Framework" });
   await input.fill("sve");
@@ -1154,6 +1160,7 @@ test("combobox filters items and persists its typed selection output", async ({
     "svelte",
   );
   await expect(example.locator("code")).toContainText("maybeSelection");
+  await expect(example.locator("code")).toContainText("@/stylex/combobox");
 
   const emptyExample = page.locator("#no-results");
   await expect(emptyExample.getByRole("status")).toHaveText(/No frameworks/u);
