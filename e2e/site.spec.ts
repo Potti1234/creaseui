@@ -2292,6 +2292,11 @@ test("controlled helper pages own and update compact local preview state", async
   const url = page.locator("#url-prefix").getByRole("textbox");
   await url.fill("crease.dev");
   await expect(url).toHaveValue("crease.dev");
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(url).toHaveValue("crease.dev");
+  await expect(page.locator("#url-prefix code")).toContainText("@/stylex/input-group");
+  await expect(page.locator("#trailing-unit")).toContainText("kg");
 
   await page.goto("/docs/components/input-otp");
   const code = page

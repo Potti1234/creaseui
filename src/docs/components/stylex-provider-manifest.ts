@@ -60,6 +60,7 @@ import { datePickerStyleXPreview } from '@/docs/components/pages/date-picker/sty
 import { directionStyleXPreview } from '@/docs/components/pages/direction/stylex';
 import { fieldStyleXPreview } from '@/docs/components/pages/field/stylex';
 import { formStyleXPreview } from '@/docs/components/pages/form/stylex';
+import { inputGroupStyleXPreview } from '@/docs/components/pages/input-group/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -122,3 +123,4 @@ installStyleXExamplePreviewProvider('date-picker', datePickerStyleXPreview);
 installStyleXExamplePreviewProvider('direction', directionStyleXPreview);
 installStyleXExamplePreviewProvider('field', fieldStyleXPreview);
 installStyleXExamplePreviewProvider('form', formStyleXPreview);
+installStyleXExamplePreviewProvider('input-group', inputGroupStyleXPreview);
