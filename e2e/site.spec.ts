@@ -1054,6 +1054,12 @@ test("tooltip opens from keyboard focus and dismisses without moving focus", asy
 test("select persists a typed OutMessage selection", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/docs/components/select");
+  await page.getByRole("button", { name: "StyleX" }).click();
+  await expect(page.locator("#typed-selection")).toBeVisible();
+  await expect(page.locator("#grouped-fruit")).toBeVisible();
+  await expect(page.locator("#disabled-option")).toBeVisible();
+  await expect(page.locator("#read-only-rtl")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
   const example = page.locator("#typed-selection");
   const trigger = example.getByRole("button", { name: "Fruit" });
   const controls = await trigger.getAttribute("aria-controls");
@@ -1073,6 +1079,7 @@ test("select persists a typed OutMessage selection", async ({ page }) => {
   await expect(example.locator("code")).toContainText(
     "selection._tag === 'Selected'",
   );
+  await expect(example.locator("code")).toContainText("@/stylex/select");
 
   const disabledExample = page.locator("#disabled-option");
   const disabledTrigger = disabledExample.getByRole("button", { name: "Fruit" });

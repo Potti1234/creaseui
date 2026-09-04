@@ -37,6 +37,7 @@ import { dropdownMenuStyleXPreview } from '@/docs/components/pages/dropdown-menu
 import { contextMenuStyleXPreview } from '@/docs/components/pages/context-menu/stylex';
 import { menubarStyleXPreview } from '@/docs/components/pages/menubar/stylex';
 import { navigationMenuStyleXPreview } from '@/docs/components/pages/navigation-menu/stylex';
+import { selectStyleXPreview } from '@/docs/components/pages/select/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -76,3 +77,4 @@ installStyleXExamplePreviewProvider('dropdown-menu', dropdownMenuStyleXPreview);
 installStyleXExamplePreviewProvider('context-menu', contextMenuStyleXPreview);
 installStyleXExamplePreviewProvider('menubar', menubarStyleXPreview);
 installStyleXExamplePreviewProvider('navigation-menu', navigationMenuStyleXPreview);
+installStyleXExamplePreviewProvider('select', selectStyleXPreview);
