@@ -2338,6 +2338,11 @@ test("empty variants preserve heading structure, action order, and responsive co
 
 test("message exposes live author metadata and parent-owned keyboard actions", async ({ page }) => {
   await page.goto("/docs/components/message");
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(page.locator("#incoming")).toBeVisible();
+  await expect(page.locator("#outgoing")).toBeVisible();
+  await expect(page.locator("#live-recovery")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
   await expect(page.locator("#incoming").locator('[data-slot="message-author"]')).toHaveText("Ada");
   await expect(page.locator("#outgoing").locator('[data-slot="message-metadata"]')).toHaveText("Delivered");
 
@@ -2350,6 +2355,7 @@ test("message exposes live author metadata and parent-owned keyboard actions", a
   await expect(action).toBeFocused();
   const row = recovery.locator('[data-slot="message"]');
   expect(await row.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+  await expect(page.locator("#incoming code")).toContainText("@/stylex/message");
 });
 
 test("table preserves native captions, scoped headers, overflow, and empty rows", async ({ page }) => {
