@@ -509,6 +509,12 @@ test("authored tabs keep child instances and selected values independent", async
   page,
 }) => {
   await page.goto("/docs/components/tabs");
+  await page.getByRole("button", { name: "StyleX" }).click();
+  await expect(page.locator("#settings")).toBeVisible();
+  await expect(page.locator("#line-variant")).toBeVisible();
+  await expect(page.locator("#manual-with-disabled-tab")).toBeVisible();
+  await expect(page.locator("#rtl-route-value")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
 
   const settings = page.locator("#settings");
   const line = page.locator("#line-variant");
@@ -555,6 +561,7 @@ test("authored tabs keep child instances and selected values independent", async
     "aria-selected",
     "true",
   );
+  await expect(settings.locator("code")).toContainText("@/stylex/tabs");
 });
 
 test("authored slider delegates keyboard changes and stores its output value", async ({

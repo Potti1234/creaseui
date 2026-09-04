@@ -50,6 +50,7 @@ import { messageScrollerStyleXPreview } from '@/docs/components/pages/message-sc
 import { paginationStyleXPreview } from '@/docs/components/pages/pagination/stylex';
 import { scrollAreaStyleXPreview } from '@/docs/components/pages/scroll-area/stylex';
 import { resizableStyleXPreview } from '@/docs/components/pages/resizable/stylex';
+import { tabsStyleXPreview } from '@/docs/components/pages/tabs/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -102,3 +103,4 @@ installStyleXExamplePreviewProvider('message-scroller', messageScrollerStyleXPre
 installStyleXExamplePreviewProvider('pagination', paginationStyleXPreview);
 installStyleXExamplePreviewProvider('scroll-area', scrollAreaStyleXPreview);
 installStyleXExamplePreviewProvider('resizable', resizableStyleXPreview);
+installStyleXExamplePreviewProvider('tabs', tabsStyleXPreview);
