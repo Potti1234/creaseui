@@ -1904,7 +1904,13 @@ test("chart documents pure Foldkit SVG recipes with complete source", async ({
 
 test("presentational helpers preserve native semantics and controlled OTP state", async ({ page }) => {
   await page.goto("/docs/components/card");
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(page.locator("#article")).toBeVisible();
+  await expect(page.locator("#with-footer")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
   await expect(page.locator("#article").getByRole("article").getByRole("heading", { level: 2, name: "Release notes" })).toBeVisible();
+  await expect(page.locator("#with-footer [data-slot=card-footer]")).toContainText("Ready to deploy");
+  await expect(page.locator("#article code")).toContainText("@/stylex/card");
 
   await page.goto("/docs/components/separator");
   await expect(page.locator("#horizontal").getByRole("separator")).toHaveCount(0);
