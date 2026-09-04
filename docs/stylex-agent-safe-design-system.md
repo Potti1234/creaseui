@@ -26,9 +26,9 @@ system around it:
    through explicit messages and `update` branches.
 
 The implementation now contains StyleX counterparts for all 65 Crease UI
-component modules, 33 StyleX card demonstrations on the Create board, a full
-StyleX catalog, and a constrained Create page whose initial geometry matches
-the StyleX reference page.
+component modules, authored StyleX examples throughout the component docs, 33
+StyleX card demonstrations on the Create board, and a constrained Create page
+whose initial geometry matches the StyleX reference page.
 
 The constrained page also includes a primitive inspector. Its controls modify
 the real board rather than a synthetic preview, so the effect of a design-system
@@ -683,4 +683,3 @@ is:
 This does not eliminate visual review. It changes visual review from policing
 an unbounded collection of CSS choices to evaluating a much smaller set of
 explicit design decisions.
-

@@ -16,7 +16,6 @@ import * as Board from "@/demo/board";
 import * as BoardStyleX from "@/demo/board-stylex";
 import * as BoardConstrained from "@/demo/board-constrained";
 import * as Landing from "@/demo/landing";
-import * as StyleXComparison from "@/demo/stylex-comparison";
 import * as ChartsArea from "@/demo/charts/area";
 import * as ChartsBar from "@/demo/charts/bar";
 import * as ChartsLine from "@/demo/charts/line";
@@ -42,7 +41,6 @@ import {
   createStyleXPath,
   homePath,
   isChartSection,
-  stylexPath,
   urlToAppRoute,
 } from "@/route";
 import { cn } from "@/lib/utils";
@@ -82,9 +80,6 @@ export const GotBoardStyleXMessage = m("GotBoardStyleXMessage", {
 });
 export const GotLandingMessage = m("GotLandingMessage", {
   message: Landing.Message,
-});
-export const GotStyleXMessage = m("GotStyleXMessage", {
-  message: StyleXComparison.Message,
 });
 export const GotBlocksMessage = m("GotBlocksMessage", {
   message: Blocks.Message,
@@ -137,7 +132,6 @@ export const Message = S.Union([
   GotBlocksStyleXMessage,
   GotTanStackTableMessage,
   GotLandingMessage,
-  GotStyleXMessage,
   GotChartsAreaMessage,
   GotChartsBarMessage,
   GotChartsLineMessage,
@@ -319,21 +313,6 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           Command.mapMessages(commands, (next) =>
             GotBoardStyleXMessage({ message: next }),
           ),
-        ];
-      },
-
-      GotStyleXMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== "StyleXPage") return [model, []];
-        const currentPage = model.page;
-        const [comparison] = StyleXComparison.update(
-          currentPage.comparison,
-          childMessage,
-        );
-        return [
-          evo(model, {
-            page: () => evo(currentPage, { comparison: () => comparison }),
-          }),
-          [],
         ];
       },
 
@@ -615,13 +594,6 @@ const header = (model: Model, h: HtmlBuilder<Message>): Html => {
             h,
           ),
           headerLink(
-            stylexPath(),
-            "StyleX",
-            model.route._tag === "StyleX",
-            "hidden sm:inline-flex",
-            h,
-          ),
-          headerLink(
             chartsPath("area"),
             "Charts",
             isCharts,
@@ -694,13 +666,6 @@ const header = (model: Model, h: HtmlBuilder<Message>): Html => {
                     createConstrainedPath(),
                     "Create Constrained",
                     model.route._tag === "CreateConstrained",
-                    "rounded-md px-3 py-2 hover:bg-accent",
-                    h,
-                  ),
-                  headerLink(
-                    stylexPath(),
-                    "StyleX",
-                    model.route._tag === "StyleX",
                     "rounded-md px-3 py-2 hover:bg-accent",
                     h,
                   ),
@@ -791,10 +756,6 @@ const boardConstrainedView = defineView<
   BoardConstrained.Message
 >(BoardConstrained.view);
 const landingView = defineView<Landing.Model, Landing.Message>(Landing.view);
-const stylexComparisonView = defineView<
-  StyleXComparison.Model,
-  StyleXComparison.Message
->(StyleXComparison.view);
 const catalogDocsView = defineView<
   ComponentCatalog.Model,
   ComponentCatalog.Message,
@@ -1043,19 +1004,6 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
               "page-not-found",
               notFoundView(createConstrainedPath(), h),
             ),
-      StyleX: () =>
-        model.page._tag === "StyleXPage"
-          ? keyed(
-              "page-stylex",
-              h.submodel({
-                slotId: "stylex-comparison",
-                model: model.page.comparison,
-                view: stylexComparisonView,
-                toParentMessage: (message: StyleXComparison.Message): Message =>
-                  GotStyleXMessage({ message }),
-              }),
-            )
-          : keyed("page-not-found", notFoundView(stylexPath(), h)),
       Charts: ({ section }) =>
         isChartSection(section)
           ? keyed(
@@ -1144,4 +1092,3 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
       : h.div([], [header(model, h), pageView(model, h)]),
   };
 };
-

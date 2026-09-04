@@ -48,7 +48,6 @@ export const HomeRoute = r("Home");
 export const CreateRoute = r("Create");
 export const CreateStyleXRoute = r("CreateStyleX");
 export const CreateConstrainedRoute = r("CreateConstrained");
-export const StyleXRoute = r("StyleX");
 export const ChartsRoute = r("Charts", { section: S.String });
 export const ChartsStyleXRoute = r("ChartsStyleX");
 export const BlocksIndexRoute = r("BlocksIndex");
@@ -63,7 +62,6 @@ export const AppRoute = S.Union([
   CreateRoute,
   CreateStyleXRoute,
   CreateConstrainedRoute,
-  StyleXRoute,
   ChartsRoute,
   ChartsStyleXRoute,
   BlocksIndexRoute,
@@ -101,8 +99,6 @@ const createConstrainedRouter = pipe(
   literal("create-constrained"),
   Route.mapTo(CreateConstrainedRoute),
 );
-
-const stylexRouter = pipe(literal("stylex"), Route.mapTo(StyleXRoute));
 
 const chartsRouter = pipe(
   literal("charts"),
@@ -150,7 +146,6 @@ const routeParser = Route.oneOf(
   createRouter,
   createStyleXRouter,
   createConstrainedRouter,
-  stylexRouter,
   chartsRouter,
   chartsStyleXRouter,
   blockRouter,
@@ -173,8 +168,6 @@ export const createPath = (): string => createRouter();
 export const createStyleXPath = (): string => createStyleXRouter();
 
 export const createConstrainedPath = (): string => createConstrainedRouter();
-
-export const stylexPath = (): string => stylexRouter();
 
 export const chartsPath = (section: ChartSection): string =>
   chartsRouter({ section });

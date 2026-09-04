@@ -8,7 +8,6 @@ import * as BoardFeature from "@/demo/board";
 import * as BoardStyleX from "@/demo/board-stylex";
 import * as BoardConstrained from "@/demo/board-constrained";
 import * as LandingFeature from "@/demo/landing";
-import * as StyleXComparison from "@/demo/stylex-comparison";
 import * as ChartsArea from "@/demo/charts/area";
 import * as ChartsBar from "@/demo/charts/bar";
 import * as ChartsLine from "@/demo/charts/line";
@@ -28,7 +27,6 @@ export const CreateStyleX = ts("CreateStyleXPage", {
 export const CreateConstrained = ts("CreateConstrainedPage", {
   board: BoardConstrained.Model,
 });
-export const StyleX = ts("StyleXPage", { comparison: StyleXComparison.Model });
 export const BlocksIndex = ts("BlocksIndexPage");
 export const BlocksStyleX = ts("BlocksStyleXPage", {
   table: BlocksStyleXFeature.Model,
@@ -59,7 +57,6 @@ export const Page = S.Union([
   Create,
   CreateStyleX,
   CreateConstrained,
-  StyleX,
   BlocksIndex,
   BlocksStyleX,
   BlocksStyleXTable,
@@ -80,7 +77,6 @@ export const init = (route: AppRoute): Page =>
       CreateStyleX: () => CreateStyleX({ board: BoardStyleX.init() }),
       CreateConstrained: () =>
         CreateConstrained({ board: BoardConstrained.init() }),
-      StyleX: () => StyleX({ comparison: StyleXComparison.init() }),
       Charts: () =>
         Charts({
           area: ChartsArea.init(),

@@ -90,52 +90,14 @@ test("landing remains contained and navigable on mobile", async ({
   await attachPage(page, testInfo, "landing-light-mobile");
 });
 
-test("StyleX full catalog preserves Foldkit state, coverage, theme parity, and accessibility", async ({
-  page,
-}, testInfo) => {
-  await page.goto("/stylex");
-
+test("standalone StyleX page is no longer routed or linked", async ({ page }) => {
+  await page.goto("/");
   await expect(
-    page.getByRole("heading", {
-      level: 1,
-      name: "Same Foldkit architecture. Tighter styling grammar.",
-    }),
-  ).toBeVisible();
+    page.getByRole("link", { name: "StyleX", exact: true }),
+  ).toHaveCount(0);
 
-  const tailwindInput = page.locator("#tailwind-email");
-  const stylexInput = page.locator("#stylex-email");
-  await tailwindInput.fill("foldkit@crease.dev");
-  await expect(stylexInput).toHaveValue("foldkit@crease.dev");
-
-  const catalogEntries = page.locator("[data-stylex-component]");
-  await expect(catalogEntries).toHaveCount(65);
-  await expect(page.getByText("Showing 65 of 65 components")).toBeVisible();
-  const catalogFilter = page.getByRole("searchbox", {
-    name: "Filter StyleX components",
-  });
-  await catalogFilter.fill("tooltip");
-  await expect(catalogEntries).toHaveCount(1);
-  await expect(catalogEntries).toHaveAttribute(
-    "data-stylex-component",
-    "tooltip",
-  );
-  await catalogFilter.fill("");
-  await expect(catalogEntries).toHaveCount(65);
-
-  await assertAccessible(page);
-  await attachPage(page, testInfo, "stylex-comparison-light");
-
-  await page.getByRole("button", { name: "Switch to dark mode" }).click();
-  await expect(page.locator("html")).toHaveClass(/dark/u);
-  await attachPage(page, testInfo, "stylex-comparison-dark");
-
-  await page.setViewportSize({ width: 390, height: 844 });
-  const overflow = await page.evaluate(
-    () =>
-      document.documentElement.scrollWidth -
-      document.documentElement.clientWidth,
-  );
-  expect(overflow).toBeLessThanOrEqual(1);
+  await page.goto("/stylex");
+  await expect(page.getByText("No page at /stylex.")).toBeVisible();
 });
 
 test("production component examples keep readable source and valid Unicode", async ({

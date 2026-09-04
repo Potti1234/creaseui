@@ -8,8 +8,8 @@ state, behavior, and accessibility semantics must match. Only renderer-specific
 component imports, view inputs, and layout-style adapters may differ.
 
 Accordion is the reference implementation. Do not move component documentation
-previews back into `src/docs/components/stylex-specimens.ts`; that module is only
-for the full StyleX catalog showcase.
+previews back into a shared catalog showcase; each component page owns its
+renderer-specific examples.
 
 ## Reference architecture
 
@@ -151,8 +151,8 @@ The migration is complete only when:
 
 - Every authored component page declares renderer-parity examples.
 - No component docs example implementation lives in `stylex-specimens.ts`.
-- The generic StyleX specimen fallback is unused by component pages and can be
-  removed from the component-page renderer without affecting the full catalog.
+- The generic StyleX specimen fallback is unused and can be removed from the
+  component-page renderer.
 - A parity test covers every component slug.
 - Node tests do not execute uncompiled StyleX token setup.
 - Typecheck, lint, unit tests, production build, and the full relevant

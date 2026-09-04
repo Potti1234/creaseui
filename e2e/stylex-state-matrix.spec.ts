@@ -28,13 +28,14 @@ const visualState = async (
 test('StyleX interaction and theme state matrix', async ({ page }, testInfo) => {
   test.slow()
   await page.emulateMedia({ reducedMotion: 'no-preference' })
-  await page.goto('/stylex')
+  await page.goto('/docs/components/button')
+  await page
+    .getByRole('group', { name: 'Preview styling engine' })
+    .getByRole('button', { name: 'StyleX' })
+    .click()
 
-  const stylexPanel = page
-    .getByRole('heading', { name: 'StyleX', exact: true })
-    .locator('xpath=ancestor::section[1]')
-  const button = stylexPanel.getByRole('button', { name: 'Save changes' })
-  const disabled = stylexPanel.getByRole('button', { name: 'Disabled' })
+  const button = page.locator('#variants').getByRole('button', { name: 'Primary' })
+  const disabled = page.locator('#loading').getByRole('button', { name: 'Save changes' })
 
   const matrix: Record<string, VisualState | Record<string, string>> = {}
   matrix.rest = await visualState(button)
@@ -52,8 +53,10 @@ test('StyleX interaction and theme state matrix', async ({ page }, testInfo) => 
   if (bounds !== null) {
     await page.mouse.move(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2)
     await page.mouse.down()
+    await expect
+      .poll(() => visualState(button).then(state => state.transform))
+      .not.toBe('none')
     matrix.active = await visualState(button)
-    expect(matrix.active.transform).not.toBe('none')
     await page.mouse.up()
   }
 
