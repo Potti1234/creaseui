@@ -165,6 +165,7 @@ export type DropdownMenuProps<Item extends string, Msg> = Readonly<{
   trigger: Html | string;
   triggerLayoutStyle?: ComponentLayoutStyle;
   triggerTabindex?: number;
+  triggerRole?: string;
   items: ReadonlyArray<Item>;
   itemToConfig: (item: Item) => DropdownMenuItemConfig<Item>;
   align?: DropdownMenuAlign;
@@ -387,6 +388,7 @@ export const dropdownMenu = <Item extends string, Msg>(
       h.button(
         [
           h.Type('button'),
+          ...(props.triggerRole === undefined ? [] : [h.Role(props.triggerRole)]),
           h.AriaHasPopup('menu'),
           h.Id(`${props.model.id}-trigger`),
           h.AriaExpanded(props.model.isOpen),

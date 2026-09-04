@@ -62,6 +62,7 @@ const menuView = <Item extends string, Msg>(
       toParentMessage: menu.toParentMessage,
       trigger: menu.label,
       triggerTabindex: activeIndex === index ? 0 : -1,
+      triggerRole: 'menuitem',
       triggerClass: cn(TRIGGER_CLASS, activeIndex === index ? 'bg-accent' : undefined),
       items: menu.items,
       itemToConfig: menu.itemToConfig,

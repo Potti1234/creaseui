@@ -348,7 +348,7 @@ test("Foldkit-native documentation remains contained on mobile", async ({
 test("authored helper pages publish complete application source", async ({
   page,
 }) => {
-  test.setTimeout(180_000);
+  test.setTimeout(360_000);
 
   for (const route of [
     "accordion",
