@@ -53,6 +53,7 @@ import { resizableStyleXPreview } from '@/docs/components/pages/resizable/stylex
 import { tabsStyleXPreview } from '@/docs/components/pages/tabs/stylex';
 import { tableStyleXPreview } from '@/docs/components/pages/table/stylex';
 import { calendarStyleXPreview } from '@/docs/components/pages/calendar/stylex';
+import { carouselStyleXPreview } from '@/docs/components/pages/carousel/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -108,3 +109,4 @@ installStyleXExamplePreviewProvider('resizable', resizableStyleXPreview);
 installStyleXExamplePreviewProvider('tabs', tabsStyleXPreview);
 installStyleXExamplePreviewProvider('table', tableStyleXPreview);
 installStyleXExamplePreviewProvider('calendar', calendarStyleXPreview);
+installStyleXExamplePreviewProvider('carousel', carouselStyleXPreview);

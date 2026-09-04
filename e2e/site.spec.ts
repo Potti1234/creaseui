@@ -675,6 +675,10 @@ test("authored carousels synchronize Embla selections without sharing state", as
   page,
 }) => {
   await page.goto("/docs/components/carousel");
+  await page.getByRole("button", { name: "StyleX" }).click();
+  await expect(page.locator("#single-slide")).toBeVisible();
+  await expect(page.locator("#two-at-a-time")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
 
   const single = page.locator("#single-slide");
   const compact = page.locator("#two-at-a-time");
@@ -685,6 +689,7 @@ test("authored carousels synchronize Embla selections without sharing state", as
   await compact.getByRole("button", { name: "Next slide" }).click();
   await expect(compact).toContainText("Snap 2");
   await expect(single).toContainText("Slide 2 of 3");
+  await expect(single.locator("code")).toContainText("@/stylex/carousel");
 });
 
 test("create icon selection changes the live preview shapes", async ({
