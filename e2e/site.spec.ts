@@ -2696,12 +2696,15 @@ test("field guarantees linked parts and documents stale async validation", async
     .getByRole("group", { name: "Preview styling engine" })
     .getByRole("button", { name: "StyleX" })
     .click();
-  const stylexField = page.getByRole("textbox", { name: "Repository" });
-  await expect(stylexField).toHaveValue("creaseui");
-  await expect(stylexField).toHaveAttribute(
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(anatomy).toHaveValue("Ada Lovelace");
+  await expect(anatomy).toHaveAttribute(
     "aria-describedby",
-    "stylex-field-description",
+    "docs-field-name-description",
   );
+  await expect(page.locator("#anatomy code")).toContainText("@/stylex/field");
+  await expect(invalid).toHaveAttribute("aria-invalid", "true");
+  await expect(username).toHaveValue("ada");
   await assertAccessible(page);
 });
 

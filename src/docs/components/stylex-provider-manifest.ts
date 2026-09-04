@@ -58,6 +58,7 @@ import { chartStyleXPreview } from '@/docs/components/pages/chart/stylex';
 import { dataTableStyleXPreview } from '@/docs/components/pages/data-table/stylex';
 import { datePickerStyleXPreview } from '@/docs/components/pages/date-picker/stylex';
 import { directionStyleXPreview } from '@/docs/components/pages/direction/stylex';
+import { fieldStyleXPreview } from '@/docs/components/pages/field/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -118,3 +119,4 @@ installStyleXExamplePreviewProvider('chart', chartStyleXPreview);
 installStyleXExamplePreviewProvider('data-table', dataTableStyleXPreview);
 installStyleXExamplePreviewProvider('date-picker', datePickerStyleXPreview);
 installStyleXExamplePreviewProvider('direction', directionStyleXPreview);
+installStyleXExamplePreviewProvider('field', fieldStyleXPreview);
