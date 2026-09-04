@@ -1724,6 +1724,20 @@ test("bubble preserves conversational alignment, tone, and reactions", async ({ 
   await expect(page.locator("#conversation code")).toContainText("@/stylex/bubble");
 });
 
+test("item preserves semantic collections and structured metadata", async ({ page }) => {
+  await page.goto("/docs/components/item");
+  await page.getByRole("button", { name: "StyleX" }).click();
+  await expect(page.locator("#collection")).toBeVisible();
+  await expect(page.locator("#outlined")).toBeVisible();
+  await expect(page.locator("#header-and-footer")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#collection [role=list]")).toHaveCount(1);
+  await expect(page.locator("#collection [role=listitem]")).toHaveCount(2);
+  await expect(page.locator("#header-and-footer [data-slot=item-header]")).toContainText("Build #418");
+  await expect(page.locator("#header-and-footer [data-slot=item-footer]")).toContainText("2 minutes ago");
+  await expect(page.locator("#collection code")).toContainText("@/stylex/item");
+});
+
 test("message scroller measures overflow and maps its scroll command", async ({
   page,
 }) => {
