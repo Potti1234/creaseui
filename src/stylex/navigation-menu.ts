@@ -53,7 +53,7 @@ const styles = stylex.create({
  flexShrink: '1',
  justifyContent: 'center',
  position: 'relative',
- zIndex: 10,
+ zIndex: { default: 10, ':has([data-slot="popover-content"])': 50 },
  maxWidth: 'max-content', },
   navBounded: { maxWidth: '100%' },
   navScroll: { overflowX: 'auto' },

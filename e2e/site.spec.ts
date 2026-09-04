@@ -1298,6 +1298,12 @@ test("navigation menu distinguishes semantic links from stateful disclosures", a
   page,
 }) => {
   await page.goto("/docs/components/navigation-menu");
+  await page.getByRole("button", { name: "StyleX" }).click();
+  await expect(page.locator("#semantic-links")).toBeVisible();
+  await expect(page.locator("#popover-disclosure")).toBeVisible();
+  await expect(page.locator("#responsive-fallback")).toBeVisible();
+  await expect(page.locator("#rtl-overflow")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
   const linksExample = page.locator("#semantic-links");
   await expect(
     linksExample.getByRole("navigation", { name: "Primary" }),
@@ -1312,6 +1318,7 @@ test("navigation menu distinguishes semantic links from stateful disclosures", a
   await expect(
     linksExample.getByRole("link", { name: "Home" }),
   ).not.toHaveAttribute("aria-current");
+  await expect(linksExample.locator("code")).toContainText("@/stylex/navigation-menu");
 
   const disclosureExample = page.locator("#popover-disclosure");
   const trigger = disclosureExample.getByRole("button", { name: "Products" });
