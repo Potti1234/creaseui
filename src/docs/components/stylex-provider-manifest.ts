@@ -51,6 +51,7 @@ import { paginationStyleXPreview } from '@/docs/components/pages/pagination/styl
 import { scrollAreaStyleXPreview } from '@/docs/components/pages/scroll-area/stylex';
 import { resizableStyleXPreview } from '@/docs/components/pages/resizable/stylex';
 import { tabsStyleXPreview } from '@/docs/components/pages/tabs/stylex';
+import { tableStyleXPreview } from '@/docs/components/pages/table/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -104,3 +105,4 @@ installStyleXExamplePreviewProvider('pagination', paginationStyleXPreview);
 installStyleXExamplePreviewProvider('scroll-area', scrollAreaStyleXPreview);
 installStyleXExamplePreviewProvider('resizable', resizableStyleXPreview);
 installStyleXExamplePreviewProvider('tabs', tabsStyleXPreview);
+installStyleXExamplePreviewProvider('table', tableStyleXPreview);
