@@ -153,7 +153,8 @@ const heroCollage = (h: HtmlBuilder<Message>): Html => {
                       hostId: HERO_CHART_ID,
                       ariaLabel: 'Revenue trend for the last 6 months',
                       toMessage: toChart,
-                      class: 'h-32 w-full',
+                      class:
+                        'h-32 w-full [&>[data-slot=echart]]:h-full [&>[data-slot=echart]]:aspect-auto',
                     },
                     h,
                   ),

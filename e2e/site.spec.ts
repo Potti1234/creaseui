@@ -46,6 +46,16 @@ test("landing content, theme, accessibility, and desktop visuals", async ({
   await expect(
     page.getByRole("link", { name: /Source revision/u }),
   ).toBeVisible();
+  const heroChartRegion = page.locator(
+    '[data-slot="echart-region"]:has([aria-label="Revenue trend for the last 6 months"])',
+  );
+  const [heroChartRegionBox, heroChartBox] = await Promise.all([
+    heroChartRegion.boundingBox(),
+    heroChartRegion.locator('[data-slot="echart"]').boundingBox(),
+  ]);
+  expect(heroChartRegionBox).not.toBeNull();
+  expect(heroChartBox).not.toBeNull();
+  expect(heroChartBox!.height).toBeLessThanOrEqual(heroChartRegionBox!.height);
   await assertAccessible(page);
   await attachPage(page, testInfo, "landing-light-desktop");
 
