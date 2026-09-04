@@ -40,6 +40,7 @@ import { navigationMenuStyleXPreview } from '@/docs/components/pages/navigation-
 import { selectStyleXPreview } from '@/docs/components/pages/select/stylex';
 import { comboboxStyleXPreview } from '@/docs/components/pages/combobox/stylex';
 import { commandStyleXPreview } from '@/docs/components/pages/command/stylex';
+import { attachmentStyleXPreview } from '@/docs/components/pages/attachment/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -82,3 +83,4 @@ installStyleXExamplePreviewProvider('navigation-menu', navigationMenuStyleXPrevi
 installStyleXExamplePreviewProvider('select', selectStyleXPreview);
 installStyleXExamplePreviewProvider('combobox', comboboxStyleXPreview);
 installStyleXExamplePreviewProvider('command', commandStyleXPreview);
+installStyleXExamplePreviewProvider('attachment', attachmentStyleXPreview);

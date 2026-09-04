@@ -1689,6 +1689,10 @@ test("attachment explains parent-owned lifecycle through rendered states", async
   page,
 }) => {
   await page.goto("/docs/components/attachment");
+  await page.getByRole("button", { name: "StyleX" }).click();
+  await expect(page.locator("#uploaded-file")).toBeVisible();
+  await expect(page.locator("#lifecycle-states")).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
   const example = page.locator("#lifecycle-states");
   await expect(example.locator('[data-slot="attachment"]')).toHaveCount(4);
   await expect(
@@ -1703,6 +1707,7 @@ test("attachment explains parent-owned lifecycle through rendered states", async
   await expect(example.locator("code")).toContainText(
     "Runtime.makeApplication",
   );
+  await expect(example.locator("code")).toContainText("@/stylex/attachment");
 });
 
 test("message scroller measures overflow and maps its scroll command", async ({
