@@ -1947,6 +1947,20 @@ test("date picker composes disclosure and calendar into one child model", async 
   expect(pageErrors).toEqual([]);
 });
 
+test("direction preserves RTL and nested LTR semantics across renderers", async ({ page }) => {
+  await page.goto("/docs/components/direction");
+  const rtl = page.locator("#right-to-left");
+  const mixed = page.locator("#mixed-direction");
+  await expect(rtl.locator('[dir="rtl"]')).toContainText("التالي");
+  await expect(mixed.locator('[dir="rtl"]')).toContainText("الإصدار");
+  await expect(mixed.locator('[dir="ltr"]')).toContainText("v0.148.2");
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(rtl.locator('[dir="rtl"]')).toContainText("التالي");
+  await expect(mixed.locator('[dir="ltr"]')).toContainText("v0.148.2");
+  await expect(rtl.locator("code")).toContainText("@/stylex/direction");
+});
+
 test("chart documents pure Foldkit SVG recipes with complete source", async ({
   page,
 }) => {
