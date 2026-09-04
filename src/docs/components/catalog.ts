@@ -14,22 +14,10 @@ import type {
 import { componentApi } from '@/docs/generated-component-api';
 import { authoredPages } from '@/docs/components/pages';
 import { RoutedDocsPreviewMessage } from '@/docs/components/pages/authored-page';
-type StyleXSpecimen = Readonly<{ name: string; note: string; view: Html }>;
-type StyleXSpecimenProvider = <Msg>(
-  noOpMessage: Msg,
-  h: HtmlBuilder<Msg>,
-) => ReadonlyArray<StyleXSpecimen>;
-let stylexSpecimenProvider: StyleXSpecimenProvider | undefined;
 const stylexExamplePreviewProviders = new Map<
   string,
   StyleXExamplePreviewProvider
 >();
-
-export const installStyleXSpecimenProvider = (
-  provider: StyleXSpecimenProvider,
-): void => {
-  stylexSpecimenProvider = provider;
-};
 
 export const installStyleXExamplePreviewProvider = (
   slug: string,
@@ -64,11 +52,9 @@ export const GotExampleMessage = m('GotCatalogExampleMessage', {
 export const ChangedRenderer = m('ChangedCatalogRenderer', {
   renderer: S.Literals(['tailwind', 'stylex']),
 });
-export const InteractedWithStyleXSpecimen = m('InteractedWithStyleXSpecimen');
 export const Message = S.Union([
   GotExampleMessage,
   ChangedRenderer,
-  InteractedWithStyleXSpecimen,
   CopyFeedback.Message,
 ]);
 export type Message = typeof Message.Type;
@@ -90,7 +76,6 @@ export const update = (model: Model, message: Message): UpdateReturn => {
   if (message._tag === 'ChangedCatalogRenderer') {
     return [{ ...model, renderer: message.renderer }, []];
   }
-  if (message._tag === 'InteractedWithStyleXSpecimen') return [model, []];
   if (message._tag !== 'GotCatalogExampleMessage') {
     const [copiedCode, commands] = CopyFeedback.update(
       model.copiedCode,
@@ -256,47 +241,20 @@ export const view = (
     throw new Error(`Missing dedicated documentation definition for ${slug}`);
   }
   const kind = kindFor(slug, definition);
-  const stylexSpecimen =
-    model.renderer === 'stylex' && stylexSpecimenProvider
-    ? stylexSpecimenProvider(InteractedWithStyleXSpecimen(), h).find(
-        (specimen) => specimen.name === slug,
-      )
-    : undefined;
   const stylexExamples = definition.stylexExamples;
   const stylexExamplePreviewProvider = stylexExamplePreviewProviders.get(slug);
   if (
     model.renderer === 'stylex' &&
-    stylexExamples !== undefined &&
-    stylexExamplePreviewProvider === undefined
+    (stylexExamples === undefined || stylexExamplePreviewProvider === undefined)
   ) {
-    throw new Error(`Missing registered StyleX example preview provider for ${slug}`);
+    throw new Error(`Missing StyleX example parity for ${slug}`);
   }
   const authoredExamples =
     model.renderer === 'stylex' && stylexExamples !== undefined
       ? stylexExamples
       : definition.examples;
   const authoredProgram = authoredPages[slug]?.previewProgram;
-  const renderedExamples =
-    model.renderer === 'stylex' && stylexExamples === undefined && stylexSpecimen !== undefined
-      ? [
-          example<Message>(
-            {
-              title: 'StyleX specimen',
-              description:
-                'The same component family rendered through its statically extracted StyleX counterpart.',
-              preview: stylexSpecimen.view,
-              code: `import * as ${name.replaceAll(' ', '')} from '@/stylex/${slug}'`,
-              onCopy: CopyFeedback.ClickedCopyCode({
-                code: `import * as ${name.replaceAll(' ', '')} from '@/stylex/${slug}'`,
-              }),
-              isCopied:
-                model.copiedCode ===
-                `import * as ${name.replaceAll(' ', '')} from '@/stylex/${slug}'`,
-            },
-            h,
-          ),
-        ]
-      : authoredExamples.map((config, index) => {
+  const renderedExamples = authoredExamples.map((config, index) => {
           const exampleCode = config.code;
           const program = authoredProgram;
           if (program === undefined)
@@ -371,10 +329,7 @@ export const view = (
       ...(definition.keyboard === undefined ? {} : { keyboard: definition.keyboard }),
       copiedCode: model.copiedCode,
       onCopyCode: (code) => CopyFeedback.ClickedCopyCode({ code }),
-      exampleTitles:
-        model.renderer === 'stylex' && stylexExamples === undefined
-          ? ['StyleX specimen']
-          : authoredExamples.map((example) => example.title),
+      exampleTitles: authoredExamples.map((example) => example.title),
       sidebarScrolled: CopyFeedback.ObservedSidebarScroll(),
       renderer: model.renderer,
       onRendererChange: (renderer) => ChangedRenderer({ renderer }),
