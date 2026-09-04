@@ -10,8 +10,10 @@ const styles = stylex.create({
     flexDirection: 'column',
     position: 'fixed',
     transitionDuration: { default: interactionTokens.motionModerate, '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone },
+    transitionProperty: { default: 'transform', '@media (prefers-reduced-motion: reduce)': 'none' },
     zIndex: 50,
   },
+  dragging: { transitionProperty: 'none' },
   handleHorizontal: { height: '0.5rem', marginBlock: '1rem', marginInline: 'auto', width: '6.25rem' },
   handleVertical: { height: '6.25rem', marginBlock: 'auto', width: '0.5rem' },
   left: { borderRightWidth: 1, bottom: 0, left: 0, maxWidth: '24rem', top: 0, transform: { default: 'none', ':is([data-closed])': 'translateX(-100%)' }, width: '75%' },
@@ -181,6 +183,7 @@ export const drawer = <Msg>(
                           className(
                             styles.content,
                             styles[direction],
+                            props.model.dragOffset > 0 ? styles.dragging : undefined,
                             props.layoutStyle,
                           ),
                         ),

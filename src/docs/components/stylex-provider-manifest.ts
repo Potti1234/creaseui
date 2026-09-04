@@ -28,6 +28,7 @@ import { sliderStyleXPreview } from '@/docs/components/pages/slider/stylex';
 import { collapsibleStyleXPreview } from '@/docs/components/pages/collapsible/stylex';
 import { dialogStyleXPreview } from '@/docs/components/pages/dialog/stylex';
 import { alertDialogStyleXPreview } from '@/docs/components/pages/alert-dialog/stylex';
+import { drawerStyleXPreview } from '@/docs/components/pages/drawer/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -58,3 +59,4 @@ installStyleXExamplePreviewProvider('slider', sliderStyleXPreview);
 installStyleXExamplePreviewProvider('collapsible', collapsibleStyleXPreview);
 installStyleXExamplePreviewProvider('dialog', dialogStyleXPreview);
 installStyleXExamplePreviewProvider('alert-dialog', alertDialogStyleXPreview);
+installStyleXExamplePreviewProvider('drawer', drawerStyleXPreview);

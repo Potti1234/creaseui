@@ -862,6 +862,24 @@ test("drawer documents its child model and preserves modal focus behavior", asyn
   await page.keyboard.press("Escape");
   await expect(drawer).toBeHidden();
   await expect(trigger).toBeFocused();
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(page.locator("#activity-goal")).toBeVisible();
+  const sideExample = page.locator("#side-drawer");
+  await expect(sideExample).toBeVisible();
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(example.locator("code")).toContainText("@/stylex/drawer");
+  const sideTrigger = sideExample.getByRole("button", { name: "Open right drawer" });
+  await sideTrigger.click();
+  const sideDrawer = page.locator("#docs-drawer-1");
+  await expect(sideDrawer).toBeVisible();
+  await expect(sideDrawer.locator('[data-slot="drawer-content"]')).toHaveAttribute(
+    "data-vaul-drawer-direction",
+    "right",
+  );
+  await page.keyboard.press("Escape");
+  await expect(sideDrawer).toBeHidden();
+  await expect(sideTrigger).toBeFocused();
 });
 
 test("popover delegates disclosure commands and restores trigger focus", async ({
@@ -905,6 +923,7 @@ test("popover delegates disclosure commands and restores trigger focus", async (
 test("drawer handle supports mouse cancellation and touch threshold dismissal", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/docs/components/drawer");
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
   const example = page.locator("#activity-goal");
   const trigger = example.getByRole("button", { name: "Open bottom drawer" });
   await trigger.click();
