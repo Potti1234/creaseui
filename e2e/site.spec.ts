@@ -72,7 +72,7 @@ test("landing content, theme, accessibility, and desktop visuals", async ({
   await attachPage(page, testInfo, "landing-dark-desktop");
 });
 
-test("landing remains contained and navigable on mobile", async ({
+test("landing remains contained and navigable on mobile", { tag: "@mobile" }, async ({
   page,
 }, testInfo) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -307,7 +307,7 @@ test("component docs explain the Foldkit integration model", async ({
   ).toBeVisible();
 });
 
-test("Foldkit-native documentation remains contained on mobile", async ({
+test("Foldkit-native documentation remains contained on mobile", { tag: "@mobile" }, async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });

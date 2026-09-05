@@ -73,8 +73,7 @@ test.describe('carousel', () => {
     })
   })
 
-  test('moves through a native touch gesture on mobile', async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name !== 'mobile-chromium', 'Touch evidence runs in the mobile project')
+  test('moves through a native touch gesture on mobile', { tag: '@mobile' }, async ({ page }) => {
     await page.goto('/docs/components/carousel')
     const example = page.locator('#single-slide')
     const viewport = example.locator('[data-slot="carousel-content"]')

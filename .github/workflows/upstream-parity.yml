@@ -1,8 +1,8 @@
-name: Upstream parity
+name: Shadcn upstream parity
 
 on:
   schedule:
-    - cron: '23 6 * * 1'
+    - cron: "23 6 * * 1"
   workflow_dispatch:
 
 permissions:
@@ -15,10 +15,10 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
