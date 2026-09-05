@@ -1643,20 +1643,23 @@ test("sidebar documents persistence and toggles derived shell state", async ({
   page,
 }) => {
   await page.goto("/docs/components/sidebar");
-  const example = page.locator("#persistent-shell");
+  const example = page.locator("#application-shell");
   const provider = example.locator('[data-slot="sidebar-wrapper"]');
+  const trigger = example.locator('[data-slot="sidebar-trigger"]:visible');
   await expect(provider).toHaveAttribute("data-state", "expanded");
-  await example.locator('[data-slot="sidebar-trigger"]').click();
+  await expect(trigger).toHaveCount(1);
+  await trigger.click();
   await expect(provider).toHaveAttribute("data-state", "collapsed");
   await expect(example.locator("code")).toContainText("Sidebar.shortcut");
   await expect(example.locator("code")).toContainText("Command.mapMessages");
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  await expect(page.locator("#persistent-shell")).toBeVisible();
-  await expect(page.locator("#static-structure")).toBeVisible();
+  await expect(page.locator("#application-shell")).toBeVisible();
+  await expect(page.locator("#floating-sidebar")).toBeVisible();
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
   await expect(provider).toHaveAttribute("data-state", "collapsed");
   await expect(example.locator("code")).toContainText("@/stylex/sidebar");
-  await example.locator('[data-slot="sidebar-trigger"]').click();
+  await expect(trigger).toHaveCount(1);
+  await trigger.click();
   await expect(provider).toHaveAttribute("data-state", "expanded");
 });
 
@@ -1977,8 +1980,9 @@ test("chart documents SVG recipes and the complete ECharts family showcase", asy
   await expect(page.locator("#chart-types")).toBeVisible();
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
   const bars = page.locator("#monthly-revenue");
-  await expect(bars.getByRole("img", { name: "Bar chart" })).toBeVisible();
-  await expect(bars.locator("rect")).toHaveCount(6);
+  const barChart = bars.getByRole("img", { name: "Bar chart" });
+  await expect(barChart).toBeVisible();
+  await expect(barChart.locator("rect")).toHaveCount(6);
   const trend = page.locator("#traffic-trend");
   await expect(trend.getByRole("img", { name: "Area chart" })).toBeVisible();
   await expect(trend.locator('[data-slot="chart-legend"]')).toContainText(

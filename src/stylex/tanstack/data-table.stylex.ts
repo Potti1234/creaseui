@@ -60,6 +60,7 @@ export const styles = stylex.create({
  transitionProperty: 'color',
  minHeight: '2.5rem',
  minWidth: 0, },
+  staticHeader: { color: { default: tokens.mutedForeground, ':hover': tokens.mutedForeground }, cursor: interactionTokens.cursorDefault },
   sortIcon: { color: tokens.primary, flexShrink: 0, height: '0.75rem', width: '0.75rem' },
   sortIconIdle: { color: tokens.mutedForeground, opacity: 0.3 },
   info: { alignItems: 'center', color: tokens.primary, cursor: interactionTokens.cursorDefault, display: 'inline-flex', flexShrink: 0, opacity: 0.8 },
@@ -189,4 +190,3 @@ export const styles = stylex.create({
   smallIcon: { height: '0.875rem', width: '0.875rem' },
   tinyIcon: { height: '0.75rem', width: '0.75rem' },
 })
-
