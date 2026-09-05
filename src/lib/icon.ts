@@ -99,12 +99,15 @@ export const icon = <Msg>(
     [
       h.Xmlns('http://www.w3.org/2000/svg'),
       h.ViewBox('0 0 24 24'),
+      h.Width('1em'),
+      h.Height('1em'),
       h.Fill('none'),
       h.Stroke('currentColor'),
       h.StrokeWidth('2'),
       h.StrokeLinecap('round'),
       h.StrokeLinejoin('round'),
       h.Class(cn(`lucide lucide-${name}`, config.class)),
+      ...(node.length === 0 ? [h.DataAttribute('icon-missing', name)] : []),
       ...(config.ariaLabel === undefined
         ? [h.AriaHidden(true)]
         : [h.Role('img'), h.AriaLabel(config.ariaLabel)]),
@@ -150,4 +153,3 @@ export const rotateCcw = named('rotate-ccw');
 export const search = named('search');
 export const triangleAlert = named('triangle-alert');
 export const x = named('x');
-

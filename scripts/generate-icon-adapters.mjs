@@ -87,7 +87,10 @@ export const icon = <Msg>(
     [
       h.Xmlns('http://www.w3.org/2000/svg'),
       h.ViewBox(\`0 0 \${width} \${height}\`),
+      h.Width('1em'),
+      h.Height('1em'),
       h.Class(cn('crease-icon crease-icon-${library}', \`crease-icon-\${name}\`, config.class)),
+      ...(definition === undefined ? [h.DataAttribute('icon-missing', name)] : []),
       ...(config.ariaLabel === undefined
         ? [h.AriaHidden(true)]
         : [h.Role('img'), h.AriaLabel(config.ariaLabel)]),

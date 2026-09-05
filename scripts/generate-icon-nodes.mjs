@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import ts from 'typescript'
 
 const root = process.cwd()
 const sourceFiles = directory =>
@@ -11,26 +12,50 @@ const sourceFiles = directory =>
         ? [path]
         : []
   })
-const source = sourceFiles(join(root, 'src'))
-  .map(path => readFileSync(path, 'utf8'))
-  .join('\n')
+const sourcePaths = sourceFiles(join(root, 'src'))
 const catalog = JSON.parse(
   readFileSync(
     join(root, 'node_modules', 'lucide-static', 'icon-nodes.json'),
     'utf8',
   ),
 )
-// Keep icons referenced through named wrappers. The broad literal scan below
-// can miss a literal when comments or template strings sit between quotes.
-const requiredIconNames = ['arrow-down', 'arrow-left', 'arrow-up', 'code-xml']
-const names = Array.from(
-  new Set(
-    [
-      ...requiredIconNames,
-      ...Array.from(source.matchAll(/['"]([^'"]+)['"]/g), match => match[1]),
-    ].filter(name => catalog[name] !== undefined),
-  ),
+const adapterNames = Object.keys(
+  JSON.parse(readFileSync(join(root, 'scripts', 'icon-adapter-map.json'), 'utf8')),
+)
+const referencedIconNames = sourcePaths.flatMap(path => {
+  const sourceFile = ts.createSourceFile(
+    path,
+    readFileSync(path, 'utf8'),
+    ts.ScriptTarget.Latest,
+    true,
+  )
+  const names = []
+  const visit = node => {
+    if (ts.isCallExpression(node)) {
+      const callee = node.expression
+      const isIconCall =
+        (ts.isIdentifier(callee) && (callee.text === 'icon' || callee.text === 'named')) ||
+        (ts.isPropertyAccessExpression(callee) && callee.name.text === 'icon')
+      const firstArgument = node.arguments[0]
+      if (isIconCall && firstArgument !== undefined && ts.isStringLiteralLike(firstArgument)) {
+        names.push(firstArgument.text)
+      }
+    }
+    ts.forEachChild(node, visit)
+  }
+  visit(sourceFile)
+  return names
+})
+const requestedIconNames = Array.from(
+  new Set([...adapterNames, ...referencedIconNames]),
 ).sort()
+const missingIconNames = requestedIconNames.filter(name => catalog[name] === undefined)
+if (missingIconNames.length > 0) {
+  throw new Error(`Unknown Lucide icon names: ${missingIconNames.join(', ')}`)
+}
+const names = Array.from(
+  new Set(requestedIconNames),
+)
 const selectedNodes = Object.fromEntries(
   names.map(name => {
     const node = catalog[name]
