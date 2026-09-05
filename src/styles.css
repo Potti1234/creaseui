@@ -189,3 +189,56 @@
 [data-crease-board-theme][data-icon-library='remixicon'] .crease-preview-icon-remixicon {
   display: block;
 }
+
+/* StyleX cannot express ancestor data-state selectors. Keep icon-collapse
+   visibility structural and scoped to the renderer boundary. */
+[data-slot='sidebar-wrapper'][data-renderer='stylex'][data-state='collapsed']
+  [data-collapsible='icon']
+  :is(
+    [data-sidebar='group-label'],
+    [data-sidebar='group-action'],
+    [data-sidebar='input'],
+    [data-sidebar='menu-action'],
+    [data-sidebar='menu-badge'],
+    [data-sidebar='menu-sub']
+  ) {
+  display: none;
+}
+
+[data-slot='sidebar-wrapper'][data-renderer='stylex'][data-state='collapsed']
+  [data-collapsible='icon']
+  [data-sidebar='brand'] {
+  padding-inline: 0.125rem;
+}
+
+[data-slot='sidebar-wrapper'][data-renderer='stylex']
+  :is(
+    [data-sidebar='menu-button'],
+    [data-sidebar='menu-action'],
+    [data-sidebar='trigger']
+  )
+  > svg {
+  flex-shrink: 0;
+  height: 1rem;
+  width: 1rem;
+}
+
+[data-slot='sidebar-wrapper'][data-renderer='stylex'][data-state='collapsed']
+  [data-collapsible='icon']
+  [data-sidebar='menu-button'] {
+  height: 2rem;
+  padding: 0.5rem;
+  width: 2rem;
+}
+
+[data-slot='sidebar-wrapper'][data-renderer='stylex'][data-state='collapsed']
+  [data-collapsible='icon']
+  [data-sidebar='menu-button'][data-size='lg'] {
+  padding: 0;
+}
+
+[data-slot='sidebar-wrapper'][data-renderer='stylex']
+  [data-sidebar='menu-item']:is(:hover, :focus-within)
+  [data-sidebar='menu-action'][data-show-on-hover] {
+  opacity: 1;
+}

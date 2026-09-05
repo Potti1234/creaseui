@@ -2982,7 +2982,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "SidebarProviderProps",
       "kind": "type",
-      "signature": "SidebarProviderProps = Slot & Readonly<{ state?: SidebarState; }>"
+      "signature": "SidebarProviderProps = Slot & Readonly<{ state?: SidebarState; width?: string; mobileWidth?: string; iconWidth?: string; }>"
     },
     {
       "name": "sidebarProvider",
@@ -3002,7 +3002,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "SidebarTriggerProps",
       "kind": "type",
-      "signature": "SidebarTriggerProps<Msg> = Readonly<{ onClick: Msg; class?: string; }>"
+      "signature": "SidebarTriggerProps<Msg> = Readonly<{ onClick: Msg; onMobileClick?: Msg; class?: string; }>"
     },
     {
       "name": "sidebarTrigger",
@@ -3020,9 +3020,14 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "sidebarRail<Msg>(props: SidebarRailProps<Msg>, h: HtmlBuilder<Msg>): Html"
     },
     {
+      "name": "SidebarInsetProps",
+      "kind": "type",
+      "signature": "SidebarInsetProps = Slot & Readonly<{ variant?: SidebarVariant; state?: SidebarState; }>"
+    },
+    {
       "name": "sidebarInset",
       "kind": "function",
-      "signature": "sidebarInset<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html"
+      "signature": "sidebarInset<Msg>(props: SidebarInsetProps, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "SidebarInputProps",

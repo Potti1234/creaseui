@@ -17,6 +17,7 @@ export * from '@/lib/sidebar-state';
    subscriptions helpers below for persistence and cmd/ctrl+b behavior. */
 
 const SIDEBAR_WIDTH = '16rem';
+const SIDEBAR_WIDTH_MOBILE = '18rem';
 const SIDEBAR_WIDTH_ICON = '3rem';
 export type SidebarState = 'expanded' | 'collapsed';
 export type SidebarSide = 'left' | 'right';
@@ -44,6 +45,9 @@ const slotDiv =
 export type SidebarProviderProps = Slot &
   Readonly<{
     state?: SidebarState;
+    width?: string;
+    mobileWidth?: string;
+    iconWidth?: string;
   }>;
 
 export const sidebarProvider = <Msg>(
@@ -55,8 +59,9 @@ export const sidebarProvider = <Msg>(
       h.DataAttribute('slot', 'sidebar-wrapper'),
       h.DataAttribute('state', props.state ?? 'expanded'),
       h.Style({
-        '--sidebar-width': SIDEBAR_WIDTH,
-        '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
+        '--sidebar-width': props.width ?? SIDEBAR_WIDTH,
+        '--sidebar-width-mobile': props.mobileWidth ?? SIDEBAR_WIDTH_MOBILE,
+        '--sidebar-width-icon': props.iconWidth ?? SIDEBAR_WIDTH_ICON,
       }),
       h.Class(
         cn(
@@ -119,7 +124,7 @@ export const sidebar = <Msg>(
             h.button(
               [
                 h.Type('button'),
-                h.AriaLabel('Close sidebar'),
+                h.AriaLabel('Close sidebar backdrop'),
                 ...(props.onMobileDismiss === undefined
                   ? []
                   : [h.OnClick(props.onMobileDismiss)]),
@@ -133,13 +138,30 @@ export const sidebar = <Msg>(
                 h.AriaLabel('Sidebar'),
                 h.Class(
                   cn(
-                    'fixed inset-y-0 z-50 flex w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground shadow-xl md:hidden',
+                    'fixed inset-y-0 z-50 flex w-(--sidebar-width-mobile) max-w-[calc(100vw-2rem)] flex-col bg-sidebar text-sidebar-foreground shadow-xl md:hidden',
                     side === 'left' ? 'left-0 border-r' : 'right-0 border-l',
                     props.class,
                   ),
                 ),
               ],
-              [...props.children],
+              [
+                ...props.children,
+                ...(props.onMobileDismiss === undefined
+                  ? []
+                  : [
+                      h.button(
+                        [
+                          h.Type('button'),
+                          h.AriaLabel('Close sidebar'),
+                          h.OnClick(props.onMobileDismiss),
+                          h.Class(
+                            'absolute top-2 right-2 inline-flex size-8 items-center justify-center rounded-md text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring md:hidden',
+                          ),
+                        ],
+                        [Icon.x({}, h)],
+                      ),
+                    ]),
+              ],
             ),
           ]
         : []),
@@ -194,6 +216,7 @@ export const sidebar = <Msg>(
 
 export type SidebarTriggerProps<Msg> = Readonly<{
   onClick: Msg;
+  onMobileClick?: Msg;
   class?: string;
 }>;
 
@@ -201,16 +224,17 @@ export const sidebarTrigger = <Msg>(
   props: SidebarTriggerProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  return h.button(
+  const trigger = (onClick: Msg, visibilityClass?: string): Html => h.button(
     [
       h.DataAttribute('sidebar', 'trigger'),
       h.DataAttribute('slot', 'sidebar-trigger'),
-      h.OnClick(props.onClick),
+      h.OnClick(onClick),
       h.Type('button'),
       h.Class(
         cn(
           buttonVariants({ variant: 'ghost', size: 'icon' }),
           'size-7',
+          visibilityClass,
           props.class,
         ),
       ),
@@ -220,6 +244,16 @@ export const sidebarTrigger = <Msg>(
       h.span([h.Class('sr-only')], ['Toggle Sidebar']),
     ],
   );
+
+  return props.onMobileClick === undefined
+    ? trigger(props.onClick)
+    : h.span(
+        [h.DataAttribute('slot', 'sidebar-responsive-trigger')],
+        [
+          trigger(props.onMobileClick, 'md:hidden'),
+          trigger(props.onClick, 'hidden md:inline-flex'),
+        ],
+      );
 };
 
 export type SidebarRailProps<Msg> = Readonly<{
@@ -254,7 +288,12 @@ export const sidebarRail = <Msg>(
   );
 };
 
-export const sidebarInset = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
+export type SidebarInsetProps = Slot & Readonly<{
+  variant?: SidebarVariant;
+  state?: SidebarState;
+}>;
+
+export const sidebarInset = <Msg>(props: SidebarInsetProps, h: HtmlBuilder<Msg>): Html => {
   return h.main(
     [
       h.DataAttribute('slot', 'sidebar-inset'),
@@ -262,6 +301,9 @@ export const sidebarInset = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
         cn(
           'relative flex w-full flex-1 flex-col bg-background',
           'md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2',
+          props.variant === 'inset' &&
+            'md:m-2 md:ml-0 md:rounded-xl md:shadow-sm',
+          props.variant === 'inset' && props.state === 'collapsed' && 'md:ml-2',
           props.class,
         ),
       ),
@@ -303,7 +345,11 @@ export const sidebarInput = <Msg>(
     h.Disabled(props.isDisabled ?? false),
     h.AriaInvalid(props.isInvalid ?? false),
     h.Class(
-      cn(INPUT_CLASS, 'h-8 w-full bg-background shadow-none', props.class),
+      cn(
+        INPUT_CLASS,
+        'h-8 w-full bg-background shadow-none group-data-[collapsible=icon]:hidden',
+        props.class,
+      ),
     ),
   ]);
 };

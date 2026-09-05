@@ -940,15 +940,16 @@ Source: [`src/ui/sidebar.ts`](../src/ui/sidebar.ts)
 | `SidebarSide` | type | `SidebarSide = 'left' \| 'right'` |
 | `SidebarVariant` | type | `SidebarVariant = 'sidebar' \| 'floating' \| 'inset'` |
 | `SidebarCollapsible` | type | `SidebarCollapsible = 'offcanvas' \| 'icon' \| 'none'` |
-| `SidebarProviderProps` | type | `SidebarProviderProps = Slot & Readonly<{ state?: SidebarState; }>` |
+| `SidebarProviderProps` | type | `SidebarProviderProps = Slot & Readonly<{ state?: SidebarState; width?: string; mobileWidth?: string; iconWidth?: string; }>` |
 | `sidebarProvider` | function | `sidebarProvider<Msg>(props: SidebarProviderProps, h: HtmlBuilder<Msg>): Html` |
 | `SidebarProps` | type | `SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; presentation?: 'application' \| 'contained'; isMobileOpen?: boolean; onMobileDismiss?: Msg; }>` |
 | `sidebar` | function | `sidebar<Msg>(props: SidebarProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-| `SidebarTriggerProps` | type | `SidebarTriggerProps<Msg> = Readonly<{ onClick: Msg; class?: string; }>` |
+| `SidebarTriggerProps` | type | `SidebarTriggerProps<Msg> = Readonly<{ onClick: Msg; onMobileClick?: Msg; class?: string; }>` |
 | `sidebarTrigger` | function | `sidebarTrigger<Msg>(props: SidebarTriggerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `SidebarRailProps` | type | `SidebarRailProps<Msg> = Readonly<{ onClick: Msg; }>` |
 | `sidebarRail` | function | `sidebarRail<Msg>(props: SidebarRailProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-| `sidebarInset` | function | `sidebarInset<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
+| `SidebarInsetProps` | type | `SidebarInsetProps = Slot & Readonly<{ variant?: SidebarVariant; state?: SidebarState; }>` |
+| `sidebarInset` | function | `sidebarInset<Msg>(props: SidebarInsetProps, h: HtmlBuilder<Msg>): Html` |
 | `SidebarInputProps` | type | `SidebarInputProps<Msg> = Readonly<{ id?: string; value?: string; onInput?: (value: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; class?: string; }>` |
 | `sidebarInput` | function | `sidebarInput<Msg>(props: SidebarInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `sidebarHeader` | value | `sidebarHeader: value` |

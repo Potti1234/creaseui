@@ -3895,8 +3895,14 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Persistent shell",
-        "Static structure"
+        "Application shell",
+        "Floating sidebar",
+        "Inset sidebar",
+        "Off-canvas collapse",
+        "Menu primitives",
+        "Nested navigation",
+        "Loading navigation",
+        "Right side and custom width"
       ],
       "api": [
         {
@@ -3927,7 +3933,7 @@
         {
           "name": "SidebarProviderProps",
           "kind": "type",
-          "signature": "SidebarProviderProps = Slot & Readonly<{ state?: SidebarState; }>"
+          "signature": "SidebarProviderProps = Slot & Readonly<{ state?: SidebarState; width?: string; mobileWidth?: string; iconWidth?: string; }>"
         },
         {
           "name": "sidebarProvider",
@@ -3947,7 +3953,7 @@
         {
           "name": "SidebarTriggerProps",
           "kind": "type",
-          "signature": "SidebarTriggerProps<Msg> = Readonly<{ onClick: Msg; class?: string; }>"
+          "signature": "SidebarTriggerProps<Msg> = Readonly<{ onClick: Msg; onMobileClick?: Msg; class?: string; }>"
         },
         {
           "name": "sidebarTrigger",
@@ -3965,9 +3971,14 @@
           "signature": "sidebarRail<Msg>(props: SidebarRailProps<Msg>, h: HtmlBuilder<Msg>): Html"
         },
         {
+          "name": "SidebarInsetProps",
+          "kind": "type",
+          "signature": "SidebarInsetProps = Slot & Readonly<{ variant?: SidebarVariant; state?: SidebarState; }>"
+        },
+        {
           "name": "sidebarInset",
           "kind": "function",
-          "signature": "sidebarInset<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html"
+          "signature": "sidebarInset<Msg>(props: SidebarInsetProps, h: HtmlBuilder<Msg>): Html"
         },
         {
           "name": "SidebarInputProps",

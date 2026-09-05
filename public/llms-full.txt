@@ -1116,22 +1116,23 @@ A shadcn-styled Sidebar component for Foldkit.
 
 Source: `src/ui/sidebar.ts`
 
-Examples: Persistent shell, Static structure
+Examples: Application shell, Floating sidebar, Inset sidebar, Off-canvas collapse, Menu primitives, Nested navigation, Loading navigation, Right side and custom width
 
 - `export * from '@/lib/sidebar-state'` (re-export)
 - `SidebarState = 'expanded' | 'collapsed'` (type)
 - `SidebarSide = 'left' | 'right'` (type)
 - `SidebarVariant = 'sidebar' | 'floating' | 'inset'` (type)
 - `SidebarCollapsible = 'offcanvas' | 'icon' | 'none'` (type)
-- `SidebarProviderProps = Slot & Readonly<{ state?: SidebarState; }>` (type)
+- `SidebarProviderProps = Slot & Readonly<{ state?: SidebarState; width?: string; mobileWidth?: string; iconWidth?: string; }>` (type)
 - `sidebarProvider<Msg>(props: SidebarProviderProps, h: HtmlBuilder<Msg>): Html` (function)
 - `SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; presentation?: 'application' | 'contained'; isMobileOpen?: boolean; onMobileDismiss?: Msg; }>` (type)
 - `sidebar<Msg>(props: SidebarProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-- `SidebarTriggerProps<Msg> = Readonly<{ onClick: Msg; class?: string; }>` (type)
+- `SidebarTriggerProps<Msg> = Readonly<{ onClick: Msg; onMobileClick?: Msg; class?: string; }>` (type)
 - `sidebarTrigger<Msg>(props: SidebarTriggerProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `SidebarRailProps<Msg> = Readonly<{ onClick: Msg; }>` (type)
 - `sidebarRail<Msg>(props: SidebarRailProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-- `sidebarInset<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
+- `SidebarInsetProps = Slot & Readonly<{ variant?: SidebarVariant; state?: SidebarState; }>` (type)
+- `sidebarInset<Msg>(props: SidebarInsetProps, h: HtmlBuilder<Msg>): Html` (function)
 - `SidebarInputProps<Msg> = Readonly<{ id?: string; value?: string; onInput?: (value: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; class?: string; }>` (type)
 - `sidebarInput<Msg>(props: SidebarInputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `sidebarHeader: value` (value)
