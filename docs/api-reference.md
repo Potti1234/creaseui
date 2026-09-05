@@ -486,7 +486,7 @@ Source: [`src/ui/dropdown-menu.ts`](../src/ui/dropdown-menu.ts)
 | `DropdownMenuItemConfig` | type | `DropdownMenuItemConfig<Item extends string = string> = Readonly<{ label: Html \| string; icon?: Html; shortcut?: Html \| string; variant?: 'default' \| 'destructive'; kind?: 'item' \| 'checkbox' \| 'radio'; isChecked?: boolean; isInset?: boolean; isDisabled?: bool…` |
 | `DropdownMenuSide` | type | `DropdownMenuSide = 'top' \| 'right' \| 'bottom' \| 'left'` |
 | `DropdownMenuAlign` | type | `DropdownMenuAlign = 'start' \| 'center' \| 'end'` |
-| `DropdownMenuProps` | type | `DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; triggerTabindex?: number; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenuI…` |
+| `DropdownMenuProps` | type | `DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; triggerTabindex?: number; triggerRole?: string; items: ReadonlyArray<Item>; itemToConfig: (item: …` |
 | `dropdownMenu` | function | `dropdownMenu<Item extends string, Msg>(props: DropdownMenuProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Empty
@@ -942,7 +942,7 @@ Source: [`src/ui/sidebar.ts`](../src/ui/sidebar.ts)
 | `SidebarCollapsible` | type | `SidebarCollapsible = 'offcanvas' \| 'icon' \| 'none'` |
 | `SidebarProviderProps` | type | `SidebarProviderProps = Slot & Readonly<{ state?: SidebarState; }>` |
 | `sidebarProvider` | function | `sidebarProvider<Msg>(props: SidebarProviderProps, h: HtmlBuilder<Msg>): Html` |
-| `SidebarProps` | type | `SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; isMobileOpen?: boolean; onMobileDismiss?: Msg; }>` |
+| `SidebarProps` | type | `SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; presentation?: 'application' \| 'contained'; isMobileOpen?: boolean; onMobileDismiss?: Msg; }>` |
 | `sidebar` | function | `sidebar<Msg>(props: SidebarProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `SidebarTriggerProps` | type | `SidebarTriggerProps<Msg> = Readonly<{ onClick: Msg; class?: string; }>` |
 | `sidebarTrigger` | function | `sidebarTrigger<Msg>(props: SidebarTriggerProps<Msg>, h: HtmlBuilder<Msg>): Html` |

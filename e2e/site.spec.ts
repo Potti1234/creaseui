@@ -1965,7 +1965,7 @@ test("direction preserves RTL and nested LTR semantics across renderers", async 
   await expect(rtl.locator("code")).toContainText("@/stylex/direction");
 });
 
-test("chart documents pure Foldkit SVG recipes with complete source", async ({
+test("chart documents SVG recipes and the complete ECharts family showcase", async ({
   page,
 }) => {
   await page.goto("/docs/components/chart");
@@ -1974,6 +1974,7 @@ test("chart documents pure Foldkit SVG recipes with complete source", async ({
   await expect(page.locator("#traffic-trend")).toBeVisible();
   await expect(page.locator("#echarts-lifecycle")).toBeVisible();
   await expect(page.locator("#lifecycle-states")).toBeVisible();
+  await expect(page.locator("#chart-types")).toBeVisible();
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
   const bars = page.locator("#monthly-revenue");
   await expect(bars.getByRole("img", { name: "Bar chart" })).toBeVisible();
@@ -1997,6 +1998,18 @@ test("chart documents pure Foldkit SVG recipes with complete source", async ({
   await expect(states.getByRole("status")).toHaveCount(2);
   await expect(states.getByRole("alert")).toContainText("Revenue could not be loaded.");
   await expect(states.locator('[data-slot="echart"]')).toHaveCount(0);
+
+  for (const family of ["area", "bar", "line", "pie", "radar", "radial"]) {
+    const example = page.locator(`#${family}-chart`);
+    await expect(example).toBeVisible();
+    await expect(example.locator('[data-slot="echart"] canvas')).toHaveCount(1);
+    await expect(example.locator("code")).toContainText("Chart.registerChart");
+    await expect(example.locator("code")).toContainText("@/stylex/chart");
+  }
+
+  await page.getByRole("button", { name: "Tailwind", exact: true }).click();
+  await expect(page.locator("#area-chart code")).toContainText("@/ui/chart");
+  await expect(page.locator('[id$="-chart"] [data-slot="echart"] canvas')).toHaveCount(6);
 
   await page.goto("/docs/components/button");
   await expect.poll(() => page.evaluate(() => (window as Window & { __charts?: Map<string, unknown> }).__charts?.size ?? 0)).toBe(0);

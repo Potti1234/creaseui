@@ -166,10 +166,10 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Static information",
-        "Polite success",
-        "Long warning",
-        "Urgent error"
+        "Deployment window",
+        "Changes saved",
+        "Storage nearly full",
+        "Upload failed"
       ],
       "api": [
         {
@@ -226,8 +226,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Video",
+        "Square"
       ],
       "api": [
         {
@@ -323,8 +323,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Image lifecycle",
+        "Initials only"
       ],
       "api": [
         {
@@ -412,8 +412,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Variants",
+        "Status"
       ],
       "api": [
         {
@@ -543,8 +543,9 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Conversation",
+        "Reaction",
+        "Error"
       ],
       "api": [
         {
@@ -592,8 +593,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Pagination actions",
+        "Vertical tools"
       ],
       "api": [
         {
@@ -652,8 +653,13 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Basic",
+        "Variants",
+        "Sizes",
+        "Loading",
+        "Button Group",
+        "As Link",
+        "RTL"
       ],
       "api": [
         {
@@ -823,8 +829,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Article",
+        "With Footer"
       ],
       "api": [
         {
@@ -888,8 +894,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Single slide",
+        "Two at a time"
       ],
       "api": [
         {
@@ -925,7 +931,13 @@
         "Monthly revenue",
         "Traffic trend",
         "ECharts lifecycle",
-        "Lifecycle states"
+        "Lifecycle states",
+        "Area chart",
+        "Bar chart",
+        "Line chart",
+        "Pie chart",
+        "Radar chart",
+        "Radial chart"
       ],
       "api": [
         {
@@ -1626,8 +1638,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Edit profile",
+        "Compact confirmation"
       ],
       "api": [
         {
@@ -1753,8 +1765,8 @@
         "Potti1234/creaseui/crease-theme"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Right to Left",
+        "Mixed Direction"
       ],
       "api": [
         {
@@ -2041,7 +2053,7 @@
         {
           "name": "DropdownMenuProps",
           "kind": "type",
-          "signature": "DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; triggerTabindex?: number; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenuI…"
+          "signature": "DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; triggerTabindex?: number; triggerRole?: string; items: ReadonlyArray<Item>; itemToConfig: (item: …"
         },
         {
           "name": "dropdownMenu",
@@ -2063,8 +2075,10 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Create First Item",
+        "No Results",
+        "Error recovery",
+        "Permission denied"
       ],
       "api": [
         {
@@ -2128,8 +2142,10 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Anatomy",
+        "Validation error",
+        "Async validation",
+        "Field group"
       ],
       "api": [
         {
@@ -2488,8 +2504,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "URL prefix",
+        "Trailing unit"
       ],
       "api": [
         {
@@ -2629,8 +2645,9 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Collection",
+        "Outlined",
+        "Header and Footer"
       ],
       "api": [
         {
@@ -2732,8 +2749,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Key",
+        "Shortcut"
       ],
       "api": [
         {
@@ -2760,8 +2777,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Input Label",
+        "Supporting Text"
       ],
       "api": [
         {
@@ -3008,8 +3025,9 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Incoming",
+        "Outgoing",
+        "Live recovery"
       ],
       "api": [
         {
@@ -3458,8 +3476,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Editor and preview",
+        "Vertical split"
       ],
       "api": [
         {
@@ -3596,8 +3614,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Vertical",
+        "Horizontal"
       ],
       "api": [
         {
@@ -3715,8 +3733,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Horizontal",
+        "Vertical"
       ],
       "api": [
         {
@@ -3919,7 +3937,7 @@
         {
           "name": "SidebarProps",
           "kind": "type",
-          "signature": "SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; isMobileOpen?: boolean; onMobileDismiss?: Msg; }>"
+          "signature": "SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; presentation?: 'application' | 'contained'; isMobileOpen?: boolean; onMobileDismiss?: Msg; }>"
         },
         {
           "name": "sidebar",
@@ -4095,8 +4113,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Profile",
+        "Card"
       ],
       "api": [
         {
@@ -4263,8 +4281,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Default",
+        "With Label"
       ],
       "api": [
         {
@@ -4330,8 +4348,10 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Component Inventory",
+        "Footer",
+        "Dense overflow",
+        "Empty body"
       ],
       "api": [
         {
@@ -4399,8 +4419,10 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Settings",
+        "Line variant",
+        "Manual with disabled tab",
+        "RTL route value"
       ],
       "api": [
         {
@@ -4557,11 +4579,8 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Single selection",
-        "Multiple selection",
-        "RTL",
-        "Disabled item",
-        "Form policy"
+        "Timed notification",
+        "Sticky error"
       ],
       "api": [
         {
@@ -4767,8 +4786,9 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Article",
+        "Inline Code",
+        "Quotation"
       ],
       "api": [
         {

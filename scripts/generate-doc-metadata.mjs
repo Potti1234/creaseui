@@ -107,18 +107,42 @@ const apiFor = (file) => {
   return api;
 };
 
-const authoredExamples = new Map(
-  fs.readdirSync(authoredPagesDirectory)
-    .filter((name) => name.endsWith('.ts'))
-    .flatMap((name) => {
-      const source = fs.readFileSync(path.join(authoredPagesDirectory, name), 'utf8');
-      const slug = source.match(/slug: '([^']+)'/)?.[1];
-      if (slug === undefined) return [];
-      const examplesSource = source.slice(source.indexOf('examples:'));
-      const examples = [...examplesSource.matchAll(/\{ title: '([^']+)'/g)].map((match) => match[1]);
-      return [[slug, examples.length > 0 ? examples : ['Timed notification', 'Sticky error']]];
-    }),
-);
+const titleProperties = (file, preferredSuffix) => {
+  if (!fs.existsSync(file)) return [];
+  const source = fs.readFileSync(file, 'utf8');
+  const sourceFile = ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+  const titles = [];
+  const collect = (node) => {
+    if (
+      ts.isPropertyAssignment(node) &&
+      ((ts.isIdentifier(node.name) && node.name.text === 'title') || (ts.isStringLiteral(node.name) && node.name.text === 'title')) &&
+      ts.isStringLiteral(node.initializer)
+    ) titles.push(node.initializer.text);
+    ts.forEachChild(node, collect);
+  };
+  for (const statement of sourceFile.statements) {
+    if (!ts.isVariableStatement(statement)) continue;
+    for (const declaration of statement.declarationList.declarations) {
+      if (ts.isIdentifier(declaration.name) && declaration.name.text.endsWith(preferredSuffix) && declaration.initializer !== undefined) collect(declaration.initializer);
+    }
+  }
+  return [...new Set(titles)];
+};
+
+const pageEntryFiles = fs
+  .readdirSync(authoredPagesDirectory, { recursive: true, withFileTypes: true })
+  .filter((entry) => entry.isFile() && entry.name === 'index.ts')
+  .map((entry) => path.join(entry.parentPath, entry.name));
+
+const authoredExamples = new Map(pageEntryFiles.flatMap((file) => {
+  const source = fs.readFileSync(file, 'utf8');
+  const slug = source.match(/slug: '([^']+)'/)?.[1];
+  if (slug === undefined) return [];
+  const sharedFile = path.join(path.dirname(file), 'shared.ts');
+  const fixtures = titleProperties(sharedFile, 'Fixtures');
+  const examples = fixtures.length > 0 ? fixtures : titleProperties(sharedFile, 'Examples');
+  return [[slug, examples.length > 0 ? examples : ['Timed notification', 'Sticky error']]];
+}));
 const components = registry.items.map((item) => {
   const file = path.join(root, 'src/ui', item.files[0].path);
   return {
