@@ -2,6 +2,7 @@ import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { className } from '../style'
+import { tokens } from '../tokens.stylex'
 import { primitiveAttributes, primitiveElement } from './element'
 import { columnGapStyle } from './space'
 import type { LayoutElement, PrimitiveChildren, PrimitiveData, SpaceToken } from './types'
@@ -15,6 +16,7 @@ export type InlineProps = Readonly<{
   justify?: 'start' | 'center' | 'end' | 'between'
   minWidth?: 'none' | 'maxContent'
   slot?: string
+  variant?: 'default' | 'sectionTabs'
   width?: 'auto' | 'full'
   wrap?: boolean
 }>
@@ -32,6 +34,13 @@ const styles = stylex.create({
   minWidthMaxContent: { minWidth: 'max-content' },
   minWidthNone: { minWidth: 0 },
   noWrap: { flexWrap: 'nowrap' },
+  sectionTabs: {
+    gap: '0.25rem',
+    borderBottomColor: tokens.border,
+    borderBottomStyle: 'solid',
+    borderBottomWidth: 1,
+    paddingBottom: '0.5rem',
+  },
   widthAuto: { width: 'auto' },
   widthFull: { width: '100%' },
   wrap: { flexWrap: 'wrap' },
@@ -42,12 +51,11 @@ export const inline = <Message>(props: InlineProps, h: HtmlBuilder<Message>): Ht
   const justify = props.justify === undefined ? [] : [{ between: styles.justifyBetween, center: styles.justifyCenter, end: styles.justifyEnd, start: styles.justifyStart }[props.justify]]
   const minWidth = props.minWidth === undefined ? [] : [{ maxContent: styles.minWidthMaxContent, none: styles.minWidthNone }[props.minWidth]]
   const width = props.width === undefined ? [] : [{ auto: styles.widthAuto, full: styles.widthFull }[props.width]]
+  const variant = props.variant === 'sectionTabs' ? [styles.sectionTabs] : []
   return primitiveElement(
     props.as ?? 'div',
-    primitiveAttributes(className(styles.base, ...align, ...justify, ...minWidth, ...width, props.wrap === undefined ? [] : props.wrap ? styles.wrap : styles.noWrap, ...columnGapStyle(props.gap)), props.slot, props.data, h),
+    primitiveAttributes(className(styles.base, ...variant, ...align, ...justify, ...minWidth, ...width, props.wrap === undefined ? [] : props.wrap ? styles.wrap : styles.noWrap, ...columnGapStyle(props.gap)), props.slot, props.data, h),
     props.children,
     h,
   )
 }
-
-

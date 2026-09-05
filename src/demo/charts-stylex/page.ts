@@ -7,7 +7,7 @@ import { evo } from 'foldkit/struct'
 
 import type { ChartSection } from '@/route'
 import { CHART_SECTIONS, chartsPath } from '@/route'
-import { badge } from '@/stylex/badge'
+import { chartTab } from '@/stylex/composition/chart-tab'
 import { box, grid, inline, section, stack, text } from '@/stylex/composition'
 import * as Chart from '@/stylex/integrations/echarts'
 import * as ToggleGroup from '@/stylex/toggle-group'
@@ -217,9 +217,9 @@ export const view = (model: Model, activeSection: ChartSection, h: HtmlBuilder<M
   box({
     as: 'main',
     children: [stack({ children: [
-      stack({ children: [badge({ children: ['Apache ECharts + StyleX'], variant: 'secondary' }, h), text({ as: 'h1', children: ['Beautiful Charts & Graphs'], variant: 'hero' }, h), text({ as: 'p', children: ['The complete Tailwind chart gallery, rendered through the same Foldkit behavior and a constrained StyleX surface.'], measure: 'hero', tone: 'secondary' }, h)], gap: 'md' }, h),
-      box({ as: 'nav', children: [inline({ children: CHART_SECTIONS.map((sectionName) => badge({ children: [h.a([h.Href(chartsPath(sectionName))], [SECTION_LABELS[sectionName]])], variant: sectionName === activeSection ? 'secondary' : 'outline' }, h)), gap: 'sm', wrap: true }, h)] }, h),
+      stack({ align: 'start', children: [text({ as: 'h1', children: ['Beautiful Charts & Graphs'], tone: 'accent', variant: 'chartTitle' }, h), text({ as: 'p', children: ['A collection of ready-to-use chart components built with Apache ECharts and foldkit, styled like shadcn/ui. From basic charts to rich data displays.'], variant: 'chartLead' }, h)], gap: 'md' }, h),
+      box({ as: 'nav', children: [inline({ align: 'center', children: CHART_SECTIONS.map((sectionName) => chartTab({ active: sectionName === activeSection, children: [SECTION_LABELS[sectionName]], href: chartsPath(sectionName) }, h)), variant: 'sectionTabs', width: 'full', wrap: true }, h)] }, h),
       grid({ children: SECTION_SPECS[activeSection].map((spec) => chartCard(model, spec, h)), columns: 'gallery', gap: 'lg', width: 'full' }, h),
-    ], gap: 'xl', padding: 'xl' }, h)],
+    ], preset: 'chartGallery' }, h)],
     data: { page: 'charts-stylex', section: activeSection }, minHeight: 'createPage', surface: 'page', width: 'content',
   }, h)

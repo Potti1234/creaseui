@@ -86,13 +86,37 @@ test('StyleX analytics block mounts every Apache ECharts family', async ({ page 
 
 test('unified charts routes expose the complete constrained StyleX gallery', async ({ page }) => {
   await page.goto('/charts/area')
+  const headingName = 'Beautiful Charts & Graphs'
+  const description = 'A collection of ready-to-use chart components built with Apache ECharts and foldkit, styled like shadcn/ui. From basic charts to rich data displays.'
+  const topLayout = async () => page.getByRole('heading', { level: 1, name: headingName }).evaluate((heading) => {
+    const header = heading.parentElement
+    const shell = header?.parentElement
+    const activeTab = shell?.querySelector<HTMLAnchorElement>('a[href="/charts/area"]')
+    const tabs = activeTab?.parentElement
+    if (header === null || header === undefined || shell === null || shell === undefined || activeTab === null || activeTab === undefined || tabs === null || tabs === undefined) throw new Error('Chart gallery header structure is incomplete')
+    const shellStyle = getComputedStyle(shell)
+    const headingStyle = getComputedStyle(heading)
+    const descriptionStyle = getComputedStyle(header.querySelector('p')!)
+    const tabsStyle = getComputedStyle(tabs)
+    const activeTabStyle = getComputedStyle(activeTab)
+    return {
+      activeTab: [activeTabStyle.backgroundColor, activeTabStyle.color, activeTabStyle.fontSize, activeTabStyle.fontWeight, activeTabStyle.height, activeTabStyle.paddingInline],
+      description: [descriptionStyle.color, descriptionStyle.fontSize, descriptionStyle.lineHeight, descriptionStyle.maxWidth],
+      heading: [headingStyle.color, headingStyle.fontSize, headingStyle.fontWeight, headingStyle.letterSpacing, headingStyle.lineHeight, headingStyle.maxWidth],
+      shell: [shellStyle.gap, shellStyle.maxWidth, shellStyle.paddingBlock, shellStyle.paddingInline],
+      tabs: [tabsStyle.borderBottomWidth, tabsStyle.gap, tabsStyle.paddingBottom],
+    }
+  })
+  const tailwindTopLayout = await topLayout()
   await page
     .getByRole('group', { name: 'Charts renderer' })
     .getByRole('button', { name: 'StyleX' })
     .click()
 
   const pageRoot = page.locator('[data-page="charts-stylex"]')
-  await expect(pageRoot.getByRole('heading', { level: 1, name: 'Beautiful Charts & Graphs' })).toBeVisible()
+  await expect(pageRoot.getByRole('heading', { level: 1, name: headingName })).toBeVisible()
+  await expect(pageRoot.getByText(description, { exact: true })).toBeVisible()
+  expect(await topLayout()).toEqual(tailwindTopLayout)
   await expect(pageRoot.locator('[data-slot="echart"]')).toHaveCount(10)
   await expect(pageRoot.locator('canvas')).toHaveCount(10)
   const areaRange = pageRoot.getByRole('group', { name: 'Area range' })

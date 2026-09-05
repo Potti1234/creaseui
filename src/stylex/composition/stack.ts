@@ -20,6 +20,7 @@ export type StackProps = Readonly<{
   gridColumn?: 'auto' | 'span2'
   justify?: 'start' | 'center' | 'end' | 'between'
   padding?: ResponsiveSpaceToken
+  preset?: 'default' | 'chartGallery'
   rendering?: 'eager' | 'deferred'
   slot?: string
   width?: 'auto' | 'full'
@@ -31,6 +32,18 @@ const styles = stylex.create({
   alignStart: { alignItems: 'flex-start' },
   alignStretch: { alignItems: 'stretch' },
   base: { display: 'flex', flexDirection: 'column' },
+  chartGallery: {
+    gap: '2rem',
+    marginInline: 'auto',
+    paddingBlock: '2rem',
+    paddingInline: {
+      default: '1rem',
+      '@media (min-width: 768px)': '2rem',
+    },
+    boxSizing: 'border-box',
+    maxWidth: '87.5rem',
+    width: '100%',
+  },
   gridColumnAuto: { gridColumn: 'auto' },
   gridColumnSpan2: { gridColumnEnd: 'span 2',
  gridColumnStart: 'span 2' },
@@ -57,10 +70,11 @@ export const stack = <Message>(props: StackProps, h: HtmlBuilder<Message>): Html
     deferred: styles.renderingDeferred, eager: styles.renderingEager,
   }[props.rendering]]
   const width = props.width === undefined ? [] : [{ auto: styles.widthAuto, full: styles.widthFull }[props.width]]
+  const preset = props.preset === 'chartGallery' ? [styles.chartGallery] : []
   return primitiveElement(
     props.as ?? 'div',
     primitiveAttributes(
-      className(styles.base, ...align, ...justify, ...gapStyles(props.gap), ...paddingStyles(props.padding), ...gridColumn, ...rendering, ...width),
+      className(styles.base, ...preset, ...align, ...justify, ...gapStyles(props.gap), ...paddingStyles(props.padding), ...gridColumn, ...rendering, ...width),
       props.slot,
       props.data,
       h,
@@ -69,4 +83,3 @@ export const stack = <Message>(props: StackProps, h: HtmlBuilder<Message>): Html
     h,
   )
 }
-
