@@ -1,4 +1,10 @@
 const styles = stylex.create({
+  alignHorizontalCenter: { left: '50%', transform: 'translateX(-50%)' },
+  alignHorizontalEnd: { right: 0 },
+  alignHorizontalStart: { left: 0 },
+  alignVerticalCenter: { top: '50%', transform: 'translateY(-50%)' },
+  alignVerticalEnd: { bottom: 0 },
+  alignVerticalStart: { top: 0 },
   backdrop: { cursor: interactionTokens.cursorDefault, inset: 0, position: 'fixed', zIndex: 40 },
   bottom: { marginTop: '0.25rem', top: '100%' },
   indicator: { alignItems: 'center', display: 'flex', height: '0.875rem', justifyContent: 'center', left: '0.5rem', position: 'absolute', width: '0.875rem' },
@@ -177,8 +183,21 @@ export type DropdownMenuProps<Item extends string, Msg> = Readonly<{
 
 const positionClass = (
   side: DropdownMenuSide,
-  _align: DropdownMenuAlign,
-): StaticStyles => styles[side]
+  align: DropdownMenuAlign,
+): ReadonlyArray<StaticStyles> => [
+  styles[side],
+  side === 'top' || side === 'bottom'
+    ? {
+        start: styles.alignHorizontalStart,
+        center: styles.alignHorizontalCenter,
+        end: styles.alignHorizontalEnd,
+      }[align]
+    : {
+        start: styles.alignVerticalStart,
+        center: styles.alignVerticalCenter,
+        end: styles.alignVerticalEnd,
+      }[align],
+]
 
 const menuKey = <Item extends string>(
   model: Model,
@@ -482,12 +501,12 @@ export const dropdownMenu = <Item extends string, Msg>(
                   cn(
                     CONTENT_CLASS,
                     styles.menuContent,
-                    anchorX !== undefined
-                      ? undefined
+                    ...(anchorX !== undefined
+                      ? []
                       : positionClass(
                           props.side ?? 'bottom',
                           props.align ?? 'start',
-                        ),
+                        )),
                   ),
                 ),
               ],

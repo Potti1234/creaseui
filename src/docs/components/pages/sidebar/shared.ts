@@ -27,7 +27,7 @@ const viewFor = (kind: SidebarFixtureKind, renderer: 'tailwind' | 'stylex'): str
   ] }, h),
   Sidebar.sidebarMenuItem({ children: [
     Sidebar.sidebarMenuButton({ variant: 'outline', children: [Icon.icon('inbox', {}, h), h.span([], ['Inbox'])] }, h),
-    Sidebar.sidebarMenuAction({ onClick: OpenedActions(), showOnHover: true, children: [Icon.moreHorizontal({}, h)] }, h),
+    actionMenu(model, h),
   ] }, h),
 ] }, h)
 
@@ -35,7 +35,7 @@ return { title: 'Sidebar menu primitives', body: Sidebar.sidebar({ collapsible: 
 
   if (kind === 'nested') return `const menu = Sidebar.sidebarMenu({ children: [
   Sidebar.sidebarMenuItem({ children: [
-    Sidebar.sidebarMenuButton({ isActive: true, children: [Icon.icon('book-open', {}, h), h.span([], ['Documentation'])] }, h),
+    Sidebar.sidebarMenuButton({ children: [Icon.icon('book-open', {}, h), h.span([], ['Documentation'])] }, h),
     Sidebar.sidebarMenuSub({ children: ['Introduction', 'Components', 'Changelog'].map((label, index) =>
       Sidebar.sidebarMenuSubItem({ children: [Sidebar.sidebarMenuSubButton({ href: '#', isActive: index === 1, children: [label] }, h)] }, h),
     ) }, h),
@@ -59,7 +59,7 @@ return {
   body: Sidebar.sidebarProvider({ state${providerWidths}, children: [
     Sidebar.sidebar({ state, side: '${side}', variant: '${variant}', collapsible: '${collapsible}', isMobileOpen: model.sidebar.isMobileOpen, onMobileDismiss: GotSidebarMessage({ message: Sidebar.SetMobileOpen({ isOpen: false }) }), children: [
       Sidebar.sidebarHeader({ children: [Sidebar.sidebarInput({ value: model.query, onInput: value => ChangedQuery({ value }), placeholder: 'Search navigation' }, h)] }, h),
-      Sidebar.sidebarContent({ children: [Sidebar.sidebarGroup({ children: [Sidebar.sidebarGroupLabel({ children: ['Platform'] }, h), Sidebar.sidebarGroupContent({ children: [navigation(h)] }, h)] }, h)] }, h),
+      Sidebar.sidebarContent({ children: [Sidebar.sidebarGroup({ children: [Sidebar.sidebarGroupLabel({ children: ['Platform'] }, h), Sidebar.sidebarGroupContent({ children: [navigation(model, h)] }, h)] }, h)] }, h),
       Sidebar.sidebarFooter({ children: [Sidebar.sidebarMenuButton({ size: 'lg', children: [Icon.icon('circle-user-round', {}, h), h.span([], ['Ada Lovelace'])] }, h)] }, h),
       Sidebar.sidebarRail({ onClick: desktopToggle }, h),
     ] }, h),
@@ -81,16 +81,17 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { m } from 'foldkit/message'
 ${sx ? "import * as stylex from '@stylexjs/stylex'\n\nconst styles = stylex.create({ header: { alignItems: 'center', borderBottomColor: 'var(--border)', borderBottomStyle: 'solid', borderBottomWidth: 1, display: 'flex', gap: '0.5rem', height: '3rem', paddingInline: '1rem' }, main: { padding: '1.5rem' } })\n" : ''}
 import * as Icon from '@/lib/icon'
+import * as DropdownMenu from '@/${sx ? 'stylex' : 'ui'}/dropdown-menu'
 import * as Sidebar from '@/${sx ? 'stylex' : 'ui'}/sidebar'`,
-    model: `export const Model = S.Struct({ sidebar: Sidebar.Model, query: S.String })
+    model: `export const Model = S.Struct({ sidebar: Sidebar.Model, actions: DropdownMenu.Model, query: S.String })
 export type Model = typeof Model.Type`,
     messages: `export const GotSidebarMessage = m('GotSidebarMessage', { message: Sidebar.Message })
+export const GotActionsMessage = m('GotActionsMessage', { message: DropdownMenu.Message })
 export const ChangedQuery = m('ChangedQuery', { value: S.String })
-export const OpenedActions = m('OpenedActions')
-export const Message = S.Union([GotSidebarMessage, ChangedQuery, OpenedActions])
+export const Message = S.Union([GotSidebarMessage, GotActionsMessage, ChangedQuery])
 export type Message = typeof Message.Type`,
     init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { sidebar: Sidebar.init({ defaultOpen: true, storageKey: 'workspace_sidebar' }), query: '' },
+  { sidebar: Sidebar.init({ defaultOpen: true, storageKey: 'workspace_sidebar' }), actions: DropdownMenu.init({ id: 'sidebar-actions' }), query: '' },
   [],
 ]`,
     update: `export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
@@ -99,18 +100,33 @@ export type Message = typeof Message.Type`,
       const [sidebar, commands] = Sidebar.update(model.sidebar, message.message)
       return [{ ...model, sidebar }, Command.mapMessages(commands, next => GotSidebarMessage({ message: next }))]
     }
+    case 'GotActionsMessage': {
+      const [actions, commands] = DropdownMenu.update(model.actions, message.message)
+      return [{ ...model, actions }, Command.mapMessages(commands, next => GotActionsMessage({ message: next }))]
+    }
     case 'ChangedQuery': return [{ ...model, query: message.value }, []]
-    case 'OpenedActions': return [model, []]
   }
 }`,
     subscriptions: `export const subscriptions = Subscription.make<Model, Message>()(() => ({
   sidebarShortcut: Subscription.persistent(Sidebar.shortcut(next => GotSidebarMessage({ message: next }))),
 }))`,
-    view: `const navigation = (h: HtmlBuilder<Message>) => Sidebar.sidebarMenu({ children: [
+    view: `const actionItems = ['open', 'rename', 'delete'] as const
+const actionMenu = (model: Model, h: HtmlBuilder<Message>) => DropdownMenu.dropdownMenu({
+  model: model.actions,
+  toParentMessage: message => GotActionsMessage({ message }),
+  trigger: Icon.moreHorizontal({}, h),
+  ariaLabel: 'Item actions',
+  align: 'end',
+  items: actionItems,
+  itemToConfig: action => ({ label: action[0]?.toUpperCase() + action.slice(1), ...(action === 'delete' ? { variant: 'destructive' as const } : {}) }),
+}, h)
+
+const navigation = (model: Model, h: HtmlBuilder<Message>) => Sidebar.sidebarMenu({ children: [
   ['Overview', 'gauge'], ['Inbox', 'inbox'], ['Projects', 'book-open']
 ].map(([label, iconName], index) => Sidebar.sidebarMenuItem({ children: [
   Sidebar.sidebarMenuButton({ href: '#', isActive: index === 0, tooltip: label ?? '', children: [Icon.icon(iconName ?? 'circle', {}, h), h.span([], [label ?? ''])] }, h),
   ...(index === 1 ? [Sidebar.sidebarMenuBadge({ children: ['12'] }, h)] : []),
+  ...(index === 2 ? [actionMenu(model, h)] : []),
 ] }, h)) }, h)
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => {

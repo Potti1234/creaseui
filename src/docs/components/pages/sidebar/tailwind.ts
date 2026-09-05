@@ -1,20 +1,26 @@
-import { Schema as S } from 'effect';
+import { Option, Schema as S } from 'effect';
 import { Command, Subscription } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import { sidebarFixtures, type SidebarFixtureKind } from '@/docs/components/pages/sidebar/shared';
+import * as DropdownMenu from '@/ui/dropdown-menu';
 import * as Icon from '@/lib/icon';
 import * as Sidebar from '@/ui/sidebar';
 
 const GotSidebar = m('GotSidebarPreviewMessage', { message: Sidebar.Message });
 const ChangedQuery = m('ChangedSidebarPreviewQuery', { value: S.String });
-const PressedAction = m('PressedSidebarPreviewAction');
-const Message = S.Union([GotSidebar, ChangedQuery, PressedAction]);
+const GotActionMenu = m('GotSidebarPreviewActionMenuMessage', { message: DropdownMenu.Message });
+const CreatedProject = m('CreatedSidebarPreviewProject');
+const Message = S.Union([GotSidebar, ChangedQuery, GotActionMenu, CreatedProject]);
 type Message = typeof Message.Type;
-const Model = S.Struct({ _docsPage: S.Literal('sidebar'), sidebar: Sidebar.Model, query: S.String });
+const Model = S.Struct({ _docsPage: S.Literal('sidebar'), sidebar: Sidebar.Model, actionMenu: DropdownMenu.Model, feedback: S.String, query: S.String });
 type Model = typeof Model.Type;
+
+const ActionMenu = DropdownMenu.create<string>();
+const actionItems = ['open', 'rename', 'delete'] as const;
+const actionLabel = (action: string): string => action[0]?.toUpperCase() + action.slice(1);
 
 const subscriptions = typeof document === 'undefined'
   ? undefined
@@ -27,7 +33,21 @@ const iconLabel = (name: string, label: string, h: HtmlBuilder<Message>): Readon
   h.span([], [label]),
 ];
 
-const primaryNavigation = (h: HtmlBuilder<Message>): Html => Sidebar.sidebarMenu({
+const actionMenu = (model: DropdownMenu.Model, label: string, h: HtmlBuilder<Message>): Html => h.div([
+  h.DataAttribute('sidebar', 'menu-action'),
+  h.Class('absolute right-1 top-1.5 z-30 group-data-[collapsible=icon]:hidden'),
+], [DropdownMenu.dropdownMenu({
+  model,
+  toParentMessage: (message) => GotActionMenu({ message }),
+  trigger: h.span([h.Class('flex items-center')], [Icon.moreHorizontal({}, h), h.span([h.Class('sr-only')], [label])]),
+  triggerClass: 'flex size-5 items-center justify-center rounded-md text-sidebar-foreground outline-none hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring [&_svg]:size-4',
+  ariaLabel: label,
+  align: 'end',
+  items: actionItems,
+  itemToConfig: (action) => ({ label: actionLabel(action), ...(action === 'delete' ? { variant: 'destructive' as const } : {}) }),
+}, h)]);
+
+const primaryNavigation = (model: Model, h: HtmlBuilder<Message>): Html => Sidebar.sidebarMenu({
   children: [
     ['Dashboard', 'gauge'],
     ['Inbox', 'inbox'],
@@ -42,11 +62,7 @@ const primaryNavigation = (h: HtmlBuilder<Message>): Html => Sidebar.sidebarMenu
         children: iconLabel(iconName ?? 'circle', label ?? '', h),
       }, h),
       ...(index === 1 ? [Sidebar.sidebarMenuBadge({ children: ['12'] }, h)] : []),
-      ...(index === 2 ? [Sidebar.sidebarMenuAction({
-        onClick: PressedAction(),
-        showOnHover: true,
-        children: [Icon.moreHorizontal({}, h), h.span([h.Class('sr-only')], ['Project actions'])],
-      }, h)] : []),
+      ...(index === 2 ? [actionMenu(model.actionMenu, 'Project actions', h)] : []),
     ],
   }, h)),
 }, h);
@@ -70,7 +86,7 @@ const account = (h: HtmlBuilder<Message>): Html => Sidebar.sidebarMenu({
 const nestedNavigation = (h: HtmlBuilder<Message>): Html => Sidebar.sidebarMenu({
   children: [Sidebar.sidebarMenuItem({
     children: [
-      Sidebar.sidebarMenuButton({ isActive: true, children: iconLabel('book-open', 'Documentation', h) }, h),
+      Sidebar.sidebarMenuButton({ children: iconLabel('book-open', 'Documentation', h) }, h),
       Sidebar.sidebarMenuSub({ children: ['Introduction', 'Components', 'Changelog'].map((label, index) =>
         Sidebar.sidebarMenuSubItem({ children: [Sidebar.sidebarMenuSubButton({ href: '#', isActive: index === 1, children: [label] }, h)] }, h),
       ) }, h),
@@ -89,7 +105,7 @@ const sidebarBody = (model: Model, h: HtmlBuilder<Message>, detailed = true): Re
   Sidebar.sidebarContent({ children: [
     Sidebar.sidebarGroup({ children: [
       Sidebar.sidebarGroupLabel({ children: ['Platform'] }, h),
-      Sidebar.sidebarGroupContent({ children: [primaryNavigation(h)] }, h),
+      Sidebar.sidebarGroupContent({ children: [primaryNavigation(model, h)] }, h),
     ] }, h),
     ...(detailed ? [Sidebar.sidebarGroup({ children: [
       Sidebar.sidebarGroupLabel({ children: ['Learn'] }, h),
@@ -148,22 +164,22 @@ const shell = (kind: SidebarFixtureKind, model: Model, h: HtmlBuilder<Message>):
   }, h);
 };
 
-const staticPanel = (kind: 'menu' | 'nested' | 'loading', h: HtmlBuilder<Message>): Html => {
+const staticPanel = (kind: 'menu' | 'nested' | 'loading', model: Model, h: HtmlBuilder<Message>): Html => {
   const content = kind === 'menu'
     ? Sidebar.sidebarMenu({ children: [
         Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ isActive: true, children: iconLabel('gauge', 'Overview', h) }, h), Sidebar.sidebarMenuBadge({ children: ['12'] }, h)] }, h),
-        Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ variant: 'outline', children: iconLabel('inbox', 'Inbox', h) }, h), Sidebar.sidebarMenuAction({ onClick: PressedAction(), showOnHover: true, children: [Icon.moreHorizontal({}, h), h.span([h.Class('sr-only')], ['Inbox actions'])] }, h)] }, h),
-        Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ variant: 'primary', children: iconLabel('plus', 'Create project', h) }, h)] }, h),
+        Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ variant: 'outline', children: iconLabel('inbox', 'Inbox', h) }, h), actionMenu(model.actionMenu, 'Inbox actions', h)] }, h),
+        Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ onClick: CreatedProject(), variant: 'primary', children: iconLabel('plus', 'Create project', h) }, h)] }, h),
       ] }, h)
     : kind === 'nested'
       ? nestedNavigation(h)
       : Sidebar.sidebarMenu({ children: [82, 68, 76, 58].map((widthPercent) => Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuSkeleton({ showIcon: true, widthPercent }, h)] }, h)) }, h);
 
-  return h.div([h.Class('flex h-[26rem] items-stretch justify-center overflow-hidden rounded-lg border bg-muted/30 p-4')], [
-    Sidebar.sidebarProvider({ width: '18rem', class: 'min-h-0 w-[18rem] overflow-hidden rounded-lg border bg-background', children: [
+  return h.div([h.Class('flex h-80 w-full items-stretch justify-center bg-muted/30 p-4')], [
+    Sidebar.sidebarProvider({ width: '18rem', class: 'h-full min-h-0 w-full max-w-[18rem] overflow-hidden rounded-lg border bg-background', children: [
       Sidebar.sidebar({ collapsible: 'none', children: [
         Sidebar.sidebarHeader({ children: [h.div([h.Class('px-2 py-1 text-sm font-semibold')], [kind === 'loading' ? 'Loading projects' : 'Crease Workspace'])] }, h),
-        Sidebar.sidebarContent({ children: [Sidebar.sidebarGroup({ children: [Sidebar.sidebarGroupLabel({ children: [kind === 'nested' ? 'Resources' : 'Workspace'] }, h), Sidebar.sidebarGroupContent({ children: [content] }, h)] }, h)] }, h),
+        Sidebar.sidebarContent({ children: [Sidebar.sidebarGroup({ children: [Sidebar.sidebarGroupLabel({ children: [kind === 'nested' ? 'Resources' : 'Workspace'] }, h), Sidebar.sidebarGroupContent({ children: [content] }, h), ...(kind === 'menu' && model.feedback !== '' ? [h.p([h.Role('status'), h.AriaLive('polite'), h.Class('px-2 pt-2 text-xs text-sidebar-foreground/70')], [model.feedback])] : [])] }, h)] }, h),
       ] }, h),
     ] }, h),
   ]);
@@ -172,7 +188,7 @@ const staticPanel = (kind: 'menu' | 'nested' | 'loading', h: HtmlBuilder<Message
 export const sidebarTailwindPreviewProgram = definePreviewProgram<Model, Message>({
   Model,
   Message,
-  init: (index) => ({ _docsPage: 'sidebar', sidebar: Sidebar.init({ defaultOpen: true, storageKey: `docs_sidebar_${String(index)}` }), query: '' }),
+  init: (index) => ({ _docsPage: 'sidebar', sidebar: Sidebar.init({ defaultOpen: true, storageKey: `docs_sidebar_${String(index)}` }), actionMenu: DropdownMenu.init({ id: `docs-sidebar-actions-${String(index)}`, isAnimated: false }), feedback: '', query: '' }),
   update: (model, message) => {
     switch (message._tag) {
       case 'GotSidebarPreviewMessage': {
@@ -180,14 +196,19 @@ export const sidebarTailwindPreviewProgram = definePreviewProgram<Model, Message
         return [{ ...model, sidebar }, Command.mapMessages(commands, (next) => GotSidebar({ message: next }))];
       }
       case 'ChangedSidebarPreviewQuery': return [{ ...model, query: message.value }, []];
-      case 'PressedSidebarPreviewAction': return [model, []];
+      case 'GotSidebarPreviewActionMenuMessage': {
+        const [actionMenu, commands, maybeSelection] = ActionMenu.update(model.actionMenu, message.message);
+        const selection = Option.getOrUndefined(maybeSelection);
+        return [{ ...model, actionMenu, ...(selection === undefined ? {} : { feedback: `${actionLabel(selection.value)} selected` }) }, Command.mapMessages(commands, (next) => GotActionMenu({ message: next }))];
+      }
+      case 'CreatedSidebarPreviewProject': return [{ ...model, feedback: 'Project created' }, []];
     }
   },
   ...(subscriptions === undefined ? {} : { subscriptions }),
   view: (index, model, h) => {
     const kind = sidebarFixtures[index]?.kind ?? 'shell';
     return kind === 'menu' || kind === 'nested' || kind === 'loading'
-      ? staticPanel(kind, h)
+      ? staticPanel(kind, model, h)
       : shell(kind, model, h);
   },
 });

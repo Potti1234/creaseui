@@ -401,6 +401,16 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/menubar['"]/u)
   })
 
+  it('positions StyleX dropdown alignments on both axes', () => {
+    const stylex = readFileSync('src/stylex/dropdown-menu.ts', 'utf8')
+
+    assert.match(stylex, /alignHorizontalStart: \{ left: 0 \}/u)
+    assert.match(stylex, /alignHorizontalEnd: \{ right: 0 \}/u)
+    assert.match(stylex, /alignVerticalStart: \{ top: 0 \}/u)
+    assert.match(stylex, /alignVerticalEnd: \{ bottom: 0 \}/u)
+    assert.match(stylex, /side === 'top' \|\| side === 'bottom'/u)
+  })
+
   it('shares Pagination range policy while keeping page state parent-owned', () => {
     const behavior = readFileSync('src/lib/pagination.ts', 'utf8')
     const tailwind = readFileSync('src/ui/pagination.ts', 'utf8')
