@@ -117,7 +117,7 @@ const VersionMenu = DropdownMenu.create<Version>();
 // MODEL
 
 export const Model = S.Struct({
-  isSidebarOpen: S.Boolean,
+  isMobileOpen: S.Boolean, isSidebarOpen: S.Boolean,
   selectedVersion: S.String,
   versionMenu: DropdownMenu.Model,
   navMainOpen: S.Array(S.Boolean),
@@ -127,6 +127,7 @@ export type Model = typeof Model.Type;
 // MESSAGE
 
 export const ToggledSidebar = m('ToggledSidebar');
+export const ToggledMobileSidebar = m('ToggledMobileSidebar');
 export const GotVersionMenuMessage = m('GotVersionMenuMessage', {
   message: DropdownMenu.Message,
 });
@@ -136,6 +137,7 @@ export const ToggledNavMain = m('ToggledNavMain', {
 });
 
 export const Message = S.Union([
+  ToggledMobileSidebar,
   ToggledSidebar,
   GotVersionMenuMessage,
   ToggledNavMain,
@@ -145,7 +147,7 @@ export type Message = typeof Message.Type;
 // INIT
 
 export const init = (): Model => ({
-  isSidebarOpen: true,
+  isMobileOpen: false, isSidebarOpen: true,
   selectedVersion: data.versions[0] ?? '1.0.1',
   versionMenu: DropdownMenu.init({
     id: 'sidebar-02-version-switcher',
@@ -162,6 +164,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
+      ToggledMobileSidebar: () => [evo(model, {isMobileOpen: current => !current}), []],
       ToggledSidebar: () => [
         evo(model, { isSidebarOpen: (current) => !current }),
         [],
@@ -407,7 +410,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
 
   return sidebar<Message>(
     {
-      state,
+      isMobileOpen: model.isMobileOpen, onMobileDismiss: ToggledMobileSidebar(), state,
       children: [
         sidebarHeader(
           {
@@ -434,7 +437,7 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
             ),
           ],
           [
-            sidebarTrigger({ onClick: ToggledSidebar(), class: '-ml-1' }, h),
+            sidebarTrigger({ onMobileClick: ToggledMobileSidebar(), onClick: ToggledSidebar(), class: '-ml-1' }, h),
             separator({ orientation: 'vertical', class: 'mr-2 h-4' }, h),
             breadcrumb(
               {

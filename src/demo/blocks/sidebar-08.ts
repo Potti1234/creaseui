@@ -142,7 +142,7 @@ const UserMenu = DropdownMenu.create<UserAction>();
 // MODEL
 
 export const Model = S.Struct({
-  isSidebarOpen: S.Boolean,
+  isMobileOpen: S.Boolean, isSidebarOpen: S.Boolean,
   navMainOpen: S.Array(S.Boolean),
   projectMenus: S.Array(DropdownMenu.Model),
   userMenu: DropdownMenu.Model,
@@ -152,6 +152,7 @@ export type Model = typeof Model.Type;
 // MESSAGE
 
 export const ToggledSidebar = m('ToggledSidebar');
+export const ToggledMobileSidebar = m('ToggledMobileSidebar');
 export const ToggledNavMain = m('ToggledNavMain', {
   index: S.Number,
   isOpen: S.Boolean,
@@ -165,6 +166,7 @@ export const GotUserMenuMessage = m('GotUserMenuMessage', {
 });
 
 export const Message = S.Union([
+  ToggledMobileSidebar,
   ToggledSidebar,
   ToggledNavMain,
   GotProjectMenuMessage,
@@ -175,7 +177,7 @@ export type Message = typeof Message.Type;
 // INIT
 
 export const init = (): Model => ({
-  isSidebarOpen: true,
+  isMobileOpen: false, isSidebarOpen: true,
   navMainOpen: data.navMain.map((item) => item.isActive ?? false),
   projectMenus: data.projects.map((_, index) =>
     DropdownMenu.init({
@@ -197,6 +199,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
+      ToggledMobileSidebar: () => [evo(model, {isMobileOpen: current => !current}), []],
       ToggledSidebar: () => [
         evo(model, { isSidebarOpen: (current) => !current }),
         [],
@@ -617,7 +620,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
 
   return sidebar(
     {
-      state,
+      isMobileOpen: model.isMobileOpen, onMobileDismiss: ToggledMobileSidebar(), state,
       variant: 'inset',
       children: [
         sidebarHeader(
@@ -710,7 +713,7 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
               [
                 sidebarTrigger(
                   {
-                    onClick: ToggledSidebar(),
+                    onMobileClick: ToggledMobileSidebar(), onClick: ToggledSidebar(),
                     class: '-ml-1',
                   },
                   h,

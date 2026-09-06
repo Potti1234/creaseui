@@ -68,7 +68,7 @@ type Workspace = Readonly<{
   pages: ReadonlyArray<WorkspacePage>;
 }>;
 
-const data = {
+export const data = {
   teams: [
     { name: 'Acme Inc', logo: 'command', plan: 'Enterprise' },
     { name: 'Acme Corp.', logo: 'audio-waveform', plan: 'Startup' },
@@ -80,7 +80,7 @@ const data = {
     {
       title: 'Home',
       url: '#',
-      icon: 'home',
+      icon: 'house',
       isActive: true,
     },
     { title: 'Inbox', url: '#', icon: 'inbox', badge: '10' },
@@ -303,7 +303,7 @@ const FavoriteMenu = DropdownMenu.create<FavoriteAction>();
 // MODEL
 
 export const Model = S.Struct({
-  isSidebarOpen: S.Boolean,
+  isMobileOpen: S.Boolean, isSidebarOpen: S.Boolean,
   activeTeamIndex: S.Number,
   teamMenu: DropdownMenu.Model,
   favoriteMenus: S.Array(DropdownMenu.Model),
@@ -315,6 +315,7 @@ export type Model = typeof Model.Type;
 // MESSAGE
 
 export const ToggledSidebar = m('ToggledSidebar');
+export const ToggledMobileSidebar = m('ToggledMobileSidebar');
 export const GotTeamMenuMessage = m('GotTeamMenuMessage', {
   message: DropdownMenu.Message,
 });
@@ -331,6 +332,7 @@ export const GotActionsPopoverMessage = m('GotActionsPopoverMessage', {
 });
 
 export const Message = S.Union([
+  ToggledMobileSidebar,
   ToggledSidebar,
   GotTeamMenuMessage,
   GotFavoriteMenuMessage,
@@ -342,7 +344,7 @@ export type Message = typeof Message.Type;
 // INIT
 
 export const init = (): Model => ({
-  isSidebarOpen: true,
+  isMobileOpen: false, isSidebarOpen: true,
   activeTeamIndex: 0,
   teamMenu: DropdownMenu.init({
     id: 'sidebar-10-team-menu',
@@ -369,6 +371,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
+      ToggledMobileSidebar: () => [evo(model, {isMobileOpen: current => !current}), []],
       ToggledSidebar: () => [
         evo(model, { isSidebarOpen: (current) => !current }),
         [],
@@ -992,7 +995,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
 
   return sidebar<Message>(
     {
-      state,
+      isMobileOpen: model.isMobileOpen, onMobileDismiss: ToggledMobileSidebar(), state,
       class: 'border-r-0',
       children: [
         sidebarHeader(
@@ -1028,7 +1031,7 @@ const pageContent = (model: Popover.Model, h: HtmlBuilder<Message>): Html => {
             h.div(
               [h.Class('flex flex-1 items-center gap-2 px-3')],
               [
-                sidebarTrigger({ onClick: ToggledSidebar() }, h),
+                sidebarTrigger({ onMobileClick: ToggledMobileSidebar(), onClick: ToggledSidebar() }, h),
                 separator(
                   {
                     orientation: 'vertical',

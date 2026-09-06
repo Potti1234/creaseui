@@ -65,7 +65,7 @@ type Project = Readonly<{
 
 // Sample data copied from the source block; icon components become their
 // equivalent lucide-static names for foldkit's icon renderer.
-const data = {
+export const data = {
   user: {
     name: 'shadcn',
     email: 'm@example.com',
@@ -165,7 +165,7 @@ const UserMenu = DropdownMenu.create<UserMenuItem>();
 // MODEL
 
 export const Model = S.Struct({
-  isSidebarOpen: S.Boolean,
+  isMobileOpen: S.Boolean, isSidebarOpen: S.Boolean,
   activeTeamIndex: S.Number,
   navMainOpen: S.Array(S.Boolean),
   teamMenu: DropdownMenu.Model,
@@ -176,6 +176,7 @@ export type Model = typeof Model.Type;
 // MESSAGE
 
 export const ToggledSidebar = m('ToggledSidebar');
+export const ToggledMobileSidebar = m('ToggledMobileSidebar');
 export const ToggledNavMain = m('ToggledNavMain', {
   index: S.Number,
   isOpen: S.Boolean,
@@ -188,6 +189,7 @@ export const GotUserMenuMessage = m('GotUserMenuMessage', {
 });
 
 export const Message = S.Union([
+  ToggledMobileSidebar,
   ToggledSidebar,
   ToggledNavMain,
   GotTeamMenuMessage,
@@ -198,7 +200,7 @@ export type Message = typeof Message.Type;
 // INIT
 
 export const init = (): Model => ({
-  isSidebarOpen: true,
+  isMobileOpen: false, isSidebarOpen: true,
   activeTeamIndex: 0,
   navMainOpen: data.navMain.map((item) => item.isActive ?? false),
   teamMenu: DropdownMenu.init({
@@ -219,6 +221,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
+      ToggledMobileSidebar: () => [evo(model, {isMobileOpen: current => !current}), []],
       ToggledSidebar: () => [
         evo(model, { isSidebarOpen: (current) => !current }),
         [],
@@ -653,7 +656,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
 
   return sidebar<Message>(
     {
-      state,
+      isMobileOpen: model.isMobileOpen, onMobileDismiss: ToggledMobileSidebar(), state,
       collapsible: 'icon',
       children: [
         sidebarHeader({ children: [teamSwitcher(model, h)] }, h),
@@ -687,7 +690,7 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
               [
                 sidebarTrigger(
                   {
-                    onClick: ToggledSidebar(),
+                    onMobileClick: ToggledMobileSidebar(), onClick: ToggledSidebar(),
                     class: '-ml-1',
                   },
                   h,

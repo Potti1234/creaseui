@@ -112,7 +112,7 @@ const USER_ITEMS: ReadonlyArray<UserItem> = [
 const UserMenu = DropdownMenu.create<UserItem>();
 
 export const Model = S.Struct({
-  isSidebarOpen: S.Boolean,
+  isMobileOpen: S.Boolean, isSidebarOpen: S.Boolean,
   search: S.String,
   navMainOpen: S.Array(S.Boolean),
   userMenu: DropdownMenu.Model,
@@ -120,6 +120,7 @@ export const Model = S.Struct({
 export type Model = typeof Model.Type;
 
 export const ToggledSidebar = m('ToggledSidebar');
+export const ToggledMobileSidebar = m('ToggledMobileSidebar');
 export const ChangedSearch = m('ChangedSearch', { value: S.String });
 export const ToggledNavMain = m('ToggledNavMain', {
   index: S.Number,
@@ -129,6 +130,7 @@ export const GotUserMenuMessage = m('GotUserMenuMessage', {
   message: DropdownMenu.Message,
 });
 export const Message = S.Union([
+  ToggledMobileSidebar,
   ToggledSidebar,
   ChangedSearch,
   ToggledNavMain,
@@ -137,7 +139,7 @@ export const Message = S.Union([
 export type Message = typeof Message.Type;
 
 export const init = (): Model => ({
-  isSidebarOpen: true,
+  isMobileOpen: false, isSidebarOpen: true,
   search: '',
   navMainOpen: data.navMain.map((item) => item.isActive ?? false),
   userMenu: DropdownMenu.init({
@@ -151,6 +153,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
+      ToggledMobileSidebar: () => [evo(model, {isMobileOpen: current => !current}), []],
       ToggledSidebar: () => [
         evo(model, { isSidebarOpen: (current) => !current }),
         [],
@@ -465,7 +468,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
   const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
   return sidebar<Message>(
     {
-      state,
+      isMobileOpen: model.isMobileOpen, onMobileDismiss: ToggledMobileSidebar(), state,
       collapsible: 'icon',
       class: 'top-(--header-height) h-[calc(100svh-var(--header-height))]!',
       children: [
@@ -591,7 +594,7 @@ const siteHeader = (model: Model, h: HtmlBuilder<Message>): Html => {
         [
           sidebarTrigger(
             {
-              onClick: ToggledSidebar(),
+              onMobileClick: ToggledMobileSidebar(), onClick: ToggledSidebar(),
               class: 'size-8',
             },
             h,

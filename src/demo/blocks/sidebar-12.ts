@@ -35,7 +35,7 @@ import {
   sidebarTrigger,
 } from '@/ui/sidebar';
 
-const data = {
+export const data = {
   user: {
     name: 'shadcn',
     email: 'm@example.com',
@@ -61,7 +61,7 @@ const USER_MENU_ITEMS: ReadonlyArray<UserMenuItem> = [
 const UserMenu = DropdownMenu.create<UserMenuItem>();
 
 export const Model = S.Struct({
-  isSidebarOpen: S.Boolean,
+  isMobileOpen: S.Boolean, isSidebarOpen: S.Boolean,
   calendar: Calendar.Model,
   selectedDate: S.Option(FoldkitCalendar.CalendarDate),
   calendarGroupsOpen: S.Array(S.Boolean),
@@ -70,6 +70,7 @@ export const Model = S.Struct({
 export type Model = typeof Model.Type;
 
 export const ToggledSidebar = m('ToggledSidebar');
+export const ToggledMobileSidebar = m('ToggledMobileSidebar');
 export const GotCalendarMessage = m('GotCalendarMessage', {
   message: Calendar.Message,
 });
@@ -81,6 +82,7 @@ export const GotUserMenuMessage = m('GotUserMenuMessage', {
   message: DropdownMenu.Message,
 });
 export const Message = S.Union([
+  ToggledMobileSidebar,
   ToggledSidebar,
   GotCalendarMessage,
   ToggledCalendarGroup,
@@ -89,7 +91,7 @@ export const Message = S.Union([
 export type Message = typeof Message.Type;
 
 export const init = (): Model => ({
-  isSidebarOpen: true,
+  isMobileOpen: false, isSidebarOpen: true,
   calendar: Calendar.init({
     id: 'sidebar-12-calendar',
     today: { year: 2024, month: 10, day: 15 },
@@ -108,6 +110,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
+      ToggledMobileSidebar: () => [evo(model, {isMobileOpen: current => !current}), []],
       ToggledSidebar: () => [
         evo(model, { isSidebarOpen: (current) => !current }),
         [],
@@ -385,7 +388,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
   const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
   return sidebar<Message>(
     {
-      state,
+      isMobileOpen: model.isMobileOpen, onMobileDismiss: ToggledMobileSidebar(), state,
       children: [
         sidebarHeader(
           {
@@ -456,7 +459,7 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
             ),
           ],
           [
-            sidebarTrigger({ onClick: ToggledSidebar(), class: '-ml-1' }, h),
+            sidebarTrigger({ onMobileClick: ToggledMobileSidebar(), onClick: ToggledSidebar(), class: '-ml-1' }, h),
             separator(
               {
                 orientation: 'vertical',

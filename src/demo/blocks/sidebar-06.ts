@@ -112,7 +112,7 @@ const SectionMenu = DropdownMenu.create<string>();
 // MODEL
 
 export const Model = S.Struct({
-  isSidebarOpen: S.Boolean,
+  isMobileOpen: S.Boolean, isSidebarOpen: S.Boolean,
   sectionMenus: S.Array(DropdownMenu.Model),
 });
 export type Model = typeof Model.Type;
@@ -120,18 +120,19 @@ export type Model = typeof Model.Type;
 // MESSAGE
 
 export const ToggledSidebar = m('ToggledSidebar');
+export const ToggledMobileSidebar = m('ToggledMobileSidebar');
 export const GotSectionMenuMessage = m('GotSectionMenuMessage', {
   index: S.Number,
   message: DropdownMenu.Message,
 });
 
-export const Message = S.Union([ToggledSidebar, GotSectionMenuMessage]);
+export const Message = S.Union([ToggledMobileSidebar, ToggledSidebar, GotSectionMenuMessage]);
 export type Message = typeof Message.Type;
 
 // INIT
 
 export const init = (): Model => ({
-  isSidebarOpen: true,
+  isMobileOpen: false, isSidebarOpen: true,
   sectionMenus: data.navMain.map((_, index) =>
     DropdownMenu.init({
       id: `sidebar-06-section-menu-${index}`,
@@ -148,6 +149,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
+      ToggledMobileSidebar: () => [evo(model, {isMobileOpen: current => !current}), []],
       ToggledSidebar: () => [
         evo(model, { isSidebarOpen: (current) => !current }),
         [],
@@ -319,7 +321,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
 
   return sidebar(
     {
-      state,
+      isMobileOpen: model.isMobileOpen, onMobileDismiss: ToggledMobileSidebar(), state,
       children: [
         sidebarHeader(
           {
@@ -407,7 +409,7 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
           [
             sidebarTrigger(
               {
-                onClick: ToggledSidebar(),
+                onMobileClick: ToggledMobileSidebar(), onClick: ToggledSidebar(),
                 class: '-ml-1',
               },
               h,

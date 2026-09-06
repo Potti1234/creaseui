@@ -40,7 +40,7 @@ type Change = Readonly<{
 
 type TreeItem = string | ReadonlyArray<TreeItem>;
 
-const data = {
+export const data = {
   changes: [
     { file: 'README.md', state: 'M' },
     { file: 'api/hello/route.ts', state: 'U' },
@@ -108,7 +108,7 @@ const folderEntries = (
 // MODEL
 
 export const Model = S.Struct({
-  isSidebarOpen: S.Boolean,
+  isMobileOpen: S.Boolean, isSidebarOpen: S.Boolean,
   folders: S.Record(S.String, S.Boolean),
 });
 export type Model = typeof Model.Type;
@@ -116,18 +116,19 @@ export type Model = typeof Model.Type;
 // MESSAGE
 
 export const ToggledSidebar = m('ToggledSidebar');
+export const ToggledMobileSidebar = m('ToggledMobileSidebar');
 export const ToggledFolder = m('ToggledFolder', {
   path: S.String,
   isOpen: S.Boolean,
 });
 
-export const Message = S.Union([ToggledSidebar, ToggledFolder]);
+export const Message = S.Union([ToggledMobileSidebar, ToggledSidebar, ToggledFolder]);
 export type Message = typeof Message.Type;
 
 // INIT
 
 export const init = (): Model => ({
-  isSidebarOpen: true,
+  isMobileOpen: false, isSidebarOpen: true,
   folders: folderEntries(data.tree).reduce<Readonly<Record<string, boolean>>>(
     (models, entry) => ({
       ...models,
@@ -145,6 +146,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
+      ToggledMobileSidebar: () => [evo(model, {isMobileOpen: current => !current}), []],
       ToggledSidebar: () => [
         evo(model, { isSidebarOpen: (current) => !current }),
         [],
@@ -314,7 +316,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
 
   return sidebar<Message>(
     {
-      state,
+      isMobileOpen: model.isMobileOpen, onMobileDismiss: ToggledMobileSidebar(), state,
       children: [
         sidebarContent(
           {
@@ -338,7 +340,7 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
           [
             sidebarTrigger(
               {
-                onClick: ToggledSidebar(),
+                onMobileClick: ToggledMobileSidebar(), onClick: ToggledSidebar(),
                 class: '-ml-1',
               },
               h,

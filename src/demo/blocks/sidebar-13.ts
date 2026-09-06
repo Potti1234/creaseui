@@ -26,7 +26,7 @@ import {
   sidebarProvider,
 } from '@/ui/sidebar';
 
-const data = {
+export const data = {
   nav: [
     { name: 'Notifications', icon: 'bell' },
     { name: 'Navigation', icon: 'menu' },

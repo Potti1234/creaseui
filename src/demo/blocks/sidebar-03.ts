@@ -106,20 +106,21 @@ const data = {
 // MODEL
 
 export const Model = S.Struct({
-  isSidebarOpen: S.Boolean,
+  isMobileOpen: S.Boolean, isSidebarOpen: S.Boolean,
 });
 export type Model = typeof Model.Type;
 
 // MESSAGE
 
 export const ToggledSidebar = m('ToggledSidebar');
+export const ToggledMobileSidebar = m('ToggledMobileSidebar');
 
-export const Message = S.Union([ToggledSidebar]);
+export const Message = S.Union([ToggledMobileSidebar, ToggledSidebar]);
 export type Message = typeof Message.Type;
 
 // INIT
 
-export const init = (): Model => ({ isSidebarOpen: true });
+export const init = (): Model => ({ isMobileOpen: false, isSidebarOpen: true });
 
 // UPDATE
 
@@ -129,6 +130,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
+      ToggledMobileSidebar: () => [evo(model, {isMobileOpen: current => !current}), []],
       ToggledSidebar: () => [
         evo(model, { isSidebarOpen: (current) => !current }),
         [],
@@ -244,7 +246,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
 
   return sidebar<Message>(
     {
-      state,
+      isMobileOpen: model.isMobileOpen, onMobileDismiss: ToggledMobileSidebar(), state,
       children: [
         sidebarHeader({ children: [brand(h)] }, h),
         sidebarContent({ children: [navMain(h)] }, h),
@@ -265,7 +267,7 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
             h.div(
               [h.Class('flex items-center gap-2 px-3')],
               [
-                sidebarTrigger({ onClick: ToggledSidebar() }, h),
+                sidebarTrigger({ onMobileClick: ToggledMobileSidebar(), onClick: ToggledSidebar() }, h),
                 separator({ orientation: 'vertical', class: 'mr-2 h-4' }, h),
                 breadcrumb(
                   {

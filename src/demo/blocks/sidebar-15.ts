@@ -208,7 +208,7 @@ const TeamMenu = DropdownMenu.create<TeamItem>();
 const UserMenu = DropdownMenu.create<UserItem>();
 
 export const Model = S.Struct({
-  isLeftSidebarOpen: S.Boolean,
+  isMobileOpen: S.Boolean, isLeftSidebarOpen: S.Boolean,
   isRightSidebarOpen: S.Boolean,
   activeTeamIndex: S.Number,
   teamMenu: DropdownMenu.Model,
@@ -221,6 +221,7 @@ export const Model = S.Struct({
 export type Model = typeof Model.Type;
 
 export const ToggledSidebar = m('ToggledSidebar');
+export const ToggledMobileSidebar = m('ToggledMobileSidebar');
 export const GotTeamMenuMessage = m('GotTeamMenuMessage', {
   message: DropdownMenu.Message,
 });
@@ -239,6 +240,7 @@ export const ToggledCalendarGroup = m('ToggledCalendarGroup', {
   isOpen: S.Boolean,
 });
 export const Message = S.Union([
+  ToggledMobileSidebar,
   ToggledSidebar,
   GotTeamMenuMessage,
   GotUserMenuMessage,
@@ -249,7 +251,7 @@ export const Message = S.Union([
 export type Message = typeof Message.Type;
 
 export const init = (): Model => ({
-  isLeftSidebarOpen: true,
+  isMobileOpen: false, isLeftSidebarOpen: true,
   isRightSidebarOpen: true,
   activeTeamIndex: 0,
   teamMenu: DropdownMenu.init({
@@ -274,6 +276,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
+      ToggledMobileSidebar: () => [evo(model, {isMobileOpen: current => !current}), []],
       ToggledSidebar: () => [
         evo(model, { isLeftSidebarOpen: (current) => !current }),
         [],
@@ -671,7 +674,7 @@ const sidebarLeft = (model: Model, h: HtmlBuilder<Message>): Html => {
   const state = model.isLeftSidebarOpen ? 'expanded' : 'collapsed';
   return sidebar<Message>(
     {
-      state,
+      state, isMobileOpen: model.isMobileOpen, onMobileDismiss: ToggledMobileSidebar(),
       class: 'border-r-0',
       children: [
         sidebarHeader(
@@ -982,7 +985,7 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
             h.div(
               [h.Class('flex flex-1 items-center gap-2 px-3')],
               [
-                sidebarTrigger({ onClick: ToggledSidebar() }, h),
+                sidebarTrigger({ onMobileClick: ToggledMobileSidebar(), onClick: ToggledSidebar() }, h),
                 separator(
                   {
                     orientation: 'vertical',

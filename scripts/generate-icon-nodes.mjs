@@ -31,6 +31,11 @@ const referencedIconNames = sourcePaths.flatMap(path => {
   )
   const names = []
   const visit = node => {
+    // Data-driven blocks and the constrained icon adapter pass names through
+    // object properties and tuples, not only direct icon('name') calls.
+    if (ts.isStringLiteralLike(node) && catalog[node.text] !== undefined) {
+      names.push(node.text)
+    }
     if (ts.isCallExpression(node)) {
       const callee = node.expression
       const isIconCall =

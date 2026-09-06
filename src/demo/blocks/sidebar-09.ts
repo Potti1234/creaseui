@@ -48,7 +48,7 @@ type Mail = Readonly<{
   teaser: string;
 }>;
 
-const data = {
+export const data = {
   user: {
     name: 'shadcn',
     email: 'm@example.com',
@@ -186,7 +186,7 @@ const UserMenu = DropdownMenu.create<UserAction>();
 // MODEL
 
 export const Model = S.Struct({
-  isSidebarOpen: S.Boolean,
+  isMobileOpen: S.Boolean, isSidebarOpen: S.Boolean,
   activeNavIndex: S.Number,
   unreadOnly: S.Boolean,
   userMenu: DropdownMenu.Model,
@@ -196,6 +196,7 @@ export type Model = typeof Model.Type;
 // MESSAGE
 
 export const ToggledSidebar = m('ToggledSidebar');
+export const ToggledMobileSidebar = m('ToggledMobileSidebar');
 export const SelectedNavItem = m('SelectedNavItem', {
   index: S.Number,
 });
@@ -205,6 +206,7 @@ export const GotUserMenuMessage = m('GotUserMenuMessage', {
 });
 
 export const Message = S.Union([
+  ToggledMobileSidebar,
   ToggledSidebar,
   SelectedNavItem,
   ToggledUnread,
@@ -215,7 +217,7 @@ export type Message = typeof Message.Type;
 // INIT
 
 export const init = (): Model => ({
-  isSidebarOpen: true,
+  isMobileOpen: false, isSidebarOpen: true,
   activeNavIndex: 0,
   unreadOnly: false,
   userMenu: DropdownMenu.init({
@@ -232,6 +234,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
+      ToggledMobileSidebar: () => [evo(model, {isMobileOpen: current => !current}), []],
       ToggledSidebar: () => [
         evo(model, { isSidebarOpen: (current) => !current }),
         [],
@@ -609,7 +612,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
 
   return sidebar<Message>(
     {
-      state,
+      isMobileOpen: model.isMobileOpen, onMobileDismiss: ToggledMobileSidebar(), state,
       collapsible: 'icon',
       class: 'overflow-hidden *:data-[sidebar=sidebar]:flex-row',
       children: [iconSidebar(model, h), mailSidebar(model, h)],
@@ -631,7 +634,7 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
           [
             sidebarTrigger(
               {
-                onClick: ToggledSidebar(),
+                onMobileClick: ToggledMobileSidebar(), onClick: ToggledSidebar(),
                 class: '-ml-1',
               },
               h,
