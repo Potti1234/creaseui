@@ -57,7 +57,7 @@ const leftData = {
     { title: 'Settings', url: '#', icon: 'settings-2' },
     { title: 'Templates', url: '#', icon: 'blocks' },
     { title: 'Trash', url: '#', icon: 'trash-2' },
-    { title: 'Help', url: '#', icon: 'message-circle-question' },
+    { title: 'Help', url: '#', icon: 'message-circle-question-mark' },
   ],
   favorites: [
     { name: 'Project Management & Task Tracking', url: '#', emoji: '📊' },

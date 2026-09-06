@@ -93,7 +93,7 @@ export const data = {
     {
       title: 'Help',
       url: '#',
-      icon: 'message-circle-question',
+      icon: 'message-circle-question-mark',
     },
   ] satisfies ReadonlyArray<NavItem>,
   favorites: [

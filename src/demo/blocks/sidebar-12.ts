@@ -495,7 +495,7 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
           [h.Class('flex flex-1 flex-col gap-4 p-4')],
           [
             h.div(
-              [h.Class('grid auto-rows-min gap-4 md:grid-cols-5')],
+              [h.Class('grid grid-cols-5 auto-rows-min gap-4')],
               Array.from({ length: 20 }, () =>
                 h.div([h.Class('aspect-square rounded-xl bg-muted/50')], []),
               ),

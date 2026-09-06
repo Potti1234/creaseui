@@ -1,4 +1,4 @@
-import { Match as M, Schema as S } from 'effect';
+import { Match as M, Schema as S, Stream } from 'effect';
 import { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 import { m } from 'foldkit/message';
@@ -65,7 +65,7 @@ export const init = (): Model => ({
   isSidebarOpen: true,
   dialog: Dialog.init({
     id: 'sidebar-13-settings-dialog',
-    isOpen: true,
+    isOpen: false,
     isAnimated: true,
   }),
 });
@@ -257,7 +257,7 @@ const settingsDialog = (model: Dialog.Model, h: HtmlBuilder<Message>): Html =>
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   return h.div(
-    [h.Class('flex h-svh items-center justify-center')],
+    [h.Class('flex h-svh items-center justify-center'), h.OnMount({ name: 'open-settings-preview', f: () => Stream.succeed(OpenedSettings()) })],
     [
       button(
         {
