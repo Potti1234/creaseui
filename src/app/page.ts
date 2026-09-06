@@ -1,6 +1,8 @@
 import { Match as M, Schema as S } from "effect";
 import { ts } from "foldkit/schema";
 
+import * as BlocksTailwindFeature from "@/demo/blocks/featured-page";
+import * as SidebarStyleX from "@/demo/blocks-stylex/sidebar-page";
 import * as BlocksFeature from "@/demo/blocks/registry";
 import * as BlocksStyleXFeature from "@/demo/blocks-stylex/featured-page";
 import * as TanStackTableFeature from "@/demo/blocks-stylex/tanstack-table-page";
@@ -26,14 +28,12 @@ export const Create = ts("CreatePage", {
   tailwindBoard: BoardFeature.Model,
   styleXBoard: BoardConstrained.Model,
 });
-export const BlocksIndex = ts("BlocksIndexPage");
-export const BlocksStyleX = ts("BlocksStyleXPage", {
-  table: BlocksStyleXFeature.Model,
-});
+export const BlockCategory = S.Literals(["all", "dashboard", "sidebar", "login"]);
+export const BlocksIndex = ts("BlocksIndexPage", { renderer: CreateRenderer, category: BlockCategory });
 export const BlocksStyleXTable = ts("BlocksStyleXTablePage", {
   table: TanStackTableFeature.Model,
 });
-export const Block = ts("BlockPage", { blocks: BlocksFeature.Model });
+export const Block = ts("BlockPage", { blocks: BlocksFeature.Model, styleXSidebar: SidebarStyleX.Model, styleXFeatured: BlocksStyleXFeature.Model, tailwindFeatured: BlocksTailwindFeature.Model });
 export const Charts = ts("ChartsPage", {
   renderer: CreateRenderer,
   area: ChartsArea.Model,
@@ -54,7 +54,6 @@ export const Page = S.Union([
   Landing,
   Create,
   BlocksIndex,
-  BlocksStyleX,
   BlocksStyleXTable,
   Block,
   Charts,
@@ -86,10 +85,10 @@ export const init = (route: AppRoute): Page =>
           tooltip: ChartsTooltip.init(),
           styleXCharts: ChartsStyleX.init(),
         }),
-      BlocksIndex: () => BlocksIndex(),
-      BlocksStyleX: () => BlocksStyleX({ table: BlocksStyleXFeature.init() }),
+      BlocksIndex: () => BlocksIndex({renderer: "tailwind", category: "all"}),
+      BlocksStyleX: () => BlocksIndex({renderer: "stylex", category: "all"}),
       BlocksStyleXTable: () => BlocksStyleXTable({ table: TanStackTableFeature.init() }),
-      Block: () => Block({ blocks: BlocksFeature.init() }),
+      Block: () => Block({ blocks: BlocksFeature.init(), styleXSidebar: SidebarStyleX.init(), styleXFeatured: BlocksStyleXFeature.init(), tailwindFeatured: BlocksTailwindFeature.init() }),
       ComponentDocs: ({ component }) =>
         ComponentCatalog.hasCatalogPage(component)
           ? CatalogDocs({ docs: ComponentCatalog.init(component) })

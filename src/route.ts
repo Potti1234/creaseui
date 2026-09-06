@@ -87,6 +87,10 @@ const chartsRouter = pipe(
   Route.mapTo(ChartsRoute),
 );
 
+const blocksRootRouter = pipe(literal("blocks"), Route.mapTo(BlocksIndexRoute));
+
+const blockPreviewRouter = pipe(literal("blocks"), slash(literal("preview")), slash(string("blockId")), Route.mapTo(BlockRoute));
+
 const blocksIndexRouter = pipe(
   literal("blocks"),
   slash(literal("sidebar")),
@@ -121,8 +125,10 @@ const componentDocsRouter = pipe(
 const routeParser = Route.oneOf(
   createRouter,
   chartsRouter,
+  blockPreviewRouter,
   blockRouter,
   blocksIndexRouter,
+  blocksRootRouter,
   blocksStyleXTableRouter,
   blocksStyleXRouter,
   componentDocsRouter,
@@ -141,7 +147,9 @@ export const createPath = (): string => createRouter();
 export const chartsPath = (section: ChartSection): string =>
   chartsRouter({ section });
 
-export const blocksIndexPath = (): string => blocksIndexRouter();
+export const blocksIndexPath = (): string => blocksRootRouter();
+
+export const blockPreviewPath = (renderer: "tailwind" | "stylex", name: string): string => blockPreviewRouter({ blockId: `${renderer}--${name}` });
 
 export const blocksStyleXPath = (): string => blocksStyleXRouter();
 

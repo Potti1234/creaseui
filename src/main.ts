@@ -8,6 +8,9 @@ import { Url, toString as urlToString } from "foldkit/url";
 import { defineView } from "foldkit/submodel";
 import { evo } from "foldkit/struct";
 
+import * as BlocksTailwindPage from "@/demo/blocks/featured-page";
+import * as SidebarStyleX from "@/demo/blocks-stylex/sidebar-page";
+import { resolveBlock } from "@/demo/blocks/catalog";
 import * as BlocksIndexPage from "@/demo/blocks/index-page";
 import * as BlocksStyleXPage from "@/demo/blocks-stylex/featured-page";
 import * as TanStackTablePage from "@/demo/blocks-stylex/tanstack-table-page";
@@ -31,7 +34,6 @@ import {
   AppRoute,
   type ChartSection,
   blocksIndexPath,
-  blocksStyleXPath,
   blocksStyleXTablePath,
   chartsPath,
   componentDocsPath,
@@ -77,6 +79,10 @@ export const ChangedCreateRenderer = m("ChangedCreateRenderer", {
 export const ChangedChartsRenderer = m("ChangedChartsRenderer", {
   renderer: Page.CreateRenderer,
 });
+export const ChangedBlocksRenderer = m("ChangedBlocksRenderer", { renderer: Page.CreateRenderer });
+export const ChangedBlocksCategory = m("ChangedBlocksCategory", { category: Page.BlockCategory });
+export const GotBlocksTailwindMessage = m("GotBlocksTailwindMessage", { message: BlocksTailwindPage.Message });
+export const GotSidebarStyleXMessage = m("GotSidebarStyleXMessage", { message: SidebarStyleX.Message });
 export const GotBoardMessage = m("GotBoardMessage", { message: Board.Message });
 export const GotBoardStyleXMessage = m("GotBoardStyleXMessage", {
   message: BoardStyleX.Message,
@@ -131,6 +137,10 @@ export const Message = S.Union([
   IgnoredBlocksPreviewInput,
   ChangedCreateRenderer,
   ChangedChartsRenderer,
+  ChangedBlocksRenderer,
+  ChangedBlocksCategory,
+  GotBlocksTailwindMessage,
+  GotSidebarStyleXMessage,
   GotBoardMessage,
   GotBoardStyleXMessage,
   GotBlocksMessage,
@@ -200,6 +210,18 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       CompletedApplyTheme: () => [model, []],
       IgnoredBlocksPreviewInput: () => [model, []],
 
+      ChangedBlocksRenderer: ({renderer}) => model.page._tag === "BlocksIndexPage" ? [{...model, page: {...model.page, renderer}}, []] : [model, []],
+      ChangedBlocksCategory: ({category}) => model.page._tag === "BlocksIndexPage" ? [{...model, page: {...model.page, category}}, []] : [model, []],
+      GotBlocksTailwindMessage: ({message: child}) => {
+        if(model.page._tag !== "BlockPage") return [model, []];
+        const [tailwindFeatured] = BlocksTailwindPage.update(model.page.tailwindFeatured, child);
+        return [{...model, page: {...model.page, tailwindFeatured}}, []];
+      },
+      GotSidebarStyleXMessage: ({message: child}) => {
+        if(model.page._tag !== "BlockPage") return [model, []];
+        const [styleXSidebar, commands] = SidebarStyleX.update(model.page.styleXSidebar, child);
+        return [{...model, page: {...model.page, styleXSidebar}}, Command.mapMessages(commands, message => GotSidebarStyleXMessage({message}))];
+      },
       ChangedCreateRenderer: ({ renderer }) => {
         if (model.page._tag !== "CreatePage") return [model, []];
         const currentPage = model.page;
@@ -288,19 +310,10 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         ];
       },
 
-      GotBlocksStyleXMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== "BlocksStyleXPage") return [model, []];
-        const currentPage = model.page;
-        const [table] = BlocksStyleXPage.update(
-          currentPage.table,
-          childMessage,
-        );
-        return [
-          evo(model, {
-            page: () => evo(currentPage, { table: () => table }),
-          }),
-          [],
-        ];
+      GotBlocksStyleXMessage: ({message: child}) => {
+        if(model.page._tag !== "BlockPage") return [model, []];
+        const [styleXFeatured] = BlocksStyleXPage.update(model.page.styleXFeatured, child);
+        return [{...model, page: {...model.page, styleXFeatured}}, []];
       },
 
       GotTanStackTableMessage: ({ message: childMessage }) => {
@@ -654,6 +667,36 @@ const chartsRendererSwitcher = (
     ),
   );
 
+const blocksRendererSwitcher = (
+  page: typeof Page.BlocksIndex.Type,
+  h: HtmlBuilder<Message>,
+): Html =>
+  h.div(
+    [
+      h.Role("group"),
+      h.AriaLabel("Blocks renderer"),
+      h.Class("flex items-center rounded-md border bg-muted/40 p-0.5"),
+    ],
+    (["tailwind", "stylex"] as const).map((renderer) =>
+      h.button(
+        [
+          h.Type("button"),
+          h.OnClick(ChangedBlocksRenderer({ renderer })),
+          h.AriaPressed(page.renderer === renderer ? "true" : "false"),
+          h.Class(
+            cn(
+              "min-h-8 rounded-[5px] px-2.5 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring/50",
+              page.renderer === renderer
+                ? "bg-background text-foreground shadow-xs"
+                : "text-muted-foreground hover:text-foreground",
+            ),
+          ),
+        ],
+        [renderer === "tailwind" ? "Tailwind" : "StyleX"],
+      ),
+    ),
+  );
+
 const header = (model: Model, h: HtmlBuilder<Message>): Html => {
   const isCharts = model.route._tag === "Charts";
 
@@ -701,17 +744,11 @@ const header = (model: Model, h: HtmlBuilder<Message>): Html => {
           headerLink(
             blocksIndexPath(),
             "Blocks",
-            model.route._tag === "BlocksIndex",
+            model.route._tag === "BlocksIndex" || model.route._tag === "BlocksStyleX" || model.route._tag === "BlocksStyleXTable",
             "hidden sm:inline-flex",
             h,
           ),
-          headerLink(
-            blocksStyleXPath(),
-            "Blocks StyleX",
-            model.route._tag === "BlocksStyleX" || model.route._tag === "BlocksStyleXTable",
-            "hidden lg:inline-flex",
-            h,
-          ),
+          ...(model.page._tag === "BlocksIndexPage" ? [blocksRendererSwitcher(model.page, h)] : []),
           h.details(
             [h.Class("relative ml-auto sm:hidden")],
             [
@@ -756,14 +793,7 @@ const header = (model: Model, h: HtmlBuilder<Message>): Html => {
                   headerLink(
                     blocksIndexPath(),
                     "Blocks",
-                    model.route._tag === "BlocksIndex",
-                    "rounded-md px-3 py-2 hover:bg-accent",
-                    h,
-                  ),
-                  headerLink(
-                    blocksStyleXPath(),
-                    "Blocks StyleX",
-                    model.route._tag === "BlocksStyleX" || model.route._tag === "BlocksStyleXTable",
+                    model.route._tag === "BlocksIndex" || model.route._tag === "BlocksStyleX" || model.route._tag === "BlocksStyleXTable",
                     "rounded-md px-3 py-2 hover:bg-accent",
                     h,
                   ),
@@ -833,8 +863,11 @@ const blocksRegistryView = defineView<Blocks.Model, Blocks.Message, string>(
 );
 const blocksStyleXView = defineView<
   BlocksStyleXPage.Model,
-  BlocksStyleXPage.Message
->(BlocksStyleXPage.view);
+  BlocksStyleXPage.Message,
+  string
+>(BlocksStyleXPage.viewBlock);
+const blocksTailwindView = defineView<BlocksTailwindPage.Model, BlocksTailwindPage.Message, string>(BlocksTailwindPage.viewBlock);
+const sidebarStyleXView = defineView<SidebarStyleX.Model, SidebarStyleX.Message, string>(SidebarStyleX.view);
 const tanStackTableView = defineView<
   TanStackTablePage.Model,
   TanStackTablePage.Message
@@ -846,14 +879,18 @@ const blocksView = (
   h: HtmlBuilder<Message>,
 ): Html => {
   if (model.page._tag !== "BlockPage") return h.empty;
-  return h.submodel({
-    slotId: "sidebar-blocks",
-    model: model.page.blocks,
-    view: blocksRegistryView,
-    viewInputs: blockId,
-    toParentMessage: (message: Blocks.Message): Message =>
-      GotBlocksMessage({ message }),
-  });
+  const block = resolveBlock(blockId);
+  if(block === undefined) return h.p([], ["Unknown block."]);
+  const page = model.page;
+  if(block.name.startsWith("sidebar-")) {
+    const id = block.name.slice(8);
+    return block.renderer === "stylex"
+      ? h.submodel({ slotId: "sidebar-stylex", model: page.styleXSidebar, view: sidebarStyleXView, viewInputs: id, toParentMessage: message => GotSidebarStyleXMessage({message}) })
+      : h.submodel({ slotId: "sidebar-blocks", model: page.blocks, view: blocksRegistryView, viewInputs: id, toParentMessage: message => GotBlocksMessage({message}) });
+  }
+  return block.renderer === "stylex"
+    ? h.submodel({slotId: "featured-stylex", model: page.styleXFeatured, view: blocksStyleXView, viewInputs: block.name, toParentMessage: message => GotBlocksStyleXMessage({message})})
+    : h.submodel({slotId: "featured-tailwind", model: page.tailwindFeatured, view: blocksTailwindView, viewInputs: block.name, toParentMessage: message => GotBlocksTailwindMessage({message})});
 };
 const chartsAreaView = defineView<ChartsArea.Model, ChartsArea.Message>(
   ChartsArea.view,
@@ -1071,20 +1108,8 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
               chartsSectionView(model, section, h),
             )
           : keyed("page-not-found", notFoundView(`/charts/${section}`, h)),
-      BlocksIndex: () => keyed("page-blocks-index", BlocksIndexPage.view(h)),
-      BlocksStyleX: () =>
-        model.page._tag === "BlocksStyleXPage"
-          ? keyed(
-              "page-blocks-stylex",
-              h.submodel({
-                slotId: "blocks-stylex",
-                model: model.page.table,
-                view: blocksStyleXView,
-                toParentMessage: (message: BlocksStyleXPage.Message): Message =>
-                  GotBlocksStyleXMessage({ message }),
-              }),
-            )
-          : keyed("page-not-found", notFoundView(blocksStyleXPath(), h)),
+      BlocksIndex: () => model.page._tag === "BlocksIndexPage" ? keyed("page-blocks", BlocksIndexPage.view({...model.page, isDark:model.isDark, onCategory: category => ChangedBlocksCategory({category})}, h)) : h.empty,
+      BlocksStyleX: () => model.page._tag === "BlocksIndexPage" ? keyed("page-blocks", BlocksIndexPage.view({...model.page, isDark:model.isDark, onCategory: category => ChangedBlocksCategory({category})}, h)) : h.empty,
       BlocksStyleXTable: () =>
         model.page._tag === "BlocksStyleXTablePage"
           ? keyed(

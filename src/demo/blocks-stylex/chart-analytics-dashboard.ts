@@ -127,13 +127,13 @@ export const chartAnalyticsDashboard = <Message>(
       insight('Organic growth', 'Organic acquisition is now the largest channel.', 'chart-pie', h),
     ], spacing: 'sm' }, h)], description: 'Generated from the current reporting window', heading: 'Key insights' }, h),
     detailBehavior: 'stack',
-    header: [stack({ children: [text({ as: 'h1', children: ['Analytics overview'], variant: 'headingMd' }, h), text({ as: 'p', children: ['Apache ECharts rendered through constrained StyleX surfaces and layout recipes.'], tone: 'secondary', variant: 'caption' }, h)], gap: 'xs' }, h)],
+    header: [stack({ children: [text({ as: 'h1', children: ['Analytics overview'], variant: 'headingMd' }, h), text({ as: 'p', children: ['Revenue, service performance and acquisition in one view.'], tone: 'secondary', variant: 'caption' }, h)], gap: 'xs' }, h)],
     master: [
       metricGrid({ children: [metric('Revenue', '$354k', '+14.6%', h), metric('Conversion', '4.82%', '+0.7 pts', h), metric('P95 latency', '151ms', '-8.1%', h), metric('Budget used', '68%', '+3.2 pts', h)] }, h),
       grid({ children: [
-        chartCard('Revenue trend', 'Monthly recurring revenue', Chart.eChart({ accessibleAlternative: h.p([], ['Monthly recurring revenue trend.']), ariaLabel: 'Area chart of monthly recurring revenue', hostId: AREA_HOST, toMessage }, h), h),
-        chartCard('Actual vs target', 'Monthly revenue performance', Chart.eChart({ accessibleAlternative: h.p([], ['Monthly actual and target revenue comparison.']), ariaLabel: 'Grouped bar chart comparing actual revenue with target', hostId: BAR_HOST, toMessage }, h), h),
-        chartCard('Service latency', 'API and web response time', Chart.eChart({ accessibleAlternative: h.p([], ['API and web response-time comparison.']), ariaLabel: 'Line chart comparing API and web latency', hostId: LINE_HOST, toMessage }, h), h),
+        chartCard('Revenue trend', 'Monthly recurring revenue', Chart.eChart({size: 'dashboard', accessibleAlternative: h.p([], ['Monthly recurring revenue trend.']), ariaLabel: 'Area chart of monthly recurring revenue', hostId: AREA_HOST, toMessage }, h), h),
+        chartCard('Actual vs target', 'Monthly revenue performance', Chart.eChart({size: 'dashboard', accessibleAlternative: h.p([], ['Monthly actual and target revenue comparison.']), ariaLabel: 'Grouped bar chart comparing actual revenue with target', hostId: BAR_HOST, toMessage }, h), h),
+        chartCard('Service latency', 'API and web response time', Chart.eChart({size: 'dashboard', accessibleAlternative: h.p([], ['API and web response-time comparison.']), ariaLabel: 'Line chart comparing API and web latency', hostId: LINE_HOST, toMessage }, h), h),
         chartCard('Acquisition mix', 'Share of new customers by channel', Chart.eChart({ accessibleAlternative: h.p([], ['New-customer share by acquisition channel.']), ariaLabel: 'Donut chart of acquisition channels', hostId: PIE_HOST, size: 'square', toMessage }, h), h),
         chartCard('Product readiness', 'Weighted launch dimensions', Chart.eChart({ accessibleAlternative: h.p([], ['Weighted product launch-readiness dimensions.']), ariaLabel: 'Radar chart of product readiness dimensions', hostId: RADAR_HOST, size: 'square', toMessage }, h), h),
         chartCard('Budget allocation', 'Usage by operating category', Chart.eChart({ accessibleAlternative: h.p([], ['Budget usage by operating category.']), ariaLabel: 'Radial bar chart of budget usage', hostId: RADIAL_HOST, size: 'square', toMessage }, h), h),
