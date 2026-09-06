@@ -23,7 +23,7 @@ export const shadcnTooltip = ECharts.shadcnTooltip
 export const SyncChart = ECharts.SyncChart
 export const valueAxis = ECharts.valueAxis
 
-export type EChartSize = 'default' | 'compact' | 'square' | 'wide'
+export type EChartSize = 'default' | 'compact' | 'dashboard' | 'square' | 'wide'
 
 export type EChartProps<Message> = Readonly<{
   ariaLabel: string
@@ -38,6 +38,7 @@ export type EChartProps<Message> = Readonly<{
 }>
 
 const styles = stylex.create({
+  dashboard: { height: '16rem' },
   compact: {
     aspectRatio: '16 / 7',
     minHeight: '12rem',
@@ -65,6 +66,7 @@ const styles = stylex.create({
 })
 
 const sizeStyles = {
+  dashboard: styles.dashboard,
   compact: styles.compact,
   default: styles.default,
   square: styles.square,

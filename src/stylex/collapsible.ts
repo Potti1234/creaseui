@@ -12,6 +12,7 @@ const styles = stylex.create({
   content: { overflow: 'hidden' },
   root: { display: 'block' },
   trigger: { cursor: interactionTokens.cursorAction },
+  sidebarTrigger: { padding: '0.5rem', alignItems: 'center', display: 'flex', textAlign: 'left', minHeight: '2rem', width: '100%', },
 })
 
 const isStaticStyle = (value: unknown): value is StaticStyles =>
@@ -30,6 +31,7 @@ export type CollapsibleProps<Msg> = Readonly<{
   content: Html | string;
   isDisabled?: boolean;
   ariaLabel?: string;
+  variant?: 'default' | 'sidebar';
   layoutStyle?: ComponentLayoutStyle;
   triggerLayoutStyle?: ComponentLayoutStyle;
   contentLayoutStyle?: ComponentLayoutStyle;
@@ -60,7 +62,7 @@ export const collapsible = <Msg>(
                 ...button,
                 h.Type('button'),
                 h.DataAttribute('slot', 'collapsible-trigger'),
-                h.Class(cn(styles.trigger, props.triggerLayoutStyle)),
+                h.Class(cn(styles.trigger, props.variant === 'sidebar' && styles.sidebarTrigger, props.triggerLayoutStyle)),
               ],
               [props.trigger],
             ),
@@ -93,5 +95,4 @@ collapsible({
   content: detailsView,
 })
 */
-
 

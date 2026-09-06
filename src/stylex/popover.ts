@@ -10,7 +10,8 @@ import { themedAnchor } from './overlay-boundary'
 import { className } from './style'
 
 const styles = stylex.create({
-  content: { padding: '1rem', width: '18rem' },
+  content: { padding: '1rem', maxHeight: '24rem', overflowY: 'auto', width: '18rem', },
+  sidebarTrigger: { padding: '0.5rem', display: 'flex', textAlign: 'left', minHeight: '2rem', width: '100%', },
 })
 
 const isStaticStyle = (value: unknown): value is StaticStyles =>
@@ -55,6 +56,7 @@ const PLACEMENTS: Readonly<
 };
 
 export type PopoverProps<Msg> = Readonly<{
+  variant?: 'default' | 'sidebar';
   model: Model;
   toParentMessage: (message: Message) => Msg;
   trigger: Html | string;
@@ -87,9 +89,7 @@ export const popover = <Msg>(
               [
                 ...button,
                 hp.DataAttribute('slot', 'popover-trigger'),
-                ...(props.triggerLayoutStyle === undefined
-                  ? []
-                  : [hp.Class(cn(props.triggerLayoutStyle))]),
+                hp.Class(cn(props.variant === 'sidebar' && styles.sidebarTrigger, props.triggerLayoutStyle)),
               ],
               [props.trigger],
             ),

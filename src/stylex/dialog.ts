@@ -10,6 +10,7 @@ import { className } from './style'
 
 const styles = stylex.create({
   content: { padding: '1.5rem', gap: '1rem', display: 'grid', maxWidth: '32rem', },
+  settings: { maxHeight: 'calc(100svh - 2rem)', maxWidth: 'min(50rem, calc(100vw - 2rem))', overflowY: 'auto', },
   icon: { height: '1rem', width: '1rem' },
 })
 
@@ -130,6 +131,7 @@ export type DialogParts<Msg> = Readonly<{
 }>;
 
 export type DialogProps<Msg> = Readonly<{
+  size?: 'default' | 'settings';
   model: Model;
   toParentMessage: (message: Message) => Msg;
   title: string;
@@ -239,7 +241,7 @@ export const dialog = <Msg>(
                     ...panel,
                     ...panelFocusAttributes,
                     hd.DataAttribute('slot', 'dialog-content'),
-                    hd.Class(cn(overlayStyles.panel, CONTENT_CLASS, props.layoutStyle)),
+                    hd.Class(cn(overlayStyles.panel, CONTENT_CLASS, props.size === 'settings' && styles.settings, props.layoutStyle)),
                   ],
                   content,
                 ),
@@ -251,4 +253,3 @@ export const dialog = <Msg>(
     toParentMessage: props.toParentMessage,
   });
 };
-

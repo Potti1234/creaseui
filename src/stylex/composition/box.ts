@@ -25,7 +25,7 @@ export type BoxProps = Readonly<{
   contain?: 'none' | 'paint'
   contentAlignment?: 'normal' | 'center'
   data?: PrimitiveData
-  minHeight?: 'none' | 'full' | 'createPage' | 'blockPreview' | 'blocksHero' | 'skeleton'
+  minHeight?: 'viewport' | 'none' | 'full' | 'createPage' | 'blockPreview' | 'blocksHero' | 'skeleton'
   minWidth?: 'none' | 'maxContent'
   overflowX?: 'visible' | 'hidden' | 'auto'
   overflowY?: 'visible' | 'hidden' | 'auto'
@@ -44,6 +44,7 @@ const styles = stylex.create({
   containPaint: { contain: 'paint' },
   contentCenter: { alignItems: 'center', display: 'grid', justifyItems: 'center' },
   contentNormal: { display: 'block' },
+  minHeightViewport: { minHeight: '100svh' },
   minHeightCreatePage: { minHeight: 'calc(100vh - 3.5rem)' },
   minHeightBlockPreview: { minHeight: { default: '36rem', '@media (min-width: 768px)': '50rem' } },
   minHeightBlocksHero: { minHeight: { default: '22rem', '@media (min-width: 768px)': '25rem' } },
@@ -140,6 +141,7 @@ export const box = <Message>(props: BoxProps, h: HtmlBuilder<Message>): Html => 
       none: styles.minWidthNone,
     }),
     ...pick(props.minHeight, {
+      viewport: styles.minHeightViewport,
       blockPreview: styles.minHeightBlockPreview,
       blocksHero: styles.minHeightBlocksHero,
       createPage: styles.minHeightCreatePage,
