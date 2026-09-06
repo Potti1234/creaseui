@@ -2053,7 +2053,7 @@
         {
           "name": "DropdownMenuProps",
           "kind": "type",
-          "signature": "DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; triggerTabindex?: number; triggerRole?: string; items: ReadonlyArray<Item>; itemToConfig: (item: …"
+          "signature": "DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; /** Anchor an action directly to its sidebar menu item. */ placement?: 'inline' | 'sidebarAction'…"
         },
         {
           "name": "dropdownMenu",

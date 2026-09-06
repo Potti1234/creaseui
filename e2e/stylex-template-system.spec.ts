@@ -2,9 +2,9 @@ import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 
 test('semantic dashboard recipe preserves region ownership and responsive containment', async ({ page }) => {
-  await page.goto('/blocks-stylex')
+  await page.goto('/blocks/preview/stylex--dashboard-01')
 
-  const dashboard = page.locator('[data-block="dashboard-01"] [data-recipe="dashboard"]')
+  const dashboard = page.locator('[data-recipe="dashboard"]')
   await expect(dashboard).toBeVisible()
   await expect(page.locator('[data-semantic-theme="comfortable"]').first()).toBeVisible()
   await expect(dashboard.locator('[data-region="table"]')).toBeVisible()
@@ -13,7 +13,7 @@ test('semantic dashboard recipe preserves region ownership and responsive contai
   await expect(dashboard.locator('canvas')).toHaveCount(1)
 
   const accessibility = await new AxeBuilder({ page })
-    .include('[data-block="dashboard-01"] [data-recipe="dashboard"]')
+    .include('[data-recipe="dashboard"]')
     .analyze()
   expect(accessibility.violations.filter(({ impact }) => impact === 'serious' || impact === 'critical')).toEqual([])
 
@@ -35,47 +35,36 @@ test('semantic dashboard recipe preserves region ownership and responsive contai
 
 test('Astryx-inspired dashboards use constrained recipes and remain accessible', async ({ page }) => {
   test.slow()
-  await page.goto('/blocks-stylex')
-
-  const names = [
-    'astryx-executive-summary',
-    'astryx-cohort-funnel',
-    'astryx-project-status',
-    'astryx-service-monitoring',
-    'astryx-incident-console',
+  const blocks = [
+    ['astryx-executive-summary', 2],
+    ['astryx-cohort-funnel', 1],
+    ['astryx-project-status', 2],
+    ['astryx-service-monitoring', 2],
+    ['astryx-incident-console', 0],
   ] as const
-
-  for (const name of names) {
-    const block = page.locator(`[data-block="${name}"]`)
-    await expect(block).toBeAttached()
-    await expect(block.locator('[data-recipe]')).toBeAttached()
-  }
-  await expect(page.locator('[data-block^="astryx-"] [data-slot="echart"]')).toHaveCount(7)
-  await expect(page.locator('[data-block^="astryx-"] canvas')).toHaveCount(7)
-
-  const accessibility = await new AxeBuilder({ page })
-    .include('[data-block^="astryx-"]')
-    .analyze()
-  expect(accessibility.violations.filter(({ impact }) => impact === 'serious' || impact === 'critical')).toEqual([])
-
-  await page.setViewportSize({ height: 900, width: 390 })
-  for (const name of names) {
-    const block = page.locator(`[data-block="${name}"]`)
-    const metrics = await block.evaluate((element) => ({ clientWidth: element.clientWidth, scrollWidth: element.scrollWidth }))
-    expect(metrics.scrollWidth, `${name} should contain horizontal overflow`).toBeLessThanOrEqual(metrics.clientWidth + 1)
+  for (const [name, charts] of blocks) {
+    await page.setViewportSize({width: 1440, height: 1000})
+    await page.goto(`/blocks/preview/stylex--${name}`)
+    await expect(page.locator('[data-recipe]')).toBeAttached()
+    await expect(page.locator('[data-slot="echart"]')).toHaveCount(charts)
+    await expect(page.locator('canvas')).toHaveCount(charts)
+    const accessibility = await new AxeBuilder({page}).include('[data-recipe]').analyze()
+    expect(accessibility.violations.filter(({impact}) => impact === 'serious' || impact === 'critical')).toEqual([])
+    await page.setViewportSize({width:390,height:900})
+    await expect.poll(() => page.evaluate(()=>document.documentElement.scrollWidth <= innerWidth)).toBe(true)
   }
 })
 
 test('StyleX analytics block mounts every Apache ECharts family', async ({ page }) => {
-  await page.goto('/blocks-stylex')
+  await page.goto('/blocks/preview/stylex--chart-analytics-dashboard')
 
-  const block = page.locator('[data-block="chart-analytics-dashboard"]')
+  const block = page.locator('[data-recipe]')
   await expect(block).toBeAttached()
   await expect(block.locator('[data-slot="echart"]')).toHaveCount(6)
   await expect(block.locator('canvas')).toHaveCount(6)
 
   const accessibility = await new AxeBuilder({ page })
-    .include('[data-block="chart-analytics-dashboard"] [data-recipe]')
+    .include('[data-recipe]')
     .analyze()
   expect(accessibility.violations.filter(({ impact }) => impact === 'serious' || impact === 'critical')).toEqual([])
 

@@ -617,7 +617,7 @@ Examples: Account actions, Destructive action, Submenu and disabled action, RTL 
 - `DropdownMenuItemConfig<Item extends string = string> = Readonly<{ label: Html | string; icon?: Html; shortcut?: Html | string; variant?: 'default' | 'destructive'; kind?: 'item' | 'checkbox' | 'radio'; isChecked?: boolean; isInset?: boolean; isDisabled?: bool…` (type)
 - `DropdownMenuSide = 'top' | 'right' | 'bottom' | 'left'` (type)
 - `DropdownMenuAlign = 'start' | 'center' | 'end'` (type)
-- `DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; triggerTabindex?: number; triggerRole?: string; items: ReadonlyArray<Item>; itemToConfig: (item: …` (type)
+- `DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; /** Anchor an action directly to its sidebar menu item. */ placement?: 'inline' | 'sidebarAction'…` (type)
 - `dropdownMenu<Item extends string, Msg>(props: DropdownMenuProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Empty

@@ -13,9 +13,9 @@ const walk = (node: ts.Node, visit: (candidate: ts.Node) => void): void => {
 }
 
 describe('featured StyleX blocks composition', () => {
-  it('renders exactly the five official featured block identifiers in order', () => {
+  it('renders dashboard and login blocks; full sidebars live in the sidebar renderer', () => {
     const names = [...source.matchAll(/name: '(dashboard-01|sidebar-07|sidebar-03|login-03|login-04)'/gu)].map((match) => match[1])
-    assert.deepEqual(names, ['dashboard-01', 'sidebar-07', 'sidebar-03', 'login-03', 'login-04'])
+    assert.deepEqual(names, ['dashboard-01', 'login-03', 'login-04'])
   })
 
   it('adds five Astryx-inspired constrained dashboard identifiers in order', () => {

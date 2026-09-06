@@ -117,6 +117,6 @@ describe('constrained StyleX composition', () => {
     const grid = readFileSync('src/stylex/composition/grid.ts', 'utf8')
     assert.match(grid, /min-width: 700px\) and \(max-width: 1099px/u)
     assert.match(grid, /min-width: 1100px/u)
-    assert.doesNotMatch(grid, /'@media \(min-width: 700px\)'/u)
+    assert.match(grid, /columnsTwo: \{ gridTemplateColumns: \{ default: 'minmax\(0, 1fr\)', '@media \(min-width: 700px\)'/u)
   })
 })

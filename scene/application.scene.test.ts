@@ -41,9 +41,9 @@ describe('application scenes', () => {
       { update, view },
       Scene.given(modelAt('/blocks/sidebar')),
       Scene.expect(
-        Scene.role('heading', { level: 1, name: 'Sidebar Blocks' }),
+        Scene.role('heading', { level: 1, name: 'Building Blocks for Foldkit' }),
       ).toExist(),
-      Scene.expect(Scene.role('link', { name: 'Open' })).toExist(),
+      Scene.expect(Scene.role('link', { name: 'Open dashboard-01 in Tailwind' })).toExist(),
     )
   })
 })

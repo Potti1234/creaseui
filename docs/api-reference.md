@@ -486,7 +486,7 @@ Source: [`src/ui/dropdown-menu.ts`](../src/ui/dropdown-menu.ts)
 | `DropdownMenuItemConfig` | type | `DropdownMenuItemConfig<Item extends string = string> = Readonly<{ label: Html \| string; icon?: Html; shortcut?: Html \| string; variant?: 'default' \| 'destructive'; kind?: 'item' \| 'checkbox' \| 'radio'; isChecked?: boolean; isInset?: boolean; isDisabled?: bool…` |
 | `DropdownMenuSide` | type | `DropdownMenuSide = 'top' \| 'right' \| 'bottom' \| 'left'` |
 | `DropdownMenuAlign` | type | `DropdownMenuAlign = 'start' \| 'center' \| 'end'` |
-| `DropdownMenuProps` | type | `DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; triggerTabindex?: number; triggerRole?: string; items: ReadonlyArray<Item>; itemToConfig: (item: …` |
+| `DropdownMenuProps` | type | `DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; /** Anchor an action directly to its sidebar menu item. */ placement?: 'inline' \| 'sidebarAction'…` |
 | `dropdownMenu` | function | `dropdownMenu<Item extends string, Msg>(props: DropdownMenuProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Empty
