@@ -69,8 +69,8 @@ const render = <Message>(hostId: string, ariaLabel: string, toMessage: ToMessage
 
 export const executiveRevenueChart = <Message>(toMessage: ToMessage<Message>, h: HtmlBuilder<Message>): Html => render(HOSTS.executiveRevenue, 'Area chart of executive revenue trend', toMessage, h)
 export const executiveCustomerChart = <Message>(toMessage: ToMessage<Message>, h: HtmlBuilder<Message>): Html => render(HOSTS.executiveCustomers, 'Bar chart of new customer growth', toMessage, h)
-export const featuredVisitorsChart = <Message>(toMessage: ToMessage<Message>, h: HtmlBuilder<Message>): Html => render(HOSTS.featuredVisitors, 'Area chart comparing desktop and mobile visitors for the last three months', toMessage, h, 'wide')
-export const cohortConversionChart = <Message>(toMessage: ToMessage<Message>, h: HtmlBuilder<Message>): Html => render(HOSTS.cohortConversion, 'Area chart of weekly conversion rate', toMessage, h, 'wide')
+export const featuredVisitorsChart = <Message>(toMessage: ToMessage<Message>, h: HtmlBuilder<Message>): Html => render(HOSTS.featuredVisitors, 'Area chart comparing desktop and mobile visitors for the last three months', toMessage, h)
+export const cohortConversionChart = <Message>(toMessage: ToMessage<Message>, h: HtmlBuilder<Message>): Html => render(HOSTS.cohortConversion, 'Area chart of weekly conversion rate', toMessage, h)
 export const projectBurndownChart = <Message>(toMessage: ToMessage<Message>, h: HtmlBuilder<Message>): Html => render(HOSTS.projectBurndown, 'Area chart of remaining project story points', toMessage, h)
 export const projectProgressChart = <Message>(toMessage: ToMessage<Message>, h: HtmlBuilder<Message>): Html => render(HOSTS.projectProgress, 'Donut chart showing 68 percent project completion', toMessage, h, 'square')
 export const serviceRequestChart = <Message>(toMessage: ToMessage<Message>, h: HtmlBuilder<Message>): Html => render(HOSTS.serviceRequests, 'Area chart of service request volume', toMessage, h)

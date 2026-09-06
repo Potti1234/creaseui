@@ -161,6 +161,6 @@ export const incidentConsoleDashboard = <Message>(h: HtmlBuilder<Message>): Html
       ['INC-2047 Delayed invoices', 'worker-billing', badge({ children: ['SEV-2'], variant: 'outline' }, h), 'Mitigating', '43m'],
       ['INC-2044 Search freshness', 'search-index', badge({ children: ['SEV-3'], variant: 'secondary' }, h), 'Monitoring', '2h 14m'],
       ['INC-2041 Email retries', 'email-delivery', badge({ children: ['SEV-3'], variant: 'secondary' }, h), 'Resolved', '3h 02m'],
-    ], h)], heading: 'Active incidents', toolbar: [toolbar({ children: [button({ children: [icon({ name: 'search' }, h), 'Search incidents'], size: 'sm', variant: 'outline' }, h), button({ children: ['Status: Open'], size: 'sm', variant: 'outline' }, h)], label: 'Incident filters' }, h)] }, h)],
+    ], h)], heading: 'Active incidents', toolbar: [toolbar({ children: [button({ leadingIcon: icon({ name: 'search' }, h), children: ['Search incidents'], size: 'sm', variant: 'outline' }, h), button({ children: ['Status: Open'], size: 'sm', variant: 'outline' }, h)], label: 'Incident filters' }, h)] }, h)],
     theme: 'compact',
   }, h)

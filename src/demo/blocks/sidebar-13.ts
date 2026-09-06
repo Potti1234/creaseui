@@ -240,7 +240,7 @@ const settingsDialog = (model: Dialog.Model, h: HtmlBuilder<Message>): Html =>
       description: 'Customize your settings here.',
       showCloseButton: true,
       class:
-        'overflow-hidden p-0 md:max-h-[500px] md:max-w-[700px] lg:max-w-[800px]',
+        'overflow-hidden p-0 [&_[data-slot=dialog-header]]:px-6 [&_[data-slot=dialog-header]]:pt-6 md:max-h-[560px] md:max-w-[700px] lg:max-w-[800px]',
       content: () => [
         sidebarProvider(
           {

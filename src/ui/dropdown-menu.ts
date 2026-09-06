@@ -139,6 +139,8 @@ export type DropdownMenuProps<Item extends string, Msg> = Readonly<{
   toParentMessage: (message: Message) => Msg;
   trigger: Html | string;
   triggerClass?: string;
+  /** Anchor an action directly to its sidebar menu item. */
+  placement?: 'inline' | 'sidebarAction';
   triggerTabindex?: number;
   triggerRole?: string;
   items: ReadonlyArray<Item>;
@@ -387,7 +389,7 @@ export const dropdownMenu = <Item extends string, Msg>(
   return h.div(
     [
       h.DataAttribute('slot', 'dropdown-menu'),
-      h.Class('relative inline-flex'),
+      h.Class(props.placement === 'sidebarAction' ? 'contents' : 'relative inline-flex'),
       ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
     ],
     [

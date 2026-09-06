@@ -416,6 +416,7 @@ const navProjects = (
                                 h.span([h.Class('sr-only')], ['More']),
                               ],
                             ),
+                            placement: 'sidebarAction',
                             triggerClass: PROJECT_ACTION_CLASS,
                             items: PROJECT_ACTIONS,
                             itemToConfig: (action) =>

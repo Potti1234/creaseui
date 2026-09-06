@@ -237,7 +237,7 @@ const dashboard = (model: Model, h: HtmlBuilder<Message>): Html =>
         ),
         tableRegion(
           {
-            actions: [button({ children: [icon({ name: 'sliders-horizontal' }, h), 'Customize Columns'], size: 'sm', variant: 'outline' }, h)],
+            actions: [button({ leadingIcon: icon({ name: 'sliders-horizontal' }, h), children: ['Customize Columns'], size: 'sm', variant: 'outline' }, h)],
             children: [dashboardTable(model, h)],
             heading: 'Document sections',
             toolbar: [toolbar({ children: [inline({ children: [button({ children: ['Outline'], size: 'sm', variant: 'secondary' }, h), button({ children: ['Past Performance'], size: 'sm', variant: 'ghost' }, h), button({ children: ['Key Personnel'], size: 'sm', variant: 'ghost' }, h)], gap: 'xs', wrap: true }, h)], label: 'Document views' }, h)],
@@ -390,10 +390,10 @@ const loginForm = <Message>(noop: Message, h: HtmlBuilder<Message>): Html =>
       children: [
         stack({ align: 'center', children: [text({ as: 'h3', children: ['Welcome back'], variant: 'headingMd' }, h), text({ children: ['Login to your Acme Inc account'], tone: 'secondary' }, h)], gap: 'xs' }, h),
         input({ id: 'blocks-email', label: 'Email', onInput: () => noop, placeholder: 'm@example.com', value: '' }, h),
-        stack({ children: [inline({ children: [text({ children: ['Password'], variant: 'label' }, h), text({ children: ['Forgot your password?'], variant: 'caption' }, h)], justify: 'between', width: 'full' }, h), input({ id: 'blocks-password', onInput: () => noop, type: 'password', value: '' }, h)], gap: 'xs' }, h),
+        stack({ children: [inline({ children: [text({ children: ['Password'], variant: 'label' }, h), text({ children: ['Forgot your password?'], variant: 'caption' }, h)], gap: 'sm', wrap: true, justify: 'between', width: 'full' }, h), input({ id: 'blocks-password', onInput: () => noop, type: 'password', value: '' }, h)], gap: 'xs' }, h),
         button({ children: ['Login'] }, h),
         fieldSeparator({ children: ['Or continue with'] }, h),
-        button({ children: [icon({ name: 'code-xml' }, h), 'Login with GitHub'], variant: 'outline' }, h),
+        button({ leadingIcon: icon({ name: 'code-xml' }, h), children: ['Login with GitHub'], variant: 'outline' }, h),
         text({ align: 'center', children: ["Don't have an account? Sign up"], variant: 'caption' }, h),
       ],
       gap: 'md',
@@ -411,7 +411,7 @@ const loginMuted = <Message>(noop: Message, h: HtmlBuilder<Message>): Html =>
             align: 'center',
             children: [
               inline({ children: [badge({ children: ['A'] }, h), text({ children: ['Acme Inc.'], variant: 'label' }, h)], gap: 'sm' }, h),
-              box({ children: [loginForm(noop, h)], padding: 'lg', width: 'form' }, h),
+              box({ children: [loginForm(noop, h)], width: 'form' }, h),
             ],
             gap: 'lg',
             width: 'full',
@@ -421,7 +421,7 @@ const loginMuted = <Message>(noop: Message, h: HtmlBuilder<Message>): Html =>
       ],
       contentAlignment: 'center',
       minHeight: 'blocksHero',
-      padding: 'xl',
+      padding: 'md',
       surface: 'muted',
     },
     h,
@@ -437,8 +437,8 @@ const loginImage = <Message>(noop: Message, h: HtmlBuilder<Message>): Html =>
               grid(
                 {
                   children: [
-                    box({ children: [stack({ align: 'center', children: [box({ children: [loginForm(noop, h)], width: 'form' }, h)], justify: 'center' }, h)], minHeight: 'full', padding: 'xl', surface: 'page' }, h),
-                    box({ children: [stack({ align: 'center', children: [icon({ ariaLabel: 'Image placeholder', name: 'image', size: 'md' }, h)], justify: 'center' }, h)], minHeight: 'full', padding: 'xl', surface: 'muted' }, h),
+                    box({ children: [stack({ align: 'center', children: [box({ children: [loginForm(noop, h)], width: 'form' }, h)], justify: 'center' }, h)], minHeight: 'full', padding: 'md', surface: 'page' }, h),
+                    box({ children: [stack({ align: 'center', children: [icon({ ariaLabel: 'Image placeholder', name: 'image', size: 'md' }, h)], justify: 'center' }, h)], visibility: 'desktop', minHeight: 'full', padding: 'md', surface: 'muted' }, h),
                   ],
                   columns: 'loginSplit',
                   width: 'full',
@@ -455,7 +455,7 @@ const loginImage = <Message>(noop: Message, h: HtmlBuilder<Message>): Html =>
       ],
       contentAlignment: 'center',
       minHeight: 'blockPreview',
-      padding: 'xl',
+      padding: 'md',
       surface: 'muted',
     },
     h,
@@ -548,7 +548,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
               ...blocks.map((block) => blockSection(block, model, h)),
             ],
             gap: 'xxl',
-            padding: 'xl',
+            padding: 'md',
           },
           h,
         ),

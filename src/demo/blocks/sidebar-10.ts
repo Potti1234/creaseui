@@ -688,6 +688,7 @@ const navFavorites = (
                                 h.span([h.Class('sr-only')], ['More']),
                               ],
                             ),
+                            placement: 'sidebarAction',
                             triggerClass: ROW_ACTION_CLASS,
                             items: FAVORITE_ACTIONS,
                             itemToConfig: (action) =>
