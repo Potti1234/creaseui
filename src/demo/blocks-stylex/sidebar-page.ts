@@ -863,14 +863,14 @@ export const view = (
   const navigation =
     id === "09"
       ? [
-          brand("Acme Inc", "Enterprise", h, true),
+          brand("Acme Inc", "Enterprise", h, !model.isMobileOpen),
           Sidebar.sidebarContent(
             {
               children: [
                 Sidebar.sidebarMenu(
                   {
                     children: mail.navMain.map((i) =>
-                      item(i.title, model, h, i.icon, true),
+                      item(i.title, model, h, i.icon, !model.isMobileOpen),
                     ),
                   },
                   h,
@@ -879,7 +879,7 @@ export const view = (
             },
             h,
           ),
-          user(h, true),
+          user(h, !model.isMobileOpen),
         ]
       : id === "11"
         ? [

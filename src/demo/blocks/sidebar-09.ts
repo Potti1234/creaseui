@@ -24,6 +24,7 @@ import {
   sidebarGroupContent,
   sidebarHeader,
   sidebarInset,
+  sidebarProvider,
   sidebarInput,
   sidebarMenu,
   sidebarMenuButton,
@@ -382,7 +383,7 @@ const iconSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
   return sidebar(
     {
       collapsible: 'none',
-      class: 'w-[calc(var(--sidebar-width-icon)+1px)]! border-r',
+      class: 'w-full md:w-[calc(var(--sidebar-width-icon)+1px)]! border-r',
       children: [
         sidebarHeader(
           {
@@ -706,20 +707,7 @@ const blockSidebarProvider = (
   children: ReadonlyArray<Html>,
   h: HtmlBuilder<Message>,
 ): Html => {
-  return h.div(
-    [
-      h.DataAttribute('slot', 'sidebar-wrapper'),
-      h.DataAttribute('state', state),
-      h.Style({
-        '--sidebar-width': '350px',
-        '--sidebar-width-icon': '3rem',
-      }),
-      h.Class(
-        'group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar',
-      ),
-    ],
-    [...children],
-  );
+  return sidebarProvider({ state, width: '350px', children }, h);
 };
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
@@ -728,10 +716,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   return blockSidebarProvider(state, [appSidebar(model, h), pageContent(h)], h);
 };
 
-// PORT NOTE: The shared sidebarProvider fixes --sidebar-width at 16rem, so
-// this block reproduces its wrapper locally to preserve the source's 350px
-// nested-sidebar width. Mail ordering stays deterministic instead of using
-// the source demo's random shuffle when a mailbox is selected.
+// Preserve the source's 350px nested-sidebar width through the shared provider.
+// Mail ordering stays deterministic when a mailbox is selected.
 // PORT NOTE: Avatar files are not bundled, so the source image is represented
 // by its CN fallback.
 

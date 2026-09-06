@@ -13,6 +13,7 @@ const styles = stylex.create({
   label: { flexGrow: 1 },
   left: { marginRight: '0.25rem', right: '100%' },
   root: { display: 'inline-flex', position: 'relative' },
+  sidebarAction: { display: 'contents' },
   right: { left: '100%', marginLeft: '0.25rem' },
   menuContent: { minWidth: '8rem', overflow: 'visible', padding: '0.25rem', position: 'absolute', width: 'max-content' },
   submenu: { left: '100%', marginLeft: '0.25rem', minWidth: '8rem', overflow: 'visible', padding: '0.25rem', position: 'absolute', top: 0, width: 'max-content' },
@@ -169,6 +170,7 @@ export type DropdownMenuProps<Item extends string, Msg> = Readonly<{
   model: Model;
   toParentMessage: (message: Message) => Msg;
   trigger: Html | string;
+  placement?: 'inline' | 'sidebarAction';
   triggerLayoutStyle?: ComponentLayoutStyle;
   triggerTabindex?: number;
   triggerRole?: string;
@@ -400,7 +402,7 @@ export const dropdownMenu = <Item extends string, Msg>(
   return h.div(
     [
       h.DataAttribute('slot', 'dropdown-menu'),
-      h.Class(className(styles.root)),
+      h.Class(className(styles.root, props.placement === 'sidebarAction' && styles.sidebarAction)),
       ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
     ],
     [
