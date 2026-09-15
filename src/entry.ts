@@ -23,6 +23,7 @@ const application = Runtime.makeApplication({
   view,
   subscriptions,
   container: document.getElementById('root'),
+  devTools: { keyframeInterval: 1 },
   routing: {
     onUrlRequest: request => ClickedLink({ request }),
     onUrlChange: url => ChangedUrl({ url }),

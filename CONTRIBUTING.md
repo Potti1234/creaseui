@@ -46,6 +46,9 @@ interactive component.
   and `npm run test:registry`
 - Generated docs, parity, or icon data: run the owning `*:generate` command and
   commit its inputs and outputs together
+- Lint rules or component styling contracts: run `npm run test:lint-package`
+  and `npm run lint:design-system`; lower the warning ceiling when warnings are
+  removed and never raise it to admit new violations
 
 Pull requests should complete the repository template and identify both the
 upstream shadcn reference and the Foldkit primitive used. Security reports must

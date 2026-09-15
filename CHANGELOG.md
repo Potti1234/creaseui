@@ -17,6 +17,9 @@ All notable changes to Crease UI are recorded here. The project follows
 - Multidimensional parity contracts pinned to upstream shadcn/ui provenance.
 - Compound Dialog and Sheet layout APIs.
 - Installable Create presets with five Foldkit-native icon families.
+- A publishable `@creaseui/lint` package with Foldkit-aware Tailwind and StyleX
+  component contracts, strict constrained-composition rules, and a CI warning
+  ratchet for existing examples.
 
 ### Changed
 

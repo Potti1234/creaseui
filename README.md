@@ -82,6 +82,8 @@ The registry guide also documents tag- and commit-pinned installs.
 - [Constrained StyleX](docs/stylex-agent-safe-design-system.md) documents the
   Polar-inspired AI-safe design-system experiment, its enforcement model, and
   the implementation learnings.
+- [Design-system linting](docs/design-system-lint.md) documents the Foldkit-aware
+  Tailwind and StyleX lint presets, component contracts, and warning ratchet.
 - [Compatibility matrix](compatibility.json) records the framework and tooling
   versions used by the current validation suite.
 - [Upstream provenance](docs/provenance.md) records the projects this work builds
