@@ -406,6 +406,7 @@ export type ChartProps<Msg> = Readonly<{
   state?: 'ready' | 'loading' | 'empty' | 'error';
   statusText?: string;
   class?: string;
+  dataSize?: string;
 }>;
 
 export const chart = <Msg>(
@@ -428,6 +429,9 @@ export const chart = <Msg>(
         ? [h.div(
             [
               h.DataAttribute('slot', 'echart'),
+              ...(props.dataSize === undefined
+                ? []
+                : [h.DataAttribute('size', props.dataSize)]),
               h.Class('aspect-video w-full'),
               h.Role('img'),
               h.AriaLabel(props.ariaLabel),

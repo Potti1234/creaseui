@@ -84,6 +84,7 @@ export const eChart = <Message>(props: EChartProps<Message>, h: HtmlBuilder<Mess
     ...(state === 'ready' ? [h.div(
     [
       h.DataAttribute('slot', 'echart'),
+      h.DataAttribute('size', props.size ?? 'default'),
       h.Role('img'),
       h.AriaLabel(props.ariaLabel),
       h.Class(className(styles.host, sizeStyles[props.size ?? 'default'], props.layoutStyle)),

@@ -1,7 +1,6 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { Option } from 'effect'
 
-import { avatar, avatarFallback } from '@/ui/avatar'
 import { badge } from '@/ui/badge'
 import { bubble, bubbleContent, bubbleGroup } from '@/ui/bubble'
 import { button } from '@/ui/button'
@@ -55,7 +54,7 @@ const narrative = <Message>(title: string, body: string, iconName: string, h: Ht
   item({ children: [itemMedia({ children: [icon({ name: iconName }, h)], variant: 'icon' }, h), itemContent({ children: [itemTitle({ children: [title] }, h), itemDescription({ children: [body] }, h)] }, h)], size: 'sm' }, h)
 
 const initials = <Message>(name: string, h: HtmlBuilder<Message>): Html =>
-  avatar({ children: [avatarFallback({ children: [name] }, h)], size: 'sm' }, h)
+  badge({ children: [name], variant: 'secondary' }, h)
 
 const workspaceNavigation = <Message>(active: string, h: HtmlBuilder<Message>): Html =>
   sidebar({

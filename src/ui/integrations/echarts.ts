@@ -11,6 +11,7 @@ export const eChart = <M>(p: EChartProps<M>, h: HtmlBuilder<M>): Html =>
       accessibleAlternative: p.accessibleAlternative,
       toMessage: p.toMessage,
       ...(p.variant === undefined ? {} : { variant: p.variant }),
+      dataSize: p.size ?? "default",
       class:
         p.size === "spark"
           ? "h-14 w-full [&_[data-slot=echart]]:h-full [&_[data-slot=echart]]:aspect-auto"

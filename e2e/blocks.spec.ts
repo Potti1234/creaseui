@@ -17,8 +17,9 @@ for (const renderer of ['tailwind', 'stylex'] as const) {
         for (const chart of await charts.all()) {
           await expect(chart.locator('canvas')).toBeVisible()
           const bounds = await chart.boundingBox()
+          const minHeight = (await chart.getAttribute('data-size')) === 'spark' ? 40 : 150
           expect(bounds?.width).toBeGreaterThan(150)
-          expect(bounds?.height).toBeGreaterThan(150)
+          expect(bounds?.height).toBeGreaterThan(minHeight)
         }
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
         if (process.env.BLOCKS_VISUAL_AUDIT) {
