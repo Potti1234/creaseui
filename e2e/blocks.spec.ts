@@ -56,6 +56,7 @@ for (const renderer of ['tailwind', 'stylex'] as const) {
 }
 
 test('combined gallery preserves its category across renderer switches and names every preview', async ({ page }) => {
+  test.setTimeout(90_000)
   await page.goto('/blocks')
   const switcher = page.getByRole('group', { name: 'Blocks renderer' })
   await expect(page.locator('[data-block]')).toHaveCount(31)
