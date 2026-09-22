@@ -57,7 +57,7 @@ for (const renderer of ['tailwind', 'stylex'] as const) {
 test('combined gallery preserves its category across renderer switches and names every preview', async ({ page }) => {
   await page.goto('/blocks')
   const switcher = page.getByRole('group', { name: 'Blocks renderer' })
-  await expect(page.locator('[data-block]')).toHaveCount(25)
+  await expect(page.locator('[data-block]')).toHaveCount(31)
   await page.getByRole('button', { name: 'Authentication', exact: true }).click()
   await expect(page.locator('[data-block]')).toHaveCount(2)
   await switcher.getByRole('button', { name: 'StyleX', exact: true }).click()
@@ -69,7 +69,7 @@ test('combined gallery preserves its category across renderer switches and names
   await switcher.getByRole('button', { name: 'Tailwind', exact: true }).click()
   await expect(page.locator('iframe').first()).toHaveAttribute('src', '/blocks/preview/tailwind--login-03')
   await page.getByRole('button', { name: 'All blocks', exact: true }).click()
-  await expect(page.locator('[data-block]')).toHaveCount(25)
+  await expect(page.locator('[data-block]')).toHaveCount(31)
 })
 
 test('legacy gallery and block URLs remain available', async ({ page }) => {

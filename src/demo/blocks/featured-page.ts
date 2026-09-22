@@ -1,5 +1,6 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { Schema as S } from 'effect'
+import { Option, Schema as S } from 'effect'
+import { Command } from 'foldkit'
 import { m } from 'foldkit/message'
 
 import { loginArtwork } from '@/ui/composition/login-artwork'
@@ -10,6 +11,7 @@ import { fieldSeparator } from '@/ui/field'
 import { input } from '@/ui/input'
 import { icon } from '@/ui/composition/icon'
 import * as ECharts from '@/ui/integrations/echarts'
+import * as RadioGroup from '@/ui/radio-group'
 import { dataTable, type DataTableColumn } from '@/ui/data-table'
 import {
   box,
@@ -42,6 +44,14 @@ import {
   projectStatusDashboard,
   serviceMonitoringDashboard,
 } from './astryx-inspired-dashboards'
+import {
+  cardGrid,
+  checkoutForm,
+  dataDashboard,
+  inboxTable,
+  kanbanBoard,
+  orderDetail,
+} from './astryx-inspired-blocks'
 import { chartAnalyticsDashboard } from './chart-analytics-dashboard'
 import { featuredVisitorsChart } from './dashboard-echarts'
 
@@ -51,18 +61,38 @@ type Block = Readonly<{
   preview: (model: Model, h: HtmlBuilder<Message>) => Html
 }>
 
-export const Model = S.Struct({ table: TableState.Model, email: S.String, password: S.String })
+export const Model = S.Struct({ checkout: S.Record(S.String, S.String), delivery: S.String, email: S.String, password: S.String, query: S.String, radioGroup: RadioGroup.Model, table: TableState.Model })
 export type Model = typeof Model.Type
 export const ChangedEmail = m('ChangedBlockEmail', { value: S.String })
 export const ChangedPassword = m('ChangedBlockPassword', { value: S.String })
+export const ChangedQuery = m('ChangedBlockQuery', { value: S.String })
+export const ChangedCheckoutField = m('ChangedCheckoutField', { name: S.String, value: S.String })
+export const GotRadioGroupMessage = m('GotBlockRadioGroupMessage', { message: RadioGroup.Message })
 export const GotEChartMessage = m('GotBlocksStyleXEChartMessage', { message: ECharts.ChartMessage })
-export const Message = S.Union([TableState.Message, GotEChartMessage, ChangedEmail, ChangedPassword])
+export const Message = S.Union([TableState.Message, GotEChartMessage, ChangedEmail, ChangedPassword, ChangedQuery, ChangedCheckoutField, GotRadioGroupMessage])
 export type Message = typeof Message.Type
-export const init = (): Model => ({ email: '', password: '', table: TableState.init(10) })
-export const update = (model: Model, message: Message): readonly [Model, readonly []] => {
+export const init = (): Model => ({ checkout: {}, delivery: 'standard', email: '', password: '', query: '', radioGroup: RadioGroup.init({ id: 'checkout-delivery' }), table: TableState.init(10) })
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
+export const update = (model: Model, message: Message): UpdateReturn => {
   if (message._tag === 'GotBlocksStyleXEChartMessage') return [model, []]
   if (message._tag === 'ChangedBlockEmail') return [{...model, email: message.value}, []]
   if (message._tag === 'ChangedBlockPassword') return [{...model, password: message.value}, []]
+  if (message._tag === 'ChangedBlockQuery') return [{...model, query: message.value}, []]
+  if (message._tag === 'ChangedCheckoutField') return [{...model, checkout: {...model.checkout, [message.name]: message.value}}, []]
+  if (message._tag === 'GotBlockRadioGroupMessage') {
+    const [radioGroup, commands, maybeSelection] = RadioGroup.update(model.radioGroup, message.message)
+    return [
+      {
+        ...model,
+        delivery: Option.match(maybeSelection, {
+          onNone: () => model.delivery,
+          onSome: (selection) => selection.value,
+        }),
+        radioGroup,
+      },
+      Command.mapMessages(commands, (childMessage) => GotRadioGroupMessage({ message: childMessage })),
+    ]
+  }
   return [{...model, table: TableState.update(model.table, message)}, []]
 }
 
@@ -333,6 +363,12 @@ const blocks: ReadonlyArray<Block> = [
   { description: 'Launch milestones, weighted task progress, workstreams and risks.', name: 'astryx-project-status', preview: (_model, h) => projectStatusDashboard((message) => GotEChartMessage({ message }), h) },
   { description: 'Live service health, traffic metrics and an operational triage rail.', name: 'astryx-service-monitoring', preview: (_model, h) => serviceMonitoringDashboard((message) => GotEChartMessage({ message }), h) },
   { description: 'Dense incident rows with filtering and a dedicated inspector panel.', name: 'astryx-incident-console', preview: (_model, h) => incidentConsoleDashboard(h) },
+  { description: 'Four status lanes of task cards under a shared sprint toolbar.', name: 'astryx-kanban-board', preview: (_model, h) => kanbanBoard(h) },
+  { description: 'A mail queue that indexes a reading pane with a live reply composer.', name: 'astryx-inbox-table', preview: (_model, h) => inboxTable(h) },
+  { description: 'A single record with line items, totals and an activity rail.', name: 'astryx-order-detail', preview: (_model, h) => orderDetail(h) },
+  { description: 'A sectioned checkout form beside an order summary that recalculates.', name: 'astryx-checkout-form', preview: (model, h) => checkoutForm({ delivery: model.delivery, fields: model.checkout, onField: (name, value) => ChangedCheckoutField({ name, value }), radioGroup: model.radioGroup, toRadioGroupMessage: (message) => GotRadioGroupMessage({ message }) }, h) },
+  { description: 'Sparkline tiles with period-over-period deltas and segment breakdowns.', name: 'astryx-data-dashboard', preview: (_model, h) => dataDashboard((message) => GotEChartMessage({ message }), h) },
+  { description: 'A browsable catalog grid with search, filter tabs and a real empty state.', name: 'astryx-card-grid', preview: (model, h) => cardGrid({ onQuery: (value) => ChangedQuery({ value }), query: model.query }, h) },
   { description: 'Real Apache ECharts rendered inside constrained StyleX analytics recipes.', name: 'chart-analytics-dashboard', preview: (_model, h) => chartAnalyticsDashboard((message) => GotEChartMessage({ message }), h) },
 ]
 

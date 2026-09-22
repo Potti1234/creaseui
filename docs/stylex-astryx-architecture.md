@@ -146,14 +146,21 @@ new page from first principles.
 
 ## Astryx-inspired dashboard set
 
-The blocks gallery now includes five additional constrained dashboards based
-on the information architectures in Astryx's current template catalog:
+The blocks gallery now includes five constrained dashboards and six further
+blocks based on the information architectures in Astryx's current template
+catalog:
 
 - executive summary: KPI scorecard, objectives, trends, and narrative rail;
 - cohort funnel: conversion stages, trend, and retention table;
 - project status: task progress, milestones, workstreams, and risks;
 - service monitoring: live metrics plus an alert/service triage rail;
-- incident console: dense incident rows and a separate inspector panel.
+- incident console: dense incident rows and a separate inspector panel;
+- kanban board: status lanes of task cards under a shared sprint toolbar;
+- inbox table: mail queue indexed into a reading pane with a reply composer;
+- order detail: record view with line items, totals, and an activity rail;
+- checkout form: sectioned form beside a recalculating order summary;
+- data dashboard: sparkline tiles with deltas and segment breakdowns;
+- card grid: browsable catalog with search, filter tabs, and an empty state.
 
 They intentionally copy structure rather than Astryx source or branding. Each
 uses Crease components, Foldkit views, the closed StyleX recipe APIs, and the
@@ -172,7 +179,7 @@ remains owned by Apache ECharts, while StyleX owns the host dimensions,
 surfaces, spacing, responsive grid, typography, and surrounding semantic
 regions.
 
-`src/stylex/integrations/echarts.ts` is the single bridge. It exposes only four finite host
+`src/stylex/integrations/echarts.ts` is the single bridge. It exposes only six finite host
 sizes and the reviewed chart helpers from `src/lib/echarts.ts`; consumers do
 not receive a class string or arbitrary visual style escape hatch. The block
 itself uses only composition primitives and `masterDetailPage`, so chart-heavy

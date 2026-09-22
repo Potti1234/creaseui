@@ -25,5 +25,12 @@ export const DESIGN_SYSTEM_EVALUATIONS = [
   { assertion: 'incident console uses dense table rows and a separate inspector region', id: 'incident-structure', mode: 'static', template: 'astryx-incident-console' },
   { assertion: 'six Apache ECharts hosts mount real canvases inside constrained StyleX regions', id: 'charts-mount', mode: 'browser', template: 'chart-analytics-dashboard' },
   { assertion: 'chart grid and insight rail remain horizontally contained at narrow widths', id: 'charts-responsive', mode: 'browser', template: 'chart-analytics-dashboard' },
+  { assertion: 'kanban lanes stay parallel columns and cards keep tag badges', id: 'kanban-structure', mode: 'static', template: 'astryx-kanban-board' },
+  { assertion: 'message queue rows render in the table region beside the reading pane', id: 'inbox-structure', mode: 'static', template: 'astryx-inbox-table' },
+  { assertion: 'reading pane and composer stack below the queue at narrow widths', id: 'inbox-responsive', mode: 'browser', template: 'astryx-inbox-table' },
+  { assertion: 'order totals stay column-aligned and the activity rail follows at narrow widths', id: 'order-responsive', mode: 'browser', template: 'astryx-order-detail' },
+  { assertion: 'checkout sections keep field order and totals update with delivery selection', id: 'checkout-totals', mode: 'browser', template: 'astryx-checkout-form' },
+  { assertion: 'sparkline hosts mount canvases inside metric tiles', id: 'data-dashboard-sparks', mode: 'browser', template: 'astryx-data-dashboard' },
+  { assertion: 'search filters the gallery grid and the empty state replaces products', id: 'card-grid-empty', mode: 'browser', template: 'astryx-card-grid' },
 ] as const satisfies ReadonlyArray<DesignSystemEvaluation>
 

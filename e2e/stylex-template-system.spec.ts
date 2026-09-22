@@ -41,6 +41,12 @@ test('Astryx-inspired dashboards use constrained recipes and remain accessible',
     ['astryx-project-status', 2],
     ['astryx-service-monitoring', 2],
     ['astryx-incident-console', 0],
+    ['astryx-kanban-board', 0],
+    ['astryx-inbox-table', 0],
+    ['astryx-order-detail', 0],
+    ['astryx-checkout-form', 0],
+    ['astryx-data-dashboard', 4],
+    ['astryx-card-grid', 0],
   ] as const
   for (const [name, charts] of blocks) {
     await page.setViewportSize({width: 1440, height: 1000})

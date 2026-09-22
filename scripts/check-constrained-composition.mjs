@@ -5,6 +5,7 @@ const files = [
   'src/demo/board-constrained.ts',
   'src/demo/blocks-stylex/featured-page.ts',
   'src/demo/blocks-stylex/astryx-inspired-dashboards.ts',
+  'src/demo/blocks-stylex/astryx-inspired-blocks.ts',
   'src/demo/blocks-stylex/chart-analytics-dashboard.ts',
   'src/demo/charts-stylex/page.ts',
 ]
