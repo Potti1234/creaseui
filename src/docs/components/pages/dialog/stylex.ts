@@ -56,7 +56,7 @@ export const dialogStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       footer: slots => [
         h.button([
           ...slots.closeButton,
-          ...(exampleIndex === 0 ? slots.initialFocusAttributes() : []),
+          ...slots.initialFocusAttributes(),
           h.Type('button'),
           h.Class(stylex.props(styles.action).className ?? ''),
         ], [exampleIndex === 0 ? 'Cancel' : 'Back']),
