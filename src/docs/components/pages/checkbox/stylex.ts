@@ -12,6 +12,7 @@ export const checkboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
 ) => Checkbox.checkbox({
   id: `docs-checkbox-${String(exampleIndex)}`,
   isChecked: (model as { isChecked: boolean }).isChecked,
+  ...(exampleIndex === 1 ? { isIndeterminate: (model as { isIndeterminate: boolean }).isIndeterminate } : {}),
   onToggle: isChecked => onMessageJson(JSON.stringify({
     _tag: 'ToggledCheckboxPreview',
     isChecked,
@@ -24,7 +25,6 @@ export const checkboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         value: 'accepted',
       }
     : {}),
-  ...(exampleIndex === 1 ? { isIndeterminate: true } : {}),
   ...(exampleIndex === 2 ? { isDisabled: true } : {}),
   ...(exampleIndex === 3
     ? {
