@@ -112,8 +112,8 @@ const CONTENT_CLASS =
   'absolute z-50 min-w-[8rem] overflow-visible rounded-md border bg-popover p-1 text-popover-foreground shadow-md';
 const ITEM_CLASS =
   "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[active=true]:bg-accent data-[active=true]:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4";
-const SUBMENU_CLASS =
-  'absolute top-0 left-full ml-1 min-w-[8rem] rounded-md border bg-popover p-1 text-popover-foreground shadow-lg';
+const SUBMENU_PANEL_CLASS =
+  'z-50 min-w-[8rem] rounded-md border bg-popover p-1 text-popover-foreground shadow-lg';
 
 export type DropdownMenuItemConfig<Item extends string = string> = Readonly<{
   label: Html | string;
@@ -304,6 +304,9 @@ export const dropdownMenu = <Item extends string, Msg>(
                 Option.contains(props.model.openSubmenuIndex, index),
               ),
               h.AriaControls(`${props.model.id}-submenu-${String(index)}`),
+              h.Style({
+                anchorName: `--${props.model.id}-sub-${String(index)}`,
+              }),
             ]),
         ...(config.isDisabled === true
           ? []
@@ -372,39 +375,52 @@ export const dropdownMenu = <Item extends string, Msg>(
         ...(config.submenu === undefined
           ? []
           : [Icon.chevronRight<Msg>({ class: 'ml-auto size-4' }, h)]),
-        ...(config.submenu === undefined ||
-        !Option.contains(props.model.openSubmenuIndex, index)
-          ? []
-          : [
-              h.div(
-                [
-                  h.Role('menu'),
-                  h.AriaLabel(
-                    `${typeof config.label === 'string' ? config.label : 'Submenu'} submenu`,
-                  ),
-                  h.Id(`${props.model.id}-submenu-${String(index)}`),
-                  h.Class(
-                    cn(
-                      SUBMENU_CLASS,
-                      props.direction === 'rtl'
-                        ? 'right-full left-auto mr-1 ml-0'
-                        : undefined,
-                    ),
-                  ),
-                ],
-                config.submenu.items.map((child, childIndex) =>
-                  renderItem(
-                    child,
-                    props.items.length + childIndex,
-                    config.submenu?.itemToConfig(child) ?? { label: child },
-                    true,
-                  ),
-                ),
-              ),
-            ]),
       ],
     );
   };
+
+  const submenuPanels: Array<Html> = [];
+  props.items.forEach((item, index) => {
+    const config = props.itemToConfig(item);
+    if (
+      config.submenu === undefined ||
+      !Option.contains(props.model.openSubmenuIndex, index)
+    )
+      return;
+    submenuPanels.push(
+      h.div(
+        [
+          h.Role('menu'),
+          h.AriaLabel(
+            `${typeof config.label === 'string' ? config.label : 'Submenu'} submenu`,
+          ),
+          h.Id(`${props.model.id}-submenu-${String(index)}`),
+          h.Class(SUBMENU_PANEL_CLASS),
+          // Anchored to the parent item and rendered outside the scrollable
+          // panel so the panel's overflow-y clip can't hide it.
+          h.Style({
+            position: 'fixed',
+            positionAnchor: `--${props.model.id}-sub-${String(index)}`,
+            ...(props.direction === 'rtl'
+              ? { right: 'anchor(left)', marginRight: '0.25rem' }
+              : { left: 'anchor(right)', marginLeft: '0.25rem' }),
+            top: 'anchor(top)',
+            positionTry: 'flip-inline',
+            maxHeight: 'calc(100vh - 8px)',
+            overflowY: 'auto',
+          }),
+        ],
+        config.submenu.items.map((child, childIndex) =>
+          renderItem(
+            child,
+            props.items.length + childIndex,
+            config.submenu?.itemToConfig(child) ?? { label: child },
+            true,
+          ),
+        ),
+      ),
+    );
+  });
 
   const grouped: Array<Html> = [];
   let previousGroup: string | undefined;
@@ -552,6 +568,7 @@ export const dropdownMenu = <Item extends string, Msg>(
               ],
               grouped,
             ),
+            ...submenuPanels,
           ]
         : []),
     ],

@@ -16,8 +16,7 @@ const styles = stylex.create({
   sidebarAction: { display: 'contents' },
   right: { left: '100%', marginLeft: '0.25rem' },
   menuContent: { minWidth: '8rem', overflow: 'visible', padding: '0.25rem', position: 'absolute', width: 'max-content' },
-  submenu: { left: '100%', marginLeft: '0.25rem', minWidth: '8rem', overflow: 'visible', padding: '0.25rem', position: 'absolute', top: 0, width: 'max-content' },
-  submenuRtl: { left: 'auto', marginLeft: 0, marginRight: '0.25rem', right: '100%' },
+  submenuPanel: { minWidth: '8rem', overflow: 'visible', padding: '0.25rem', width: 'max-content', zIndex: 50 },
   shortcut: { color: tokens.mutedForeground, fontSize: '0.75rem', letterSpacing: '0.1em', marginLeft: 'auto' },
   top: { bottom: '100%', marginBottom: '0.25rem' },
 })
@@ -330,6 +329,9 @@ export const dropdownMenu = <Item extends string, Msg>(
                 Option.contains(props.model.openSubmenuIndex, index),
               ),
               h.AriaControls(`${props.model.id}-submenu-${String(index)}`),
+              h.Style({
+                anchorName: `--${props.model.id}-sub-${String(index)}`,
+              }),
             ]),
         ...(config.isDisabled === true
           ? []
@@ -392,32 +394,52 @@ export const dropdownMenu = <Item extends string, Msg>(
         ...(config.submenu === undefined
           ? []
           : [Icon.chevronRight<Msg>({ class: className(overlayStyles.icon) }, h)]),
-        ...(config.submenu === undefined ||
-        !Option.contains(props.model.openSubmenuIndex, index)
-          ? []
-          : [
-              h.div(
-                [
-                  h.Role('menu'),
-                  h.AriaLabel(
-                    `${typeof config.label === 'string' ? config.label : 'Submenu'} submenu`,
-                  ),
-                  h.Id(`${props.model.id}-submenu-${String(index)}`),
-                  h.Class(cn(SUBMENU_CLASS, styles.submenu, props.direction === 'rtl' ? styles.submenuRtl : undefined)),
-                ],
-                config.submenu.items.map((child, childIndex) =>
-                  renderItem(
-                    child,
-                    props.items.length + childIndex,
-                    config.submenu?.itemToConfig(child) ?? { label: child },
-                    true,
-                  ),
-                ),
-              ),
-            ]),
       ],
     );
   };
+
+  const submenuPanels: Array<Html> = [];
+  props.items.forEach((item, index) => {
+    const config = props.itemToConfig(item);
+    if (
+      config.submenu === undefined ||
+      !Option.contains(props.model.openSubmenuIndex, index)
+    )
+      return;
+    submenuPanels.push(
+      h.div(
+        [
+          h.Role('menu'),
+          h.AriaLabel(
+            `${typeof config.label === 'string' ? config.label : 'Submenu'} submenu`,
+          ),
+          h.Id(`${props.model.id}-submenu-${String(index)}`),
+          h.Class(cn(SUBMENU_CLASS, styles.submenuPanel)),
+          // Anchored to the parent item and rendered outside the scrollable
+          // panel so the panel's overflow-y clip can't hide it.
+          h.Style({
+            position: 'fixed',
+            positionAnchor: `--${props.model.id}-sub-${String(index)}`,
+            ...(props.direction === 'rtl'
+              ? { right: 'anchor(left)', marginRight: '0.25rem' }
+              : { left: 'anchor(right)', marginLeft: '0.25rem' }),
+            top: 'anchor(top)',
+            positionTry: 'flip-inline',
+            maxHeight: 'calc(100vh - 8px)',
+            overflowY: 'auto',
+          }),
+        ],
+        config.submenu.items.map((child, childIndex) =>
+          renderItem(
+            child,
+            props.items.length + childIndex,
+            config.submenu?.itemToConfig(child) ?? { label: child },
+            true,
+          ),
+        ),
+      ),
+    );
+  });
 
   const grouped: Array<Html> = [];
   let previousGroup: string | undefined;
@@ -566,6 +588,7 @@ export const dropdownMenu = <Item extends string, Msg>(
               ],
               grouped,
             ),
+            ...submenuPanels,
           ]
         : []),
     ],
