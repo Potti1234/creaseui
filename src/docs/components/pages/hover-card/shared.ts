@@ -23,7 +23,7 @@ export type Model = typeof Model.Type`,
 export const Message = S.Union([GotHoverCardMessage])
 export type Message = typeof Message.Type`,
     init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { hoverCard: HoverCard.init({ id: 'foldkit-profile', showDelay: 200, closeDelay: 150 }) },
+  { hoverCard: HoverCard.init({ id: 'hover-card-${tag.toLowerCase()}', showDelay: 200, closeDelay: 150 }) },
   [],
 ]`,
     update: `export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
