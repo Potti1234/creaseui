@@ -183,32 +183,35 @@ const anchorPositionStyle = (
   align: DropdownMenuAlign,
 ): Record<string, string> => {
   const isBlock = side === 'top' || side === 'bottom';
+  // Pin the matching edge for start/end alignment; an anchored box with a
+  // single inset constraint stretches to the containing block, which flung
+  // 'end' menus off-screen under translateX(-100%).
   const alignInset = isBlock
-    ? { start: 'anchor(left)', center: 'anchor(center)', end: 'anchor(right)' }[align]
-    : { start: 'anchor(top)', center: 'anchor(center)', end: 'anchor(bottom)' }[align];
+    ? ({ start: { left: 'anchor(left)' }, center: { left: 'anchor(center)' }, end: { right: 'anchor(right)' } } as const)[align]
+    : ({ start: { top: 'anchor(top)' }, center: { top: 'anchor(center)' }, end: { bottom: 'anchor(bottom)' } } as const)[align];
   const alignTransform =
     align === 'center'
       ? isBlock
         ? 'translateX(-50%)'
         : 'translateY(-50%)'
-      : align === 'end'
-        ? isBlock
-          ? 'translateX(-100%)'
-          : 'translateY(-100%)'
-        : undefined;
+      : undefined;
   const gap = '0.25rem';
-  const inset =
+  const sideInset =
     side === 'bottom'
-      ? { top: `calc(anchor(bottom) + ${gap})`, left: alignInset }
+      ? { top: `calc(anchor(bottom) + ${gap})` }
       : side === 'top'
-        ? { bottom: `calc(anchor(top) + ${gap})`, left: alignInset }
+        ? { bottom: `calc(anchor(top) + ${gap})` }
         : side === 'right'
-          ? { left: `calc(anchor(right) + ${gap})`, top: alignInset }
-          : { right: `calc(anchor(left) + ${gap})`, top: alignInset };
+          ? { left: `calc(anchor(right) + ${gap})` }
+          : { right: `calc(anchor(left) + ${gap})` };
   return {
     position: 'fixed',
     positionAnchor: `--${id}-menu`,
-    ...inset,
+    ...alignInset,
+    ...sideInset,
+    width: 'max-content',
+    height: 'max-content',
+    maxWidth: 'calc(100vw - 8px)',
     ...(alignTransform === undefined ? {} : { transform: alignTransform }),
     positionTry: isBlock ? 'flip-block' : 'flip-inline',
     maxHeight: 'calc(100vh - 8px)',
