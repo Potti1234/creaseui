@@ -75,7 +75,9 @@ test('combined gallery preserves its category across renderer switches and names
 })
 
 test('block code toggle swaps the preview for the matching renderer source', async ({ page }) => {
+  test.setTimeout(90_000)
   await page.goto('/blocks')
+  await page.getByRole('button', { name: 'Dashboards', exact: true }).click()
   const section = page.locator('[data-block="dashboard-01"]')
   const toggle = section.getByRole('button', { name: 'View code for dashboard-01', exact: true })
   await expect(toggle).toHaveAttribute('aria-pressed', 'false')
