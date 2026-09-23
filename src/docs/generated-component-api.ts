@@ -1771,12 +1771,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ErrorSummaryProps",
       "kind": "type",
-      "signature": "ErrorSummaryProps = SharedErrorSummaryProps & Readonly<{ class?: string }>"
+      "signature": "ErrorSummaryProps<Msg> = SharedErrorSummaryProps<Msg> & Readonly<{ class?: string }>"
     },
     {
       "name": "errorSummary",
       "kind": "function",
-      "signature": "errorSummary<Msg>(props: ErrorSummaryProps, h: HtmlBuilder<Msg>): Html"
+      "signature": "errorSummary<Msg>(props: ErrorSummaryProps<Msg>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "FormItemProps",
