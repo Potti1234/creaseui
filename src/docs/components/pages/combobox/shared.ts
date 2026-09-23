@@ -32,7 +32,7 @@ export type Model = typeof Model.Type`,
 export const Message = S.Union([GotComboboxMessage])
 export type Message = typeof Message.Type`,
     init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { combobox: Combobox.init({ id: 'framework-combobox', isAnimated: true }), maybeFramework: Option.none() },
+  { combobox: Combobox.init({ id: 'framework-combobox', isAnimated: true }), maybeFramework: ${fixture.readOnly ? "Option.some('next')" : 'Option.none()'} },
   [],
 ]`,
     update: `export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {

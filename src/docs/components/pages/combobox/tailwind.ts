@@ -13,7 +13,7 @@ type ComboboxPreviewModel = typeof ComboboxPreviewModel.Type;
 
 export const comboboxTailwindPreviewProgram = definePreviewProgram<ComboboxPreviewModel, GotComboboxPreviewMessage>({
   Model: ComboboxPreviewModel, Message: GotComboboxPreviewMessage,
-  init: index => ({ _docsPage: 'combobox', combobox: Combobox.init({ id: `docs-combobox-${String(index)}`, isAnimated: true }), maybeFramework: Option.none() }),
+  init: index => ({ _docsPage: 'combobox', combobox: Combobox.init({ id: `docs-combobox-${String(index)}`, isAnimated: true }), maybeFramework: comboboxFixtures[index]?.readOnly === true ? Option.some('next') : Option.none() }),
   update: (model, message) => {
     const [combobox, commands, maybeSelection] = Combobox.update(model.combobox, message.message);
     const maybeFramework = Option.match(maybeSelection, { onNone: () => model.maybeFramework, onSome: selection => selection._tag === 'Selected' ? Option.some(selection.value) : Option.none<string>() });
