@@ -201,6 +201,47 @@ const positionClass = (
       }[align],
 ]
 
+/** CSS anchor-positioned menu placement: anchors the panel to the trigger and
+ * lets `position-try` flip sides when it would overflow the viewport. */
+const anchorPositionStyle = (
+  id: string,
+  side: DropdownMenuSide,
+  align: DropdownMenuAlign,
+): Record<string, string> => {
+  const isBlock = side === 'top' || side === 'bottom';
+  const alignInset = isBlock
+    ? { start: 'anchor(left)', center: 'anchor(center)', end: 'anchor(right)' }[align]
+    : { start: 'anchor(top)', center: 'anchor(center)', end: 'anchor(bottom)' }[align];
+  const alignTransform =
+    align === 'center'
+      ? isBlock
+        ? 'translateX(-50%)'
+        : 'translateY(-50%)'
+      : align === 'end'
+        ? isBlock
+          ? 'translateX(-100%)'
+          : 'translateY(-100%)'
+        : undefined;
+  const gap = '0.25rem';
+  const inset =
+    side === 'bottom'
+      ? { top: `calc(anchor(bottom) + ${gap})`, left: alignInset }
+      : side === 'top'
+        ? { bottom: `calc(anchor(top) + ${gap})`, left: alignInset }
+        : side === 'right'
+          ? { left: `calc(anchor(right) + ${gap})`, top: alignInset }
+          : { right: `calc(anchor(left) + ${gap})`, top: alignInset };
+  return {
+    position: 'fixed',
+    positionAnchor: `--${id}-menu`,
+    ...inset,
+    ...(alignTransform === undefined ? {} : { transform: alignTransform }),
+    positionTry: isBlock ? 'flip-block' : 'flip-inline',
+    maxHeight: 'calc(100vh - 8px)',
+    overflowY: 'auto',
+  };
+};
+
 const menuKey = <Item extends string>(
   model: Model,
   items: ReadonlyArray<Item>,
@@ -444,6 +485,7 @@ export const dropdownMenu = <Item extends string, Msg>(
                 ),
               ]),
           h.DataAttribute('slot', 'dropdown-menu-trigger'),
+          h.Style({ anchorName: `--${props.model.id}-menu` }),
           ...(props.triggerTabindex === undefined ? [] : [h.Tabindex(props.triggerTabindex)]),
           ...(props.triggerLayoutStyle === undefined
             ? []
@@ -500,7 +542,15 @@ export const dropdownMenu = <Item extends string, Msg>(
                         overflowY: 'auto',
                       }),
                     ]
-                  : []),
+                  : [
+                      h.Style(
+                        anchorPositionStyle(
+                          props.model.id,
+                          props.side ?? 'bottom',
+                          props.align ?? 'start',
+                        ),
+                      ),
+                    ]),
                 h.Class(
                   cn(
                     CONTENT_CLASS,
