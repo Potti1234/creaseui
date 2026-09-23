@@ -28,6 +28,7 @@ import * as ChartsRadial from "@/demo/charts/radial";
 import * as ChartsTooltip from "@/demo/charts/tooltip";
 import * as ChartsStyleX from "@/demo/charts-stylex/page";
 import * as ComponentCatalog from "@/docs/components/catalog";
+import * as CopyFeedback from "@/docs/copy-feedback";
 import * as Page from "@/app/page";
 import * as Icon from "@/lib/icon";
 import {
@@ -81,6 +82,11 @@ export const ChangedChartsRenderer = m("ChangedChartsRenderer", {
 });
 export const ChangedBlocksRenderer = m("ChangedBlocksRenderer", { renderer: Page.CreateRenderer });
 export const ChangedBlocksCategory = m("ChangedBlocksCategory", { category: Page.BlockCategory });
+export const ToggledBlockCode = m("ToggledBlockCode", { block: S.String });
+export const LoadedBlockCode = m("LoadedBlockCode", { block: S.String, renderer: Page.CreateRenderer, source: S.String });
+export const GotBlocksCopyMessage = m("GotBlocksCopyMessage", {
+  message: CopyFeedback.Message,
+});
 export const GotBlocksTailwindMessage = m("GotBlocksTailwindMessage", { message: BlocksTailwindPage.Message });
 export const GotSidebarStyleXMessage = m("GotSidebarStyleXMessage", { message: SidebarStyleX.Message });
 export const GotBoardMessage = m("GotBoardMessage", { message: Board.Message });
@@ -139,6 +145,9 @@ export const Message = S.Union([
   ChangedChartsRenderer,
   ChangedBlocksRenderer,
   ChangedBlocksCategory,
+  ToggledBlockCode,
+  LoadedBlockCode,
+  GotBlocksCopyMessage,
   GotBlocksTailwindMessage,
   GotSidebarStyleXMessage,
   GotBoardMessage,
@@ -196,6 +205,17 @@ const ApplyTheme = Command.define("ApplyTheme", {
     }),
 });
 
+const LoadBlockCode = Command.define("LoadBlockCode", {
+  args: { renderer: Page.CreateRenderer, name: S.String },
+  messages: [LoadedBlockCode],
+  execute: ({ renderer, name }) =>
+    Effect.promise(() =>
+      BlocksIndexPage.loadBlockSource(renderer, name),
+    ).pipe(
+      Effect.map((source) => LoadedBlockCode({ block: name, renderer, source })),
+    ),
+});
+
 // UPDATE
 
 type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
@@ -210,8 +230,32 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       CompletedApplyTheme: () => [model, []],
       IgnoredBlocksPreviewInput: () => [model, []],
 
-      ChangedBlocksRenderer: ({renderer}) => model.page._tag === "BlocksIndexPage" ? [{...model, page: {...model.page, renderer}}, []] : [model, []],
-      ChangedBlocksCategory: ({category}) => model.page._tag === "BlocksIndexPage" ? [{...model, page: {...model.page, category}}, []] : [model, []],
+      ChangedBlocksRenderer: ({renderer}) => {
+        if (model.page._tag !== "BlocksIndexPage") return [model, []];
+        const page = model.page;
+        const pageNext = page.codeBlock === "" ? {...page, renderer} : {...page, renderer, codeSource: null};
+        const commands = page.codeBlock === "" ? [] : [LoadBlockCode({ renderer, name: page.codeBlock })];
+        return [{...model, page: pageNext}, commands];
+      },
+      ChangedBlocksCategory: ({category}) => model.page._tag === "BlocksIndexPage" ? [{...model, page: {...model.page, category, codeBlock: "", codeSource: null}}, []] : [model, []],
+      ToggledBlockCode: ({block}) => {
+        if (model.page._tag !== "BlocksIndexPage") return [model, []];
+        const page = model.page;
+        if (page.codeBlock === block) {
+          return [{...model, page: {...page, codeBlock: "", codeSource: null}}, []];
+        }
+        return [{...model, page: {...page, codeBlock: block, codeSource: null}}, [LoadBlockCode({ renderer: page.renderer, name: block })]];
+      },
+      LoadedBlockCode: ({block, renderer, source}) => {
+        if (model.page._tag !== "BlocksIndexPage" || model.page.codeBlock !== block || model.page.renderer !== renderer) return [model, []];
+        return [{...model, page: {...model.page, codeSource: source}}, []];
+      },
+      GotBlocksCopyMessage: ({message: child}) => {
+        if (model.page._tag !== "BlocksIndexPage") return [model, []];
+        const page = model.page;
+        const [copiedCode, commands] = CopyFeedback.update(page.copiedCode, child);
+        return [{...model, page: {...page, copiedCode}}, Command.mapMessages(commands, message => GotBlocksCopyMessage({message}))];
+      },
       GotBlocksTailwindMessage: ({message: child}) => {
         if(model.page._tag !== "BlockPage") return [model, []];
         const [tailwindFeatured] = BlocksTailwindPage.update(model.page.tailwindFeatured, child);
@@ -1108,8 +1152,8 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
               chartsSectionView(model, section, h),
             )
           : keyed("page-not-found", notFoundView(`/charts/${section}`, h)),
-      BlocksIndex: () => model.page._tag === "BlocksIndexPage" ? keyed("page-blocks", BlocksIndexPage.view({...model.page, isDark:model.isDark, onCategory: category => ChangedBlocksCategory({category})}, h)) : h.empty,
-      BlocksStyleX: () => model.page._tag === "BlocksIndexPage" ? keyed("page-blocks", BlocksIndexPage.view({...model.page, isDark:model.isDark, onCategory: category => ChangedBlocksCategory({category})}, h)) : h.empty,
+      BlocksIndex: () => model.page._tag === "BlocksIndexPage" ? keyed("page-blocks", BlocksIndexPage.view({...model.page, isDark:model.isDark, onCategory: category => ChangedBlocksCategory({category}), onToggleCode: block => ToggledBlockCode({block}), onCopyCode: code => GotBlocksCopyMessage({message: CopyFeedback.ClickedCopyCode({code})})}, h)) : h.empty,
+      BlocksStyleX: () => model.page._tag === "BlocksIndexPage" ? keyed("page-blocks", BlocksIndexPage.view({...model.page, isDark:model.isDark, onCategory: category => ChangedBlocksCategory({category}), onToggleCode: block => ToggledBlockCode({block}), onCopyCode: code => GotBlocksCopyMessage({message: CopyFeedback.ClickedCopyCode({code})})}, h)) : h.empty,
       BlocksStyleXTable: () =>
         model.page._tag === "BlocksStyleXTablePage"
           ? keyed(
