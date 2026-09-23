@@ -516,6 +516,7 @@ export type SidebarMenuButtonVariants = VariantProps<
 export type SidebarMenuButtonProps<Msg> = Readonly<{
   children: ReadonlyArray<Html | string>;
   onClick?: Msg;
+  ariaExpanded?: boolean;
   href?: string;
   isActive?: boolean;
   variant?: SidebarMenuButtonVariants['variant'];
@@ -535,6 +536,7 @@ export const sidebarMenuButton = <Msg>(
     h.DataAttribute('size', size),
     ...((props.isActive ?? false) ? [h.DataAttribute('active', '')] : []),
     ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
+    ...(props.ariaExpanded === undefined ? [] : [h.AriaExpanded(props.ariaExpanded)]),
     h.Class(
       cn(
         sidebarMenuButtonVariants({

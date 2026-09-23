@@ -32,6 +32,9 @@ const styles = stylex.create({
   staticPanel: { backgroundColor: 'var(--background)', borderColor: 'var(--border)', borderRadius: '0.5rem', borderStyle: 'solid', borderWidth: 1, maxWidth: '18rem', overflow: 'hidden', width: '100%' },
   staticProvider: { height: '100%', minHeight: 0, width: '100%' },
   staticTitle: { fontSize: '0.875rem', fontWeight: 600, paddingBlock: '0.25rem', paddingInline: '0.5rem' },
+  accountTrigger: { alignItems: 'center', backgroundColor: { default: 'transparent', ':hover': 'var(--sidebar-accent)' }, borderRadius: '0.375rem', color: { default: 'var(--sidebar-foreground)', ':hover': 'var(--sidebar-accent-foreground)' }, display: 'flex', gap: '0.5rem', outlineStyle: 'none', padding: '0.5rem', textAlign: 'left', width: '100%' },
+  learnChevron: { height: '1rem', marginLeft: 'auto', transitionProperty: 'transform', transitionDuration: '150ms', width: '1rem' },
+  learnChevronOpen: { transform: 'rotate(90deg)' },
   srOnly: { height: 1, margin: -1, overflow: 'hidden', padding: 0, position: 'absolute', width: 1 },
 });
 
@@ -40,6 +43,7 @@ const cx = (...values: ReadonlyArray<unknown>): string => className(...values.fi
 const iconLabel = <Msg>(name: string, label: string, h: HtmlBuilder<Msg>): ReadonlyArray<Html | string> => [Icon.icon(name, {}, h), h.span([], [label])];
 
 const actionItems = ['open', 'rename', 'delete'] as const;
+const accountItems = ['profile', 'settings', 'sign out'] as const;
 const actionLabel = (action: string): string => action[0]?.toUpperCase() + action.slice(1);
 const actionMenu = <Msg>(model: DropdownMenu.Model, label: string, send: (json: string) => Msg, h: HtmlBuilder<Msg>): Html => h.div([
   h.DataAttribute('sidebar', 'menu-action'),
@@ -67,29 +71,42 @@ const primaryNavigation = <Msg>(model: { actionMenu: DropdownMenu.Model }, send:
   ] }, h)),
 }, h);
 
-const nestedNavigation = <Msg>(h: HtmlBuilder<Msg>): Html => Sidebar.sidebarMenu({ children: [
+const nestedNavigation = <Msg>(model: { learnOpen: boolean }, send: (json: string) => Msg, h: HtmlBuilder<Msg>): Html => Sidebar.sidebarMenu({ children: [
   Sidebar.sidebarMenuItem({ children: [
-    Sidebar.sidebarMenuButton({ children: iconLabel('book-open', 'Documentation', h) }, h),
-    Sidebar.sidebarMenuSub({ children: ['Introduction', 'Components', 'Changelog'].map((label, index) => Sidebar.sidebarMenuSubItem({ children: [Sidebar.sidebarMenuSubButton({ href: '#', isActive: index === 1, children: [label] }, h)] }, h)) }, h),
+    Sidebar.sidebarMenuButton({
+      onClick: send(JSON.stringify({ _tag: 'ToggledSidebarPreviewLearn' })),
+      ariaExpanded: model.learnOpen,
+      children: [...iconLabel('book-open', 'Documentation', h), Icon.chevronRight({ class: cx(styles.learnChevron, model.learnOpen && styles.learnChevronOpen) }, h)],
+    }, h),
+    ...(model.learnOpen ? [Sidebar.sidebarMenuSub({ children: ['Introduction', 'Components', 'Changelog'].map((label, index) => Sidebar.sidebarMenuSubItem({ children: [Sidebar.sidebarMenuSubButton({ href: '#', isActive: index === 1, children: [label] }, h)] }, h)) }, h)] : []),
   ] }, h),
 ] }, h);
 
-const account = <Msg>(h: HtmlBuilder<Msg>): Html => Sidebar.sidebarMenu({ children: [Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ size: 'lg', children: [
-  h.span([h.Class(cx(styles.accountAvatar))], ['AL']),
-  h.span([h.Class(cx(styles.accountCopy))], [h.span([h.Class(cx(styles.accountName))], ['Ada Lovelace']), h.span([h.Class(cx(styles.accountEmail))], ['ada@example.com'])]),
-  Icon.chevronsUpDown({}, h),
-] }, h)] }, h)] }, h);
+const account = <Msg>(model: { accountMenu: DropdownMenu.Model }, send: (json: string) => Msg, h: HtmlBuilder<Msg>): Html => Sidebar.sidebarMenu({ children: [Sidebar.sidebarMenuItem({ children: [DropdownMenu.dropdownMenu({
+  model: model.accountMenu,
+  toParentMessage: (message) => send(JSON.stringify({ _tag: 'GotSidebarPreviewAccountMenuMessage', message })),
+  trigger: h.span([h.Class(cx(styles.accountTrigger))], [
+    h.span([h.Class(cx(styles.accountAvatar))], ['AL']),
+    h.span([h.Class(cx(styles.accountCopy))], [h.span([h.Class(cx(styles.accountName))], ['Ada Lovelace']), h.span([h.Class(cx(styles.accountEmail))], ['ada@example.com'])]),
+    Icon.chevronsUpDown({}, h),
+  ]),
+  ariaLabel: 'Account menu',
+  side: 'top',
+  align: 'start',
+  items: accountItems,
+  itemToConfig: (action) => ({ label: actionLabel(action) }),
+}, h)] }, h)] }, h);
 
-const sidebarBody = <Msg>(model: { actionMenu: DropdownMenu.Model; query: string }, send: (json: string) => Msg, onQuery: (value: string) => Msg, h: HtmlBuilder<Msg>): ReadonlyArray<Html | string> => [
+const sidebarBody = <Msg>(model: { actionMenu: DropdownMenu.Model; accountMenu: DropdownMenu.Model; query: string; learnOpen: boolean }, send: (json: string) => Msg, onQuery: (value: string) => Msg, h: HtmlBuilder<Msg>): ReadonlyArray<Html | string> => [
   Sidebar.sidebarHeader({ children: [
     h.div([h.DataAttribute('sidebar', 'brand'), h.Class(cx(styles.brand))], [h.span([h.Class(cx(styles.brandMark))], ['C']), h.span([h.Class(cx(styles.brandName))], ['Crease Workspace'])]),
     Sidebar.sidebarInput({ value: model.query, onInput: onQuery, placeholder: 'Search navigation' }, h),
   ] }, h),
   Sidebar.sidebarContent({ children: [
     Sidebar.sidebarGroup({ children: [Sidebar.sidebarGroupLabel({ children: ['Platform'] }, h), Sidebar.sidebarGroupContent({ children: [primaryNavigation(model, send, h)] }, h)] }, h),
-    Sidebar.sidebarGroup({ spacing: 'later', children: [Sidebar.sidebarGroupLabel({ children: ['Learn'] }, h), Sidebar.sidebarGroupContent({ children: [nestedNavigation(h)] }, h)] }, h),
+    Sidebar.sidebarGroup({ spacing: 'later', children: [Sidebar.sidebarGroupLabel({ children: ['Learn'] }, h), Sidebar.sidebarGroupContent({ children: [nestedNavigation(model, send, h)] }, h)] }, h),
   ] }, h),
-  Sidebar.sidebarFooter({ children: [account(h)] }, h),
+  Sidebar.sidebarFooter({ children: [account(model, send, h)] }, h),
 ];
 
 const pageContent = <Msg>(title: string, trigger: Html, h: HtmlBuilder<Msg>): ReadonlyArray<Html | string> => [
@@ -97,7 +114,7 @@ const pageContent = <Msg>(title: string, trigger: Html, h: HtmlBuilder<Msg>): Re
   h.main([h.Class(cx(styles.pageMain))], [h.div([h.Class(cx(styles.skeletonBlock))], []), h.div([h.Class(cx(styles.skeletonBlock))], []), h.div([h.Class(cx(styles.skeletonBlockWide))], [])]),
 ];
 
-const shell = <Msg>(kind: SidebarFixtureKind, model: { sidebar: Sidebar.Model; actionMenu: DropdownMenu.Model; query: string }, send: (json: string) => Msg, h: HtmlBuilder<Msg>): Html => {
+const shell = <Msg>(kind: SidebarFixtureKind, model: { sidebar: Sidebar.Model; actionMenu: DropdownMenu.Model; accountMenu: DropdownMenu.Model; query: string; learnOpen: boolean }, send: (json: string) => Msg, h: HtmlBuilder<Msg>): Html => {
   const state: Sidebar.SidebarState = model.sidebar.isOpen ? 'expanded' : 'collapsed';
   const variant: Sidebar.SidebarVariant = kind === 'floating' || kind === 'inset' ? kind : 'sidebar';
   const collapsible: Sidebar.SidebarCollapsible = kind === 'offcanvas' ? 'offcanvas' : 'icon';
@@ -131,7 +148,7 @@ const shell = <Msg>(kind: SidebarFixtureKind, model: { sidebar: Sidebar.Model; a
   }, h)]);
 };
 
-const staticPanel = <Msg>(kind: 'menu' | 'nested' | 'loading', model: { actionMenu: DropdownMenu.Model; feedback: string }, send: (json: string) => Msg, h: HtmlBuilder<Msg>): Html => {
+const staticPanel = <Msg>(kind: 'menu' | 'nested' | 'loading', model: { actionMenu: DropdownMenu.Model; accountMenu: DropdownMenu.Model; learnOpen: boolean; feedback: string }, send: (json: string) => Msg, h: HtmlBuilder<Msg>): Html => {
   const content = kind === 'menu'
     ? Sidebar.sidebarMenu({ children: [
         Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ isActive: true, children: iconLabel('gauge', 'Overview', h) }, h), Sidebar.sidebarMenuBadge({ children: ['12'] }, h)] }, h),
@@ -139,7 +156,7 @@ const staticPanel = <Msg>(kind: 'menu' | 'nested' | 'loading', model: { actionMe
         Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ onClick: send(JSON.stringify({ _tag: 'CreatedSidebarPreviewProject' })), variant: 'primary', children: iconLabel('plus', 'Create project', h) }, h)] }, h),
       ] }, h)
     : kind === 'nested'
-      ? nestedNavigation(h)
+      ? nestedNavigation(model, send, h)
       : Sidebar.sidebarMenu({ children: [82, 68, 76, 58].map((widthPercent) => Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuSkeleton({ showIcon: true, widthPercent }, h)] }, h)) }, h);
 
   return h.div([h.Class(cx(styles.staticFrame))], [h.div([h.Class(cx(styles.staticPanel))], [Sidebar.sidebarProvider({ width: '18rem', layoutStyle: styles.staticProvider, children: [Sidebar.sidebar({ collapsible: 'none', children: [
@@ -151,6 +168,6 @@ const staticPanel = <Msg>(kind: 'menu' | 'nested' | 'loading', model: { actionMe
 export const sidebarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(index: number, model: unknown, send: (json: string) => Msg, h: HtmlBuilder<Msg>) => {
   const kind = sidebarFixtures[index]?.kind ?? 'shell';
   return kind === 'menu' || kind === 'nested' || kind === 'loading'
-    ? staticPanel(kind, model as { actionMenu: DropdownMenu.Model; feedback: string }, send, h)
-    : shell(kind, model as { sidebar: Sidebar.Model; actionMenu: DropdownMenu.Model; query: string }, send, h);
+    ? staticPanel(kind, model as { actionMenu: DropdownMenu.Model; accountMenu: DropdownMenu.Model; learnOpen: boolean; feedback: string }, send, h)
+    : shell(kind, model as { sidebar: Sidebar.Model; actionMenu: DropdownMenu.Model; accountMenu: DropdownMenu.Model; query: string; learnOpen: boolean }, send, h);
 };
