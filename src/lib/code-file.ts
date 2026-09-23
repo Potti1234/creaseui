@@ -139,6 +139,10 @@ registerCustomTheme('crease-light', async () => CREASE_LIGHT);
 registerCustomTheme('crease-dark', async () => CREASE_DARK);
 
 const makeScrollableFocusable = (node: HTMLElement): void => {
+  node.style.display = "block";
+  node.style.minWidth = "0";
+  node.style.height = "100%";
+  node.style.minHeight = "0";
   const roots: (HTMLElement | ShadowRoot)[] = [node];
   if (node.shadowRoot) roots.push(node.shadowRoot);
   for (const root of roots) {
@@ -192,6 +196,8 @@ export const MountCodeFile = Mount.define(
               disableFileHeader: true,
               disableLineNumbers: !lineNumbers,
               overflow: 'scroll',
+              unsafeCSS:
+                'pre { height: 100%; } [data-code] { height: 100%; overflow-y: auto; }',
               onPostRender: (node) => {
                 makeScrollableFocusable(node);
               },

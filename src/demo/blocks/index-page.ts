@@ -8,17 +8,19 @@ import { blockSourcePath } from "./block-source";
 import { BLOCKS, type BlockCategory } from "./catalog";
 export { BLOCKS } from "./catalog";
 export { blockSourcePath, loadBlockSources } from "./block-source";
+export type CodePanel = Readonly<{
+  files: Readonly<Record<string, string>>;
+  codeFile: string;
+}>;
 export type Props<M> = Readonly<{
   renderer: "tailwind" | "stylex";
   category: BlockCategory;
   isDark: boolean;
-  codeBlock: string;
-  codeFiles: Readonly<Record<string, string>>;
-  codeFile: string;
+  codeBlocks: Readonly<Record<string, CodePanel>>;
   copiedCode: string | null;
   onCategory: (category: BlockCategory) => M;
   onToggleCode: (name: string) => M;
-  onSelectCodeFile: (path: string) => M;
+  onSelectCodeFile: (block: string, path: string) => M;
   onCodeFileMessage: (message: CodeFile.Message) => M;
   onCopyCode: (code: string) => M;
 }>;
@@ -114,13 +116,16 @@ export const view = <M>(props: Props<M>, h: HtmlBuilder<M>): Html =>
       ...BLOCKS.filter(
         (b) => props.category === "all" || b.category === props.category,
       ).map((block) => {
-        const codeOpen = props.codeBlock === block.name;
-        const selectedPath = codeOpen ? props.codeFile : "";
+        const panel = props.codeBlocks[block.name];
+        const codeOpen = panel !== undefined;
+        const selectedPath = panel?.codeFile ?? "";
         const selectedSource =
-          selectedPath === "" ? "" : (props.codeFiles[selectedPath] ?? "");
+          selectedPath === "" || panel === undefined
+            ? ""
+            : (panel.files[selectedPath] ?? "");
         const isCopied =
           selectedSource !== "" && props.copiedCode === selectedSource;
-        const filePaths = codeOpen ? Object.keys(props.codeFiles) : [];
+        const filePaths = panel === undefined ? [] : Object.keys(panel.files);
         return h.section(
           [
             h.Id(block.name),
@@ -267,7 +272,9 @@ export const view = <M>(props: Props<M>, h: HtmlBuilder<M>): Html =>
                                 h.button(
                                   [
                                     h.Type("button"),
-                                    h.OnClick(props.onSelectCodeFile(path)),
+                                    h.OnClick(
+                                      props.onSelectCodeFile(block.name, path),
+                                    ),
                                     h.AriaPressed(
                                       path === selectedPath
                                         ? "true"
