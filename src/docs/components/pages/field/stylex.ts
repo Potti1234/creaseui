@@ -9,6 +9,7 @@ const styles = stylex.create({ field: { maxWidth: '24rem' } });
 type PreviewModel = {
   value: string;
   lastName: string;
+  error: string | null;
 };
 
 export const fieldStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
@@ -64,7 +65,7 @@ export const fieldStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       preview.value,
       onValue,
       'Availability is checked after each edit.',
-      preview.value.length < 3 ? 'Use at least three characters.' : undefined,
+      preview.error ?? undefined,
     );
   return Field.fieldGroup(
     {

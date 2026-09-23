@@ -1,4 +1,5 @@
-import { Schema as S } from 'effect';
+import { Effect, Schema as S } from 'effect';
+import { Command } from 'foldkit';
 import { m } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
@@ -7,15 +8,35 @@ import * as Input from '@/ui/input';
 
 const ChangedValue = m('ChangedFieldPreviewValue', { value: S.String });
 const ChangedLastName = m('ChangedFieldPreviewLastName', { value: S.String });
-const PreviewMessage = S.Union([ChangedValue, ChangedLastName]);
+const CompletedValidation = m('CompletedFieldPreviewValidation', {
+  version: S.Number,
+  error: S.NullOr(S.String),
+});
+const PreviewMessage = S.Union([ChangedValue, ChangedLastName, CompletedValidation]);
 type PreviewMessage = typeof PreviewMessage.Type;
 const PreviewModel = S.Struct({
   _docsPage: S.Literal('field'),
   exampleIndex: S.Number,
   value: S.String,
   lastName: S.String,
+  validationVersion: S.Number,
+  error: S.NullOr(S.String),
 });
 type PreviewModel = typeof PreviewModel.Type;
+
+const ValidateUsername = Command.define('ValidateDocsFieldUsername', {
+  args: { username: S.String, version: S.Number },
+  messages: [CompletedValidation],
+  execute: ({ username, version }) =>
+    Effect.sleep('250 millis').pipe(
+      Effect.as(
+        CompletedValidation({
+          version,
+          error: username.length < 3 ? 'Use at least three characters.' : null,
+        }),
+      ),
+    ),
+});
 
 export const fieldTailwindPreviewProgram = definePreviewProgram<PreviewModel, PreviewMessage>({
   Model: PreviewModel,
@@ -25,13 +46,26 @@ export const fieldTailwindPreviewProgram = definePreviewProgram<PreviewModel, Pr
     exampleIndex: index,
     value: index === 2 ? 'ad' : '',
     lastName: '',
+    validationVersion: 0,
+    error: index === 2 ? 'Use at least three characters.' : null,
   }),
   update: (model, message) => {
     switch (message._tag) {
-      case 'ChangedFieldPreviewValue':
-        return [{ ...model, value: message.value }, []];
+      case 'ChangedFieldPreviewValue': {
+        if (model.exampleIndex !== 2)
+          return [{ ...model, value: message.value }, []];
+        const validationVersion = model.validationVersion + 1;
+        return [
+          { ...model, value: message.value, validationVersion, error: null },
+          [ValidateUsername({ username: message.value, version: validationVersion })],
+        ];
+      }
       case 'ChangedFieldPreviewLastName':
         return [{ ...model, lastName: message.value }, []];
+      case 'CompletedFieldPreviewValidation':
+        return message.version === model.validationVersion
+          ? [{ ...model, error: message.error }, []]
+          : [model, []];
     }
   },
   view: (index, model, h) => {
@@ -78,7 +112,7 @@ export const fieldTailwindPreviewProgram = definePreviewProgram<PreviewModel, Pr
         model.value,
         onValue,
         'Availability is checked after each edit.',
-        model.value.length < 3 ? 'Use at least three characters.' : undefined,
+        model.error ?? undefined,
       );
     return Field.fieldGroup(
       {
