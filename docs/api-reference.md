@@ -602,7 +602,7 @@ Source: [`src/ui/input-group.ts`](../src/ui/input-group.ts)
 | `InputGroupButtonProps` | type | `InputGroupButtonProps<Msg> = Omit< ButtonProps<Msg>, 'size' \| 'class' > & Readonly<{ size?: InputGroupButtonVariants['size']; class?: string; }>` |
 | `inputGroupButton` | function | `inputGroupButton<Msg>(props: InputGroupButtonProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `inputGroupText` | function | `inputGroupText<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` |
-| `InputGroupInputProps` | type | `InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; class?: string; }>` |
+| `InputGroupInputProps` | type | `InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: string; }>` |
 | `inputGroupInput` | function | `inputGroupInput<Msg>(props: InputGroupInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Input Otp
@@ -803,7 +803,7 @@ Source: [`src/ui/popover.ts`](../src/ui/popover.ts)
 | `RequestedClose` | value | `RequestedClose: value` |
 | `PopoverSide` | type | `PopoverSide = 'top' \| 'right' \| 'bottom' \| 'left'` |
 | `PopoverAlign` | type | `PopoverAlign = 'start' \| 'center' \| 'end'` |
-| `PopoverProps` | type | `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; content: Html \| string; align?: PopoverAlign; side?: PopoverSide; class?: string; }>` |
+| `PopoverProps` | type | `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; content: Html \| string; align?: PopoverAlign; side?: PopoverSide; class?: string; focusSelector?: string; }>` |
 | `popover` | function | `popover<Msg>(props: PopoverProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Progress
