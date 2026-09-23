@@ -30,9 +30,23 @@ const categories = [
   ["sidebar", "Sidebars"],
   ["login", "Authentication"],
 ] as const;
-const fileLabel = (path: string): string => path.replace("/src/demo/", "");
+const fileLabel = (path: string): string => path.replace("/src/", "");
 const fileBasename = (path: string): string =>
   path.slice(path.lastIndexOf("/") + 1);
+const fileDir = (path: string): string =>
+  path.slice("/src/".length, path.lastIndexOf("/"));
+const groupPaths = (
+  paths: ReadonlyArray<string>,
+): ReadonlyArray<readonly [string, ReadonlyArray<string>]> => {
+  const groups = new Map<string, string[]>();
+  for (const path of paths) {
+    const dir = fileDir(path);
+    const group = groups.get(dir);
+    if (group === undefined) groups.set(dir, [path]);
+    else group.push(path);
+  }
+  return [...groups.entries()];
+};
 export const view = <M>(props: Props<M>, h: HtmlBuilder<M>): Html =>
   h.main(
     [
@@ -268,30 +282,48 @@ export const view = <M>(props: Props<M>, h: HtmlBuilder<M>): Html =>
                                   "hidden w-52 shrink-0 flex-col gap-0.5 overflow-y-auto border-r bg-background p-2 md:flex",
                                 ),
                               ],
-                              filePaths.map((path) =>
-                                h.button(
+                              groupPaths(filePaths).map(([dir, paths]) =>
+                                h.div(
+                                  [h.Class("flex flex-col gap-0.5")],
                                   [
-                                    h.Type("button"),
-                                    h.OnClick(
-                                      props.onSelectCodeFile(block.name, path),
+                                    h.div(
+                                      [
+                                        h.Class(
+                                          "px-2 pt-2 pb-1 font-mono text-xs tracking-wide text-muted-foreground/70 uppercase",
+                                        ),
+                                      ],
+                                      [dir],
                                     ),
-                                    h.AriaPressed(
-                                      path === selectedPath
-                                        ? "true"
-                                        : "false",
-                                    ),
-                                    h.DataAttribute("code-file", path),
-                                    h.Title(fileLabel(path)),
-                                    h.Class(
-                                      cn(
-                                        "truncate rounded-md px-2 py-1 text-left font-mono text-xs transition-colors focus-visible:ring-2 focus-visible:ring-ring",
-                                        path === selectedPath
-                                          ? "bg-muted text-foreground"
-                                          : "text-muted-foreground hover:text-foreground",
+                                    ...paths.map((path) =>
+                                      h.button(
+                                        [
+                                          h.Type("button"),
+                                          h.OnClick(
+                                            props.onSelectCodeFile(
+                                              block.name,
+                                              path,
+                                            ),
+                                          ),
+                                          h.AriaPressed(
+                                            path === selectedPath
+                                              ? "true"
+                                              : "false",
+                                          ),
+                                          h.DataAttribute("code-file", path),
+                                          h.Title(fileLabel(path)),
+                                          h.Class(
+                                            cn(
+                                              "truncate rounded-md px-2 py-1 text-left font-mono text-xs transition-colors focus-visible:ring-2 focus-visible:ring-ring",
+                                              path === selectedPath
+                                                ? "bg-muted text-foreground"
+                                                : "text-muted-foreground hover:text-foreground",
+                                            ),
+                                          ),
+                                        ],
+                                        [fileBasename(path)],
                                       ),
                                     ),
                                   ],
-                                  [fileLabel(path)],
                                 ),
                               ),
                             ),

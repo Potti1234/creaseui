@@ -2,10 +2,12 @@ type BlockRenderer = "tailwind" | "stylex";
 
 const rawBlockSources = import.meta.glob(
   [
-    "/src/demo/blocks/*.ts",
-    "/src/demo/blocks-stylex/*.ts",
-    "/src/demo/blocks/**/*.json",
-    "/src/demo/blocks-stylex/**/*.json",
+    "/src/*.ts",
+    "/src/lib/**/*.ts",
+    "/src/ui/**/*.ts",
+    "/src/stylex/**/*.ts",
+    "/src/demo/**/*.ts",
+    "/src/demo/**/*.json",
   ],
   { query: "?raw", import: "default" },
 ) as Record<string, () => Promise<string>>;
@@ -39,26 +41,61 @@ export const blockSourcePath = (
   return `/src/demo/${dir}/${stem}.ts`;
 };
 
-const IMPORT_SPECIFIER = /from\s+['"](\.[^'"]+|@\/demo\/[^'"]+)['"]/g;
+const IMPORT_SPECIFIER =
+  /from\s+['"]([^'"]+)['"]|import\s+['"]([^'"]+)['"]/g;
+
+const normalizePath = (path: string): string => {
+  const out: string[] = [];
+  for (const seg of path.split("/")) {
+    if (seg === "" || seg === ".") continue;
+    if (seg === "..") out.pop();
+    else out.push(seg);
+  }
+  return `/${out.join("/")}`;
+};
+
+const resolveSpecifier = (
+  fromPath: string,
+  specifier: string,
+): string | undefined => {
+  if (specifier.startsWith("@/")) {
+    return withExtension(`/src/${specifier.slice(2)}`);
+  }
+  if (specifier.startsWith("./") || specifier.startsWith("../")) {
+    const dir = fromPath.slice(0, fromPath.lastIndexOf("/"));
+    return withExtension(normalizePath(`${dir}/${specifier}`));
+  }
+  return undefined;
+};
+
+const withExtension = (base: string): string | undefined => {
+  const candidates = base.endsWith(".ts") || base.endsWith(".json")
+    ? [base]
+    : [`${base}.ts`, `${base}.json`, `${base}/index.ts`];
+  return candidates.find((p) => rawBlockSources[p] !== undefined);
+};
+
+const SIDEBAR_DATA_FILE = /^\/src\/demo\/blocks\/sidebar-\d+\.ts$/;
 
 const dependencyPaths = (
+  name: string,
   primaryPath: string,
   source: string,
 ): ReadonlyArray<string> => {
-  const dir = primaryPath.slice(0, primaryPath.lastIndexOf("/"));
   const resolved: string[] = [];
   for (const match of source.matchAll(IMPORT_SPECIFIER)) {
-    const specifier = match[1];
+    const specifier = match[1] ?? match[2];
     if (specifier === undefined) continue;
-    const base = specifier.startsWith("@/demo/")
-      ? `/src/demo/${specifier.slice("@/demo/".length)}`
-      : `${dir}/${specifier.slice(2)}`;
-    const path = base.endsWith(".ts") || base.endsWith(".json")
-      ? base
-      : `${base}.ts`;
-    if (path !== primaryPath && rawBlockSources[path] !== undefined) {
-      resolved.push(path);
+    const path = resolveSpecifier(primaryPath, specifier);
+    if (path === undefined || path === primaryPath) continue;
+    if (path.startsWith("/src/demo/")) {
+      // Demo files aggregate blocks; only pull the primary's own deps, and
+      // never a sidebar data file belonging to a different block.
+      if (SIDEBAR_DATA_FILE.test(path) && path !== `/src/demo/blocks/${name}.ts`) {
+        continue;
+      }
     }
+    resolved.push(path);
   }
   return resolved;
 };
@@ -73,25 +110,47 @@ export const loadBlockSources = async (
   name: string,
 ): Promise<BlockSources> => {
   const primary = blockSourcePath(renderer, name);
-  const load = rawBlockSources[primary];
-  if (load === undefined) {
+  if (rawBlockSources[primary] === undefined) {
     return { primary, files: { [primary]: "// Source unavailable for this block." } };
   }
+
+  const loadSource = async (path: string): Promise<string> => {
+    const loader = rawBlockSources[path];
+    if (loader === undefined) return "// Source unavailable.";
+    try {
+      return (await loader()) as string;
+    } catch {
+      return "// Failed to load source.";
+    }
+  };
+
   try {
-    const source = (await load()) as string;
-    const deps = name.startsWith("sidebar-") && renderer === "stylex"
-      ? [`/src/demo/blocks/${name}.ts`]
-      : dependencyPaths(primary, source);
+    const primarySource = await loadSource(primary);
+    const otherRendererDemo =
+      renderer === "stylex" ? "/src/demo/blocks/" : "/src/demo/blocks-stylex/";
+    const seen = new Set([primary]);
+    const ordered = [primary];
+    // Breadth-first import closure: the primary's own demo deps plus every
+    // component/library file reachable from the block (transitively).
+    // Demo files are only expanded at depth 0 (they aggregate blocks), and
+    // cross-renderer demo files are included as data sources but never
+    // walked — their own imports belong to the other renderer.
+    const queue: { path: string; source: string; deep: boolean }[] = [
+      { path: primary, source: primarySource, deep: false },
+    ];
+    while (queue.length > 0) {
+      const { path, source, deep } = queue.shift()!;
+      if (path.startsWith(otherRendererDemo)) continue;
+      for (const dep of dependencyPaths(name, path, source)) {
+        if (deep && dep.startsWith("/src/demo/")) continue;
+        if (seen.has(dep)) continue;
+        seen.add(dep);
+        ordered.push(dep);
+        queue.push({ path: dep, source: await loadSource(dep), deep: true });
+      }
+    }
     const entries = await Promise.all(
-      [primary, ...deps].map(async (path) => {
-        try {
-          const loader = rawBlockSources[path];
-          const contents = loader === undefined ? "// Source unavailable." : ((await loader()) as string);
-          return [path, contents] as const;
-        } catch {
-          return [path, "// Failed to load source."] as const;
-        }
-      }),
+      ordered.map(async (path) => [path, await loadSource(path)] as const),
     );
     return { primary, files: Object.fromEntries(entries) };
   } catch {
