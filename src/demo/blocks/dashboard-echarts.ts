@@ -4,14 +4,18 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as Chart from '@/ui/integrations/echarts'
 
 const HOSTS = {
+  activationSpark: 'tailwind-activation-spark',
   cohortConversion: 'tailwind-cohort-conversion',
+  conversionSpark: 'tailwind-conversion-spark',
   executiveCustomers: 'tailwind-executive-customers',
   executiveRevenue: 'tailwind-executive-revenue',
   featuredVisitors: 'tailwind-featured-visitors',
   projectBurndown: 'tailwind-project-burndown',
   projectProgress: 'tailwind-project-progress',
+  revenueSpark: 'tailwind-revenue-spark',
   serviceLatency: 'tailwind-service-latency',
   serviceRequests: 'tailwind-service-requests',
+  sessionSpark: 'tailwind-session-spark',
 } as const
 
 const lineOption = (
@@ -62,6 +66,23 @@ Chart.registerChart(HOSTS.projectProgress, (theme): EChartsOption => ({
 Chart.registerChart(HOSTS.serviceRequests, (theme) => lineOption(theme, [18, 22, 21, 25, 29, 27, 32, 28], ['00', '08', '16', '24', '32', '40', '48', '56'], 'Requests'))
 Chart.registerChart(HOSTS.serviceLatency, (theme) => barOption(theme, [120, 142, 184, 151], ['00', '15', '30', '45'], 'P95 latency'))
 
+const sparkOption = (
+  theme: Chart.ChartTheme,
+  data: ReadonlyArray<number>,
+  color: string,
+): EChartsOption => ({
+  grid: { bottom: 2, left: 2, right: 2, top: 2 },
+  series: [{ areaStyle: { color: Chart.colorWithOpacity(color, 0.16) }, data: [...data], itemStyle: { color }, lineStyle: { color, width: 1.5 }, showSymbol: false, smooth: 0.5, type: 'line' }],
+  tooltip: { show: false },
+  xAxis: { boundaryGap: false, show: false, type: 'category' },
+  yAxis: { show: false, type: 'value' },
+})
+
+Chart.registerChart(HOSTS.revenueSpark, (theme) => sparkOption(theme, [38, 42, 40, 48, 46, 55, 52, 61, 58, 66, 63, 74], theme.chart1))
+Chart.registerChart(HOSTS.sessionSpark, (theme) => sparkOption(theme, [30, 34, 32, 38, 36, 41, 39, 45, 44, 48, 46, 52], theme.chart2))
+Chart.registerChart(HOSTS.conversionSpark, (theme) => sparkOption(theme, [4.1, 3.9, 4.0, 3.7, 3.8, 3.6, 3.7, 3.5, 3.6, 3.4, 3.5, 3.4], theme.chart3))
+Chart.registerChart(HOSTS.activationSpark, (theme) => sparkOption(theme, [33, 35, 34, 36, 38, 37, 39, 40, 39, 41, 42, 44], theme.chart4))
+
 type ToMessage<Message> = (message: Chart.ChartMessage) => Message
 
 const render = <Message>(hostId: string, ariaLabel: string, toMessage: ToMessage<Message>, h: HtmlBuilder<Message>, size?: Chart.EChartSize): Html =>
@@ -75,3 +96,7 @@ export const projectBurndownChart = <Message>(toMessage: ToMessage<Message>, h: 
 export const projectProgressChart = <Message>(toMessage: ToMessage<Message>, h: HtmlBuilder<Message>): Html => render(HOSTS.projectProgress, 'Donut chart showing 68 percent project completion', toMessage, h, 'square')
 export const serviceRequestChart = <Message>(toMessage: ToMessage<Message>, h: HtmlBuilder<Message>): Html => render(HOSTS.serviceRequests, 'Area chart of service request volume', toMessage, h)
 export const serviceLatencyChart = <Message>(toMessage: ToMessage<Message>, h: HtmlBuilder<Message>): Html => render(HOSTS.serviceLatency, 'Bar chart of service P95 latency', toMessage, h)
+export const revenueSparkChart = <Message>(toMessage: ToMessage<Message>, h: HtmlBuilder<Message>): Html => render(HOSTS.revenueSpark, 'Sparkline of revenue over the last twelve periods', toMessage, h, 'spark')
+export const sessionSparkChart = <Message>(toMessage: ToMessage<Message>, h: HtmlBuilder<Message>): Html => render(HOSTS.sessionSpark, 'Sparkline of active sessions over the last twelve periods', toMessage, h, 'spark')
+export const conversionSparkChart = <Message>(toMessage: ToMessage<Message>, h: HtmlBuilder<Message>): Html => render(HOSTS.conversionSpark, 'Sparkline of conversion rate over the last twelve periods', toMessage, h, 'spark')
+export const activationSparkChart = <Message>(toMessage: ToMessage<Message>, h: HtmlBuilder<Message>): Html => render(HOSTS.activationSpark, 'Sparkline of activation rate over the last twelve periods', toMessage, h, 'spark')

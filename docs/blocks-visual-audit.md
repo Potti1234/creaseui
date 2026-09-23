@@ -4,8 +4,8 @@ Reviewed the original Tailwind sidebar gallery (16 blocks) and StyleX gallery
 (11 entries) with Playwright before combining them. The two overlapping sidebar
 entries are now part of the complete native StyleX sidebar family.
 
-The combined `/blocks` gallery contains 25 blocks in each renderer: 16 sidebars,
-seven dashboards and two authentication layouts. `/blocks-stylex` still selects
+The combined `/blocks` gallery contains 31 blocks in each renderer: 16 sidebars,
+thirteen dashboards and two authentication layouts. `/blocks-stylex` still selects
 StyleX; existing `/blocks/sidebar` and `/blocks/sidebar/:id` links still work.
 Standalone previews use `/blocks/preview/:renderer--:name`.
 

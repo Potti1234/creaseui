@@ -58,6 +58,41 @@ export const BLOCKS: ReadonlyArray<BlockDefinition> = [
     category: "dashboard",
   },
   {
+    name: "astryx-kanban-board",
+    description: "Four status lanes of task cards under a shared sprint toolbar.",
+    category: "dashboard",
+  },
+  {
+    name: "astryx-inbox-table",
+    description:
+      "A mail queue that indexes a reading pane with a live reply composer.",
+    category: "dashboard",
+  },
+  {
+    name: "astryx-order-detail",
+    description:
+      "A single record with line items, totals and an activity rail.",
+    category: "dashboard",
+  },
+  {
+    name: "astryx-checkout-form",
+    description:
+      "A sectioned checkout form beside an order summary that recalculates.",
+    category: "dashboard",
+  },
+  {
+    name: "astryx-data-dashboard",
+    description:
+      "Sparkline tiles with period-over-period deltas and segment breakdowns.",
+    category: "dashboard",
+  },
+  {
+    name: "astryx-card-grid",
+    description:
+      "A browsable catalog grid with search, filter tabs and a real empty state.",
+    category: "dashboard",
+  },
+  {
     name: "chart-analytics-dashboard",
     description:
       "An analytics dashboard with six Apache ECharts visualizations.",

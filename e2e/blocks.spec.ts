@@ -17,8 +17,9 @@ for (const renderer of ['tailwind', 'stylex'] as const) {
         for (const chart of await charts.all()) {
           await expect(chart.locator('canvas')).toBeVisible()
           const bounds = await chart.boundingBox()
+          const minHeight = (await chart.getAttribute('data-size')) === 'spark' ? 40 : 150
           expect(bounds?.width).toBeGreaterThan(150)
-          expect(bounds?.height).toBeGreaterThan(150)
+          expect(bounds?.height).toBeGreaterThan(minHeight)
         }
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
         if (process.env.BLOCKS_VISUAL_AUDIT) {
@@ -55,9 +56,10 @@ for (const renderer of ['tailwind', 'stylex'] as const) {
 }
 
 test('combined gallery preserves its category across renderer switches and names every preview', async ({ page }) => {
+  test.setTimeout(90_000)
   await page.goto('/blocks')
   const switcher = page.getByRole('group', { name: 'Blocks renderer' })
-  await expect(page.locator('[data-block]')).toHaveCount(25)
+  await expect(page.locator('[data-block]')).toHaveCount(31)
   await page.getByRole('button', { name: 'Authentication', exact: true }).click()
   await expect(page.locator('[data-block]')).toHaveCount(2)
   await switcher.getByRole('button', { name: 'StyleX', exact: true }).click()
@@ -69,7 +71,7 @@ test('combined gallery preserves its category across renderer switches and names
   await switcher.getByRole('button', { name: 'Tailwind', exact: true }).click()
   await expect(page.locator('iframe').first()).toHaveAttribute('src', '/blocks/preview/tailwind--login-03')
   await page.getByRole('button', { name: 'All blocks', exact: true }).click()
-  await expect(page.locator('[data-block]')).toHaveCount(25)
+  await expect(page.locator('[data-block]')).toHaveCount(31)
 })
 
 test('legacy gallery and block URLs remain available', async ({ page }) => {

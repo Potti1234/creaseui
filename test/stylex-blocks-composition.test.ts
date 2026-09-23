@@ -18,9 +18,9 @@ describe('featured StyleX blocks composition', () => {
     assert.deepEqual(names, ['dashboard-01', 'login-03', 'login-04'])
   })
 
-  it('adds five Astryx-inspired constrained dashboard identifiers in order', () => {
+  it('adds eleven Astryx-inspired constrained block identifiers in order', () => {
     const names = [...source.matchAll(/name: '(astryx-[^']+)'/gu)].map((match) => match[1])
-    assert.deepEqual(names, ['astryx-executive-summary', 'astryx-cohort-funnel', 'astryx-project-status', 'astryx-service-monitoring', 'astryx-incident-console'])
+    assert.deepEqual(names, ['astryx-executive-summary', 'astryx-cohort-funnel', 'astryx-project-status', 'astryx-service-monitoring', 'astryx-incident-console', 'astryx-kanban-board', 'astryx-inbox-table', 'astryx-order-detail', 'astryx-checkout-form', 'astryx-data-dashboard', 'astryx-card-grid'])
   })
 
   it('adds a real Apache ECharts analytics dashboard block', () => {

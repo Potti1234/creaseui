@@ -5,6 +5,7 @@ const source = Object.fromEntries(Object.entries({
   docs: 'docs/stylex-astryx-architecture.md',
   featured: 'src/demo/blocks-stylex/featured-page.ts',
   inspired: 'src/demo/blocks-stylex/astryx-inspired-dashboards.ts',
+  inspiredBlocks: 'src/demo/blocks-stylex/astryx-inspired-blocks.ts',
   charts: 'src/demo/blocks-stylex/chart-analytics-dashboard.ts',
   chartsPage: 'src/demo/charts-stylex/page.ts',
   layout: 'src/stylex/composition/semantic-layout.ts',
@@ -29,6 +30,7 @@ for (const escapeHatch of ['className', 'layoutStyle', 'unsafeStyle', 'xstyle'])
 assert.doesNotMatch(source.layout, /@stylexjs\/stylex|h\.(?:Class|Style)\s*\(/u)
 assert.doesNotMatch(source.recipes, /@stylexjs\/stylex|h\.(?:Class|Style)\s*\(/u)
 assert.doesNotMatch(source.inspired, /@stylexjs\/stylex|h\.(?:article|aside|div|footer|header|li|main|nav|ol|section|ul|Class|Style)\s*\(/u)
+assert.doesNotMatch(source.inspiredBlocks, /@stylexjs\/stylex|h\.(?:article|aside|div|footer|header|li|main|nav|ol|section|ul|Class|Style)\s*\(/u)
 assert.doesNotMatch(source.charts, /@stylexjs\/stylex|h\.(?:article|aside|div|footer|header|li|main|nav|ol|section|ul|Class|Style)\s*\(/u)
 assert.doesNotMatch(source.chartsPage, /@stylexjs\/stylex|h\.(?:article|aside|div|footer|header|li|main|nav|ol|section|ul|Class|Style)\s*\(/u)
 assert.doesNotMatch(source.layout, /\b\d+(?:px|rem)\b/u)
@@ -38,6 +40,9 @@ for (const call of ['dashboardShell', 'metricGrid', 'section', 'tableRegion', 't
 }
 for (const dashboard of ['executiveSummaryDashboard', 'cohortFunnelDashboard', 'projectStatusDashboard', 'serviceMonitoringDashboard', 'incidentConsoleDashboard']) {
   assert.match(source.inspired, new RegExp(`export const ${dashboard}\\b`, 'u'), `missing inspired dashboard ${dashboard}`)
+}
+for (const block of ['kanbanBoard', 'inboxTable', 'orderDetail', 'checkoutForm', 'dataDashboard', 'cardGrid']) {
+  assert.match(source.inspiredBlocks, new RegExp(`export const ${block}\\b`, 'u'), `missing inspired block ${block}`)
 }
 assert.match(source.charts, /export const chartAnalyticsDashboard\b/u, 'missing StyleX ECharts analytics dashboard')
 for (const family of ['AREA_HOST', 'BAR_HOST', 'LINE_HOST', 'PIE_HOST', 'RADAR_HOST', 'RADIAL_HOST']) {

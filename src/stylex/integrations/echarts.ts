@@ -23,7 +23,7 @@ export const shadcnTooltip = ECharts.shadcnTooltip
 export const SyncChart = ECharts.SyncChart
 export const valueAxis = ECharts.valueAxis
 
-export type EChartSize = 'default' | 'compact' | 'dashboard' | 'square' | 'wide'
+export type EChartSize = 'default' | 'compact' | 'dashboard' | 'spark' | 'square' | 'wide'
 
 export type EChartProps<Message> = Readonly<{
   ariaLabel: string
@@ -54,6 +54,9 @@ const styles = stylex.create({
   alternative: { marginTop: '0.75rem' },
   alternativeHidden: { overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', clipPath: 'inset(50%)', position: 'absolute', whiteSpace: 'nowrap', height: '1px', width: '1px', },
   status: { alignItems: 'center', color: tokens.mutedForeground, display: 'flex', fontSize: '0.875rem', justifyContent: 'center' },
+  spark: {
+    height: '3.5rem',
+  },
   square: {
     marginInline: 'auto',
     aspectRatio: '1 / 1',
@@ -69,6 +72,7 @@ const sizeStyles = {
   dashboard: styles.dashboard,
   compact: styles.compact,
   default: styles.default,
+  spark: styles.spark,
   square: styles.square,
   wide: styles.wide,
 } as const
@@ -80,6 +84,7 @@ export const eChart = <Message>(props: EChartProps<Message>, h: HtmlBuilder<Mess
     ...(state === 'ready' ? [h.div(
     [
       h.DataAttribute('slot', 'echart'),
+      h.DataAttribute('size', props.size ?? 'default'),
       h.Role('img'),
       h.AriaLabel(props.ariaLabel),
       h.Class(className(styles.host, sizeStyles[props.size ?? 'default'], props.layoutStyle)),
