@@ -40,5 +40,9 @@ export const loadBlockSource = async (
 ): Promise<string> => {
   const load = rawBlockSources[blockSourcePath(renderer, name)];
   if (load === undefined) return "// Source unavailable for this block.";
-  return (await load()) as string;
+  try {
+    return (await load()) as string;
+  } catch {
+    return "// Failed to load block source.";
+  }
 };
