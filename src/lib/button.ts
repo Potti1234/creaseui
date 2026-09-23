@@ -114,7 +114,7 @@ export const renderButtonLink = <Msg>(
       ...(props.dataSize === undefined
         ? []
         : [h.DataAttribute('size', props.dataSize)]),
-      ...(props.target === undefined ? [] : [h.Target(props.target)]),
+      ...(props.target === undefined ? [] : [h.Attribute('target', props.target)]),
       ...(props.target === '_blank' ? [h.Rel('noopener noreferrer')] : []),
       ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
       ...visualAttributes,
