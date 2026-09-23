@@ -340,6 +340,7 @@ export type SidebarInputProps<Msg> = Readonly<{
   value?: string;
   onInput?: (value: string) => Msg;
   placeholder?: string;
+  ariaLabel?: string;
   type?: string;
   name?: string;
   isDisabled?: boolean;
@@ -361,6 +362,9 @@ export const sidebarInput = <Msg>(
       ? []
       : [h.Placeholder(props.placeholder)]),
     ...(props.name === undefined ? [] : [h.Name(props.name)]),
+    ...(props.ariaLabel === undefined
+      ? []
+      : [h.AriaLabel(props.ariaLabel)]),
     h.Type(props.type ?? 'text'),
     h.Disabled(props.isDisabled ?? false),
     h.AriaInvalid(props.isInvalid ?? false),

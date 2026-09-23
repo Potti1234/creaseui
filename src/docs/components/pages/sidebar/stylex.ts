@@ -35,6 +35,7 @@ const styles = stylex.create({
   accountTrigger: { alignItems: 'center', backgroundColor: { default: 'transparent', ':hover': 'var(--sidebar-accent)' }, borderRadius: '0.375rem', color: { default: 'var(--sidebar-foreground)', ':hover': 'var(--sidebar-accent-foreground)' }, display: 'flex', gap: '0.5rem', outlineStyle: 'none', padding: '0.5rem', textAlign: 'left', width: '100%' },
   learnChevron: { height: '1rem', marginLeft: 'auto', transitionProperty: 'transform', transitionDuration: '150ms', width: '1rem' },
   learnChevronOpen: { transform: 'rotate(90deg)' },
+  noMatches: { color: 'var(--muted-foreground)', fontSize: '0.875rem', paddingBlock: '0.375rem', paddingInline: '0.5rem' },
   srOnly: { height: 1, margin: -1, overflow: 'hidden', padding: 0, position: 'absolute', width: 1 },
 });
 
@@ -58,18 +59,25 @@ const actionMenu = <Msg>(model: DropdownMenu.Model, label: string, send: (json: 
   itemToConfig: (action) => ({ label: actionLabel(action), ...(action === 'delete' ? { variant: 'destructive' as const } : {}) }),
 }, h)]);
 
-const primaryNavigation = <Msg>(model: { actionMenu: DropdownMenu.Model }, send: (json: string) => Msg, h: HtmlBuilder<Msg>): Html => Sidebar.sidebarMenu({
-  children: [
+const primaryNavigation = <Msg>(model: { actionMenu: DropdownMenu.Model; query: string }, send: (json: string) => Msg, h: HtmlBuilder<Msg>): Html => {
+  const query = model.query.trim().toLowerCase();
+  const allEntries: ReadonlyArray<readonly [string, string]> = [
     ['Dashboard', 'gauge'],
     ['Inbox', 'inbox'],
     ['Projects', 'book-open'],
     ['Calendar', 'calendar-days'],
-  ].map(([label, iconName], index) => Sidebar.sidebarMenuItem({ children: [
-    Sidebar.sidebarMenuButton({ href: '#', isActive: index === 0, tooltip: label ?? '', children: iconLabel(iconName ?? 'circle', label ?? '', h) }, h),
-    ...(index === 1 ? [Sidebar.sidebarMenuBadge({ children: ['12'] }, h)] : []),
-    ...(index === 2 ? [actionMenu(model.actionMenu, 'Project actions', send, h)] : []),
-  ] }, h)),
+  ];
+  const entries = allEntries.filter(([label]) => query === '' || label.toLowerCase().includes(query));
+  return Sidebar.sidebarMenu({
+  children: entries.length === 0
+    ? [Sidebar.sidebarMenuItem({ children: [h.span([h.Class(cx(styles.noMatches))], ['No matching navigation'])] }, h)]
+    : entries.map(([label, iconName], index) => Sidebar.sidebarMenuItem({ children: [
+      Sidebar.sidebarMenuButton({ href: '#', isActive: index === 0, tooltip: label ?? '', children: iconLabel(iconName ?? 'circle', label ?? '', h) }, h),
+      ...(index === 1 && query === '' ? [Sidebar.sidebarMenuBadge({ children: ['12'] }, h)] : []),
+      ...(index === 2 && query === '' ? [actionMenu(model.actionMenu, 'Project actions', send, h)] : []),
+    ] }, h)),
 }, h);
+};
 
 const nestedNavigation = <Msg>(model: { learnOpen: boolean }, send: (json: string) => Msg, h: HtmlBuilder<Msg>): Html => Sidebar.sidebarMenu({ children: [
   Sidebar.sidebarMenuItem({ children: [
@@ -100,7 +108,7 @@ const account = <Msg>(model: { accountMenu: DropdownMenu.Model }, send: (json: s
 const sidebarBody = <Msg>(model: { actionMenu: DropdownMenu.Model; accountMenu: DropdownMenu.Model; query: string; learnOpen: boolean }, send: (json: string) => Msg, onQuery: (value: string) => Msg, h: HtmlBuilder<Msg>): ReadonlyArray<Html | string> => [
   Sidebar.sidebarHeader({ children: [
     h.div([h.DataAttribute('sidebar', 'brand'), h.Class(cx(styles.brand))], [h.span([h.Class(cx(styles.brandMark))], ['C']), h.span([h.Class(cx(styles.brandName))], ['Crease Workspace'])]),
-    Sidebar.sidebarInput({ value: model.query, onInput: onQuery, placeholder: 'Search navigation' }, h),
+    Sidebar.sidebarInput({ value: model.query, onInput: onQuery, placeholder: 'Search navigation', ariaLabel: 'Search navigation' }, h),
   ] }, h),
   Sidebar.sidebarContent({ children: [
     Sidebar.sidebarGroup({ children: [Sidebar.sidebarGroupLabel({ children: ['Platform'] }, h), Sidebar.sidebarGroupContent({ children: [primaryNavigation(model, send, h)] }, h)] }, h),

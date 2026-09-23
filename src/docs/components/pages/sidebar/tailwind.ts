@@ -50,13 +50,19 @@ const actionMenu = (model: DropdownMenu.Model, label: string, h: HtmlBuilder<Mes
   itemToConfig: (action) => ({ label: actionLabel(action), ...(action === 'delete' ? { variant: 'destructive' as const } : {}) }),
 }, h)]);
 
-const primaryNavigation = (model: Model, h: HtmlBuilder<Message>): Html => Sidebar.sidebarMenu({
-  children: [
+const primaryNavigation = (model: Model, h: HtmlBuilder<Message>): Html => {
+  const query = model.query.trim().toLowerCase();
+  const allEntries: ReadonlyArray<readonly [string, string]> = [
     ['Dashboard', 'gauge'],
     ['Inbox', 'inbox'],
     ['Projects', 'book-open'],
     ['Calendar', 'calendar-days'],
-  ].map(([label, iconName], index) => Sidebar.sidebarMenuItem({
+  ];
+  const entries = allEntries.filter(([label]) => query === '' || label.toLowerCase().includes(query));
+  return Sidebar.sidebarMenu({
+  children: entries.length === 0
+    ? [Sidebar.sidebarMenuItem({ children: [h.span([h.Class('px-2 py-1.5 text-sm text-muted-foreground')], ['No matching navigation'])] }, h)]
+    : entries.map(([label, iconName], index) => Sidebar.sidebarMenuItem({
     children: [
       Sidebar.sidebarMenuButton({
         href: '#',
@@ -64,11 +70,12 @@ const primaryNavigation = (model: Model, h: HtmlBuilder<Message>): Html => Sideb
         tooltip: label ?? '',
         children: iconLabel(iconName ?? 'circle', label ?? '', h),
       }, h),
-      ...(index === 1 ? [Sidebar.sidebarMenuBadge({ children: ['12'] }, h)] : []),
-      ...(index === 2 ? [actionMenu(model.actionMenu, 'Project actions', h)] : []),
+      ...(index === 1 && query === '' ? [Sidebar.sidebarMenuBadge({ children: ['12'] }, h)] : []),
+      ...(index === 2 && query === '' ? [actionMenu(model.actionMenu, 'Project actions', h)] : []),
     ],
   }, h)),
 }, h);
+};
 
 const account = (model: Model, h: HtmlBuilder<Message>): Html => Sidebar.sidebarMenu({
   children: [Sidebar.sidebarMenuItem({
@@ -119,7 +126,7 @@ const sidebarBody = (model: Model, h: HtmlBuilder<Message>, detailed = true): Re
       h.span([h.Class('grid size-7 shrink-0 place-items-center rounded-md bg-sidebar-primary text-xs font-semibold text-sidebar-primary-foreground')], ['C']),
       h.span([h.Class('truncate text-sm font-semibold')], ['Crease Workspace']),
     ]),
-    ...(detailed ? [Sidebar.sidebarInput({ value: model.query, onInput: (value) => ChangedQuery({ value }), placeholder: 'Search navigation' }, h)] : []),
+    ...(detailed ? [Sidebar.sidebarInput({ value: model.query, onInput: (value) => ChangedQuery({ value }), placeholder: 'Search navigation', ariaLabel: 'Search navigation' }, h)] : []),
   ] }, h),
   Sidebar.sidebarContent({ children: [
     Sidebar.sidebarGroup({ children: [
