@@ -493,9 +493,11 @@ export const dropdownMenu = <Item extends string, Msg>(
                   ? [
                       h.Style({
                         position: 'fixed',
-                        left: `clamp(4px, ${String(anchorX)}px, calc(100vw - 164px))`,
-                        top: `clamp(4px, ${String(anchorY)}px, calc(100vh - 48px))`,
+                        left: `clamp(4px, ${String(anchorX)}px, calc(100vw - 4px))`,
+                        top: `clamp(4px, ${String(anchorY)}px, calc(100vh - 4px))`,
+                        transform: `translate(min(0px, calc(100vw - ${String(anchorX)}px - 100% - 8px)), min(0px, calc(100vh - ${String(anchorY)}px - 100% - 8px)))`,
                         maxHeight: 'calc(100vh - 8px)',
+                        overflowY: 'auto',
                       }),
                     ]
                   : []),
