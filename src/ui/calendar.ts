@@ -29,7 +29,7 @@ export const OutMessage = CalendarPrimitive.OutMessage;
 export type OutMessage = typeof OutMessage.Type;
 
 export const init = CalendarPrimitive.init;
-export const update = CalendarPrimitive.update;
+export const update = CalendarBehavior.update;
 export const selectDate = CalendarPrimitive.selectDate;
 export const focusDate = CalendarPrimitive.focusDate;
 export const reflectMinDate = CalendarPrimitive.reflectMinDate;
