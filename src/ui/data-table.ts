@@ -1,7 +1,8 @@
+import { Option } from 'effect';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 import { Checkbox as CheckboxPrimitive } from '@foldkit/ui';
 
-import { ChangedPage, ChangedPageSize, Filtered, Sorted, ToggledColumn, ToggledRow, ToggledRows, type Message, type Model } from '@/lib/data-table-state';
+import { ChangedPage, ChangedPageSize, ClosedColumnsMenu, Filtered, Sorted, ToggledColumn, ToggledColumnsMenu, ToggledRow, ToggledRows, type Message, type Model } from '@/lib/data-table-state';
 import { projectDataTable, type DataTableMode } from '@/lib/data-table-adapter';
 import * as Icon from '@/lib/icon';
 import { cn } from '@/lib/utils';
@@ -149,13 +150,24 @@ export const dataTable = <Row, Msg>(
               ]),
           ...(props.enableColumnVisibility === true
             ? [
-                h.details(
-                  [h.Class('relative ml-auto')],
+                h.div(
                   [
-                    h.summary(
+                    h.Class('relative ml-auto'),
+                    h.OnKeyDownPreventDefault((key) =>
+                      key === 'Escape' && props.model.columnsMenuOpen
+                        ? Option.some(props.toParentMessage(ClosedColumnsMenu()))
+                        : Option.none(),
+                    ),
+                  ],
+                  [
+                    h.button(
                       [
+                        h.Type('button'),
+                        h.AriaExpanded(props.model.columnsMenuOpen),
+                        h.AriaHasPopup('menu'),
+                        h.OnClick(props.toParentMessage(ToggledColumnsMenu())),
                         h.Class(
-                          'flex h-10 cursor-pointer list-none items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted/50',
+                          'flex h-10 cursor-pointer items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted/50',
                         ),
                       ],
                       [
@@ -163,13 +175,25 @@ export const dataTable = <Row, Msg>(
                         Icon.chevronDown<Msg>({ class: 'size-3.5' }, h),
                       ],
                     ),
-                    h.div(
-                      [
-                        h.Class(
-                          'absolute right-0 top-[calc(100%+0.375rem)] z-20 min-w-48 rounded-md border bg-card p-1.5 shadow-md',
-                        ),
-                      ],
-                      props.columns
+                    ...(props.model.columnsMenuOpen
+                      ? [
+                          h.button(
+                            [
+                              h.Type('button'),
+                              h.Tabindex(-1),
+                              h.AriaHidden(true),
+                              h.Class('fixed inset-0 z-10 cursor-default'),
+                              h.OnClick(props.toParentMessage(ClosedColumnsMenu())),
+                            ],
+                            [],
+                          ),
+                          h.div(
+                            [
+                              h.Class(
+                                'absolute right-0 top-[calc(100%+0.375rem)] z-20 min-w-48 rounded-md border bg-card p-1.5 shadow-md',
+                              ),
+                            ],
+                            props.columns
                         .filter(
                           (column) =>
                             column.isHideable !== false &&
@@ -201,11 +225,13 @@ export const dataTable = <Row, Msg>(
                             ],
                           );
                         }),
-                    ),
-                  ],
-                ),
-              ]
-            : []),
+                      ),
+                    ]
+                  : []),
+              ],
+            ),
+          ]
+        : []),
         ],
       ),
       h.div(

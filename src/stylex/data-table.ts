@@ -1,8 +1,9 @@
 import * as stylex from '@stylexjs/stylex'
+import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { Checkbox as CheckboxPrimitive } from '@foldkit/ui'
 
-import { ChangedPage, ChangedPageSize, Filtered, Sorted, ToggledColumn, ToggledRow, ToggledRows, type Message, type Model } from '@/lib/data-table-state'
+import { ChangedPage, ChangedPageSize, ClosedColumnsMenu, Filtered, Sorted, ToggledColumn, ToggledColumnsMenu, ToggledRow, ToggledRows, type Message, type Model } from '@/lib/data-table-state'
 import { projectDataTable, type DataTableMode } from '@/lib/data-table-adapter'
 import * as Icon from '@/lib/icon'
 import type { ComponentLayoutStyle } from './contracts'
@@ -71,7 +72,13 @@ export const dataTable = <Row, Msg>(props: DataTableProps<Row, Msg>, h: HtmlBuil
   return h.div([h.DataAttribute('slot', 'data-table'), ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]), h.Class(className(styles.root, props.layoutStyle))], [
     h.div([h.Class(className(styles.toolbar))], [
       ...(props.filterText === undefined ? [] : [h.input([h.Type('search'), h.Value(props.model.filter), h.OnInput((value) => props.toParentMessage(Filtered({ value }))), h.Placeholder(props.filterPlaceholder ?? 'Filter rows…'), h.AriaLabel(props.filterPlaceholder ?? 'Filter rows'), h.Class(className(styles.filter))])]),
-      ...(props.enableColumnVisibility === true ? [h.details([h.Class(className(styles.chooser))], [h.summary([h.Class(className(styles.chooserSummary))], ['Columns', Icon.chevronDown<Msg>({ class: className(styles.sortIcon) }, h)]), h.div([h.Class(className(styles.chooserPanel))], props.columns.filter((column) => column.isHideable !== false && column.header.trim() !== '').map((column) => { const isVisible = !hiddenKeys.has(column.key); return h.div([h.Class(className(styles.chooserOption))], [selectionControl({ id: `data-table-column-${column.key}`, label: `${isVisible ? 'Hide' : 'Show'} ${column.header} column`, isChecked: isVisible, isDisabled: isVisible && visibleColumns.length === 1, onToggle: (nextVisible) => props.toParentMessage(ToggledColumn({ key: column.key, isVisible: nextVisible })) }, h), column.header]) }))])] : []),
+      ...(props.enableColumnVisibility === true ? [h.div([h.Class(className(styles.chooser)), h.OnKeyDownPreventDefault((key) => key === 'Escape' && props.model.columnsMenuOpen ? Option.some(props.toParentMessage(ClosedColumnsMenu())) : Option.none())], [
+        h.button([h.Type('button'), h.AriaExpanded(props.model.columnsMenuOpen), h.AriaHasPopup('menu'), h.OnClick(props.toParentMessage(ToggledColumnsMenu())), h.Class(className(styles.chooserSummary))], ['Columns', Icon.chevronDown<Msg>({ class: className(styles.sortIcon) }, h)]),
+        ...(props.model.columnsMenuOpen ? [
+          h.button([h.Type('button'), h.Tabindex(-1), h.AriaHidden(true), h.Style({ position: 'fixed', inset: '0', zIndex: '10', cursor: 'default', border: 'none', background: 'transparent' }), h.OnClick(props.toParentMessage(ClosedColumnsMenu()))], []),
+          h.div([h.Class(className(styles.chooserPanel))], props.columns.filter((column) => column.isHideable !== false && column.header.trim() !== '').map((column) => { const isVisible = !hiddenKeys.has(column.key); return h.div([h.Class(className(styles.chooserOption))], [selectionControl({ id: `data-table-column-${column.key}`, label: `${isVisible ? 'Hide' : 'Show'} ${column.header} column`, isChecked: isVisible, isDisabled: isVisible && visibleColumns.length === 1, onToggle: (nextVisible) => props.toParentMessage(ToggledColumn({ key: column.key, isVisible: nextVisible })) }, h), column.header]) })),
+        ] : []),
+      ])] : []),
     ]),
     h.div([h.Class(className(styles.tableShell))], [Table.table({ children: [
       h.thead([h.Class(className(styles.header))], [h.tr([], [...(props.enableRowSelection === true ? [h.th([h.Scope('col'), h.Class(className(styles.selectionCell))], [selectionControl({ id: `${instanceId}-select-page`, label: allOnPageSelected ? 'Deselect all rows on this page' : 'Select all rows on this page', isChecked: allOnPageSelected, isIndeterminate: someOnPageSelected, isDisabled: selectableKeys.length === 0, onToggle: (isSelected) => props.toParentMessage(ToggledRows({ keys: selectableKeys, isSelected })) }, h)])] : []), ...headings])]),
