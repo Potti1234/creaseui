@@ -1,7 +1,12 @@
 type BlockRenderer = "tailwind" | "stylex";
 
 const rawBlockSources = import.meta.glob(
-  ["/src/demo/blocks/*.ts", "/src/demo/blocks-stylex/*.ts"],
+  [
+    "/src/demo/blocks/*.ts",
+    "/src/demo/blocks-stylex/*.ts",
+    "/src/demo/blocks/**/*.json",
+    "/src/demo/blocks-stylex/**/*.json",
+  ],
   { query: "?raw", import: "default" },
 ) as Record<string, () => Promise<string>>;
 
@@ -34,15 +39,62 @@ export const blockSourcePath = (
   return `/src/demo/${dir}/${stem}.ts`;
 };
 
-export const loadBlockSource = async (
+const IMPORT_SPECIFIER = /from\s+['"](\.[^'"]+|@\/demo\/[^'"]+)['"]/g;
+
+const dependencyPaths = (
+  primaryPath: string,
+  source: string,
+): ReadonlyArray<string> => {
+  const dir = primaryPath.slice(0, primaryPath.lastIndexOf("/"));
+  const resolved: string[] = [];
+  for (const match of source.matchAll(IMPORT_SPECIFIER)) {
+    const specifier = match[1];
+    if (specifier === undefined) continue;
+    const base = specifier.startsWith("@/demo/")
+      ? `/src/demo/${specifier.slice("@/demo/".length)}`
+      : `${dir}/${specifier.slice(2)}`;
+    const path = base.endsWith(".ts") || base.endsWith(".json")
+      ? base
+      : `${base}.ts`;
+    if (path !== primaryPath && rawBlockSources[path] !== undefined) {
+      resolved.push(path);
+    }
+  }
+  return resolved;
+};
+
+export type BlockSources = Readonly<{
+  primary: string;
+  files: Readonly<Record<string, string>>;
+}>;
+
+export const loadBlockSources = async (
   renderer: BlockRenderer,
   name: string,
-): Promise<string> => {
-  const load = rawBlockSources[blockSourcePath(renderer, name)];
-  if (load === undefined) return "// Source unavailable for this block.";
+): Promise<BlockSources> => {
+  const primary = blockSourcePath(renderer, name);
+  const load = rawBlockSources[primary];
+  if (load === undefined) {
+    return { primary, files: { [primary]: "// Source unavailable for this block." } };
+  }
   try {
-    return (await load()) as string;
+    const source = (await load()) as string;
+    const deps = name.startsWith("sidebar-") && renderer === "stylex"
+      ? [`/src/demo/blocks/${name}.ts`]
+      : dependencyPaths(primary, source);
+    const entries = await Promise.all(
+      [primary, ...deps].map(async (path) => {
+        try {
+          const loader = rawBlockSources[path];
+          const contents = loader === undefined ? "// Source unavailable." : ((await loader()) as string);
+          return [path, contents] as const;
+        } catch {
+          return [path, "// Failed to load source."] as const;
+        }
+      }),
+    );
+    return { primary, files: Object.fromEntries(entries) };
   } catch {
-    return "// Failed to load block source.";
+    return { primary, files: { [primary]: "// Failed to load block source." } };
   }
 };

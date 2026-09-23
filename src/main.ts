@@ -29,6 +29,7 @@ import * as ChartsTooltip from "@/demo/charts/tooltip";
 import * as ChartsStyleX from "@/demo/charts-stylex/page";
 import * as ComponentCatalog from "@/docs/components/catalog";
 import * as CopyFeedback from "@/docs/copy-feedback";
+import * as CodeFile from "@/lib/code-file";
 import * as Page from "@/app/page";
 import * as Icon from "@/lib/icon";
 import {
@@ -83,7 +84,11 @@ export const ChangedChartsRenderer = m("ChangedChartsRenderer", {
 export const ChangedBlocksRenderer = m("ChangedBlocksRenderer", { renderer: Page.CreateRenderer });
 export const ChangedBlocksCategory = m("ChangedBlocksCategory", { category: Page.BlockCategory });
 export const ToggledBlockCode = m("ToggledBlockCode", { block: S.String });
-export const LoadedBlockCode = m("LoadedBlockCode", { block: S.String, renderer: Page.CreateRenderer, source: S.String });
+export const LoadedBlockCode = m("LoadedBlockCode", { block: S.String, renderer: Page.CreateRenderer, primary: S.String, files: S.Record(S.String, S.String) });
+export const SelectedBlockCodeFile = m("SelectedBlockCodeFile", { path: S.String });
+export const GotCodeFileMessage = m("GotCodeFileMessage", {
+  message: CodeFile.Message,
+});
 export const GotBlocksCopyMessage = m("GotBlocksCopyMessage", {
   message: CopyFeedback.Message,
 });
@@ -147,6 +152,8 @@ export const Message = S.Union([
   ChangedBlocksCategory,
   ToggledBlockCode,
   LoadedBlockCode,
+  SelectedBlockCodeFile,
+  GotCodeFileMessage,
   GotBlocksCopyMessage,
   GotBlocksTailwindMessage,
   GotSidebarStyleXMessage,
@@ -210,9 +217,11 @@ const LoadBlockCode = Command.define("LoadBlockCode", {
   messages: [LoadedBlockCode],
   execute: ({ renderer, name }) =>
     Effect.promise(() =>
-      BlocksIndexPage.loadBlockSource(renderer, name),
+      BlocksIndexPage.loadBlockSources(renderer, name),
     ).pipe(
-      Effect.map((source) => LoadedBlockCode({ block: name, renderer, source })),
+      Effect.map(({ primary, files }) =>
+        LoadedBlockCode({ block: name, renderer, primary, files }),
+      ),
     ),
 });
 
@@ -233,23 +242,28 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       ChangedBlocksRenderer: ({renderer}) => {
         if (model.page._tag !== "BlocksIndexPage") return [model, []];
         const page = model.page;
-        const pageNext = page.codeBlock === "" ? {...page, renderer} : {...page, renderer, codeSource: null};
+        const pageNext = page.codeBlock === "" ? {...page, renderer} : {...page, renderer, codeFiles: {}, codeFile: ""};
         const commands = page.codeBlock === "" ? [] : [LoadBlockCode({ renderer, name: page.codeBlock })];
         return [{...model, page: pageNext}, commands];
       },
-      ChangedBlocksCategory: ({category}) => model.page._tag === "BlocksIndexPage" ? [{...model, page: {...model.page, category, codeBlock: "", codeSource: null}}, []] : [model, []],
+      ChangedBlocksCategory: ({category}) => model.page._tag === "BlocksIndexPage" ? [{...model, page: {...model.page, category, codeBlock: "", codeFiles: {}, codeFile: ""}}, []] : [model, []],
       ToggledBlockCode: ({block}) => {
         if (model.page._tag !== "BlocksIndexPage") return [model, []];
         const page = model.page;
         if (page.codeBlock === block) {
-          return [{...model, page: {...page, codeBlock: "", codeSource: null}}, []];
+          return [{...model, page: {...page, codeBlock: "", codeFiles: {}, codeFile: ""}}, []];
         }
-        return [{...model, page: {...page, codeBlock: block, codeSource: null}}, [LoadBlockCode({ renderer: page.renderer, name: block })]];
+        return [{...model, page: {...page, codeBlock: block, codeFiles: {}, codeFile: ""}}, [LoadBlockCode({ renderer: page.renderer, name: block })]];
       },
-      LoadedBlockCode: ({block, renderer, source}) => {
+      LoadedBlockCode: ({block, renderer, primary, files}) => {
         if (model.page._tag !== "BlocksIndexPage" || model.page.codeBlock !== block || model.page.renderer !== renderer) return [model, []];
-        return [{...model, page: {...model.page, codeSource: source}}, []];
+        return [{...model, page: {...model.page, codeFiles: files, codeFile: primary}}, []];
       },
+      SelectedBlockCodeFile: ({path}) => {
+        if (model.page._tag !== "BlocksIndexPage" || model.page.codeFiles[path] === undefined) return [model, []];
+        return [{...model, page: {...model.page, codeFile: path}}, []];
+      },
+      GotCodeFileMessage: () => [model, []],
       GotBlocksCopyMessage: ({message: child}) => {
         if (model.page._tag !== "BlocksIndexPage") return [model, []];
         const page = model.page;
@@ -900,8 +914,8 @@ const landingView = defineView<Landing.Model, Landing.Message>(Landing.view);
 const catalogDocsView = defineView<
   ComponentCatalog.Model,
   ComponentCatalog.Message,
-  string
->((catalogModel, slug, h) => ComponentCatalog.view(catalogModel, slug, h));
+  { slug: string; dark: boolean }
+>((catalogModel, { slug, dark }, h) => ComponentCatalog.view(catalogModel, slug, dark, h));
 const blocksRegistryView = defineView<Blocks.Model, Blocks.Message, string>(
   (blocksModel, blockId, h) => Blocks.view(blocksModel, blockId, h),
 );
@@ -1152,8 +1166,8 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
               chartsSectionView(model, section, h),
             )
           : keyed("page-not-found", notFoundView(`/charts/${section}`, h)),
-      BlocksIndex: () => model.page._tag === "BlocksIndexPage" ? keyed("page-blocks", BlocksIndexPage.view({...model.page, isDark:model.isDark, onCategory: category => ChangedBlocksCategory({category}), onToggleCode: block => ToggledBlockCode({block}), onCopyCode: code => GotBlocksCopyMessage({message: CopyFeedback.ClickedCopyCode({code})})}, h)) : h.empty,
-      BlocksStyleX: () => model.page._tag === "BlocksIndexPage" ? keyed("page-blocks", BlocksIndexPage.view({...model.page, isDark:model.isDark, onCategory: category => ChangedBlocksCategory({category}), onToggleCode: block => ToggledBlockCode({block}), onCopyCode: code => GotBlocksCopyMessage({message: CopyFeedback.ClickedCopyCode({code})})}, h)) : h.empty,
+      BlocksIndex: () => model.page._tag === "BlocksIndexPage" ? keyed("page-blocks", BlocksIndexPage.view({...model.page, isDark:model.isDark, onCategory: category => ChangedBlocksCategory({category}), onToggleCode: block => ToggledBlockCode({block}), onSelectCodeFile: path => SelectedBlockCodeFile({path}), onCodeFileMessage: message => GotCodeFileMessage({message}), onCopyCode: code => GotBlocksCopyMessage({message: CopyFeedback.ClickedCopyCode({code})})}, h)) : h.empty,
+      BlocksStyleX: () => model.page._tag === "BlocksIndexPage" ? keyed("page-blocks", BlocksIndexPage.view({...model.page, isDark:model.isDark, onCategory: category => ChangedBlocksCategory({category}), onToggleCode: block => ToggledBlockCode({block}), onSelectCodeFile: path => SelectedBlockCodeFile({path}), onCodeFileMessage: message => GotCodeFileMessage({message}), onCopyCode: code => GotBlocksCopyMessage({message: CopyFeedback.ClickedCopyCode({code})})}, h)) : h.empty,
       BlocksStyleXTable: () =>
         model.page._tag === "BlocksStyleXTablePage"
           ? keyed(
@@ -1178,7 +1192,7 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
                 slotId: `docs-${component}`,
                 model: model.page.docs,
                 view: catalogDocsView,
-                viewInputs: component,
+                viewInputs: { slug: component, dark: model.isDark },
                 toParentMessage: (message: ComponentCatalog.Message): Message =>
                   GotCatalogDocsMessage({ message }),
               }),
