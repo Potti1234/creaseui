@@ -41,41 +41,8 @@ export const blockSourcePath = (
   return `/src/demo/${dir}/${stem}.ts`;
 };
 
-const IMPORT_CLAUSE =
-  /import\s+(?:type\s+)?([\w*$,\s{}]+?)\s+from\s+['"]([^'"]+)['"]/g;
-const BARE_IMPORT = /import\s+['"]([^'"]+)['"]/g;
-const EXPORT_CLAUSE =
-  /export\s+(?:type\s+)?([\w*$,\s{}]+?)\s+from\s+['"]([^'"]+)['"]/g;
-
-type NameFilter = "all" | ReadonlySet<string>;
-
-const clauseNames = (clause: string): NameFilter => {
-  const c = clause.trim();
-  if (c.startsWith("*")) return "all";
-  const names = new Set<string>();
-  for (const part of c.replace(/[{}]/g, "").split(",")) {
-    const segs = part.trim().replace(/^type\s+/, "").split(/\s+as\s+/);
-    const name = segs[0]?.trim();
-    if (name !== undefined && name !== "") {
-      // For `import { a as b }` the local name is b but the export is a;
-      // keep the exported name so it can match a barrel's re-export.
-      names.add(segs.length > 1 ? segs[0]!.trim() : name);
-    }
-  }
-  return names.size === 0 ? "all" : names;
-};
-
-const exportClauseNames = (clause: string): NameFilter => {
-  const c = clause.trim();
-  if (c.startsWith("*")) return "all";
-  const names = new Set<string>();
-  for (const part of c.replace(/[{}]/g, "").split(",")) {
-    const segs = part.trim().replace(/^type\s+/, "").split(/\s+as\s+/);
-    const name = (segs[segs.length - 1] ?? "").trim();
-    if (name !== "") names.add(name);
-  }
-  return names.size === 0 ? "all" : names;
-};
+const IMPORT_SPECIFIER =
+  /(?:import|export)\s+[\w*$,\s{}]*?from\s+['"]([^'"]+)['"]|import\s+['"]([^'"]+)['"]/g;
 
 const normalizePath = (path: string): string => {
   const out: string[] = [];
@@ -110,45 +77,31 @@ const resolveSpecifier = (
 
 const SIDEBAR_DATA_FILE = /^\/src\/demo\/blocks\/sidebar-\d+\.ts$/;
 
-type Dep = Readonly<{ path: string; filter: NameFilter }>;
-
 const dependencyPaths = (
+  renderer: BlockRenderer,
   name: string,
-  fromPath: string,
   source: string,
-  filter: NameFilter,
-  otherRendererDir: string,
-): ReadonlyArray<Dep> => {
-  const deps: Dep[] = [];
-  const push = (specifier: string, names: NameFilter) => {
-    const path = resolveSpecifier(fromPath, specifier);
-    if (path === undefined || path === fromPath) return;
+): ReadonlyArray<string> => {
+  const otherRendererDir =
+    renderer === "stylex" ? "/src/ui/" : "/src/stylex/";
+  const deps: string[] = [];
+  for (const match of source.matchAll(IMPORT_SPECIFIER)) {
+    const specifier = match[1] ?? match[2];
+    if (specifier === undefined) continue;
+    const path = resolveSpecifier(
+      blockSourcePath(renderer, name),
+      specifier,
+    );
+    if (path === undefined) continue;
     if (
       SIDEBAR_DATA_FILE.test(path) &&
       path !== `/src/demo/blocks/${name}.ts`
     ) {
-      return;
+      continue;
     }
     // The other renderer's component tree is never part of this block.
-    if (path.startsWith(otherRendererDir)) return;
-    deps.push({ path, filter: names });
-  };
-
-  // A filtered file (a barrel reached via named imports) only expands the
-  // re-exports the importer actually used; its own imports still count.
-  for (const match of source.matchAll(IMPORT_CLAUSE)) {
-    push(match[2]!, filter === "all" ? clauseNames(match[1]!) : "all");
-  }
-  for (const match of source.matchAll(EXPORT_CLAUSE)) {
-    const exported = exportClauseNames(match[1]!);
-    if (filter === "all") {
-      push(match[2]!, exported);
-    } else if (exported === "all" || [...exported].some((n) => filter.has(n))) {
-      push(match[2]!, "all");
-    }
-  }
-  for (const match of source.matchAll(BARE_IMPORT)) {
-    push(match[1]!, "all");
+    if (path.startsWith(otherRendererDir)) continue;
+    deps.push(path);
   }
   return deps;
 };
@@ -164,7 +117,10 @@ export const loadBlockSources = async (
 ): Promise<BlockSources> => {
   const primary = blockSourcePath(renderer, name);
   if (rawBlockSources[primary] === undefined) {
-    return { primary, files: { [primary]: "// Source unavailable for this block." } };
+    return {
+      primary,
+      files: { [primary]: "// Source unavailable for this block." },
+    };
   }
 
   const loadSource = async (path: string): Promise<string> => {
@@ -179,55 +135,17 @@ export const loadBlockSources = async (
 
   try {
     const primarySource = await loadSource(primary);
-    const rendererDir =
-      renderer === "stylex" ? "/src/stylex/" : "/src/ui/";
-    const otherRendererDir =
-      renderer === "stylex" ? "/src/ui/" : "/src/stylex/";
-    const walkable = (path: string): boolean =>
-      path.startsWith(rendererDir) || path.startsWith("/src/lib/");
-    const included = new Set([primary]);
-    const ordered = [primary];
-    // The block's own source plus the components it uses: demo files and
-    // anything outside the renderer/lib dirs are leaves; barrel index files
-    // only expand the re-exports an importer actually named.
-    const queue: { path: string; source: string; filter: NameFilter }[] = [
-      { path: primary, source: primarySource, filter: "all" },
+    // The block's own source plus the files it directly uses — components,
+    // lib modules, and data files — without walking further deps, matching
+    // how shadcn lists a block's file tree.
+    const paths = [
+      primary,
+      ...dependencyPaths(renderer, name, primarySource),
     ];
-    const walkedAll = new Set([primary]);
-    const barrelExpanded = new Map<string, Set<string>>();
-    while (queue.length > 0) {
-      const { path, source, filter } = queue.shift()!;
-      let effective = filter;
-      if (effective !== "all") {
-        const prev = barrelExpanded.get(path) ?? new Set<string>();
-        const fresh = new Set([...effective].filter((n) => !prev.has(n)));
-        if (fresh.size === 0) continue;
-        barrelExpanded.set(path, new Set([...prev, ...fresh]));
-        effective = fresh;
-      }
-      for (const dep of dependencyPaths(name, path, source, effective, otherRendererDir)) {
-        if (!included.has(dep.path)) {
-          included.add(dep.path);
-          ordered.push(dep.path);
-        }
-        if (!walkable(dep.path)) continue;
-        const depFilter =
-          dep.path.endsWith("/index.ts") && dep.filter !== "all"
-            ? dep.filter
-            : "all";
-        if (depFilter === "all") {
-          if (walkedAll.has(dep.path)) continue;
-          walkedAll.add(dep.path);
-        }
-        queue.push({
-          path: dep.path,
-          source: await loadSource(dep.path),
-          filter: depFilter,
-        });
-      }
-    }
     const entries = await Promise.all(
-      ordered.map(async (path) => [path, await loadSource(path)] as const),
+      [...new Set(paths)].map(
+        async (path) => [path, await loadSource(path)] as const,
+      ),
     );
     return { primary, files: Object.fromEntries(entries) };
   } catch {
