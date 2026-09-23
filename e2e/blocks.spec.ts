@@ -74,6 +74,24 @@ test('combined gallery preserves its category across renderer switches and names
   await expect(page.locator('[data-block]')).toHaveCount(31)
 })
 
+test('block code toggle swaps the preview for the matching renderer source', async ({ page }) => {
+  await page.goto('/blocks')
+  const section = page.locator('[data-block="dashboard-01"]')
+  const toggle = section.getByRole('button', { name: 'View code for dashboard-01', exact: true })
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false')
+  await toggle.click()
+  const panel = section.locator('[data-block-code="dashboard-01"]')
+  await expect(panel).toBeVisible()
+  await expect(panel).toContainText('src/demo/blocks/featured-page.ts')
+  await expect(panel.locator('pre code')).toContainText('const dashboard')
+  await expect(section.locator('iframe')).toHaveCount(0)
+  await page.getByRole('group', { name: 'Blocks renderer' }).getByRole('button', { name: 'StyleX', exact: true }).click()
+  await expect(panel).toContainText('src/demo/blocks-stylex/featured-page.ts')
+  await expect(panel.locator('pre code')).toContainText('const dashboard')
+  await section.getByRole('button', { name: 'Hide code for dashboard-01', exact: true }).click()
+  await expect(section.locator('iframe')).toHaveAttribute('src', '/blocks/preview/stylex--dashboard-01')
+})
+
 test('legacy gallery and block URLs remain available', async ({ page }) => {
   await page.goto('/blocks-stylex')
   await expect(page.getByRole('group', { name: 'Blocks renderer' }).getByRole('button', { name: 'StyleX', exact: true })).toHaveAttribute('aria-pressed', 'true')

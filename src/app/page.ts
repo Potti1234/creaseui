@@ -18,6 +18,7 @@ import * as ChartsRadial from "@/demo/charts/radial";
 import * as ChartsTooltip from "@/demo/charts/tooltip";
 import * as ChartsStyleX from "@/demo/charts-stylex/page";
 import * as ComponentCatalog from "@/docs/components/catalog";
+import * as CopyFeedback from "@/docs/copy-feedback";
 import type { AppRoute } from "@/route";
 
 export const Landing = ts("LandingPage", { landing: LandingFeature.Model });
@@ -29,7 +30,7 @@ export const Create = ts("CreatePage", {
   styleXBoard: BoardConstrained.Model,
 });
 export const BlockCategory = S.Literals(["all", "dashboard", "sidebar", "login"]);
-export const BlocksIndex = ts("BlocksIndexPage", { renderer: CreateRenderer, category: BlockCategory });
+export const BlocksIndex = ts("BlocksIndexPage", { renderer: CreateRenderer, category: BlockCategory, codeBlock: S.String, codeSource: S.NullOr(S.String), copiedCode: CopyFeedback.Model });
 export const BlocksStyleXTable = ts("BlocksStyleXTablePage", {
   table: TanStackTableFeature.Model,
 });
@@ -85,8 +86,8 @@ export const init = (route: AppRoute): Page =>
           tooltip: ChartsTooltip.init(),
           styleXCharts: ChartsStyleX.init(),
         }),
-      BlocksIndex: () => BlocksIndex({renderer: "tailwind", category: "all"}),
-      BlocksStyleX: () => BlocksIndex({renderer: "stylex", category: "all"}),
+      BlocksIndex: () => BlocksIndex({renderer: "tailwind", category: "all", codeBlock: "", codeSource: null, copiedCode: null}),
+      BlocksStyleX: () => BlocksIndex({renderer: "stylex", category: "all", codeBlock: "", codeSource: null, copiedCode: null}),
       BlocksStyleXTable: () => BlocksStyleXTable({ table: TanStackTableFeature.init() }),
       Block: () => Block({ blocks: BlocksFeature.init(), styleXSidebar: SidebarStyleX.init(), styleXFeatured: BlocksStyleXFeature.init(), tailwindFeatured: BlocksTailwindFeature.init() }),
       ComponentDocs: ({ component }) =>
