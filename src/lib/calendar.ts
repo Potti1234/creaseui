@@ -1,4 +1,20 @@
+import { Calendar as CalendarPrimitive } from '@foldkit/ui'
 import * as Calendar from 'foldkit/calendar'
+
+/** In a right-to-left calendar the day and picker grids are mirrored, so
+ *  ArrowLeft and ArrowRight must swap to move the cursor in the visual
+ *  direction the user expects. Home/End stay logical (first/last day of
+ *  week). */
+export const mirrorNavigationKeyForRtl = (
+  message: CalendarPrimitive.Message,
+): CalendarPrimitive.Message =>
+  message._tag === 'PressedKeyOnGrid' &&
+  (message.key === 'ArrowLeft' || message.key === 'ArrowRight')
+    ? CalendarPrimitive.PressedKeyOnGrid({
+        key: message.key === 'ArrowLeft' ? 'ArrowRight' : 'ArrowLeft',
+        isShift: message.isShift,
+      })
+    : message
 
 export type CalendarRange = Readonly<{
   start: Calendar.CalendarDate

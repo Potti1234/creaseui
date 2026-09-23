@@ -354,7 +354,12 @@ export const calendar = <Msg>(
         ? {}
         : { monthsHeadingButtonLabel: props.monthsHeadingButtonLabel }),
     },
-    toParentMessage: props.toParentMessage,
+    toParentMessage: message =>
+      props.toParentMessage(
+        props.direction === 'rtl'
+          ? CalendarBehavior.mirrorNavigationKeyForRtl(message)
+          : message,
+      ),
   });
 };
 
