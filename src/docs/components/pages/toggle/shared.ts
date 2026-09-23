@@ -45,7 +45,7 @@ export const toggleExamples = (
     viewBody: `Toggle.toggle({
   isPressed: model.isPressed,
   onToggle: ToggledPressed({ isPressed: !model.isPressed }),
-  children: ['Bold'],
+  children: ['${toggleChildren[index]}'],
   ${item.config}
 }, h),`,
   }),
