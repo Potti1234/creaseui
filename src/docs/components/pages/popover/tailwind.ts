@@ -10,6 +10,7 @@ import * as Popover from '@/ui/popover';
 const content = <Msg>(h: HtmlBuilder<Msg>) => h.div([h.Class('grid gap-2')], [
   h.h4([h.Class('font-medium')], ['Dimensions']),
   h.p([h.Class('text-sm text-muted-foreground')], ['Set the dimensions for the layer.']),
+  h.input([h.Type('number'), h.AriaLabel('Width'), h.Class('rounded-md border px-3 py-2')]),
 ]);
 
 const GotPopoverPreviewMessage = m('GotPopoverPreviewMessage', { message: Popover.Message });
@@ -44,6 +45,7 @@ export const popoverTailwindPreviewProgram = definePreviewProgram<PopoverPreview
       triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium',
       side: fixture.side,
       align: fixture.align,
+      focusSelector: 'input',
       content: content(h),
     }, h);
   },
