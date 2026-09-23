@@ -196,7 +196,10 @@ export const keyMessage = <Item extends string>(
   const active = items[model.activeIndex];
   if (active === undefined) return undefined;
   const behavior = itemToBehavior(active);
-  if (key === forwardKey && behavior.submenu !== undefined)
+  if (
+    (key === forwardKey || key === 'Enter' || key === ' ') &&
+    behavior.submenu !== undefined
+  )
     return { _tag: 'OpenedSubmenu', index: model.activeIndex };
   if (key === backKey) return { _tag: 'ClosedSubmenu' };
   if ((key === 'Enter' || key === ' ') && behavior.submenu === undefined)
