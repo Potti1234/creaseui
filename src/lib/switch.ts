@@ -47,6 +47,7 @@ export const renderSwitch = <Msg>(
           [
             h.button(
               [
+                h.Id(`${props.id}-control`),
                 ...button.filter(
                   (attribute) =>
                     props.description !== undefined ||
@@ -59,7 +60,7 @@ export const renderSwitch = <Msg>(
               [h.span([h.DataAttribute('slot', 'switch-thumb'), ...visual.thumb], [])],
             ),
             h.div([...visual.text], [
-              h.label([...label, ...visual.label], [props.label]),
+              h.label([h.For(`${props.id}-control`), ...label, ...visual.label], [props.label]),
               ...(props.description === undefined
                 ? []
                 : [h.p([...description, ...visual.description], [props.description])]),
