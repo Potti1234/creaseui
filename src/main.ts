@@ -85,7 +85,7 @@ export const ChangedBlocksRenderer = m("ChangedBlocksRenderer", { renderer: Page
 export const ChangedBlocksCategory = m("ChangedBlocksCategory", { category: Page.BlockCategory });
 export const ToggledBlockCode = m("ToggledBlockCode", { block: S.String });
 export const LoadedBlockCode = m("LoadedBlockCode", { block: S.String, renderer: Page.CreateRenderer, primary: S.String, files: S.Record(S.String, S.String) });
-export const SelectedBlockCodeFile = m("SelectedBlockCodeFile", { path: S.String });
+export const SelectedBlockCodeFile = m("SelectedBlockCodeFile", { block: S.String, path: S.String });
 export const GotCodeFileMessage = m("GotCodeFileMessage", {
   message: CodeFile.Message,
 });
@@ -242,26 +242,32 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       ChangedBlocksRenderer: ({renderer}) => {
         if (model.page._tag !== "BlocksIndexPage") return [model, []];
         const page = model.page;
-        const pageNext = page.codeBlock === "" ? {...page, renderer} : {...page, renderer, codeFiles: {}, codeFile: ""};
-        const commands = page.codeBlock === "" ? [] : [LoadBlockCode({ renderer, name: page.codeBlock })];
-        return [{...model, page: pageNext}, commands];
+        const open = Object.keys(page.codeBlocks);
+        const codeBlocks = Object.fromEntries(open.map((name) => [name, {files: {}, codeFile: ""}]));
+        const commands = open.map((name) => LoadBlockCode({ renderer, name }));
+        return [{...model, page: {...page, renderer, codeBlocks}}, commands];
       },
-      ChangedBlocksCategory: ({category}) => model.page._tag === "BlocksIndexPage" ? [{...model, page: {...model.page, category, codeBlock: "", codeFiles: {}, codeFile: ""}}, []] : [model, []],
+      ChangedBlocksCategory: ({category}) => model.page._tag === "BlocksIndexPage" ? [{...model, page: {...model.page, category, codeBlocks: {}}}, []] : [model, []],
       ToggledBlockCode: ({block}) => {
         if (model.page._tag !== "BlocksIndexPage") return [model, []];
         const page = model.page;
-        if (page.codeBlock === block) {
-          return [{...model, page: {...page, codeBlock: "", codeFiles: {}, codeFile: ""}}, []];
+        if (page.codeBlocks[block] !== undefined) {
+          const codeBlocks = Object.fromEntries(Object.entries(page.codeBlocks).filter(([name]) => name !== block));
+          return [{...model, page: {...page, codeBlocks}}, []];
         }
-        return [{...model, page: {...page, codeBlock: block, codeFiles: {}, codeFile: ""}}, [LoadBlockCode({ renderer: page.renderer, name: block })]];
+        const codeBlocks = {...page.codeBlocks, [block]: {files: {}, codeFile: ""}};
+        return [{...model, page: {...page, codeBlocks}}, [LoadBlockCode({ renderer: page.renderer, name: block })]];
       },
       LoadedBlockCode: ({block, renderer, primary, files}) => {
-        if (model.page._tag !== "BlocksIndexPage" || model.page.codeBlock !== block || model.page.renderer !== renderer) return [model, []];
-        return [{...model, page: {...model.page, codeFiles: files, codeFile: primary}}, []];
+        if (model.page._tag !== "BlocksIndexPage" || model.page.codeBlocks[block] === undefined || model.page.renderer !== renderer) return [model, []];
+        const codeBlocks = {...model.page.codeBlocks, [block]: {files, codeFile: primary}};
+        return [{...model, page: {...model.page, codeBlocks}}, []];
       },
-      SelectedBlockCodeFile: ({path}) => {
-        if (model.page._tag !== "BlocksIndexPage" || model.page.codeFiles[path] === undefined) return [model, []];
-        return [{...model, page: {...model.page, codeFile: path}}, []];
+      SelectedBlockCodeFile: ({block, path}) => {
+        const panel = model.page._tag === "BlocksIndexPage" ? model.page.codeBlocks[block] : undefined;
+        if (model.page._tag !== "BlocksIndexPage" || panel === undefined || panel.files[path] === undefined) return [model, []];
+        const codeBlocks = {...model.page.codeBlocks, [block]: {...panel, codeFile: path}};
+        return [{...model, page: {...model.page, codeBlocks}}, []];
       },
       GotCodeFileMessage: () => [model, []],
       GotBlocksCopyMessage: ({message: child}) => {
@@ -1166,8 +1172,8 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
               chartsSectionView(model, section, h),
             )
           : keyed("page-not-found", notFoundView(`/charts/${section}`, h)),
-      BlocksIndex: () => model.page._tag === "BlocksIndexPage" ? keyed("page-blocks", BlocksIndexPage.view({...model.page, isDark:model.isDark, onCategory: category => ChangedBlocksCategory({category}), onToggleCode: block => ToggledBlockCode({block}), onSelectCodeFile: path => SelectedBlockCodeFile({path}), onCodeFileMessage: message => GotCodeFileMessage({message}), onCopyCode: code => GotBlocksCopyMessage({message: CopyFeedback.ClickedCopyCode({code})})}, h)) : h.empty,
-      BlocksStyleX: () => model.page._tag === "BlocksIndexPage" ? keyed("page-blocks", BlocksIndexPage.view({...model.page, isDark:model.isDark, onCategory: category => ChangedBlocksCategory({category}), onToggleCode: block => ToggledBlockCode({block}), onSelectCodeFile: path => SelectedBlockCodeFile({path}), onCodeFileMessage: message => GotCodeFileMessage({message}), onCopyCode: code => GotBlocksCopyMessage({message: CopyFeedback.ClickedCopyCode({code})})}, h)) : h.empty,
+      BlocksIndex: () => model.page._tag === "BlocksIndexPage" ? keyed("page-blocks", BlocksIndexPage.view({...model.page, isDark:model.isDark, onCategory: category => ChangedBlocksCategory({category}), onToggleCode: block => ToggledBlockCode({block}), onSelectCodeFile: (block, path) => SelectedBlockCodeFile({block, path}), onCodeFileMessage: message => GotCodeFileMessage({message}), onCopyCode: code => GotBlocksCopyMessage({message: CopyFeedback.ClickedCopyCode({code})})}, h)) : h.empty,
+      BlocksStyleX: () => model.page._tag === "BlocksIndexPage" ? keyed("page-blocks", BlocksIndexPage.view({...model.page, isDark:model.isDark, onCategory: category => ChangedBlocksCategory({category}), onToggleCode: block => ToggledBlockCode({block}), onSelectCodeFile: (block, path) => SelectedBlockCodeFile({block, path}), onCodeFileMessage: message => GotCodeFileMessage({message}), onCopyCode: code => GotBlocksCopyMessage({message: CopyFeedback.ClickedCopyCode({code})})}, h)) : h.empty,
       BlocksStyleXTable: () =>
         model.page._tag === "BlocksStyleXTablePage"
           ? keyed(

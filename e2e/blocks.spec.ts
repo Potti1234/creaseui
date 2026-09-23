@@ -102,7 +102,23 @@ test('block code toggle swaps the preview for the matching renderer source', asy
   await page.getByRole('group', { name: 'Blocks renderer' }).getByRole('button', { name: 'StyleX', exact: true }).click()
   await expect(panel).toContainText('src/demo/blocks-stylex/featured-page.ts')
   await expect(panel.locator('[data-code-view] pre code')).toContainText('const dashboard')
+  const second = page.locator('[data-block="astryx-executive-summary"]')
+  await second.getByRole('button', { name: 'View code for astryx-executive-summary', exact: true }).click()
+  const secondPanel = second.locator('[data-block-code="astryx-executive-summary"]')
+  await expect(secondPanel).toBeVisible()
+  await expect(panel).toBeVisible()
+  await expect(panel).toContainText('src/demo/blocks-stylex/featured-page.ts')
+  const scrollTop = await panel.locator('[data-code-view]').evaluate((el) => {
+    const code = el.querySelector('diffs-container')?.shadowRoot?.querySelector('code[data-code]')
+    if (!(code instanceof HTMLElement)) return -1
+    code.scrollTop = 400
+    return code.scrollTop
+  })
+  expect(scrollTop).toBeGreaterThan(0)
   await section.getByRole('button', { name: 'Hide code for dashboard-01', exact: true }).click()
+  await expect(secondPanel).toBeVisible()
+  await second.getByRole('button', { name: 'Hide code for astryx-executive-summary', exact: true }).click()
+  await expect(second.locator('iframe')).toHaveAttribute('src', '/blocks/preview/stylex--astryx-executive-summary')
   await expect(section.locator('iframe')).toHaveAttribute('src', '/blocks/preview/stylex--dashboard-01')
 })
 
