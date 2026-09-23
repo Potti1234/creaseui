@@ -41,8 +41,41 @@ export const blockSourcePath = (
   return `/src/demo/${dir}/${stem}.ts`;
 };
 
-const IMPORT_SPECIFIER =
-  /from\s+['"]([^'"]+)['"]|import\s+['"]([^'"]+)['"]/g;
+const IMPORT_CLAUSE =
+  /import\s+(?:type\s+)?([\w*$,\s{}]+?)\s+from\s+['"]([^'"]+)['"]/g;
+const BARE_IMPORT = /import\s+['"]([^'"]+)['"]/g;
+const EXPORT_CLAUSE =
+  /export\s+(?:type\s+)?([\w*$,\s{}]+?)\s+from\s+['"]([^'"]+)['"]/g;
+
+type NameFilter = "all" | ReadonlySet<string>;
+
+const clauseNames = (clause: string): NameFilter => {
+  const c = clause.trim();
+  if (c.startsWith("*")) return "all";
+  const names = new Set<string>();
+  for (const part of c.replace(/[{}]/g, "").split(",")) {
+    const segs = part.trim().replace(/^type\s+/, "").split(/\s+as\s+/);
+    const name = segs[0]?.trim();
+    if (name !== undefined && name !== "") {
+      // For `import { a as b }` the local name is b but the export is a;
+      // keep the exported name so it can match a barrel's re-export.
+      names.add(segs.length > 1 ? segs[0]!.trim() : name);
+    }
+  }
+  return names.size === 0 ? "all" : names;
+};
+
+const exportClauseNames = (clause: string): NameFilter => {
+  const c = clause.trim();
+  if (c.startsWith("*")) return "all";
+  const names = new Set<string>();
+  for (const part of c.replace(/[{}]/g, "").split(",")) {
+    const segs = part.trim().replace(/^type\s+/, "").split(/\s+as\s+/);
+    const name = (segs[segs.length - 1] ?? "").trim();
+    if (name !== "") names.add(name);
+  }
+  return names.size === 0 ? "all" : names;
+};
 
 const normalizePath = (path: string): string => {
   const out: string[] = [];
@@ -52,6 +85,13 @@ const normalizePath = (path: string): string => {
     else out.push(seg);
   }
   return `/${out.join("/")}`;
+};
+
+const withExtension = (base: string): string | undefined => {
+  const candidates = base.endsWith(".ts") || base.endsWith(".json")
+    ? [base]
+    : [`${base}.ts`, `${base}.json`, `${base}/index.ts`];
+  return candidates.find((p) => rawBlockSources[p] !== undefined);
 };
 
 const resolveSpecifier = (
@@ -68,36 +108,49 @@ const resolveSpecifier = (
   return undefined;
 };
 
-const withExtension = (base: string): string | undefined => {
-  const candidates = base.endsWith(".ts") || base.endsWith(".json")
-    ? [base]
-    : [`${base}.ts`, `${base}.json`, `${base}/index.ts`];
-  return candidates.find((p) => rawBlockSources[p] !== undefined);
-};
-
 const SIDEBAR_DATA_FILE = /^\/src\/demo\/blocks\/sidebar-\d+\.ts$/;
+
+type Dep = Readonly<{ path: string; filter: NameFilter }>;
 
 const dependencyPaths = (
   name: string,
-  primaryPath: string,
+  fromPath: string,
   source: string,
-): ReadonlyArray<string> => {
-  const resolved: string[] = [];
-  for (const match of source.matchAll(IMPORT_SPECIFIER)) {
-    const specifier = match[1] ?? match[2];
-    if (specifier === undefined) continue;
-    const path = resolveSpecifier(primaryPath, specifier);
-    if (path === undefined || path === primaryPath) continue;
-    if (path.startsWith("/src/demo/")) {
-      // Demo files aggregate blocks; only pull the primary's own deps, and
-      // never a sidebar data file belonging to a different block.
-      if (SIDEBAR_DATA_FILE.test(path) && path !== `/src/demo/blocks/${name}.ts`) {
-        continue;
-      }
+  filter: NameFilter,
+  otherRendererDir: string,
+): ReadonlyArray<Dep> => {
+  const deps: Dep[] = [];
+  const push = (specifier: string, names: NameFilter) => {
+    const path = resolveSpecifier(fromPath, specifier);
+    if (path === undefined || path === fromPath) return;
+    if (
+      SIDEBAR_DATA_FILE.test(path) &&
+      path !== `/src/demo/blocks/${name}.ts`
+    ) {
+      return;
     }
-    resolved.push(path);
+    // The other renderer's component tree is never part of this block.
+    if (path.startsWith(otherRendererDir)) return;
+    deps.push({ path, filter: names });
+  };
+
+  // A filtered file (a barrel reached via named imports) only expands the
+  // re-exports the importer actually used; its own imports still count.
+  for (const match of source.matchAll(IMPORT_CLAUSE)) {
+    push(match[2]!, filter === "all" ? clauseNames(match[1]!) : "all");
   }
-  return resolved;
+  for (const match of source.matchAll(EXPORT_CLAUSE)) {
+    const exported = exportClauseNames(match[1]!);
+    if (filter === "all") {
+      push(match[2]!, exported);
+    } else if (exported === "all" || [...exported].some((n) => filter.has(n))) {
+      push(match[2]!, "all");
+    }
+  }
+  for (const match of source.matchAll(BARE_IMPORT)) {
+    push(match[1]!, "all");
+  }
+  return deps;
 };
 
 export type BlockSources = Readonly<{
@@ -126,27 +179,51 @@ export const loadBlockSources = async (
 
   try {
     const primarySource = await loadSource(primary);
-    const otherRendererDemo =
-      renderer === "stylex" ? "/src/demo/blocks/" : "/src/demo/blocks-stylex/";
-    const seen = new Set([primary]);
+    const rendererDir =
+      renderer === "stylex" ? "/src/stylex/" : "/src/ui/";
+    const otherRendererDir =
+      renderer === "stylex" ? "/src/ui/" : "/src/stylex/";
+    const walkable = (path: string): boolean =>
+      path.startsWith(rendererDir) || path.startsWith("/src/lib/");
+    const included = new Set([primary]);
     const ordered = [primary];
-    // Breadth-first import closure: the primary's own demo deps plus every
-    // component/library file reachable from the block (transitively).
-    // Demo files are only expanded at depth 0 (they aggregate blocks), and
-    // cross-renderer demo files are included as data sources but never
-    // walked — their own imports belong to the other renderer.
-    const queue: { path: string; source: string; deep: boolean }[] = [
-      { path: primary, source: primarySource, deep: false },
+    // The block's own source plus the components it uses: demo files and
+    // anything outside the renderer/lib dirs are leaves; barrel index files
+    // only expand the re-exports an importer actually named.
+    const queue: { path: string; source: string; filter: NameFilter }[] = [
+      { path: primary, source: primarySource, filter: "all" },
     ];
+    const walkedAll = new Set([primary]);
+    const barrelExpanded = new Map<string, Set<string>>();
     while (queue.length > 0) {
-      const { path, source, deep } = queue.shift()!;
-      if (path.startsWith(otherRendererDemo)) continue;
-      for (const dep of dependencyPaths(name, path, source)) {
-        if (deep && dep.startsWith("/src/demo/")) continue;
-        if (seen.has(dep)) continue;
-        seen.add(dep);
-        ordered.push(dep);
-        queue.push({ path: dep, source: await loadSource(dep), deep: true });
+      const { path, source, filter } = queue.shift()!;
+      let effective = filter;
+      if (effective !== "all") {
+        const prev = barrelExpanded.get(path) ?? new Set<string>();
+        const fresh = new Set([...effective].filter((n) => !prev.has(n)));
+        if (fresh.size === 0) continue;
+        barrelExpanded.set(path, new Set([...prev, ...fresh]));
+        effective = fresh;
+      }
+      for (const dep of dependencyPaths(name, path, source, effective, otherRendererDir)) {
+        if (!included.has(dep.path)) {
+          included.add(dep.path);
+          ordered.push(dep.path);
+        }
+        if (!walkable(dep.path)) continue;
+        const depFilter =
+          dep.path.endsWith("/index.ts") && dep.filter !== "all"
+            ? dep.filter
+            : "all";
+        if (depFilter === "all") {
+          if (walkedAll.has(dep.path)) continue;
+          walkedAll.add(dep.path);
+        }
+        queue.push({
+          path: dep.path,
+          source: await loadSource(dep.path),
+          filter: depFilter,
+        });
       }
     }
     const entries = await Promise.all(
