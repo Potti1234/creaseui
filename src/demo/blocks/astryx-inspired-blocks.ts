@@ -125,37 +125,148 @@ export const kanbanBoard = <Message>(h: HtmlBuilder<Message>): Html => {
 }
 
 /* Astryx "Inbox Table": the table indexes a reading pane instead of being the destination. */
-export const inboxTable = <Message>(h: HtmlBuilder<Message>): Html =>
-  masterDetailPage({
+type MailThread = Readonly<{
+  email: string
+  id: string
+  messages: ReadonlyArray<string>
+  received: string
+  receivedDetail: string
+  sender: string
+  starred: boolean
+  subject: string
+  tag: string
+  tagVariant: 'outline' | 'secondary'
+  unread: boolean
+}>
+
+const MAIL_THREADS: readonly [MailThread, ...MailThread[]] = [
+  {
+    email: 'nora@lumen.supply',
+    id: 'nora',
+    messages: [
+      'Forecast file is attached — the supplier moved the fleece line up two weeks, so the October window is tighter than we planned.',
+      'I can hold the current allocation if the ops team confirms the extra dock time by Thursday.',
+    ],
+    received: '9:41 AM',
+    receivedDetail: 'Today · 9:41 AM · to me',
+    sender: 'Nora Patel',
+    starred: true,
+    subject: 'Re: Q4 restock forecast',
+    tag: 'Customers',
+    tagVariant: 'secondary',
+    unread: true,
+  },
+  {
+    email: 'ops@atlas.dev',
+    id: 'ops',
+    messages: [
+      'Storefront v2.31 deployed to production at 09:08 — all 42 checks passed.',
+      'Canary traffic is holding at 10%. The rollback window stays open until noon.',
+    ],
+    received: '9:12 AM',
+    receivedDetail: 'Today · 9:12 AM · to me',
+    sender: 'Ops Bot',
+    starred: false,
+    subject: 'Deploy finished: storefront v2.31',
+    tag: 'Ops',
+    tagVariant: 'outline',
+    unread: true,
+  },
+  {
+    email: 'kofi@adlergoods.com',
+    id: 'kofi',
+    messages: [
+      'Invoice #2184 for $2,184.00 was paid this afternoon — the receipt is attached.',
+      'The order moved to fulfillment and the packing slip went to the warehouse.',
+    ],
+    received: 'Yesterday',
+    receivedDetail: 'Yesterday · 4:22 PM · to me',
+    sender: 'Kofi Mensah',
+    starred: false,
+    subject: 'Invoice #2184 paid',
+    tag: 'Receipts',
+    tagVariant: 'secondary',
+    unread: false,
+  },
+  {
+    email: 'priya@fieldnotes.co',
+    id: 'priya',
+    messages: [
+      'Do we still get the Q4 tier pricing if we split the order across two warehouses?',
+      'Happy to send the purchase order today if the terms hold.',
+    ],
+    received: 'Yesterday',
+    receivedDetail: 'Yesterday · 11:03 AM · to me',
+    sender: 'Priya Nair',
+    starred: true,
+    subject: 'Question about the trade program',
+    tag: 'Customers',
+    tagVariant: 'secondary',
+    unread: true,
+  },
+  {
+    email: 'liam@depotline.io',
+    id: 'liam',
+    messages: [
+      'Dock 2 is reserved October 6–9 for the fleece delivery.',
+      'Can you confirm the truck count? The depot needs it by Friday.',
+    ],
+    received: 'Monday',
+    receivedDetail: 'Monday · 8:15 AM · to me',
+    sender: 'Liam Ortiz',
+    starred: false,
+    subject: 'Dock schedule for October',
+    tag: 'Ops',
+    tagVariant: 'outline',
+    unread: false,
+  },
+]
+
+const INBOX_FILTERS: ReadonlyArray<Readonly<{ id: string, label: string }>> = [
+  { id: 'all', label: 'All' },
+  { id: 'unread', label: 'Unread' },
+  { id: 'starred', label: 'Starred' },
+]
+
+const monogram = (name: string): string =>
+  name.split(' ').map((part) => part.charAt(0)).join('').toUpperCase()
+
+export const inboxTable = <Message>(props: Readonly<{
+  filter: string
+  onFilter: (value: string) => Message
+  onSelect: (id: string) => Message
+  selected: string
+}>, h: HtmlBuilder<Message>): Html => {
+  const thread = MAIL_THREADS.find((candidate) => candidate.id === props.selected) ?? MAIL_THREADS[0]
+  const rows = MAIL_THREADS.filter((candidate) =>
+    props.filter === 'unread' ? candidate.unread : props.filter === 'starred' ? candidate.starred : true)
+  return masterDetailPage({
     detail: section({ children: [stack({ children: [
       inline({ align: 'center', children: [
-        inline({ align: 'center', children: [initials('NP', h), stack({ children: [text({ children: ['Nora Patel'], variant: 'label' }, h), text({ children: ['nora@lumen.supply'], tone: 'secondary', variant: 'caption' }, h)], gap: 'none' }, h)], gap: 'sm' }, h),
+        inline({ align: 'center', children: [initials(monogram(thread.sender), h), stack({ children: [text({ children: [thread.sender], variant: 'label' }, h), text({ children: [thread.email], tone: 'secondary', variant: 'caption' }, h)], gap: 'none' }, h)], gap: 'sm' }, h),
         inline({ children: [button({ ariaLabel: 'Reply', children: [icon({ name: 'corner-up-left' }, h)], size: 'icon', variant: 'ghost' }, h), button({ ariaLabel: 'Star', children: [icon({ name: 'star' }, h)], size: 'icon', variant: 'ghost' }, h), button({ ariaLabel: 'Archive', children: [icon({ name: 'folder' }, h)], size: 'icon', variant: 'ghost' }, h)], gap: 'xs' }, h),
       ], justify: 'between', width: 'full' }, h),
-      stack({ children: [text({ children: ['Re: Q4 restock forecast'], variant: 'headingSm' }, h), text({ children: ['Today · 9:41 AM · to me'], tone: 'secondary', variant: 'caption' }, h)], gap: 'xs' }, h),
+      stack({ children: [text({ children: [thread.subject], variant: 'headingSm' }, h), text({ children: [thread.receivedDetail], tone: 'secondary', variant: 'caption' }, h)], gap: 'xs' }, h),
       separator({}, h),
-      bubbleGroup({ children: [
-        bubble({ children: [bubbleContent({ children: ['Forecast file is attached — the supplier moved the fleece line up two weeks, so the October window is tighter than we planned.'] }, h)] }, h),
-        bubble({ children: [bubbleContent({ children: ['I can hold the current allocation if the ops team confirms the extra dock time by Thursday.'] }, h)] }, h),
-      ] }, h),
+      bubbleGroup({ children: thread.messages.map((body) => bubble({ children: [bubbleContent({ children: [body] }, h)] }, h)) }, h),
       separator({}, h),
       stack({ children: [
-        textarea({ id: 'inbox-reply', placeholder: 'Reply to Nora…', rows: 3, value: '' }, h),
+        textarea({ id: 'inbox-reply', placeholder: `Reply to ${thread.sender.split(' ')[0] ?? thread.sender}…`, rows: 3, value: '' }, h),
         inline({ children: [button({ ariaLabel: 'Attach file', children: [icon({ name: 'link' }, h)], size: 'icon', variant: 'ghost' }, h), button({ leadingIcon: icon({ name: 'send' }, h), children: ['Send'], size: 'sm' }, h)], justify: 'between', width: 'full' }, h),
       ], gap: 'sm' }, h),
     ], gap: 'md' }, h)], heading: 'Message', surface: 'plain' }, h),
     detailBehavior: 'stack',
     header: [pageHeader('Inbox', '12 unread · synced 1 minute ago', [button({ leadingIcon: icon({ name: 'search' }, h), children: ['Search mail'], size: 'sm', variant: 'outline' }, h), button({ leadingIcon: icon({ name: 'file-pen-line' }, h), children: ['Compose'], size: 'sm' }, h)], h)],
-    master: [tableRegion({ children: [dataTable(['Sender', 'Subject', 'Tags', 'Received'], [
-      ['Nora Patel', 'Re: Q4 restock forecast', badge({ children: ['Customers'], variant: 'secondary' }, h), '9:41 AM'],
-      ['Ops Bot', 'Deploy finished: storefront v2.31', badge({ children: ['Ops'], variant: 'outline' }, h), '9:12 AM'],
-      ['Kofi Mensah', 'Invoice #2184 paid', badge({ children: ['Receipts'], variant: 'secondary' }, h), 'Yesterday'],
-      ['Priya Nair', 'Question about the trade program', badge({ children: ['Customers'], variant: 'secondary' }, h), 'Yesterday'],
-      ['Liam Ortiz', 'Dock schedule for October', badge({ children: ['Ops'], variant: 'outline' }, h), 'Monday'],
-    ], h)], description: 'Select a row to read the thread', heading: 'Messages', toolbar: [toolbar({ children: [inline({ children: [button({ children: ['All'], size: 'sm', variant: 'secondary' }, h), button({ children: ['Unread'], size: 'sm', variant: 'ghost' }, h), button({ children: ['Starred'], size: 'sm', variant: 'ghost' }, h)], gap: 'xs' }, h), inline({ children: [button({ children: ['Newest first'], size: 'sm', variant: 'outline' }, h)], gap: 'xs' }, h)], label: 'Inbox filters' }, h)] }, h)],
+    master: [tableRegion({ children: [dataTable(['Sender', 'Subject', 'Tags', 'Received'], rows.map((candidate) => [
+      candidate.sender,
+      button({ children: [candidate.subject], onClick: props.onSelect(candidate.id), size: 'sm', variant: candidate.id === thread.id ? 'secondary' : 'ghost' }, h),
+      badge({ children: [candidate.tag], variant: candidate.tagVariant }, h),
+      candidate.received,
+    ]), h)], description: 'Select a row to read the thread', heading: 'Messages', toolbar: [toolbar({ children: [inline({ children: INBOX_FILTERS.map((option) => button({ children: [option.label], onClick: props.onFilter(option.id), size: 'sm', variant: props.filter === option.id ? 'secondary' : 'ghost' }, h)), gap: 'xs' }, h), inline({ children: [button({ children: ['Newest first'], size: 'sm', variant: 'outline' }, h)], gap: 'xs' }, h)], label: 'Inbox filters' }, h)] }, h)],
     navigation: mailNavigation(h),
     theme: 'compact',
   }, h)
+}
 
 /* Astryx "Order Detail": a record holding children plus a chronological activity rail. */
 export const orderDetail = <Message>(h: HtmlBuilder<Message>): Html =>
@@ -264,22 +375,38 @@ const productCard = <Message>(product: CatalogProduct, h: HtmlBuilder<Message>):
     cardFooter({ children: [inline({ children: [text({ children: [product.price], numeric: 'tabular', variant: 'label' }, h), button({ children: [icon({ name: 'save' }, h), product.saved ? 'Saved' : 'Save'], size: 'sm', variant: product.saved ? 'secondary' : 'outline' }, h)], justify: 'between', width: 'full' }, h)] }, h),
   ] }, h)
 
-export const cardGrid = <Message>(props: Readonly<{ onQuery: (value: string) => Message, query: string }>, h: HtmlBuilder<Message>): Html => {
+const CATALOG_KINDS: ReadonlyArray<Readonly<{ id: string, label: string }>> = [
+  { id: 'all', label: 'All' },
+  { id: 'Template', label: 'Templates' },
+  { id: 'Icon set', label: 'Icon sets' },
+  { id: 'Font', label: 'Fonts' },
+  { id: 'Preset', label: 'Presets' },
+]
+
+export const cardGrid = <Message>(props: Readonly<{
+  kind: string
+  onClear: Message
+  onKind: (value: string) => Message
+  onQuery: (value: string) => Message
+  query: string
+}>, h: HtmlBuilder<Message>): Html => {
   const query = props.query.trim().toLowerCase()
-  const visible = CATALOG_PRODUCTS.filter((product) => query === '' || product.name.toLowerCase().includes(query) || product.format.toLowerCase().includes(query))
+  const visible = CATALOG_PRODUCTS.filter((product) =>
+    (props.kind === 'all' || product.format === props.kind)
+    && (query === '' || product.name.toLowerCase().includes(query) || product.format.toLowerCase().includes(query)))
   return commercePage({
     cart: section({ children: [itemGroup({ children: CATALOG_PRODUCTS.filter((product) => product.saved).map((product) => item({ children: [itemMedia({ children: [icon({ name: 'image' }, h)], variant: 'icon' }, h), itemContent({ children: [itemTitle({ children: [product.name] }, h), itemDescription({ children: [product.format] }, h)] }, h), text({ children: [product.price], numeric: 'tabular', variant: 'label' }, h)], size: 'sm' }, h)), class: 'gap-3' }, h), button({ children: ['Move all to cart'], variant: 'secondary' }, h)], description: 'Two products saved for later', heading: 'Saved for later', surface: 'plain' }, h),
     header: [pageHeader('Asset catalog', 'Curated templates, icon sets and fonts', [button({ children: ['Newest first'], size: 'sm', variant: 'outline' }, h), button({ leadingIcon: icon({ name: 'plus' }, h), children: ['Upload'], size: 'sm' }, h)], h)],
     products: [
       box({ children: [stack({ children: [
         input({ id: 'catalog-search', label: 'Search assets', onInput: props.onQuery, placeholder: 'Search assets…', type: 'search', value: props.query }, h),
-        inline({ children: [button({ children: ['All'], size: 'sm', variant: 'secondary' }, h), button({ children: ['Templates'], size: 'sm', variant: 'ghost' }, h), button({ children: ['Icon sets'], size: 'sm', variant: 'ghost' }, h), button({ children: ['Fonts'], size: 'sm', variant: 'ghost' }, h), button({ children: ['Presets'], size: 'sm', variant: 'ghost' }, h)], gap: 'xs', wrap: true }, h),
+        inline({ children: CATALOG_KINDS.map((kind) => button({ children: [kind.label], onClick: props.onKind(kind.id), size: 'sm', variant: props.kind === kind.id ? 'secondary' : 'ghost' }, h)), gap: 'xs', wrap: true }, h),
       ], gap: 'sm' }, h)], padding: 'sm', radius: 'lg', surface: 'card' }, h),
       ...(visible.length === 0
         ? [empty({ children: [
             emptyMedia({ children: [icon({ name: 'search', size: 'md' }, h)], variant: 'icon' }, h),
             emptyHeader({ children: [emptyTitle({ children: ['No assets match'] }, h), emptyDescription({ children: [`Nothing matches "${props.query}". Try a different search or clear the filter.`] }, h)] }, h),
-            emptyContent({ children: [button({ children: ['Clear search'], variant: 'outline' }, h)] }, h),
+            emptyContent({ children: [button({ children: ['Clear search'], onClick: props.onClear, variant: 'outline' }, h)] }, h),
           ] }, h)]
         : [grid({ children: visible.map((product) => productCard(product, h)), columns: 'gallery', gap: 'md', width: 'full' }, h)]),
     ],
