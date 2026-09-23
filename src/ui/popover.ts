@@ -78,6 +78,7 @@ export const popover = <Msg>(
               [
                 ...button,
                 hp.DataAttribute('slot', 'popover-trigger'),
+                hp.AriaHasPopup('dialog'),
                 ...(props.triggerClass === undefined
                   ? []
                   : [hp.Class(cn(props.triggerClass))]),

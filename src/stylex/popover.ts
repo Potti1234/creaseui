@@ -93,6 +93,7 @@ export const popover = <Msg>(
               [
                 ...button,
                 hp.DataAttribute('slot', 'popover-trigger'),
+                hp.AriaHasPopup('dialog'),
                 hp.Class(cn(props.variant === 'sidebar' && styles.sidebarTrigger, props.triggerLayoutStyle)),
               ],
               [props.trigger],
