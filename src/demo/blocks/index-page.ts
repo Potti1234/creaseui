@@ -1,20 +1,25 @@
+import { Mount } from "foldkit";
 import type { Html, HtmlBuilder } from "foldkit/html";
 import { blockPreviewPath, blocksStyleXTablePath } from "@/route";
+import * as CodeFile from "@/lib/code-file";
 import * as Icon from "@/lib/icon";
 import { cn } from "@/lib/utils";
 import { blockSourcePath } from "./block-source";
 import { BLOCKS, type BlockCategory } from "./catalog";
 export { BLOCKS } from "./catalog";
-export { blockSourcePath, loadBlockSource } from "./block-source";
+export { blockSourcePath, loadBlockSources } from "./block-source";
 export type Props<M> = Readonly<{
   renderer: "tailwind" | "stylex";
   category: BlockCategory;
   isDark: boolean;
   codeBlock: string;
-  codeSource: string | null;
+  codeFiles: Readonly<Record<string, string>>;
+  codeFile: string;
   copiedCode: string | null;
   onCategory: (category: BlockCategory) => M;
   onToggleCode: (name: string) => M;
+  onSelectCodeFile: (path: string) => M;
+  onCodeFileMessage: (message: CodeFile.Message) => M;
   onCopyCode: (code: string) => M;
 }>;
 const categories = [
@@ -23,6 +28,9 @@ const categories = [
   ["sidebar", "Sidebars"],
   ["login", "Authentication"],
 ] as const;
+const fileLabel = (path: string): string => path.replace("/src/demo/", "");
+const fileBasename = (path: string): string =>
+  path.slice(path.lastIndexOf("/") + 1);
 export const view = <M>(props: Props<M>, h: HtmlBuilder<M>): Html =>
   h.main(
     [
@@ -107,9 +115,12 @@ export const view = <M>(props: Props<M>, h: HtmlBuilder<M>): Html =>
         (b) => props.category === "all" || b.category === props.category,
       ).map((block) => {
         const codeOpen = props.codeBlock === block.name;
-        const codeSource = codeOpen ? props.codeSource : null;
+        const selectedPath = codeOpen ? props.codeFile : "";
+        const selectedSource =
+          selectedPath === "" ? "" : (props.codeFiles[selectedPath] ?? "");
         const isCopied =
-          codeSource !== null && props.copiedCode === codeSource;
+          selectedSource !== "" && props.copiedCode === selectedSource;
+        const filePaths = codeOpen ? Object.keys(props.codeFiles) : [];
         return h.section(
           [
             h.Id(block.name),
@@ -196,17 +207,18 @@ export const view = <M>(props: Props<M>, h: HtmlBuilder<M>): Html =>
                             ),
                           ],
                           [
-                            blockSourcePath(props.renderer, block.name).slice(
-                              1,
-                            ),
+                            (selectedPath === ""
+                              ? blockSourcePath(props.renderer, block.name)
+                              : selectedPath
+                            ).slice(1),
                           ],
                         ),
-                        codeSource === null
+                        selectedSource === ""
                           ? h.empty
                           : h.button(
                               [
                                 h.Type("button"),
-                                h.OnClick(props.onCopyCode(codeSource)),
+                                h.OnClick(props.onCopyCode(selectedSource)),
                                 h.AriaLabel(
                                   isCopied
                                     ? `${block.name} source copied`
@@ -229,7 +241,7 @@ export const view = <M>(props: Props<M>, h: HtmlBuilder<M>): Html =>
                             ),
                       ],
                     ),
-                    codeSource === null
+                    selectedPath === ""
                       ? h.div(
                           [
                             h.Role("status"),
@@ -239,17 +251,66 @@ export const view = <M>(props: Props<M>, h: HtmlBuilder<M>): Html =>
                           ],
                           [`Loading ${block.name} source…`],
                         )
-                      : h.pre(
+                      : h.div(
+                          [h.Class("flex min-h-0 flex-1")],
                           [
-                            h.Attribute("tabindex", "0"),
-                            h.Class(
-                              "m-0 min-h-0 flex-1 overflow-auto p-4 font-mono text-xs leading-6 text-foreground",
+                            h.div(
+                              [
+                                h.AriaLabel(
+                                  `Source files for ${block.name}`,
+                                ),
+                                h.Class(
+                                  "hidden w-52 shrink-0 flex-col gap-0.5 overflow-y-auto border-r bg-background p-2 md:flex",
+                                ),
+                              ],
+                              filePaths.map((path) =>
+                                h.button(
+                                  [
+                                    h.Type("button"),
+                                    h.OnClick(props.onSelectCodeFile(path)),
+                                    h.AriaPressed(
+                                      path === selectedPath
+                                        ? "true"
+                                        : "false",
+                                    ),
+                                    h.DataAttribute("code-file", path),
+                                    h.Title(fileLabel(path)),
+                                    h.Class(
+                                      cn(
+                                        "truncate rounded-md px-2 py-1 text-left font-mono text-xs transition-colors focus-visible:ring-2 focus-visible:ring-ring",
+                                        path === selectedPath
+                                          ? "bg-muted text-foreground"
+                                          : "text-muted-foreground hover:text-foreground",
+                                      ),
+                                    ),
+                                  ],
+                                  [fileLabel(path)],
+                                ),
+                              ),
                             ),
-                          ],
-                          [
-                            h.code(
-                              [h.Class("block w-max min-w-full")],
-                              [codeSource],
+                            h.div(
+                              [h.Class("min-w-0 flex-1")],
+                              [
+                                h.keyed("div")(
+                                  `codefile-${selectedPath}-${props.isDark}`,
+                                  [
+                                    h.DataAttribute("code-view", block.name),
+                                    h.Class("h-full w-full overflow-hidden"),
+                                    h.OnMount(
+                                      Mount.mapMessage(
+                                        CodeFile.MountCodeFile({
+                                          fileName: fileBasename(selectedPath),
+                                          contents: selectedSource,
+                                          dark: props.isDark,
+                                          lineNumbers: true,
+                                        }),
+                                        props.onCodeFileMessage,
+                                      ),
+                                    ),
+                                  ],
+                                  [],
+                                ),
+                              ],
                             ),
                           ],
                         ),

@@ -30,7 +30,7 @@ export const Create = ts("CreatePage", {
   styleXBoard: BoardConstrained.Model,
 });
 export const BlockCategory = S.Literals(["all", "dashboard", "sidebar", "login"]);
-export const BlocksIndex = ts("BlocksIndexPage", { renderer: CreateRenderer, category: BlockCategory, codeBlock: S.String, codeSource: S.NullOr(S.String), copiedCode: CopyFeedback.Model });
+export const BlocksIndex = ts("BlocksIndexPage", { renderer: CreateRenderer, category: BlockCategory, codeBlock: S.String, codeFiles: S.Record(S.String, S.String), codeFile: S.String, copiedCode: CopyFeedback.Model });
 export const BlocksStyleXTable = ts("BlocksStyleXTablePage", {
   table: TanStackTableFeature.Model,
 });
@@ -86,8 +86,8 @@ export const init = (route: AppRoute): Page =>
           tooltip: ChartsTooltip.init(),
           styleXCharts: ChartsStyleX.init(),
         }),
-      BlocksIndex: () => BlocksIndex({renderer: "tailwind", category: "all", codeBlock: "", codeSource: null, copiedCode: null}),
-      BlocksStyleX: () => BlocksIndex({renderer: "stylex", category: "all", codeBlock: "", codeSource: null, copiedCode: null}),
+      BlocksIndex: () => BlocksIndex({renderer: "tailwind", category: "all", codeBlock: "", codeFiles: {}, codeFile: "", copiedCode: null}),
+      BlocksStyleX: () => BlocksIndex({renderer: "stylex", category: "all", codeBlock: "", codeFiles: {}, codeFile: "", copiedCode: null}),
       BlocksStyleXTable: () => BlocksStyleXTable({ table: TanStackTableFeature.init() }),
       Block: () => Block({ blocks: BlocksFeature.init(), styleXSidebar: SidebarStyleX.init(), styleXFeatured: BlocksStyleXFeature.init(), tailwindFeatured: BlocksTailwindFeature.init() }),
       ComponentDocs: ({ component }) =>

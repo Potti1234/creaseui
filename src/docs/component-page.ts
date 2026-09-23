@@ -1,7 +1,8 @@
 import { Stream } from 'effect';
-import { Subscription } from 'foldkit';
+import { Mount, Subscription } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 
+import * as CodeFile from '@/lib/code-file';
 import * as Icon from '@/lib/icon';
 import { cn } from '@/lib/utils';
 import { componentDocsPath } from '@/route';
@@ -90,11 +91,19 @@ export type ExampleConfig<Msg> = Readonly<{
   onCopy: Msg;
   isCopied: boolean;
   previewClass?: string;
+  dark: boolean;
+  codeFileMessage: (message: CodeFile.Message) => Msg;
 }>;
+
+const codeKey = (code: string): number =>
+  [...code].reduce((hash, char) => (hash * 33 + char.charCodeAt(0)) | 0, 5381);
 
 export const codeBlock = <Msg>(
   code: string,
+  fileName: string,
   copy: Readonly<{ onCopy: Msg; isCopied: boolean; label: string }> | undefined,
+  dark: boolean,
+  toMessage: (message: CodeFile.Message) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
   return h.div(
@@ -104,14 +113,22 @@ export const codeBlock = <Msg>(
       ),
     ],
     [
-      h.pre(
+      h.keyed('div')(`codeview-${fileName}-${dark}-${codeKey(code)}`,
         [
-          h.Attribute('tabindex', '0'),
-          h.Class(
-            'overflow-x-auto p-4 pr-14 font-mono text-[13px] leading-6 text-foreground',
+          h.Class('min-w-0 max-w-full overflow-x-auto font-mono text-[13px] leading-6'),
+          h.OnMount(
+            Mount.mapMessage(
+              CodeFile.MountCodeFile({
+                fileName,
+                contents: code,
+                dark,
+                lineNumbers: false,
+              }),
+              toMessage,
+            ),
           ),
         ],
-        [h.code([h.Class('block w-max min-w-full')], [code])],
+        [],
       ),
       ...(copy === undefined
         ? []
@@ -224,19 +241,25 @@ export const example = <Msg>(
                   ),
                 ],
                 [
-                  h.pre(
+                  h.keyed('div')(
+                    `example-codeview-${toSlug(config.title)}-${config.dark}-${codeKey(config.code)}`,
                     [
-                      h.Attribute('tabindex', '0'),
                       h.Class(
-                        'min-w-0 max-w-full overflow-x-auto p-4 pr-14 font-mono text-[13px] leading-6 text-foreground',
+                        'min-w-0 max-w-full overflow-x-auto font-mono text-[13px] leading-6',
+                      ),
+                      h.OnMount(
+                        Mount.mapMessage(
+                          CodeFile.MountCodeFile({
+                            fileName: 'example.ts',
+                            contents: config.code,
+                            dark: config.dark,
+                            lineNumbers: false,
+                          }),
+                          config.codeFileMessage,
+                        ),
                       ),
                     ],
-                    [
-                      h.code(
-                        [h.Class('block w-max min-w-full')],
-                        [config.code],
-                      ),
-                    ],
+                    [],
                   ),
                   h.button(
                     [
@@ -324,6 +347,8 @@ export type ComponentPageConfig<Msg> = Readonly<{
   exampleTitles?: ReadonlyArray<string>;
   copiedCode?: string | null;
   onCopyCode?: (code: string) => Msg;
+  dark?: boolean;
+  codeFileMessage: (message: CodeFile.Message) => Msg;
   sourceHref?: string;
   apiDescription?: string;
   apiEntries: ReadonlyArray<ApiEntry>;
@@ -661,7 +686,10 @@ export const componentPage = <Msg>(
                       ),
                       codeBlock<Msg>(
                         config.installation,
+                        'install.sh',
                         copy(config.installation, 'installation command'),
+                        config.dark === true,
+                        config.codeFileMessage,
                         h,
                       ),
                     ],
@@ -674,7 +702,10 @@ export const componentPage = <Msg>(
                   heading<Msg>('usage', 'Usage', '', h),
                   codeBlock<Msg>(
                     config.usage,
+                    'usage.ts',
                     copy(config.usage, 'usage example'),
+                    config.dark === true,
+                    config.codeFileMessage,
                     h,
                   ),
                 ],
@@ -693,7 +724,10 @@ export const componentPage = <Msg>(
                       : [
                           codeBlock<Msg>(
                             section.code,
+                            `${section.id}.ts`,
                             copy(section.code, section.title.toLowerCase()),
+                            config.dark === true,
+                            config.codeFileMessage,
                             h,
                           ),
                         ]),
@@ -709,7 +743,10 @@ export const componentPage = <Msg>(
                         heading<Msg>('composition', 'Composition', '', h),
                         codeBlock<Msg>(
                           config.composition,
+                          'composition.ts',
                           copy(config.composition, 'composition example'),
+                          config.dark === true,
+                          config.codeFileMessage,
                           h,
                         ),
                       ],

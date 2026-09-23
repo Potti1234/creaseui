@@ -6,6 +6,7 @@ import { defineView } from 'foldkit/submodel';
 
 import { componentPage, componentTitle, example } from '@/docs/component-page';
 import * as CopyFeedback from '@/docs/copy-feedback';
+import * as CodeFile from '@/lib/code-file';
 import type {
   ComponentKind,
   PageDefinitions,
@@ -52,9 +53,13 @@ export const GotExampleMessage = m('GotCatalogExampleMessage', {
 export const ChangedRenderer = m('ChangedCatalogRenderer', {
   renderer: S.Literals(['tailwind', 'stylex']),
 });
+export const GotCodeFileMessage = m('GotCatalogCodeFileMessage', {
+  message: CodeFile.Message,
+});
 export const Message = S.Union([
   GotExampleMessage,
   ChangedRenderer,
+  GotCodeFileMessage,
   CopyFeedback.Message,
 ]);
 export type Message = typeof Message.Type;
@@ -76,6 +81,7 @@ export const update = (model: Model, message: Message): UpdateReturn => {
   if (message._tag === 'ChangedCatalogRenderer') {
     return [{ ...model, renderer: message.renderer }, []];
   }
+  if (message._tag === 'GotCatalogCodeFileMessage') return [model, []];
   if (message._tag !== 'GotCatalogExampleMessage') {
     const [copiedCode, commands] = CopyFeedback.update(
       model.copiedCode,
@@ -232,6 +238,7 @@ const usageFor = (slug: string, name: string, kind: ComponentKind): string => {
 export const view = (
   model: Model,
   slug: string,
+  dark: boolean,
   h: HtmlBuilder<Message>,
 ): Html => {
   const name = componentTitle(slug);
@@ -299,6 +306,8 @@ export const view = (
               code: exampleCode,
               onCopy: CopyFeedback.ClickedCopyCode({ code: exampleCode }),
               isCopied: model.copiedCode === exampleCode,
+              dark,
+              codeFileMessage: (message) => GotCodeFileMessage({ message }),
               ...(config.previewClass === undefined
                 ? {}
                 : { previewClass: config.previewClass }),
@@ -329,6 +338,8 @@ export const view = (
       ...(definition.keyboard === undefined ? {} : { keyboard: definition.keyboard }),
       copiedCode: model.copiedCode,
       onCopyCode: (code) => CopyFeedback.ClickedCopyCode({ code }),
+      dark,
+      codeFileMessage: (message) => GotCodeFileMessage({ message }),
       exampleTitles: authoredExamples.map((example) => example.title),
       sidebarScrolled: CopyFeedback.ObservedSidebarScroll(),
       renderer: model.renderer,

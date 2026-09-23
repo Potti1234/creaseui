@@ -279,10 +279,20 @@ test("component docs explain the Foldkit integration model", async ({
   await expect(page.locator("#architecture")).toContainText("no child Model");
   await expect(page.locator("#keyboard-interaction")).toContainText("Enter");
   await page.locator("#basic label").click();
-  await expect(page.locator("#basic code")).toContainText("// MODEL");
-  await expect(page.locator("#basic code")).toContainText(
+  await expect(page.locator("#basic pre code")).toContainText("// MODEL");
+  await expect(page.locator("#basic pre code")).toContainText(
     "Runtime.makeApplication",
   );
+  await expect(async () => {
+    expect(
+      await page.locator("#basic pre code span").count(),
+    ).toBeGreaterThan(5);
+  }).toPass();
+  await expect(async () => {
+    expect(
+      await page.locator("#installation pre code span").count(),
+    ).toBeGreaterThan(0);
+  }).toPass();
 
   await page.goto("/docs/components/dialog");
   await expect(
