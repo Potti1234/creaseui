@@ -106,7 +106,14 @@ export const renderRadioGroup = <Msg>(
                   ],
                 ),
                 h.div([...visual.text], [
-                  h.label([...option.label, ...visual.label], [content.label]),
+                  h.label(
+                    [
+                      ...option.label,
+                      h.For(`${props.model.id}-option-${String(option.index)}`),
+                      ...visual.label,
+                    ],
+                    [content.label],
+                  ),
                   ...(content.description === undefined
                     ? []
                     : [h.p([...option.description, ...visual.description], [content.description])]),
