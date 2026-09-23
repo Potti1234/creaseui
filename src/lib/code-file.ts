@@ -197,7 +197,7 @@ export const MountCodeFile = Mount.define(
               disableLineNumbers: !lineNumbers,
               overflow: 'scroll',
               unsafeCSS:
-                'pre { height: 100%; } [data-code] { height: 100%; overflow-y: auto; }',
+                'pre { height: 100%; } [data-code] { height: 100%; overflow-y: auto; align-content: start; }',
               onPostRender: (node) => {
                 makeScrollableFocusable(node);
               },
