@@ -950,7 +950,7 @@ Source: [`src/ui/sidebar.ts`](../src/ui/sidebar.ts)
 | `sidebarRail` | function | `sidebarRail<Msg>(props: SidebarRailProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `SidebarInsetProps` | type | `SidebarInsetProps = Slot & Readonly<{ variant?: SidebarVariant; state?: SidebarState; }>` |
 | `sidebarInset` | function | `sidebarInset<Msg>(props: SidebarInsetProps, h: HtmlBuilder<Msg>): Html` |
-| `SidebarInputProps` | type | `SidebarInputProps<Msg> = Readonly<{ id?: string; value?: string; onInput?: (value: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; class?: string; }>` |
+| `SidebarInputProps` | type | `SidebarInputProps<Msg> = Readonly<{ id?: string; value?: string; onInput?: (value: string) => Msg; placeholder?: string; ariaLabel?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; class?: string; }>` |
 | `sidebarInput` | function | `sidebarInput<Msg>(props: SidebarInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `sidebarHeader` | value | `sidebarHeader: value` |
 | `sidebarFooter` | value | `sidebarFooter: value` |
@@ -965,7 +965,7 @@ Source: [`src/ui/sidebar.ts`](../src/ui/sidebar.ts)
 | `sidebarMenuItem` | function | `sidebarMenuItem<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
 | `sidebarMenuButtonVariants` | value | `sidebarMenuButtonVariants: value` |
 | `SidebarMenuButtonVariants` | type | `SidebarMenuButtonVariants = VariantProps< typeof sidebarMenuButtonVariants >` |
-| `SidebarMenuButtonProps` | type | `SidebarMenuButtonProps<Msg> = Readonly<{ children: ReadonlyArray<Html \| string>; onClick?: Msg; href?: string; isActive?: boolean; variant?: SidebarMenuButtonVariants['variant']; size?: SidebarMenuButtonVariants['size']; tooltip?: string; class?: string; }>` |
+| `SidebarMenuButtonProps` | type | `SidebarMenuButtonProps<Msg> = Readonly<{ children: ReadonlyArray<Html \| string>; onClick?: Msg; ariaExpanded?: boolean; href?: string; isActive?: boolean; variant?: SidebarMenuButtonVariants['variant']; size?: SidebarMenuButtonVariants['size']; tooltip?: stri…` |
 | `sidebarMenuButton` | function | `sidebarMenuButton<Msg>(props: SidebarMenuButtonProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `SidebarMenuActionProps` | type | `SidebarMenuActionProps<Msg> = SidebarActionProps<Msg> & Readonly<{ showOnHover?: boolean; }>` |
 | `sidebarMenuAction` | function | `sidebarMenuAction<Msg>(props: SidebarMenuActionProps<Msg>, h: HtmlBuilder<Msg>): Html` |
