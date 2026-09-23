@@ -1,11 +1,10 @@
 import { authoredPage } from '@/docs/components/pages/authored-page';
 import { attachmentExamples } from '@/docs/components/pages/attachment/shared';
-import { attachmentTailwindPreviews } from '@/docs/components/pages/attachment/tailwind';
-
-const tailwindExamples = attachmentExamples('tailwind').map((example, index) => ({ ...example, staticPreview: (attachmentTailwindPreviews[index] ?? attachmentTailwindPreviews[0])! }));
+import { attachmentTailwindPreviewProgram } from '@/docs/components/pages/attachment/tailwind';
 
 export const attachmentPage = authoredPage({
-  slug: 'attachment', title: 'Attachment', kind: 'helper', previewMode: 'static',
+  slug: 'attachment', title: 'Attachment', kind: 'helper',
+  previewProgram: attachmentTailwindPreviewProgram,
   definition: {
     kind: 'helper', description: 'Displays a parent-owned file record with media, metadata, lifecycle state, and actions.',
     architecture: 'Attachment is stateless Html composition. File input events, upload Effects, progress, retry, and removal belong to the parent Model/Message/update; pass the resulting domain state into the view helpers.',
@@ -14,6 +13,6 @@ export const attachmentPage = authoredPage({
     styling: 'Use idle, uploading, processing, error, and done to reflect real domain state. Horizontal cards suit lists; vertical cards suit image grids; AttachmentGroup provides an overflow-safe strip.',
     accessibility: 'Titles and descriptions remain readable text. Give icon-only actions an accessible label, preserve visible error copy, and do not communicate upload status through color alone.',
     keyboard: [['Tab', 'Moves to attachment actions supplied by the parent.'], ['Enter / Space', 'Activates the focused parent action.']],
-    examples: tailwindExamples, stylexExamples: attachmentExamples('stylex'),
+    examples: attachmentExamples('tailwind'), stylexExamples: attachmentExamples('stylex'),
   },
 });
