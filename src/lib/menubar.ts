@@ -62,6 +62,7 @@ export type ViewInputs = Readonly<{
   triggerIds: ReadonlyArray<string>
   direction?: 'ltr' | 'rtl'
   shouldMoveTopLevel?: (index: number, key: string) => boolean
+  hoverFocus?: boolean
   toView: (menus: ReadonlyArray<MenuFocusInfo>) => Html
 }>
 
@@ -92,6 +93,7 @@ const view: SubmodelView<Model, Message, ViewInputs> = defineView((model, inputs
     isActive: index === activeIndex,
     attributes: childAttributes([
       h.OnFocus(Focused({ index })),
+      ...(inputs.hoverFocus === true ? [h.OnMouseEnter(Focused({ index }))] : []),
       h.OnKeyDownPreventDefault((key) => move(index, key)),
     ]),
   })))
