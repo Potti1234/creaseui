@@ -132,6 +132,7 @@ export const navigationMenuDisclosure = <Msg>(
       content: props.content,
       class: 'w-auto min-w-64 p-2',
       align: 'start',
+      focusSelector: 'a',
     },
     h,
   );

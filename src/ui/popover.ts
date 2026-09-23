@@ -50,6 +50,7 @@ export type PopoverProps<Msg> = Readonly<{
   align?: PopoverAlign;
   side?: PopoverSide;
   class?: string;
+  focusSelector?: string;
 }>;
 
 export const popover = <Msg>(
@@ -64,6 +65,9 @@ export const popover = <Msg>(
     view: PopoverPrimitive.view,
     viewInputs: {
       anchor: { placement, gap: 4 },
+      ...(props.focusSelector === undefined
+        ? {}
+        : { focusSelector: props.focusSelector }),
       toView: ({ button, panel, backdrop, isVisible }) => {
         const hp = h;
 
