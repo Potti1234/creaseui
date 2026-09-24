@@ -1225,30 +1225,107 @@ test("drawer documents its child model and preserves modal focus behavior", asyn
   page,
 }) => {
   await page.goto("/docs/components/drawer");
-  const example = page.locator("#activity-goal");
-  const trigger = example.getByRole("button", { name: "Open bottom drawer" });
+  const hero = page.locator('[aria-label="Activity goal preview"]');
+  const trigger = hero.getByRole("button", { name: "Open Drawer" });
 
   await trigger.click();
-  const drawer = page.getByRole("dialog");
-  await expect(drawer).toBeVisible();
-  await expect(drawer.locator('[data-slot="drawer-handle"]')).toBeVisible();
-  await expect(drawer.locator('[data-slot="drawer-title"]')).toHaveText(
+  const heroDrawer = page.locator("#docs-drawer-6");
+  await expect(heroDrawer).toBeVisible();
+  await expect(heroDrawer.locator('[data-slot="drawer-handle"]')).toBeVisible();
+  await expect(heroDrawer.locator('[data-slot="drawer-title"]')).toHaveText(
     "Move goal",
   );
-  await expect(example.locator("code")).toContainText("Drawer.update");
-  await expect(example.locator("code")).toContainText("Command.mapMessages");
+  await expect(
+    page.locator("#scrollable-content, #sides, #responsive-dialog, #rtl"),
+  ).toHaveCount(4);
 
   await page.keyboard.press("Escape");
-  await expect(drawer).toBeHidden();
+  await expect(heroDrawer).toBeHidden();
   await expect(trigger).toBeFocused();
 
+  const scrollSection = page.locator("#scrollable-content");
+  await scrollSection
+    .getByRole("button", { name: "Scrollable Content", exact: true })
+    .click();
+  const scrollDrawer = page.locator("#docs-drawer-2");
+  await expect(scrollDrawer).toBeVisible();
+  await expect(scrollDrawer.locator('[data-slot="drawer-content"]')).toHaveAttribute(
+    "data-vaul-drawer-direction",
+    "right",
+  );
+  const scrollRegion = scrollDrawer.locator(".overflow-y-auto");
+  await expect(scrollRegion).toBeVisible();
+  const scrollMetrics = await scrollRegion.evaluate(node => ({
+    scrollHeight: node.scrollHeight,
+    clientHeight: node.clientHeight,
+  }));
+  expect(scrollMetrics.scrollHeight).toBeGreaterThan(scrollMetrics.clientHeight);
+  await page.keyboard.press("Escape");
+  await expect(scrollDrawer).toBeHidden();
+
+  const sidesSection = page.locator("#sides");
+  await sidesSection.getByRole("button", { name: "left", exact: true }).click();
+  const sidesDrawer = page.locator("#docs-drawer-3");
+  await expect(sidesDrawer.locator('[data-slot="drawer-content"]')).toHaveAttribute(
+    "data-vaul-drawer-direction",
+    "left",
+  );
+  await page.keyboard.press("Escape");
+  await expect(sidesDrawer).toBeHidden();
+  await sidesSection.getByRole("button", { name: "top", exact: true }).click();
+  await expect(sidesDrawer.locator('[data-slot="drawer-content"]')).toHaveAttribute(
+    "data-vaul-drawer-direction",
+    "top",
+  );
+  await page.keyboard.press("Escape");
+  await expect(sidesDrawer).toBeHidden();
+
+  const responsiveSection = page.locator("#responsive-dialog");
+  const editTrigger = responsiveSection.getByRole("button", {
+    name: "Edit Profile",
+    exact: true,
+  });
+  await editTrigger.click();
+  const responsiveDialog = page.locator("#docs-drawer-dialog-4");
+  await expect(responsiveDialog).toBeVisible();
+  await expect(responsiveDialog.locator('input[id$="-name"]')).toHaveValue(
+    "Pedro Duarte",
+  );
+  await page.keyboard.press("Escape");
+  await expect(responsiveDialog).toBeHidden();
+  await page.setViewportSize({ width: 500, height: 800 });
+  await page.waitForTimeout(400);
+  await editTrigger.click();
+  const responsiveDrawer = page.locator("#docs-drawer-4");
+  await expect(responsiveDrawer).toBeVisible();
+  await expect(responsiveDrawer.locator('input[id$="-name"]')).toHaveValue(
+    "Pedro Duarte",
+  );
+  await page.keyboard.press("Escape");
+  await expect(responsiveDrawer).toBeHidden();
+  await page.setViewportSize({ width: 1280, height: 800 });
+
+  const rtlSection = page.locator("#rtl");
+  const rtlTrigger = rtlSection.getByRole("button", { name: "افتح الدرج" });
+  await rtlTrigger.click();
+  const rtlDrawer = page.locator("#docs-drawer-5");
+  await expect(rtlDrawer).toBeVisible();
+  await expect(rtlDrawer.locator('[dir="rtl"]')).toHaveCount(1);
+  await expect(rtlDrawer).toContainText("350");
+  await rtlDrawer.getByRole("button", { name: "زيادة" }).click();
+  await expect(rtlDrawer).toContainText("360");
+  await page.keyboard.press("Escape");
+  await expect(rtlDrawer).toBeHidden();
+  await expect(rtlTrigger).toBeFocused();
+
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  await expect(page.locator("#activity-goal")).toBeVisible();
-  const sideExample = page.locator("#side-drawer");
-  await expect(sideExample).toBeVisible();
+  await expect(page.locator("#scrollable-content")).toBeVisible();
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(example.locator("code")).toContainText("@/stylex/drawer");
-  const sideTrigger = sideExample.getByRole("button", { name: "Open right drawer" });
+  await expect(scrollSection.locator("code")).toContainText("@/stylex/drawer");
+  const sideExample = page.locator("#side-drawer");
+  const sideTrigger = sideExample.getByRole("button", {
+    name: "Open right drawer",
+  });
   await sideTrigger.click();
   const sideDrawer = page.locator("#docs-drawer-1");
   await expect(sideDrawer).toBeVisible();
@@ -1308,11 +1385,11 @@ test("drawer handle supports mouse cancellation and touch threshold dismissal", 
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/docs/components/drawer");
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  const example = page.locator("#activity-goal");
-  const trigger = example.getByRole("button", { name: "Open bottom drawer" });
+  const example = page.locator('[aria-label="Activity goal preview"]');
+  const trigger = example.getByRole("button", { name: "Open Drawer" });
   await trigger.click();
 
-  const drawer = page.getByRole("dialog");
+  const drawer = page.locator("#docs-drawer-6");
   const root = example.locator('[data-slot="drawer-root"]');
   const panel = drawer.locator('[data-slot="drawer-content"]');
   let handle = drawer.locator('[data-slot="drawer-handle"]');

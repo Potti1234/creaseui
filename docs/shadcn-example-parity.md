@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 21 done · 40 todo · 3 crease-only
+Current: 22 done · 39 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -39,7 +39,7 @@ Current: 21 done · 40 todo · 3 crease-only
 | `date-picker` | 2 | Basic<br>Range Picker<br>Date of Birth<br>Input<br>Time Picker<br>Natural Language Picker<br>RTL | todo (missing: Basic, Range Picker, Date of Birth, Input, Time Picker, Natural Language Picker, RTL) |
 | `dialog` | 7 | Custom Close Button<br>No Close Button<br>Sticky Footer<br>Scrollable Content<br>RTL | done |
 | `direction` | 2 | — | crease-only |
-| `drawer` | 3 | Scrollable Content<br>Sides<br>Responsive Dialog<br>RTL | todo (missing: Scrollable Content, Sides, Responsive Dialog, RTL) |
+| `drawer` | 11 | Scrollable Content<br>Sides<br>Responsive Dialog<br>RTL | done |
 | `dropdown-menu` | 12 | Basic<br>Submenu<br>Shortcuts<br>Icons<br>Checkboxes<br>Checkboxes Icons<br>Radio Group<br>Radio Icons<br>Destructive<br>Avatar<br>Complex<br>RTL | done |
 | `empty` | 4 | Outline<br>Background<br>Avatar<br>Avatar Group<br>InputGroup<br>RTL | todo (missing: Outline, Background, Avatar, Avatar Group, InputGroup, RTL) |
 | `field` | 8 | Input<br>Textarea<br>Select<br>Slider<br>Fieldset<br>Checkbox<br>Radio<br>Switch<br>Choice Card<br>Field Group<br>RTL<br>Responsive Layout | todo (missing: Input, Textarea, Select, Slider, Fieldset, Checkbox, Radio, Switch, Choice Card, RTL, Responsive Layout) |
