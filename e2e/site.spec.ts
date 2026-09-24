@@ -2845,13 +2845,32 @@ test("controlled helper pages own and update compact local preview state", async
   await expect(checkbox).toBeChecked();
 
   await page.goto("/docs/components/collapsible");
+  for (const id of ["basic", "settings-panel", "file-tree", "rtl", "disabled"]) {
+    await expect(page.locator(`[id="${id}"]`)).toBeVisible();
+  }
   const disclosure = page
-    .locator("#details")
-    .getByRole("button", { name: "Show details" });
+    .locator("#basic")
+    .getByRole("button", { name: "Product details" });
   await disclosure.click();
+  await expect(disclosure).toHaveAttribute("aria-expanded", "true");
   await expect(
-    page.locator("#details").getByRole("button", { name: "Hide details" }),
-  ).toHaveAttribute("aria-expanded", "true");
+    page.locator("#basic").getByRole("button", { name: "Learn More" }),
+  ).toBeVisible();
+  await page.locator("#settings-panel")
+    .getByRole("button", { name: "More radii" })
+    .click();
+  await expect(
+    page.locator("#settings-panel").locator("input[id^='docs-collapsible-2-']"),
+  ).toHaveCount(4);
+  await page.locator("#file-tree")
+    .getByRole("button", { name: "lib" })
+    .click();
+  await expect(
+    page.locator("#file-tree").getByText("utils.ts", { exact: true }).first(),
+  ).toBeVisible();
+  const rtlPanel = page.locator("#rtl [data-slot='collapsible-content']");
+  await page.locator("#rtl button[aria-expanded]").click();
+  await expect(rtlPanel).toContainText("عنوان الشحن");
 
   await page.goto("/docs/components/switch");
   const switchControl = page

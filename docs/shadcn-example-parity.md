@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 16 done · 45 todo · 3 crease-only
+Current: 17 done · 44 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -31,7 +31,7 @@ Current: 16 done · 45 todo · 3 crease-only
 | `carousel` | 8 | Sizes<br>Spacing<br>Orientation<br>API<br>Plugins<br>RTL | done |
 | `chart` | 25 | Your First Chart<br>Your First Chart<br>Your First Chart<br>Your First Chart<br>Your First Chart<br>Tooltip<br>RTL | done |
 | `checkbox` | 14 | Invalid State<br>Basic<br>Description<br>Disabled<br>Group<br>Table<br>RTL | done |
-| `collapsible` | 3 | Basic<br>Settings Panel<br>File Tree<br>RTL | todo (missing: Basic, Settings Panel, File Tree, RTL) |
+| `collapsible` | 14 | Basic<br>Settings Panel<br>File Tree<br>RTL | done |
 | `combobox` | 4 | Basic<br>Multiple<br>Clear Button<br>Groups<br>Custom Items<br>Invalid<br>Disabled<br>Auto Highlight<br>Popup<br>Input Group<br>RTL | todo (missing: Basic, Multiple, Clear Button, Groups, Custom Items, Invalid, Disabled, Auto Highlight, Popup, Input Group, RTL) |
 | `command` | 5 | Basic<br>Shortcuts<br>Groups<br>Scrollable<br>RTL | todo (missing: Basic, Shortcuts, Groups, Scrollable, RTL) |
 | `context-menu` | 3 | Basic<br>Submenu<br>Shortcuts<br>Groups<br>Icons<br>Checkboxes<br>Radio<br>Destructive<br>RTL | todo (missing: Basic, Submenu, Shortcuts, Groups, Icons, Checkboxes, Radio, Destructive, RTL) |
