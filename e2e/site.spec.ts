@@ -1553,34 +1553,38 @@ test("breadcrumb renders semantic route parts, collapse, and RTL", async ({ page
 
 test("alert requires explicit severity and announcement policy", async ({ page }) => {
   await page.goto("/docs/components/alert");
-  const staticInfo = page.locator("#static-information").locator('[data-slot="alert"]');
-  await expect(staticInfo).toHaveAttribute("data-severity", "info");
-  await expect(staticInfo).not.toHaveAttribute("role");
-  await expect(staticInfo.locator('[data-slot="alert-icon"]')).toHaveAttribute("aria-hidden", "true");
+  const basic = page.locator("#basic").locator('[data-slot="alert"]');
+  await expect(basic).toHaveAttribute("data-severity", "success");
+  await expect(basic).not.toHaveAttribute("role");
+  await expect(basic.locator('[data-slot="alert-icon"]')).toHaveAttribute("aria-hidden", "true");
 
-  const success = page.locator("#polite-success").getByRole("status");
-  await expect(success).toHaveAttribute("aria-live", "polite");
-  await expect(success).toHaveAttribute("data-severity", "success");
+  const destructive = page.locator("#destructive").getByRole("alert");
+  await expect(destructive).toHaveAttribute("aria-live", "assertive");
+  await expect(destructive).toHaveAttribute("data-severity", "error");
 
-  const warning = page.locator("#long-warning").getByRole("status");
-  await expect(warning).toHaveAttribute("data-severity", "warning");
-  await expect(warning.locator('[data-slot="alert-title"]')).toContainText("Storage nearly full");
-  await expect(warning.locator('[data-slot="alert-description"]')).toContainText("additional logs and source maps");
+  await expect(
+    page.locator("#action").getByRole("button", { name: "Enable" }),
+  ).toBeVisible();
 
-  const error = page.locator("#urgent-error").getByRole("alert");
-  await expect(error).toHaveAttribute("aria-live", "assertive");
-  await expect(error).toHaveAttribute("data-severity", "error");
+  const colors = page.locator("#custom-colors").getByRole("status");
+  await expect(colors).toHaveAttribute("aria-live", "polite");
+  await expect(colors).toHaveAttribute("data-severity", "warning");
+
+  const rtl = page.locator("#rtl");
+  await expect(rtl.locator("[dir='rtl']")).toHaveCount(1);
+  await expect(rtl.locator('[data-slot="alert"]')).toHaveCount(2);
 
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  await expect(page.locator("#static-information")).toBeVisible();
-  await expect(page.locator("#polite-success")).toBeVisible();
-  await expect(page.locator("#long-warning")).toBeVisible();
-  await expect(page.locator("#urgent-error")).toBeVisible();
+  await expect(page.locator("#basic")).toBeVisible();
+  await expect(page.locator("#destructive")).toBeVisible();
+  await expect(page.locator("#action")).toBeVisible();
+  await expect(page.locator("#custom-colors")).toBeVisible();
+  await expect(page.locator("#rtl")).toBeVisible();
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(page.locator("#static-information code")).toContainText(
+  await expect(page.locator("#basic code")).toContainText(
     "@/stylex/alert",
   );
-  await expect(page.locator("#polite-success").getByRole("status")).toHaveAttribute(
+  await expect(page.locator("#custom-colors").getByRole("status")).toHaveAttribute(
     "aria-live",
     "polite",
   );
