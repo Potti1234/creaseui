@@ -584,7 +584,7 @@ A shadcn-styled Dropdown Menu component for Foldkit.
 
 Source: `src/ui/dropdown-menu.ts`
 
-Examples: Account actions, Destructive action, Submenu and disabled action, RTL submenu
+Examples: Basic, Submenu, Shortcuts, Icons, Checkboxes, Checkboxes Icons, Radio Group, Radio Icons, Destructive, Avatar, Complex, RTL
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)

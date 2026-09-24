@@ -5,7 +5,7 @@ import { Command, Subscription } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 import { defineView } from 'foldkit/submodel';
 
-import { componentPage, componentTitle, example } from '@/docs/component-page';
+import { componentPage, componentTitle, example, hero } from '@/docs/component-page';
 import * as CopyFeedback from '@/docs/copy-feedback';
 import * as CodeFile from '@/lib/code-file';
 import type {
@@ -67,7 +67,9 @@ export type Message = typeof Message.Type;
 
 export const init = (slug?: string): Model => ({
   slug: slug ?? '',
-  examples: Array.from({ length: definitions[slug ?? '']?.examples.length ?? 0 }, (_, index) => {
+  // One spare slot at the end: the hero preview on top of the page re-renders
+  // the first example but keeps its own state.
+  examples: Array.from({ length: (definitions[slug ?? '']?.examples.length ?? 0) === 0 ? 0 : (definitions[slug ?? '']?.examples.length ?? 0) + 1 }, (_, index) => {
     const program = authoredPages[slug ?? '']?.previewProgram;
     if (program === undefined) throw new Error(`Missing preview program for ${slug ?? ''}`);
     return program.init(index);
@@ -258,48 +260,53 @@ export const view = (
       ? stylexExamples
       : definition.examples;
   const authoredProgram = authoredPages[slug]?.previewProgram;
+
+  // stateIndex selects the preview-model slot; contentIndex selects which
+  // example fixture it renders — the hero reuses content 0 on a spare slot.
+  const previewFor = (contentIndex: number, stateIndex: number): Html => {
+    const program = authoredProgram;
+    if (program === undefined)
+      throw new Error(`Missing preview program for ${slug}`);
+    const exampleModel = model.examples[stateIndex] ?? program.init(contentIndex);
+    const previewView = defineView<unknown, RoutedDocsPreviewMessage>(
+      (previewModel, previewBuilder) => program.view(contentIndex, previewModel, previewBuilder),
+    );
+    if (
+      model.renderer === 'stylex' &&
+      stylexExamples !== undefined &&
+      stylexExamplePreviewProvider !== undefined
+    ) {
+      return h.submodel({
+        slotId: `docs-${slug}-stylex-example-${String(stateIndex)}`,
+        model: exampleModel,
+        view: defineView<unknown, RoutedDocsPreviewMessage>(
+          (stylexModel, stylexBuilder) => stylexExamplePreviewProvider(
+            contentIndex,
+            stylexModel,
+            messageJson => RoutedDocsPreviewMessage.RoutedDocsPreviewMessage({ messageJson }),
+            stylexBuilder,
+          ) ?? stylexBuilder.div([], []),
+        ),
+        toParentMessage: (message): Message => GotExampleMessage({ index: stateIndex, message }),
+      });
+    }
+    return h.submodel({
+      slotId: `docs-${slug}-example-${String(stateIndex)}`,
+      model: exampleModel,
+      view: previewView,
+      toParentMessage: (message): Message => GotExampleMessage({ index: stateIndex, message }),
+    });
+  };
+
   const renderedExamples = authoredExamples.map((config, index) => {
           const exampleCode = config.code;
-          const program = authoredProgram;
-          if (program === undefined)
-            throw new Error(`Missing preview program for ${slug}`);
-          const previewView = defineView<unknown, RoutedDocsPreviewMessage>(
-            (exampleModel, h) => program.view(index, exampleModel, h),
-          );
-
-          const exampleModel = model.examples[index] ?? program.init(index);
-          const stylexPreview =
-            model.renderer === 'stylex' && stylexExamples !== undefined && stylexExamplePreviewProvider !== undefined
-              ? h.submodel({
-                  slotId: `docs-${slug}-stylex-example-${String(index)}`,
-                  model: exampleModel,
-                  view: defineView<unknown, RoutedDocsPreviewMessage>(
-                    (stylexModel, stylexBuilder) => stylexExamplePreviewProvider(
-                      index,
-                      stylexModel,
-                      messageJson => RoutedDocsPreviewMessage.RoutedDocsPreviewMessage({ messageJson }),
-                      stylexBuilder,
-                    ) ?? stylexBuilder.div([], []),
-                  ),
-                  toParentMessage: (message): Message => GotExampleMessage({ index, message }),
-                })
-              : undefined;
-
           return example<Message>(
             {
               title: config.title,
               ...(config.description === undefined
                 ? {}
                 : { description: config.description }),
-              preview:
-                stylexPreview ??
-                h.submodel({
-                  slotId: `docs-${slug}-example-${String(index)}`,
-                  model: exampleModel,
-                  view: previewView,
-                  toParentMessage: (message): Message =>
-                    GotExampleMessage({ index, message }),
-                }),
+              preview: previewFor(index, index),
               code: exampleCode,
               onCopy: CopyFeedback.Message.ClickedDocsCopyCode({ code: exampleCode }),
               isCopied: model.copiedCode === exampleCode,
@@ -312,6 +319,27 @@ export const view = (
             h,
           );
         });
+
+  const firstExample = authoredExamples[0];
+  const heroIndex = authoredExamples.length;
+  const heroExample =
+    firstExample === undefined
+      ? undefined
+      : hero<Message>(
+          {
+            title: firstExample.title,
+            preview: previewFor(0, heroIndex),
+            code: firstExample.code,
+            onCopy: CopyFeedback.Message.ClickedDocsCopyCode({ code: firstExample.code }),
+            isCopied: model.copiedCode === firstExample.code,
+            dark,
+            codeFileMessage: (message) => GotCodeFileMessage({ message }),
+            ...(firstExample.previewClass === undefined
+              ? {}
+              : { previewClass: firstExample.previewClass }),
+          },
+          h,
+        );
 
   return componentPage<Message>(
     {
@@ -338,6 +366,7 @@ export const view = (
       dark,
       codeFileMessage: (message) => GotCodeFileMessage({ message }),
       exampleTitles: authoredExamples.map((example) => example.title),
+      ...(heroExample === undefined ? {} : { heroExample }),
       sidebarScrolled: CopyFeedback.Message.ObservedDocsSidebarScroll(),
       renderer: model.renderer,
       onRendererChange: (renderer) => ChangedRenderer({ renderer }),

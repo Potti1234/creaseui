@@ -212,7 +212,33 @@ export const example = <Msg>(
               ]),
         ],
       ),
-      h.div(
+      exampleCard(config, toSlug(config.title), config.title, h),
+    ],
+  );
+};
+
+export type HeroExampleConfig<Msg> = Omit<ExampleConfig<Msg>, 'description'>;
+
+/** Heading-less copy of the first example, rendered directly under the page
+    header like shadcn's unnamed top preview. Ids differ from the named
+    section so both can coexist on one page. */
+export const hero = <Msg>(
+  config: HeroExampleConfig<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  return h.div(
+    [h.AriaLabel(`${config.title} preview`)],
+    [exampleCard(config, `hero-${toSlug(config.title)}`, config.title, h)],
+  );
+};
+
+const exampleCard = <Msg>(
+  config: HeroExampleConfig<Msg>,
+  idBase: string,
+  copyLabelTitle: string,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  return h.div(
         [h.Class('overflow-hidden rounded-lg border bg-background')],
         [
           h.div(
@@ -230,7 +256,7 @@ export const example = <Msg>(
             [h.Class('relative border-t bg-muted/35')],
             [
               h.input([
-                h.Id(`example-code-${toSlug(config.title)}`),
+                h.Id(`example-code-${idBase}`),
                 h.Type('checkbox'),
                 h.Class('peer sr-only'),
               ]),
@@ -242,7 +268,7 @@ export const example = <Msg>(
                 ],
                 [
                   h.keyed('div')(
-                    `example-codeview-${toSlug(config.title)}-${config.dark}-${codeKey(config.code)}`,
+                    `example-codeview-${idBase}-${config.dark}-${codeKey(config.code)}`,
                     [
                       h.Class(
                         'min-w-0 max-w-full overflow-x-auto font-mono text-[13px] leading-6',
@@ -267,8 +293,8 @@ export const example = <Msg>(
                       h.OnClick(config.onCopy),
                       h.AriaLabel(
                         config.isCopied
-                          ? `${config.title} example code copied`
-                          : `Copy ${config.title} example code`,
+                          ? `${copyLabelTitle} example code copied`
+                          : `Copy ${copyLabelTitle} example code`,
                       ),
                       h.Title(config.isCopied ? 'Copied' : 'Copy code'),
                       h.Class(
@@ -311,7 +337,7 @@ export const example = <Msg>(
               ),
               h.label(
                 [
-                  h.For(`example-code-${toSlug(config.title)}`),
+                  h.For(`example-code-${idBase}`),
                   h.Class(
                     'absolute bottom-2.5 left-1/2 z-10 flex min-h-10 -translate-x-1/2 cursor-pointer items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium text-foreground shadow-xs outline-none transition-[color,background-color,transform] hover:bg-accent active:scale-[0.96] peer-checked:[&_.hide-code-label]:inline peer-checked:[&_.view-code-label]:hidden peer-focus-visible:ring-3 peer-focus-visible:ring-ring/50',
                   ),
@@ -325,9 +351,7 @@ export const example = <Msg>(
             ],
           ),
         ],
-      ),
-    ],
-  );
+      );
 };
 
 export type ComponentPageConfig<Msg> = Readonly<{
@@ -342,6 +366,8 @@ export type ComponentPageConfig<Msg> = Readonly<{
   accessibility?: string;
   keyboard?: ReadonlyArray<readonly [key: string, behavior: string]>;
   examples: ReadonlyArray<Html>;
+  /** Heading-less duplicate of the first example, rendered under the header. */
+  heroExample?: Html;
   apiHref: string;
   composition?: string;
   exampleTitles?: ReadonlyArray<string>;
@@ -638,6 +664,7 @@ export const componentPage = <Msg>(
                   ),
                 ],
               ),
+              ...(config.heroExample === undefined ? [] : [config.heroExample]),
               h.section(
                 [
                   h.Id('architecture'),
