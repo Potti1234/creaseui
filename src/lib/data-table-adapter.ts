@@ -77,7 +77,7 @@ export const projectDataTable = <Row>(props: Readonly<{
   const rows = isServer
     ? table.getRowModel().rows.map((row) => row.original)
     : table
-        .getFilteredRowModel()
+        .getSortedRowModel()
         .rows.slice(page * props.model.pageSize, (page + 1) * props.model.pageSize)
         .map((row) => row.original)
   const selectableRowKeys = rows
