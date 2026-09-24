@@ -2911,8 +2911,18 @@ test("data table filters and sorts through its interaction model", async ({
   await expect(server).toContainText("Page 1 of 9");
   await expect(server.locator("code")).toContainText("mode: 'server'");
 
+  const rtl = page.locator("#rtl");
+  await expect(rtl.locator("[dir='rtl']").first()).toBeVisible();
+  await expect(
+    rtl.getByRole("columnheader", { name: "المبلغ" }),
+  ).toBeVisible();
+  await rtl
+    .getByRole("searchbox", { name: "بحث في المدفوعات..." })
+    .fill("failed");
+  await expect(rtl).toContainText("r@example.com");
+
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  for (const id of ["sortable-payments", "filter-and-paginate", "server-owned-query"]) {
+  for (const id of ["sortable-payments", "filter-and-paginate", "server-owned-query", "rtl"]) {
     await expect(page.locator(`#${id}`)).toBeVisible();
   }
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
@@ -2922,6 +2932,9 @@ test("data table filters and sorts through its interaction model", async ({
   await expect(filtered.getByRole("searchbox", { name: "Filter payments…" })).toHaveValue("failed");
   await expect(filtered).toContainText("r@example.com");
   await expect(server).toContainText("Page 1 of 9");
+  await expect(
+    rtl.getByRole("columnheader", { name: "المبلغ" }),
+  ).toBeVisible();
 });
 
 test("controlled helper pages own and update compact local preview state", async ({
