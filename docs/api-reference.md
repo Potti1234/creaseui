@@ -546,8 +546,8 @@ Source: [`src/ui/form.ts`](../src/ui/form.ts)
 | `formControlIds` | re-export | `export { formControlIds } from '@/lib/form'` |
 | `FormProps` | type | `FormProps<Msg> = FormBehaviorProps<Msg> & Readonly<{ class?: string }>` |
 | `form` | function | `form<Msg>(props: FormProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-| `ErrorSummaryProps` | type | `ErrorSummaryProps = SharedErrorSummaryProps & Readonly<{ class?: string }>` |
-| `errorSummary` | function | `errorSummary<Msg>(props: ErrorSummaryProps, h: HtmlBuilder<Msg>): Html` |
+| `ErrorSummaryProps` | type | `ErrorSummaryProps<Msg> = SharedErrorSummaryProps<Msg> & Readonly<{ class?: string }>` |
+| `errorSummary` | function | `errorSummary<Msg>(props: ErrorSummaryProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `FormItemProps` | type | `FormItemProps = Slot & Readonly<{ id: string; isInvalid?: boolean; isDisabled?: boolean }>` |
 | `formItem` | function | `formItem<Msg>(props: FormItemProps, h: HtmlBuilder<Msg>): Html` |
 | `FormLabelProps` | type | `FormLabelProps = Slot & Readonly<{ for: string }>` |
@@ -602,7 +602,7 @@ Source: [`src/ui/input-group.ts`](../src/ui/input-group.ts)
 | `InputGroupButtonProps` | type | `InputGroupButtonProps<Msg> = Omit< ButtonProps<Msg>, 'size' \| 'class' > & Readonly<{ size?: InputGroupButtonVariants['size']; class?: string; }>` |
 | `inputGroupButton` | function | `inputGroupButton<Msg>(props: InputGroupButtonProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `inputGroupText` | function | `inputGroupText<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` |
-| `InputGroupInputProps` | type | `InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; class?: string; }>` |
+| `InputGroupInputProps` | type | `InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: string; }>` |
 | `inputGroupInput` | function | `inputGroupInput<Msg>(props: InputGroupInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Input Otp
@@ -803,7 +803,7 @@ Source: [`src/ui/popover.ts`](../src/ui/popover.ts)
 | `RequestedClose` | value | `RequestedClose: value` |
 | `PopoverSide` | type | `PopoverSide = 'top' \| 'right' \| 'bottom' \| 'left'` |
 | `PopoverAlign` | type | `PopoverAlign = 'start' \| 'center' \| 'end'` |
-| `PopoverProps` | type | `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; content: Html \| string; align?: PopoverAlign; side?: PopoverSide; class?: string; }>` |
+| `PopoverProps` | type | `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; content: Html \| string; align?: PopoverAlign; side?: PopoverSide; class?: string; focusSelector?: string; }>` |
 | `popover` | function | `popover<Msg>(props: PopoverProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Progress
@@ -950,7 +950,7 @@ Source: [`src/ui/sidebar.ts`](../src/ui/sidebar.ts)
 | `sidebarRail` | function | `sidebarRail<Msg>(props: SidebarRailProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `SidebarInsetProps` | type | `SidebarInsetProps = Slot & Readonly<{ variant?: SidebarVariant; state?: SidebarState; }>` |
 | `sidebarInset` | function | `sidebarInset<Msg>(props: SidebarInsetProps, h: HtmlBuilder<Msg>): Html` |
-| `SidebarInputProps` | type | `SidebarInputProps<Msg> = Readonly<{ id?: string; value?: string; onInput?: (value: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; class?: string; }>` |
+| `SidebarInputProps` | type | `SidebarInputProps<Msg> = Readonly<{ id?: string; value?: string; onInput?: (value: string) => Msg; placeholder?: string; ariaLabel?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; class?: string; }>` |
 | `sidebarInput` | function | `sidebarInput<Msg>(props: SidebarInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `sidebarHeader` | value | `sidebarHeader: value` |
 | `sidebarFooter` | value | `sidebarFooter: value` |
@@ -965,7 +965,7 @@ Source: [`src/ui/sidebar.ts`](../src/ui/sidebar.ts)
 | `sidebarMenuItem` | function | `sidebarMenuItem<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
 | `sidebarMenuButtonVariants` | value | `sidebarMenuButtonVariants: value` |
 | `SidebarMenuButtonVariants` | type | `SidebarMenuButtonVariants = VariantProps< typeof sidebarMenuButtonVariants >` |
-| `SidebarMenuButtonProps` | type | `SidebarMenuButtonProps<Msg> = Readonly<{ children: ReadonlyArray<Html \| string>; onClick?: Msg; href?: string; isActive?: boolean; variant?: SidebarMenuButtonVariants['variant']; size?: SidebarMenuButtonVariants['size']; tooltip?: string; class?: string; }>` |
+| `SidebarMenuButtonProps` | type | `SidebarMenuButtonProps<Msg> = Readonly<{ children: ReadonlyArray<Html \| string>; onClick?: Msg; ariaExpanded?: boolean; href?: string; isActive?: boolean; variant?: SidebarMenuButtonVariants['variant']; size?: SidebarMenuButtonVariants['size']; tooltip?: stri…` |
 | `sidebarMenuButton` | function | `sidebarMenuButton<Msg>(props: SidebarMenuButtonProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `SidebarMenuActionProps` | type | `SidebarMenuActionProps<Msg> = SidebarActionProps<Msg> & Readonly<{ showOnHover?: boolean; }>` |
 | `sidebarMenuAction` | function | `sidebarMenuAction<Msg>(props: SidebarMenuActionProps<Msg>, h: HtmlBuilder<Msg>): Html` |

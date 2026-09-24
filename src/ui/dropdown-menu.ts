@@ -112,8 +112,8 @@ const CONTENT_CLASS =
   'absolute z-50 min-w-[8rem] overflow-visible rounded-md border bg-popover p-1 text-popover-foreground shadow-md';
 const ITEM_CLASS =
   "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[active=true]:bg-accent data-[active=true]:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4";
-const SUBMENU_CLASS =
-  'absolute top-0 left-full ml-1 min-w-[8rem] rounded-md border bg-popover p-1 text-popover-foreground shadow-lg';
+const SUBMENU_PANEL_CLASS =
+  'z-50 min-w-[8rem] rounded-md border bg-popover p-1 text-popover-foreground shadow-lg';
 
 export type DropdownMenuItemConfig<Item extends string = string> = Readonly<{
   label: Html | string;
@@ -173,6 +173,50 @@ const positionClass = (
           align
         ];
   return `${sideClass} ${alignClass}`;
+};
+
+/** CSS anchor-positioned menu placement: anchors the panel to the trigger and
+ * lets `position-try` flip sides when it would overflow the viewport. */
+const anchorPositionStyle = (
+  id: string,
+  side: DropdownMenuSide,
+  align: DropdownMenuAlign,
+): Record<string, string> => {
+  const isBlock = side === 'top' || side === 'bottom';
+  // Pin the matching edge for start/end alignment; an anchored box with a
+  // single inset constraint stretches to the containing block, which flung
+  // 'end' menus off-screen under translateX(-100%).
+  const alignInset = isBlock
+    ? ({ start: { left: 'anchor(left)' }, center: { left: 'anchor(center)' }, end: { right: 'anchor(right)' } } as const)[align]
+    : ({ start: { top: 'anchor(top)' }, center: { top: 'anchor(center)' }, end: { bottom: 'anchor(bottom)' } } as const)[align];
+  const alignTransform =
+    align === 'center'
+      ? isBlock
+        ? 'translateX(-50%)'
+        : 'translateY(-50%)'
+      : undefined;
+  const gap = '0.25rem';
+  const sideInset =
+    side === 'bottom'
+      ? { top: `calc(anchor(bottom) + ${gap})` }
+      : side === 'top'
+        ? { bottom: `calc(anchor(top) + ${gap})` }
+        : side === 'right'
+          ? { left: `calc(anchor(right) + ${gap})` }
+          : { right: `calc(anchor(left) + ${gap})` };
+  return {
+    position: 'fixed',
+    positionAnchor: `--${id}-menu`,
+    ...alignInset,
+    ...sideInset,
+    width: 'max-content',
+    height: 'max-content',
+    maxWidth: 'calc(100vw - 8px)',
+    ...(alignTransform === undefined ? {} : { transform: alignTransform }),
+    positionTry: isBlock ? 'flip-block' : 'flip-inline',
+    maxHeight: 'calc(100vh - 8px)',
+    overflowY: 'auto',
+  };
 };
 
 const menuKey = <Item extends string>(
@@ -263,6 +307,9 @@ export const dropdownMenu = <Item extends string, Msg>(
                 Option.contains(props.model.openSubmenuIndex, index),
               ),
               h.AriaControls(`${props.model.id}-submenu-${String(index)}`),
+              h.Style({
+                anchorName: `--${props.model.id}-sub-${String(index)}`,
+              }),
             ]),
         ...(config.isDisabled === true
           ? []
@@ -331,39 +378,52 @@ export const dropdownMenu = <Item extends string, Msg>(
         ...(config.submenu === undefined
           ? []
           : [Icon.chevronRight<Msg>({ class: 'ml-auto size-4' }, h)]),
-        ...(config.submenu === undefined ||
-        !Option.contains(props.model.openSubmenuIndex, index)
-          ? []
-          : [
-              h.div(
-                [
-                  h.Role('menu'),
-                  h.AriaLabel(
-                    `${typeof config.label === 'string' ? config.label : 'Submenu'} submenu`,
-                  ),
-                  h.Id(`${props.model.id}-submenu-${String(index)}`),
-                  h.Class(
-                    cn(
-                      SUBMENU_CLASS,
-                      props.direction === 'rtl'
-                        ? 'right-full left-auto mr-1 ml-0'
-                        : undefined,
-                    ),
-                  ),
-                ],
-                config.submenu.items.map((child, childIndex) =>
-                  renderItem(
-                    child,
-                    props.items.length + childIndex,
-                    config.submenu?.itemToConfig(child) ?? { label: child },
-                    true,
-                  ),
-                ),
-              ),
-            ]),
       ],
     );
   };
+
+  const submenuPanels: Array<Html> = [];
+  props.items.forEach((item, index) => {
+    const config = props.itemToConfig(item);
+    if (
+      config.submenu === undefined ||
+      !Option.contains(props.model.openSubmenuIndex, index)
+    )
+      return;
+    submenuPanels.push(
+      h.div(
+        [
+          h.Role('menu'),
+          h.AriaLabel(
+            `${typeof config.label === 'string' ? config.label : 'Submenu'} submenu`,
+          ),
+          h.Id(`${props.model.id}-submenu-${String(index)}`),
+          h.Class(SUBMENU_PANEL_CLASS),
+          // Anchored to the parent item and rendered outside the scrollable
+          // panel so the panel's overflow-y clip can't hide it.
+          h.Style({
+            position: 'fixed',
+            positionAnchor: `--${props.model.id}-sub-${String(index)}`,
+            ...(props.direction === 'rtl'
+              ? { right: 'anchor(left)', marginRight: '0.25rem' }
+              : { left: 'anchor(right)', marginLeft: '0.25rem' }),
+            top: 'anchor(top)',
+            positionTry: 'flip-inline',
+            maxHeight: 'calc(100vh - 8px)',
+            overflowY: 'auto',
+          }),
+        ],
+        config.submenu.items.map((child, childIndex) =>
+          renderItem(
+            child,
+            props.items.length + childIndex,
+            config.submenu?.itemToConfig(child) ?? { label: child },
+            true,
+          ),
+        ),
+      ),
+    );
+  });
 
   const grouped: Array<Html> = [];
   let previousGroup: string | undefined;
@@ -431,6 +491,7 @@ export const dropdownMenu = <Item extends string, Msg>(
                 ),
               ]),
           h.DataAttribute('slot', 'dropdown-menu-trigger'),
+          h.Style({ anchorName: `--${props.model.id}-menu` }),
           ...(props.triggerTabindex === undefined ? [] : [h.Tabindex(props.triggerTabindex)]),
           ...(props.triggerClass === undefined
             ? []
@@ -480,12 +541,22 @@ export const dropdownMenu = <Item extends string, Msg>(
                   ? [
                       h.Style({
                         position: 'fixed',
-                        left: `clamp(4px, ${String(anchorX)}px, calc(100vw - 164px))`,
-                        top: `clamp(4px, ${String(anchorY)}px, calc(100vh - 48px))`,
+                        left: `clamp(4px, ${String(anchorX)}px, calc(100vw - 4px))`,
+                        top: `clamp(4px, ${String(anchorY)}px, calc(100vh - 4px))`,
+                        transform: `translate(min(0px, calc(100vw - ${String(anchorX)}px - 100% - 8px)), min(0px, calc(100vh - ${String(anchorY)}px - 100% - 8px)))`,
                         maxHeight: 'calc(100vh - 8px)',
+                        overflowY: 'auto',
                       }),
                     ]
-                  : []),
+                  : [
+                      h.Style(
+                        anchorPositionStyle(
+                          props.model.id,
+                          props.side ?? 'bottom',
+                          props.align ?? 'start',
+                        ),
+                      ),
+                    ]),
                 h.Class(
                   cn(
                     CONTENT_CLASS,
@@ -500,6 +571,7 @@ export const dropdownMenu = <Item extends string, Msg>(
               ],
               grouped,
             ),
+            ...submenuPanels,
           ]
         : []),
     ],

@@ -41,11 +41,6 @@ export const projectDataTable = <Row>(props: Readonly<{
   rows: ReadonlyArray<Row>
 }>): DataTableProjection<Row> => {
   const isServer = props.mode === 'server'
-  const pageCount = Math.max(
-    1,
-    Math.ceil((isServer ? (props.rowCount ?? props.rows.length) : props.rows.length) / props.model.pageSize),
-  )
-  const page = Math.min(props.model.page, pageCount - 1)
   const columns: Array<ColumnDef<Row>> = props.columns.map((column) => ({
     id: column.key,
     accessorFn: column.sortValue,
@@ -65,22 +60,32 @@ export const projectDataTable = <Row>(props: Readonly<{
     manualPagination: isServer,
     manualSorting: isServer,
     onStateChange: () => undefined,
-    pageCount,
+    pageCount: -1,
     renderFallbackValue: '',
     state: {
       globalFilter: props.model.filter,
-      pagination: { pageIndex: page, pageSize: props.model.pageSize },
+      pagination: { pageIndex: props.model.page, pageSize: props.model.pageSize },
       rowSelection: Object.fromEntries(props.model.selectedRowKeys.map((key) => [key, true])),
       sorting: props.model.sortKey === '' ? [] : [{ id: props.model.sortKey, desc: props.model.sortDirection === 'descending' }],
     },
   })
-  const rows = table.getRowModel().rows.map((row) => row.original)
+  const filteredRowCount = isServer
+    ? (props.rowCount ?? props.rows.length)
+    : table.getFilteredRowModel().rows.length
+  const pageCount = Math.max(1, Math.ceil(filteredRowCount / props.model.pageSize))
+  const page = Math.min(props.model.page, pageCount - 1)
+  const rows = isServer
+    ? table.getRowModel().rows.map((row) => row.original)
+    : table
+        .getSortedRowModel()
+        .rows.slice(page * props.model.pageSize, (page + 1) * props.model.pageSize)
+        .map((row) => row.original)
   const selectableRowKeys = rows
     .filter((row) => props.isRowSelectable?.(row) ?? true)
     .map(props.rowKey)
 
   return {
-    filteredRowCount: isServer ? (props.rowCount ?? props.rows.length) : table.getFilteredRowModel().rows.length,
+    filteredRowCount,
     page,
     pageCount,
     rows,

@@ -89,4 +89,5 @@ export const navigationMenuDisclosure = <Msg>(props: NavigationMenuDisclosurePro
   ]),
   content: h.div([h.Class(className(styles.content))], [props.content]),
   align: 'start',
+  focusSelector: 'a',
 }, h)

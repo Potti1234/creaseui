@@ -683,8 +683,8 @@ Examples: Newsletter signup, Error summary, Async validation
 - `export { formControlIds } from '@/lib/form'` (re-export)
 - `FormProps<Msg> = FormBehaviorProps<Msg> & Readonly<{ class?: string }>` (type)
 - `form<Msg>(props: FormProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-- `ErrorSummaryProps = SharedErrorSummaryProps & Readonly<{ class?: string }>` (type)
-- `errorSummary<Msg>(props: ErrorSummaryProps, h: HtmlBuilder<Msg>): Html` (function)
+- `ErrorSummaryProps<Msg> = SharedErrorSummaryProps<Msg> & Readonly<{ class?: string }>` (type)
+- `errorSummary<Msg>(props: ErrorSummaryProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `FormItemProps = Slot & Readonly<{ id: string; isInvalid?: boolean; isDisabled?: boolean }>` (type)
 - `formItem<Msg>(props: FormItemProps, h: HtmlBuilder<Msg>): Html` (function)
 - `FormLabelProps = Slot & Readonly<{ for: string }>` (type)
@@ -743,7 +743,7 @@ Examples: URL prefix, Trailing unit
 - `InputGroupButtonProps<Msg> = Omit< ButtonProps<Msg>, 'size' | 'class' > & Readonly<{ size?: InputGroupButtonVariants['size']; class?: string; }>` (type)
 - `inputGroupButton<Msg>(props: InputGroupButtonProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `inputGroupText<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
-- `InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; class?: string; }>` (type)
+- `InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: string; }>` (type)
 - `inputGroupInput<Msg>(props: InputGroupInputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Input Otp
@@ -970,7 +970,7 @@ Examples: Interactive content, Right aligned
 - `RequestedClose: value` (value)
 - `PopoverSide = 'top' | 'right' | 'bottom' | 'left'` (type)
 - `PopoverAlign = 'start' | 'center' | 'end'` (type)
-- `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; content: Html | string; align?: PopoverAlign; side?: PopoverSide; class?: string; }>` (type)
+- `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; content: Html | string; align?: PopoverAlign; side?: PopoverSide; class?: string; focusSelector?: string; }>` (type)
 - `popover<Msg>(props: PopoverProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Progress
@@ -1133,7 +1133,7 @@ Examples: Application shell, Floating sidebar, Inset sidebar, Off-canvas collaps
 - `sidebarRail<Msg>(props: SidebarRailProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `SidebarInsetProps = Slot & Readonly<{ variant?: SidebarVariant; state?: SidebarState; }>` (type)
 - `sidebarInset<Msg>(props: SidebarInsetProps, h: HtmlBuilder<Msg>): Html` (function)
-- `SidebarInputProps<Msg> = Readonly<{ id?: string; value?: string; onInput?: (value: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; class?: string; }>` (type)
+- `SidebarInputProps<Msg> = Readonly<{ id?: string; value?: string; onInput?: (value: string) => Msg; placeholder?: string; ariaLabel?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; class?: string; }>` (type)
 - `sidebarInput<Msg>(props: SidebarInputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `sidebarHeader: value` (value)
 - `sidebarFooter: value` (value)
@@ -1148,7 +1148,7 @@ Examples: Application shell, Floating sidebar, Inset sidebar, Off-canvas collaps
 - `sidebarMenuItem<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
 - `sidebarMenuButtonVariants: value` (value)
 - `SidebarMenuButtonVariants = VariantProps< typeof sidebarMenuButtonVariants >` (type)
-- `SidebarMenuButtonProps<Msg> = Readonly<{ children: ReadonlyArray<Html | string>; onClick?: Msg; href?: string; isActive?: boolean; variant?: SidebarMenuButtonVariants['variant']; size?: SidebarMenuButtonVariants['size']; tooltip?: string; class?: string; }>` (type)
+- `SidebarMenuButtonProps<Msg> = Readonly<{ children: ReadonlyArray<Html | string>; onClick?: Msg; ariaExpanded?: boolean; href?: string; isActive?: boolean; variant?: SidebarMenuButtonVariants['variant']; size?: SidebarMenuButtonVariants['size']; tooltip?: stri…` (type)
 - `sidebarMenuButton<Msg>(props: SidebarMenuButtonProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `SidebarMenuActionProps<Msg> = SidebarActionProps<Msg> & Readonly<{ showOnHover?: boolean; }>` (type)
 - `sidebarMenuAction<Msg>(props: SidebarMenuActionProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)

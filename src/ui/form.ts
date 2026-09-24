@@ -23,10 +23,10 @@ export const form = <Msg>(props: FormProps<Msg>, h: HtmlBuilder<Msg>): Html => {
   return renderForm(props, [h.Class(cn('space-y-6', props.class))], h);
 };
 
-export type ErrorSummaryProps = SharedErrorSummaryProps & Readonly<{ class?: string }>;
+export type ErrorSummaryProps<Msg> = SharedErrorSummaryProps<Msg> & Readonly<{ class?: string }>;
 
 export const errorSummary = <Msg>(
-  props: ErrorSummaryProps,
+  props: ErrorSummaryProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => renderErrorSummary(props, {
   root: [h.Class(cn('rounded-lg border border-destructive/40 bg-destructive/5 p-4 text-sm', props.class))],

@@ -32,9 +32,13 @@ export const menubarTailwindPreviewProgram = definePreviewProgram<MenubarPreview
       return [{ ...model, file, edit, view, menubar }, Command.mapMessages(commands, next => GotMenubarBehaviorPreview({ message: next }))];
     }
     const [menu, commands, maybeSelection] = ActionMenu.update(model[message.target], message.message);
-    return [{ ...model, [message.target]: menu, maybeLastAction: Option.match(maybeSelection, { onNone: () => model.maybeLastAction, onSome: selection => Option.some(selection.value) }) }, Command.mapMessages(commands, next => GotMenubarPreviewMessage({ target: message.target, message: next }))];
+    const [file] = message.target === 'file' ? [menu] : DropdownMenu.close(model.file);
+    const [edit] = message.target === 'edit' ? [menu] : DropdownMenu.close(model.edit);
+    const [view] = message.target === 'view' ? [menu] : DropdownMenu.close(model.view);
+    return [{ ...model, file, edit, view, maybeLastAction: Option.match(maybeSelection, { onNone: () => model.maybeLastAction, onSome: selection => Option.some(selection.value) }) }, Command.mapMessages(commands, next => GotMenubarPreviewMessage({ target: message.target, message: next }))];
   },
-  view: (index, model, h) => Menubar.menubar<string, MenubarPreviewMessage>({
+  view: (index, model, h) => h.div([h.Class('grid justify-items-center gap-3')], [
+    Menubar.menubar<string, MenubarPreviewMessage>({
     model: model.menubar,
     toParentMessage: message => GotMenubarBehaviorPreview({ message }),
     ariaLabel: 'Application menu',
@@ -45,5 +49,12 @@ export const menubarTailwindPreviewProgram = definePreviewProgram<MenubarPreview
       items: menubarActions,
       itemToConfig: item => ({ label: menubarLabel(item), ...(item === 'save' ? { shortcut: '⌘S', isDisabled: true } : {}), ...(item === 'export' ? { submenu: { items: ['pdf', 'csv'], itemToConfig: child => ({ label: child.toUpperCase() }) } } : {}) }),
     })),
-  }, h),
+    }, h),
+    h.p([h.Role('status'), h.Class('text-sm text-muted-foreground')], [
+      Option.match(model.maybeLastAction, {
+        onNone: () => 'No action selected.',
+        onSome: action => `Last action: ${menubarLabel(action)}`,
+      }),
+    ]),
+  ]),
 });

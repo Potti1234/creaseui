@@ -1,4 +1,5 @@
 import { type VariantProps, cva } from 'class-variance-authority';
+import { Option } from 'effect';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import * as Icon from '@/lib/icon';
@@ -93,6 +94,7 @@ export const sidebar = <Msg>(
   const side = props.side ?? 'left';
   const variant = props.variant ?? 'sidebar';
   const collapsible = props.collapsible ?? 'offcanvas';
+  const onMobileDismiss = props.onMobileDismiss;
 
   if (collapsible === 'none') {
     return h.div(
@@ -125,9 +127,16 @@ export const sidebar = <Msg>(
               [
                 h.Type('button'),
                 h.AriaLabel('Close sidebar backdrop'),
-                ...(props.onMobileDismiss === undefined
+                ...(onMobileDismiss === undefined
                   ? []
-                  : [h.OnClick(props.onMobileDismiss)]),
+                  : [
+                      h.OnClick(onMobileDismiss),
+                      h.OnKeyDownPreventDefault((key) =>
+                        key === 'Escape'
+                          ? Option.some(onMobileDismiss)
+                          : Option.none(),
+                      ),
+                    ]),
                 h.Class('fixed inset-0 z-40 bg-black/50 md:hidden'),
               ],
               [],
@@ -135,7 +144,18 @@ export const sidebar = <Msg>(
             h.aside(
               [
                 h.DataAttribute('slot', 'sidebar-mobile'),
+                h.Role('dialog'),
+                h.AriaModal(true),
                 h.AriaLabel('Sidebar'),
+                ...(onMobileDismiss === undefined
+                  ? []
+                  : [
+                      h.OnKeyDownPreventDefault((key) =>
+                        key === 'Escape'
+                          ? Option.some(onMobileDismiss)
+                          : Option.none(),
+                      ),
+                    ]),
                 h.Class(
                   cn(
                     'fixed inset-y-0 z-50 flex w-(--sidebar-width-mobile) max-w-[calc(100vw-2rem)] flex-col bg-sidebar text-sidebar-foreground shadow-xl md:hidden',
@@ -146,14 +166,14 @@ export const sidebar = <Msg>(
               ],
               [
                 ...props.children,
-                ...(props.onMobileDismiss === undefined
+                ...(onMobileDismiss === undefined
                   ? []
                   : [
                       h.button(
                         [
                           h.Type('button'),
                           h.AriaLabel('Close sidebar'),
-                          h.OnClick(props.onMobileDismiss),
+                          h.OnClick(onMobileDismiss),
                           h.Class(
                             'absolute top-2 right-2 inline-flex size-8 items-center justify-center rounded-md text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring md:hidden',
                           ),
@@ -320,6 +340,7 @@ export type SidebarInputProps<Msg> = Readonly<{
   value?: string;
   onInput?: (value: string) => Msg;
   placeholder?: string;
+  ariaLabel?: string;
   type?: string;
   name?: string;
   isDisabled?: boolean;
@@ -341,6 +362,9 @@ export const sidebarInput = <Msg>(
       ? []
       : [h.Placeholder(props.placeholder)]),
     ...(props.name === undefined ? [] : [h.Name(props.name)]),
+    ...(props.ariaLabel === undefined
+      ? []
+      : [h.AriaLabel(props.ariaLabel)]),
     h.Type(props.type ?? 'text'),
     h.Disabled(props.isDisabled ?? false),
     h.AriaInvalid(props.isInvalid ?? false),
@@ -496,6 +520,7 @@ export type SidebarMenuButtonVariants = VariantProps<
 export type SidebarMenuButtonProps<Msg> = Readonly<{
   children: ReadonlyArray<Html | string>;
   onClick?: Msg;
+  ariaExpanded?: boolean;
   href?: string;
   isActive?: boolean;
   variant?: SidebarMenuButtonVariants['variant'];
@@ -515,6 +540,7 @@ export const sidebarMenuButton = <Msg>(
     h.DataAttribute('size', size),
     ...((props.isActive ?? false) ? [h.DataAttribute('active', '')] : []),
     ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
+    ...(props.ariaExpanded === undefined ? [] : [h.AriaExpanded(props.ariaExpanded)]),
     h.Class(
       cn(
         sidebarMenuButtonVariants({

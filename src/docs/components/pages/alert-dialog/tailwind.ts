@@ -33,7 +33,14 @@ const applyDialog = (
   if (Option.isNone(out)) return [{ ...model, dialog }, mapped];
   return out.value._tag === 'ConfirmedAlertDialog'
     ? [{ ...model, dialog, status: 'pending' }, [...mapped, FinishAction()]]
-    : [{ ...model, dialog, status: 'idle' }, mapped];
+    : [
+        {
+          ...model,
+          dialog,
+          status: model.status === 'pending' ? 'idle' : model.status,
+        },
+        mapped,
+      ];
 };
 
 export const alertDialogTailwindPreviewProgram = definePreviewProgram<PreviewModel, PreviewMessage>({

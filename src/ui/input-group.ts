@@ -176,6 +176,7 @@ export type InputGroupInputProps<Msg> = Readonly<{
   name?: string;
   isDisabled?: boolean;
   isInvalid?: boolean;
+  ariaLabel?: string;
   class?: string;
 }>;
 
@@ -195,6 +196,7 @@ export const inputGroupInput = <Msg>(
     ...(props.placeholder === undefined
       ? []
       : [h.Placeholder(props.placeholder)]),
+    ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
     ...((props.isDisabled ?? false) ? [h.Disabled(true)] : []),
     ...((props.isInvalid ?? false) ? [h.AriaInvalid(true)] : []),
     h.DataAttribute('slot', 'input-group-control'),

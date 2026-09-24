@@ -1,4 +1,88 @@
+import { Array, Option, pipe } from 'effect'
+
+import { Calendar as CalendarPrimitive } from '@foldkit/ui'
 import * as Calendar from 'foldkit/calendar'
+
+/** In a right-to-left calendar the day and picker grids are mirrored, so
+ *  ArrowLeft and ArrowRight must swap to move the cursor in the visual
+ *  direction the user expects. Home/End stay logical (first/last day of
+ *  week). */
+export const mirrorNavigationKeyForRtl = (
+  message: CalendarPrimitive.Message,
+): CalendarPrimitive.Message =>
+  message._tag === 'PressedKeyOnGrid' &&
+  (message.key === 'ArrowLeft' || message.key === 'ArrowRight')
+    ? CalendarPrimitive.PressedKeyOnGrid({
+        key: message.key === 'ArrowLeft' ? 'ArrowRight' : 'ArrowLeft',
+        isShift: message.isShift,
+      })
+    : message
+
+const isDisabled = (
+  model: CalendarPrimitive.Model,
+  date: Calendar.CalendarDate,
+): boolean =>
+  Option.exists(model.maybeMinDate, (min) => Calendar.isBefore(date, min)) ||
+  Option.exists(model.maybeMaxDate, (max) => Calendar.isAfter(date, max)) ||
+  model.disabledDaysOfWeek.includes(Calendar.dayOfWeek(date)) ||
+  model.disabledDates.some(Calendar.isEqual(date))
+
+const fallbackFocus = (model: CalendarPrimitive.Model): Calendar.CalendarDate =>
+  Option.getOrElse(model.maybeFocusedDate, () =>
+    Calendar.make(model.viewYear, model.viewMonth, 1))
+
+/** Home/End jump to the week's edge day, but when that edge day is disabled
+ *  the primitive's directional skip can spill the cursor into the adjacent
+ *  month. Target the first (Home) or last (End) enabled day inside the
+ *  focused week row instead so the cursor stays in the row the user sees. */
+const weekEdgeTarget = (
+  model: CalendarPrimitive.Model,
+  edge: 'start' | 'end',
+): Option.Option<Calendar.CalendarDate> => {
+  const focused = fallbackFocus(model)
+  const edgeDate =
+    edge === 'start'
+      ? Calendar.startOfWeek(focused, model.locale.firstDayOfWeek)
+      : Calendar.endOfWeek(focused, model.locale.firstDayOfWeek)
+  const step = edge === 'start' ? 1 : -1
+  return pipe(
+    Array.makeBy(7, (index) => Calendar.addDays(edgeDate, index * step)),
+    Array.findFirst((date) => !isDisabled(model, date)),
+  )
+}
+
+/** Wraps the primitive update: Home/End land on the nearest enabled day
+ *  within the focused week row rather than skipping across a month
+ *  boundary. Every other message defers to the primitive unchanged. */
+export const update = (
+  model: CalendarPrimitive.Model,
+  message: CalendarPrimitive.Message,
+): ReturnType<typeof CalendarPrimitive.update> => {
+  if (
+    message._tag === 'PressedKeyOnGrid' &&
+    (message.key === 'Home' || message.key === 'End')
+  ) {
+    const target = weekEdgeTarget(model, message.key === 'Home' ? 'start' : 'end')
+    if (Option.isSome(target)) {
+      const nextModel = CalendarPrimitive.focusDate(model, target.value)
+      const crossedMonth =
+        target.value.year !== model.viewYear || target.value.month !== model.viewMonth
+      return [
+        nextModel,
+        [],
+        crossedMonth
+          ? Option.some(
+              CalendarPrimitive.ChangedViewMonth({
+                year: target.value.year,
+                month: target.value.month,
+              }),
+            )
+          : Option.none(),
+      ]
+    }
+  }
+  return CalendarPrimitive.update(model, message)
+}
 
 export type CalendarRange = Readonly<{
   start: Calendar.CalendarDate

@@ -188,7 +188,7 @@ export const view = <M>(props: Props<M>, h: HtmlBuilder<M>): Html =>
                     h.a(
                       [
                         h.Href(blockPreviewPath(props.renderer, block.name)),
-                        h.Target("_blank"),
+                        h.Attribute("target", "_blank"),
                         h.Rel("noopener noreferrer"),
                         h.AriaLabel(
                           `Open ${block.name} in ${props.renderer === "tailwind" ? "Tailwind" : "StyleX"}`,

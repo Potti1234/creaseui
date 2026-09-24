@@ -10,29 +10,37 @@ import * as Sidebar from '@/stylex/sidebar';
 import { className } from '@/stylex/style';
 
 const styles = stylex.create({
-  actionAnchor: { position: 'absolute', right: '0.25rem', top: '0.375rem', zIndex: 30 },
-  actionTrigger: { alignItems: 'center', backgroundColor: { default: 'transparent', ':hover': 'var(--sidebar-accent)' }, borderRadius: '0.375rem', color: { default: 'var(--sidebar-foreground)', ':hover': 'var(--sidebar-accent-foreground)' }, display: 'flex', height: '1.25rem', justifyContent: 'center', outlineStyle: 'none', width: '1.25rem' },
-  accountAvatar: { alignItems: 'center', backgroundColor: 'var(--sidebar-primary)', borderRadius: '0.5rem', color: 'var(--sidebar-primary-foreground)', display: 'grid', flexShrink: 0, fontSize: '0.75rem', fontWeight: 600, height: '2rem', justifyContent: 'center', width: '2rem' },
-  accountCopy: { display: 'grid', flexGrow: 1, lineHeight: 1.25, minWidth: 0, textAlign: 'left' },
-  accountEmail: { fontSize: '0.75rem', opacity: 0.7, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
-  accountName: { fontSize: '0.875rem', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
-  brand: { alignItems: 'center', display: 'flex', gap: '0.5rem', overflow: 'hidden', paddingBlock: '0.25rem', paddingInline: '0.5rem', whiteSpace: 'nowrap' },
-  brandMark: { alignItems: 'center', backgroundColor: 'var(--sidebar-primary)', borderRadius: '0.375rem', color: 'var(--sidebar-primary-foreground)', display: 'grid', flexShrink: 0, fontSize: '0.75rem', fontWeight: 600, height: '1.75rem', justifyContent: 'center', width: '1.75rem' },
+  actionAnchor: { position: 'absolute', zIndex: 30, right: '0.25rem', top: '0.375rem', },
+  actionTrigger: { borderRadius: '0.375rem', alignItems: 'center', backgroundColor: { default: 'transparent', ':hover': 'var(--sidebar-accent)' }, color: { default: 'var(--sidebar-foreground)', ':hover': 'var(--sidebar-accent-foreground)' }, display: 'flex', justifyContent: 'center', outlineStyle: 'none', height: '1.25rem', width: '1.25rem', },
+  accountAvatar: { borderRadius: '0.5rem', alignItems: 'center', backgroundColor: 'var(--sidebar-primary)', color: 'var(--sidebar-primary-foreground)', display: 'grid', flexShrink: 0, fontSize: '0.75rem', fontWeight: 600, justifyContent: 'center', height: '2rem', width: '2rem', },
+  accountCopy: { display: 'grid', flexGrow: 1, lineHeight: 1.25, textAlign: 'left', minWidth: 0, },
+  accountEmail: { overflow: 'hidden', fontSize: '0.75rem', opacity: 0.7, textOverflow: 'ellipsis', whiteSpace: 'nowrap', },
+  accountName: { overflow: 'hidden', fontSize: '0.875rem', fontWeight: 500, textOverflow: 'ellipsis', whiteSpace: 'nowrap', },
+  brand: { gap: '0.5rem', overflow: 'hidden', paddingBlock: '0.25rem', paddingInline: '0.5rem', alignItems: 'center', display: 'flex', whiteSpace: 'nowrap', },
+  brandMark: { borderRadius: '0.375rem', alignItems: 'center', backgroundColor: 'var(--sidebar-primary)', color: 'var(--sidebar-primary-foreground)', display: 'grid', flexShrink: 0, fontSize: '0.75rem', fontWeight: 600, justifyContent: 'center', height: '1.75rem', width: '1.75rem', },
   brandName: { fontSize: '0.875rem', fontWeight: 600 },
-  frame: { backgroundColor: 'var(--background)', borderColor: 'var(--border)', borderRadius: '0.5rem', borderStyle: 'solid', borderWidth: 1, height: '26rem', minHeight: 0, overflow: 'hidden', position: 'relative', width: '100%' },
-  feedback: { color: 'var(--sidebar-foreground)', fontSize: '0.75rem', opacity: 0.7, paddingInline: '0.5rem', paddingTop: '0.5rem' },
+  frame: { borderColor: 'var(--border)', borderRadius: '0.5rem', borderStyle: 'solid', borderWidth: 1, overflow: 'hidden', backgroundColor: 'var(--background)', position: 'relative', height: '26rem', minHeight: 0, width: '100%', },
+  feedback: { paddingInline: '0.5rem', color: 'var(--sidebar-foreground)', fontSize: '0.75rem', opacity: 0.7, paddingTop: '0.5rem', },
   inset: { minHeight: 0 },
-  pageHeader: { alignItems: 'center', borderBottomColor: 'var(--border)', borderBottomStyle: 'solid', borderBottomWidth: 1, display: 'flex', flexShrink: 0, gap: '0.5rem', height: '3rem', paddingInline: '1rem' },
+  pageHeader: { gap: '0.5rem', paddingInline: '1rem', alignItems: 'center', display: 'flex', flexShrink: 0, borderBottomColor: 'var(--border)', borderBottomStyle: 'solid', borderBottomWidth: 1, height: '3rem', },
   pageTitle: { fontSize: '0.875rem', fontWeight: 600 },
   provider: { height: '26rem', minHeight: 0 },
-  skeletonBlock: { backgroundColor: 'var(--muted)', borderRadius: '0.5rem', height: '6rem' },
-  skeletonBlockWide: { backgroundColor: 'var(--muted)', borderRadius: '0.5rem', gridColumn: '1 / -1', height: '8rem' },
-  pageMain: { display: 'grid', gap: '1rem', gridTemplateColumns: { default: 'minmax(0, 1fr)', '@media (min-width: 640px)': 'repeat(2, minmax(0, 1fr))' }, padding: '1rem' },
-  staticFrame: { alignItems: 'stretch', backgroundColor: 'color-mix(in oklab, var(--muted) 30%, transparent)', display: 'flex', height: '20rem', justifyContent: 'center', padding: '1rem', width: '100%' },
-  staticPanel: { backgroundColor: 'var(--background)', borderColor: 'var(--border)', borderRadius: '0.5rem', borderStyle: 'solid', borderWidth: 1, maxWidth: '18rem', overflow: 'hidden', width: '100%' },
+  skeletonBlock: { borderRadius: '0.5rem', backgroundColor: 'var(--muted)', height: '6rem', },
+  skeletonBlockWide: { borderRadius: '0.5rem',
+ backgroundColor: 'var(--muted)',
+ gridColumnEnd: '-1',
+ gridColumnStart: '1',
+ height: '8rem', },
+  pageMain: { padding: '1rem', gap: '1rem', display: 'grid', gridTemplateColumns: { default: 'minmax(0, 1fr)', '@media (min-width: 640px)': 'repeat(2, minmax(0, 1fr))' }, },
+  staticFrame: { padding: '1rem', alignItems: 'stretch', backgroundColor: 'color-mix(in oklab, var(--muted) 30%, transparent)', display: 'flex', justifyContent: 'center', height: '20rem', width: '100%', },
+  staticPanel: { borderColor: 'var(--border)', borderRadius: '0.5rem', borderStyle: 'solid', borderWidth: 1, overflow: 'hidden', backgroundColor: 'var(--background)', maxWidth: '18rem', width: '100%', },
   staticProvider: { height: '100%', minHeight: 0, width: '100%' },
-  staticTitle: { fontSize: '0.875rem', fontWeight: 600, paddingBlock: '0.25rem', paddingInline: '0.5rem' },
-  srOnly: { height: 1, margin: -1, overflow: 'hidden', padding: 0, position: 'absolute', width: 1 },
+  staticTitle: { paddingBlock: '0.25rem', paddingInline: '0.5rem', fontSize: '0.875rem', fontWeight: 600, },
+  accountTrigger: { padding: '0.5rem', borderRadius: '0.375rem', gap: '0.5rem', alignItems: 'center', backgroundColor: { default: 'transparent', ':hover': 'var(--sidebar-accent)' }, color: { default: 'var(--sidebar-foreground)', ':hover': 'var(--sidebar-accent-foreground)' }, display: 'flex', outlineStyle: 'none', textAlign: 'left', width: '100%', },
+  learnChevron: { transitionDuration: '150ms', transitionProperty: 'transform', height: '1rem', marginLeft: 'auto', width: '1rem', },
+  learnChevronOpen: { transform: 'rotate(90deg)' },
+  noMatches: { paddingBlock: '0.375rem', paddingInline: '0.5rem', color: 'var(--muted-foreground)', fontSize: '0.875rem', },
+  srOnly: { margin: -1, padding: 0, overflow: 'hidden', position: 'absolute', height: 1, width: 1, },
 });
 
 const isStaticStyle = (value: unknown): value is StaticStyles => typeof value === 'object' && value !== null;
@@ -40,6 +48,7 @@ const cx = (...values: ReadonlyArray<unknown>): string => className(...values.fi
 const iconLabel = <Msg>(name: string, label: string, h: HtmlBuilder<Msg>): ReadonlyArray<Html | string> => [Icon.icon(name, {}, h), h.span([], [label])];
 
 const actionItems = ['open', 'rename', 'delete'] as const;
+const accountItems = ['profile', 'settings', 'sign out'] as const;
 const actionLabel = (action: string): string => action[0]?.toUpperCase() + action.slice(1);
 const actionMenu = <Msg>(model: DropdownMenu.Model, label: string, send: (json: string) => Msg, h: HtmlBuilder<Msg>): Html => h.div([
   h.DataAttribute('sidebar', 'menu-action'),
@@ -54,42 +63,62 @@ const actionMenu = <Msg>(model: DropdownMenu.Model, label: string, send: (json: 
   itemToConfig: (action) => ({ label: actionLabel(action), ...(action === 'delete' ? { variant: 'destructive' as const } : {}) }),
 }, h)]);
 
-const primaryNavigation = <Msg>(model: { actionMenu: DropdownMenu.Model }, send: (json: string) => Msg, h: HtmlBuilder<Msg>): Html => Sidebar.sidebarMenu({
-  children: [
+const primaryNavigation = <Msg>(model: { actionMenu: DropdownMenu.Model; query: string }, send: (json: string) => Msg, h: HtmlBuilder<Msg>): Html => {
+  const query = model.query.trim().toLowerCase();
+  const allEntries: ReadonlyArray<readonly [string, string]> = [
     ['Dashboard', 'gauge'],
     ['Inbox', 'inbox'],
     ['Projects', 'book-open'],
     ['Calendar', 'calendar-days'],
-  ].map(([label, iconName], index) => Sidebar.sidebarMenuItem({ children: [
-    Sidebar.sidebarMenuButton({ href: '#', isActive: index === 0, tooltip: label ?? '', children: iconLabel(iconName ?? 'circle', label ?? '', h) }, h),
-    ...(index === 1 ? [Sidebar.sidebarMenuBadge({ children: ['12'] }, h)] : []),
-    ...(index === 2 ? [actionMenu(model.actionMenu, 'Project actions', send, h)] : []),
-  ] }, h)),
+  ];
+  const entries = allEntries.filter(([label]) => query === '' || label.toLowerCase().includes(query));
+  return Sidebar.sidebarMenu({
+  children: entries.length === 0
+    ? [Sidebar.sidebarMenuItem({ children: [h.span([h.Class(cx(styles.noMatches))], ['No matching navigation'])] }, h)]
+    : entries.map(([label, iconName], index) => Sidebar.sidebarMenuItem({ children: [
+      Sidebar.sidebarMenuButton({ href: '#', isActive: index === 0, tooltip: label ?? '', children: iconLabel(iconName ?? 'circle', label ?? '', h) }, h),
+      ...(index === 1 && query === '' ? [Sidebar.sidebarMenuBadge({ children: ['12'] }, h)] : []),
+      ...(index === 2 && query === '' ? [actionMenu(model.actionMenu, 'Project actions', send, h)] : []),
+    ] }, h)),
 }, h);
+};
 
-const nestedNavigation = <Msg>(h: HtmlBuilder<Msg>): Html => Sidebar.sidebarMenu({ children: [
+const nestedNavigation = <Msg>(model: { learnOpen: boolean }, send: (json: string) => Msg, h: HtmlBuilder<Msg>): Html => Sidebar.sidebarMenu({ children: [
   Sidebar.sidebarMenuItem({ children: [
-    Sidebar.sidebarMenuButton({ children: iconLabel('book-open', 'Documentation', h) }, h),
-    Sidebar.sidebarMenuSub({ children: ['Introduction', 'Components', 'Changelog'].map((label, index) => Sidebar.sidebarMenuSubItem({ children: [Sidebar.sidebarMenuSubButton({ href: '#', isActive: index === 1, children: [label] }, h)] }, h)) }, h),
+    Sidebar.sidebarMenuButton({
+      onClick: send(JSON.stringify({ _tag: 'ToggledSidebarPreviewLearn' })),
+      ariaExpanded: model.learnOpen,
+      children: [...iconLabel('book-open', 'Documentation', h), Icon.chevronRight({ class: cx(styles.learnChevron, model.learnOpen && styles.learnChevronOpen) }, h)],
+    }, h),
+    ...(model.learnOpen ? [Sidebar.sidebarMenuSub({ children: ['Introduction', 'Components', 'Changelog'].map((label, index) => Sidebar.sidebarMenuSubItem({ children: [Sidebar.sidebarMenuSubButton({ href: '#', isActive: index === 1, children: [label] }, h)] }, h)) }, h)] : []),
   ] }, h),
 ] }, h);
 
-const account = <Msg>(h: HtmlBuilder<Msg>): Html => Sidebar.sidebarMenu({ children: [Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ size: 'lg', children: [
-  h.span([h.Class(cx(styles.accountAvatar))], ['AL']),
-  h.span([h.Class(cx(styles.accountCopy))], [h.span([h.Class(cx(styles.accountName))], ['Ada Lovelace']), h.span([h.Class(cx(styles.accountEmail))], ['ada@example.com'])]),
-  Icon.chevronsUpDown({}, h),
-] }, h)] }, h)] }, h);
+const account = <Msg>(model: { accountMenu: DropdownMenu.Model }, send: (json: string) => Msg, h: HtmlBuilder<Msg>): Html => Sidebar.sidebarMenu({ children: [Sidebar.sidebarMenuItem({ children: [DropdownMenu.dropdownMenu({
+  model: model.accountMenu,
+  toParentMessage: (message) => send(JSON.stringify({ _tag: 'GotSidebarPreviewAccountMenuMessage', message })),
+  trigger: h.span([h.Class(cx(styles.accountTrigger))], [
+    h.span([h.Class(cx(styles.accountAvatar))], ['AL']),
+    h.span([h.Class(cx(styles.accountCopy))], [h.span([h.Class(cx(styles.accountName))], ['Ada Lovelace']), h.span([h.Class(cx(styles.accountEmail))], ['ada@example.com'])]),
+    Icon.chevronsUpDown({}, h),
+  ]),
+  ariaLabel: 'Account menu',
+  side: 'top',
+  align: 'start',
+  items: accountItems,
+  itemToConfig: (action) => ({ label: actionLabel(action) }),
+}, h)] }, h)] }, h);
 
-const sidebarBody = <Msg>(model: { actionMenu: DropdownMenu.Model; query: string }, send: (json: string) => Msg, onQuery: (value: string) => Msg, h: HtmlBuilder<Msg>): ReadonlyArray<Html | string> => [
+const sidebarBody = <Msg>(model: { actionMenu: DropdownMenu.Model; accountMenu: DropdownMenu.Model; query: string; learnOpen: boolean }, send: (json: string) => Msg, onQuery: (value: string) => Msg, h: HtmlBuilder<Msg>): ReadonlyArray<Html | string> => [
   Sidebar.sidebarHeader({ children: [
     h.div([h.DataAttribute('sidebar', 'brand'), h.Class(cx(styles.brand))], [h.span([h.Class(cx(styles.brandMark))], ['C']), h.span([h.Class(cx(styles.brandName))], ['Crease Workspace'])]),
-    Sidebar.sidebarInput({ value: model.query, onInput: onQuery, placeholder: 'Search navigation' }, h),
+    Sidebar.sidebarInput({ value: model.query, onInput: onQuery, placeholder: 'Search navigation', ariaLabel: 'Search navigation' }, h),
   ] }, h),
   Sidebar.sidebarContent({ children: [
     Sidebar.sidebarGroup({ children: [Sidebar.sidebarGroupLabel({ children: ['Platform'] }, h), Sidebar.sidebarGroupContent({ children: [primaryNavigation(model, send, h)] }, h)] }, h),
-    Sidebar.sidebarGroup({ spacing: 'later', children: [Sidebar.sidebarGroupLabel({ children: ['Learn'] }, h), Sidebar.sidebarGroupContent({ children: [nestedNavigation(h)] }, h)] }, h),
+    Sidebar.sidebarGroup({ spacing: 'later', children: [Sidebar.sidebarGroupLabel({ children: ['Learn'] }, h), Sidebar.sidebarGroupContent({ children: [nestedNavigation(model, send, h)] }, h)] }, h),
   ] }, h),
-  Sidebar.sidebarFooter({ children: [account(h)] }, h),
+  Sidebar.sidebarFooter({ children: [account(model, send, h)] }, h),
 ];
 
 const pageContent = <Msg>(title: string, trigger: Html, h: HtmlBuilder<Msg>): ReadonlyArray<Html | string> => [
@@ -97,7 +126,7 @@ const pageContent = <Msg>(title: string, trigger: Html, h: HtmlBuilder<Msg>): Re
   h.main([h.Class(cx(styles.pageMain))], [h.div([h.Class(cx(styles.skeletonBlock))], []), h.div([h.Class(cx(styles.skeletonBlock))], []), h.div([h.Class(cx(styles.skeletonBlockWide))], [])]),
 ];
 
-const shell = <Msg>(kind: SidebarFixtureKind, model: { sidebar: Sidebar.Model; actionMenu: DropdownMenu.Model; query: string }, send: (json: string) => Msg, h: HtmlBuilder<Msg>): Html => {
+const shell = <Msg>(kind: SidebarFixtureKind, model: { sidebar: Sidebar.Model; actionMenu: DropdownMenu.Model; accountMenu: DropdownMenu.Model; query: string; learnOpen: boolean }, send: (json: string) => Msg, h: HtmlBuilder<Msg>): Html => {
   const state: Sidebar.SidebarState = model.sidebar.isOpen ? 'expanded' : 'collapsed';
   const variant: Sidebar.SidebarVariant = kind === 'floating' || kind === 'inset' ? kind : 'sidebar';
   const collapsible: Sidebar.SidebarCollapsible = kind === 'offcanvas' ? 'offcanvas' : 'icon';
@@ -131,7 +160,7 @@ const shell = <Msg>(kind: SidebarFixtureKind, model: { sidebar: Sidebar.Model; a
   }, h)]);
 };
 
-const staticPanel = <Msg>(kind: 'menu' | 'nested' | 'loading', model: { actionMenu: DropdownMenu.Model; feedback: string }, send: (json: string) => Msg, h: HtmlBuilder<Msg>): Html => {
+const staticPanel = <Msg>(kind: 'menu' | 'nested' | 'loading', model: { actionMenu: DropdownMenu.Model; accountMenu: DropdownMenu.Model; learnOpen: boolean; feedback: string }, send: (json: string) => Msg, h: HtmlBuilder<Msg>): Html => {
   const content = kind === 'menu'
     ? Sidebar.sidebarMenu({ children: [
         Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ isActive: true, children: iconLabel('gauge', 'Overview', h) }, h), Sidebar.sidebarMenuBadge({ children: ['12'] }, h)] }, h),
@@ -139,7 +168,7 @@ const staticPanel = <Msg>(kind: 'menu' | 'nested' | 'loading', model: { actionMe
         Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ onClick: send(JSON.stringify({ _tag: 'CreatedSidebarPreviewProject' })), variant: 'primary', children: iconLabel('plus', 'Create project', h) }, h)] }, h),
       ] }, h)
     : kind === 'nested'
-      ? nestedNavigation(h)
+      ? nestedNavigation(model, send, h)
       : Sidebar.sidebarMenu({ children: [82, 68, 76, 58].map((widthPercent) => Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuSkeleton({ showIcon: true, widthPercent }, h)] }, h)) }, h);
 
   return h.div([h.Class(cx(styles.staticFrame))], [h.div([h.Class(cx(styles.staticPanel))], [Sidebar.sidebarProvider({ width: '18rem', layoutStyle: styles.staticProvider, children: [Sidebar.sidebar({ collapsible: 'none', children: [
@@ -151,6 +180,6 @@ const staticPanel = <Msg>(kind: 'menu' | 'nested' | 'loading', model: { actionMe
 export const sidebarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(index: number, model: unknown, send: (json: string) => Msg, h: HtmlBuilder<Msg>) => {
   const kind = sidebarFixtures[index]?.kind ?? 'shell';
   return kind === 'menu' || kind === 'nested' || kind === 'loading'
-    ? staticPanel(kind, model as { actionMenu: DropdownMenu.Model; feedback: string }, send, h)
-    : shell(kind, model as { sidebar: Sidebar.Model; actionMenu: DropdownMenu.Model; query: string }, send, h);
+    ? staticPanel(kind, model as { actionMenu: DropdownMenu.Model; accountMenu: DropdownMenu.Model; learnOpen: boolean; feedback: string }, send, h)
+    : shell(kind, model as { sidebar: Sidebar.Model; actionMenu: DropdownMenu.Model; accountMenu: DropdownMenu.Model; query: string; learnOpen: boolean }, send, h);
 };

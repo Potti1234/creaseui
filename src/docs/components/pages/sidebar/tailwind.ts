@@ -12,14 +12,17 @@ import * as Sidebar from '@/ui/sidebar';
 const GotSidebar = m('GotSidebarPreviewMessage', { message: Sidebar.Message });
 const ChangedQuery = m('ChangedSidebarPreviewQuery', { value: S.String });
 const GotActionMenu = m('GotSidebarPreviewActionMenuMessage', { message: DropdownMenu.Message });
+const GotAccountMenu = m('GotSidebarPreviewAccountMenuMessage', { message: DropdownMenu.Message });
 const CreatedProject = m('CreatedSidebarPreviewProject');
-const Message = S.Union([GotSidebar, ChangedQuery, GotActionMenu, CreatedProject]);
+const ToggledLearn = m('ToggledSidebarPreviewLearn');
+const Message = S.Union([GotSidebar, ChangedQuery, GotActionMenu, GotAccountMenu, CreatedProject, ToggledLearn]);
 type Message = typeof Message.Type;
-const Model = S.Struct({ _docsPage: S.Literal('sidebar'), sidebar: Sidebar.Model, actionMenu: DropdownMenu.Model, feedback: S.String, query: S.String });
+const Model = S.Struct({ _docsPage: S.Literal('sidebar'), sidebar: Sidebar.Model, actionMenu: DropdownMenu.Model, accountMenu: DropdownMenu.Model, feedback: S.String, query: S.String, learnOpen: S.Boolean });
 type Model = typeof Model.Type;
 
 const ActionMenu = DropdownMenu.create<string>();
 const actionItems = ['open', 'rename', 'delete'] as const;
+const accountItems = ['profile', 'settings', 'sign out'] as const;
 const actionLabel = (action: string): string => action[0]?.toUpperCase() + action.slice(1);
 
 const subscriptions = typeof document === 'undefined'
@@ -47,13 +50,19 @@ const actionMenu = (model: DropdownMenu.Model, label: string, h: HtmlBuilder<Mes
   itemToConfig: (action) => ({ label: actionLabel(action), ...(action === 'delete' ? { variant: 'destructive' as const } : {}) }),
 }, h)]);
 
-const primaryNavigation = (model: Model, h: HtmlBuilder<Message>): Html => Sidebar.sidebarMenu({
-  children: [
+const primaryNavigation = (model: Model, h: HtmlBuilder<Message>): Html => {
+  const query = model.query.trim().toLowerCase();
+  const allEntries: ReadonlyArray<readonly [string, string]> = [
     ['Dashboard', 'gauge'],
     ['Inbox', 'inbox'],
     ['Projects', 'book-open'],
     ['Calendar', 'calendar-days'],
-  ].map(([label, iconName], index) => Sidebar.sidebarMenuItem({
+  ];
+  const entries = allEntries.filter(([label]) => query === '' || label.toLowerCase().includes(query));
+  return Sidebar.sidebarMenu({
+  children: entries.length === 0
+    ? [Sidebar.sidebarMenuItem({ children: [h.span([h.Class('px-2 py-1.5 text-sm text-muted-foreground')], ['No matching navigation'])] }, h)]
+    : entries.map(([label, iconName], index) => Sidebar.sidebarMenuItem({
     children: [
       Sidebar.sidebarMenuButton({
         href: '#',
@@ -61,35 +70,52 @@ const primaryNavigation = (model: Model, h: HtmlBuilder<Message>): Html => Sideb
         tooltip: label ?? '',
         children: iconLabel(iconName ?? 'circle', label ?? '', h),
       }, h),
-      ...(index === 1 ? [Sidebar.sidebarMenuBadge({ children: ['12'] }, h)] : []),
-      ...(index === 2 ? [actionMenu(model.actionMenu, 'Project actions', h)] : []),
+      ...(index === 1 && query === '' ? [Sidebar.sidebarMenuBadge({ children: ['12'] }, h)] : []),
+      ...(index === 2 && query === '' ? [actionMenu(model.actionMenu, 'Project actions', h)] : []),
     ],
   }, h)),
 }, h);
+};
 
-const account = (h: HtmlBuilder<Message>): Html => Sidebar.sidebarMenu({
+const account = (model: Model, h: HtmlBuilder<Message>): Html => Sidebar.sidebarMenu({
   children: [Sidebar.sidebarMenuItem({
-    children: [Sidebar.sidebarMenuButton({
-      size: 'lg',
-      children: [
+    children: [DropdownMenu.dropdownMenu({
+      model: model.accountMenu,
+      toParentMessage: (message) => GotAccountMenu({ message }),
+      trigger: h.span([h.Class('flex w-full items-center gap-2 text-left')], [
         h.span([h.Class('grid size-8 shrink-0 place-items-center rounded-lg bg-sidebar-primary text-xs font-semibold text-sidebar-primary-foreground')], ['AL']),
         h.span([h.Class('grid min-w-0 flex-1 text-left leading-tight')], [
           h.span([h.Class('truncate text-sm font-medium')], ['Ada Lovelace']),
           h.span([h.Class('truncate text-xs text-sidebar-foreground/70')], ['ada@example.com']),
         ]),
         Icon.chevronsUpDown({}, h),
-      ],
+      ]),
+      triggerClass: 'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring [&>svg]:size-4 [&>svg]:shrink-0',
+      ariaLabel: 'Account menu',
+      side: 'top',
+      align: 'start',
+      items: accountItems,
+      itemToConfig: (action) => ({ label: actionLabel(action) }),
     }, h)],
   }, h)],
 }, h);
 
-const nestedNavigation = (h: HtmlBuilder<Message>): Html => Sidebar.sidebarMenu({
+const nestedNavigation = (model: Model, h: HtmlBuilder<Message>): Html => Sidebar.sidebarMenu({
   children: [Sidebar.sidebarMenuItem({
     children: [
-      Sidebar.sidebarMenuButton({ children: iconLabel('book-open', 'Documentation', h) }, h),
-      Sidebar.sidebarMenuSub({ children: ['Introduction', 'Components', 'Changelog'].map((label, index) =>
-        Sidebar.sidebarMenuSubItem({ children: [Sidebar.sidebarMenuSubButton({ href: '#', isActive: index === 1, children: [label] }, h)] }, h),
-      ) }, h),
+      Sidebar.sidebarMenuButton({
+        onClick: ToggledLearn(),
+        ariaExpanded: model.learnOpen,
+        children: [
+          ...iconLabel('book-open', 'Documentation', h),
+          Icon.chevronRight({ class: model.learnOpen ? 'ml-auto size-4 rotate-90 transition-transform' : 'ml-auto size-4 transition-transform' }, h),
+        ],
+      }, h),
+      ...(model.learnOpen
+        ? [Sidebar.sidebarMenuSub({ children: ['Introduction', 'Components', 'Changelog'].map((label, index) =>
+            Sidebar.sidebarMenuSubItem({ children: [Sidebar.sidebarMenuSubButton({ href: '#', isActive: index === 1, children: [label] }, h)] }, h),
+          ) }, h)]
+        : []),
     ],
   }, h)],
 }, h);
@@ -100,7 +126,7 @@ const sidebarBody = (model: Model, h: HtmlBuilder<Message>, detailed = true): Re
       h.span([h.Class('grid size-7 shrink-0 place-items-center rounded-md bg-sidebar-primary text-xs font-semibold text-sidebar-primary-foreground')], ['C']),
       h.span([h.Class('truncate text-sm font-semibold')], ['Crease Workspace']),
     ]),
-    ...(detailed ? [Sidebar.sidebarInput({ value: model.query, onInput: (value) => ChangedQuery({ value }), placeholder: 'Search navigation' }, h)] : []),
+    ...(detailed ? [Sidebar.sidebarInput({ value: model.query, onInput: (value) => ChangedQuery({ value }), placeholder: 'Search navigation', ariaLabel: 'Search navigation' }, h)] : []),
   ] }, h),
   Sidebar.sidebarContent({ children: [
     Sidebar.sidebarGroup({ children: [
@@ -109,10 +135,10 @@ const sidebarBody = (model: Model, h: HtmlBuilder<Message>, detailed = true): Re
     ] }, h),
     ...(detailed ? [Sidebar.sidebarGroup({ children: [
       Sidebar.sidebarGroupLabel({ children: ['Learn'] }, h),
-      Sidebar.sidebarGroupContent({ children: [nestedNavigation(h)] }, h),
+      Sidebar.sidebarGroupContent({ children: [nestedNavigation(model, h)] }, h),
     ] }, h)] : []),
   ] }, h),
-  Sidebar.sidebarFooter({ children: [account(h)] }, h),
+  Sidebar.sidebarFooter({ children: [account(model, h)] }, h),
 ];
 
 const pageContent = (title: string, h: HtmlBuilder<Message>): ReadonlyArray<Html | string> => [
@@ -172,7 +198,7 @@ const staticPanel = (kind: 'menu' | 'nested' | 'loading', model: Model, h: HtmlB
         Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ onClick: CreatedProject(), variant: 'primary', children: iconLabel('plus', 'Create project', h) }, h)] }, h),
       ] }, h)
     : kind === 'nested'
-      ? nestedNavigation(h)
+      ? nestedNavigation(model, h)
       : Sidebar.sidebarMenu({ children: [82, 68, 76, 58].map((widthPercent) => Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuSkeleton({ showIcon: true, widthPercent }, h)] }, h)) }, h);
 
   return h.div([h.Class('flex h-80 w-full items-stretch justify-center bg-muted/30 p-4')], [
@@ -188,7 +214,7 @@ const staticPanel = (kind: 'menu' | 'nested' | 'loading', model: Model, h: HtmlB
 export const sidebarTailwindPreviewProgram = definePreviewProgram<Model, Message>({
   Model,
   Message,
-  init: (index) => ({ _docsPage: 'sidebar', sidebar: Sidebar.init({ defaultOpen: true, storageKey: `docs_sidebar_${String(index)}` }), actionMenu: DropdownMenu.init({ id: `docs-sidebar-actions-${String(index)}`, isAnimated: false }), feedback: '', query: '' }),
+  init: (index) => ({ _docsPage: 'sidebar', sidebar: Sidebar.init({ defaultOpen: true, storageKey: `docs_sidebar_${String(index)}` }), actionMenu: DropdownMenu.init({ id: `docs-sidebar-actions-${String(index)}`, isAnimated: false }), accountMenu: DropdownMenu.init({ id: `docs-sidebar-account-${String(index)}`, isAnimated: false }), feedback: '', query: '', learnOpen: true }),
   update: (model, message) => {
     switch (message._tag) {
       case 'GotSidebarPreviewMessage': {
@@ -201,7 +227,13 @@ export const sidebarTailwindPreviewProgram = definePreviewProgram<Model, Message
         const selection = Option.getOrUndefined(maybeSelection);
         return [{ ...model, actionMenu, ...(selection === undefined ? {} : { feedback: `${actionLabel(selection.value)} selected` }) }, Command.mapMessages(commands, (next) => GotActionMenu({ message: next }))];
       }
+      case 'GotSidebarPreviewAccountMenuMessage': {
+        const [accountMenu, commands, maybeSelection] = ActionMenu.update(model.accountMenu, message.message);
+        const selection = Option.getOrUndefined(maybeSelection);
+        return [{ ...model, accountMenu, ...(selection === undefined ? {} : { feedback: `${actionLabel(selection.value)} selected` }) }, Command.mapMessages(commands, (next) => GotAccountMenu({ message: next }))];
+      }
       case 'CreatedSidebarPreviewProject': return [{ ...model, feedback: 'Project created' }, []];
+      case 'ToggledSidebarPreviewLearn': return [{ ...model, learnOpen: !model.learnOpen }, []];
     }
   },
   ...(subscriptions === undefined ? {} : { subscriptions }),

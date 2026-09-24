@@ -5,13 +5,14 @@ import type { StyleXExamplePreviewProvider } from '@/docs/components/page-defini
 import { emptyFixtures } from '@/docs/components/pages/empty/shared';
 import * as Button from '@/stylex/button';
 import * as Empty from '@/stylex/empty';
+import { tokens } from '../../../../stylex/tokens.stylex';
 
-const styles = stylex.create({ empty: { width: '100%', maxWidth: '36rem' }, bordered: { width: '100%', maxWidth: '36rem', borderColor: 'var(--border)', borderRadius: '0.625rem', borderStyle: 'solid', borderWidth: 1 } });
-export const emptyStyleXPreview: StyleXExamplePreviewProvider = <Msg>(index: number, _model: unknown, onMessageJson: (messageJson: string) => Msg, h: HtmlBuilder<Msg>) => {
+const styles = stylex.create({ empty: { width: '100%', maxWidth: '36rem' }, bordered: { width: '100%', maxWidth: '36rem', borderColor: 'var(--border)', borderRadius: '0.625rem', borderStyle: 'solid', borderWidth: 1 }, count: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' } });
+export const emptyStyleXPreview: StyleXExamplePreviewProvider = <Msg>(index: number, model: unknown, onMessageJson: (messageJson: string) => Msg, h: HtmlBuilder<Msg>) => {
   const fixture = emptyFixtures[index] ?? emptyFixtures[0];
   const content = Empty.empty({ layoutStyle: styles.empty, children: [
     Empty.emptyHeader({ children: [Empty.emptyMedia({ variant: 'icon', children: [fixture.icon] }, h), Empty.emptyTitle({ children: [fixture.heading] }, h), Empty.emptyDescription({ children: [fixture.copy] }, h)] }, h),
-    Empty.emptyContent({ children: [Button.button({ ...(fixture.outline ? { variant: 'outline' as const } : {}), onClick: onMessageJson(JSON.stringify({ _tag: 'InteractedWithDocsPreview' })), children: [fixture.action] }, h)] }, h),
+    Empty.emptyContent({ children: [Button.button({ ...(fixture.outline ? { variant: 'outline' as const } : {}), onClick: onMessageJson(JSON.stringify({ _tag: 'InteractedWithDocsPreview' })), children: [fixture.action] }, h), h.p([h.Role('status'), h.Class(stylex.props(styles.count).className ?? '')], [`Clicked ${String((model as { interactionCount: number }).interactionCount)} times`])] }, h),
   ] }, h);
   return fixture.bordered ? h.div([h.Class(stylex.props(styles.bordered).className ?? '')], [content]) : content;
 };

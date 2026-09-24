@@ -146,8 +146,14 @@ export const resizable = <Msg>(
                 )
               : Option.none(),
           ),
-          h.OnKeyDownPreventDefault((key) => {
-            if (props.disabled === true) return Option.none();
+          h.OnKeyDownPreventDefault((key, modifiers) => {
+            if (
+              props.disabled === true ||
+              modifiers.ctrlKey ||
+              modifiers.altKey ||
+              modifiers.metaKey
+            )
+              return Option.none();
             const step = props.keyboardStep ?? 2;
             if (key === (vertical ? 'ArrowUp' : 'ArrowLeft'))
               return Option.some(
@@ -395,8 +401,11 @@ export const resizableGroup = <Msg>(
                 )
               : Option.none(),
           ),
-          h.OnKeyDownPreventDefault((key) =>
-            props.disabled === true
+          h.OnKeyDownPreventDefault((key, modifiers) =>
+            props.disabled === true ||
+            modifiers.ctrlKey ||
+            modifiers.altKey ||
+            modifiers.metaKey
               ? Option.none()
               : key === (vertical ? 'ArrowUp' : 'ArrowLeft')
                 ? Option.some(

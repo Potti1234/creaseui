@@ -47,7 +47,9 @@ const menuView = <Item extends string, Msg>(
   activeIndex: number,
   menuAttributes: (index: number) => ReadonlyArray<Attribute<Msg> | ChildAttribute>,
   h: HtmlBuilder<Msg>,
-): Html => h.div(
+): Html => {
+  const anyOpen = props.menus.some((menu) => menu.model.isOpen);
+  return h.div(
   [
     h.Role('menubar'),
     h.DataAttribute('slot', 'menubar'),
@@ -56,7 +58,15 @@ const menuView = <Item extends string, Msg>(
     h.Class(cn(ROOT_CLASS, props.class)),
   ],
   props.menus.map((menu, index) => h.div(
-    [h.Role('none'), h.DataAttribute('slot', 'menubar-menu'), ...menuAttributes(index)],
+    [
+      h.Role('none'),
+      h.DataAttribute('slot', 'menubar-menu'),
+      // While a menu is open the open menu's backdrop (z-40) would otherwise
+      // sit above the sibling triggers; raise them so clicking or hovering
+      // another trigger can reach it.
+      h.Class(anyOpen ? 'relative z-50' : 'relative'),
+      ...menuAttributes(index),
+    ],
     [DropdownMenu.dropdownMenu<Item, Msg>({
       model: menu.model,
       toParentMessage: menu.toParentMessage,
@@ -71,7 +81,8 @@ const menuView = <Item extends string, Msg>(
       ...(props.direction === undefined ? {} : { direction: props.direction }),
     }, h)],
   )),
-)
+);
+};
 
 const renderMenubar = <Item extends string, Msg>(props: MenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html =>
   h.submodel({
@@ -90,6 +101,7 @@ const renderMenubar = <Item extends string, Msg>(props: MenubarProps<Item, Msg>,
         const active = menu.items[menu.model.activeIndex]
         return key !== forward || active === undefined || menu.itemToConfig(active).submenu === undefined
       },
+      hoverFocus: props.menus.some((menu) => menu.model.isOpen),
       toView: menus => menuView(props, props.model.activeIndex, index => menus[index]?.attributes ?? [], h),
     },
     toParentMessage: props.toParentMessage,

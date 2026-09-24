@@ -96,6 +96,7 @@ export const renderRadioGroup = <Msg>(
                     ),
                     h.Type('button'),
                     h.DataAttribute('slot', 'radio-group-item'),
+                    ...(option.isReadOnly ? [h.AriaReadonly(true)] : []),
                     ...visual.item(option),
                   ],
                   [
@@ -106,7 +107,14 @@ export const renderRadioGroup = <Msg>(
                   ],
                 ),
                 h.div([...visual.text], [
-                  h.label([...option.label, ...visual.label], [content.label]),
+                  h.label(
+                    [
+                      ...option.label,
+                      h.For(`${props.model.id}-option-${String(option.index)}`),
+                      ...visual.label,
+                    ],
+                    [content.label],
+                  ),
                   ...(content.description === undefined
                     ? []
                     : [h.p([...option.description, ...visual.description], [content.description])]),

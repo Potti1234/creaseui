@@ -9,6 +9,7 @@ export const Model = S.Struct({
   pageSize: S.Number,
   selectedRowKeys: S.Array(S.String),
   hiddenColumnKeys: S.Array(S.String),
+  columnsMenuOpen: S.Boolean,
 })
 export type Model = typeof Model.Type
 
@@ -20,7 +21,9 @@ export const ToggledRow = m('ToggledRow', { key: S.String, isSelected: S.Boolean
 export const ToggledRows = m('ToggledRows', { keys: S.Array(S.String), isSelected: S.Boolean })
 export const ToggledColumn = m('ToggledColumn', { key: S.String, isVisible: S.Boolean })
 export const ClearedSelection = m('ClearedSelection')
-export const Message = S.Union([Filtered, Sorted, ChangedPage, ChangedPageSize, ToggledRow, ToggledRows, ToggledColumn, ClearedSelection])
+export const ToggledColumnsMenu = m('ToggledColumnsMenu')
+export const ClosedColumnsMenu = m('ClosedColumnsMenu')
+export const Message = S.Union([Filtered, Sorted, ChangedPage, ChangedPageSize, ToggledRow, ToggledRows, ToggledColumn, ClearedSelection, ToggledColumnsMenu, ClosedColumnsMenu])
 export type Message = typeof Message.Type
 
 export const init = (pageSize = 10): Model => ({
@@ -31,6 +34,7 @@ export const init = (pageSize = 10): Model => ({
   pageSize: Math.max(1, pageSize),
   selectedRowKeys: [],
   hiddenColumnKeys: [],
+  columnsMenuOpen: false,
 })
 
 const withMembership = (
@@ -62,6 +66,10 @@ export const update = (model: Model, message: Message): Model => {
       return { ...model, hiddenColumnKeys: withMembership(model.hiddenColumnKeys, message.key, !message.isVisible) }
     case 'ClearedSelection':
       return { ...model, selectedRowKeys: [] }
+    case 'ToggledColumnsMenu':
+      return { ...model, columnsMenuOpen: !model.columnsMenuOpen }
+    case 'ClosedColumnsMenu':
+      return { ...model, columnsMenuOpen: false }
   }
 }
 

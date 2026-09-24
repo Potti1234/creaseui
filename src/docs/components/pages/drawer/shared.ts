@@ -42,7 +42,7 @@ export const GotDrawerMessage = m('GotDrawerMessage${tag}', { message: Drawer.Me
 export const Message = S.Union([ClickedOpen, GotDrawerMessage])
 export type Message = typeof Message.Type`,
     init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { drawer: Drawer.init({ id: 'goal-drawer', isAnimated: true }) },
+  { drawer: Drawer.init({ id: 'drawer-${tag.toLowerCase()}', isAnimated: true }) },
   [],
 ]`,
     update: `const mapDrawer = (

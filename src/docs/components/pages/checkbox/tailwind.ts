@@ -13,6 +13,7 @@ import * as Checkbox from '@/ui/checkbox';
 const PreviewModel = S.Struct({
   _docsPage: S.Literal('checkbox'),
   isChecked: S.Boolean,
+  isIndeterminate: S.Boolean,
 });
 type PreviewModel = typeof PreviewModel.Type;
 const ToggledPreview = m('ToggledCheckboxPreview', { isChecked: S.Boolean });
@@ -27,9 +28,10 @@ export const checkboxTailwindPreviewProgram = definePreviewProgram<
   init: index => ({
     _docsPage: 'checkbox',
     isChecked: checkboxInitialValues[index] ?? false,
+    isIndeterminate: index === 1,
   }),
   update: (model, message) => [
-    { ...model, isChecked: message.isChecked },
+    { ...model, isChecked: message.isChecked, isIndeterminate: false },
     [],
   ],
   view: (index, model, h) => Checkbox.checkbox({
@@ -44,7 +46,7 @@ export const checkboxTailwindPreviewProgram = definePreviewProgram<
           value: 'accepted',
         }
       : {}),
-    ...(index === 1 ? { isIndeterminate: true } : {}),
+    ...(index === 1 ? { isIndeterminate: model.isIndeterminate } : {}),
     ...(index === 2 ? { isDisabled: true } : {}),
     ...(index === 3
       ? {

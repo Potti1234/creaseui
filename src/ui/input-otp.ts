@@ -58,6 +58,12 @@ export const inputOtp = <Msg>(
         h.Disabled(props.isDisabled ?? false),
         ...(props.name === undefined ? [] : [h.Name(props.name)]),
         h.OnInput((next) => props.onInput(normalize(next, length, pattern))),
+        // The fake caret always renders at value.length; pin the real caret
+        // there too so arrow keys / mid-string clicks can't desync them.
+        h.Attribute(
+          'onselect',
+          'this.setSelectionRange(this.value.length, this.value.length)',
+        ),
         h.Class(
           'peer absolute inset-0 z-10 size-full cursor-text opacity-0 disabled:cursor-not-allowed',
         ),

@@ -45,7 +45,7 @@ export const dialogTailwindPreviewProgram = definePreviewProgram<DialogPreviewMo
         footer: slots => [
           h.button([
             ...slots.closeButton,
-            ...(index === 0 ? slots.initialFocusAttributes() : []),
+            ...slots.initialFocusAttributes(),
             h.Type('button'),
             h.Class('rounded-md border px-4 py-2 text-sm'),
           ], [index === 0 ? 'Cancel' : 'Back']),

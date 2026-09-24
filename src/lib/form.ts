@@ -1,4 +1,4 @@
-import { Stream } from 'effect'
+import { Option, Stream } from 'effect'
 import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 
 export type FormMethod = 'get' | 'post' | 'dialog'
@@ -20,11 +20,12 @@ export type FormError = Readonly<{
   message: Html | string
 }>
 
-export type ErrorSummaryProps = Readonly<{
+export type ErrorSummaryProps<Msg> = Readonly<{
   id: string
   title: Html | string
   errors: ReadonlyArray<FormError>
   isAutofocus?: boolean
+  onErrorLink?: (controlId: string) => Msg
 }>
 
 export type ErrorSummaryVisualAttributes<Msg> = Readonly<{
@@ -76,7 +77,7 @@ export const renderForm = <Msg>(
   )
 
 export const renderErrorSummary = <Msg>(
-  props: ErrorSummaryProps,
+  props: ErrorSummaryProps<Msg>,
   visual: ErrorSummaryVisualAttributes<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
@@ -117,11 +118,30 @@ export const renderErrorSummary = <Msg>(
         props.errors.map((error) =>
           h.li([], [
             h.a(
-              [
-                h.Href(`#${error.controlId}`),
-                h.DataAttribute('slot', 'form-error-summary-link'),
-                ...visual.link,
-              ],
+              props.onErrorLink === undefined
+                ? [
+                    h.Href(`#${error.controlId}`),
+                    h.DataAttribute('slot', 'form-error-summary-link'),
+                    ...visual.link,
+                  ]
+                : [
+                    h.Tabindex(0),
+                    h.Role('link'),
+                    h.OnClickFocus(
+                      `#${error.controlId}`,
+                      props.onErrorLink(error.controlId),
+                    ),
+                    h.OnKeyDownFocus((key) =>
+                      key === 'Enter' && props.onErrorLink !== undefined
+                        ? Option.some({
+                            focusSelector: `#${error.controlId}`,
+                            message: props.onErrorLink(error.controlId),
+                          })
+                        : Option.none(),
+                    ),
+                    h.DataAttribute('slot', 'form-error-summary-link'),
+                    ...visual.link,
+                  ],
               [error.message],
             ),
           ]),
