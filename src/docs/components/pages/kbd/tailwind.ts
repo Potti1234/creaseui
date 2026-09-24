@@ -1,10 +1,12 @@
 import { Schema as S } from 'effect';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import * as Kbd from '@/ui/kbd';
 
-const InteractedWithKbdPreview = m('InteractedWithKbdPreview');
+const InteractedWithKbdPreview = defineMessageUnion({
+  InteractedWithKbdPreview: {},
+});
 type InteractedWithKbdPreview = typeof InteractedWithKbdPreview.Type;
 const KbdPreviewModel = S.Struct({ _docsPage: S.Literal('kbd') });
 type KbdPreviewModel = typeof KbdPreviewModel.Type;
@@ -16,7 +18,7 @@ export const kbdTailwindPreviewProgram = definePreviewProgram<
   Model: KbdPreviewModel,
   Message: InteractedWithKbdPreview,
   init: () => ({ _docsPage: 'kbd' }),
-  update: model => [model, []],
+  update: model => ({ model: model }),
   view: (index, _model, h) => index === 0
     ? h.p([h.Class('text-sm')], [
         'Press ',

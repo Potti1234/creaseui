@@ -8,7 +8,7 @@ import * as Button from '@/stylex/button';
 import * as Drawer from '@/stylex/drawer';
 
 const styles = stylex.create({
-  content: { paddingInline: '1rem', paddingBottom: '1.5rem', textAlign: 'center' },
+  content: { paddingInline: '1rem', textAlign: 'center', paddingBottom: '1.5rem', },
   value: {
     fontSize: '3rem',
     fontVariantNumeric: 'tabular-nums',
@@ -21,11 +21,11 @@ const styles = stylex.create({
     lineHeight: '1.25rem',
   },
   action: {
-    backgroundColor: 'var(--primary)',
     borderRadius: '0.375rem',
-    color: 'var(--primary-foreground)',
     paddingBlock: '0.5rem',
     paddingInline: '1rem',
+    backgroundColor: 'var(--primary)',
+    color: 'var(--primary-foreground)',
     fontSize: '0.875rem',
   },
   cancel: {

@@ -1,6 +1,6 @@
 import { Option, Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import { radioGroupOptions } from '@/docs/components/pages/radio-group/shared';
@@ -12,11 +12,14 @@ const PreviewModel = S.Struct({
   radioGroup: RadioGroup.Model,
 });
 type PreviewModel = typeof PreviewModel.Type;
-const ChangedPreview = m('ChangedRadioGroupPreview', { value: S.String });
-const GotRadioGroupMessage = m('GotDocsRadioGroupMessage', {
+
+
+const PreviewMessage = defineMessageUnion({
+  'ChangedRadioGroupPreview': { value: S.String },
+  'GotDocsRadioGroupMessage': {
   message: RadioGroup.Message,
+},
 });
-const PreviewMessage = S.Union([ChangedPreview, GotRadioGroupMessage]);
 type PreviewMessage = typeof PreviewMessage.Type;
 
 export const radioGroupTailwindPreviewProgram = definePreviewProgram<
@@ -32,29 +35,26 @@ export const radioGroupTailwindPreviewProgram = definePreviewProgram<
   }),
   update: (model, message) => {
     if (message._tag === 'ChangedRadioGroupPreview') {
-      return [{ ...model, value: message.value }, []];
+      return { model: { ...model, value: message.value } };
     }
-    const [radioGroup, commands, maybeSelection] =
-      RadioGroup.update(model.radioGroup, message.message);
-    return [
-      {
+    const { model: radioGroup, commands: radioGroupCommands__, outMessage: radioGroupOut__ } = RadioGroup.update(model.radioGroup, message.message);    const commands = radioGroupCommands__ ?? []
+    const maybeSelection = Option.fromNullishOr(radioGroupOut__)
+    return { model: {
         ...model,
         radioGroup,
         value: Option.match(maybeSelection, {
           onNone: () => model.value,
           onSome: selection => selection.value,
         }),
-      },
-      Command.mapMessages(
+      }, commands: Command.mapMessages(
         commands,
-        child => GotRadioGroupMessage({ message: child }),
-      ),
-    ];
+        child => PreviewMessage['GotDocsRadioGroupMessage']({ message: child }),
+      ) };
   },
   view: (index, model, h) => RadioGroup.radioGroup({
     model: model.radioGroup,
     selectedValue: Option.some(model.value),
-    toParentMessage: message => GotRadioGroupMessage({ message }),
+    toParentMessage: message => PreviewMessage['GotDocsRadioGroupMessage']({ message }),
     ariaLabel: 'Interface density',
     name: 'density',
     ...(index === 1

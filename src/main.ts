@@ -1,13 +1,13 @@
 import { Effect, Equal, Match as M, Schema as S } from "effect";
-import type { Runtime } from "foldkit";
+import type { Runtime , Update } from "foldkit";
 import { Command, Subscription } from "foldkit";
 import type { Document, Html, HtmlBuilder } from "foldkit/html";
-import { m } from "foldkit/message";
+import { defineMessageUnion } from "foldkit/message";
 import { UrlRequest, load, pushUrl } from "foldkit/navigation";
 import { Url, toString as urlToString } from "foldkit/url";
 import * as Render from "foldkit/render";
 import { defineView } from "foldkit/submodel";
-import { evo } from "foldkit/struct";
+import { modifyFields } from "foldkit/struct";
 
 import * as BlocksTailwindPage from "@/demo/blocks/featured-page";
 import * as SidebarStyleX from "@/demo/blocks-stylex/sidebar-page";
@@ -69,113 +69,112 @@ export const flags: Effect.Effect<Flags> = Effect.sync(() => ({
 
 // MESSAGE
 
-export const CompletedNavigateInternal = m("CompletedNavigateInternal");
-export const CompletedLoadExternal = m("CompletedLoadExternal");
-export const CompletedScrollToTop = m("CompletedScrollToTop");
-export const ClickedLink = m("ClickedLink", { request: UrlRequest });
-export const ChangedUrl = m("ChangedUrl", { url: Url });
-export const ClickedThemeToggle = m("ClickedThemeToggle");
-export const CompletedApplyTheme = m("CompletedApplyTheme");
-export const IgnoredBlocksPreviewInput = m("IgnoredBlocksPreviewInput");
-export const ChangedCreateRenderer = m("ChangedCreateRenderer", {
-  renderer: Page.CreateRenderer,
-});
-export const ChangedChartsRenderer = m("ChangedChartsRenderer", {
-  renderer: Page.CreateRenderer,
-});
-export const ChangedBlocksRenderer = m("ChangedBlocksRenderer", { renderer: Page.CreateRenderer });
-export const ChangedBlocksCategory = m("ChangedBlocksCategory", { category: Page.BlockCategory });
-export const ToggledBlockCode = m("ToggledBlockCode", { block: S.String });
-export const LoadedBlockCode = m("LoadedBlockCode", { block: S.String, renderer: Page.CreateRenderer, primary: S.String, files: S.Record(S.String, S.String) });
-export const SelectedBlockCodeFile = m("SelectedBlockCodeFile", { block: S.String, path: S.String });
-export const GotCodeFileMessage = m("GotCodeFileMessage", {
-  message: CodeFile.Message,
-});
-export const GotBlocksCopyMessage = m("GotBlocksCopyMessage", {
-  message: CopyFeedback.Message,
-});
-export const GotBlocksTailwindMessage = m("GotBlocksTailwindMessage", { message: BlocksTailwindPage.Message });
-export const GotSidebarStyleXMessage = m("GotSidebarStyleXMessage", { message: SidebarStyleX.Message });
-export const GotBoardMessage = m("GotBoardMessage", { message: Board.Message });
-export const GotBoardStyleXMessage = m("GotBoardStyleXMessage", {
-  message: BoardStyleX.Message,
-});
-export const GotLandingMessage = m("GotLandingMessage", {
-  message: Landing.Message,
-});
-export const GotBlocksMessage = m("GotBlocksMessage", {
-  message: Blocks.Message,
-});
-export const GotBlocksStyleXMessage = m("GotBlocksStyleXMessage", {
-  message: BlocksStyleXPage.Message,
-});
-export const GotTanStackTableMessage = m("GotTanStackTableMessage", {
-  message: TanStackTablePage.Message,
-});
-export const GotChartsAreaMessage = m("GotChartsAreaMessage", {
-  message: ChartsArea.Message,
-});
-export const GotChartsBarMessage = m("GotChartsBarMessage", {
-  message: ChartsBar.Message,
-});
-export const GotChartsLineMessage = m("GotChartsLineMessage", {
-  message: ChartsLine.Message,
-});
-export const GotChartsPieMessage = m("GotChartsPieMessage", {
-  message: ChartsPie.Message,
-});
-export const GotChartsRadarMessage = m("GotChartsRadarMessage", {
-  message: ChartsRadar.Message,
-});
-export const GotChartsRadialMessage = m("GotChartsRadialMessage", {
-  message: ChartsRadial.Message,
-});
-export const GotChartsTooltipMessage = m("GotChartsTooltipMessage", {
-  message: ChartsTooltip.Message,
-});
-export const GotChartsStyleXMessage = m("GotChartsStyleXMessage", {
-  message: ChartsStyleX.Message,
-});
-export const GotCatalogDocsMessage = m("GotCatalogDocsMessage", {
-  message: ComponentCatalog.Message,
-});
 
-export const Message = S.Union([
-  CompletedNavigateInternal,
-  CompletedLoadExternal,
-  CompletedScrollToTop,
-  ClickedLink,
-  ChangedUrl,
-  ClickedThemeToggle,
-  CompletedApplyTheme,
-  IgnoredBlocksPreviewInput,
-  ChangedCreateRenderer,
-  ChangedChartsRenderer,
-  ChangedBlocksRenderer,
-  ChangedBlocksCategory,
-  ToggledBlockCode,
-  LoadedBlockCode,
-  SelectedBlockCodeFile,
-  GotCodeFileMessage,
-  GotBlocksCopyMessage,
-  GotBlocksTailwindMessage,
-  GotSidebarStyleXMessage,
-  GotBoardMessage,
-  GotBoardStyleXMessage,
-  GotBlocksMessage,
-  GotBlocksStyleXMessage,
-  GotTanStackTableMessage,
-  GotLandingMessage,
-  GotChartsAreaMessage,
-  GotChartsBarMessage,
-  GotChartsLineMessage,
-  GotChartsPieMessage,
-  GotChartsRadarMessage,
-  GotChartsRadialMessage,
-  GotChartsTooltipMessage,
-  GotChartsStyleXMessage,
-  GotCatalogDocsMessage,
-]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export const Message = defineMessageUnion({
+  CompletedNavigateInternal: {},
+  CompletedLoadExternal: {},
+  CompletedScrollToTop: {},
+  ClickedLink: { request: UrlRequest },
+  ChangedUrl: { url: Url },
+  ClickedThemeToggle: {},
+  CompletedApplyTheme: {},
+  IgnoredBlocksPreviewInput: {},
+  ChangedCreateRenderer: {
+  renderer: Page.CreateRenderer,
+},
+  ChangedChartsRenderer: {
+  renderer: Page.CreateRenderer,
+},
+  ChangedBlocksRenderer: { renderer: Page.CreateRenderer },
+  ChangedBlocksCategory: { category: Page.BlockCategory },
+  ToggledBlockCode: { block: S.String },
+  LoadedBlockCode: { block: S.String, renderer: Page.CreateRenderer, primary: S.String, files: S.Record(S.String, S.String) },
+  SelectedBlockCodeFile: { block: S.String, path: S.String },
+  GotCodeFileMessage: {
+  message: CodeFile.Message,
+},
+  GotBlocksCopyMessage: {
+  message: CopyFeedback.Message,
+},
+  GotBlocksTailwindMessage: { message: BlocksTailwindPage.Message },
+  GotSidebarStyleXMessage: { message: SidebarStyleX.Message },
+  GotBoardMessage: { message: Board.Message },
+  GotBoardStyleXMessage: {
+  message: BoardStyleX.Message,
+},
+  GotBlocksMessage: {
+  message: Blocks.Message,
+},
+  GotBlocksStyleXMessage: {
+  message: BlocksStyleXPage.Message,
+},
+  GotTanStackTableMessage: {
+  message: TanStackTablePage.Message,
+},
+  GotLandingMessage: {
+  message: Landing.Message,
+},
+  GotChartsAreaMessage: {
+  message: ChartsArea.Message,
+},
+  GotChartsBarMessage: {
+  message: ChartsBar.Message,
+},
+  GotChartsLineMessage: {
+  message: ChartsLine.Message,
+},
+  GotChartsPieMessage: {
+  message: ChartsPie.Message,
+},
+  GotChartsRadarMessage: {
+  message: ChartsRadar.Message,
+},
+  GotChartsRadialMessage: {
+  message: ChartsRadial.Message,
+},
+  GotChartsTooltipMessage: {
+  message: ChartsTooltip.Message,
+},
+  GotChartsStyleXMessage: {
+  message: ChartsStyleX.Message,
+},
+  GotCatalogDocsMessage: {
+  message: ComponentCatalog.Message,
+},
+});
 export type Message = typeof Message.Type;
 
 // INIT
@@ -185,157 +184,150 @@ export const init: Runtime.RoutingApplicationInit<Model, Message, Flags> = (
   url: Url,
 ) => {
   const route = urlToAppRoute(url);
-  return [{ route, isDark: flags.isDark, page: Page.init(route) }, []];
+  return { model: { route, isDark: flags.isDark, page: Page.init(route) } };
 };
 
 // COMMAND
 
 const NavigateInternal = Command.define("NavigateInternal", {
   args: { url: S.String },
-  messages: [CompletedNavigateInternal],
+  messages: [Message.CompletedNavigateInternal],
   execute: ({ url }) =>
-    pushUrl(url).pipe(Effect.as(CompletedNavigateInternal())),
+    pushUrl(url).pipe(Effect.as(Message.CompletedNavigateInternal())),
 });
 
 const LoadExternal = Command.define("LoadExternal", {
   args: { href: S.String },
-  messages: [CompletedLoadExternal],
-  execute: ({ href }) => load(href).pipe(Effect.as(CompletedLoadExternal())),
+  messages: [Message.CompletedLoadExternal],
+  execute: ({ href }) => load(href).pipe(Effect.as(Message.CompletedLoadExternal())),
 });
 
 const ApplyTheme = Command.define("ApplyTheme", {
   args: { isDark: S.Boolean },
-  messages: [CompletedApplyTheme],
+  messages: [Message.CompletedApplyTheme],
   execute: ({ isDark }) =>
     Effect.sync(() => {
       document.documentElement.classList.toggle("dark", isDark);
       document.documentElement.style.colorScheme = isDark ? "dark" : "light";
       localStorage.setItem("creaseui-theme", isDark ? "dark" : "light");
-      return CompletedApplyTheme();
+      return Message.CompletedApplyTheme();
     }),
 });
 
 const ScrollToTop = Command.define("ScrollToTop", {
-  messages: [CompletedScrollToTop],
+  messages: [Message.CompletedScrollToTop],
   execute: Render.afterPaint.pipe(
     Effect.andThen(
       Effect.sync(() => window.scrollTo({ top: 0, behavior: "instant" })),
     ),
-    Effect.as(CompletedScrollToTop()),
+    Effect.as(Message.CompletedScrollToTop()),
   ),
 });
 
 const LoadBlockCode = Command.define("LoadBlockCode", {
   args: { renderer: Page.CreateRenderer, name: S.String },
-  messages: [LoadedBlockCode],
+  messages: [Message.LoadedBlockCode],
   execute: ({ renderer, name }) =>
     Effect.promise(() =>
       BlocksIndexPage.loadBlockSources(renderer, name),
     ).pipe(
       Effect.map(({ primary, files }) =>
-        LoadedBlockCode({ block: name, renderer, primary, files }),
+        Message.LoadedBlockCode({ block: name, renderer, primary, files }),
       ),
     ),
 });
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 const withUpdateReturn = M.withReturnType<UpdateReturn>();
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     withUpdateReturn,
     M.tagsExhaustive({
-      CompletedNavigateInternal: () => [model, []],
-      CompletedScrollToTop: () => [model, []],
-      CompletedLoadExternal: () => [model, []],
-      CompletedApplyTheme: () => [model, []],
-      IgnoredBlocksPreviewInput: () => [model, []],
+      CompletedNavigateInternal: () => ({ model: model }),
+      CompletedScrollToTop: () => ({ model: model }),
+      CompletedLoadExternal: () => ({ model: model }),
+      CompletedApplyTheme: () => ({ model: model }),
+      IgnoredBlocksPreviewInput: () => ({ model: model }),
 
       ChangedBlocksRenderer: ({renderer}) => {
-        if (model.page._tag !== "BlocksIndexPage") return [model, []];
+        if (model.page._tag !== "BlocksIndexPage") return { model: model };
         const page = model.page;
         const open = Object.keys(page.codeBlocks);
         const codeBlocks = Object.fromEntries(open.map((name) => [name, {files: {}, codeFile: ""}]));
         const commands = open.map((name) => LoadBlockCode({ renderer, name }));
-        return [{...model, page: {...page, renderer, codeBlocks}}, commands];
+        return { model: {...model, page: {...page, renderer, codeBlocks}}, commands: commands };
       },
-      ChangedBlocksCategory: ({category}) => model.page._tag === "BlocksIndexPage" ? [{...model, page: {...model.page, category, codeBlocks: {}}}, []] : [model, []],
+      ChangedBlocksCategory: ({category}) => model.page._tag === "BlocksIndexPage" ? { model: {...model, page: {...model.page, category, codeBlocks: {}}} } : { model: model },
       ToggledBlockCode: ({block}) => {
-        if (model.page._tag !== "BlocksIndexPage") return [model, []];
+        if (model.page._tag !== "BlocksIndexPage") return { model: model };
         const page = model.page;
         if (page.codeBlocks[block] !== undefined) {
           const codeBlocks = Object.fromEntries(Object.entries(page.codeBlocks).filter(([name]) => name !== block));
-          return [{...model, page: {...page, codeBlocks}}, []];
+          return { model: {...model, page: {...page, codeBlocks}} };
         }
         const codeBlocks = {...page.codeBlocks, [block]: {files: {}, codeFile: ""}};
-        return [{...model, page: {...page, codeBlocks}}, [LoadBlockCode({ renderer: page.renderer, name: block })]];
+        return { model: {...model, page: {...page, codeBlocks}}, commands: [LoadBlockCode({ renderer: page.renderer, name: block })] };
       },
       LoadedBlockCode: ({block, renderer, primary, files}) => {
-        if (model.page._tag !== "BlocksIndexPage" || model.page.codeBlocks[block] === undefined || model.page.renderer !== renderer) return [model, []];
+        if (model.page._tag !== "BlocksIndexPage" || model.page.codeBlocks[block] === undefined || model.page.renderer !== renderer) return { model: model };
         const codeBlocks = {...model.page.codeBlocks, [block]: {files, codeFile: primary}};
-        return [{...model, page: {...model.page, codeBlocks}}, []];
+        return { model: {...model, page: {...model.page, codeBlocks}} };
       },
       SelectedBlockCodeFile: ({block, path}) => {
         const panel = model.page._tag === "BlocksIndexPage" ? model.page.codeBlocks[block] : undefined;
-        if (model.page._tag !== "BlocksIndexPage" || panel === undefined || panel.files[path] === undefined) return [model, []];
+        if (model.page._tag !== "BlocksIndexPage" || panel === undefined || panel.files[path] === undefined) return { model: model };
         const codeBlocks = {...model.page.codeBlocks, [block]: {...panel, codeFile: path}};
-        return [{...model, page: {...model.page, codeBlocks}}, []];
+        return { model: {...model, page: {...model.page, codeBlocks}} };
       },
-      GotCodeFileMessage: () => [model, []],
+      GotCodeFileMessage: () => ({ model: model }),
       GotBlocksCopyMessage: ({message: child}) => {
-        if (model.page._tag !== "BlocksIndexPage") return [model, []];
+        if (model.page._tag !== "BlocksIndexPage") return { model: model };
         const page = model.page;
-        const [copiedCode, commands] = CopyFeedback.update(page.copiedCode, child);
-        return [{...model, page: {...page, copiedCode}}, Command.mapMessages(commands, message => GotBlocksCopyMessage({message}))];
+        const { model: copiedCode, commands: copiedCodeCommands__ } = CopyFeedback.update(page.copiedCode, child);
+        const commands = copiedCodeCommands__ ?? []
+        return { model: {...model, page: {...page, copiedCode}}, commands: Command.mapMessages(commands, message => Message.GotBlocksCopyMessage({message})) };
       },
       GotBlocksTailwindMessage: ({message: child}) => {
-        if(model.page._tag !== "BlockPage") return [model, []];
-        const [tailwindFeatured] = BlocksTailwindPage.update(model.page.tailwindFeatured, child);
-        return [{...model, page: {...model.page, tailwindFeatured}}, []];
+        if(model.page._tag !== "BlockPage") return { model: model };
+        const tailwindFeatured = BlocksTailwindPage.update(model.page.tailwindFeatured, child).model;
+        return { model: {...model, page: {...model.page, tailwindFeatured}} };
       },
       GotSidebarStyleXMessage: ({message: child}) => {
-        if(model.page._tag !== "BlockPage") return [model, []];
-        const [styleXSidebar, commands] = SidebarStyleX.update(model.page.styleXSidebar, child);
-        return [{...model, page: {...model.page, styleXSidebar}}, Command.mapMessages(commands, message => GotSidebarStyleXMessage({message}))];
+        if(model.page._tag !== "BlockPage") return { model: model };
+        const { model: styleXSidebar, commands: styleXSidebarCommands__ } = SidebarStyleX.update(model.page.styleXSidebar, child);
+        const commands = styleXSidebarCommands__ ?? []
+        return { model: {...model, page: {...model.page, styleXSidebar}}, commands: Command.mapMessages(commands, message => Message.GotSidebarStyleXMessage({message})) };
       },
       ChangedCreateRenderer: ({ renderer }) => {
-        if (model.page._tag !== "CreatePage") return [model, []];
+        if (model.page._tag !== "CreatePage") return { model: model };
         const currentPage = model.page;
-        return [
-          evo(model, {
-            page: () => evo(currentPage, { renderer: () => renderer }),
-          }),
-          [],
-        ];
+        return { model: modifyFields(model, {
+            page: () => modifyFields(currentPage, { renderer: () => renderer }),
+          }) };
       },
 
       ChangedChartsRenderer: ({ renderer }) => {
-        if (model.page._tag !== "ChartsPage") return [model, []];
+        if (model.page._tag !== "ChartsPage") return { model: model };
         const currentPage = model.page;
-        return [
-          evo(model, {
-            page: () => evo(currentPage, { renderer: () => renderer }),
-          }),
-          [],
-        ];
+        return { model: modifyFields(model, {
+            page: () => modifyFields(currentPage, { renderer: () => renderer }),
+          }) };
       },
 
       ClickedThemeToggle: () => {
         const isDark = !model.isDark;
-        return [evo(model, { isDark: () => isDark }), [ApplyTheme({ isDark })]];
+        return { model: modifyFields(model, { isDark: () => isDark }), commands: [ApplyTheme({ isDark })] };
       },
 
       ClickedLink: ({ request }) =>
         M.value(request).pipe(
           withUpdateReturn,
           M.tagsExhaustive({
-            Internal: ({ url }) => [
-              model,
-              [NavigateInternal({ url: urlToString(url) })],
-            ],
-            External: ({ href }) => [model, [LoadExternal({ href })]],
+            Internal: ({ url }) => ({ model: model, commands: [NavigateInternal({ url: urlToString(url) })] }),
+            External: ({ href }) => ({ model: model, commands: [LoadExternal({ href })] }),
           }),
         ),
 
@@ -345,252 +337,221 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           model.page._tag === "ChartsPage" && route._tag === "Charts"
             ? model.page
             : Page.init(route);
-        return [
-          evo(model, {
+        return { model: modifyFields(model, {
             route: () => route,
             page: () => page,
-          }),
-          Equal.equals(model.route, route) ? [] : [ScrollToTop()],
-        ];
+          }), commands: Equal.equals(model.route, route) ? [] : [ScrollToTop()] };
       },
 
       GotBoardMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== "CreatePage") return [model, []];
+        if (model.page._tag !== "CreatePage") return { model: model };
         const currentPage = model.page;
-        const [board, commands] = Board.update(
+        const { model: board, commands: boardCommands__ } = Board.update(
           currentPage.tailwindBoard,
           childMessage,
         );
-        return [
-          evo(model, {
-            page: () => evo(currentPage, { tailwindBoard: () => board }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotBoardMessage({ message: next }),
-          ),
-        ];
+        const commands = boardCommands__ ?? []
+        return { model: modifyFields(model, {
+            page: () => modifyFields(currentPage, { tailwindBoard: () => board }),
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotBoardMessage({ message: next }),
+          ) };
       },
 
       GotBlocksMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== "BlockPage") return [model, []];
+        if (model.page._tag !== "BlockPage") return { model: model };
         const currentPage = model.page;
-        const [blocks, commands] = Blocks.update(
+        const { model: blocks, commands: blocksCommands__ } = Blocks.update(
           currentPage.blocks,
           childMessage,
         );
-        return [
-          evo(model, {
-            page: () => evo(currentPage, { blocks: () => blocks }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotBlocksMessage({ message: next }),
-          ),
-        ];
+        const commands = blocksCommands__ ?? []
+        return { model: modifyFields(model, {
+            page: () => modifyFields(currentPage, { blocks: () => blocks }),
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotBlocksMessage({ message: next }),
+          ) };
       },
 
       GotBlocksStyleXMessage: ({message: child}) => {
-        if(model.page._tag !== "BlockPage") return [model, []];
-        const [styleXFeatured] = BlocksStyleXPage.update(model.page.styleXFeatured, child);
-        return [{...model, page: {...model.page, styleXFeatured}}, []];
+        if(model.page._tag !== "BlockPage") return { model: model };
+        const styleXFeatured = BlocksStyleXPage.update(model.page.styleXFeatured, child).model;
+        return { model: {...model, page: {...model.page, styleXFeatured}} };
       },
 
       GotTanStackTableMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== "BlocksStyleXTablePage") return [model, []];
+        if (model.page._tag !== "BlocksStyleXTablePage") return { model: model };
         const currentPage = model.page;
-        const [table, commands] = TanStackTablePage.update(currentPage.table, childMessage);
-        return [
-          evo(model, { page: () => evo(currentPage, { table: () => table }) }),
-          Command.mapMessages(commands, (next) =>
-            GotTanStackTableMessage({ message: next }),
-          ),
-        ];
+        const { model: table, commands: tableCommands__ } = TanStackTablePage.update(currentPage.table, childMessage);
+        const commands = tableCommands__ ?? []
+        return { model: modifyFields(model, { page: () => modifyFields(currentPage, { table: () => table }) }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotTanStackTableMessage({ message: next }),
+          ) };
       },
 
       GotLandingMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== "LandingPage") return [model, []];
+        if (model.page._tag !== "LandingPage") return { model: model };
         const currentPage = model.page;
-        const [landing, commands] = Landing.update(
+        const { model: landing, commands: landingCommands__ } = Landing.update(
           currentPage.landing,
           childMessage,
         );
-        return [
-          evo(model, {
-            page: () => evo(currentPage, { landing: () => landing }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotLandingMessage({ message: next }),
-          ),
-        ];
+        const commands = landingCommands__ ?? []
+        return { model: modifyFields(model, {
+            page: () => modifyFields(currentPage, { landing: () => landing }),
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotLandingMessage({ message: next }),
+          ) };
       },
 
       GotBoardStyleXMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== "CreatePage") return [model, []];
+        if (model.page._tag !== "CreatePage") return { model: model };
         const currentPage = model.page;
-        const [board, commands] = BoardStyleX.update(
+        const { model: board, commands: boardCommands__ } = BoardStyleX.update(
           currentPage.styleXBoard,
           childMessage,
         );
-        return [
-          evo(model, {
-            page: () => evo(currentPage, { styleXBoard: () => board }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotBoardStyleXMessage({ message: next }),
-          ),
-        ];
+        const commands = boardCommands__ ?? []
+        return { model: modifyFields(model, {
+            page: () => modifyFields(currentPage, { styleXBoard: () => board }),
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotBoardStyleXMessage({ message: next }),
+          ) };
       },
 
       GotChartsAreaMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== "ChartsPage") return [model, []];
+        if (model.page._tag !== "ChartsPage") return { model: model };
         const currentPage = model.page;
-        const [page, commands] = ChartsArea.update(
+        const { model: page, commands: pageCommands__ } = ChartsArea.update(
           currentPage.area,
           childMessage,
         );
-        return [
-          evo(model, {
-            page: () => evo(currentPage, { area: () => page }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotChartsAreaMessage({ message: next }),
-          ),
-        ];
+        const commands = pageCommands__ ?? []
+        return { model: modifyFields(model, {
+            page: () => modifyFields(currentPage, { area: () => page }),
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotChartsAreaMessage({ message: next }),
+          ) };
       },
 
       GotChartsBarMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== "ChartsPage") return [model, []];
+        if (model.page._tag !== "ChartsPage") return { model: model };
         const currentPage = model.page;
-        const [page, commands] = ChartsBar.update(
+        const { model: page, commands: pageCommands__ } = ChartsBar.update(
           currentPage.bar,
           childMessage,
         );
-        return [
-          evo(model, {
-            page: () => evo(currentPage, { bar: () => page }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotChartsBarMessage({ message: next }),
-          ),
-        ];
+        const commands = pageCommands__ ?? []
+        return { model: modifyFields(model, {
+            page: () => modifyFields(currentPage, { bar: () => page }),
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotChartsBarMessage({ message: next }),
+          ) };
       },
 
       GotChartsLineMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== "ChartsPage") return [model, []];
+        if (model.page._tag !== "ChartsPage") return { model: model };
         const currentPage = model.page;
-        const [page, commands] = ChartsLine.update(
+        const { model: page, commands: pageCommands__ } = ChartsLine.update(
           currentPage.line,
           childMessage,
         );
-        return [
-          evo(model, {
-            page: () => evo(currentPage, { line: () => page }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotChartsLineMessage({ message: next }),
-          ),
-        ];
+        const commands = pageCommands__ ?? []
+        return { model: modifyFields(model, {
+            page: () => modifyFields(currentPage, { line: () => page }),
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotChartsLineMessage({ message: next }),
+          ) };
       },
 
       GotChartsPieMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== "ChartsPage") return [model, []];
+        if (model.page._tag !== "ChartsPage") return { model: model };
         const currentPage = model.page;
-        const [page, commands] = ChartsPie.update(
+        const { model: page, commands: pageCommands__ } = ChartsPie.update(
           currentPage.pie,
           childMessage,
         );
-        return [
-          evo(model, {
-            page: () => evo(currentPage, { pie: () => page }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotChartsPieMessage({ message: next }),
-          ),
-        ];
+        const commands = pageCommands__ ?? []
+        return { model: modifyFields(model, {
+            page: () => modifyFields(currentPage, { pie: () => page }),
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotChartsPieMessage({ message: next }),
+          ) };
       },
 
       GotChartsRadarMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== "ChartsPage") return [model, []];
+        if (model.page._tag !== "ChartsPage") return { model: model };
         const currentPage = model.page;
-        const [page, commands] = ChartsRadar.update(
+        const { model: page, commands: pageCommands__ } = ChartsRadar.update(
           currentPage.radar,
           childMessage,
         );
-        return [
-          evo(model, {
-            page: () => evo(currentPage, { radar: () => page }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotChartsRadarMessage({ message: next }),
-          ),
-        ];
+        const commands = pageCommands__ ?? []
+        return { model: modifyFields(model, {
+            page: () => modifyFields(currentPage, { radar: () => page }),
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotChartsRadarMessage({ message: next }),
+          ) };
       },
 
       GotChartsRadialMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== "ChartsPage") return [model, []];
+        if (model.page._tag !== "ChartsPage") return { model: model };
         const currentPage = model.page;
-        const [page, commands] = ChartsRadial.update(
+        const { model: page, commands: pageCommands__ } = ChartsRadial.update(
           currentPage.radial,
           childMessage,
         );
-        return [
-          evo(model, {
-            page: () => evo(currentPage, { radial: () => page }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotChartsRadialMessage({ message: next }),
-          ),
-        ];
+        const commands = pageCommands__ ?? []
+        return { model: modifyFields(model, {
+            page: () => modifyFields(currentPage, { radial: () => page }),
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotChartsRadialMessage({ message: next }),
+          ) };
       },
 
       GotChartsTooltipMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== "ChartsPage") return [model, []];
+        if (model.page._tag !== "ChartsPage") return { model: model };
         const currentPage = model.page;
-        const [page, commands] = ChartsTooltip.update(
+        const { model: page, commands: pageCommands__ } = ChartsTooltip.update(
           currentPage.tooltip,
           childMessage,
         );
-        return [
-          evo(model, {
-            page: () => evo(currentPage, { tooltip: () => page }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotChartsTooltipMessage({ message: next }),
-          ),
-        ];
+        const commands = pageCommands__ ?? []
+        return { model: modifyFields(model, {
+            page: () => modifyFields(currentPage, { tooltip: () => page }),
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotChartsTooltipMessage({ message: next }),
+          ) };
       },
 
       GotChartsStyleXMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== "ChartsPage") return [model, []];
+        if (model.page._tag !== "ChartsPage") return { model: model };
         const currentPage = model.page;
-        const [charts, commands] = ChartsStyleX.update(
+        const { model: charts, commands: chartsCommands__ } = ChartsStyleX.update(
           currentPage.styleXCharts,
           childMessage,
         );
-        return [
-          evo(model, {
-            page: () => evo(currentPage, { styleXCharts: () => charts }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotChartsStyleXMessage({ message: next }),
-          ),
-        ];
+        const commands = chartsCommands__ ?? []
+        return { model: modifyFields(model, {
+            page: () => modifyFields(currentPage, { styleXCharts: () => charts }),
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotChartsStyleXMessage({ message: next }),
+          ) };
       },
 
       GotCatalogDocsMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== "CatalogDocsPage") return [model, []];
+        if (model.page._tag !== "CatalogDocsPage") return { model: model };
         const currentPage = model.page;
-        const [catalogDocs, commands] = ComponentCatalog.update(
+        const { model: catalogDocs, commands: catalogDocsCommands__ } = ComponentCatalog.update(
           currentPage.docs,
           childMessage,
         );
-        return [
-          evo(model, {
-            page: () => evo(currentPage, { docs: () => catalogDocs }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotCatalogDocsMessage({ message: next }),
-          ),
-        ];
+        const commands = catalogDocsCommands__ ?? []
+        return { model: modifyFields(model, {
+            page: () => modifyFields(currentPage, { docs: () => catalogDocs }),
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotCatalogDocsMessage({ message: next }),
+          ) };
       },
     }),
   );
@@ -625,7 +586,7 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
       model.page._tag === "CreatePage"
         ? model.page.tailwindBoard
         : inactiveBoard,
-    toParentMessage: (message) => GotBoardMessage({ message }),
+    toParentMessage: (message) => Message.GotBoardMessage({ message }),
     when: (model) =>
       model.page._tag === "CreatePage" && model.page.renderer === "tailwind",
   }),
@@ -634,7 +595,7 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
       model.page._tag === "CreatePage"
         ? model.page.styleXBoard
         : inactiveBoardStyleX,
-    toParentMessage: (message) => GotBoardStyleXMessage({ message }),
+    toParentMessage: (message) => Message.GotBoardStyleXMessage({ message }),
     when: (model) =>
       model.page._tag === "CreatePage" && model.page.renderer === "stylex",
   }),
@@ -643,14 +604,14 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
       model.page._tag === "CatalogDocsPage"
         ? model.page.docs
         : inactiveCatalogDocs,
-    toParentMessage: (message) => GotCatalogDocsMessage({ message }),
+    toParentMessage: (message) => Message.GotCatalogDocsMessage({ message }),
   }),
   Subscription.lift(TanStackTablePage.subscriptions)<Model, Message>({
     toChildModel: (model) =>
       model.page._tag === "BlocksStyleXTablePage"
         ? model.page.table
         : inactiveTanStackTablePage,
-    toParentMessage: (message) => GotTanStackTableMessage({ message }),
+    toParentMessage: (message) => Message.GotTanStackTableMessage({ message }),
     when: (model) => model.page._tag === "BlocksStyleXTablePage",
   }),
 );
@@ -699,7 +660,7 @@ const createRendererSwitcher = (
       h.button(
         [
           h.Type("button"),
-          h.OnClick(ChangedCreateRenderer({ renderer })),
+          h.OnClick(Message.ChangedCreateRenderer({ renderer })),
           h.AriaPressed(page.renderer === renderer ? "true" : "false"),
           h.Class(
             cn(
@@ -729,7 +690,7 @@ const chartsRendererSwitcher = (
       h.button(
         [
           h.Type("button"),
-          h.OnClick(ChangedChartsRenderer({ renderer })),
+          h.OnClick(Message.ChangedChartsRenderer({ renderer })),
           h.AriaPressed(page.renderer === renderer ? "true" : "false"),
           h.Class(
             cn(
@@ -759,7 +720,7 @@ const blocksRendererSwitcher = (
       h.button(
         [
           h.Type("button"),
-          h.OnClick(ChangedBlocksRenderer({ renderer })),
+          h.OnClick(Message.ChangedBlocksRenderer({ renderer })),
           h.AriaPressed(page.renderer === renderer ? "true" : "false"),
           h.Class(
             cn(
@@ -882,7 +843,7 @@ const header = (model: Model, h: HtmlBuilder<Message>): Html => {
           h.button(
             [
               h.Type("button"),
-              h.OnClick(ClickedThemeToggle()),
+              h.OnClick(Message.ClickedThemeToggle()),
               h.AriaLabel(
                 model.isDark ? "Switch to light mode" : "Switch to dark mode",
               ),
@@ -963,12 +924,12 @@ const blocksView = (
   if(block.name.startsWith("sidebar-")) {
     const id = block.name.slice(8);
     return block.renderer === "stylex"
-      ? h.submodel({ slotId: "sidebar-stylex", model: page.styleXSidebar, view: sidebarStyleXView, viewInputs: id, toParentMessage: message => GotSidebarStyleXMessage({message}) })
-      : h.submodel({ slotId: "sidebar-blocks", model: page.blocks, view: blocksRegistryView, viewInputs: id, toParentMessage: message => GotBlocksMessage({message}) });
+      ? h.submodel({ slotId: "sidebar-stylex", model: page.styleXSidebar, view: sidebarStyleXView, viewInputs: id, toParentMessage: message => Message.GotSidebarStyleXMessage({message}) })
+      : h.submodel({ slotId: "sidebar-blocks", model: page.blocks, view: blocksRegistryView, viewInputs: id, toParentMessage: message => Message.GotBlocksMessage({message}) });
   }
   return block.renderer === "stylex"
-    ? h.submodel({slotId: "featured-stylex", model: page.styleXFeatured, view: blocksStyleXView, viewInputs: block.name, toParentMessage: message => GotBlocksStyleXMessage({message})})
-    : h.submodel({slotId: "featured-tailwind", model: page.tailwindFeatured, view: blocksTailwindView, viewInputs: block.name, toParentMessage: message => GotBlocksTailwindMessage({message})});
+    ? h.submodel({slotId: "featured-stylex", model: page.styleXFeatured, view: blocksStyleXView, viewInputs: block.name, toParentMessage: message => Message.GotBlocksStyleXMessage({message})})
+    : h.submodel({slotId: "featured-tailwind", model: page.tailwindFeatured, view: blocksTailwindView, viewInputs: block.name, toParentMessage: message => Message.GotBlocksTailwindMessage({message})});
 };
 const chartsAreaView = defineView<ChartsArea.Model, ChartsArea.Message>(
   ChartsArea.view,
@@ -1012,7 +973,7 @@ const chartsSectionView = (
       view: chartsStyleXView,
       viewInputs: section,
       toParentMessage: (message: ChartsStyleX.Message): Message =>
-        GotChartsStyleXMessage({ message }),
+        Message.GotChartsStyleXMessage({ message }),
     });
   }
   return M.value(section).pipe(
@@ -1023,7 +984,7 @@ const chartsSectionView = (
         model: page.area,
         view: chartsAreaView,
         toParentMessage: (message: ChartsArea.Message): Message =>
-          GotChartsAreaMessage({ message }),
+          Message.GotChartsAreaMessage({ message }),
       }),
     ),
     M.when("bar", () =>
@@ -1032,7 +993,7 @@ const chartsSectionView = (
         model: page.bar,
         view: chartsBarView,
         toParentMessage: (message: ChartsBar.Message): Message =>
-          GotChartsBarMessage({ message }),
+          Message.GotChartsBarMessage({ message }),
       }),
     ),
     M.when("line", () =>
@@ -1041,7 +1002,7 @@ const chartsSectionView = (
         model: page.line,
         view: chartsLineView,
         toParentMessage: (message: ChartsLine.Message): Message =>
-          GotChartsLineMessage({ message }),
+          Message.GotChartsLineMessage({ message }),
       }),
     ),
     M.when("pie", () =>
@@ -1050,7 +1011,7 @@ const chartsSectionView = (
         model: page.pie,
         view: chartsPieView,
         toParentMessage: (message: ChartsPie.Message): Message =>
-          GotChartsPieMessage({ message }),
+          Message.GotChartsPieMessage({ message }),
       }),
     ),
     M.when("radar", () =>
@@ -1059,7 +1020,7 @@ const chartsSectionView = (
         model: page.radar,
         view: chartsRadarView,
         toParentMessage: (message: ChartsRadar.Message): Message =>
-          GotChartsRadarMessage({ message }),
+          Message.GotChartsRadarMessage({ message }),
       }),
     ),
     M.when("radial", () =>
@@ -1068,7 +1029,7 @@ const chartsSectionView = (
         model: page.radial,
         view: chartsRadialView,
         toParentMessage: (message: ChartsRadial.Message): Message =>
-          GotChartsRadialMessage({ message }),
+          Message.GotChartsRadialMessage({ message }),
       }),
     ),
     M.when("tooltip", () =>
@@ -1077,7 +1038,7 @@ const chartsSectionView = (
         model: page.tooltip,
         view: chartsTooltipView,
         toParentMessage: (message: ChartsTooltip.Message): Message =>
-          GotChartsTooltipMessage({ message }),
+          Message.GotChartsTooltipMessage({ message }),
       }),
     ),
     M.exhaustive,
@@ -1151,7 +1112,7 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
                 model: model.page.landing,
                 view: landingView,
                 toParentMessage: (message: Landing.Message): Message =>
-                  GotLandingMessage({ message }),
+                  Message.GotLandingMessage({ message }),
               }),
             )
           : keyed("page-not-found", notFoundView("/", h)),
@@ -1165,7 +1126,7 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
                   model: model.page.tailwindBoard,
                   view: boardView,
                   toParentMessage: (message: Board.Message): Message =>
-                    GotBoardMessage({ message }),
+                    Message.GotBoardMessage({ message }),
                 }),
               )
             : keyed(
@@ -1175,7 +1136,7 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
                   model: model.page.styleXBoard,
                   view: boardConstrainedView,
                   toParentMessage: (message: BoardConstrained.Message): Message =>
-                    GotBoardStyleXMessage({ message }),
+                    Message.GotBoardStyleXMessage({ message }),
                 }),
               )
           : keyed("page-not-found", notFoundView(createPath(), h)),
@@ -1186,8 +1147,8 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
               chartsSectionView(model, section, h),
             )
           : keyed("page-not-found", notFoundView(`/charts/${section}`, h)),
-      BlocksIndex: () => model.page._tag === "BlocksIndexPage" ? keyed("page-blocks", BlocksIndexPage.view({...model.page, isDark:model.isDark, onCategory: category => ChangedBlocksCategory({category}), onToggleCode: block => ToggledBlockCode({block}), onSelectCodeFile: (block, path) => SelectedBlockCodeFile({block, path}), onCodeFileMessage: message => GotCodeFileMessage({message}), onCopyCode: code => GotBlocksCopyMessage({message: CopyFeedback.ClickedCopyCode({code})})}, h)) : h.empty,
-      BlocksStyleX: () => model.page._tag === "BlocksIndexPage" ? keyed("page-blocks", BlocksIndexPage.view({...model.page, isDark:model.isDark, onCategory: category => ChangedBlocksCategory({category}), onToggleCode: block => ToggledBlockCode({block}), onSelectCodeFile: (block, path) => SelectedBlockCodeFile({block, path}), onCodeFileMessage: message => GotCodeFileMessage({message}), onCopyCode: code => GotBlocksCopyMessage({message: CopyFeedback.ClickedCopyCode({code})})}, h)) : h.empty,
+      BlocksIndex: () => model.page._tag === "BlocksIndexPage" ? keyed("page-blocks", BlocksIndexPage.view({...model.page, isDark:model.isDark, onCategory: category => Message.ChangedBlocksCategory({category}), onToggleCode: block => Message.ToggledBlockCode({block}), onSelectCodeFile: (block, path) => Message.SelectedBlockCodeFile({block, path}), onCodeFileMessage: message => Message.GotCodeFileMessage({message}), onCopyCode: code => Message.GotBlocksCopyMessage({message: CopyFeedback.Message.ClickedDocsCopyCode({code})})}, h)) : h.empty,
+      BlocksStyleX: () => model.page._tag === "BlocksIndexPage" ? keyed("page-blocks", BlocksIndexPage.view({...model.page, isDark:model.isDark, onCategory: category => Message.ChangedBlocksCategory({category}), onToggleCode: block => Message.ToggledBlockCode({block}), onSelectCodeFile: (block, path) => Message.SelectedBlockCodeFile({block, path}), onCodeFileMessage: message => Message.GotCodeFileMessage({message}), onCopyCode: code => Message.GotBlocksCopyMessage({message: CopyFeedback.Message.ClickedDocsCopyCode({code})})}, h)) : h.empty,
       BlocksStyleXTable: () =>
         model.page._tag === "BlocksStyleXTablePage"
           ? keyed(
@@ -1197,7 +1158,7 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
                 model: model.page.table,
                 view: tanStackTableView,
                 toParentMessage: (message: TanStackTablePage.Message): Message =>
-                  GotTanStackTableMessage({ message }),
+                  Message.GotTanStackTableMessage({ message }),
               }),
             )
           : keyed("page-not-found", notFoundView(blocksStyleXTablePath(), h)),
@@ -1214,7 +1175,7 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
                 view: catalogDocsView,
                 viewInputs: { slug: component, dark: model.isDark },
                 toParentMessage: (message: ComponentCatalog.Message): Message =>
-                  GotCatalogDocsMessage({ message }),
+                  Message.GotCatalogDocsMessage({ message }),
               }),
             )
           : keyed(

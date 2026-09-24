@@ -9,11 +9,9 @@ Source: [`src/ui/accordion.ts`](../src/ui/accordion.ts)
 | Export | Kind | Signature |
 | --- | --- | --- |
 | `AccordionType` | re-export | `export { AccordionType } from '@/lib/accordion-state'` |
-| `ChangedValue` | re-export | `export { ChangedValue } from '@/lib/accordion-state'` |
 | `Message` | re-export | `export { Message } from '@/lib/accordion-state'` |
 | `Model` | re-export | `export { Model } from '@/lib/accordion-state'` |
 | `OutMessage` | re-export | `export { OutMessage } from '@/lib/accordion-state'` |
-| `ToggledItem` | re-export | `export { ToggledItem } from '@/lib/accordion-state'` |
 | `init` | re-export | `export { init } from '@/lib/accordion-state'` |
 | `reflect` | re-export | `export { reflect } from '@/lib/accordion-state'` |
 | `update` | re-export | `export { update } from '@/lib/accordion-state'` |
@@ -86,8 +84,6 @@ Source: [`src/ui/avatar.ts`](../src/ui/avatar.ts)
 | --- | --- | --- |
 | `Model` | value | `Model: value` |
 | `Model` | type | `Model = typeof Model.Type` |
-| `Loaded` | value | `Loaded: value` |
-| `Failed` | value | `Failed: value` |
 | `Message` | value | `Message: value` |
 | `Message` | type | `Message = typeof Message.Type` |
 | `init` | function | `init(): Model` |
@@ -461,19 +457,8 @@ Source: [`src/ui/dropdown-menu.ts`](../src/ui/dropdown-menu.ts)
 | --- | --- | --- |
 | `Model` | value | `Model: value` |
 | `Model` | type | `Model = typeof Model.Type` |
-| `Opened` | value | `Opened: value` |
-| `AnchoredAt` | value | `AnchoredAt: value` |
-| `OpenedFromContext` | value | `OpenedFromContext: value` |
-| `OpenedAt` | value | `OpenedAt: value` |
-| `Closed` | value | `Closed: value` |
-| `ActivatedItem` | value | `ActivatedItem: value` |
-| `OpenedSubmenu` | value | `OpenedSubmenu: value` |
-| `ActivatedSubmenuItem` | value | `ActivatedSubmenuItem: value` |
-| `ClosedSubmenu` | value | `ClosedSubmenu: value` |
-| `SelectedItem` | value | `SelectedItem: value` |
 | `Message` | value | `Message: value` |
 | `Message` | type | `Message = typeof Message.Type` |
-| `Selected` | value | `Selected: value` |
 | `OutMessage` | value | `OutMessage: value` |
 | `OutMessage` | type | `OutMessage<Item extends string = string> = Readonly<{ _tag: 'Selected'; value: Item; index: number; }>` |
 | `init` | function | `init(config: Readonly<{ id: string; isAnimated?: boolean; isModal?: boolean }>): Model` |
@@ -838,10 +823,6 @@ Source: [`src/ui/resizable.ts`](../src/ui/resizable.ts)
 | --- | --- | --- |
 | `Model` | value | `Model: value` |
 | `Model` | type | `Model = typeof Model.Type` |
-| `StartedResize` | value | `StartedResize: value` |
-| `DraggedResize` | value | `DraggedResize: value` |
-| `EndedResize` | value | `EndedResize: value` |
-| `NudgedResize` | value | `NudgedResize: value` |
 | `Message` | value | `Message: value` |
 | `Message` | type | `Message = typeof Message.Type` |
 | `init` | function | `init(id: string, firstSize = 50): Model` |
@@ -850,10 +831,6 @@ Source: [`src/ui/resizable.ts`](../src/ui/resizable.ts)
 | `resizable` | function | `resizable<Msg>(props: ResizableProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `GroupModel` | value | `GroupModel: value` |
 | `GroupModel` | type | `GroupModel = typeof GroupModel.Type` |
-| `StartedGroupResize` | value | `StartedGroupResize: value` |
-| `DraggedGroupResize` | value | `DraggedGroupResize: value` |
-| `EndedGroupResize` | value | `EndedGroupResize: value` |
-| `NudgedGroupResize` | value | `NudgedGroupResize: value` |
 | `GroupMessage` | value | `GroupMessage: value` |
 | `GroupMessage` | type | `GroupMessage = typeof GroupMessage.Type` |
 | `initGroup` | function | `initGroup(id: string, panelCount: number, sizes?: ReadonlyArray<number>): GroupModel` |

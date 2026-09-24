@@ -133,8 +133,8 @@ const shell = <Msg>(kind: SidebarFixtureKind, model: { sidebar: Sidebar.Model; a
   const side: Sidebar.SidebarSide = kind === 'right' ? 'right' : 'left';
   const sidebarMessage = (message: Sidebar.Message): Msg => send(JSON.stringify({ _tag: 'GotSidebarPreviewMessage', message }));
   const queryMessage = (value: string): Msg => send(JSON.stringify({ _tag: 'ChangedSidebarPreviewQuery', value }));
-  const desktopToggle = sidebarMessage(Sidebar.Toggled());
-  const trigger = Sidebar.sidebarTrigger({ onClick: desktopToggle, onMobileClick: sidebarMessage(Sidebar.ToggledMobile()) }, h);
+  const desktopToggle = sidebarMessage(Sidebar.Message.Toggled());
+  const trigger = Sidebar.sidebarTrigger({ onClick: desktopToggle, onMobileClick: sidebarMessage(Sidebar.Message.ToggledMobile()) }, h);
   const panel = Sidebar.sidebar({
     state,
     side,
@@ -142,7 +142,7 @@ const shell = <Msg>(kind: SidebarFixtureKind, model: { sidebar: Sidebar.Model; a
     collapsible,
     presentation: 'contained',
     isMobileOpen: model.sidebar.isMobileOpen,
-    onMobileDismiss: sidebarMessage(Sidebar.SetMobileOpen({ isOpen: false })),
+    onMobileDismiss: sidebarMessage(Sidebar.Message.SetMobileOpen({ isOpen: false })),
     children: [...sidebarBody(model, send, queryMessage, h), Sidebar.sidebarRail({ onClick: desktopToggle }, h)],
   }, h);
   const inset = Sidebar.sidebarInset({

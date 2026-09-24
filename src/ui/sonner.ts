@@ -2,7 +2,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as Icon from '@/lib/icon'
 import { cn } from '@/lib/utils'
-import { Activated, Dismissed, Paused, Resumed, type Entry, type Message, type Model, type Variant } from '@/lib/toast'
+import { type Entry, type Message, type Model, type Variant, Message as ToastMessages } from '@/lib/toast'
 
 export * from '@/lib/toast'
 
@@ -33,8 +33,8 @@ const entryView = <Msg>(entry: Entry, props: SonnerProps<Msg>, h: HtmlBuilder<Ms
     h.DataAttribute('variant', entry.variant.toLowerCase()),
     h.DataAttribute('paused', String(entry.isPaused)),
     ...(props.pausePolicy === 'none' || entry.sticky ? [] : [
-      h.OnMouseEnter(props.toParentMessage(Paused({ id: entry.id }))),
-      h.OnMouseLeave(props.toParentMessage(Resumed({ id: entry.id }))),
+      h.OnMouseEnter(props.toParentMessage(ToastMessages.PausedToast({ id: entry.id }))),
+      h.OnMouseLeave(props.toParentMessage(ToastMessages.ResumedToast({ id: entry.id }))),
     ]),
     h.Class(cn('group pointer-events-auto relative flex w-full items-start gap-3 overflow-hidden rounded-lg border bg-popover p-4 pr-8 text-popover-foreground shadow-lg transition-[opacity,transform] duration-200 motion-reduce:transition-none', props.entryClass)),
   ],
@@ -46,12 +46,12 @@ const entryView = <Msg>(entry: Entry, props: SonnerProps<Msg>, h: HtmlBuilder<Ms
     ]),
     ...(entry.payload.actionLabel === undefined ? [] : [h.button([
       h.Type('button'),
-      h.OnClick(props.toParentMessage(Activated({ id: entry.id }))),
+      h.OnClick(props.toParentMessage(ToastMessages.ActivatedToastAction({ id: entry.id }))),
       h.Class('inline-flex h-8 shrink-0 items-center justify-center rounded-md border bg-transparent px-3 text-sm font-medium hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring'),
     ], [entry.payload.actionLabel])]),
     h.button([
       h.Type('button'), h.AriaLabel('Dismiss notification'),
-      h.OnClick(props.toParentMessage(Dismissed({ id: entry.id }))),
+      h.OnClick(props.toParentMessage(ToastMessages.Dismissed({ id: entry.id }))),
       h.Class('absolute top-2 right-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity motion-reduce:transition-none hover:text-foreground focus:opacity-100 group-hover:opacity-100'),
     ], [Icon.x<Msg>({ class: 'size-4' }, h)]),
   ],

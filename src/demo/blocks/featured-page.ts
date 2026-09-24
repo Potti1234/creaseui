@@ -1,7 +1,8 @@
+import { taggedStruct } from 'foldkit/schema'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { Option, Schema as S } from 'effect'
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit'
-import { m } from 'foldkit/message'
 
 import { loginArtwork } from '@/ui/composition/login-artwork'
 import { badge } from '@/ui/badge'
@@ -63,45 +64,44 @@ type Block = Readonly<{
 
 export const Model = S.Struct({ checkout: S.Record(S.String, S.String), delivery: S.String, email: S.String, kind: S.String, mail: S.String, mailFilter: S.String, password: S.String, query: S.String, radioGroup: RadioGroup.Model, table: TableState.Model })
 export type Model = typeof Model.Type
-export const ChangedEmail = m('ChangedBlockEmail', { value: S.String })
-export const ChangedPassword = m('ChangedBlockPassword', { value: S.String })
-export const ChangedQuery = m('ChangedBlockQuery', { value: S.String })
-export const ChangedKind = m('ChangedBlockKind', { value: S.String })
-export const ClearedCatalogSearch = m('ClearedBlockCatalogSearch')
-export const ChangedMailFilter = m('ChangedBlockMailFilter', { value: S.String })
-export const SelectedMailThread = m('SelectedBlockMailThread', { id: S.String })
-export const ChangedCheckoutField = m('ChangedCheckoutField', { name: S.String, value: S.String })
-export const GotRadioGroupMessage = m('GotBlockRadioGroupMessage', { message: RadioGroup.Message })
-export const GotEChartMessage = m('GotBlocksStyleXEChartMessage', { message: ECharts.ChartMessage })
+export const ChangedEmail = taggedStruct('ChangedBlockEmail', { value: S.String });
+export const ChangedPassword = taggedStruct('ChangedBlockPassword', { value: S.String });
+export const ChangedQuery = taggedStruct('ChangedBlockQuery', { value: S.String });
+export const ChangedKind = taggedStruct('ChangedBlockKind', { value: S.String });
+export const ClearedCatalogSearch = taggedStruct('ClearedBlockCatalogSearch');
+export const ChangedMailFilter = taggedStruct('ChangedBlockMailFilter', { value: S.String });
+export const SelectedMailThread = taggedStruct('SelectedBlockMailThread', { id: S.String });
+export const ChangedCheckoutField = taggedStruct('ChangedCheckoutField', { name: S.String, value: S.String });
+export const GotRadioGroupMessage = taggedStruct('GotBlockRadioGroupMessage', { message: RadioGroup.Message });
+export const GotEChartMessage = taggedStruct('GotBlocksStyleXEChartMessage', { message: ECharts.ChartMessage });
 export const Message = S.Union([TableState.Message, GotEChartMessage, ChangedEmail, ChangedPassword, ChangedQuery, ChangedKind, ClearedCatalogSearch, ChangedMailFilter, SelectedMailThread, ChangedCheckoutField, GotRadioGroupMessage])
 export type Message = typeof Message.Type
 export const init = (): Model => ({ checkout: {}, delivery: 'standard', email: '', kind: 'all', mail: 'nora', mailFilter: 'all', password: '', query: '', radioGroup: RadioGroup.init({ id: 'checkout-delivery' }), table: TableState.init(10) })
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
+type UpdateReturn = Update.Return<Model, Message>
 export const update = (model: Model, message: Message): UpdateReturn => {
-  if (message._tag === 'GotBlocksStyleXEChartMessage') return [model, []]
-  if (message._tag === 'ChangedBlockEmail') return [{...model, email: message.value}, []]
-  if (message._tag === 'ChangedBlockPassword') return [{...model, password: message.value}, []]
-  if (message._tag === 'ChangedBlockQuery') return [{...model, query: message.value}, []]
-  if (message._tag === 'ChangedBlockKind') return [{...model, kind: message.value}, []]
-  if (message._tag === 'ClearedBlockCatalogSearch') return [{...model, kind: 'all', query: ''}, []]
-  if (message._tag === 'ChangedBlockMailFilter') return [{...model, mailFilter: message.value}, []]
-  if (message._tag === 'SelectedBlockMailThread') return [{...model, mail: message.id}, []]
-  if (message._tag === 'ChangedCheckoutField') return [{...model, checkout: {...model.checkout, [message.name]: message.value}}, []]
+  if (message._tag === 'GotBlocksStyleXEChartMessage') return { model: model }
+  if (message._tag === 'ChangedBlockEmail') return { model: {...model, email: message.value} }
+  if (message._tag === 'ChangedBlockPassword') return { model: {...model, password: message.value} }
+  if (message._tag === 'ChangedBlockQuery') return { model: {...model, query: message.value} }
+  if (message._tag === 'ChangedBlockKind') return { model: {...model, kind: message.value} }
+  if (message._tag === 'ClearedBlockCatalogSearch') return { model: {...model, kind: 'all', query: ''} }
+  if (message._tag === 'ChangedBlockMailFilter') return { model: {...model, mailFilter: message.value} }
+  if (message._tag === 'SelectedBlockMailThread') return { model: {...model, mail: message.id} }
+  if (message._tag === 'ChangedCheckoutField') return { model: {...model, checkout: {...model.checkout, [message.name]: message.value}} }
   if (message._tag === 'GotBlockRadioGroupMessage') {
-    const [radioGroup, commands, maybeSelection] = RadioGroup.update(model.radioGroup, message.message)
-    return [
-      {
+    const { model: radioGroup, commands: radioGroupCommands__, outMessage: radioGroupOut__ } = RadioGroup.update(model.radioGroup, message.message)
+    const commands = radioGroupCommands__ ?? []
+    const maybeSelection = Option.fromNullishOr(radioGroupOut__)
+    return { model: {
         ...model,
         delivery: Option.match(maybeSelection, {
           onNone: () => model.delivery,
           onSome: (selection) => selection.value,
         }),
         radioGroup,
-      },
-      Command.mapMessages(commands, (childMessage) => GotRadioGroupMessage({ message: childMessage })),
-    ]
+      }, commands: Command.mapMessages(commands, (childMessage) => GotRadioGroupMessage({ message: childMessage })) }
   }
-  return [{...model, table: TableState.update(model.table, message)}, []]
+  return { model: {...model, table: TableState.update(model.table, message)} }
 }
 
 const metricCard = <Message>(

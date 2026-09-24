@@ -15,9 +15,8 @@ const source = (fixture: (typeof comboboxFixtures)[number], renderer: 'tailwind'
   return foldkitApplication({
     title: `Combobox — ${fixture.title}`,
     imports: `import { Option, Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
 
 import * as Combobox from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/combobox'`,
     model: `export const FrameworkValue = S.Literals(['next', 'svelte', 'nuxt'])
@@ -28,27 +27,25 @@ export const Model = S.Struct({
   maybeFramework: S.Option(FrameworkValue),
 })
 export type Model = typeof Model.Type`,
-    messages: `export const GotComboboxMessage = m('GotComboboxMessage${tag}', { message: Combobox.Message })
+    messages: `import { taggedStruct } from 'foldkit/schema'
+export const GotComboboxMessage = taggedStruct('GotComboboxMessage${tag}', { message: Combobox.Message });
 export const Message = S.Union([GotComboboxMessage])
 export type Message = typeof Message.Type`,
-    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { combobox: Combobox.init({ id: 'framework-combobox', isAnimated: true }), maybeFramework: ${fixture.readOnly ? "Option.some('next')" : 'Option.none()'} },
-  [],
-]`,
-    update: `export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: { combobox: Combobox.init({ id: 'framework-combobox', isAnimated: true }), maybeFramework: ${fixture.readOnly ? "Option.some('next')" : 'Option.none()'} } })`,
+    update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'GotComboboxMessage${tag}': {
-      const [combobox, commands, maybeSelection] = FrameworkCombobox.update(model.combobox, message.message)
+      const comboboxOp__ = FrameworkCombobox.update(model.combobox, message.message);
+    const combobox = comboboxOp__.model;
+    const commands = comboboxOp__.commands ?? [];
+    const maybeSelection = Option.fromNullishOr(comboboxOp__.outMessage);
       const maybeFramework = Option.match(maybeSelection, {
         onNone: () => model.maybeFramework,
         onSome: selection => selection._tag === 'Selected'
           ? Option.some(selection.value)
           : Option.none<FrameworkValue>(),
       })
-      return [
-        { ...model, combobox, maybeFramework },
-        Command.mapMessages(commands, next => GotComboboxMessage({ message: next })),
-      ]
+      return { model: { ...model, combobox, maybeFramework }, commands: Command.mapMessages(commands, next => GotComboboxMessage({ message: next })) }
     }
   }
 }`,

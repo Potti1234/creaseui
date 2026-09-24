@@ -1,9 +1,10 @@
 import type { EChartsOption } from 'echarts/types/dist/shared'
 import { Match as M, Schema as S } from 'effect'
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
 import type { ChartSection } from '@/route'
 import { CHART_SECTIONS, chartsPath } from '@/route'
@@ -23,30 +24,36 @@ export const Model = S.Struct({
 })
 export type Model = typeof Model.Type
 
-export const GotChartMessage = m('GotChartMessage', { message: Chart.ChartMessage })
-export const SelectedAreaRange = m('SelectedAreaRange', { value: Model.fields.areaRange })
-export const SelectedBarSeries = m('SelectedBarSeries', { value: SeriesChoice })
-export const SelectedLineSeries = m('SelectedLineSeries', { value: SeriesChoice })
-export const SelectedPieMonth = m('SelectedPieMonth', { value: Model.fields.pieMonth })
-export const Message = S.Union([GotChartMessage, SelectedAreaRange, SelectedBarSeries, SelectedLineSeries, SelectedPieMonth])
+
+
+
+
+
+export const Message = defineMessageUnion({
+  GotChartMessage: { message: Chart.ChartMessage },
+  SelectedAreaRange: { value: Model.fields.areaRange },
+  SelectedBarSeries: { value: SeriesChoice },
+  SelectedLineSeries: { value: SeriesChoice },
+  SelectedPieMonth: { value: Model.fields.pieMonth },
+});
 export type Message = typeof Message.Type
 
 export const init = (): Model => ({ areaRange: '90d', barSeries: 'desktop', lineSeries: 'desktop', pieMonth: 'january' })
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
+type UpdateReturn = Update.Return<Model, Message>
 const sync = (hostId: string, variant: string): ReadonlyArray<Command.Command<Message>> => [
-  Command.mapMessage(Chart.SyncChart({ hostId, variant }), (message) => GotChartMessage({ message })),
+  Command.mapMessage(Chart.SyncChart({ hostId, variant }), (message) => Message.GotChartMessage({ message })),
 ]
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      GotChartMessage: () => [model, []],
-      SelectedAreaRange: ({ value }) => [evo(model, { areaRange: () => value }), sync('stylex-chart-area-interactive', value)],
-      SelectedBarSeries: ({ value }) => [evo(model, { barSeries: () => value }), sync('stylex-chart-bar-interactive', value)],
-      SelectedLineSeries: ({ value }) => [evo(model, { lineSeries: () => value }), sync('stylex-chart-line-interactive', value)],
-      SelectedPieMonth: ({ value }) => [evo(model, { pieMonth: () => value }), sync('stylex-chart-pie-interactive', value)],
+      GotChartMessage: () => ({ model: model }),
+      SelectedAreaRange: ({ value }) => ({ model: modifyFields(model, { areaRange: () => value }), commands: sync('stylex-chart-area-interactive', value) }),
+      SelectedBarSeries: ({ value }) => ({ model: modifyFields(model, { barSeries: () => value }), commands: sync('stylex-chart-bar-interactive', value) }),
+      SelectedLineSeries: ({ value }) => ({ model: modifyFields(model, { lineSeries: () => value }), commands: sync('stylex-chart-line-interactive', value) }),
+      SelectedPieMonth: ({ value }) => ({ model: modifyFields(model, { pieMonth: () => value }), commands: sync('stylex-chart-pie-interactive', value) }),
     }),
   )
 
@@ -201,15 +208,15 @@ const choices = <Value extends string>(label: string, value: Value, values: Read
   }, h)
 
 const actions = (model: Model, spec: ChartSpec, h: HtmlBuilder<Message>): ReadonlyArray<Html> =>
-  spec.id === 'area-interactive' ? [choices('Area range', model.areaRange, ['90d', '30d', '7d'], (value) => SelectedAreaRange({ value }), h)]
-    : spec.id === 'bar-interactive' ? [choices('Bar series', model.barSeries, ['desktop', 'mobile'], (value) => SelectedBarSeries({ value }), h)]
-      : spec.id === 'line-interactive' ? [choices('Line series', model.lineSeries, ['desktop', 'mobile'], (value) => SelectedLineSeries({ value }), h)]
-        : spec.id === 'pie-interactive' ? [choices('Pie month', model.pieMonth, ['january', 'february', 'march', 'april', 'may', 'june'], (value) => SelectedPieMonth({ value }), h)] : []
+  spec.id === 'area-interactive' ? [choices('Area range', model.areaRange, ['90d', '30d', '7d'], (value) => Message.SelectedAreaRange({ value }), h)]
+    : spec.id === 'bar-interactive' ? [choices('Bar series', model.barSeries, ['desktop', 'mobile'], (value) => Message.SelectedBarSeries({ value }), h)]
+      : spec.id === 'line-interactive' ? [choices('Line series', model.lineSeries, ['desktop', 'mobile'], (value) => Message.SelectedLineSeries({ value }), h)]
+        : spec.id === 'pie-interactive' ? [choices('Pie month', model.pieMonth, ['january', 'february', 'march', 'april', 'may', 'june'], (value) => Message.SelectedPieMonth({ value }), h)] : []
 
 const chartCard = (model: Model, spec: ChartSpec, h: HtmlBuilder<Message>): Html =>
   section({
     actions: actions(model, spec, h),
-    children: [Chart.eChart({ accessibleAlternative: h.p([], [`${spec.title}: ${spec.description}`]), ariaLabel: `${spec.title}: ${spec.description}`, hostId: `stylex-chart-${spec.id}`, ...(spec.size === undefined ? {} : { size: spec.size }), toMessage: (message) => GotChartMessage({ message }), variant: chartVariant(model, spec) }, h)],
+    children: [Chart.eChart({ accessibleAlternative: h.p([], [`${spec.title}: ${spec.description}`]), ariaLabel: `${spec.title}: ${spec.description}`, hostId: `stylex-chart-${spec.id}`, ...(spec.size === undefined ? {} : { size: spec.size }), toMessage: (message) => Message.GotChartMessage({ message }), variant: chartVariant(model, spec) }, h)],
     data: { 'chart-example': spec.id }, description: spec.description, heading: spec.title, surface: 'card',
   }, h)
 

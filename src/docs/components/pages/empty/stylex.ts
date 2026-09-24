@@ -7,7 +7,7 @@ import * as Button from '@/stylex/button';
 import * as Empty from '@/stylex/empty';
 import { tokens } from '../../../../stylex/tokens.stylex';
 
-const styles = stylex.create({ empty: { width: '100%', maxWidth: '36rem' }, bordered: { width: '100%', maxWidth: '36rem', borderColor: 'var(--border)', borderRadius: '0.625rem', borderStyle: 'solid', borderWidth: 1 }, count: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' } });
+const styles = stylex.create({ empty: { maxWidth: '36rem', width: '100%', }, bordered: { borderColor: 'var(--border)', borderRadius: '0.625rem', borderStyle: 'solid', borderWidth: 1, maxWidth: '36rem', width: '100%', }, count: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' } });
 export const emptyStyleXPreview: StyleXExamplePreviewProvider = <Msg>(index: number, model: unknown, onMessageJson: (messageJson: string) => Msg, h: HtmlBuilder<Msg>) => {
   const fixture = emptyFixtures[index] ?? emptyFixtures[0];
   const content = Empty.empty({ layoutStyle: styles.empty, children: [

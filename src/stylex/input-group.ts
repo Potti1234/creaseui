@@ -138,7 +138,7 @@ export const inputGroupAddon = <Msg>(
       h.DataAttribute("align", align),
       ...(p.focusControlId === undefined || p.onFocus === undefined
         ? []
-        : [h.OnClickFocus(`#${p.focusControlId}`, p.onFocus)]),
+        : [h.OnClick(p.onFocus, { focusSelector: `#${p.focusControlId}` })]),
       h.Class(className(styles.addon, map[align], p.layoutStyle)),
     ],
     [...p.children],

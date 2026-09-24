@@ -103,7 +103,7 @@ export const codeBlock = <Msg>(
   fileName: string,
   copy: Readonly<{ onCopy: Msg; isCopied: boolean; label: string }> | undefined,
   dark: boolean,
-  toMessage: (message: CodeFile.Message) => Msg,
+  mapEvent: (message: CodeFile.Message) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
   return h.div(
@@ -124,7 +124,7 @@ export const codeBlock = <Msg>(
                 dark,
                 lineNumbers: false,
               }),
-              toMessage,
+              mapEvent,
             ),
           ),
         ],
@@ -490,11 +490,11 @@ export const componentPage = <Msg>(
               if (Number.isFinite(savedScrollTop))
                 element.scrollTop = savedScrollTop;
 
-              return Subscription.fromEvent<Event, Msg>({
+              return Subscription.fromEvent<HTMLElement, 'scroll', Msg>({
                 target: element,
                 type: 'scroll',
                 options: { passive: true },
-                toMessage: () => {
+                mapEvent: () => {
                   sessionStorage.setItem(
                     SIDEBAR_SCROLL_KEY,
                     String(element.scrollTop),

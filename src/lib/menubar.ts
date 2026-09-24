@@ -1,20 +1,27 @@
 import { Effect, Option, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
 import * as Command from 'foldkit/command'
 import * as Dom from 'foldkit/dom'
 import { childAttributes, type ChildAttribute, type Html } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { defineView, type View as SubmodelView } from 'foldkit/submodel'
 
 export const Model = S.Struct({ id: S.String, activeIndex: S.Number })
 export type Model = typeof Model.Type
 
-export const Moved = m('MovedMenubarFocus', { index: S.Number, triggerId: S.String })
-export const Focused = m('FocusedMenubarTrigger', { index: S.Number })
-export const CompletedFocus = m('CompletedFocusMenubarTrigger')
-export const Message = S.Union([Moved, Focused, CompletedFocus])
+
+
+
+export const Message = defineMessageUnion({
+  'MovedMenubarFocus': { index: S.Number, triggerId: S.String },
+  'FocusedMenubarTrigger': { index: S.Number },
+  'CompletedFocusMenubarTrigger': {},
+});
 export type Message = typeof Message.Type
 
-export const MovedTo = m('MovedToMenubar', { index: S.Number })
+export const MovedTo = defineMessageUnion({
+  'MovedToMenubar': { index: S.Number },
+});
 export type OutMessage = typeof MovedTo.Type
 
 export const init = (config: Readonly<{ id: string; activeIndex?: number }>): Model => ({
@@ -24,31 +31,23 @@ export const init = (config: Readonly<{ id: string; activeIndex?: number }>): Mo
 
 export const FocusTrigger = Command.define('FocusMenubarTrigger', {
   args: { triggerId: S.String },
-  messages: [CompletedFocus],
+  messages: [Message['CompletedFocusMenubarTrigger']],
   execute: ({ triggerId }) => Dom.focus(`[id="${triggerId}"]`).pipe(
     Effect.ignore,
-    Effect.as(CompletedFocus()),
+    Effect.as(Message['CompletedFocusMenubarTrigger']()),
   ),
 })
 
-type UpdateReturn = readonly [
-  Model,
-  ReadonlyArray<Command.Command<Message>>,
-  Option.Option<OutMessage>,
-]
+type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
     case 'MovedMenubarFocus':
-      return [
-        { ...model, activeIndex: Math.max(0, message.index) },
-        [FocusTrigger({ triggerId: message.triggerId })],
-        Option.some(MovedTo({ index: Math.max(0, message.index) })),
-      ]
+      return { model: { ...model, activeIndex: Math.max(0, message.index) }, commands: [FocusTrigger({ triggerId: message.triggerId })], outMessage: MovedTo['MovedToMenubar']({ index: Math.max(0, message.index) }) }
     case 'FocusedMenubarTrigger':
-      return [{ ...model, activeIndex: Math.max(0, message.index) }, [], Option.none()]
+      return { model: { ...model, activeIndex: Math.max(0, message.index) } }
     case 'CompletedFocusMenubarTrigger':
-      return [model, [], Option.none()]
+      return { model: model }
   }
 }
 
@@ -86,14 +85,14 @@ const view: SubmodelView<Model, Message, ViewInputs> = defineView((model, inputs
     const triggerId = target === undefined ? undefined : inputs.triggerIds[target]
     return target === undefined || triggerId === undefined
       ? Option.none<Message>()
-      : Option.some(Moved({ index: target, triggerId }))
+      : Option.some(Message['MovedMenubarFocus']({ index: target, triggerId }))
   }
   return inputs.toView(inputs.triggerIds.map((_id, index) => ({
     index,
     isActive: index === activeIndex,
     attributes: childAttributes([
-      h.OnFocus(Focused({ index })),
-      ...(inputs.hoverFocus === true ? [h.OnMouseEnter(Focused({ index }))] : []),
+      h.OnFocus(Message['FocusedMenubarTrigger']({ index })),
+      ...(inputs.hoverFocus === true ? [h.OnMouseEnter(Message['FocusedMenubarTrigger']({ index }))] : []),
       h.OnKeyDownPreventDefault((key) => move(index, key)),
     ]),
   })))

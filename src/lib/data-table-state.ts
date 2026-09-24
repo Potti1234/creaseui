@@ -1,5 +1,5 @@
 import { Schema as S } from 'effect'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 export const Model = S.Struct({
   filter: S.String,
@@ -13,17 +13,28 @@ export const Model = S.Struct({
 })
 export type Model = typeof Model.Type
 
-export const Filtered = m('Filtered', { value: S.String })
-export const Sorted = m('Sorted', { key: S.String })
-export const ChangedPage = m('ChangedPage', { page: S.Number })
-export const ChangedPageSize = m('ChangedPageSize', { pageSize: S.Number })
-export const ToggledRow = m('ToggledRow', { key: S.String, isSelected: S.Boolean })
-export const ToggledRows = m('ToggledRows', { keys: S.Array(S.String), isSelected: S.Boolean })
-export const ToggledColumn = m('ToggledColumn', { key: S.String, isVisible: S.Boolean })
-export const ClearedSelection = m('ClearedSelection')
-export const ToggledColumnsMenu = m('ToggledColumnsMenu')
-export const ClosedColumnsMenu = m('ClosedColumnsMenu')
-export const Message = S.Union([Filtered, Sorted, ChangedPage, ChangedPageSize, ToggledRow, ToggledRows, ToggledColumn, ClearedSelection, ToggledColumnsMenu, ClosedColumnsMenu])
+
+
+
+
+
+
+
+
+
+
+export const Message = defineMessageUnion({
+  Filtered: { value: S.String },
+  Sorted: { key: S.String },
+  ChangedPage: { page: S.Number },
+  ChangedPageSize: { pageSize: S.Number },
+  ToggledRow: { key: S.String, isSelected: S.Boolean },
+  ToggledRows: { keys: S.Array(S.String), isSelected: S.Boolean },
+  ToggledColumn: { key: S.String, isVisible: S.Boolean },
+  ClearedSelection: {},
+  ToggledColumnsMenu: {},
+  ClosedColumnsMenu: {},
+});
 export type Message = typeof Message.Type
 
 export const init = (pageSize = 10): Model => ({

@@ -1,7 +1,8 @@
 import { Match as M, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import * as Chart from '@/lib/echarts';
 import * as BarActive from '@/demo/charts/cards/bar-active';
@@ -14,7 +15,7 @@ import * as BarMixed from '@/demo/charts/cards/bar-mixed';
 import * as BarMultiple from '@/demo/charts/cards/bar-multiple';
 import * as BarNegative from '@/demo/charts/cards/bar-negative';
 import * as BarStacked from '@/demo/charts/cards/bar-stacked';
-import { evo } from 'foldkit/struct';
+import { modifyFields } from 'foldkit/struct';
 
 import { chartsPageShell } from '@/demo/charts/shell';
 
@@ -31,14 +32,17 @@ export type Model = typeof Model.Type;
 
 // MESSAGE
 
-export const GotChartMessage = m('GotChartMessage', {
-  message: Chart.ChartMessage,
-});
-export const SelectedSeries = m('SelectedSeries', {
-  series: S.Union([S.Literal('desktop'), S.Literal('mobile')]),
-});
 
-export const Message = S.Union([GotChartMessage, SelectedSeries]);
+
+
+export const Message = defineMessageUnion({
+  GotChartMessage: {
+  message: Chart.ChartMessage,
+},
+  SelectedSeries: {
+  series: S.Union([S.Literal('desktop'), S.Literal('mobile')]),
+},
+});
 export type Message = typeof Message.Type;
 
 // INIT
@@ -47,25 +51,22 @@ export const init = (): Model => ({ activeSeries: 'desktop' });
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      GotChartMessage: () => [model, []],
-      SelectedSeries: ({ series }) => [
-        evo(model, { activeSeries: () => series }),
-        [
+      GotChartMessage: () => ({ model: model }),
+      SelectedSeries: ({ series }) => ({ model: modifyFields(model, { activeSeries: () => series }), commands: [
           Command.mapMessage(
             Chart.SyncChart({
               hostId: BarInteractive.HOST_ID,
               variant: series,
             }),
-            (message) => GotChartMessage({ message }),
+            (message) => Message.GotChartMessage({ message }),
           ),
-        ],
-      ],
+        ] }),
     }),
   );
 
@@ -73,7 +74,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   const toMessage = (message: Chart.ChartMessage): Message =>
-    GotChartMessage({ message });
+    Message.GotChartMessage({ message });
 
   return chartsPageShell<Message>(
     'bar',
@@ -90,7 +91,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       BarInteractive.view(
         {
           activeSeries: model.activeSeries,
-          onSelect: (series) => SelectedSeries({ series }),
+          onSelect: (series) => Message.SelectedSeries({ series }),
           toMessage,
         },
         h,

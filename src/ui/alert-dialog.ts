@@ -4,13 +4,7 @@ import { Dialog as DialogPrimitive } from '@foldkit/ui';
 
 import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/ui/button';
-import {
-  GotDialogMessage,
-  RequestedCancel,
-  RequestedConfirm,
-  type Message,
-  type Model,
-} from '@/lib/alert-dialog';
+import { type Message, type Model, Message as AlertDialogMessages } from '@/lib/alert-dialog';
 
 export * from '@/lib/alert-dialog';
 
@@ -179,7 +173,7 @@ export const alertDialog = <Msg>(
                         hd.button(
                           [
                             ...initialFocus,
-                            hd.OnClick(props.toParentMessage(RequestedCancel())),
+                            hd.OnClick(props.toParentMessage(AlertDialogMessages.RequestedAlertDialogCancel())),
                             hd.Type('button'),
                             hd.Disabled(props.isPending ?? false),
                             hd.DataAttribute('slot', 'alert-dialog-cancel'),
@@ -197,7 +191,7 @@ export const alertDialog = <Msg>(
                         ),
                         hd.button(
                           [
-                            hd.OnClick(props.toParentMessage(RequestedConfirm())),
+                            hd.OnClick(props.toParentMessage(AlertDialogMessages.RequestedAlertDialogConfirm())),
                             hd.Type('button'),
                             hd.Disabled(props.isPending ?? false),
                             hd.AriaBusy(props.isPending ?? false),
@@ -223,14 +217,16 @@ export const alertDialog = <Msg>(
         );
       },
     },
-    toParentMessage: message => props.toParentMessage(GotDialogMessage({ message })),
+    toParentMessage: message => props.toParentMessage(AlertDialogMessages.GotAlertDialogPrimitiveMessage({ message })),
   });
 };
 
 /*
 Minimal wiring:
 const model = init({ id: 'delete-alert', isAnimated: true })
-const [nextModel, commands] = update(model, message)
+const nextModelOp__ = update(model, message);
+    const nextModel = nextModelOp__.model;
+    const commands = nextModelOp__.commands ?? [];
 alertDialog({
   model,
   toParentMessage: message => GotAlertDialogMessage({ message }),

@@ -16,8 +16,8 @@ type Message =
 
 const update = (model: Model, message: Message) =>
   message._tag === 'ChangedEmail'
-    ? [{ ...model, email: message.value }, []] as const
-    : [{ ...model, submitted: true }, []] as const
+    ? { model: { ...model, email: message.value } } as const
+    : { model: { ...model, submitted: true } } as const
 
 type FormModule = Readonly<{
   form: <Msg>(props: { ariaLabel: string; onSubmit: Msg; children: ReadonlyArray<Html | string> }, h: HtmlBuilder<Msg>) => Html

@@ -1,9 +1,10 @@
 import { Match as M, Option, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
 import * as FoldkitCalendar from 'foldkit/calendar';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 
 import * as Icon from '@/lib/icon';
 import { avatar, avatarFallback } from '@/ui/avatar';
@@ -220,34 +221,34 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const ToggledSidebar = m('ToggledSidebar');
-export const ToggledMobileSidebar = m('ToggledMobileSidebar');
-export const GotTeamMenuMessage = m('GotTeamMenuMessage', {
+
+
+
+
+
+
+
+export const Message = defineMessageUnion({
+  ToggledMobileSidebar: {},
+  ToggledSidebar: {},
+  GotTeamMenuMessage: {
   message: DropdownMenu.Message,
-});
-export const GotUserMenuMessage = m('GotUserMenuMessage', {
+},
+  GotUserMenuMessage: {
   message: DropdownMenu.Message,
-});
-export const ToggledWorkspace = m('ToggledWorkspace', {
+},
+  ToggledWorkspace: {
   index: S.Number,
   isOpen: S.Boolean,
-});
-export const GotCalendarMessage = m('GotCalendarMessage', {
+},
+  GotCalendarMessage: {
   message: Calendar.Message,
-});
-export const ToggledCalendarGroup = m('ToggledCalendarGroup', {
+},
+  ToggledCalendarGroup: {
   index: S.Number,
   isOpen: S.Boolean,
+},
 });
-export const Message = S.Union([
-  ToggledMobileSidebar,
-  ToggledSidebar,
-  GotTeamMenuMessage,
-  GotUserMenuMessage,
-  ToggledWorkspace,
-  GotCalendarMessage,
-  ToggledCalendarGroup,
-]);
 export type Message = typeof Message.Type;
 
 export const init = (): Model => ({
@@ -271,21 +272,20 @@ export const init = (): Model => ({
   calendarGroupsOpen: rightData.calendars.map((_, index) => index === 0),
 });
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledMobileSidebar: () => [evo(model, {isMobileOpen: current => !current}), []],
-      ToggledSidebar: () => [
-        evo(model, { isLeftSidebarOpen: (current) => !current }),
-        [],
-      ],
+      ToggledMobileSidebar: () => ({ model: modifyFields(model, {isMobileOpen: current => !current}) }),
+      ToggledSidebar: () => ({ model: modifyFields(model, { isLeftSidebarOpen: (current) => !current }) }),
       GotTeamMenuMessage: ({ message: childMessage }) => {
-        const [teamMenu, commands, selection] = TeamMenu.update(
+        const { model: teamMenu, commands: teamMenuCommands__, outMessage: teamMenuOut__ } = TeamMenu.update(
           model.teamMenu,
           childMessage,
         );
+        const commands = teamMenuCommands__ ?? []
+        const selection = Option.fromNullishOr(teamMenuOut__)
         const activeTeamIndex = Option.match(selection, {
           onNone: () => model.activeTeamIndex,
           onSome: ({ value }) =>
@@ -297,47 +297,40 @@ export const update = (model: Model, message: Message): UpdateReturn =>
                   ? 2
                   : model.activeTeamIndex,
         });
-        return [
-          evo(model, {
+        return { model: modifyFields(model, {
             teamMenu: () => teamMenu,
             activeTeamIndex: () => activeTeamIndex,
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotTeamMenuMessage({ message: next }),
-          ),
-        ];
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotTeamMenuMessage({ message: next }),
+          ) };
       },
       GotUserMenuMessage: ({ message: childMessage }) => {
-        const [userMenu, commands] = UserMenu.update(
+        const { model: userMenu, commands: userMenuCommands__ } = UserMenu.update(
           model.userMenu,
           childMessage,
         );
-        return [
-          evo(model, { userMenu: () => userMenu }),
-          Command.mapMessages(commands, (next) =>
-            GotUserMenuMessage({ message: next }),
-          ),
-        ];
+        const commands = userMenuCommands__ ?? []
+        return { model: modifyFields(model, { userMenu: () => userMenu }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotUserMenuMessage({ message: next }),
+          ) };
       },
       ToggledWorkspace: ({ index, isOpen }) => {
-        if (model.workspaceOpen[index] === undefined) return [model, []];
-        return [
-          evo(model, {
+        if (model.workspaceOpen[index] === undefined) return { model: model };
+        return { model: modifyFields(model, {
             workspaceOpen: (items) =>
               items.map((open, itemIndex) =>
                 itemIndex === index ? isOpen : open,
               ),
-          }),
-          [],
-        ];
+          }) };
       },
       GotCalendarMessage: ({ message: childMessage }) => {
-        const [calendar, commands, maybeSelection] = Calendar.update(
+        const { model: calendar, commands: calendarCommands__, outMessage: calendarOut__ } = Calendar.update(
           model.calendar,
           childMessage,
-        );
-        return [
-          evo(model, {
+        )
+        const commands = calendarCommands__ ?? []
+        const maybeSelection = Option.fromNullishOr(calendarOut__)
+        return { model: modifyFields(model, {
             calendar: () => calendar,
             selectedDate: (current) =>
               Option.match(maybeSelection, {
@@ -347,23 +340,18 @@ export const update = (model: Model, message: Message): UpdateReturn =>
                     ? Option.some(selection.date)
                     : current,
               }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotCalendarMessage({ message: next }),
-          ),
-        ];
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotCalendarMessage({ message: next }),
+          ) };
       },
       ToggledCalendarGroup: ({ index, isOpen }) => {
-        if (model.calendarGroupsOpen[index] === undefined) return [model, []];
-        return [
-          evo(model, {
+        if (model.calendarGroupsOpen[index] === undefined) return { model: model };
+        return { model: modifyFields(model, {
             calendarGroupsOpen: (groups) =>
               groups.map((open, groupIndex) =>
                 groupIndex === index ? isOpen : open,
               ),
-          }),
-          [],
-        ];
+          }) };
       },
     }),
   );
@@ -380,7 +368,7 @@ const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
               DropdownMenu.dropdownMenu<TeamItem, Message>(
                 {
                   model: model.teamMenu,
-                  toParentMessage: (message) => GotTeamMenuMessage({ message }),
+                  toParentMessage: (message) => Message.GotTeamMenuMessage({ message }),
                   trigger: h.span(
                     [h.Class('contents')],
                     [
@@ -548,7 +536,7 @@ const navWorkspaces = (
                                   id: `sidebar-15-left-workspace-${index}`,
                                   isOpen,
                                   onToggle: (nextIsOpen) =>
-                                    ToggledWorkspace({
+                                    Message.ToggledWorkspace({
                                       index,
                                       isOpen: nextIsOpen,
                                     }),
@@ -674,7 +662,7 @@ const sidebarLeft = (model: Model, h: HtmlBuilder<Message>): Html => {
   const state = model.isLeftSidebarOpen ? 'expanded' : 'collapsed';
   return sidebar<Message>(
     {
-      state, isMobileOpen: model.isMobileOpen, onMobileDismiss: ToggledMobileSidebar(),
+      state, isMobileOpen: model.isMobileOpen, onMobileDismiss: Message.ToggledMobileSidebar(),
       class: 'border-r-0',
       children: [
         sidebarHeader(
@@ -693,7 +681,7 @@ const sidebarLeft = (model: Model, h: HtmlBuilder<Message>): Html => {
           },
           h,
         ),
-        sidebarRail({ onClick: ToggledSidebar() }, h),
+        sidebarRail({ onClick: Message.ToggledSidebar() }, h),
       ],
     },
     h,
@@ -734,7 +722,7 @@ const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
               DropdownMenu.dropdownMenu<UserItem, Message>(
                 {
                   model,
-                  toParentMessage: (message) => GotUserMenuMessage({ message }),
+                  toParentMessage: (message) => Message.GotUserMenuMessage({ message }),
                   trigger: h.span(
                     [h.Class('contents')],
                     [
@@ -811,7 +799,7 @@ const rightCalendars = (
                 id: `sidebar-15-right-calendar-group-${index}`,
                 isOpen,
                 onToggle: (nextIsOpen) =>
-                  ToggledCalendarGroup({ index, isOpen: nextIsOpen }),
+                  Message.ToggledCalendarGroup({ index, isOpen: nextIsOpen }),
                 class: 'group/collapsible',
                 trigger: h.span(
                   [h.Class('contents')],
@@ -919,7 +907,7 @@ const sidebarRight = (model: Model, h: HtmlBuilder<Message>): Html =>
                               model: model.calendar,
                               maybeSelectedDate: model.selectedDate,
                               toParentMessage: (message) =>
-                                GotCalendarMessage({ message }),
+                                Message.GotCalendarMessage({ message }),
                               class:
                                 '[&_[role=gridcell]]:w-[33px] [&_[role=gridcell].bg-accent]:bg-sidebar-primary [&_[role=gridcell].bg-accent]:text-sidebar-primary-foreground',
                             },
@@ -985,7 +973,7 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
             h.div(
               [h.Class('flex flex-1 items-center gap-2 px-3')],
               [
-                sidebarTrigger({ onMobileClick: ToggledMobileSidebar(), onClick: ToggledSidebar() }, h),
+                sidebarTrigger({ onMobileClick: Message.ToggledMobileSidebar(), onClick: Message.ToggledSidebar() }, h),
                 separator(
                   {
                     orientation: 'vertical',

@@ -6,7 +6,7 @@ import type { StyleXExamplePreviewProvider } from '@/docs/components/page-defini
 import { commandActions, commandFixtures, commandLabel } from '@/docs/components/pages/command/shared';
 import * as CommandMenu from '@/stylex/command';
 
-const styles = stylex.create({ command: { width: '100%', maxWidth: '28rem' } });
+const styles = stylex.create({ command: { maxWidth: '28rem', width: '100%', } });
 
 export const commandStyleXPreview: StyleXExamplePreviewProvider = <Msg>(index: number, model: unknown, onMessageJson: (messageJson: string) => Msg, h: HtmlBuilder<Msg>) => {
   const fixture = commandFixtures[index] ?? commandFixtures[0];

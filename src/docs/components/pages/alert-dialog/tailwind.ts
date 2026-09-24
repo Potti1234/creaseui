@@ -1,16 +1,21 @@
 import { Effect, Option, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import { alertDialogFixtures } from '@/docs/components/pages/alert-dialog/shared';
 import * as AlertDialog from '@/ui/alert-dialog';
 import * as Button from '@/ui/button';
 
-const Opened = m('OpenedAlertDialogPreview');
-const CompletedAction = m('CompletedAlertDialogAction');
-const GotMessage = m('GotAlertDialogPreviewMessage', { message: AlertDialog.Message });
-const PreviewMessage = S.Union([Opened, CompletedAction, GotMessage]);
+
+
+
+const PreviewMessage = defineMessageUnion({
+  'OpenedAlertDialogPreview': {},
+  'CompletedAlertDialogAction': {},
+  'GotAlertDialogPreviewMessage': { message: AlertDialog.Message },
+});
 type PreviewMessage = typeof PreviewMessage.Type;
 const PreviewModel = S.Struct({
   _docsPage: S.Literal('alert-dialog'),
@@ -20,27 +25,29 @@ const PreviewModel = S.Struct({
 type PreviewModel = typeof PreviewModel.Type;
 
 const FinishAction = Command.define('FinishAlertDialogAction', {
-  messages: [CompletedAction],
-  execute: Effect.sleep('350 millis').pipe(Effect.as(CompletedAction())),
+  messages: [PreviewMessage['CompletedAlertDialogAction']],
+  execute: Effect.sleep('350 millis').pipe(Effect.as(PreviewMessage['CompletedAlertDialogAction']())),
 });
 
 const applyDialog = (
   model: PreviewModel,
   result: ReturnType<typeof AlertDialog.update>,
-): readonly [PreviewModel, ReadonlyArray<Command.Command<PreviewMessage>>] => {
-  const [dialog, commands, out] = result;
-  const mapped = Command.mapMessages(commands, message => GotMessage({ message }));
-  if (Option.isNone(out)) return [{ ...model, dialog }, mapped];
+): Update.Return<PreviewModel, PreviewMessage> => {
+  const { model: dialog, commands: dialogCommands__, outMessage: dialogOut__ } = result
+  const commands = dialogCommands__ ?? []
+  const out = Option.fromNullishOr(dialogOut__)
+  const mapped = Command.mapMessages(commands, message => PreviewMessage['GotAlertDialogPreviewMessage']({ message }));
+  if (Option.isNone(out)) return { model: { ...model, dialog }, commands: mapped };
   return out.value._tag === 'ConfirmedAlertDialog'
-    ? [{ ...model, dialog, status: 'pending' }, [...mapped, FinishAction()]]
-    : [
-        {
+    ? { model: { ...model, dialog, status: 'pending' }, commands: [...mapped, FinishAction()] }
+    : {
+        model: {
           ...model,
           dialog,
           status: model.status === 'pending' ? 'idle' : model.status,
         },
-        mapped,
-      ];
+        commands: mapped,
+      };
 };
 
 export const alertDialogTailwindPreviewProgram = definePreviewProgram<PreviewModel, PreviewMessage>({
@@ -61,12 +68,12 @@ export const alertDialogTailwindPreviewProgram = definePreviewProgram<PreviewMod
     return h.div([h.Class('grid justify-items-center gap-3')], [
       Button.button({
         variant: index === 0 ? 'destructive' : 'outline',
-        onClick: Opened(),
+        onClick: PreviewMessage['OpenedAlertDialogPreview'](),
         children: [fixture.triggerLabel],
       }, h),
       AlertDialog.alertDialog({
         model: model.dialog,
-        toParentMessage: message => GotMessage({ message }),
+        toParentMessage: message => PreviewMessage['GotAlertDialogPreviewMessage']({ message }),
         title: fixture.dialogTitle,
         description: fixture.dialogDescription,
         actionLabel: fixture.actionLabel,

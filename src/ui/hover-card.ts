@@ -9,15 +9,15 @@ import { cn } from '@/lib/utils';
 export const Model = HoverCardBehavior.Model;
 export type Model = typeof Model.Type;
 
-export const Entered = HoverCardBehavior.Entered;
-export const Left = HoverCardBehavior.Left;
-export const Focused = HoverCardBehavior.Focused;
-export const Blurred = HoverCardBehavior.Blurred;
-export const PressedEscape = HoverCardBehavior.PressedEscape;
-export const PressedPointer = HoverCardBehavior.PressedPointer;
-export const CompletedAnchor = HoverCardBehavior.CompletedAnchor;
-export const CompletedWaitBeforeShowingHoverCard = HoverCardBehavior.CompletedWaitBeforeShowingHoverCard;
-export const CompletedWaitBeforeClosingHoverCard = HoverCardBehavior.CompletedWaitBeforeClosingHoverCard;
+export const Entered = HoverCardBehavior.Message.EnteredHoverCard;
+export const Left = HoverCardBehavior.Message.LeftHoverCard;
+export const Focused = HoverCardBehavior.Message.FocusedHoverCardTrigger;
+export const Blurred = HoverCardBehavior.Message.BlurredHoverCardTrigger;
+export const PressedEscape = HoverCardBehavior.Message.PressedEscapeOnHoverCard;
+export const PressedPointer = HoverCardBehavior.Message.PressedPointerOnHoverCardTrigger;
+export const CompletedAnchor = HoverCardBehavior.Message.CompletedHoverCardAnchor;
+export const CompletedWaitBeforeShowingHoverCard = HoverCardBehavior.Message.CompletedWaitBeforeShowingHoverCard;
+export const CompletedWaitBeforeClosingHoverCard = HoverCardBehavior.Message.CompletedWaitBeforeClosingHoverCard;
 export const Message = HoverCardBehavior.Message;
 export type Message = typeof Message.Type;
 

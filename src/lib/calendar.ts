@@ -12,7 +12,7 @@ export const mirrorNavigationKeyForRtl = (
 ): CalendarPrimitive.Message =>
   message._tag === 'PressedKeyOnGrid' &&
   (message.key === 'ArrowLeft' || message.key === 'ArrowRight')
-    ? CalendarPrimitive.PressedKeyOnGrid({
+    ? CalendarPrimitive.Message.PressedKeyOnGrid({
         key: message.key === 'ArrowLeft' ? 'ArrowRight' : 'ArrowLeft',
         isShift: message.isShift,
       })
@@ -67,18 +67,12 @@ export const update = (
       const nextModel = CalendarPrimitive.focusDate(model, target.value)
       const crossedMonth =
         target.value.year !== model.viewYear || target.value.month !== model.viewMonth
-      return [
-        nextModel,
-        [],
-        crossedMonth
-          ? Option.some(
-              CalendarPrimitive.ChangedViewMonth({
+      return { model: nextModel, ...(crossedMonth
+          ? { outMessage: CalendarPrimitive.OutMessage.ChangedViewMonth({
                 year: target.value.year,
                 month: target.value.month,
-              }),
-            )
-          : Option.none(),
-      ]
+              }) }
+          : {}) }
     }
   }
   return CalendarPrimitive.update(model, message)

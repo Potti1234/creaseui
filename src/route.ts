@@ -1,6 +1,6 @@
 import { Schema as S, pipe } from "effect";
 import { Route } from "foldkit";
-import { literal, r, slash, string } from "foldkit/route";
+import { defineRouteUnion, literal, slash, string } from "foldkit/route";
 
 export const ChartSection = S.Literals([
   "area",
@@ -44,82 +44,63 @@ export const SIDEBAR_BLOCK_IDS: ReadonlyArray<string> = [
   "16",
 ];
 
-export const HomeRoute = r("Home");
-export const CreateRoute = r("Create");
-export const ChartsRoute = r("Charts", { section: S.String });
-export const BlocksIndexRoute = r("BlocksIndex");
-export const BlocksStyleXRoute = r("BlocksStyleX");
-export const BlocksStyleXTableRoute = r("BlocksStyleXTable");
-export const BlockRoute = r("Block", { blockId: S.String });
-export const ComponentDocsRoute = r("ComponentDocs", { component: S.String });
-export const NotFoundRoute = r("NotFound", { path: S.String });
+export const AppRoute = defineRouteUnion({
+  Home: {},
+  Create: {},
+  Charts: { section: S.String },
+  BlocksIndex: {},
+  BlocksStyleX: {},
+  BlocksStyleXTable: {},
+  Block: { blockId: S.String },
+  ComponentDocs: { component: S.String },
+  NotFound: { path: S.String },
+});
 
-export const AppRoute = S.Union([
-  HomeRoute,
-  CreateRoute,
-  ChartsRoute,
-  BlocksIndexRoute,
-  BlocksStyleXRoute,
-  BlocksStyleXTableRoute,
-  BlockRoute,
-  ComponentDocsRoute,
-  NotFoundRoute,
-]);
-
-export type HomeRoute = typeof HomeRoute.Type;
-export type CreateRoute = typeof CreateRoute.Type;
-export type ChartsRoute = typeof ChartsRoute.Type;
-export type BlocksIndexRoute = typeof BlocksIndexRoute.Type;
-export type BlocksStyleXRoute = typeof BlocksStyleXRoute.Type;
-export type BlocksStyleXTableRoute = typeof BlocksStyleXTableRoute.Type;
-export type BlockRoute = typeof BlockRoute.Type;
-export type ComponentDocsRoute = typeof ComponentDocsRoute.Type;
-export type NotFoundRoute = typeof NotFoundRoute.Type;
 export type AppRoute = typeof AppRoute.Type;
 
-const homeRouter = pipe(Route.root, Route.mapTo(HomeRoute));
+const homeRouter = pipe(Route.root, Route.mapTo(AppRoute.Home));
 
-const createRouter = pipe(literal("create"), Route.mapTo(CreateRoute));
+const createRouter = pipe(literal("create"), Route.mapTo(AppRoute.Create));
 
 const chartsRouter = pipe(
   literal("charts"),
   slash(string("section")),
-  Route.mapTo(ChartsRoute),
+  Route.mapTo(AppRoute.Charts),
 );
 
-const blocksRootRouter = pipe(literal("blocks"), Route.mapTo(BlocksIndexRoute));
+const blocksRootRouter = pipe(literal("blocks"), Route.mapTo(AppRoute.BlocksIndex));
 
-const blockPreviewRouter = pipe(literal("blocks"), slash(literal("preview")), slash(string("blockId")), Route.mapTo(BlockRoute));
+const blockPreviewRouter = pipe(literal("blocks"), slash(literal("preview")), slash(string("blockId")), Route.mapTo(AppRoute.Block));
 
 const blocksIndexRouter = pipe(
   literal("blocks"),
   slash(literal("sidebar")),
-  Route.mapTo(BlocksIndexRoute),
+  Route.mapTo(AppRoute.BlocksIndex),
 );
 
 const blocksStyleXRouter = pipe(
   literal("blocks-stylex"),
-  Route.mapTo(BlocksStyleXRoute),
+  Route.mapTo(AppRoute.BlocksStyleX),
 );
 
 const blocksStyleXTableRouter = pipe(
   literal("blocks-stylex"),
   slash(literal("table")),
-  Route.mapTo(BlocksStyleXTableRoute),
+  Route.mapTo(AppRoute.BlocksStyleXTable),
 );
 
 const blockRouter = pipe(
   literal("blocks"),
   slash(literal("sidebar")),
   slash(string("blockId")),
-  Route.mapTo(BlockRoute),
+  Route.mapTo(AppRoute.Block),
 );
 
 const componentDocsRouter = pipe(
   literal("docs"),
   slash(literal("components")),
   slash(string("component")),
-  Route.mapTo(ComponentDocsRoute),
+  Route.mapTo(AppRoute.ComponentDocs),
 );
 
 const routeParser = Route.oneOf(
@@ -137,7 +118,7 @@ const routeParser = Route.oneOf(
 
 export const urlToAppRoute = Route.parseUrlWithFallback(
   routeParser,
-  NotFoundRoute,
+  AppRoute.NotFound,
 );
 
 export const homePath = (): string => homeRouter();

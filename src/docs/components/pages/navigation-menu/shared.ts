@@ -34,26 +34,28 @@ const disclosureSource = (renderer: 'tailwind' | 'stylex'): string => {
   return foldkitApplication({
     title: 'Navigation Menu — Disclosure',
     imports: `import { Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 ${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\n" : ''}
 import * as NavigationMenu from '@/${isStyleX ? 'stylex' : 'ui'}/navigation-menu'
 import * as Popover from '@/${isStyleX ? 'stylex' : 'ui'}/popover'${isStyleX ? "\n\nconst styles = stylex.create({\n  list: { display: 'grid', gap: '0.25rem' },\n  link: { borderRadius: '0.25rem', display: 'block', padding: '0.5rem' },\n})" : ''}`,
     model: `export const Model = S.Struct({ products: Popover.Model })
 export type Model = typeof Model.Type`,
-    messages: `export const GotProductsMessage = m('GotNavigationProductsMessage', { message: Popover.Message })
-export const Message = S.Union([GotProductsMessage])
+    messages: `import { defineMessageUnion } from 'foldkit/message'
+
+export const Message = defineMessageUnion({
+  'GotNavigationProductsMessage': { message: Popover.Message },
+});
 export type Message = typeof Message.Type`,
-    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { products: Popover.init({ id: 'products-navigation', isAnimated: true, contentFocus: true }) },
-  [],
-]`,
-    update: `export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: { products: Popover.init({ id: 'products-navigation', isAnimated: true, contentFocus: true }) } })`,
+    update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'GotNavigationProductsMessage': {
-      const [products, commands] = Popover.update(model.products, message.message)
-      return [{ ...model, products }, Command.mapMessages(commands, next => GotProductsMessage({ message: next }))]
+      const productsOp__ = Popover.update(model.products, message.message);
+    const products = productsOp__.model;
+    const commands = productsOp__.commands ?? [];
+      return { model: { ...model, products }, commands: Command.mapMessages(commands, next => Message['GotNavigationProductsMessage']({ message: next })) }
     }
   }
 }`,
@@ -65,7 +67,7 @@ export type Message = typeof Message.Type`,
         NavigationMenu.navigationMenuItem({ children: [NavigationMenu.navigationMenuLink({ href: '/', isActive: true, children: ['Home'] }, h)] }, h),
         NavigationMenu.navigationMenuItem({ children: [NavigationMenu.navigationMenuDisclosure({
           model: model.products,
-          toParentMessage: message => GotProductsMessage({ message }),
+          toParentMessage: message => Message['GotNavigationProductsMessage']({ message }),
           label: 'Products',
           pointerIntent: 'hover-and-press',
           content: h.ul([h.Class(${isStyleX ? "stylex.props(styles.list).className ?? ''" : "'grid gap-1'"} )], [

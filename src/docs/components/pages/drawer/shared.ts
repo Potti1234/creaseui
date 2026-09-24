@@ -29,34 +29,27 @@ const source = (
   return foldkitApplication({
     title: `Drawer — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
 ${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\n" : ''}
 import * as Button from '@/${isStyleX ? 'stylex' : 'ui'}/button'
 import * as Drawer from '@/${isStyleX ? 'stylex' : 'ui'}/drawer'${isStyleX ? "\n\nconst styles = stylex.create({\n  content: { paddingInline: '1rem', paddingBottom: '1.5rem', textAlign: 'center' },\n  value: { fontSize: '3rem', fontWeight: 700, lineHeight: 1 },\n  label: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },\n  action: { backgroundColor: 'var(--primary)', borderRadius: '0.375rem', color: 'var(--primary-foreground)', paddingBlock: '0.5rem', paddingInline: '1rem', fontSize: '0.875rem' },\n  cancel: { borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: '1px', paddingBlock: '0.5rem', paddingInline: '1rem', fontSize: '0.875rem' },\n})" : ''}`,
     model: `export const Model = S.Struct({ drawer: Drawer.Model })
 export type Model = typeof Model.Type`,
-    messages: `export const ClickedOpen = m('ClickedOpenDrawer${tag}')
-export const GotDrawerMessage = m('GotDrawerMessage${tag}', { message: Drawer.Message })
+    messages: `import { taggedStruct } from 'foldkit/schema'
+export const ClickedOpen = taggedStruct('ClickedOpenDrawer${tag}');
+export const GotDrawerMessage = taggedStruct('GotDrawerMessage${tag}', { message: Drawer.Message });
 export const Message = S.Union([ClickedOpen, GotDrawerMessage])
 export type Message = typeof Message.Type`,
-    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { drawer: Drawer.init({ id: 'drawer-${tag.toLowerCase()}', isAnimated: true }) },
-  [],
-]`,
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: { drawer: Drawer.init({ id: 'drawer-${tag.toLowerCase()}', isAnimated: true }) } })`,
     update: `const mapDrawer = (
   model: Model,
   result: ReturnType<typeof Drawer.update>,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
-  const [drawer, commands] = result
-  return [
-    { ...model, drawer },
-    Command.mapMessages(commands, next => GotDrawerMessage({ message: next })),
-  ]
+): Update.Return<Model, Message> => {
+  return { model: { ...model, drawer: result.model }, commands: Command.mapMessages(result.commands, next => GotDrawerMessage({ message: next })) }
 }
 
-export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'ClickedOpenDrawer${tag}':
       return mapDrawer(model, Drawer.open(model.drawer))

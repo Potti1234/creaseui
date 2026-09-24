@@ -1,5 +1,5 @@
 import { Schema as S } from 'effect';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import {
   definePreviewProgram,
@@ -16,7 +16,9 @@ const PreviewModel = S.Struct({
   isIndeterminate: S.Boolean,
 });
 type PreviewModel = typeof PreviewModel.Type;
-const ToggledPreview = m('ToggledCheckboxPreview', { isChecked: S.Boolean });
+const ToggledPreview = defineMessageUnion({
+  'ToggledCheckboxPreview': { isChecked: S.Boolean },
+});
 type PreviewMessage = typeof ToggledPreview.Type;
 
 export const checkboxTailwindPreviewProgram = definePreviewProgram<
@@ -30,14 +32,11 @@ export const checkboxTailwindPreviewProgram = definePreviewProgram<
     isChecked: checkboxInitialValues[index] ?? false,
     isIndeterminate: index === 1,
   }),
-  update: (model, message) => [
-    { ...model, isChecked: message.isChecked, isIndeterminate: false },
-    [],
-  ],
+  update: (model, message) => ({ model: { ...model, isChecked: message.isChecked, isIndeterminate: false } }),
   view: (index, model, h) => Checkbox.checkbox({
     id: `docs-checkbox-${String(index)}`,
     isChecked: model.isChecked,
-    onToggle: isChecked => ToggledPreview({ isChecked }),
+    onToggle: isChecked => ToggledPreview['ToggledCheckboxPreview']({ isChecked }),
     label: checkboxLabels[index] ?? checkboxLabels[0],
     ...(index === 0
       ? {

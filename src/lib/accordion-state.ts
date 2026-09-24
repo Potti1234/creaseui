@@ -1,7 +1,8 @@
+import type { Update } from 'foldkit'
 import { Option, Schema as S } from 'effect'
 import type { Command } from 'foldkit'
 import type { Html } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 /**
  * Skin-neutral Accordion behavior shared by every Crease renderer.
@@ -21,21 +22,25 @@ export const Model = S.Struct({
 })
 export type Model = typeof Model.Type
 
-export const ToggledItem = m('ToggledItem', {
+
+
+export const Message = defineMessageUnion({
+  ToggledItem: {
   value: S.String,
   isOpen: S.Boolean,
-})
-
-export const Message = S.Union([ToggledItem])
+},
+});
 export type Message = typeof Message.Type
 
-export const ChangedValue = m('ChangedValue', {
+
+
+export const OutMessage = defineMessageUnion({
+  ChangedValue: {
   value: S.Array(S.String),
   toggledValue: S.String,
   isOpen: S.Boolean,
-})
-
-export const OutMessage = S.Union([ChangedValue])
+},
+});
 export type OutMessage = typeof OutMessage.Type
 
 /** @deprecated Prefer `InitConfig.value`. Retained for registry compatibility. */
@@ -93,11 +98,7 @@ export const reflect = (model: Model, value: ReadonlyArray<string>): Model => ({
   value: [...normalizeValue(model.type, value)],
 })
 
-export type UpdateReturn = readonly [
-  Model,
-  ReadonlyArray<Command.Command<Message>>,
-  Option.Option<OutMessage>,
-]
+export type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   const value = message.isOpen
@@ -106,15 +107,9 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       : [...normalizeValue('multiple', [...model.value, message.value])]
     : model.value.filter((currentValue) => currentValue !== message.value)
 
-  return [
-    { ...model, value },
-    [],
-    Option.some(
-      ChangedValue({
+  return { model: { ...model, value }, outMessage: OutMessage.ChangedValue({
         value,
         toggledValue: message.value,
         isOpen: message.isOpen,
-      }),
-    ),
-  ]
+      }), }
 }

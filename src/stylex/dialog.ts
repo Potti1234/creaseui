@@ -171,6 +171,7 @@ export const dialog = <Msg>(
     model: props.model,
     view: DialogPrimitive.view,
     viewInputs: {
+      hasDescription: props.description !== undefined,
       toView: ({
         dialog: dialogAttributes,
         backdrop,

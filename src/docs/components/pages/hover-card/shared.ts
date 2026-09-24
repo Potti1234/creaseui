@@ -12,28 +12,24 @@ const source = (fixture: (typeof hoverCardFixtures)[number], renderer: 'tailwind
   return foldkitApplication({
     title: `Hover Card — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
 ${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\n" : ''}
 import * as HoverCard from '@/${isStyleX ? 'stylex' : 'ui'}/hover-card'${isStyleX ? "\n\nconst styles = stylex.create({\n  content: { display: 'grid', gap: '0.25rem' },\n  heading: { fontWeight: 600 },\n  copy: { fontSize: '0.875rem' },\n})" : ''}`,
     model: `export const Model = S.Struct({ hoverCard: HoverCard.Model })
 export type Model = typeof Model.Type`,
-    messages: `export const GotHoverCardMessage = m('GotHoverCardMessage${tag}', { message: HoverCard.Message })
+    messages: `import { taggedStruct } from 'foldkit/schema'
+export const GotHoverCardMessage = taggedStruct('GotHoverCardMessage${tag}', { message: HoverCard.Message });
 export const Message = S.Union([GotHoverCardMessage])
 export type Message = typeof Message.Type`,
-    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { hoverCard: HoverCard.init({ id: 'hover-card-${tag.toLowerCase()}', showDelay: 200, closeDelay: 150 }) },
-  [],
-]`,
-    update: `export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: { hoverCard: HoverCard.init({ id: 'hover-card-${tag.toLowerCase()}', showDelay: 200, closeDelay: 150 }) } })`,
+    update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'GotHoverCardMessage${tag}': {
-      const [hoverCard, commands] = HoverCard.update(model.hoverCard, message.message)
-      return [
-        { ...model, hoverCard },
-        Command.mapMessages(commands, next => GotHoverCardMessage({ message: next })),
-      ]
+      const hoverCardOp__ = HoverCard.update(model.hoverCard, message.message);
+    const hoverCard = hoverCardOp__.model;
+    const commands = hoverCardOp__.commands ?? [];
+      return { model: { ...model, hoverCard }, commands: Command.mapMessages(commands, next => GotHoverCardMessage({ message: next })) }
     }
   }
 }`,

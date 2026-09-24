@@ -5,14 +5,14 @@ import type { StyleXExamplePreviewProvider } from '@/docs/components/page-defini
 import * as Label from '@/stylex/label';
 
 const styles = stylex.create({
-  field: { display: 'grid', gap: '0.5rem', maxWidth: '24rem', width: '100%' },
+  field: { gap: '0.5rem', display: 'grid', maxWidth: '24rem', width: '100%', },
   input: {
     borderColor: 'var(--border)',
     borderRadius: 'var(--radius-md)',
     borderStyle: 'solid',
     borderWidth: 1,
-    height: '2.25rem',
     paddingInline: '0.75rem',
+    height: '2.25rem',
   },
   supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem' },
 });

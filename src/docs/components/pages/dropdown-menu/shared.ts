@@ -22,33 +22,33 @@ const source = (fixture: (typeof dropdownMenuFixtures)[number], renderer: 'tailw
   return foldkitApplication({
     title: `Dropdown Menu — ${fixture.title}`,
     imports: `import { Option, Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
 
 import * as DropdownMenu from '@/${isStyleX ? 'stylex' : 'ui'}/dropdown-menu'`,
     model: `export const Action = S.Literals(['profile', 'billing', 'settings', 'logout'])
 export type Action = typeof Action.Type
 export const Model = S.Struct({ menu: DropdownMenu.Model, maybeLastAction: S.Option(Action) })
 export type Model = typeof Model.Type`,
-    messages: `export const GotMenuMessage = m('GotDropdownMenuMessage${tag}', { message: DropdownMenu.Message })
+    messages: `import { taggedStruct } from 'foldkit/schema'
+export const GotMenuMessage = taggedStruct('GotDropdownMenuMessage${tag}', { message: DropdownMenu.Message });
 export const Message = S.Union([GotMenuMessage])
 export type Message = typeof Message.Type`,
-    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { menu: DropdownMenu.init({ id: 'account-menu', isAnimated: true }), maybeLastAction: Option.none() },
-  [],
-]`,
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: { menu: DropdownMenu.init({ id: 'account-menu', isAnimated: true }), maybeLastAction: Option.none() } })`,
     update: `const AccountMenu = DropdownMenu.create<Action>()
 
-export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'GotDropdownMenuMessage${tag}': {
-      const [menu, commands, maybeSelection] = AccountMenu.update(model.menu, message.message)
+      const menuOp__ = AccountMenu.update(model.menu, message.message);
+    const menu = menuOp__.model;
+    const commands = menuOp__.commands ?? [];
+    const maybeSelection = Option.fromNullishOr(menuOp__.outMessage);
       const maybeLastAction = Option.match(maybeSelection, {
         onNone: () => model.maybeLastAction,
         onSome: selection => Option.some(selection.value),
       })
-      return [{ ...model, menu, maybeLastAction }, Command.mapMessages(commands, next => GotMenuMessage({ message: next }))]
+      return { model: { ...model, menu, maybeLastAction }, commands: Command.mapMessages(commands, next => GotMenuMessage({ message: next })) }
     }
   }
 }`,

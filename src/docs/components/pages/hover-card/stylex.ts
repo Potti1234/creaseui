@@ -6,7 +6,7 @@ import { hoverCardFixtures } from '@/docs/components/pages/hover-card/shared';
 import * as HoverCard from '@/stylex/hover-card';
 
 const styles = stylex.create({
-  content: { display: 'grid', gap: '0.25rem' },
+  content: { gap: '0.25rem', display: 'grid', },
   heading: { fontWeight: 600 },
   copy: { fontSize: '0.875rem', lineHeight: '1.25rem' },
 });

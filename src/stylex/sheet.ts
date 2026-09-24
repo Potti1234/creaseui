@@ -250,7 +250,9 @@ export const sheet = <Msg>(
 /*
 Minimal wiring:
 const model = init({ id: 'settings-sheet', isAnimated: true })
-const [nextModel, commands] = update(model, message)
+const nextModelOp__ = update(model, message);
+    const nextModel = nextModelOp__.model;
+    const commands = nextModelOp__.commands ?? [];
 sheet({
   model,
   toParentMessage: message => GotSheetMessage({ message }),

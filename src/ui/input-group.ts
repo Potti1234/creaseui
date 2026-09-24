@@ -80,7 +80,7 @@ export const inputGroupAddon = <Msg>(
       h.DataAttribute('align', align),
       ...(props.focusControlId === undefined || props.onFocus === undefined
         ? []
-        : [h.OnClickFocus(`#${props.focusControlId}`, props.onFocus)]),
+        : [h.OnClick(props.onFocus, { focusSelector: `#${props.focusControlId}` })]),
       h.Class(cn(inputGroupAddonVariants({ align }), props.class)),
     ],
     [...props.children],

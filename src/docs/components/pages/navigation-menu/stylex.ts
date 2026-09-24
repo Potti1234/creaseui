@@ -6,10 +6,10 @@ import * as NavigationMenu from '@/stylex/navigation-menu';
 import type * as Popover from '@/stylex/popover';
 
 const styles = stylex.create({
-  sample: { display: 'grid', gap: '0.75rem' },
-  routeButton: { borderColor: 'var(--border)', borderRadius: '0.25rem', borderStyle: 'solid', borderWidth: '1px', fontSize: '0.875rem', paddingBlock: '0.25rem', paddingInline: '0.75rem', width: 'max-content' },
-  content: { display: 'grid', gap: '0.25rem' },
-  contentLink: { borderRadius: '0.25rem', display: 'block', padding: '0.5rem' },
+  sample: { gap: '0.75rem', display: 'grid', },
+  routeButton: { borderColor: 'var(--border)', borderRadius: '0.25rem', borderStyle: 'solid', borderWidth: '1px', paddingBlock: '0.25rem', paddingInline: '0.75rem', fontSize: '0.875rem', width: 'max-content', },
+  content: { gap: '0.25rem', display: 'grid', },
+  contentLink: { padding: '0.5rem', borderRadius: '0.25rem', display: 'block', },
 });
 
 const links = <Msg>(activeRoute: string, layout: NavigationMenu.NavigationMenuLayout, direction: 'ltr' | 'rtl', labels: ReadonlyArray<string>, h: HtmlBuilder<Msg>) => NavigationMenu.navigationMenu({ ariaLabel: 'Primary', layout, direction, children: [NavigationMenu.navigationMenuList({ layout, children: labels.map(label => NavigationMenu.navigationMenuItem({ children: [NavigationMenu.navigationMenuLink({ href: '#', isActive: activeRoute === label.toLowerCase(), children: [label] }, h)] }, h)) }, h)] }, h);

@@ -1,13 +1,15 @@
 import { Option, Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import { accordionItems } from '@/docs/components/pages/accordion/shared';
 import * as Accordion from '@/ui/accordion';
 
-const GotAccordionPreviewMessage = m('GotAccordionPreviewMessage', {
+const GotAccordionPreviewMessage = defineMessageUnion({
+  GotAccordionPreviewMessage: {
   message: Accordion.Message,
+},
 });
 type GotAccordionPreviewMessage = typeof GotAccordionPreviewMessage.Type;
 
@@ -34,23 +36,23 @@ export const accordionTailwindPreviewProgram = definePreviewProgram<
     maybeLastToggledValue: Option.none(),
   }),
   update: (model, message) => {
-    const [accordion, commands, maybeToggle] = Accordion.update(
+    const accordionOp__ = Accordion.update(
       model.accordion,
       message.message,
     );
-    return [
-      {
+    const accordion = accordionOp__.model;
+    const commands = accordionOp__.commands ?? [];
+    const maybeToggle = Option.fromNullishOr(accordionOp__.outMessage);;
+    return { model: {
         ...model,
         accordion,
         maybeLastToggledValue: Option.match(maybeToggle, {
           onNone: () => model.maybeLastToggledValue,
           onSome: changed => Option.some(changed.toggledValue),
         }),
-      },
-      Command.mapMessages(commands, next =>
-        GotAccordionPreviewMessage({ message: next }),
-      ),
-    ];
+      }, commands: Command.mapMessages(commands, next =>
+        GotAccordionPreviewMessage.GotAccordionPreviewMessage({ message: next }),
+      ) };
   },
   view: (_index, model, h) =>
     h.div([h.Class('w-full max-w-xl')], [
@@ -59,7 +61,7 @@ export const accordionTailwindPreviewProgram = definePreviewProgram<
         model: model.accordion,
         view: Accordion.view,
         viewInputs: { items: accordionItems },
-        toParentMessage: message => GotAccordionPreviewMessage({ message }),
+        toParentMessage: message => GotAccordionPreviewMessage.GotAccordionPreviewMessage({ message }),
       }),
     ]),
 });

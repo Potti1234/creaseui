@@ -2,7 +2,7 @@ import { Option } from 'effect';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 import { Checkbox as CheckboxPrimitive } from '@foldkit/ui';
 
-import { ChangedPage, ChangedPageSize, ClosedColumnsMenu, Filtered, Sorted, ToggledColumn, ToggledColumnsMenu, ToggledRow, ToggledRows, type Message, type Model } from '@/lib/data-table-state';
+import { type Message, type Model, Message as DataTableStateMessages } from '@/lib/data-table-state';
 import { projectDataTable, type DataTableMode } from '@/lib/data-table-adapter';
 import * as Icon from '@/lib/icon';
 import { cn } from '@/lib/utils';
@@ -139,7 +139,7 @@ export const dataTable = <Row, Msg>(
                   h.Type('search'),
                   h.Value(props.model.filter),
                   h.OnInput((value) =>
-                    props.toParentMessage(Filtered({ value })),
+                    props.toParentMessage(DataTableStateMessages.Filtered({ value })),
                   ),
                   h.Placeholder(props.filterPlaceholder ?? 'Filter rows…'),
                   h.AriaLabel(props.filterPlaceholder ?? 'Filter rows'),
@@ -155,7 +155,7 @@ export const dataTable = <Row, Msg>(
                     h.Class('relative ml-auto'),
                     h.OnKeyDownPreventDefault((key) =>
                       key === 'Escape' && props.model.columnsMenuOpen
-                        ? Option.some(props.toParentMessage(ClosedColumnsMenu()))
+                        ? Option.some(props.toParentMessage(DataTableStateMessages.ClosedColumnsMenu()))
                         : Option.none(),
                     ),
                   ],
@@ -165,7 +165,7 @@ export const dataTable = <Row, Msg>(
                         h.Type('button'),
                         h.AriaExpanded(props.model.columnsMenuOpen),
                         h.AriaHasPopup('menu'),
-                        h.OnClick(props.toParentMessage(ToggledColumnsMenu())),
+                        h.OnClick(props.toParentMessage(DataTableStateMessages.ToggledColumnsMenu())),
                         h.Class(
                           'flex h-10 cursor-pointer items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted/50',
                         ),
@@ -183,7 +183,7 @@ export const dataTable = <Row, Msg>(
                               h.Tabindex(-1),
                               h.AriaHidden(true),
                               h.Class('fixed inset-0 z-10 cursor-default'),
-                              h.OnClick(props.toParentMessage(ClosedColumnsMenu())),
+                              h.OnClick(props.toParentMessage(DataTableStateMessages.ClosedColumnsMenu())),
                             ],
                             [],
                           ),
@@ -213,7 +213,7 @@ export const dataTable = <Row, Msg>(
                                     isVisible && visibleColumns.length === 1,
                                   onToggle: (nextVisible) =>
                                     props.toParentMessage(
-                                      ToggledColumn({
+                                      DataTableStateMessages.ToggledColumn({
                                         key: column.key,
                                         isVisible: nextVisible,
                                       }),
@@ -257,7 +257,7 @@ export const dataTable = <Row, Msg>(
                                     isDisabled: selectableKeys.length === 0,
                                     onToggle: (isSelected) =>
                                       props.toParentMessage(
-                                        ToggledRows({
+                                        DataTableStateMessages.ToggledRows({
                                           keys: selectableKeys,
                                           isSelected,
                                         }),
@@ -297,7 +297,7 @@ export const dataTable = <Row, Msg>(
                                   h.Type('button'),
                                   h.OnClick(
                                     props.toParentMessage(
-                                      Sorted({ key: column.key }),
+                                      DataTableStateMessages.Sorted({ key: column.key }),
                                     ),
                                   ),
                                   h.Class(
@@ -366,7 +366,7 @@ export const dataTable = <Row, Msg>(
                                         isDisabled: !isSelectable,
                                         onToggle: (nextSelected) =>
                                           props.toParentMessage(
-                                            ToggledRow({
+                                            DataTableStateMessages.ToggledRow({
                                               key,
                                               isSelected: nextSelected,
                                             }),
@@ -425,7 +425,7 @@ export const dataTable = <Row, Msg>(
                   h.Value(String(props.model.pageSize)),
                   h.OnChange((value) =>
                     props.toParentMessage(
-                      ChangedPageSize({ pageSize: Number(value) }),
+                      DataTableStateMessages.ChangedPageSize({ pageSize: Number(value) }),
                     ),
                   ),
                   h.Class('h-10 rounded-md border bg-background px-2 text-sm'),
@@ -443,7 +443,7 @@ export const dataTable = <Row, Msg>(
                   h.Type('button'),
                   h.AriaLabel('First page'),
                   h.Disabled(page === 0),
-                  h.OnClick(props.toParentMessage(ChangedPage({ page: 0 }))),
+                  h.OnClick(props.toParentMessage(DataTableStateMessages.ChangedPage({ page: 0 }))),
                   h.Class(
                     'h-10 rounded-md border px-3 text-sm font-medium transition-transform active:scale-[0.96] disabled:pointer-events-none disabled:opacity-50',
                   ),
@@ -455,7 +455,7 @@ export const dataTable = <Row, Msg>(
                   h.Type('button'),
                   h.Disabled(page === 0),
                   h.OnClick(
-                    props.toParentMessage(ChangedPage({ page: page - 1 })),
+                    props.toParentMessage(DataTableStateMessages.ChangedPage({ page: page - 1 })),
                   ),
                   h.Class(
                     'h-10 rounded-md border px-3 text-sm font-medium transition-transform active:scale-[0.96] disabled:pointer-events-none disabled:opacity-50',
@@ -468,7 +468,7 @@ export const dataTable = <Row, Msg>(
                   h.Type('button'),
                   h.Disabled(page >= pageCount - 1),
                   h.OnClick(
-                    props.toParentMessage(ChangedPage({ page: page + 1 })),
+                    props.toParentMessage(DataTableStateMessages.ChangedPage({ page: page + 1 })),
                   ),
                   h.Class(
                     'h-10 rounded-md border px-3 text-sm font-medium transition-transform active:scale-[0.96] disabled:pointer-events-none disabled:opacity-50',
@@ -483,7 +483,7 @@ export const dataTable = <Row, Msg>(
                   h.Disabled(page >= pageCount - 1),
                   h.OnClick(
                     props.toParentMessage(
-                      ChangedPage({ page: pageCount - 1 }),
+                      DataTableStateMessages.ChangedPage({ page: pageCount - 1 }),
                     ),
                   ),
                   h.Class(

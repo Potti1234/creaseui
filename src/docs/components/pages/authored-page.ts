@@ -1,7 +1,8 @@
 import { Schema as S, type Schema } from 'effect';
+import type { Update } from 'foldkit';
 import { Command, Subscription } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 import { defineView } from 'foldkit/submodel';
 
 import type {
@@ -18,7 +19,9 @@ export type AuthoredPage = Readonly<{
   previewMode?: 'static';
 }>;
 
-const StaticPreviewMessage = m('InteractedWithStaticDocsPreview');
+const StaticPreviewMessage = defineMessageUnion({
+  'InteractedWithStaticDocsPreview': {},
+});
 type StaticPreviewMessage = typeof StaticPreviewMessage.Type;
 
 export const authoredPage = (page: AuthoredPage): AuthoredPage => {
@@ -29,7 +32,7 @@ export const authoredPage = (page: AuthoredPage): AuthoredPage => {
     Model,
     Message: StaticPreviewMessage,
     init: () => ({ _docsPage: page.slug }),
-    update: (model) => [model, []],
+    update: (model) => ({ model: model }),
     view: (index, _model, h) => {
       const example = page.definition.examples[index];
       return example === undefined
@@ -47,7 +50,7 @@ export type PreviewProgram<Model, Message> = Readonly<{
   update: (
     model: Model,
     message: Message,
-  ) => readonly [Model, ReadonlyArray<Command.Command<Message>>];
+  ) => Update.Return<Model, Message>;
   view: (
     exampleIndex: number,
     model: Model,
@@ -63,7 +66,7 @@ export type ErasedPreviewProgram = Readonly<{
   update: (
     model: unknown,
     message: RoutedDocsPreviewMessage,
-  ) => readonly [unknown, ReadonlyArray<Command.Command<RoutedDocsPreviewMessage>>];
+  ) => Update.Return<unknown, RoutedDocsPreviewMessage>;
   view: (
     exampleIndex: number,
     model: unknown,
@@ -72,7 +75,9 @@ export type ErasedPreviewProgram = Readonly<{
   subscriptions?: Subscription.Subscriptions<unknown, RoutedDocsPreviewMessage>;
 }>;
 
-export const RoutedDocsPreviewMessage = m('RoutedDocsPreviewMessage', { messageJson: S.String });
+export const RoutedDocsPreviewMessage = defineMessageUnion({
+  RoutedDocsPreviewMessage: { messageJson: S.String },
+});
 export type RoutedDocsPreviewMessage = typeof RoutedDocsPreviewMessage.Type;
 
 /** Erases a page-local preview program only at the heterogeneous catalog boundary. */
@@ -86,33 +91,37 @@ export const definePreviewProgram = <Model, Message>(
     init: program.init,
     update: (model, message) => {
       const routed = message as RoutedDocsPreviewMessage;
-      const [next, commands] = program.update(model as Model, JSON.parse(routed.messageJson) as Message);
+      const nextOp__ = program.update(model as Model, JSON.parse(routed.messageJson) as Message);
+    const next = nextOp__.model;
+    const commands = nextOp__.commands ?? [];;
       // Foldkit's public Command union retains its schema-derived message type,
       // while mapMessages accepts the equivalent structural command shape.
       // Keep that unavoidable erasure at this one catalog boundary.
       const routedCommands = Command.mapMessages(
         commands as ReadonlyArray<Command.Command<Message> & { effect: never }>,
-        childMessage => RoutedDocsPreviewMessage({ messageJson: JSON.stringify(childMessage) }),
+        childMessage => RoutedDocsPreviewMessage.RoutedDocsPreviewMessage({ messageJson: JSON.stringify(childMessage) }),
       );
-      return [next, routedCommands];
+      return { model: next, commands: routedCommands };
     },
     view: (exampleIndex, model, h) => h.submodel({
       slotId: `typed-preview-${String(exampleIndex)}`,
       model: model as Model,
       view: childView,
       viewInputs: { exampleIndex },
-      toParentMessage: message => RoutedDocsPreviewMessage({ messageJson: JSON.stringify(message) }),
+      toParentMessage: message => RoutedDocsPreviewMessage.RoutedDocsPreviewMessage({ messageJson: JSON.stringify(message) }),
     }),
     ...(program.subscriptions === undefined ? {} : {
       subscriptions: Subscription.lift(program.subscriptions)<unknown, RoutedDocsPreviewMessage>({
         toChildModel: model => model as Model,
-        toParentMessage: message => RoutedDocsPreviewMessage({ messageJson: JSON.stringify(message) }),
+        toParentMessage: message => RoutedDocsPreviewMessage.RoutedDocsPreviewMessage({ messageJson: JSON.stringify(message) }),
       }),
     }),
   };
 };
 
-const ChangedTextPreview = m('ChangedTextDocsPreview', { value: S.String });
+const ChangedTextPreview = defineMessageUnion({
+  'ChangedTextDocsPreview': { value: S.String },
+});
 type ChangedTextPreview = typeof ChangedTextPreview.Type;
 
 /** Creates an exact route-local Model for controlled string preview families. */
@@ -132,12 +141,14 @@ export const textPreviewProgram = <const Slug extends string>(
     Model,
     Message: ChangedTextPreview,
     init: index => ({ _docsPage: slug, value: initialValues[index] ?? '' }),
-    update: (model, message) => [{ ...model, value: message.value }, []],
-    view: (index, model, h) => render(index, model.value, value => ChangedTextPreview({ value }), h),
+    update: (model, message) => ({ model: { ...model, value: message.value } }),
+    view: (index, model, h) => render(index, model.value, value => ChangedTextPreview['ChangedTextDocsPreview']({ value }), h),
   });
 };
 
-const InteractedPreview = m('InteractedWithDocsPreview');
+const InteractedPreview = defineMessageUnion({
+  'InteractedWithDocsPreview': {},
+});
 type InteractedPreview = typeof InteractedPreview.Type;
 
 /** Creates a route-local counter Model for previews whose controls emit one generic action. */
@@ -156,10 +167,10 @@ export const interactionPreviewProgram = <const Slug extends string>(
     Model,
     Message: InteractedPreview,
     init: () => ({ _docsPage: slug, interactionCount: 0 }),
-    update: model => [{ ...model, interactionCount: model.interactionCount + 1 }, []],
+    update: model => ({ model: { ...model, interactionCount: model.interactionCount + 1 } }),
     view: (index, model, h) => render(
       index,
-      InteractedPreview(),
+      InteractedPreview['InteractedWithDocsPreview'](),
       h,
       model.interactionCount,
     ),
@@ -177,6 +188,31 @@ export type FoldkitApplicationSource = Readonly<{
   subscriptions?: string;
 }>;
 
+/** Drops named imports whose bindings were already imported from the same module. */
+const dedupeNamedImports = (code: string): string => {
+  const seen = new Map<string, Set<string>>();
+  return code
+    .split('\n')
+    .filter((line) => {
+      const match = /^import (type )?\{([^}]*)\} from '([^']+)';?\s*$/.exec(line);
+      if (match === null) return true;
+      const moduleSpecifier = match[3]!;
+      const prior = seen.get(moduleSpecifier) ?? new Set<string>();
+      seen.set(moduleSpecifier, prior);
+      const names = match[2]!
+        .split(',')
+        .map((name) => name.trim().replace(/^type /, ''))
+        .filter((name) => name.length > 0);
+      return names.some((name) => {
+        const local = name.split(/\s+as\s+/).pop() ?? name;
+        if (prior.has(local)) return false;
+        prior.add(local);
+        return true;
+      });
+    })
+    .join('\n');
+};
+
 /**
  * Formats a component-specific Foldkit application for display and copying.
  * Callers own every behavior-bearing section; this helper only keeps the
@@ -192,7 +228,7 @@ export const foldkitApplication = ({
   view,
   subscriptions =
     'export const subscriptions = Subscription.aggregate<Model, Message>()()',
-}: FoldkitApplicationSource): string => `// ${title}
+}: FoldkitApplicationSource): string => dedupeNamedImports(`// ${title}
 
 ${imports}
 
@@ -232,7 +268,7 @@ Runtime.run(
     container: document.getElementById('root'),
   }),
 )
-`;
+`);
 
 export const statelessComponentApplication = (config: Readonly<{
   componentName: string;
@@ -245,9 +281,9 @@ export const statelessComponentApplication = (config: Readonly<{
   foldkitApplication({
     title: `${config.componentName} — ${config.exampleName}`,
     imports: `import { Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 import * as ${config.componentName} from '@/${config.renderer === 'stylex' ? 'stylex' : 'ui'}/${config.componentSlug}'${
       config.componentImports === undefined ? '' : `\n${config.componentImports}`
@@ -256,20 +292,18 @@ import * as ${config.componentName} from '@/${config.renderer === 'stylex' ? 'st
   clickCount: S.Number,
 })
 export type Model = typeof Model.Type`,
-    messages: `export const ClickedExample = m('Clicked${config.componentName}${config.exampleName.replaceAll(/[^a-zA-Z0-9]/g, '')}')
+    messages: `import { taggedStruct } from 'foldkit/schema'
+export const ClickedExample = taggedStruct('Clicked${config.componentName}${config.exampleName.replaceAll(/[^a-zA-Z0-9]/g, '')}');
 export const Message = S.Union([ClickedExample])
 export type Message = typeof Message.Type`,
-    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { clickCount: 0 },
-  [],
-]`,
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: { clickCount: 0 } })`,
     update: `export const update = (
   model: Model,
   message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'Clicked${config.componentName}${config.exampleName.replaceAll(/[^a-zA-Z0-9]/g, '')}':
-      return [{ ...model, clickCount: model.clickCount + 1 }, []]
+      return { model: { ...model, clickCount: model.clickCount + 1 } }
   }
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
@@ -297,28 +331,26 @@ export const staticComponentApplication = (config: Readonly<{
   foldkitApplication({
     title: `${config.componentName} — ${config.exampleName}`,
     imports: `import { Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 import * as ${config.componentName} from '@/${config.renderer === 'stylex' ? 'stylex' : 'ui'}/${config.componentSlug}'${
       config.componentImports === undefined ? '' : `\n${config.componentImports}`
     }`,
     model: `export const Model = S.Struct({})
 export type Model = typeof Model.Type`,
-    messages: `// This example has no interaction. Runtime applications still expose a
+    messages: `import { taggedStruct } from 'foldkit/schema'
+// This example has no interaction. Runtime applications still expose a
 // closed Message schema so the program boundary remains explicit.
-export const NoOp = m('NoOp${config.componentName}${config.exampleName.replaceAll(/[^a-zA-Z0-9]/g, '')}')
+export const NoOp = taggedStruct('NoOp${config.componentName}${config.exampleName.replaceAll(/[^a-zA-Z0-9]/g, '')}');
 export const Message = S.Union([NoOp])
 export type Message = typeof Message.Type`,
-    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  {},
-  [],
-]`,
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: {} })`,
     update: `export const update = (
   model: Model,
   _message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [model, []]`,
+): Update.Return<Model, Message> => ({ model: model })`,
     view: `export const view = (_model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${config.componentName} — ${config.exampleName}',
   body: h.main(
@@ -346,29 +378,27 @@ export const controlledTextApplication = (config: Readonly<{
   foldkitApplication({
     title: `${config.componentName} — ${config.exampleName}`,
     imports: `import { Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 import * as ${config.componentName} from '@/${config.renderer === 'stylex' ? 'stylex' : 'ui'}/${config.componentSlug}'${
       config.componentImports === undefined ? '' : `\n${config.componentImports}`
     }`,
     model: `export const Model = S.Struct({ ${config.field}: S.String })
 export type Model = typeof Model.Type`,
-    messages: `export const Changed${config.componentName} = m('Changed${config.componentName}${config.exampleName.replaceAll(/[^a-zA-Z0-9]/g, '')}', { value: S.String })
+    messages: `import { taggedStruct } from 'foldkit/schema'
+export const Changed${config.componentName} = taggedStruct('Changed${config.componentName}${config.exampleName.replaceAll(/[^a-zA-Z0-9]/g, '')}', { value: S.String })
 export const Message = S.Union([Changed${config.componentName}])
 export type Message = typeof Message.Type`,
-    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { ${config.field}: ${JSON.stringify(config.initialValue)} },
-  [],
-]`,
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: { ${config.field}: ${JSON.stringify(config.initialValue)} } })`,
     update: `export const update = (
   model: Model,
   message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'Changed${config.componentName}${config.exampleName.replaceAll(/[^a-zA-Z0-9]/g, '')}':
-      return [{ ...model, ${config.field}: message.value }, []]
+      return { model: { ...model, ${config.field}: message.value } }
   }
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
@@ -392,27 +422,25 @@ export const controlledBooleanApplication = (config: Readonly<{
 }>): string => foldkitApplication({
   title: `${config.componentName} — ${config.exampleName}`,
   imports: `import { Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 import * as ${config.componentName} from '@/${config.renderer === 'stylex' ? 'stylex' : 'ui'}/${config.componentSlug}'`,
   model: `export const Model = S.Struct({ ${config.field}: S.Boolean })
 export type Model = typeof Model.Type`,
-  messages: `export const ${config.messageName} = m('${config.messageName}${config.exampleName.replaceAll(/[^a-zA-Z0-9]/g, '')}', { ${config.messageField}: S.Boolean })
+  messages: `import { taggedStruct } from 'foldkit/schema'
+export const ${config.messageName} = taggedStruct('${config.messageName}${config.exampleName.replaceAll(/[^a-zA-Z0-9]/g, '')}', { ${config.messageField}: S.Boolean })
 export const Message = S.Union([${config.messageName}])
 export type Message = typeof Message.Type`,
-  init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { ${config.field}: ${String(config.initialValue)} },
-  [],
-]`,
+  init: `export const init = (): Update.Return<Model, Message> => ({ model: { ${config.field}: ${String(config.initialValue)} } })`,
   update: `export const update = (
   model: Model,
   message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+): Update.Return<Model, Message> => {
   switch (message._tag) {
     case '${config.messageName}${config.exampleName.replaceAll(/[^a-zA-Z0-9]/g, '')}':
-      return [{ ...model, ${config.field}: message.${config.messageField} }, []]
+      return { model: { ...model, ${config.field}: message.${config.messageField} } }
   }
 }`,
   view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
@@ -441,29 +469,27 @@ export const controlledStringApplication = (config: Readonly<{
   return foldkitApplication({
     title: `${config.componentName} — ${config.exampleName}`,
     imports: `import { Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 import * as ${config.componentName} from '@/${config.renderer === 'stylex' ? 'stylex' : 'ui'}/${config.componentSlug}'${
       config.componentImports === undefined ? '' : `\n${config.componentImports}`
     }`,
     model: `export const Model = S.Struct({ ${config.field}: S.String })
 export type Model = typeof Model.Type`,
-    messages: `export const ${config.messageName} = m('${tag}', { ${messageField}: S.String })
+    messages: `import { taggedStruct } from 'foldkit/schema'
+export const ${config.messageName} = taggedStruct('${tag}', { ${messageField}: S.String })
 export const Message = S.Union([${config.messageName}])
 export type Message = typeof Message.Type`,
-    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { ${config.field}: ${JSON.stringify(config.initialValue)} },
-  [],
-]`,
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: { ${config.field}: ${JSON.stringify(config.initialValue)} } })`,
     update: `export const update = (
   model: Model,
   message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+): Update.Return<Model, Message> => {
   switch (message._tag) {
     case '${tag}':
-      return [{ ...model, ${config.field}: message.${messageField} }, []]
+      return { model: { ...model, ${config.field}: message.${messageField} } }
   }
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({

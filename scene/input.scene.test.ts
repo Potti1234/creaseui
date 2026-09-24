@@ -9,10 +9,7 @@ type Model = Readonly<{ value: string }>
 type Message = Readonly<{ readonly _tag: 'ChangedInput'; value: string }>
 
 const ChangedInput = (value: string): Message => ({ _tag: 'ChangedInput', value })
-const update = (_model: Model, message: Message) => [
-  { value: message.value },
-  [],
-] as const
+const update = (_model: Model, message: Message) => ({ model: { value: message.value } })
 
 type InputModule = Readonly<{
   input: <Msg>(

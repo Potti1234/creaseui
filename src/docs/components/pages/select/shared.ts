@@ -14,9 +14,8 @@ const source = (fixture: (typeof selectFixtures)[number], renderer: 'tailwind' |
   return foldkitApplication({
     title: `Select — ${fixture.title}`,
     imports: `import { Option, Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
 
 import * as Select from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/select'`,
     model: `export const FruitValue = S.Literals(['apple', 'banana', 'blueberry'])
@@ -27,27 +26,25 @@ export const Model = S.Struct({
   maybeFruit: S.Option(FruitValue),
 })
 export type Model = typeof Model.Type`,
-    messages: `export const GotSelectMessage = m('GotSelectMessage${tag}', { message: Select.Message })
+    messages: `import { taggedStruct } from 'foldkit/schema'
+export const GotSelectMessage = taggedStruct('GotSelectMessage${tag}', { message: Select.Message });
 export const Message = S.Union([GotSelectMessage])
 export type Message = typeof Message.Type`,
-    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { select: Select.init({ id: 'fruit-select', isAnimated: true }), maybeFruit: Option.some('apple') },
-  [],
-]`,
-    update: `export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: { select: Select.init({ id: 'fruit-select', isAnimated: true }), maybeFruit: Option.some('apple') } })`,
+    update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'GotSelectMessage${tag}': {
-      const [select, commands, maybeSelection] = FruitSelect.update(model.select, message.message)
+      const selectOp__ = FruitSelect.update(model.select, message.message);
+    const select = selectOp__.model;
+    const commands = selectOp__.commands ?? [];
+    const maybeSelection = Option.fromNullishOr(selectOp__.outMessage);
       const maybeFruit = Option.match(maybeSelection, {
         onNone: () => model.maybeFruit,
         onSome: selection => selection._tag === 'Selected'
           ? Option.some(selection.value)
           : Option.none<FruitValue>(),
       })
-      return [
-        { ...model, select, maybeFruit },
-        Command.mapMessages(commands, next => GotSelectMessage({ message: next })),
-      ]
+      return { model: { ...model, select, maybeFruit }, commands: Command.mapMessages(commands, next => GotSelectMessage({ message: next })) }
     }
   }
 }`,

@@ -1,9 +1,10 @@
 import * as stylex from '@stylexjs/stylex';
 import { Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 
 import * as Icon from '@/demo/icon-preview';
 import { button } from '@/stylex/button';
@@ -107,37 +108,38 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const GotMenuMessage = m('GotMenuMessage', {
+
+
+export const Message = defineMessageUnion({
+  GotMenuMessage: {
   index: S.Number,
   message: DropdownMenu.Message,
+},
 });
-
-export const Message = S.Union([GotMenuMessage]);
 export type Message = typeof Message.Type;
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   const currentMenu = model.menus[message.index];
 
   if (currentMenu === undefined) {
-    return [model, []];
+    return { model: model };
   }
 
-  const [nextMenu, commands] = TransactionMenu.update(
+  const nextMenuOp__ = TransactionMenu.update(
     currentMenu,
     message.message,
   );
+    const nextMenu = nextMenuOp__.model;
+    const commands = nextMenuOp__.commands ?? [];;
 
-  return [
-    evo(model, {
+  return { model: modifyFields(model, {
       menus: (menus) =>
         menus.map((menu, index) => (index === message.index ? nextMenu : menu)),
-    }),
-    Command.mapMessages(commands, (nextMessage) =>
-      GotMenuMessage({ index: message.index, message: nextMessage }),
-    ),
-  ];
+    }), commands: Command.mapMessages(commands, (nextMessage) =>
+      Message.GotMenuMessage({ index: message.index, message: nextMessage }),
+    ) };
 };
 
 export const init = (): Model => ({
@@ -215,7 +217,7 @@ const transactionRow = (
                 {
                   model: menu,
                   toParentMessage: (message) =>
-                    GotMenuMessage({ index, message }),
+                    Message.GotMenuMessage({ index, message }),
                   trigger: h.span([], [
                     Icon.moreHorizontal({}, h),
                     h.span(

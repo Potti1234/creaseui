@@ -19,7 +19,7 @@ import type { EChartsOption } from 'echarts/types/dist/shared';
 import { Effect, Option, Schema as S } from 'effect';
 import { Command, Mount } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { cn } from '@/lib/utils';
 
@@ -314,15 +314,15 @@ const applyOption = (
 
 // MESSAGES
 
-export const ChartMounted = m('ChartMounted', { hostId: S.String });
-export const ChartMountFailed = m('ChartMountFailed', { reason: S.String });
-export const CompletedSyncChart = m('CompletedSyncChart');
 
-export const ChartMessage = S.Union([
-  ChartMounted,
-  ChartMountFailed,
-  CompletedSyncChart,
-]);
+
+
+
+export const ChartMessage = defineMessageUnion({
+  ChartMounted: { hostId: S.String },
+  ChartMountFailed: { reason: S.String },
+  CompletedSyncChart: {},
+});
 export type ChartMessage = typeof ChartMessage.Type;
 
 // COMMANDS + MOUNT
@@ -331,28 +331,24 @@ export type ChartMessage = typeof ChartMessage.Type;
  *  interactive charts' time-range selection). */
 export const SyncChart = Command.define('SyncChart', {
   args: { hostId: S.String, variant: S.String },
-  messages: [CompletedSyncChart],
+  messages: [ChartMessage.CompletedSyncChart],
   execute: ({ hostId, variant }) =>
     Effect.sync(() => {
       const chart = chartsByHostId.get(hostId);
       if (chart) {
         applyOption(hostId, chart, variant);
       }
-      return CompletedSyncChart();
+      return ChartMessage.CompletedSyncChart();
     }),
 });
 
-export const MountChart = Mount.define(
-  'MountChart',
-  { hostId: S.String, variant: S.String },
-  ChartMounted,
-  ChartMountFailed,
-)(
-  ({ hostId, variant }) =>
-    (element) =>
+export const MountChart = Mount.define('MountChart', {
+  args: { hostId: S.String, variant: S.String },
+  messages: [ChartMessage.ChartMounted, ChartMessage.ChartMountFailed],
+  execute: ({ element, hostId, variant }) =>
       Effect.gen(function* () {
         if (!(element instanceof HTMLElement)) {
-          return ChartMountFailed({
+          return ChartMessage.ChartMountFailed({
             reason: 'Chart host is not an HTMLElement.',
           });
         }
@@ -387,13 +383,13 @@ export const MountChart = Mount.define(
               chartsByHostId.delete(hostId);
             }),
         ).pipe(
-          Effect.map(() => ChartMounted({ hostId })),
+          Effect.map(() => ChartMessage.ChartMounted({ hostId })),
           Effect.catch((error) =>
-            Effect.succeed(ChartMountFailed({ reason: error.message })),
+            Effect.succeed(ChartMessage.ChartMountFailed({ reason: error.message })),
           ),
         );
       }),
-);
+});
 
 // VIEW
 

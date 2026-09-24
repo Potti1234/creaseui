@@ -1,7 +1,8 @@
+import { taggedStruct } from 'foldkit/schema'
 import { Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command, Subscription } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
 import { defineView } from 'foldkit/submodel';
 
 import { componentPage, componentTitle, example } from '@/docs/component-page';
@@ -46,14 +47,14 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const GotExampleMessage = m('GotCatalogExampleMessage', {
+export const GotExampleMessage = taggedStruct('GotCatalogExampleMessage', {
   index: S.Number,
   message: RoutedDocsPreviewMessage,
 });
-export const ChangedRenderer = m('ChangedCatalogRenderer', {
+export const ChangedRenderer = taggedStruct('ChangedCatalogRenderer', {
   renderer: S.Literals(['tailwind', 'stylex']),
 });
-export const GotCodeFileMessage = m('GotCatalogCodeFileMessage', {
+export const GotCodeFileMessage = taggedStruct('GotCatalogCodeFileMessage', {
   message: CodeFile.Message,
 });
 export const Message = S.Union([
@@ -75,43 +76,39 @@ export const init = (slug?: string): Model => ({
   copiedCode: null,
 });
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   if (message._tag === 'ChangedCatalogRenderer') {
-    return [{ ...model, renderer: message.renderer }, []];
+    return { model: { ...model, renderer: message.renderer } };
   }
-  if (message._tag === 'GotCatalogCodeFileMessage') return [model, []];
+  if (message._tag === 'GotCatalogCodeFileMessage') return { model: model };
   if (message._tag !== 'GotCatalogExampleMessage') {
-    const [copiedCode, commands] = CopyFeedback.update(
+    const { model: copiedCode, commands: copiedCodeCommands__ } = CopyFeedback.update(
       model.copiedCode,
       message,
-    );
-    return [
-      { ...model, copiedCode },
-      Command.mapMessages(commands, (next) => next),
-    ];
+    )
+    const commands = copiedCodeCommands__ ?? []
+    return { model: { ...model, copiedCode }, commands: Command.mapMessages(commands, (next) => next) };
   }
 
   const current = model.examples[message.index];
-  if (current === undefined) return [model, []];
+  if (current === undefined) return { model: model };
 
   const program = authoredPages[model.slug]?.previewProgram;
-  if (program === undefined) return [model, []];
-  const [example, commands] = program.update(current, message.message);
-  return [
-    {
+  if (program === undefined) return { model: model };
+  const { model: example, commands: exampleCommands__ } = program.update(current, message.message);
+  const commands = exampleCommands__ ?? []
+  return { model: {
       examples: model.examples.map((candidate, index) =>
         index === message.index ? example : candidate,
       ),
       slug: model.slug,
       renderer: model.renderer,
       copiedCode: model.copiedCode,
-    },
-    Command.mapMessages(commands, (next) =>
+    }, commands: Command.mapMessages(commands, (next) =>
       GotExampleMessage({ index: message.index, message: next as RoutedDocsPreviewMessage }),
-    ),
-  ];
+    ) };
 };
 
 export const subscriptions = Subscription.aggregate<Model, Message>()(
@@ -230,7 +227,7 @@ const usageFor = (slug: string, name: string, kind: ComponentKind): string => {
   }
   if (kind === 'submodel') {
     const field = namespace[0]!.toLowerCase() + namespace.slice(1);
-    return `import { Command } from 'foldkit'\nimport * as ${namespace} from '@/ui/${slug}'\n\n// Model and init\n${field}: ${namespace}.Model\n${field}: ${namespace}.init(initConfig)\n\n// Delegate the child update and lift its commands\nconst [next, commands] = ${namespace}.update(model.${field}, childMessage)\nreturn [\n  { ...model, ${field}: next },\n  Command.mapMessages(commands, message => Got${namespace}Message({ message })),\n]\n\n// Keep the child view behind a keyed submodel boundary\nh.submodel({\n  slotId: '${slug}',\n  model: model.${field},\n  view: ${namespace}.view,\n  viewInputs,\n  toParentMessage: message => Got${namespace}Message({ message }),\n})`;
+    return `import { Command } from 'foldkit'\nimport * as ${namespace} from '@/ui/${slug}'\n\n// Model and init\n${field}: ${namespace}.Model\n${field}: ${namespace}.init(initConfig)\n\n// Delegate the child update and lift its commands\nconst nextOp__ = ${namespace}.update(model.${field}, childMessage)\nreturn [\n  { ...model, ${field}: next },\n  Command.mapMessages(commands, message => Got${namespace}Message({ message })),\n]\n\n// Keep the child view behind a keyed submodel boundary\nh.submodel({\n  slotId: '${slug}',\n  model: model.${field},\n  view: ${namespace}.view,\n  viewInputs,\n  toParentMessage: message => Got${namespace}Message({ message }),\n})`;
   }
   return `import * as ${namespace} from '@/ui/${slug}'\n\n// Recipes are installed as source. Compose their exports in your view and\n// wire stateful dependencies through the parent Model, Message, and update.\n${namespace}.${primaryExport(slug)}(viewConfig, h)`;
 };
@@ -280,7 +277,7 @@ export const view = (
                     (stylexModel, stylexBuilder) => stylexExamplePreviewProvider(
                       index,
                       stylexModel,
-                      messageJson => RoutedDocsPreviewMessage({ messageJson }),
+                      messageJson => RoutedDocsPreviewMessage.RoutedDocsPreviewMessage({ messageJson }),
                       stylexBuilder,
                     ) ?? stylexBuilder.div([], []),
                   ),
@@ -304,7 +301,7 @@ export const view = (
                     GotExampleMessage({ index, message }),
                 }),
               code: exampleCode,
-              onCopy: CopyFeedback.ClickedCopyCode({ code: exampleCode }),
+              onCopy: CopyFeedback.Message.ClickedDocsCopyCode({ code: exampleCode }),
               isCopied: model.copiedCode === exampleCode,
               dark,
               codeFileMessage: (message) => GotCodeFileMessage({ message }),
@@ -337,11 +334,11 @@ export const view = (
         : { accessibility: definition.accessibility }),
       ...(definition.keyboard === undefined ? {} : { keyboard: definition.keyboard }),
       copiedCode: model.copiedCode,
-      onCopyCode: (code) => CopyFeedback.ClickedCopyCode({ code }),
+      onCopyCode: (code) => CopyFeedback.Message.ClickedDocsCopyCode({ code }),
       dark,
       codeFileMessage: (message) => GotCodeFileMessage({ message }),
       exampleTitles: authoredExamples.map((example) => example.title),
-      sidebarScrolled: CopyFeedback.ObservedSidebarScroll(),
+      sidebarScrolled: CopyFeedback.Message.ObservedDocsSidebarScroll(),
       renderer: model.renderer,
       onRendererChange: (renderer) => ChangedRenderer({ renderer }),
       composition:

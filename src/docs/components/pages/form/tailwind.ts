@@ -1,6 +1,6 @@
 import { Effect, Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import * as Button from '@/ui/button';
@@ -8,15 +8,21 @@ import * as Field from '@/ui/field';
 import * as Form from '@/ui/form';
 import * as Input from '@/ui/input';
 
-const ChangedEmail = m('ChangedFormEmailPreview', { value: S.String });
-const ChangedPassword = m('ChangedFormPasswordPreview', { value: S.String });
-const Submitted = m('SubmittedFormPreview');
-const NavigatedError = m('NavigatedFormErrorPreview');
-const CompletedValidation = m('CompletedFormValidation', {
+
+
+
+
+
+const Message = defineMessageUnion({
+  'ChangedFormEmailPreview': { value: S.String },
+  'ChangedFormPasswordPreview': { value: S.String },
+  'SubmittedFormPreview': {},
+  'NavigatedFormErrorPreview': {},
+  'CompletedFormValidation': {
   version: S.Number,
   error: S.NullOr(S.String),
+},
 });
-const Message = S.Union([ChangedEmail, ChangedPassword, Submitted, NavigatedError, CompletedValidation]);
 type Message = typeof Message.Type;
 const Model = S.Struct({
   _docsPage: S.Literal('form'),
@@ -31,11 +37,11 @@ type Model = typeof Model.Type;
 
 const ValidateUsername = Command.define('ValidateDocsFormUsername', {
   args: { username: S.String, version: S.Number },
-  messages: [CompletedValidation],
+  messages: [Message['CompletedFormValidation']],
   execute: ({ username, version }) =>
     Effect.sleep('250 millis').pipe(
       Effect.as(
-        CompletedValidation({
+        Message['CompletedFormValidation']({
           version,
           error: username.length < 3 ? 'Use at least three characters.' : null,
         }),
@@ -59,23 +65,20 @@ export const formTailwindPreviewProgram = definePreviewProgram<Model, Message>({
     switch (message._tag) {
       case 'ChangedFormEmailPreview': {
         if (model.exampleIndex !== 2)
-          return [{ ...model, email: message.value }, []];
+          return { model: { ...model, email: message.value } };
         const validationVersion = model.validationVersion + 1;
-        return [
-          { ...model, email: message.value, validationVersion, asyncError: null },
-          [ValidateUsername({ username: message.value, version: validationVersion })],
-        ];
+        return { model: { ...model, email: message.value, validationVersion, asyncError: null }, commands: [ValidateUsername({ username: message.value, version: validationVersion })] };
       }
       case 'ChangedFormPasswordPreview':
-        return [{ ...model, password: message.value }, []];
+        return { model: { ...model, password: message.value } };
       case 'SubmittedFormPreview':
-        return [{ ...model, hasSubmitted: true }, []];
+        return { model: { ...model, hasSubmitted: true } };
       case 'NavigatedFormErrorPreview':
-        return [model, []];
+        return { model: model };
       case 'CompletedFormValidation':
         return message.version === model.validationVersion
-          ? [{ ...model, asyncError: message.error }, []]
-          : [model, []];
+          ? { model: { ...model, asyncError: message.error } }
+          : { model };
     }
   },
   view: (index, model, h) => {
@@ -91,7 +94,7 @@ export const formTailwindPreviewProgram = definePreviewProgram<Model, Message>({
       {
         class: 'w-full max-w-sm',
         ariaLabel: index === 1 ? 'Account sign in' : index === 2 ? 'Create account' : 'Newsletter signup',
-        ...(index === 2 ? {} : { onSubmit: Submitted({}) }),
+        ...(index === 2 ? {} : { onSubmit: Message['SubmittedFormPreview']({}) }),
         children: [
           ...(index === 1 && error !== undefined
             ? [
@@ -101,7 +104,7 @@ export const formTailwindPreviewProgram = definePreviewProgram<Model, Message>({
                     title: 'Fix the following error',
                     errors: [{ controlId: id, message: error }],
                     isAutofocus: true,
-                    onErrorLink: () => NavigatedError({}),
+                    onErrorLink: () => Message['NavigatedFormErrorPreview']({}),
                   },
                   h,
                 ),
@@ -122,7 +125,7 @@ export const formTailwindPreviewProgram = definePreviewProgram<Model, Message>({
                     type: index === 2 ? 'text' : 'email',
                     autocomplete: index === 2 ? 'username' : 'email',
                     value: model.email,
-                    onInput: value => ChangedEmail({ value }),
+                    onInput: value => Message['ChangedFormEmailPreview']({ value }),
                     ...(parts.describedBy === undefined ? {} : { describedBy: parts.describedBy }),
                     isInvalid: parts.isInvalid,
                   },
@@ -145,7 +148,7 @@ export const formTailwindPreviewProgram = definePreviewProgram<Model, Message>({
                           type: 'password',
                           autocomplete: 'current-password',
                           value: model.password,
-                          onInput: value => ChangedPassword({ value }),
+                          onInput: value => Message['ChangedFormPasswordPreview']({ value }),
                         },
                         controlH,
                       ),

@@ -1,6 +1,6 @@
 import { Option, Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import {
   definePreviewProgram,
@@ -12,8 +12,10 @@ import {
 import * as ToggleGroup from '@/ui/toggle-group';
 
 const PreviewToggleGroup = ToggleGroup.create<Alignment>();
-const GotToggleGroupPreviewMessage = m('GotToggleGroupPreviewMessage', {
+const GotToggleGroupPreviewMessage = defineMessageUnion({
+  GotToggleGroupPreviewMessage: {
   message: ToggleGroup.Message,
+},
 });
 type PreviewMessage = typeof GotToggleGroupPreviewMessage.Type;
 const PreviewModel = S.Struct({
@@ -39,12 +41,11 @@ export const toggleGroupTailwindPreviewProgram = definePreviewProgram<
     values: ['left'],
   }),
   update: (model, message) => {
-    const [toggleGroup, commands, maybeSelection] =
-      PreviewToggleGroup.update(model.toggleGroup, message.message);
+    const { model: toggleGroup, commands: toggleGroupCommands__, outMessage: toggleGroupOut__ } = PreviewToggleGroup.update(model.toggleGroup, message.message);    const commands = toggleGroupCommands__ ?? []
+    const maybeSelection = Option.fromNullishOr(toggleGroupOut__)
     const selected = Option.getOrUndefined(maybeSelection)?.value;
     const isMultiple = model.toggleGroup.id.endsWith('-1');
-    return [
-      {
+    return { model: {
         ...model,
         toggleGroup,
         value: selected === undefined || isMultiple ? model.value : selected,
@@ -53,16 +54,14 @@ export const toggleGroupTailwindPreviewProgram = definePreviewProgram<
           : model.values.includes(selected)
             ? model.values.filter(value => value !== selected)
             : [...model.values, selected],
-      },
-      Command.mapMessages(
+      }, commands: Command.mapMessages(
         commands,
-        next => GotToggleGroupPreviewMessage({ message: next }),
-      ),
-    ];
+        next => GotToggleGroupPreviewMessage.GotToggleGroupPreviewMessage({ message: next }),
+      ) };
   },
   view: (index, model, h) => PreviewToggleGroup.toggleGroup({
     model: model.toggleGroup,
-    toParentMessage: message => GotToggleGroupPreviewMessage({ message }),
+    toParentMessage: message => GotToggleGroupPreviewMessage.GotToggleGroupPreviewMessage({ message }),
     ariaLabel: 'Text alignment',
     ...(index === 1 ? { values: model.values } : { value: model.value }),
     items: index === 3

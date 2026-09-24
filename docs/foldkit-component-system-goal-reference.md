@@ -3,7 +3,7 @@
 Status: implementation handoff  
 Reference implementation: Accordion  
 Registry inventory: 65 UI artifacts  
-Compatibility baseline at the time of writing: Foldkit `0.148.2`, `@foldkit/ui` `0.148.2`, Effect `4.0.0-rc.109`, Foldkit Vite plugin `0.16.1`, StyleX `^0.19.0`
+Compatibility baseline at the time of writing: Foldkit `0.163.0`, `@foldkit/ui` `0.163.0`, Effect `4.0.0-rc.116`, Foldkit Vite plugin `0.24.0`, StyleX `^0.19.0`
 
 ## Copy-ready goal assignment
 

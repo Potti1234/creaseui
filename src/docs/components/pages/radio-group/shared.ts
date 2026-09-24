@@ -26,9 +26,9 @@ const source = (
 ): string => foldkitApplication({
   title: `Radio Group — ${name}`,
   imports: `import { Option, Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 import * as RadioGroup from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/radio-group'`,
   model: `export const Model = S.Struct({
@@ -36,19 +36,19 @@ import * as RadioGroup from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/radio-
   radioGroup: RadioGroup.Model,
 })
 export type Model = typeof Model.Type`,
-  messages: `export const GotRadioGroupMessage = m('GotRadioGroupMessage', { message: RadioGroup.Message })
-export const Message = S.Union([GotRadioGroupMessage])
+  messages: `import { defineMessageUnion } from 'foldkit/message'
+
+export const Message = defineMessageUnion({
+  GotRadioGroupMessage: { message: RadioGroup.Message },
+});
 export type Message = typeof Message.Type`,
-  init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { density: 'comfortable', radioGroup: RadioGroup.init({ id: 'density' }) },
-  [],
-]`,
-  update: `export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
-  const [radioGroup, commands, maybeSelection] = RadioGroup.update(model.radioGroup, message.message)
-  return [
-    { ...model, radioGroup, density: Option.match(maybeSelection, { onNone: () => model.density, onSome: selection => selection.value }) },
-    Command.mapMessages(commands, child => GotRadioGroupMessage({ message: child })),
-  ]
+  init: `export const init = (): Update.Return<Model, Message> => ({ model: { density: 'comfortable', radioGroup: RadioGroup.init({ id: 'density' }) } })`,
+  update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
+  const radioGroupOp__ = RadioGroup.update(model.radioGroup, message.message);
+    const radioGroup = radioGroupOp__.model;
+    const commands = radioGroupOp__.commands ?? [];
+    const maybeSelection = Option.fromNullishOr(radioGroupOp__.outMessage);
+  return { model: { ...model, radioGroup, density: Option.match(maybeSelection, { onNone: () => model.density, onSome: selection => selection.value }) }, commands: Command.mapMessages(commands, child => Message.GotRadioGroupMessage({ message: child })) }
 }`,
   view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Radio Group — ${name}',
@@ -56,7 +56,7 @@ export type Message = typeof Message.Type`,
     RadioGroup.radioGroup({
       model: model.radioGroup,
       selectedValue: Option.some(model.density),
-      toParentMessage: message => GotRadioGroupMessage({ message }),
+      toParentMessage: message => Message.GotRadioGroupMessage({ message }),
       ariaLabel: 'Interface density',
       name: 'density',
       ${config}

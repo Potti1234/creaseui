@@ -1,8 +1,9 @@
 import { Match as M, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 
 import * as Icon from '@/lib/icon';
 import { avatar, avatarFallback } from '@/ui/avatar';
@@ -196,23 +197,23 @@ export type Model = typeof Model.Type;
 
 // MESSAGE
 
-export const ToggledSidebar = m('ToggledSidebar');
-export const ToggledMobileSidebar = m('ToggledMobileSidebar');
-export const SelectedNavItem = m('SelectedNavItem', {
-  index: S.Number,
-});
-export const ToggledUnread = m('ToggledUnread', { isChecked: S.Boolean });
-export const GotUserMenuMessage = m('GotUserMenuMessage', {
-  message: DropdownMenu.Message,
-});
 
-export const Message = S.Union([
-  ToggledMobileSidebar,
-  ToggledSidebar,
-  SelectedNavItem,
-  ToggledUnread,
-  GotUserMenuMessage,
-]);
+
+
+
+
+
+export const Message = defineMessageUnion({
+  ToggledMobileSidebar: {},
+  ToggledSidebar: {},
+  SelectedNavItem: {
+  index: S.Number,
+},
+  ToggledUnread: { isChecked: S.Boolean },
+  GotUserMenuMessage: {
+  message: DropdownMenu.Message,
+},
+});
 export type Message = typeof Message.Type;
 
 // INIT
@@ -229,40 +230,30 @@ export const init = (): Model => ({
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledMobileSidebar: () => [evo(model, {isMobileOpen: current => !current}), []],
-      ToggledSidebar: () => [
-        evo(model, { isSidebarOpen: (current) => !current }),
-        [],
-      ],
-      SelectedNavItem: ({ index }) => [
-        evo(model, {
+      ToggledMobileSidebar: () => ({ model: modifyFields(model, {isMobileOpen: current => !current}) }),
+      ToggledSidebar: () => ({ model: modifyFields(model, { isSidebarOpen: (current) => !current }) }),
+      SelectedNavItem: ({ index }) => ({ model: modifyFields(model, {
           activeNavIndex: () => index,
           isSidebarOpen: () => true,
-        }),
-        [],
-      ],
-      ToggledUnread: ({ isChecked }) => [
-        { ...model, unreadOnly: isChecked },
-        [],
-      ],
+        }) }),
+      ToggledUnread: ({ isChecked }) => ({ model: { ...model, unreadOnly: isChecked } }),
       GotUserMenuMessage: ({ message: childMessage }) => {
-        const [userMenu, commands] = UserMenu.update(
+        const userMenuOp__ = UserMenu.update(
           model.userMenu,
           childMessage,
         );
+    const userMenu = userMenuOp__.model;
+    const commands = userMenuOp__.commands ?? [];;
 
-        return [
-          evo(model, { userMenu: () => userMenu }),
-          Command.mapMessages(commands, (nextMessage) =>
-            GotUserMenuMessage({ message: nextMessage }),
-          ),
-        ];
+        return { model: modifyFields(model, { userMenu: () => userMenu }), commands: Command.mapMessages(commands, (nextMessage) =>
+            Message.GotUserMenuMessage({ message: nextMessage }),
+          ) };
       },
     }),
   );
@@ -343,7 +334,7 @@ const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
               DropdownMenu.dropdownMenu<UserAction, Message>(
                 {
                   model,
-                  toParentMessage: (message) => GotUserMenuMessage({ message }),
+                  toParentMessage: (message) => Message.GotUserMenuMessage({ message }),
                   trigger: h.span(
                     [h.Class('contents')],
                     [
@@ -465,7 +456,7 @@ const iconSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
                                     children: [
                                       sidebarMenuButton(
                                         {
-                                          onClick: SelectedNavItem({ index }),
+                                          onClick: Message.SelectedNavItem({ index }),
                                           isActive:
                                             model.activeNavIndex === index,
                                           tooltip: item.title,
@@ -560,7 +551,7 @@ const mailSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
                         {
                           id: 'sidebar-09-unread-switch',
                           isChecked: model.unreadOnly,
-                          onToggle: (isChecked) => ToggledUnread({ isChecked }),
+                          onToggle: (isChecked) => Message.ToggledUnread({ isChecked }),
                           label: 'Toggle unread mail',
                           class: 'shadow-none',
                         },
@@ -613,7 +604,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
 
   return sidebar<Message>(
     {
-      isMobileOpen: model.isMobileOpen, onMobileDismiss: ToggledMobileSidebar(), state,
+      isMobileOpen: model.isMobileOpen, onMobileDismiss: Message.ToggledMobileSidebar(), state,
       collapsible: 'icon',
       class: 'overflow-hidden *:data-[sidebar=sidebar]:flex-row',
       children: [iconSidebar(model, h), mailSidebar(model, h)],
@@ -635,7 +626,7 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
           [
             sidebarTrigger(
               {
-                onMobileClick: ToggledMobileSidebar(), onClick: ToggledSidebar(),
+                onMobileClick: Message.ToggledMobileSidebar(), onClick: Message.ToggledSidebar(),
                 class: '-ml-1',
               },
               h,
@@ -723,6 +714,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
 
 /* Minimal interactive wiring:
    const model = init()
-   const [nextModel, commands] = update(model, ToggledSidebar())
+   const nextModelOp__ = update(model, ToggledSidebar());
+    const nextModel = nextModelOp__.model;
+    const commands = nextModelOp__.commands ?? [];
    view(nextModel)
 */

@@ -1,12 +1,14 @@
 import { Option, Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import { commandActions, commandFixtures, commandLabel } from '@/docs/components/pages/command/shared';
 import * as CommandMenu from '@/ui/command';
 
-const GotCommandPreviewMessage = m('GotCommandPreviewMessage', { message: CommandMenu.Message });
+const GotCommandPreviewMessage = defineMessageUnion({
+  GotCommandPreviewMessage: { message: CommandMenu.Message },
+});
 type GotCommandPreviewMessage = typeof GotCommandPreviewMessage.Type;
 const PreviewActionSchema = S.Literals(['calendar', 'search', 'settings']);
 const CommandPreviewModel = S.Struct({ _docsPage: S.Literal('command'), command: CommandMenu.Model, maybeAction: S.Option(PreviewActionSchema) });
@@ -18,16 +20,18 @@ export const commandTailwindPreviewProgram = definePreviewProgram<CommandPreview
   Model: CommandPreviewModel, Message: GotCommandPreviewMessage,
   init: index => ({ _docsPage: 'command', command: CommandMenu.init({ id: `docs-command-${String(index)}`, isAnimated: true }), maybeAction: Option.none() }),
   update: (model, message) => {
-    const [command, commands, maybeSelection] = PreviewCommand.update(model.command, message.message);
+    const { model: command, commands: commandCommands__, outMessage: commandOut__ } = PreviewCommand.update(model.command, message.message)
+    const commands = commandCommands__ ?? []
+    const maybeSelection = Option.fromNullishOr(commandOut__)
     const maybeAction = Option.match(maybeSelection, { onNone: () => model.maybeAction, onSome: selection => selection._tag === 'Selected' ? Option.some(selection.value) : Option.none<PreviewAction>() });
-    return [{ ...model, command, maybeAction }, Command.mapMessages(commands, next => GotCommandPreviewMessage({ message: next }))];
+    return { model: { ...model, command, maybeAction }, commands: Command.mapMessages(commands, next => GotCommandPreviewMessage.GotCommandPreviewMessage({ message: next })) };
   },
   view: (index, model, h) => {
     const fixture = commandFixtures[index] ?? commandFixtures[0];
     return PreviewCommand.command({
       model: model.command, maybeSelectedValue: model.maybeAction,
       restingInputValue: Option.match(model.maybeAction, { onNone: () => '', onSome: commandLabel }),
-      toParentMessage: message => GotCommandPreviewMessage({ message }), class: 'w-full max-w-md border shadow-md',
+      toParentMessage: message => GotCommandPreviewMessage.GotCommandPreviewMessage({ message }), class: 'w-full max-w-md border shadow-md',
       items: fixture.mode === 'empty' ? [] : commandActions,
       itemToConfig: action => ({ content: commandLabel(action), ...(action === 'settings' ? { shortcut: '⌘,' } : {}) }),
       placeholder: 'Type a command or search…', ariaLabel: 'Application commands',

@@ -1,21 +1,21 @@
 import { Option, Schema as S } from 'effect';
 import { Command, Subscription } from 'foldkit';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import * as Slider from '@/ui/slider';
 
-const GotSliderPreviewMessage = m('GotSliderPreviewMessage', {
+
+
+const SliderPreviewMessage = defineMessageUnion({
+  GotSliderPreviewMessage: {
   message: Slider.Message,
-});
-const ChangedRangePreview = m('ChangedRangeSliderPreview', {
+},
+  'ChangedRangeSliderPreview': {
   lower: S.Number,
   upper: S.Number,
+},
 });
-const SliderPreviewMessage = S.Union([
-  GotSliderPreviewMessage,
-  ChangedRangePreview,
-]);
 type SliderPreviewMessage = typeof SliderPreviewMessage.Type;
 const SliderPreviewModel = S.Struct({
   _docsPage: S.Literal('slider'),
@@ -44,38 +44,35 @@ export const sliderTailwindPreviewProgram = definePreviewProgram<
   }),
   update: (model, message) => {
     if (message._tag === 'ChangedRangeSliderPreview') {
-      return [{ ...model, range: [message.lower, message.upper] }, []];
+      return { model: { ...model, range: [message.lower, message.upper] } };
     }
-    const [slider, commands, maybeChange] =
-      Slider.update(model.slider, message.message);
-    return [
-      {
+    const { model: slider, commands: sliderCommands__, outMessage: sliderOut__ } = Slider.update(model.slider, message.message);    const commands = sliderCommands__ ?? []
+    const maybeChange = Option.fromNullishOr(sliderOut__)
+    return { model: {
         ...model,
         slider,
         value: Option.match(maybeChange, {
           onNone: () => model.value,
           onSome: change => change.value,
         }),
-      },
-      Command.mapMessages(
+      }, commands: Command.mapMessages(
         commands,
-        next => GotSliderPreviewMessage({ message: next }),
-      ),
-    ];
+        next => SliderPreviewMessage.GotSliderPreviewMessage({ message: next }),
+      ) };
   },
   subscriptions: Subscription.lift({
     pointer: Slider.subscriptions.dragPointer,
     escape: Slider.subscriptions.dragEscape,
   })<SliderPreviewModel, SliderPreviewMessage>({
     toChildModel: model => model.slider,
-    toParentMessage: message => GotSliderPreviewMessage({ message }),
+    toParentMessage: message => SliderPreviewMessage.GotSliderPreviewMessage({ message }),
   }),
   view: (index, model, h) => index === 0
     ? h.div([h.Class('w-full max-w-sm')], [
         Slider.slider({
           model: model.slider,
           value: model.value,
-          toParentMessage: message => GotSliderPreviewMessage({ message }),
+          toParentMessage: message => SliderPreviewMessage.GotSliderPreviewMessage({ message }),
           label: 'Volume',
           formatValue: value => `${Math.round(value)} percent`,
           name: 'volume',
@@ -88,7 +85,7 @@ export const sliderTailwindPreviewProgram = definePreviewProgram<
       ? Slider.slider({
           model: model.slider,
           value: model.value,
-          toParentMessage: message => GotSliderPreviewMessage({ message }),
+          toParentMessage: message => SliderPreviewMessage.GotSliderPreviewMessage({ message }),
           label: 'Managed volume',
           isReadOnly: true,
           class: 'max-w-sm',
@@ -100,7 +97,7 @@ export const sliderTailwindPreviewProgram = definePreviewProgram<
             max: index === 4 ? 0 : 100,
             step: index === 4 ? 0 : 1,
             onInput: ([lower, upper]) =>
-              ChangedRangePreview({ lower, upper }),
+              SliderPreviewMessage['ChangedRangeSliderPreview']({ lower, upper }),
             orientation: index === 3 ? 'vertical' : 'horizontal',
             ...(index === 2 ? { direction: 'rtl' as const } : {}),
             ariaLabels: ['Minimum price', 'Maximum price'],

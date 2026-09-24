@@ -1,6 +1,7 @@
+import type { Update } from 'foldkit'
 import { Duration, Effect, Option, Schema as S } from 'effect'
 import * as Command from 'foldkit/command'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 export const ToastPayload = S.Struct({
   title: S.String,
@@ -23,30 +24,39 @@ export type Entry = typeof Entry.Type
 export const Model = S.Struct({ id: S.String, nextId: S.Number, entries: S.Array(Entry) })
 export type Model = typeof Model.Type
 
-export const Dismissed = m('Dismissed', { id: S.String })
-export const Activated = m('ActivatedToastAction', { id: S.String })
-export const Paused = m('PausedToast', { id: S.String })
-export const Resumed = m('ResumedToast', { id: S.String })
-export const CompletedWait = m('CompletedWaitBeforeDismissingToast', { id: S.String, timerVersion: S.Number })
-export const Message = S.Union([Dismissed, Activated, Paused, Resumed, CompletedWait])
+
+
+
+
+
+export const Message = defineMessageUnion({
+  Dismissed: { id: S.String },
+  'ActivatedToastAction': { id: S.String },
+  'PausedToast': { id: S.String },
+  'ResumedToast': { id: S.String },
+  'CompletedWaitBeforeDismissingToast': { id: S.String, timerVersion: S.Number },
+});
 export type Message = typeof Message.Type
 
-export const DismissedToast = m('DismissedToast', { entry: Entry })
-export const ActivatedToast = m('ActivatedToast', { entry: Entry })
-export const OutMessage = S.Union([DismissedToast, ActivatedToast])
+
+
+export const OutMessage = defineMessageUnion({
+  DismissedToast: { entry: Entry },
+  ActivatedToast: { entry: Entry },
+});
 export type OutMessage = typeof OutMessage.Type
 
 export const init = (config: Readonly<{ id: string }>): Model => ({ id: config.id, nextId: 0, entries: [] })
 
 export const WaitBeforeDismissing = Command.define('WaitBeforeDismissingToast', {
   args: { id: S.String, durationMs: S.Number, timerVersion: S.Number },
-  messages: [CompletedWait],
+  messages: [Message['CompletedWaitBeforeDismissingToast']],
   execute: ({ id, durationMs, timerVersion }) => Effect.sleep(`${durationMs} millis`).pipe(
-    Effect.as(CompletedWait({ id, timerVersion })),
+    Effect.as(Message['CompletedWaitBeforeDismissingToast']({ id, timerVersion })),
   ),
 })
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>, Option.Option<OutMessage>]
+type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
 
 const schedule = (entry: Entry): ReadonlyArray<Command.Command<Message>> => entry.sticky || entry.isPaused
   ? []
@@ -54,28 +64,24 @@ const schedule = (entry: Entry): ReadonlyArray<Command.Command<Message>> => entr
 
 const remove = (model: Model, id: string, action: boolean): UpdateReturn => {
   const entry = model.entries.find(candidate => candidate.id === id)
-  if (entry === undefined) return [model, [], Option.none()]
-  return [
-    { ...model, entries: model.entries.filter(candidate => candidate.id !== id) },
-    [],
-    Option.some(action ? ActivatedToast({ entry }) : DismissedToast({ entry })),
-  ]
+  if (entry === undefined) return { model: model }
+  return { model: { ...model, entries: model.entries.filter(candidate => candidate.id !== id) }, outMessage: action ? OutMessage.ActivatedToast({ entry }) : OutMessage.DismissedToast({ entry }) }
 }
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
     case 'Dismissed': return remove(model, message.id, false)
     case 'ActivatedToastAction': return remove(model, message.id, true)
-    case 'PausedToast': return [{ ...model, entries: model.entries.map(entry => entry.id === message.id ? { ...entry, isPaused: true } : entry) }, [], Option.none()]
+    case 'PausedToast': return { model: { ...model, entries: model.entries.map(entry => entry.id === message.id ? { ...entry, isPaused: true } : entry) } }
     case 'ResumedToast': {
       const entries = model.entries.map(entry => entry.id === message.id ? { ...entry, isPaused: false, timerVersion: entry.timerVersion + 1 } : entry)
       const entry = entries.find(candidate => candidate.id === message.id)
-      return [{ ...model, entries }, entry === undefined ? [] : schedule(entry), Option.none()]
+      return { model: { ...model, entries }, commands: entry === undefined ? [] : schedule(entry) }
     }
     case 'CompletedWaitBeforeDismissingToast': {
       const entry = model.entries.find(candidate => candidate.id === message.id)
       return entry === undefined || entry.isPaused || entry.timerVersion !== message.timerVersion
-        ? [model, [], Option.none()]
+        ? { model: model, }
         : remove(model, message.id, false)
     }
   }
@@ -113,12 +119,12 @@ export const show = (model: Model, input: ShowInput): UpdateReturn => {
     timerVersion: 0,
     isPaused: false,
   }
-  return [{ ...model, nextId: model.nextId + 1, entries: [...model.entries, entry] }, schedule(entry), Option.none()]
+  return { model: { ...model, nextId: model.nextId + 1, entries: [...model.entries, entry] }, commands: schedule(entry) }
 }
 
 export const updateToast = (model: Model, id: string, input: UpdateInput): UpdateReturn => {
   const previous = model.entries.find(entry => entry.id === id)
-  if (previous === undefined) return [model, [], Option.none()]
+  if (previous === undefined) return { model: model }
   const entry: Entry = {
     ...previous,
     payload: {
@@ -131,9 +137,9 @@ export const updateToast = (model: Model, id: string, input: UpdateInput): Updat
     durationMs: input.duration === undefined ? previous.durationMs : Math.max(0, Duration.toMillis(input.duration)),
     timerVersion: previous.timerVersion + 1,
   }
-  return [{ ...model, entries: model.entries.map(candidate => candidate.id === id ? entry : candidate) }, schedule(entry), Option.none()]
+  return { model: { ...model, entries: model.entries.map(candidate => candidate.id === id ? entry : candidate) }, commands: schedule(entry) }
 }
 
 export const dismiss = (model: Model, id: string): UpdateReturn => remove(model, id, false)
-export const dismissAll = (model: Model): UpdateReturn => [{ ...model, entries: [] }, [], Option.none()]
+export const dismissAll = (model: Model): UpdateReturn => ({ model: { ...model, entries: [] } })
 export const Added = Entry

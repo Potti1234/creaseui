@@ -1,7 +1,8 @@
 import type { Stream } from 'effect';
 import { Effect, Option, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 import * as Subscription from 'foldkit/subscription';
 
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -13,16 +14,16 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const Toggled = m('Toggled');
-export const ToggledMobile = m('ToggledMobile');
-export const SetMobileOpen = m('SetMobileOpen', { isOpen: S.Boolean });
-export const CompletedSidebarPersist = m('CompletedSidebarPersist');
-export const Message = S.Union([
-  Toggled,
-  ToggledMobile,
-  SetMobileOpen,
-  CompletedSidebarPersist,
-]);
+
+
+
+
+export const Message = defineMessageUnion({
+  Toggled: {},
+  ToggledMobile: {},
+  SetMobileOpen: { isOpen: S.Boolean },
+  CompletedSidebarPersist: {},
+});
 export type Message = typeof Message.Type;
 
 export const init = (
@@ -35,43 +36,38 @@ export const init = (
 
 const SidebarPersist = Command.define('SidebarPersist', {
   args: { key: S.String, isOpen: S.Boolean },
-  messages: [CompletedSidebarPersist],
+  messages: [Message.CompletedSidebarPersist],
   execute: ({ key, isOpen }) =>
     Effect.sync(() => {
       document.cookie = `${key}=${String(isOpen)}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}; samesite=lax`;
-    }).pipe(Effect.as(CompletedSidebarPersist())),
+    }).pipe(Effect.as(Message.CompletedSidebarPersist())),
 });
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
     case 'Toggled': {
       const isOpen = !model.isOpen;
-      return [
-        { ...model, isOpen },
-        [SidebarPersist({ key: model.storageKey, isOpen })],
-      ];
+      return { model: { ...model, isOpen }, commands: [SidebarPersist({ key: model.storageKey, isOpen })] };
     }
     case 'ToggledMobile':
-      return [{ ...model, isMobileOpen: !model.isMobileOpen }, []];
+      return { model: { ...model, isMobileOpen: !model.isMobileOpen } };
     case 'SetMobileOpen':
-      return [{ ...model, isMobileOpen: message.isOpen }, []];
+      return { model: { ...model, isMobileOpen: message.isOpen } };
     case 'CompletedSidebarPersist':
-      return [model, []];
+      return { model: model };
   }
 };
 
 export const shortcut = <Msg>(
   toMessage: (message: Message) => Msg,
 ): Stream.Stream<Msg> =>
-  Subscription.fromEventFilterMap<KeyboardEvent, Msg>({
+  Subscription.fromEventFilterMapPreventDefault<Document, 'keydown', Msg>({
     target: document,
     type: 'keydown',
-    toMessage: (event) => {
-      if (event.key.toLowerCase() !== 'b' || (!event.metaKey && !event.ctrlKey))
-        return Option.none();
-      event.preventDefault();
-      return Option.some(toMessage(Toggled()));
-    },
+    filterMapEvent: (event) =>
+      event.key.toLowerCase() !== 'b' || (!event.metaKey && !event.ctrlKey)
+        ? Option.none()
+        : Option.some(toMessage(Message.Toggled())),
   });

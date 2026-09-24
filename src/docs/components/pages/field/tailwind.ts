@@ -1,18 +1,22 @@
 import { Effect, Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import * as Field from '@/ui/field';
 import * as Input from '@/ui/input';
 
-const ChangedValue = m('ChangedFieldPreviewValue', { value: S.String });
-const ChangedLastName = m('ChangedFieldPreviewLastName', { value: S.String });
-const CompletedValidation = m('CompletedFieldPreviewValidation', {
+
+
+
+const PreviewMessage = defineMessageUnion({
+  'ChangedFieldPreviewValue': { value: S.String },
+  'ChangedFieldPreviewLastName': { value: S.String },
+  'CompletedFieldPreviewValidation': {
   version: S.Number,
   error: S.NullOr(S.String),
+},
 });
-const PreviewMessage = S.Union([ChangedValue, ChangedLastName, CompletedValidation]);
 type PreviewMessage = typeof PreviewMessage.Type;
 const PreviewModel = S.Struct({
   _docsPage: S.Literal('field'),
@@ -26,11 +30,11 @@ type PreviewModel = typeof PreviewModel.Type;
 
 const ValidateUsername = Command.define('ValidateDocsFieldUsername', {
   args: { username: S.String, version: S.Number },
-  messages: [CompletedValidation],
+  messages: [PreviewMessage['CompletedFieldPreviewValidation']],
   execute: ({ username, version }) =>
     Effect.sleep('250 millis').pipe(
       Effect.as(
-        CompletedValidation({
+        PreviewMessage['CompletedFieldPreviewValidation']({
           version,
           error: username.length < 3 ? 'Use at least three characters.' : null,
         }),
@@ -53,19 +57,16 @@ export const fieldTailwindPreviewProgram = definePreviewProgram<PreviewModel, Pr
     switch (message._tag) {
       case 'ChangedFieldPreviewValue': {
         if (model.exampleIndex !== 2)
-          return [{ ...model, value: message.value }, []];
+          return { model: { ...model, value: message.value } };
         const validationVersion = model.validationVersion + 1;
-        return [
-          { ...model, value: message.value, validationVersion, error: null },
-          [ValidateUsername({ username: message.value, version: validationVersion })],
-        ];
+        return { model: { ...model, value: message.value, validationVersion, error: null }, commands: [ValidateUsername({ username: message.value, version: validationVersion })] };
       }
       case 'ChangedFieldPreviewLastName':
-        return [{ ...model, lastName: message.value }, []];
+        return { model: { ...model, lastName: message.value } };
       case 'CompletedFieldPreviewValidation':
         return message.version === model.validationVersion
-          ? [{ ...model, error: message.error }, []]
-          : [model, []];
+          ? { model: { ...model, error: message.error } }
+          : { model };
     }
   },
   view: (index, model, h) => {
@@ -100,7 +101,7 @@ export const fieldTailwindPreviewProgram = definePreviewProgram<PreviewModel, Pr
         },
         h,
       );
-    const onValue = (value: string) => ChangedValue({ value });
+    const onValue = (value: string) => PreviewMessage['ChangedFieldPreviewValue']({ value });
     if (index === 0)
       return control('docs-field-name', 'Display name', model.value, onValue, 'Shown on your public profile.');
     if (index === 1)
@@ -119,7 +120,7 @@ export const fieldTailwindPreviewProgram = definePreviewProgram<PreviewModel, Pr
         class: 'max-w-sm',
         children: [
           control('docs-field-first', 'First name', model.value, onValue),
-          control('docs-field-last', 'Last name', model.lastName, value => ChangedLastName({ value })),
+          control('docs-field-last', 'Last name', model.lastName, value => PreviewMessage['ChangedFieldPreviewLastName']({ value })),
         ],
       },
       h,

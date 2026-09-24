@@ -7,9 +7,9 @@ import * as TableState from '@/lib/tanstack-table-state'
 describe('TanStack Table Foldkit adapter', () => {
   it('keeps controlled feature state serializable and deterministic', () => {
     const initial = TableState.init()
-    const filtered = TableState.update(initial, TableState.ChangedGlobalFilter({ value: 'audit' }))
-    const selected = TableState.update(filtered, TableState.ToggledRow({ rowId: 'TSK-101', isSelected: true }))
-    const grouped = TableState.update(selected, TableState.ToggledGrouping({ columnId: 'team' }))
+    const filtered = TableState.update(initial, TableState.Message.ChangedTanStackGlobalFilter({ value: 'audit' }))
+    const selected = TableState.update(filtered, TableState.Message.ToggledTanStackRow({ rowId: 'TSK-101', isSelected: true }))
+    const grouped = TableState.update(selected, TableState.Message.ToggledTanStackGrouping({ columnId: 'team' }))
 
     assert.equal(filtered.pageIndex, 0)
     assert.deepEqual(selected.selectedRowIds, ['TSK-101'])
@@ -29,12 +29,12 @@ describe('TanStack Table Foldkit adapter', () => {
 
   it('controls typed column filters and restorable column layouts', () => {
     const initial = TableState.init({ layoutVersion: 3 })
-    const filtered = TableState.update(initial, TableState.ChangedColumnFilter({
+    const filtered = TableState.update(initial, TableState.Message.ChangedTanStackColumnFilter({
       filter: TableState.columnFilter('points', 'number', { operator: 'between', value: '2', secondaryValue: '8' }),
     }))
-    const resized = TableState.update(filtered, TableState.ResizedColumn({ columnId: 'points', width: 180 }))
-    const pinned = TableState.update(resized, TableState.ToggledColumnPin({ columnId: 'points' }))
-    const restored = TableState.update(initial, TableState.RestoredTableLayout({ ...TableState.layoutSnapshot(pinned) }))
+    const resized = TableState.update(filtered, TableState.Message.ResizedTanStackColumn({ columnId: 'points', width: 180 }))
+    const pinned = TableState.update(resized, TableState.Message.ToggledTanStackColumnPin({ columnId: 'points' }))
+    const restored = TableState.update(initial, TableState.Message.RestoredTanStackTableLayout({ ...TableState.layoutSnapshot(pinned) }))
 
     assert.equal(filtered.columnFilters[0]?.operator, 'between')
     assert.equal(resized.columnWidths[0]?.width, 180)
@@ -44,12 +44,12 @@ describe('TanStack Table Foldkit adapter', () => {
 
   it('models popovers, calendar drafts, and direct column resizing', () => {
     const initial = TableState.init()
-    const opened = TableState.update(initial, TableState.ToggledFilterPopover({ columnId: 'due', draft: '', secondaryDraft: '', operator: 'eq' }))
-    const custom = TableState.update(opened, TableState.ChangedDateCustomOpen({ isOpen: true }))
-    const previousMonth = TableState.update(custom, TableState.ShiftedCalendarMonth({ delta: -1 }))
-    const ranged = TableState.update(previousMonth, TableState.ChangedDateRangeDraft({ from: '2026-09-01T00:00', to: '2026-09-02T23:59' }))
-    const resizing = TableState.update(ranged, TableState.StartedColumnResize({ columnId: 'title', screenX: 200, width: 280 }))
-    const resized = TableState.update(resizing, TableState.DraggedColumnResize({ screenX: 260 }))
+    const opened = TableState.update(initial, TableState.Message.ToggledTanStackFilterPopover({ columnId: 'due', draft: '', secondaryDraft: '', operator: 'eq' }))
+    const custom = TableState.update(opened, TableState.Message.ChangedTanStackDateCustomOpen({ isOpen: true }))
+    const previousMonth = TableState.update(custom, TableState.Message.ShiftedTanStackCalendarMonth({ delta: -1 }))
+    const ranged = TableState.update(previousMonth, TableState.Message.ChangedTanStackDateRangeDraft({ from: '2026-09-01T00:00', to: '2026-09-02T23:59' }))
+    const resizing = TableState.update(ranged, TableState.Message.StartedTanStackColumnResize({ columnId: 'title', screenX: 200, width: 280 }))
+    const resized = TableState.update(resizing, TableState.Message.DraggedTanStackColumnResize({ screenX: 260 }))
 
     assert.equal(opened.openFilterColumnId, 'due')
     assert.equal(custom.dateCustomOpen, true)
@@ -66,9 +66,9 @@ describe('TanStack Table Foldkit adapter', () => {
     assert.match(source, /getPaginationRowModel/u)
     assert.match(source, /matchesColumnFilter/u)
     assert.match(source, /enableExpandableRows/u)
-    assert.match(source, /ResetTableLayout/u)
+    assert.match(source, /ResetTanStackTableLayout/u)
     assert.match(source, /calendarMonth/u)
-    assert.match(source, /StartedColumnResize/u)
+    assert.match(source, /StartedTanStackColumnResize/u)
   })
 
   it('keeps the reusable recipe constrained and migrates both consumers', () => {
@@ -119,7 +119,7 @@ describe('TanStack Table Foldkit adapter', () => {
     assert.match(styles, /stickyLeading: \{[^}]*transform: 'translateX\(-1rem\)'/su)
     assert.match(recipe, /styles\.stickyPrefixHeader/u)
     assert.match(recipe, /styles\.stickyPrefixBody/u)
-    assert.match(recipe, /type: 'scroll'[^}]*ClosedTableOverlays\(\)/su)
+    assert.match(recipe, /type: 'scroll'[^}]*ClosedTanStackTableOverlays\(\)/su)
   })
 })
 

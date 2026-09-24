@@ -73,8 +73,11 @@ export const collapsible = <Msg>(
 
 /*
 Minimal wiring:
-const model = init({ id: 'details', isOpen: false })
-const [nextModel, commands, maybeToggle] = update(model, message)
+const model = init({ id: 'details' })
+const nextModelOp__ = update(model, message);
+    const nextModel = nextModelOp__.model;
+    const commands = nextModelOp__.commands ?? [];
+    const maybeToggle = Option.fromNullishOr(nextModelOp__.outMessage);
 collapsible({
   model,
   toParentMessage: message => GotCollapsibleMessage({ message }),

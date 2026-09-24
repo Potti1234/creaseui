@@ -127,10 +127,9 @@ export const renderErrorSummary = <Msg>(
                 : [
                     h.Tabindex(0),
                     h.Role('link'),
-                    h.OnClickFocus(
-                      `#${error.controlId}`,
-                      props.onErrorLink(error.controlId),
-                    ),
+                    h.OnClick(props.onErrorLink(error.controlId), {
+                      focusSelector: `#${error.controlId}`,
+                    }),
                     h.OnKeyDownFocus((key) =>
                       key === 'Enter' && props.onErrorLink !== undefined
                         ? Option.some({

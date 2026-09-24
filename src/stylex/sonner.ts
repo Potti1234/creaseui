@@ -2,7 +2,7 @@ import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as Icon from '@/lib/icon'
-import { Activated, Dismissed, Paused, Resumed, type Entry, type Message, type Model, type Variant } from '@/lib/toast'
+import { type Entry, type Message, type Model, type Variant, Message as ToastMessages } from '@/lib/toast'
 import type { ComponentLayoutStyle } from './contracts'
 import { interactionTokens } from './interaction-tokens.stylex.const'
 import { className } from './style'
@@ -43,13 +43,13 @@ export type SonnerProps<Msg> = Readonly<{
 const entryView = <Msg>(entry: Entry, props: SonnerProps<Msg>, h: HtmlBuilder<Msg>): Html => h.article([
   h.Key(entry.id), h.Role(entry.variant === 'Error' ? 'alert' : 'status'),
   h.DataAttribute('slot', 'sonner-toast'), h.DataAttribute('variant', entry.variant.toLowerCase()), h.DataAttribute('paused', String(entry.isPaused)),
-  ...(props.pausePolicy === 'none' || entry.sticky ? [] : [h.OnMouseEnter(props.toParentMessage(Paused({ id: entry.id }))), h.OnMouseLeave(props.toParentMessage(Resumed({ id: entry.id })))]),
+  ...(props.pausePolicy === 'none' || entry.sticky ? [] : [h.OnMouseEnter(props.toParentMessage(ToastMessages.PausedToast({ id: entry.id }))), h.OnMouseLeave(props.toParentMessage(ToastMessages.ResumedToast({ id: entry.id })))]),
   h.Class(className(styles.toast, props.entryLayoutStyle)),
 ], [
   variantIcon(entry.variant, h),
   h.div([h.Class(className(styles.body))], [h.div([h.Class(className(styles.title))], [entry.payload.title]), ...(entry.payload.description === undefined ? [] : [h.div([h.Class(className(styles.description))], [entry.payload.description])])]),
-  ...(entry.payload.actionLabel === undefined ? [] : [h.button([h.Type('button'), h.OnClick(props.toParentMessage(Activated({ id: entry.id }))), h.Class(className(styles.action))], [entry.payload.actionLabel])]),
-  h.button([h.Type('button'), h.AriaLabel('Dismiss notification'), h.OnClick(props.toParentMessage(Dismissed({ id: entry.id }))), h.Class(className(styles.dismiss))], [Icon.x<Msg>({}, h)]),
+  ...(entry.payload.actionLabel === undefined ? [] : [h.button([h.Type('button'), h.OnClick(props.toParentMessage(ToastMessages.ActivatedToastAction({ id: entry.id }))), h.Class(className(styles.action))], [entry.payload.actionLabel])]),
+  h.button([h.Type('button'), h.AriaLabel('Dismiss notification'), h.OnClick(props.toParentMessage(ToastMessages.Dismissed({ id: entry.id }))), h.Class(className(styles.dismiss))], [Icon.x<Msg>({}, h)]),
 ])
 
 export const sonner = <Msg>(props: SonnerProps<Msg>, h: HtmlBuilder<Msg>): Html => h.section([

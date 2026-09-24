@@ -1,8 +1,9 @@
 import { Match as M, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 
 import * as Icon from '@/lib/icon';
 import { avatar, avatarFallback } from '@/ui/avatar';
@@ -119,23 +120,23 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const ToggledSidebar = m('ToggledSidebar');
-export const ToggledMobileSidebar = m('ToggledMobileSidebar');
-export const ChangedSearch = m('ChangedSearch', { value: S.String });
-export const ToggledNavMain = m('ToggledNavMain', {
+
+
+
+
+
+export const Message = defineMessageUnion({
+  ToggledMobileSidebar: {},
+  ToggledSidebar: {},
+  ChangedSearch: { value: S.String },
+  ToggledNavMain: {
   index: S.Number,
   isOpen: S.Boolean,
-});
-export const GotUserMenuMessage = m('GotUserMenuMessage', {
+},
+  GotUserMenuMessage: {
   message: DropdownMenu.Message,
+},
 });
-export const Message = S.Union([
-  ToggledMobileSidebar,
-  ToggledSidebar,
-  ChangedSearch,
-  ToggledNavMain,
-  GotUserMenuMessage,
-]);
 export type Message = typeof Message.Type;
 
 export const init = (): Model => ({
@@ -148,40 +149,33 @@ export const init = (): Model => ({
   }),
 });
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledMobileSidebar: () => [evo(model, {isMobileOpen: current => !current}), []],
-      ToggledSidebar: () => [
-        evo(model, { isSidebarOpen: (current) => !current }),
-        [],
-      ],
-      ChangedSearch: ({ value }) => [evo(model, { search: () => value }), []],
+      ToggledMobileSidebar: () => ({ model: modifyFields(model, {isMobileOpen: current => !current}) }),
+      ToggledSidebar: () => ({ model: modifyFields(model, { isSidebarOpen: (current) => !current }) }),
+      ChangedSearch: ({ value }) => ({ model: modifyFields(model, { search: () => value }) }),
       ToggledNavMain: ({ index, isOpen }) => {
-        if (model.navMainOpen[index] === undefined) return [model, []];
-        return [
-          evo(model, {
+        if (model.navMainOpen[index] === undefined) return { model: model };
+        return { model: modifyFields(model, {
             navMainOpen: (items) =>
               items.map((open, itemIndex) =>
                 itemIndex === index ? isOpen : open,
               ),
-          }),
-          [],
-        ];
+          }) };
       },
       GotUserMenuMessage: ({ message: childMessage }) => {
-        const [userMenu, commands] = UserMenu.update(
+        const userMenuOp__ = UserMenu.update(
           model.userMenu,
           childMessage,
         );
-        return [
-          evo(model, { userMenu: () => userMenu }),
-          Command.mapMessages(commands, (next) =>
-            GotUserMenuMessage({ message: next }),
-          ),
-        ];
+    const userMenu = userMenuOp__.model;
+    const commands = userMenuOp__.commands ?? [];;
+        return { model: modifyFields(model, { userMenu: () => userMenu }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotUserMenuMessage({ message: next }),
+          ) };
       },
     }),
   );
@@ -208,7 +202,7 @@ const navMain = (
                           id: `sidebar-16-nav-main-${index}`,
                           isOpen,
                           onToggle: (nextIsOpen) =>
-                            ToggledNavMain({ index, isOpen: nextIsOpen }),
+                            Message.ToggledNavMain({ index, isOpen: nextIsOpen }),
                           trigger: h.span(
                             [h.Class('contents')],
                             [
@@ -404,7 +398,7 @@ const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
               DropdownMenu.dropdownMenu<UserItem, Message>(
                 {
                   model,
-                  toParentMessage: (message) => GotUserMenuMessage({ message }),
+                  toParentMessage: (message) => Message.GotUserMenuMessage({ message }),
                   trigger: h.span(
                     [h.Class('contents')],
                     [
@@ -468,7 +462,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
   const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
   return sidebar<Message>(
     {
-      isMobileOpen: model.isMobileOpen, onMobileDismiss: ToggledMobileSidebar(), state,
+      isMobileOpen: model.isMobileOpen, onMobileDismiss: Message.ToggledMobileSidebar(), state,
       collapsible: 'icon',
       class: 'top-(--header-height) h-[calc(100svh-var(--header-height))]!',
       children: [
@@ -562,7 +556,7 @@ const searchForm = (value: string, h: HtmlBuilder<Message>): Html => {
             {
               id: 'sidebar-16-search',
               value,
-              onInput: (next) => ChangedSearch({ value: next }),
+              onInput: (next) => Message.ChangedSearch({ value: next }),
               placeholder: 'Type to search...',
               class: 'h-8 pl-7',
             },
@@ -594,7 +588,7 @@ const siteHeader = (model: Model, h: HtmlBuilder<Message>): Html => {
         [
           sidebarTrigger(
             {
-              onMobileClick: ToggledMobileSidebar(), onClick: ToggledSidebar(),
+              onMobileClick: Message.ToggledMobileSidebar(), onClick: Message.ToggledSidebar(),
               class: 'size-8',
             },
             h,

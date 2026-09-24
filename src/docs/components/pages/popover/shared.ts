@@ -25,28 +25,24 @@ const source = (
   return foldkitApplication({
     title: `Popover — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
 ${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\n" : ''}
 import * as Popover from '@/${isStyleX ? 'stylex' : 'ui'}/popover'${isStyleX ? "\n\nconst styles = stylex.create({\n  content: { display: 'grid', gap: '0.5rem' },\n  heading: { fontWeight: 500 },\n  copy: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },\n  input: { borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: '1px', paddingBlock: '0.5rem', paddingInline: '0.75rem' },\n})" : ''}`,
     model: `export const Model = S.Struct({ popover: Popover.Model })
 export type Model = typeof Model.Type`,
-    messages: `export const GotPopoverMessage = m('GotPopoverMessage${tag}', { message: Popover.Message })
+    messages: `import { taggedStruct } from 'foldkit/schema'
+export const GotPopoverMessage = taggedStruct('GotPopoverMessage${tag}', { message: Popover.Message });
 export const Message = S.Union([GotPopoverMessage])
 export type Message = typeof Message.Type`,
-    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { popover: Popover.init({ id: 'dimensions-popover', isAnimated: true, contentFocus: true }) },
-  [],
-]`,
-    update: `export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: { popover: Popover.init({ id: 'dimensions-popover', isAnimated: true, contentFocus: true }) } })`,
+    update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'GotPopoverMessage${tag}': {
-      const [popover, commands] = Popover.update(model.popover, message.message)
-      return [
-        { ...model, popover },
-        Command.mapMessages(commands, next => GotPopoverMessage({ message: next })),
-      ]
+      const popoverOp__ = Popover.update(model.popover, message.message);
+    const popover = popoverOp__.model;
+    const commands = popoverOp__.commands ?? [];
+      return { model: { ...model, popover }, commands: Command.mapMessages(commands, next => GotPopoverMessage({ message: next })) }
     }
   }
 }`,

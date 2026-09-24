@@ -1,7 +1,8 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { Effect, Schema as S, Stream } from 'effect'
+import type { Update } from 'foldkit';
 import { Command, Subscription } from 'foldkit'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 import * as State from '@/lib/tanstack-table-state'
 import * as VirtualDataTable from '@/stylex/virtual/data-table'
@@ -22,11 +23,16 @@ type TableExample = typeof TableExample.Type
 const FEATURE_STORAGE_KEY = 'playground-features'
 export const Model = S.Struct({ tanstack: State.Model, filters: State.Model, details: State.Model, virtual: VirtualDataTable.Model })
 export type Model = typeof Model.Type
-export const GotTanStackMessage = m('GotPlaygroundTanStackMessage', { table: TableExample, message: State.Message })
-export const GotVirtualTableMessage = m('GotPlaygroundVirtualTableMessage', { message: VirtualDataTable.Message })
-export const RestoredFeatureLayout = m('RestoredPlaygroundTableLayout', { columnOrder: S.Array(S.String), hiddenColumnIds: S.Array(S.String), pinnedColumnIds: S.Array(S.String), columnWidths: S.Array(State.ColumnWidth), layoutVersion: S.Number })
-export const CompletedPersistFeatureLayout = m('CompletedPersistPlaygroundTableLayout')
-export const Message = S.Union([GotTanStackMessage, GotVirtualTableMessage, RestoredFeatureLayout, CompletedPersistFeatureLayout])
+
+
+
+
+export const Message = defineMessageUnion({
+  'GotPlaygroundTanStackMessage': { table: TableExample, message: State.Message },
+  'GotPlaygroundVirtualTableMessage': { message: VirtualDataTable.Message },
+  'RestoredPlaygroundTableLayout': { columnOrder: S.Array(S.String), hiddenColumnIds: S.Array(S.String), pinnedColumnIds: S.Array(S.String), columnWidths: S.Array(State.ColumnWidth), layoutVersion: S.Number },
+  'CompletedPersistPlaygroundTableLayout': {},
+});
 export type Message = typeof Message.Type
 export const init = (): Model => ({
   tanstack: State.init({ pinnedColumnIds: ['select', 'title'], layoutVersion: 2 }),
@@ -36,33 +42,34 @@ export const init = (): Model => ({
 })
 const PersistFeatureLayout = Command.define('PersistPlaygroundTableLayout', {
   args: { value: S.String },
-  messages: [CompletedPersistFeatureLayout],
+  messages: [Message['CompletedPersistPlaygroundTableLayout']],
   execute: ({ value }) => Effect.sync(() => {
     localStorage.setItem(FEATURE_STORAGE_KEY, value)
-    return CompletedPersistFeatureLayout()
+    return Message['CompletedPersistPlaygroundTableLayout']()
   }),
 })
-export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'GotPlaygroundTanStackMessage': {
       const key = message.table === 'features' ? 'tanstack' : message.table
       const next = State.update(model[key], message.message)
       const persistsLayout = ['EndedTanStackColumnResize', 'ResizedTanStackColumn', 'ResetTanStackColumnWidths', 'ResetTanStackTableLayout', 'ResetTanStackTableView', 'ResetTanStackTable', 'ToggledTanStackColumn', 'MovedTanStackColumn', 'ToggledTanStackColumnPin'].includes(message.message._tag)
-      return [{ ...model, [key]: next }, message.table === 'features' && persistsLayout ? [PersistFeatureLayout({ value: JSON.stringify(State.layoutSnapshot(next)) })] : []]
+      return { model: { ...model, [key]: next }, ...(message.table === 'features' && persistsLayout ? { commands: [PersistFeatureLayout({ value: JSON.stringify(State.layoutSnapshot(next)) })] } : {}) }
     }
     case 'GotPlaygroundVirtualTableMessage': {
-      const [virtual, commands] = VirtualDataTable.update(model.virtual, message.message)
-      return [{ ...model, virtual }, Command.mapMessages(commands, (next) => GotVirtualTableMessage({ message: next }))]
+      const { model: virtual, commands: virtualCommands__ } = VirtualDataTable.update(model.virtual, message.message)
+      const commands = virtualCommands__ ?? []
+      return { model: { ...model, virtual }, commands: Command.mapMessages(commands, (next) => Message['GotPlaygroundVirtualTableMessage']({ message: next })) }
     }
     case 'RestoredPlaygroundTableLayout':
-      return [{ ...model, tanstack: State.update(model.tanstack, State.RestoredTableLayout({ columnOrder: message.columnOrder, hiddenColumnIds: message.hiddenColumnIds, pinnedColumnIds: message.pinnedColumnIds, columnWidths: message.columnWidths, layoutVersion: message.layoutVersion })) }, []]
+      return { model: { ...model, tanstack: State.update(model.tanstack, State.Message.RestoredTanStackTableLayout({ columnOrder: message.columnOrder, hiddenColumnIds: message.hiddenColumnIds, pinnedColumnIds: message.pinnedColumnIds, columnWidths: message.columnWidths, layoutVersion: message.layoutVersion })) } }
     case 'CompletedPersistPlaygroundTableLayout':
-      return [model, []]
+      return { model: model }
   }
 }
 export const subscriptions = Subscription.lift(VirtualDataTable.subscriptions)<Model, Message>({
   toChildModel: (model) => model.virtual,
-  toParentMessage: (message) => GotVirtualTableMessage({ message }),
+  toParentMessage: (message) => Message['GotPlaygroundVirtualTableMessage']({ message }),
 })
 
 type Status = 'Backlog' | 'In progress' | 'Done'
@@ -148,7 +155,7 @@ const tableProps = (model: State.Model, table: TableExample = 'features'): TanSt
   allSelectableRowIds: TASKS.slice(0, 32).map((row) => row.id),
   stretchColumns: true,
   storageKey: `playground-${table}`,
-  toParentMessage: (message) => GotTanStackMessage({ table, message }),
+  toParentMessage: (message) => Message['GotPlaygroundTanStackMessage']({ table, message }),
 })
 
 const featureCard = (title: string, description: string, features: ReadonlyArray<string>, h: HtmlBuilder<Message>): Html =>
@@ -194,7 +201,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
         const raw = localStorage.getItem(FEATURE_STORAGE_KEY) ?? localStorage.getItem('crease-table-playground-layout')
         if (raw === null) return Stream.empty
         const parsed = JSON.parse(raw) as ReturnType<typeof State.layoutSnapshot>
-        return Stream.succeed(RestoredFeatureLayout(parsed))
+        return Stream.succeed(Message['RestoredPlaygroundTableLayout'](parsed))
       } catch {
         return Stream.empty
       }
@@ -206,10 +213,10 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       stack({ gap: 'md', children: [text({ as: 'h2', children: ['Column filter types'], variant: 'headingMd' }, h), text({ as: 'p', children: ['Each header exposes its matching control: free text, multi-select enums, numeric operators, and preset or custom date ranges. Active filters remain available from the table-side filter menu.'], tone: 'secondary', variant: 'body' }, h), box({ surface: 'card', radius: 'lg', padding: 'md', children: [tanStackDataTable(filterProps, h)] }, h)] }, h),
       stack({ gap: 'md', children: [text({ as: 'h2', children: ['Expandable rows'], variant: 'headingMd' }, h), text({ as: 'p', children: ['Click a row to reveal a full-width detail panel while selection and pagination stay controlled independently.'], tone: 'secondary', variant: 'body' }, h), box({ surface: 'card', radius: 'lg', padding: 'md', children: [tanStackDataTable(detailProps, h)] }, h)] }, h),
       stack({ gap: 'md', children: [text({ as: 'h2', children: ['Loading and empty states'], variant: 'headingMd' }, h), grid({ columns: 'two', gap: 'md', children: [box({ surface: 'card', radius: 'lg', padding: 'md', children: [tanStackDataTable({ ...detailProps, ariaLabel: 'Loading task table', isLoading: true, loadingText: 'Loading task data…' }, h)] }, h), box({ surface: 'card', radius: 'lg', padding: 'md', children: [tanStackDataTable({ ...detailProps, ariaLabel: 'Empty task table', pagination: { totalCount: 0 }, rows: [], emptyText: 'No tasks match this view.' }, h)] }, h)] }, h)] }, h),
-      stack({ gap: 'md', children: [inline({ align: 'center', justify: 'between', gap: 'md', wrap: true, children: [stack({ gap: 'sm', children: [text({ as: 'h2', children: ['VirtualList table'], variant: 'headingMd' }, h), text({ as: 'p', children: ['A custom CSS-grid table for 2,000 rows. Only the visible window and a small overscan buffer are mounted.'], tone: 'secondary', variant: 'body' }, h)] }, h), badge({ children: ['@foldkit/ui VirtualList'], variant: 'outline' }, h)] }, h), box({ surface: 'card', radius: 'lg', padding: 'md', children: [VirtualDataTable.virtualDataTable({ ariaLabel: 'Virtualized task table', columns: VIRTUAL_COLUMNS, filterPlaceholder: 'Search 2,000 tasks…', filterText: (row) => `${row.id} ${row.title} ${row.status} ${row.team} ${row.priority} ${row.assignee}`, gridTemplateColumns: '3rem minmax(16rem,2fr) repeat(3,minmax(7rem,0.8fr)) minmax(6rem,0.6fr) minmax(10rem,1fr) minmax(7rem,0.7fr)', model: model.virtual, rowKey: (row) => row.id, rows: TASKS, toParentMessage: (message) => GotVirtualTableMessage({ message }) }, h)] }, h)] }, h),
+      stack({ gap: 'md', children: [inline({ align: 'center', justify: 'between', gap: 'md', wrap: true, children: [stack({ gap: 'sm', children: [text({ as: 'h2', children: ['VirtualList table'], variant: 'headingMd' }, h), text({ as: 'p', children: ['A custom CSS-grid table for 2,000 rows. Only the visible window and a small overscan buffer are mounted.'], tone: 'secondary', variant: 'body' }, h)] }, h), badge({ children: ['@foldkit/ui VirtualList'], variant: 'outline' }, h)] }, h), box({ surface: 'card', radius: 'lg', padding: 'md', children: [VirtualDataTable.virtualDataTable({ ariaLabel: 'Virtualized task table', columns: VIRTUAL_COLUMNS, filterPlaceholder: 'Search 2,000 tasks…', filterText: (row) => `${row.id} ${row.title} ${row.status} ${row.team} ${row.priority} ${row.assignee}`, gridTemplateColumns: '3rem minmax(16rem,2fr) repeat(3,minmax(7rem,0.8fr)) minmax(6rem,0.6fr) minmax(10rem,1fr) minmax(7rem,0.7fr)', model: model.virtual, rowKey: (row) => row.id, rows: TASKS, toParentMessage: (message) => Message['GotPlaygroundVirtualTableMessage']({ message }) }, h)] }, h)] }, h),
       grid({ columns: 'two', gap: 'md', children: [
         box({ surface: 'card', radius: 'lg', padding: 'md', children: [stack({ gap: 'md', children: [text({ as: 'h2', children: ['Controlled state'], variant: 'headingSm' }, h), text({ as: 'p', children: ['This is the serializable Foldkit model plus counts produced by TanStack’s row-model pipeline.'], tone: 'secondary', variant: 'caption' }, h), h.pre([h.Class(className(styles.code))], [JSON.stringify(stateSnapshot, null, 2)])] }, h)] }, h),
-        box({ surface: 'card', radius: 'lg', padding: 'md', children: [stack({ gap: 'md', children: [text({ as: 'h2', children: ['Feature controls'], variant: 'headingSm' }, h), text({ as: 'p', children: ['Reset returns the TanStack baseline. The virtual table keeps a deliberately smaller API focused on fast filtering, sorting, and selection.'], tone: 'secondary', variant: 'body' }, h), button({ children: ['Reset TanStack table state'], variant: 'outline', onClick: GotTanStackMessage({ table: 'features', message: State.ResetTable() }) }, h)] }, h)] }, h),
+        box({ surface: 'card', radius: 'lg', padding: 'md', children: [stack({ gap: 'md', children: [text({ as: 'h2', children: ['Feature controls'], variant: 'headingSm' }, h), text({ as: 'p', children: ['Reset returns the TanStack baseline. The virtual table keeps a deliberately smaller API focused on fast filtering, sorting, and selection.'], tone: 'secondary', variant: 'body' }, h), button({ children: ['Reset TanStack table state'], variant: 'outline', onClick: Message['GotPlaygroundTanStackMessage']({ table: 'features', message: State.Message.ResetTanStackTable() }) }, h)] }, h)] }, h),
       ] }, h),
     ] }, h),
   ] }, h)

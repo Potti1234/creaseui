@@ -8,10 +8,10 @@ import * as Spinner from '@/stylex/spinner';
 
 const styles = stylex.create({
   row: {
+    gap: '0.75rem',
     alignItems: 'center',
     display: 'flex',
     flexWrap: 'wrap',
-    gap: '0.75rem',
     justifyContent: 'center',
   },
 });

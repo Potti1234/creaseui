@@ -18,9 +18,9 @@ const source = (fixture: (typeof commandFixtures)[number], renderer: 'tailwind' 
   return foldkitApplication({
     title: `Command — ${fixture.title}`,
     imports: `import { Option, Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 ${isStyleX ? "import * as stylex from '@stylexjs/stylex'\n" : ''}
 import * as CommandMenu from '@/${isStyleX ? 'stylex' : 'ui'}/command'`,
     model: `export const Action = S.Literals(['calendar', 'search', 'settings'])
@@ -28,26 +28,27 @@ export type Action = typeof Action.Type
 const ApplicationCommand = CommandMenu.create<Action>()
 ${isStyleX ? "const styles = stylex.create({ command: { width: '100%', maxWidth: '28rem' } })\n" : ''}export const Model = S.Struct({ command: CommandMenu.Model, maybeAction: S.Option(Action)${remote ? ', items: S.Array(Action), requestId: S.Number, isLoading: S.Boolean' : ''} })
 export type Model = typeof Model.Type`,
-    messages: `export const GotCommandMessage = m('GotCommandMessage${tag}', { message: CommandMenu.Message })
-${remote ? "export const ReceivedRemoteCommands = m('ReceivedRemoteCommands', { requestId: S.Number, items: S.Array(Action) })\n" : ''}export const Message = S.Union([GotCommandMessage${remote ? ', ReceivedRemoteCommands' : ''}])
+    messages: `import { taggedStruct } from 'foldkit/schema'
+export const GotCommandMessage = taggedStruct('GotCommandMessage${tag}', { message: CommandMenu.Message });
+${remote ? "import { defineMessageUnion } from 'foldkit/message'\nexport const ReceivedRemoteCommands = defineMessageUnion({\n  ReceivedRemoteCommands: { requestId: S.Number, items: S.Array(Action) },\n});\n" : ''}export const Message = S.Union([GotCommandMessage${remote ? ', ReceivedRemoteCommands' : ''}])
 export type Message = typeof Message.Type`,
-    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { command: CommandMenu.init({ id: 'application-command', isAnimated: true }), maybeAction: Option.none()${remote ? ', items: [], requestId: 0, isLoading: true' : ''} },
-  [],
-]`,
-    update: `export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: { command: CommandMenu.init({ id: 'application-command', isAnimated: true }), maybeAction: Option.none()${remote ? ', items: [], requestId: 0, isLoading: true' : ''} } })`,
+    update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     ${remote ? `case 'ReceivedRemoteCommands':
       return message.requestId === model.requestId
-        ? [{ ...model, items: message.items, isLoading: false }, []]
-        : [model, []]
+        ? { model: { ...model, items: message.items, isLoading: false } }
+        : { model }
     ` : ''}case 'GotCommandMessage${tag}': {
-      const [command, commands, maybeSelection] = ApplicationCommand.update(model.command, message.message)
+      const commandOp__ = ApplicationCommand.update(model.command, message.message);
+    const command = commandOp__.model;
+    const commands = commandOp__.commands ?? [];
+    const maybeSelection = Option.fromNullishOr(commandOp__.outMessage);
       const maybeAction = Option.match(maybeSelection, {
         onNone: () => model.maybeAction,
         onSome: selection => selection._tag === 'Selected' ? Option.some(selection.value) : Option.none<Action>(),
       })
-      return [{ ...model, command, maybeAction${remote ? ", requestId: command.inputValue === model.command.inputValue ? model.requestId : model.requestId + 1, isLoading: command.inputValue === model.command.inputValue ? model.isLoading : true" : ''} }, Command.mapMessages(commands, next => GotCommandMessage({ message: next }))]
+      return { model: { ...model, command, maybeAction${remote ? ", requestId: command.inputValue === model.command.inputValue ? model.requestId : model.requestId + 1, isLoading: command.inputValue === model.command.inputValue ? model.isLoading : true" : ''} }, commands: Command.mapMessages(commands, next => GotCommandMessage({ message: next })) }
     }
   }
 }`,

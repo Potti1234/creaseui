@@ -1,7 +1,8 @@
+import type { Update } from 'foldkit'
 import { Match as M, Schema as S } from 'effect';
 import type { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import * as Chart from '@/lib/echarts';
 
@@ -32,11 +33,13 @@ export type Model = typeof Model.Type;
 
 // MESSAGE
 
-export const GotChartMessage = m('GotChartMessage', {
-  message: Chart.ChartMessage,
-});
 
-export const Message = S.Union([GotChartMessage]);
+
+export const Message = defineMessageUnion({
+  GotChartMessage: {
+  message: Chart.ChartMessage,
+},
+});
 export type Message = typeof Message.Type;
 
 // INIT
@@ -45,13 +48,13 @@ export const init = (): Model => ({});
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      GotChartMessage: () => [model, []],
+      GotChartMessage: () => ({ model: model }),
     }),
   );
 
@@ -59,7 +62,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
 
 export const view = (_model: Model, h: HtmlBuilder<Message>): Html => {
   const toMessage = (message: Chart.ChartMessage): Message =>
-    GotChartMessage({ message });
+    Message.GotChartMessage({ message });
 
   return chartsPageShell<Message>(
     'radar',

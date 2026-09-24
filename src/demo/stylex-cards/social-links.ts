@@ -1,8 +1,9 @@
+import type { Update } from 'foldkit'
 import * as stylex from '@stylexjs/stylex';
 import { Match as M, Schema as S } from 'effect';
 import type { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import * as Icon from '@/demo/icon-preview';
 import { button } from '@/stylex/button';
@@ -30,27 +31,27 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const UpdatedSpotifyUrl = m('UpdatedSpotifyUrl', {
+
+
+
+
+export const Message = defineMessageUnion({
+  UpdatedSpotifyUrl: {
   value: S.String,
-});
-export const UpdatedInstagramHandle = m('UpdatedInstagramHandle', {
+},
+  UpdatedInstagramHandle: {
   value: S.String,
-});
-export const UpdatedSoundcloudUrl = m('UpdatedSoundcloudUrl', {
+},
+  UpdatedSoundcloudUrl: {
   value: S.String,
-});
-export const UpdatedWebsiteUrl = m('UpdatedWebsiteUrl', {
+},
+  UpdatedWebsiteUrl: {
   value: S.String,
+},
 });
-export const Message = S.Union([
-  UpdatedSpotifyUrl,
-  UpdatedInstagramHandle,
-  UpdatedSoundcloudUrl,
-  UpdatedWebsiteUrl,
-]);
 export type Message = typeof Message.Type;
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const init = (): Model => ({
   spotifyUrl: 'spotify.com/artist/3j...2k',
@@ -63,16 +64,10 @@ export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      UpdatedSpotifyUrl: ({ value }) => [{ ...model, spotifyUrl: value }, []],
-      UpdatedInstagramHandle: ({ value }) => [
-        { ...model, instagramHandle: value },
-        [],
-      ],
-      UpdatedSoundcloudUrl: ({ value }) => [
-        { ...model, soundcloudUrl: value },
-        [],
-      ],
-      UpdatedWebsiteUrl: ({ value }) => [{ ...model, websiteUrl: value }, []],
+      UpdatedSpotifyUrl: ({ value }) => ({ model: { ...model, spotifyUrl: value } }),
+      UpdatedInstagramHandle: ({ value }) => ({ model: { ...model, instagramHandle: value } }),
+      UpdatedSoundcloudUrl: ({ value }) => ({ model: { ...model, soundcloudUrl: value } }),
+      UpdatedWebsiteUrl: ({ value }) => ({ model: { ...model, websiteUrl: value } }),
     }),
   );
 
@@ -141,7 +136,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                         label: 'Spotify Artist URL',
                         icon: 'circle-plus',
                         value: model.spotifyUrl,
-                        onInput: (value) => UpdatedSpotifyUrl({ value }),
+                        onInput: (value) => Message.UpdatedSpotifyUrl({ value }),
                       },
                       h,
                     ),
@@ -151,7 +146,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                         label: 'Instagram Handle',
                         icon: 'camera',
                         value: model.instagramHandle,
-                        onInput: (value) => UpdatedInstagramHandle({ value }),
+                        onInput: (value) => Message.UpdatedInstagramHandle({ value }),
                       },
                       h,
                     ),
@@ -161,7 +156,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                         label: 'SoundCloud URL',
                         icon: 'cloud',
                         value: model.soundcloudUrl,
-                        onInput: (value) => UpdatedSoundcloudUrl({ value }),
+                        onInput: (value) => Message.UpdatedSoundcloudUrl({ value }),
                         placeholder: 'soundcloud.com/username',
                       },
                       h,
@@ -172,7 +167,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                         label: 'Website',
                         icon: 'globe',
                         value: model.websiteUrl,
-                        onInput: (value) => UpdatedWebsiteUrl({ value }),
+                        onInput: (value) => Message.UpdatedWebsiteUrl({ value }),
                         placeholder: 'https://yoursite.com',
                       },
                       h,
@@ -204,7 +199,9 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
 /*
 Minimal wiring:
 const model = init()
-const [nextModel, commands] = update(model, message)
+const nextModelOp__ = update(model, message);
+    const nextModel = nextModelOp__.model;
+    const commands = nextModelOp__.commands ?? [];
 const cardView = view(model)
 */
 // Stateful? yes. Submodels wired: none (local controlled inputs). PORT NOTEs: style-sera classes stripped.

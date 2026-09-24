@@ -3,6 +3,18 @@
 Issues found in foldkit / @foldkit/ui while interactively hardening the
 creaseui docs. Review before filing issues upstream.
 
+Status (foldkit 0.163):
+
+- Enter-on-empty combobox: already fixed upstream on 0.163 (the commit
+  adds a bounds check on the active index).
+- Slider readonly arrows: already fixed upstream (keydown gated behind
+  `isInteractive`).
+- The remaining four are fixed in
+  https://github.com/Potti1234/foldkit/pull/1 (combobox `inputValue`
+  seed, anchor `shift` crossAxis, closed-listbox typeahead, tooltip
+  mount hover-sync); each fix ships a repro page under
+  `examples/findings-repro/` there.
+
 ## Combobox
 
 - **Enter on an empty list throws `Schema validation failed` per press.**

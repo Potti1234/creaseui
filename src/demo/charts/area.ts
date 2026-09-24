@@ -1,8 +1,9 @@
 import { Match as M, Option, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 
 import * as Chart from '@/lib/echarts';
 import * as AreaAxes from '@/demo/charts/cards/area-axes';
@@ -32,14 +33,17 @@ export type Model = typeof Model.Type;
 
 // MESSAGE
 
-export const GotChartMessage = m('GotChartMessage', {
-  message: Chart.ChartMessage,
-});
-export const GotTimeRangeSelectMessage = m('GotTimeRangeSelectMessage', {
-  message: Select.Message,
-});
 
-export const Message = S.Union([GotChartMessage, GotTimeRangeSelectMessage]);
+
+
+export const Message = defineMessageUnion({
+  GotChartMessage: {
+  message: Chart.ChartMessage,
+},
+  GotTimeRangeSelectMessage: {
+  message: Select.Message,
+},
+});
 export type Message = typeof Message.Type;
 
 // INIT
@@ -54,16 +58,16 @@ export const init = (): Model => ({
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      GotChartMessage: () => [model, []],
+      GotChartMessage: () => ({ model: model }),
       GotTimeRangeSelectMessage: ({ message: childMessage }) => {
-        const [timeRangeSelect, selectCommands, maybeOutMessage] =
-          Select.update(model.timeRangeSelect, childMessage);
+        const { model: timeRangeSelect, commands: timeRangeSelectCommands__, outMessage: timeRangeSelectOut__ } = Select.update(model.timeRangeSelect, childMessage);        const selectCommands = timeRangeSelectCommands__ ?? []
+        const maybeOutMessage = Option.fromNullishOr(timeRangeSelectOut__)
         const timeRange = Option.match(maybeOutMessage, {
           onNone: () => model.timeRange,
           onSome: (selection) =>
@@ -80,23 +84,20 @@ export const update = (model: Model, message: Message): UpdateReturn =>
                   hostId: AreaInteractive.HOST_ID,
                   variant: timeRange,
                 }),
-                (message) => GotChartMessage({ message }),
+                (message) => Message.GotChartMessage({ message }),
               ),
             ]
           : [];
 
-        return [
-          evo(model, {
+        return { model: modifyFields(model, {
             timeRange: () => timeRange,
             timeRangeSelect: () => timeRangeSelect,
-          }),
-          [
+          }), commands: [
             ...Command.mapMessages(selectCommands, (message) =>
-              GotTimeRangeSelectMessage({ message }),
+              Message.GotTimeRangeSelectMessage({ message }),
             ),
             ...chartCommands,
-          ],
-        ];
+          ] };
       },
     }),
   );
@@ -105,7 +106,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   const toMessage = (message: Chart.ChartMessage): Message =>
-    GotChartMessage({ message });
+    Message.GotChartMessage({ message });
 
   return chartsPageShell<Message>(
     'area',
@@ -125,7 +126,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
           selectedTimeRange: model.timeRange,
           selectModel: model.timeRangeSelect,
           toChartMessage: toMessage,
-          toSelectMessage: (message) => GotTimeRangeSelectMessage({ message }),
+          toSelectMessage: (message) => Message.GotTimeRangeSelectMessage({ message }),
         },
         h,
       ),

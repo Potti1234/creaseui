@@ -1,5 +1,5 @@
 import { Schema as S } from 'effect';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import {
@@ -13,7 +13,9 @@ const PreviewModel = S.Struct({
   isPressed: S.Boolean,
 });
 type PreviewModel = typeof PreviewModel.Type;
-const ToggledPreview = m('ToggledTogglePreview');
+const ToggledPreview = defineMessageUnion({
+  'ToggledTogglePreview': {},
+});
 type PreviewMessage = typeof ToggledPreview.Type;
 
 export const toggleTailwindPreviewProgram = definePreviewProgram<
@@ -26,10 +28,10 @@ export const toggleTailwindPreviewProgram = definePreviewProgram<
     _docsPage: 'toggle',
     isPressed: toggleInitialValues[index] ?? false,
   }),
-  update: model => [{ ...model, isPressed: !model.isPressed }, []],
+  update: model => ({ model: { ...model, isPressed: !model.isPressed } }),
   view: (index, model, h) => Toggle.toggle({
     isPressed: model.isPressed,
-    onToggle: ToggledPreview(),
+    onToggle: ToggledPreview['ToggledTogglePreview'](),
     children: [toggleChildren[index] ?? toggleChildren[0]],
     ...(index === 1 ? { variant: 'outline' as const } : {}),
     ...(index === 2 ? { isDisabled: true } : {}),

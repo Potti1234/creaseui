@@ -27,7 +27,7 @@ const verifyRenderer = (name: string, Checkbox: CheckboxModule) => {
     it('keeps checked state parent-owned and exposes native form metadata', () => {
       Scene.scene(
         {
-          update: (_model: Model, message: Message) => [{ checked: message.checked }, []] as const,
+          update: (_model: Model, message: Message) => ({ model: { checked: message.checked } }),
           view: (model, h) => Checkbox.checkbox({
             id: 'terms', isChecked: model.checked,
             onToggle: checked => ({ _tag: 'Toggled', checked }),
@@ -49,7 +49,7 @@ const verifyRenderer = (name: string, Checkbox: CheckboxModule) => {
     it('exposes mixed and read-only state without interaction handlers', () => {
       Scene.scene(
         {
-          update: (model: Model) => [model, []] as const,
+          update: (model: Model) => ({ model: model }),
           view: (model, h) => Checkbox.checkbox({
             id: 'selection', isChecked: model.checked,
             onToggle: checked => ({ _tag: 'Toggled', checked }),

@@ -1,8 +1,9 @@
+import type { Update } from 'foldkit'
 import { Match as M, Schema as S } from 'effect';
 import type { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 
 import * as Icon from '@/lib/icon';
 import {
@@ -117,14 +118,18 @@ export type Model = typeof Model.Type;
 
 // MESSAGE
 
-export const ToggledSidebar = m('ToggledSidebar');
-export const ToggledMobileSidebar = m('ToggledMobileSidebar');
-export const ToggledNavMain = m('ToggledNavMain', {
+
+
+
+
+export const Message = defineMessageUnion({
+  ToggledMobileSidebar: {},
+  ToggledSidebar: {},
+  ToggledNavMain: {
   index: S.Number,
   isOpen: S.Boolean,
+},
 });
-
-export const Message = S.Union([ToggledMobileSidebar, ToggledSidebar, ToggledNavMain]);
 export type Message = typeof Message.Type;
 
 // INIT
@@ -136,30 +141,24 @@ export const init = (): Model => ({
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledMobileSidebar: () => [evo(model, {isMobileOpen: current => !current}), []],
-      ToggledSidebar: () => [
-        evo(model, { isSidebarOpen: (current) => !current }),
-        [],
-      ],
+      ToggledMobileSidebar: () => ({ model: modifyFields(model, {isMobileOpen: current => !current}) }),
+      ToggledSidebar: () => ({ model: modifyFields(model, { isSidebarOpen: (current) => !current }) }),
       ToggledNavMain: ({ index, isOpen }) => {
         if (model.navMainOpen[index] === undefined) {
-          return [model, []];
+          return { model: model };
         }
-        return [
-          evo(model, {
+        return { model: modifyFields(model, {
             navMainOpen: (groups) =>
               groups.map((open, groupIndex) =>
                 groupIndex === index ? isOpen : open,
               ),
-          }),
-          [],
-        ];
+          }) };
       },
     }),
   );
@@ -312,7 +311,7 @@ const navMain = (
                           id: `sidebar-05-nav-main-${index}`,
                           isOpen,
                           onToggle: (nextIsOpen) =>
-                            ToggledNavMain({ index, isOpen: nextIsOpen }),
+                            Message.ToggledNavMain({ index, isOpen: nextIsOpen }),
                           class: 'group/collapsible',
                           trigger,
                           triggerClass: sidebarMenuButtonVariants(),
@@ -339,11 +338,11 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
 
   return sidebar<Message>(
     {
-      isMobileOpen: model.isMobileOpen, onMobileDismiss: ToggledMobileSidebar(), state,
+      isMobileOpen: model.isMobileOpen, onMobileDismiss: Message.ToggledMobileSidebar(), state,
       children: [
         sidebarHeader({ children: [brand(h), searchForm(h)] }, h),
         sidebarContent({ children: [navMain(model.navMainOpen, h)] }, h),
-        sidebarRail({ onClick: ToggledSidebar() }, h),
+        sidebarRail({ onClick: Message.ToggledSidebar() }, h),
       ],
     },
     h,
@@ -357,7 +356,7 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
         h.header(
           [h.Class('flex h-16 shrink-0 items-center gap-2 border-b px-4')],
           [
-            sidebarTrigger({ onMobileClick: ToggledMobileSidebar(), onClick: ToggledSidebar(), class: '-ml-1' }, h),
+            sidebarTrigger({ onMobileClick: Message.ToggledMobileSidebar(), onClick: Message.ToggledSidebar(), class: '-ml-1' }, h),
             separator(
               {
                 orientation: 'vertical',

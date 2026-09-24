@@ -97,7 +97,7 @@ export const tooltip = <Msg>(
               [
                 h.Id(triggerId), h.Type('button'), h.AriaDescribedBy(panelId), h.Disabled(disabled),
                 ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
-                ...(disabled ? [] : [h.OnMouseEnter(send(TooltipBehavior.EnteredTrigger())), h.OnMouseLeave(send(TooltipBehavior.LeftTrigger())), h.OnFocus(send(TooltipBehavior.FocusedTrigger())), h.OnBlur(send(TooltipBehavior.BlurredTrigger())), h.OnPointerDown(() => Option.some(send(TooltipBehavior.PressedPointerOnTrigger()))), h.OnKeyDownPreventDefault(key => key === 'Escape' && props.model.isOpen ? Option.some(send(TooltipBehavior.PressedEscape())) : Option.none())]),
+                ...(disabled ? [] : [h.OnMouseEnter(send(TooltipBehavior.Message.EnteredTooltipTrigger())), h.OnMouseLeave(send(TooltipBehavior.Message.LeftTooltipTrigger())), h.OnFocus(send(TooltipBehavior.Message.FocusedTooltipTrigger())), h.OnBlur(send(TooltipBehavior.Message.BlurredTooltipTrigger())), h.OnPointerDown(() => Option.some(send(TooltipBehavior.Message.PressedPointerOnTooltipTrigger()))), h.OnKeyDownPreventDefault(key => key === 'Escape' && props.model.isOpen ? Option.some(send(TooltipBehavior.Message.PressedEscapeOnTooltip())) : Option.none())]),
                 h.DataAttribute('slot', 'tooltip-trigger'),
                 ...(props.triggerLayoutStyle === undefined
                   ? []
@@ -110,7 +110,7 @@ export const tooltip = <Msg>(
                   h.div(
                     [
                       h.Id(panelId), h.Role('tooltip'), h.Style({ position: 'absolute', margin: '0', visibility: 'hidden', pointerEvents: 'none' }),
-                      h.OnMount(Mount.mapMessage(TooltipPrimitive.AnchorTooltip({ buttonId: triggerId, anchor }), () => send(TooltipBehavior.CompletedAnchor()))),
+                      h.OnMount(Mount.mapMessage(TooltipPrimitive.AnchorTooltip({ buttonId: triggerId, anchor }), () => send(TooltipBehavior.Message.CompletedTooltipAnchor()))),
                       h.DataAttribute('open', ''), h.DataAttribute('slot', 'tooltip-content'),
                       h.Class(cn(overlayStyles.tooltip, CONTENT_CLASS, props.layoutStyle)),
                     ],
@@ -137,7 +137,10 @@ export const tooltip = <Msg>(
 /*
 Minimal wiring:
 const model = init({ id: 'save-tooltip', showDelay: 0 })
-const [nextModel, commands, maybeVisibility] = update(model, message)
+const nextModelOp__ = update(model, message);
+    const nextModel = nextModelOp__.model;
+    const commands = nextModelOp__.commands ?? [];
+    const maybeVisibility = Option.fromNullishOr(nextModelOp__.outMessage);
 tooltip({
   model,
   toParentMessage: message => GotTooltipMessage({ message }),

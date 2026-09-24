@@ -19,8 +19,8 @@ const styles = stylex.create({
     fontSize: '0.875rem',
   },
   primaryAction: {
-    backgroundColor: 'var(--primary)',
     borderColor: 'var(--primary)',
+    backgroundColor: 'var(--primary)',
     color: 'var(--primary-foreground)',
   },
   compact: { maxWidth: '24rem' },

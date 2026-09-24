@@ -1,7 +1,7 @@
+import { taggedStruct } from 'foldkit/schema'
 import type { EChartsOption } from 'echarts/types/dist/shared';
 import { Schema as S } from 'effect';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import { chartData, chartFamilyHostId, chartFamilyKinds, chartFamilyOption, chartFixtures, isChartFamilyKind, chartHostId } from '@/docs/components/pages/chart/shared';
@@ -11,7 +11,7 @@ import * as Table from '@/ui/table';
 Chart.registerChart(chartHostId, (theme, variant): EChartsOption => ({ grid: Chart.compactGrid(), series: [{ data: variant === 'quarter' ? [186, 305, 237, 314] : [186, 305, 237, 273, 209, 314], itemStyle: { color: theme.chart2 }, name: 'Revenue', type: 'bar' }], tooltip: Chart.shadcnTooltip(theme), xAxis: Chart.categoryAxis(theme, variant === 'quarter' ? ['Q1', 'Q2', 'Q3', 'Q4'] : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], { boundaryGap: true }), yAxis: Chart.valueAxis(theme, { showLabels: true }) }));
 for (const kind of chartFamilyKinds) Chart.registerChart(chartFamilyHostId(kind), theme => chartFamilyOption(kind, theme));
 
-const Changed = m('ChangedChartRange', { variant: S.Literals(['month', 'quarter']) });
+const Changed = taggedStruct('ChangedChartRange', { variant: S.Literals(['month', 'quarter']) });
 const Message = S.Union([Chart.ChartMessage, Changed]);
 type Message = typeof Message.Type;
 const Model = S.Struct({ _docsPage: S.Literal('chart'), variant: S.Literals(['month', 'quarter']) });
@@ -27,7 +27,7 @@ export const chartTailwindPreviewProgram = definePreviewProgram<Model, Message>(
   Model,
   Message,
   init: () => ({ _docsPage: 'chart', variant: 'month' }),
-  update: (model, message) => message._tag === 'ChangedChartRange' ? [{ ...model, variant: message.variant }, [Chart.SyncChart({ hostId: chartHostId, variant: message.variant })]] : [model, []],
+  update: (model, message) => message._tag === 'ChangedChartRange' ? { model: { ...model, variant: message.variant }, commands: [Chart.SyncChart({ hostId: chartHostId, variant: message.variant })] } : { model },
   view: (index, model, h) => {
     const kind = chartFixtures[index]?.kind;
     if (kind === 'bar-svg') return Chart.barChart({ class: 'max-w-xl', data: chartData }, h);

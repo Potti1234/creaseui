@@ -1,9 +1,10 @@
 import { Match as M, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 import { defineView } from 'foldkit/submodel';
-import { evo } from 'foldkit/struct';
+import { modifyFields } from 'foldkit/struct';
 
 import * as B01 from '@/demo/blocks/sidebar-01';
 import * as B02 from '@/demo/blocks/sidebar-02';
@@ -49,41 +50,41 @@ export type Model = typeof Model.Type;
 
 // MESSAGE
 
-export const GotB01 = m('GotB01', { message: B01.Message });
-export const GotB02 = m('GotB02', { message: B02.Message });
-export const GotB03 = m('GotB03', { message: B03.Message });
-export const GotB04 = m('GotB04', { message: B04.Message });
-export const GotB05 = m('GotB05', { message: B05.Message });
-export const GotB06 = m('GotB06', { message: B06.Message });
-export const GotB07 = m('GotB07', { message: B07.Message });
-export const GotB08 = m('GotB08', { message: B08.Message });
-export const GotB09 = m('GotB09', { message: B09.Message });
-export const GotB10 = m('GotB10', { message: B10.Message });
-export const GotB11 = m('GotB11', { message: B11.Message });
-export const GotB12 = m('GotB12', { message: B12.Message });
-export const GotB13 = m('GotB13', { message: B13.Message });
-export const GotB14 = m('GotB14', { message: B14.Message });
-export const GotB15 = m('GotB15', { message: B15.Message });
-export const GotB16 = m('GotB16', { message: B16.Message });
 
-export const Message = S.Union([
-  GotB01,
-  GotB02,
-  GotB03,
-  GotB04,
-  GotB05,
-  GotB06,
-  GotB07,
-  GotB08,
-  GotB09,
-  GotB10,
-  GotB11,
-  GotB12,
-  GotB13,
-  GotB14,
-  GotB15,
-  GotB16,
-]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export const Message = defineMessageUnion({
+  GotB01: { message: B01.Message },
+  GotB02: { message: B02.Message },
+  GotB03: { message: B03.Message },
+  GotB04: { message: B04.Message },
+  GotB05: { message: B05.Message },
+  GotB06: { message: B06.Message },
+  GotB07: { message: B07.Message },
+  GotB08: { message: B08.Message },
+  GotB09: { message: B09.Message },
+  GotB10: { message: B10.Message },
+  GotB11: { message: B11.Message },
+  GotB12: { message: B12.Message },
+  GotB13: { message: B13.Message },
+  GotB14: { message: B14.Message },
+  GotB15: { message: B15.Message },
+  GotB16: { message: B16.Message },
+});
 export type Message = typeof Message.Type;
 
 // INIT
@@ -109,123 +110,91 @@ export const init = (): Model => ({
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotB01: ({ message: child }) => {
-        const [next, commands] = B01.update(model.b01, child);
-        return [
-          evo(model, { b01: () => next }),
-          Command.mapMessages(commands, (inner) => GotB01({ message: inner })),
-        ];
+        const { model: next, commands: nextCommands__ } = B01.update(model.b01, child)
+        const commands = nextCommands__ ?? []
+        return { model: modifyFields(model, { b01: () => next }), commands: Command.mapMessages(commands, (inner) => Message.GotB01({ message: inner })) };
       },
       GotB02: ({ message: child }) => {
-        const [next, commands] = B02.update(model.b02, child);
-        return [
-          evo(model, { b02: () => next }),
-          Command.mapMessages(commands, (inner) => GotB02({ message: inner })),
-        ];
+        const { model: next, commands: nextCommands__ } = B02.update(model.b02, child)
+        const commands = nextCommands__ ?? []
+        return { model: modifyFields(model, { b02: () => next }), commands: Command.mapMessages(commands, (inner) => Message.GotB02({ message: inner })) };
       },
       GotB03: ({ message: child }) => {
-        const [next, commands] = B03.update(model.b03, child);
-        return [
-          evo(model, { b03: () => next }),
-          Command.mapMessages(commands, (inner) => GotB03({ message: inner })),
-        ];
+        const { model: next, commands: nextCommands__ } = B03.update(model.b03, child)
+        const commands = nextCommands__ ?? []
+        return { model: modifyFields(model, { b03: () => next }), commands: Command.mapMessages(commands, (inner) => Message.GotB03({ message: inner })) };
       },
       GotB04: ({ message: child }) => {
-        const [next, commands] = B04.update(model.b04, child);
-        return [
-          evo(model, { b04: () => next }),
-          Command.mapMessages(commands, (inner) => GotB04({ message: inner })),
-        ];
+        const { model: next, commands: nextCommands__ } = B04.update(model.b04, child)
+        const commands = nextCommands__ ?? []
+        return { model: modifyFields(model, { b04: () => next }), commands: Command.mapMessages(commands, (inner) => Message.GotB04({ message: inner })) };
       },
       GotB05: ({ message: child }) => {
-        const [next, commands] = B05.update(model.b05, child);
-        return [
-          evo(model, { b05: () => next }),
-          Command.mapMessages(commands, (inner) => GotB05({ message: inner })),
-        ];
+        const { model: next, commands: nextCommands__ } = B05.update(model.b05, child)
+        const commands = nextCommands__ ?? []
+        return { model: modifyFields(model, { b05: () => next }), commands: Command.mapMessages(commands, (inner) => Message.GotB05({ message: inner })) };
       },
       GotB06: ({ message: child }) => {
-        const [next, commands] = B06.update(model.b06, child);
-        return [
-          evo(model, { b06: () => next }),
-          Command.mapMessages(commands, (inner) => GotB06({ message: inner })),
-        ];
+        const { model: next, commands: nextCommands__ } = B06.update(model.b06, child)
+        const commands = nextCommands__ ?? []
+        return { model: modifyFields(model, { b06: () => next }), commands: Command.mapMessages(commands, (inner) => Message.GotB06({ message: inner })) };
       },
       GotB07: ({ message: child }) => {
-        const [next, commands] = B07.update(model.b07, child);
-        return [
-          evo(model, { b07: () => next }),
-          Command.mapMessages(commands, (inner) => GotB07({ message: inner })),
-        ];
+        const { model: next, commands: nextCommands__ } = B07.update(model.b07, child)
+        const commands = nextCommands__ ?? []
+        return { model: modifyFields(model, { b07: () => next }), commands: Command.mapMessages(commands, (inner) => Message.GotB07({ message: inner })) };
       },
       GotB08: ({ message: child }) => {
-        const [next, commands] = B08.update(model.b08, child);
-        return [
-          evo(model, { b08: () => next }),
-          Command.mapMessages(commands, (inner) => GotB08({ message: inner })),
-        ];
+        const { model: next, commands: nextCommands__ } = B08.update(model.b08, child)
+        const commands = nextCommands__ ?? []
+        return { model: modifyFields(model, { b08: () => next }), commands: Command.mapMessages(commands, (inner) => Message.GotB08({ message: inner })) };
       },
       GotB09: ({ message: child }) => {
-        const [next, commands] = B09.update(model.b09, child);
-        return [
-          evo(model, { b09: () => next }),
-          Command.mapMessages(commands, (inner) => GotB09({ message: inner })),
-        ];
+        const { model: next, commands: nextCommands__ } = B09.update(model.b09, child)
+        const commands = nextCommands__ ?? []
+        return { model: modifyFields(model, { b09: () => next }), commands: Command.mapMessages(commands, (inner) => Message.GotB09({ message: inner })) };
       },
       GotB10: ({ message: child }) => {
-        const [next, commands] = B10.update(model.b10, child);
-        return [
-          evo(model, { b10: () => next }),
-          Command.mapMessages(commands, (inner) => GotB10({ message: inner })),
-        ];
+        const { model: next, commands: nextCommands__ } = B10.update(model.b10, child)
+        const commands = nextCommands__ ?? []
+        return { model: modifyFields(model, { b10: () => next }), commands: Command.mapMessages(commands, (inner) => Message.GotB10({ message: inner })) };
       },
       GotB11: ({ message: child }) => {
-        const [next, commands] = B11.update(model.b11, child);
-        return [
-          evo(model, { b11: () => next }),
-          Command.mapMessages(commands, (inner) => GotB11({ message: inner })),
-        ];
+        const { model: next, commands: nextCommands__ } = B11.update(model.b11, child)
+        const commands = nextCommands__ ?? []
+        return { model: modifyFields(model, { b11: () => next }), commands: Command.mapMessages(commands, (inner) => Message.GotB11({ message: inner })) };
       },
       GotB12: ({ message: child }) => {
-        const [next, commands] = B12.update(model.b12, child);
-        return [
-          evo(model, { b12: () => next }),
-          Command.mapMessages(commands, (inner) => GotB12({ message: inner })),
-        ];
+        const { model: next, commands: nextCommands__ } = B12.update(model.b12, child)
+        const commands = nextCommands__ ?? []
+        return { model: modifyFields(model, { b12: () => next }), commands: Command.mapMessages(commands, (inner) => Message.GotB12({ message: inner })) };
       },
       GotB13: ({ message: child }) => {
-        const [next, commands] = B13.update(model.b13, child);
-        return [
-          evo(model, { b13: () => next }),
-          Command.mapMessages(commands, (inner) => GotB13({ message: inner })),
-        ];
+        const { model: next, commands: nextCommands__ } = B13.update(model.b13, child)
+        const commands = nextCommands__ ?? []
+        return { model: modifyFields(model, { b13: () => next }), commands: Command.mapMessages(commands, (inner) => Message.GotB13({ message: inner })) };
       },
       GotB14: ({ message: child }) => {
-        const [next, commands] = B14.update(model.b14, child);
-        return [
-          evo(model, { b14: () => next }),
-          Command.mapMessages(commands, (inner) => GotB14({ message: inner })),
-        ];
+        const { model: next, commands: nextCommands__ } = B14.update(model.b14, child)
+        const commands = nextCommands__ ?? []
+        return { model: modifyFields(model, { b14: () => next }), commands: Command.mapMessages(commands, (inner) => Message.GotB14({ message: inner })) };
       },
       GotB15: ({ message: child }) => {
-        const [next, commands] = B15.update(model.b15, child);
-        return [
-          evo(model, { b15: () => next }),
-          Command.mapMessages(commands, (inner) => GotB15({ message: inner })),
-        ];
+        const { model: next, commands: nextCommands__ } = B15.update(model.b15, child)
+        const commands = nextCommands__ ?? []
+        return { model: modifyFields(model, { b15: () => next }), commands: Command.mapMessages(commands, (inner) => Message.GotB15({ message: inner })) };
       },
       GotB16: ({ message: child }) => {
-        const [next, commands] = B16.update(model.b16, child);
-        return [
-          evo(model, { b16: () => next }),
-          Command.mapMessages(commands, (inner) => GotB16({ message: inner })),
-        ];
+        const { model: next, commands: nextCommands__ } = B16.update(model.b16, child)
+        const commands = nextCommands__ ?? []
+        return { model: modifyFields(model, { b16: () => next }), commands: Command.mapMessages(commands, (inner) => Message.GotB16({ message: inner })) };
       },
     }),
   );
@@ -278,52 +247,52 @@ export const view = (
   return M.value(blockId).pipe(
     withHtml,
     M.when('01', () =>
-      embed('01', model.b01, v01, (message) => GotB01({ message })),
+      embed('01', model.b01, v01, (message) => Message.GotB01({ message })),
     ),
     M.when('02', () =>
-      embed('02', model.b02, v02, (message) => GotB02({ message })),
+      embed('02', model.b02, v02, (message) => Message.GotB02({ message })),
     ),
     M.when('03', () =>
-      embed('03', model.b03, v03, (message) => GotB03({ message })),
+      embed('03', model.b03, v03, (message) => Message.GotB03({ message })),
     ),
     M.when('04', () =>
-      embed('04', model.b04, v04, (message) => GotB04({ message })),
+      embed('04', model.b04, v04, (message) => Message.GotB04({ message })),
     ),
     M.when('05', () =>
-      embed('05', model.b05, v05, (message) => GotB05({ message })),
+      embed('05', model.b05, v05, (message) => Message.GotB05({ message })),
     ),
     M.when('06', () =>
-      embed('06', model.b06, v06, (message) => GotB06({ message })),
+      embed('06', model.b06, v06, (message) => Message.GotB06({ message })),
     ),
     M.when('07', () =>
-      embed('07', model.b07, v07, (message) => GotB07({ message })),
+      embed('07', model.b07, v07, (message) => Message.GotB07({ message })),
     ),
     M.when('08', () =>
-      embed('08', model.b08, v08, (message) => GotB08({ message })),
+      embed('08', model.b08, v08, (message) => Message.GotB08({ message })),
     ),
     M.when('09', () =>
-      embed('09', model.b09, v09, (message) => GotB09({ message })),
+      embed('09', model.b09, v09, (message) => Message.GotB09({ message })),
     ),
     M.when('10', () =>
-      embed('10', model.b10, v10, (message) => GotB10({ message })),
+      embed('10', model.b10, v10, (message) => Message.GotB10({ message })),
     ),
     M.when('11', () =>
-      embed('11', model.b11, v11, (message) => GotB11({ message })),
+      embed('11', model.b11, v11, (message) => Message.GotB11({ message })),
     ),
     M.when('12', () =>
-      embed('12', model.b12, v12, (message) => GotB12({ message })),
+      embed('12', model.b12, v12, (message) => Message.GotB12({ message })),
     ),
     M.when('13', () =>
-      embed('13', model.b13, v13, (message) => GotB13({ message })),
+      embed('13', model.b13, v13, (message) => Message.GotB13({ message })),
     ),
     M.when('14', () =>
-      embed('14', model.b14, v14, (message) => GotB14({ message })),
+      embed('14', model.b14, v14, (message) => Message.GotB14({ message })),
     ),
     M.when('15', () =>
-      embed('15', model.b15, v15, (message) => GotB15({ message })),
+      embed('15', model.b15, v15, (message) => Message.GotB15({ message })),
     ),
     M.when('16', () =>
-      embed('16', model.b16, v16, (message) => GotB16({ message })),
+      embed('16', model.b16, v16, (message) => Message.GotB16({ message })),
     ),
     M.orElse(() =>
       h.div(

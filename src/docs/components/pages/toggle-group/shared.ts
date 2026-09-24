@@ -16,9 +16,8 @@ const source = (
 ): string => foldkitApplication({
   title: `Toggle Group — ${name}`,
   imports: `import { Option, Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
 
 import * as ToggleGroup from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/toggle-group'`,
   model: `export const Alignment = S.Literals(['left', 'center', 'right'])
@@ -29,17 +28,17 @@ export const Model = S.Struct({
   ${multiple ? 'alignments: S.Array(Alignment)' : 'alignment: Alignment'},
 })
 export type Model = typeof Model.Type`,
-  messages: `export const GotToggleGroupMessage = m('GotToggleGroupMessage${name.replaceAll(/[^a-zA-Z0-9]/g, '')}', { message: ToggleGroup.Message })
+  messages: `import { taggedStruct } from 'foldkit/schema'
+export const GotToggleGroupMessage = taggedStruct('GotToggleGroupMessage${name.replaceAll(/[^a-zA-Z0-9]/g, '')}', { message: ToggleGroup.Message });
 export const Message = S.Union([GotToggleGroupMessage])
 export type Message = typeof Message.Type`,
-  init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { toggleGroup: ToggleGroup.init({ id: 'alignment-group' }), ${multiple ? "alignments: ['left']" : "alignment: 'center'"} },
-  [],
-]`,
-  update: `export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
-  const [toggleGroup, commands, maybeSelection] = AlignmentGroup.update(model.toggleGroup, message.message)
-  return [
-    {
+  init: `export const init = (): Update.Return<Model, Message> => ({ model: { toggleGroup: ToggleGroup.init({ id: 'alignment-group' }), ${multiple ? "alignments: ['left']" : "alignment: 'center'"} } })`,
+  update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
+  const toggleGroupOp__ = AlignmentGroup.update(model.toggleGroup, message.message);
+    const toggleGroup = toggleGroupOp__.model;
+    const commands = toggleGroupOp__.commands ?? [];
+    const maybeSelection = Option.fromNullishOr(toggleGroupOp__.outMessage);
+  return { model: {
       ...model,
       toggleGroup,
       ${multiple
@@ -53,9 +52,7 @@ export type Message = typeof Message.Type`,
         onNone: () => model.alignment,
         onSome: ({ value }) => value,
       }),`}
-    },
-    Command.mapMessages(commands, next => GotToggleGroupMessage({ message: next })),
-  ]
+    }, commands: Command.mapMessages(commands, next => GotToggleGroupMessage({ message: next })) }
 }`,
   view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Toggle Group — ${name}',

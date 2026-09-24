@@ -1,7 +1,7 @@
 import { Option, Schema as S } from 'effect';
 import { Command, Subscription } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import { sidebarFixtures, type SidebarFixtureKind } from '@/docs/components/pages/sidebar/shared';
@@ -9,13 +9,20 @@ import * as DropdownMenu from '@/ui/dropdown-menu';
 import * as Icon from '@/lib/icon';
 import * as Sidebar from '@/ui/sidebar';
 
-const GotSidebar = m('GotSidebarPreviewMessage', { message: Sidebar.Message });
-const ChangedQuery = m('ChangedSidebarPreviewQuery', { value: S.String });
-const GotActionMenu = m('GotSidebarPreviewActionMenuMessage', { message: DropdownMenu.Message });
-const GotAccountMenu = m('GotSidebarPreviewAccountMenuMessage', { message: DropdownMenu.Message });
-const CreatedProject = m('CreatedSidebarPreviewProject');
-const ToggledLearn = m('ToggledSidebarPreviewLearn');
-const Message = S.Union([GotSidebar, ChangedQuery, GotActionMenu, GotAccountMenu, CreatedProject, ToggledLearn]);
+
+
+
+
+
+
+const Message = defineMessageUnion({
+  'GotSidebarPreviewMessage': { message: Sidebar.Message },
+  'ChangedSidebarPreviewQuery': { value: S.String },
+  'GotSidebarPreviewActionMenuMessage': { message: DropdownMenu.Message },
+  'GotSidebarPreviewAccountMenuMessage': { message: DropdownMenu.Message },
+  'CreatedSidebarPreviewProject': {},
+  'ToggledSidebarPreviewLearn': {},
+});
 type Message = typeof Message.Type;
 const Model = S.Struct({ _docsPage: S.Literal('sidebar'), sidebar: Sidebar.Model, actionMenu: DropdownMenu.Model, accountMenu: DropdownMenu.Model, feedback: S.String, query: S.String, learnOpen: S.Boolean });
 type Model = typeof Model.Type;
@@ -28,7 +35,7 @@ const actionLabel = (action: string): string => action[0]?.toUpperCase() + actio
 const subscriptions = typeof document === 'undefined'
   ? undefined
   : Subscription.make<Model, Message>()(() => ({
-      sidebarShortcut: Subscription.persistent(Sidebar.shortcut((message) => GotSidebar({ message }))),
+      sidebarShortcut: Subscription.persistent(Sidebar.shortcut((message) => Message['GotSidebarPreviewMessage']({ message }))),
     }));
 
 const iconLabel = (name: string, label: string, h: HtmlBuilder<Message>): ReadonlyArray<Html | string> => [
@@ -41,7 +48,7 @@ const actionMenu = (model: DropdownMenu.Model, label: string, h: HtmlBuilder<Mes
   h.Class('absolute right-1 top-1.5 z-30 group-data-[collapsible=icon]:hidden'),
 ], [DropdownMenu.dropdownMenu({
   model,
-  toParentMessage: (message) => GotActionMenu({ message }),
+  toParentMessage: (message) => Message['GotSidebarPreviewActionMenuMessage']({ message }),
   trigger: h.span([h.Class('flex items-center')], [Icon.moreHorizontal({}, h), h.span([h.Class('sr-only')], [label])]),
   triggerClass: 'flex size-5 items-center justify-center rounded-md text-sidebar-foreground outline-none hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring [&_svg]:size-4',
   ariaLabel: label,
@@ -81,7 +88,7 @@ const account = (model: Model, h: HtmlBuilder<Message>): Html => Sidebar.sidebar
   children: [Sidebar.sidebarMenuItem({
     children: [DropdownMenu.dropdownMenu({
       model: model.accountMenu,
-      toParentMessage: (message) => GotAccountMenu({ message }),
+      toParentMessage: (message) => Message['GotSidebarPreviewAccountMenuMessage']({ message }),
       trigger: h.span([h.Class('flex w-full items-center gap-2 text-left')], [
         h.span([h.Class('grid size-8 shrink-0 place-items-center rounded-lg bg-sidebar-primary text-xs font-semibold text-sidebar-primary-foreground')], ['AL']),
         h.span([h.Class('grid min-w-0 flex-1 text-left leading-tight')], [
@@ -104,7 +111,7 @@ const nestedNavigation = (model: Model, h: HtmlBuilder<Message>): Html => Sideba
   children: [Sidebar.sidebarMenuItem({
     children: [
       Sidebar.sidebarMenuButton({
-        onClick: ToggledLearn(),
+        onClick: Message['ToggledSidebarPreviewLearn'](),
         ariaExpanded: model.learnOpen,
         children: [
           ...iconLabel('book-open', 'Documentation', h),
@@ -126,7 +133,7 @@ const sidebarBody = (model: Model, h: HtmlBuilder<Message>, detailed = true): Re
       h.span([h.Class('grid size-7 shrink-0 place-items-center rounded-md bg-sidebar-primary text-xs font-semibold text-sidebar-primary-foreground')], ['C']),
       h.span([h.Class('truncate text-sm font-semibold')], ['Crease Workspace']),
     ]),
-    ...(detailed ? [Sidebar.sidebarInput({ value: model.query, onInput: (value) => ChangedQuery({ value }), placeholder: 'Search navigation', ariaLabel: 'Search navigation' }, h)] : []),
+    ...(detailed ? [Sidebar.sidebarInput({ value: model.query, onInput: (value) => Message['ChangedSidebarPreviewQuery']({ value }), placeholder: 'Search navigation', ariaLabel: 'Search navigation' }, h)] : []),
   ] }, h),
   Sidebar.sidebarContent({ children: [
     Sidebar.sidebarGroup({ children: [
@@ -157,8 +164,8 @@ const shell = (kind: SidebarFixtureKind, model: Model, h: HtmlBuilder<Message>):
   const variant: Sidebar.SidebarVariant = kind === 'floating' || kind === 'inset' ? kind : 'sidebar';
   const collapsible: Sidebar.SidebarCollapsible = kind === 'offcanvas' ? 'offcanvas' : 'icon';
   const side: Sidebar.SidebarSide = kind === 'right' ? 'right' : 'left';
-  const desktopToggle = GotSidebar({ message: Sidebar.Toggled() });
-  const mobileToggle = GotSidebar({ message: Sidebar.ToggledMobile() });
+  const desktopToggle = Message['GotSidebarPreviewMessage']({ message: Sidebar.Message.Toggled() });
+  const mobileToggle = Message['GotSidebarPreviewMessage']({ message: Sidebar.Message.ToggledMobile() });
   const panel = Sidebar.sidebar({
     state,
     side,
@@ -166,7 +173,7 @@ const shell = (kind: SidebarFixtureKind, model: Model, h: HtmlBuilder<Message>):
     collapsible,
     presentation: 'contained',
     isMobileOpen: model.sidebar.isMobileOpen,
-    onMobileDismiss: GotSidebar({ message: Sidebar.SetMobileOpen({ isOpen: false }) }),
+    onMobileDismiss: Message['GotSidebarPreviewMessage']({ message: Sidebar.Message.SetMobileOpen({ isOpen: false }) }),
     children: [...sidebarBody(model, h), Sidebar.sidebarRail({ onClick: desktopToggle }, h)],
   }, h);
   const inset = Sidebar.sidebarInset({
@@ -195,7 +202,7 @@ const staticPanel = (kind: 'menu' | 'nested' | 'loading', model: Model, h: HtmlB
     ? Sidebar.sidebarMenu({ children: [
         Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ isActive: true, children: iconLabel('gauge', 'Overview', h) }, h), Sidebar.sidebarMenuBadge({ children: ['12'] }, h)] }, h),
         Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ variant: 'outline', children: iconLabel('inbox', 'Inbox', h) }, h), actionMenu(model.actionMenu, 'Inbox actions', h)] }, h),
-        Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ onClick: CreatedProject(), variant: 'primary', children: iconLabel('plus', 'Create project', h) }, h)] }, h),
+        Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ onClick: Message['CreatedSidebarPreviewProject'](), variant: 'primary', children: iconLabel('plus', 'Create project', h) }, h)] }, h),
       ] }, h)
     : kind === 'nested'
       ? nestedNavigation(model, h)
@@ -218,22 +225,27 @@ export const sidebarTailwindPreviewProgram = definePreviewProgram<Model, Message
   update: (model, message) => {
     switch (message._tag) {
       case 'GotSidebarPreviewMessage': {
-        const [sidebar, commands] = Sidebar.update(model.sidebar, message.message);
-        return [{ ...model, sidebar }, Command.mapMessages(commands, (next) => GotSidebar({ message: next }))];
+        const { model: sidebar, commands: sidebarCommands__ } = Sidebar.update(model.sidebar, message.message)
+        const commands = sidebarCommands__ ?? []
+        return { model: { ...model, sidebar }, commands: Command.mapMessages(commands, (next) => Message['GotSidebarPreviewMessage']({ message: next })) };
       }
-      case 'ChangedSidebarPreviewQuery': return [{ ...model, query: message.value }, []];
+      case 'ChangedSidebarPreviewQuery': return { model: { ...model, query: message.value } };
       case 'GotSidebarPreviewActionMenuMessage': {
-        const [actionMenu, commands, maybeSelection] = ActionMenu.update(model.actionMenu, message.message);
+        const { model: actionMenu, commands: actionMenuCommands__, outMessage: actionMenuOut__ } = ActionMenu.update(model.actionMenu, message.message);
+        const commands = actionMenuCommands__ ?? []
+        const maybeSelection = Option.fromNullishOr(actionMenuOut__)
         const selection = Option.getOrUndefined(maybeSelection);
-        return [{ ...model, actionMenu, ...(selection === undefined ? {} : { feedback: `${actionLabel(selection.value)} selected` }) }, Command.mapMessages(commands, (next) => GotActionMenu({ message: next }))];
+        return { model: { ...model, actionMenu, ...(selection === undefined ? {} : { feedback: `${actionLabel(selection.value)} selected` }) }, commands: Command.mapMessages(commands, (next) => Message['GotSidebarPreviewActionMenuMessage']({ message: next })) };
       }
       case 'GotSidebarPreviewAccountMenuMessage': {
-        const [accountMenu, commands, maybeSelection] = ActionMenu.update(model.accountMenu, message.message);
+        const { model: accountMenu, commands: accountMenuCommands__, outMessage: accountMenuOut__ } = ActionMenu.update(model.accountMenu, message.message);
+        const commands = accountMenuCommands__ ?? []
+        const maybeSelection = Option.fromNullishOr(accountMenuOut__)
         const selection = Option.getOrUndefined(maybeSelection);
-        return [{ ...model, accountMenu, ...(selection === undefined ? {} : { feedback: `${actionLabel(selection.value)} selected` }) }, Command.mapMessages(commands, (next) => GotAccountMenu({ message: next }))];
+        return { model: { ...model, accountMenu, ...(selection === undefined ? {} : { feedback: `${actionLabel(selection.value)} selected` }) }, commands: Command.mapMessages(commands, (next) => Message['GotSidebarPreviewAccountMenuMessage']({ message: next })) };
       }
-      case 'CreatedSidebarPreviewProject': return [{ ...model, feedback: 'Project created' }, []];
-      case 'ToggledSidebarPreviewLearn': return [{ ...model, learnOpen: !model.learnOpen }, []];
+      case 'CreatedSidebarPreviewProject': return { model: { ...model, feedback: 'Project created' } };
+      case 'ToggledSidebarPreviewLearn': return { model: { ...model, learnOpen: !model.learnOpen } };
     }
   },
   ...(subscriptions === undefined ? {} : { subscriptions }),

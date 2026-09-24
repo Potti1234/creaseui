@@ -298,8 +298,10 @@ export const commandPalette = command;
    // Init: command: init({ id: 'app-command', isAnimated: true })
    //
    // Update:
-   // const [command, commands, maybeOutMessage] =
-   //   AppCommand.update(model.command, message)
+   // const commandOp__ = //   AppCommand.update(model.command, message);
+    const command = commandOp__.model;
+    const commands = commandOp__.commands ?? [];
+    const maybeOutMessage = Option.fromNullishOr(commandOp__.outMessage);
    //
    // View:
    // command<Action, AppMessage>({

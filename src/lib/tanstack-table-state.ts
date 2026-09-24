@@ -1,5 +1,5 @@
 import { Schema as S } from 'effect'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 export const Sort = S.Struct({ id: S.String, desc: S.Boolean })
 export type Sort = typeof Sort.Type
@@ -58,106 +58,106 @@ export const Model = S.Struct({
 })
 export type Model = typeof Model.Type
 
-export const ChangedGlobalFilter = m('ChangedTanStackGlobalFilter', { value: S.String })
-export const ChangedStatusFilter = m('ChangedTanStackStatusFilter', { value: S.String })
-export const ChangedSorting = m('ChangedTanStackSorting', { sorting: S.Array(Sort) })
-export const ChangedPage = m('ChangedTanStackPage', { pageIndex: S.Number })
-export const ChangedPageSize = m('ChangedTanStackPageSize', { pageSize: S.Number })
-export const ToggledRow = m('ToggledTanStackRow', { rowId: S.String, isSelected: S.Boolean })
-export const ToggledRows = m('ToggledTanStackRows', { rowIds: S.Array(S.String), isSelected: S.Boolean })
-export const ToggledColumn = m('ToggledTanStackColumn', { columnId: S.String, isVisible: S.Boolean })
-export const MovedColumn = m('MovedTanStackColumn', { columnId: S.String, direction: S.Literals(['left', 'right']) })
-export const ToggledColumnPin = m('ToggledTanStackColumnPin', { columnId: S.String })
-export const ToggledRowPin = m('ToggledTanStackRowPin', { rowId: S.String })
-export const ToggledGrouping = m('ToggledTanStackGrouping', { columnId: S.String })
-export const ToggledExpanded = m('ToggledTanStackExpanded', { rowId: S.String })
-export const ChangedTitleWidth = m('ChangedTanStackTitleWidth', { width: S.Number })
-export const ChangedDensity = m('ChangedTanStackDensity', { density: Density })
-export const ChangedColumnFilter = m('ChangedTanStackColumnFilter', { filter: ColumnFilter })
-export const ClearedColumnFilter = m('ClearedTanStackColumnFilter', { columnId: S.String })
-export const ClearedColumnFilters = m('ClearedTanStackColumnFilters')
-export const ResizedColumn = m('ResizedTanStackColumn', { columnId: S.String, width: S.Number })
-export const ResetColumnWidths = m('ResetTanStackColumnWidths')
-export const ResetTableLayout = m('ResetTanStackTableLayout', {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export const Message = defineMessageUnion({
+  'ChangedTanStackGlobalFilter': { value: S.String },
+  'ChangedTanStackStatusFilter': { value: S.String },
+  'ChangedTanStackSorting': { sorting: S.Array(Sort) },
+  'ChangedTanStackPage': { pageIndex: S.Number },
+  'ChangedTanStackPageSize': { pageSize: S.Number },
+  'ToggledTanStackRow': { rowId: S.String, isSelected: S.Boolean },
+  'ToggledTanStackRows': { rowIds: S.Array(S.String), isSelected: S.Boolean },
+  'ToggledTanStackColumn': { columnId: S.String, isVisible: S.Boolean },
+  'MovedTanStackColumn': { columnId: S.String, direction: S.Literals(['left', 'right']) },
+  'ToggledTanStackColumnPin': { columnId: S.String },
+  'ToggledTanStackRowPin': { rowId: S.String },
+  'ToggledTanStackGrouping': { columnId: S.String },
+  'ToggledTanStackExpanded': { rowId: S.String },
+  'ChangedTanStackTitleWidth': { width: S.Number },
+  'ChangedTanStackDensity': { density: Density },
+  'ChangedTanStackColumnFilter': { filter: ColumnFilter },
+  'ClearedTanStackColumnFilter': { columnId: S.String },
+  'ClearedTanStackColumnFilters': {},
+  'ResizedTanStackColumn': { columnId: S.String, width: S.Number },
+  'ResetTanStackColumnWidths': {},
+  'ResetTanStackTableLayout': {
   columnOrder: S.Array(S.String),
   pinnedColumnIds: S.Array(S.String),
-})
-export const ToggledFilterPopover = m('ToggledTanStackFilterPopover', { columnId: S.String, draft: S.String, secondaryDraft: S.String, operator: NumberFilterOperator })
-export const ChangedFilterDraft = m('ChangedTanStackFilterDraft', { value: S.String })
-export const ChangedFilterSecondaryDraft = m('ChangedTanStackFilterSecondaryDraft', { value: S.String })
-export const ChangedDateRangeDraft = m('ChangedTanStackDateRangeDraft', { from: S.String, to: S.String })
-export const ChangedFilterOperator = m('ChangedTanStackFilterOperator', { operator: NumberFilterOperator })
-export const ChangedDateCustomOpen = m('ChangedTanStackDateCustomOpen', { isOpen: S.Boolean })
-export const ShiftedCalendarMonth = m('ShiftedTanStackCalendarMonth', { delta: S.Number })
-export const ChangedEnumSearch = m('ChangedTanStackEnumSearch', { value: S.String })
-export const AppliedTextFilter = m('AppliedTanStackTextFilter', { columnId: S.String })
-export const AppliedColumnFilter = m('AppliedTanStackColumnFilter', { filter: ColumnFilter })
-export const ClearedFilterPopover = m('ClearedTanStackFilterPopover', { columnId: S.String })
-export const ToggledLayoutMenu = m('ToggledTanStackLayoutMenu')
-export const ToggledActiveFiltersMenu = m('ToggledTanStackActiveFiltersMenu')
-export const ToggledPageSizeMenu = m('ToggledTanStackPageSizeMenu')
-export const ChangedPageSizeDraft = m('ChangedTanStackPageSizeDraft', { value: S.String })
-export const CommittedPageSize = m('CommittedTanStackPageSize', { pageSize: S.Number })
-export const StartedColumnResize = m('StartedTanStackColumnResize', { columnId: S.String, screenX: S.Number, width: S.Number })
-export const DraggedColumnResize = m('DraggedTanStackColumnResize', { screenX: S.Number })
-export const EndedColumnResize = m('EndedTanStackColumnResize')
-export const ClosedTableOverlays = m('ClosedTanStackTableOverlays')
-export const ResetTableView = m('ResetTanStackTableView')
-export const RestoredTableLayout = m('RestoredTanStackTableLayout', {
+},
+  'ToggledTanStackFilterPopover': { columnId: S.String, draft: S.String, secondaryDraft: S.String, operator: NumberFilterOperator },
+  'ChangedTanStackFilterDraft': { value: S.String },
+  'ChangedTanStackFilterSecondaryDraft': { value: S.String },
+  'ChangedTanStackDateRangeDraft': { from: S.String, to: S.String },
+  'ChangedTanStackFilterOperator': { operator: NumberFilterOperator },
+  'ChangedTanStackDateCustomOpen': { isOpen: S.Boolean },
+  'ShiftedTanStackCalendarMonth': { delta: S.Number },
+  'ChangedTanStackEnumSearch': { value: S.String },
+  'AppliedTanStackTextFilter': { columnId: S.String },
+  'AppliedTanStackColumnFilter': { filter: ColumnFilter },
+  'ClearedTanStackFilterPopover': { columnId: S.String },
+  'ToggledTanStackLayoutMenu': {},
+  'ToggledTanStackActiveFiltersMenu': {},
+  'ToggledTanStackPageSizeMenu': {},
+  'ChangedTanStackPageSizeDraft': { value: S.String },
+  'CommittedTanStackPageSize': { pageSize: S.Number },
+  'StartedTanStackColumnResize': { columnId: S.String, screenX: S.Number, width: S.Number },
+  'DraggedTanStackColumnResize': { screenX: S.Number },
+  'EndedTanStackColumnResize': {},
+  'ClosedTanStackTableOverlays': {},
+  'ResetTanStackTableView': {},
+  'RestoredTanStackTableLayout': {
   columnOrder: S.Array(S.String),
   hiddenColumnIds: S.Array(S.String),
   pinnedColumnIds: S.Array(S.String),
   columnWidths: S.Array(ColumnWidth),
   layoutVersion: S.Number,
-})
-export const ResetTable = m('ResetTanStackTable')
-
-export const Message = S.Union([
-  ChangedGlobalFilter,
-  ChangedStatusFilter,
-  ChangedSorting,
-  ChangedPage,
-  ChangedPageSize,
-  ToggledRow,
-  ToggledRows,
-  ToggledColumn,
-  MovedColumn,
-  ToggledColumnPin,
-  ToggledRowPin,
-  ToggledGrouping,
-  ToggledExpanded,
-  ChangedTitleWidth,
-  ChangedDensity,
-  ChangedColumnFilter,
-  ClearedColumnFilter,
-  ClearedColumnFilters,
-  ResizedColumn,
-  ResetColumnWidths,
-  ResetTableLayout,
-  ToggledFilterPopover,
-  ChangedFilterDraft,
-  ChangedFilterSecondaryDraft,
-  ChangedDateRangeDraft,
-  ChangedFilterOperator,
-  ChangedDateCustomOpen,
-  ShiftedCalendarMonth,
-  ChangedEnumSearch,
-  AppliedTextFilter,
-  AppliedColumnFilter,
-  ClearedFilterPopover,
-  ToggledLayoutMenu,
-  ToggledActiveFiltersMenu,
-  ToggledPageSizeMenu,
-  ChangedPageSizeDraft,
-  CommittedPageSize,
-  StartedColumnResize,
-  DraggedColumnResize,
-  EndedColumnResize,
-  ClosedTableOverlays,
-  ResetTableView,
-  RestoredTableLayout,
-  ResetTable,
-])
+},
+  'ResetTanStackTable': {},
+});
 export type Message = typeof Message.Type
 
 export const DEFAULT_COLUMN_ORDER = ['select', 'title', 'status', 'team', 'priority', 'points', 'assignee', 'due'] as const

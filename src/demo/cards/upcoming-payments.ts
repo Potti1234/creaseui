@@ -1,9 +1,10 @@
 import { Match as M, Option, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
 import * as FoldkitCalendar from 'foldkit/calendar';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 
 import { badge } from '@/ui/badge';
 import * as Calendar from '@/ui/calendar';
@@ -46,25 +47,28 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const GotCalendarMessage = m('GotCalendarMessage', {
+
+export const Message = defineMessageUnion({
+  GotCalendarMessage: {
   message: Calendar.Message,
+},
 });
-export const Message = S.Union([GotCalendarMessage]);
 export type Message = typeof Message.Type;
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotCalendarMessage: ({ message: childMessage }) => {
-        const [calendar, commands, maybeSelection] = Calendar.update(
+        const { model: calendar, commands: calendarCommands__, outMessage: calendarOut__ } = Calendar.update(
           model.calendar,
           childMessage,
-        );
-        return [
-          evo(model, {
+        )
+        const commands = calendarCommands__ ?? []
+        const maybeSelection = Option.fromNullishOr(calendarOut__)
+        return { model: modifyFields(model, {
             calendar: () => calendar,
             selectedDate: (current) =>
               Option.match(maybeSelection, {
@@ -74,11 +78,9 @@ export const update = (model: Model, message: Message): UpdateReturn =>
                     ? Option.some(selection.date)
                     : current,
               }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotCalendarMessage({ message: next }),
-          ),
-        ];
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotCalendarMessage({ message: next }),
+          ) };
       },
     }),
   );
@@ -133,7 +135,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                         model: model.calendar,
                         maybeSelectedDate: model.selectedDate,
                         toParentMessage: (message) =>
-                          GotCalendarMessage({ message }),
+                          Message.GotCalendarMessage({ message }),
                         class:
                           'w-full [--cell-size:--spacing(8)] md:[--cell-size:--spacing(10)] [&_[role=row]:last-child:has(>[data-outside-month]:first-child):has(>[data-outside-month]:last-child)]:hidden',
                       },

@@ -52,7 +52,7 @@ describe('StyleX Accordion scene', () => {
         Scene.role('button', { name: 'Shipping', expanded: false }),
       ).toExist(),
       Scene.expectOutMessage(
-        Accordion.ChangedValue({
+        Accordion.OutMessage.ChangedValue({
           value: ['returns'],
           toggledValue: 'returns',
           isOpen: true,
