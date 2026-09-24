@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 9 done · 52 todo · 3 crease-only
+Current: 10 done · 51 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -20,7 +20,7 @@ Current: 9 done · 52 todo · 3 crease-only
 | `alert-dialog` | 7 | Basic<br>Small<br>Media<br>Small with Media<br>Destructive<br>RTL | done |
 | `aspect-ratio` | 3 | Square<br>Portrait<br>RTL | done |
 | `attachment` | 6 | Image<br>States<br>Sizes<br>Group<br>Trigger | done |
-| `avatar` | 4 | Basic<br>Badge<br>Badge with Icon<br>Avatar Group<br>Avatar Group Count<br>Avatar Group with Icon<br>Sizes<br>Dropdown<br>RTL | todo (missing: Basic, Badge, Badge with Icon, Avatar Group, Avatar Group Count, Avatar Group with Icon, Sizes, Dropdown, RTL) |
+| `avatar` | 10 | Basic<br>Badge<br>Badge with Icon<br>Avatar Group<br>Avatar Group Count<br>Avatar Group with Icon<br>Sizes<br>Dropdown<br>RTL | done |
 | `badge` | 7 | Variants<br>With Icon<br>With Spinner<br>Link<br>Custom Colors<br>RTL | done |
 | `breadcrumb` | 4 | Basic<br>Custom separator<br>Dropdown<br>Collapsed<br>Link component<br>RTL | todo (missing: Basic, Custom separator, Dropdown, Collapsed, Link component, RTL) |
 | `bubble` | 3 | Variants<br>Alignment<br>Bubble Group<br>Links and Buttons<br>Reactions<br>Show More / Collapsible<br>Tooltip<br>Popover | todo (missing: Variants, Alignment, Bubble Group, Links and Buttons, Reactions, Show More / Collapsible, Tooltip, Popover) |

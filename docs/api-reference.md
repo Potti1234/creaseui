@@ -95,6 +95,12 @@ Source: [`src/ui/avatar.ts`](../src/ui/avatar.ts)
 | `avatarImage` | function | `avatarImage<Msg>(props: AvatarImageProps & Readonly<{ toParentMessage?: (message: Message) => Msg }>, h: HtmlBuilder<Msg>): Html` |
 | `AvatarFallbackProps` | type | `AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html \| string>; model?: Model; }>` |
 | `avatarFallback` | function | `avatarFallback<Msg>(props: AvatarFallbackProps, h: HtmlBuilder<Msg>): Html` |
+| `AvatarBadgeProps` | type | `AvatarBadgeProps = Readonly<{ class?: string; children?: ReadonlyArray<Html \| string>; }>` |
+| `avatarBadge` | function | `avatarBadge<Msg>(props: AvatarBadgeProps, h: HtmlBuilder<Msg>): Html` |
+| `AvatarGroupProps` | type | `AvatarGroupProps = Readonly<{ class?: string; children: ReadonlyArray<Html \| string>; }>` |
+| `avatarGroup` | function | `avatarGroup<Msg>(props: AvatarGroupProps, h: HtmlBuilder<Msg>): Html` |
+| `AvatarGroupCountProps` | type | `AvatarGroupCountProps = Readonly<{ class?: string; children: ReadonlyArray<Html \| string>; }>` |
+| `avatarGroupCount` | function | `avatarGroupCount<Msg>(props: AvatarGroupCountProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Badge
 

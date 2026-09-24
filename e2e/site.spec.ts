@@ -432,26 +432,75 @@ test("authored form connects controlled input help and validation", async ({
   );
 });
 
-test("avatar delegates image lifecycle into its documented child model", async ({
+test("avatar sections mirror shadcn examples in both renderers", async ({
   page,
 }) => {
   await page.goto("/docs/components/avatar");
 
-  const example = page.locator("#image-lifecycle");
-  const image = example.getByRole("img", { name: "Ada Lovelace" });
-  await expect(image).toBeVisible();
-  await expect(image).not.toHaveAttribute("data-loading", "");
-  await expect(example.locator('[data-slot="avatar-fallback"]')).toHaveCount(0);
+  const hero = page.locator('[aria-label="Demo preview"]');
+  await expect(hero.locator('[data-slot="avatar"]')).toHaveCount(5);
+  await expect(hero.locator('[data-slot="avatar-badge"]')).toHaveCount(1);
+  await expect(
+    hero.locator('[data-slot="avatar-group-count"]'),
+  ).toHaveText("+3");
+
+  for (const id of [
+    "basic",
+    "badge",
+    "badge-with-icon",
+    "avatar-group",
+    "avatar-group-count",
+    "avatar-group-with-icon",
+    "sizes",
+    "dropdown",
+    "rtl",
+  ]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#demo")).toHaveCount(0);
+  await expect(page.locator("#image-lifecycle")).toHaveCount(0);
+  await expect(page.locator("#initials-only")).toHaveCount(0);
+
+  const group = page.locator("#avatar-group");
+  await expect(group.locator('[data-slot="avatar"]')).toHaveCount(3);
+  await expect(
+    page.locator("#avatar-group-count [data-slot='avatar-group-count']"),
+  ).toHaveText("+3");
+
+  const sizes = page.locator("#sizes [data-slot='avatar']");
+  await expect(sizes.nth(0)).toHaveAttribute("data-size", "sm");
+  await expect(sizes.nth(1)).toHaveAttribute("data-size", "default");
+  await expect(sizes.nth(2)).toHaveAttribute("data-size", "lg");
+
+  const basic = page.locator("#basic");
+  const basicImage = basic.getByRole("img", { name: "@shadcn" });
+  await expect(basicImage).toBeVisible();
+  await expect(basicImage).not.toHaveAttribute("data-loading", "");
+
+  const dropdown = page.locator("#dropdown");
+  await dropdown.locator('[data-slot="dropdown-menu-trigger"]').click();
+  await expect(page.getByRole("menu")).toBeVisible();
+  await expect(page.getByRole("menuitem", { name: "Profile" })).toBeVisible();
+  await expect(page.getByRole("menuitem", { name: "Log out" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("menu")).toHaveCount(0);
+
+  await expect(page.locator("#rtl [dir='rtl']")).toHaveCount(1);
+  await expect(page.locator("#rtl [data-slot='avatar-group-count']")).toHaveText(
+    "+٣",
+  );
 
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  await expect(page.locator("#image-lifecycle")).toBeVisible();
-  await expect(page.locator("#initials-only")).toBeVisible();
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(page.locator("#image-lifecycle code")).toContainText(
-    "@/stylex/avatar",
-  );
-  await expect(example.getByRole("img", { name: "Ada Lovelace" })).toBeVisible();
-  await expect(example.locator('[data-slot="avatar-fallback"]')).toHaveCount(0);
+  await expect(page.locator("#avatar-group")).toBeVisible();
+  await expect(page.locator("#basic code")).toContainText("@/stylex/avatar");
+  await expect(
+    page.locator("#avatar-group [data-slot='avatar']"),
+  ).toHaveCount(3);
+  await expect(
+    page.locator("#avatar-group-count [data-slot='avatar-group-count']"),
+  ).toHaveText("+3");
+  await expect(page.locator("#dropdown")).toBeVisible();
+  await expect(page.locator("#rtl [dir='rtl']")).toHaveCount(1);
 });
 
 test("button preserves authored state and semantics across renderers", async ({ page }) => {

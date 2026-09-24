@@ -172,7 +172,7 @@ A shadcn-styled Avatar component for Foldkit.
 
 Source: `src/ui/avatar.ts`
 
-Examples: Image lifecycle, Initials only
+Examples: Demo, Basic, Badge, Badge with Icon, Avatar Group, Avatar Group Count, Avatar Group with Icon, Sizes, Dropdown, RTL
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -186,6 +186,12 @@ Examples: Image lifecycle, Initials only
 - `avatarImage<Msg>(props: AvatarImageProps & Readonly<{ toParentMessage?: (message: Message) => Msg }>, h: HtmlBuilder<Msg>): Html` (function)
 - `AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; model?: Model; }>` (type)
 - `avatarFallback<Msg>(props: AvatarFallbackProps, h: HtmlBuilder<Msg>): Html` (function)
+- `AvatarBadgeProps = Readonly<{ class?: string; children?: ReadonlyArray<Html | string>; }>` (type)
+- `avatarBadge<Msg>(props: AvatarBadgeProps, h: HtmlBuilder<Msg>): Html` (function)
+- `AvatarGroupProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; }>` (type)
+- `avatarGroup<Msg>(props: AvatarGroupProps, h: HtmlBuilder<Msg>): Html` (function)
+- `AvatarGroupCountProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; }>` (type)
+- `avatarGroupCount<Msg>(props: AvatarGroupCountProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Badge
 

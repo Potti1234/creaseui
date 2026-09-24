@@ -271,6 +271,36 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "avatarFallback",
       "kind": "function",
       "signature": "avatarFallback<Msg>(props: AvatarFallbackProps, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "AvatarBadgeProps",
+      "kind": "type",
+      "signature": "AvatarBadgeProps = Readonly<{ class?: string; children?: ReadonlyArray<Html | string>; }>"
+    },
+    {
+      "name": "avatarBadge",
+      "kind": "function",
+      "signature": "avatarBadge<Msg>(props: AvatarBadgeProps, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "AvatarGroupProps",
+      "kind": "type",
+      "signature": "AvatarGroupProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; }>"
+    },
+    {
+      "name": "avatarGroup",
+      "kind": "function",
+      "signature": "avatarGroup<Msg>(props: AvatarGroupProps, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "AvatarGroupCountProps",
+      "kind": "type",
+      "signature": "AvatarGroupCountProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; }>"
+    },
+    {
+      "name": "avatarGroupCount",
+      "kind": "function",
+      "signature": "avatarGroupCount<Msg>(props: AvatarGroupCountProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "badge": [
