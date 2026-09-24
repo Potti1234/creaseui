@@ -152,7 +152,7 @@ A shadcn-styled Attachment component for Foldkit.
 
 Source: `src/ui/attachment.ts`
 
-Examples: Uploaded file, Lifecycle states
+Examples: Demo, Image, States, Sizes, Group, Trigger
 
 - `attachmentVariants: value` (value)
 - `AttachmentState = 'idle' | 'uploading' | 'processing' | 'error' | 'done'` (type)
@@ -160,6 +160,7 @@ Examples: Uploaded file, Lifecycle states
 - `attachmentMedia<Msg>(props: ChildrenProps & Readonly<{ variant?: 'icon' | 'image' }>, h: HtmlBuilder<Msg>): Html` (function)
 - `attachmentContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 - `attachmentActions<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+- `attachmentAction<Msg>(props: Readonly<{ onClick: Msg; label: string; children: ReadonlyArray<Html | string>; class?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
 - `attachmentGroup<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 - `attachmentTitle<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 - `attachmentDescription<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)

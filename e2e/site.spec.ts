@@ -1938,29 +1938,56 @@ test("accordion matches upstream examples and enforces state rules", async ({
   await expect(stylexSubscription).toHaveAttribute("aria-expanded", "false");
 });
 
-test("attachment explains parent-owned lifecycle through rendered states", async ({
+test("attachment sections mirror shadcn examples with working actions", async ({
   page,
 }) => {
   await page.goto("/docs/components/attachment");
-  await page.getByRole("button", { name: "StyleX" }).click();
-  await expect(page.locator("#uploaded-file")).toBeVisible();
-  await expect(page.locator("#lifecycle-states")).toBeVisible();
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  const example = page.locator("#lifecycle-states");
-  await expect(example.locator('[data-slot="attachment"]')).toHaveCount(4);
+  for (const id of ["image", "states", "sizes", "group", "trigger"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#demo")).toHaveCount(0);
+
+  const states = page.locator("#states");
+  await expect(states.locator('[data-slot="attachment"]')).toHaveCount(5);
   await expect(
-    example.locator('[data-slot="attachment"][data-state="error"]'),
+    states.locator('[data-slot="attachment"][data-state="error"]'),
   ).toContainText("Upload failed");
   await expect(
-    example.locator('[data-slot="attachment"][data-state="done"]'),
+    states.locator('[data-slot="attachment"][data-state="done"]'),
   ).toContainText("Uploaded");
-  await expect(example.locator("code")).toContainText(
-    "(['uploading', 'processing', 'error', 'done'] as const)",
+  await states
+    .getByRole("button", { name: "Remove selected-file.pdf" })
+    .click();
+  await expect(states.locator('[data-slot="attachment"]')).toHaveCount(4);
+  await expect(
+    states.locator('[data-slot="attachment-title"]', {
+      hasText: "selected-file.pdf",
+    }),
+  ).toHaveCount(0);
+
+  const trigger = page.locator("#trigger");
+  await trigger
+    .getByRole("button", { name: "Preview research-summary.pdf" })
+    .click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByText("research-summary.pdf")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(dialog).toBeHidden();
+
+  await page.getByRole("button", { name: "StyleX" }).click();
+  await expect(page.locator("#states")).toBeVisible();
+  await expect(
+    page.locator('#states [data-slot="attachment"]'),
+  ).toHaveCount(4);
+  await expect(
+    page.locator('#states [data-slot="attachment-title"]', {
+      hasText: "selected-file.pdf",
+    }),
+  ).toHaveCount(0);
+  await expect(page.locator("#trigger code")).toContainText(
+    "@/stylex/attachment",
   );
-  await expect(example.locator("code")).toContainText(
-    "Runtime.makeApplication",
-  );
-  await expect(example.locator("code")).toContainText("@/stylex/attachment");
 });
 
 test("bubble preserves conversational alignment, tone, and reactions", async ({ page }) => {

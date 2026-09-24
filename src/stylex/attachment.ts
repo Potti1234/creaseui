@@ -2,6 +2,7 @@ import * as stylex from "@stylexjs/stylex";
 import type { StaticStyles } from "@stylexjs/stylex";
 import type { Html, HtmlBuilder } from "foldkit/html";
 import type { ComponentLayoutStyle } from "./contracts";
+import { buttonVisualStyles } from "./button";
 import { foundationTokens } from "./foundations-tokens.stylex";
 import { className } from "./style";
 import { tokens } from "./tokens.stylex";
@@ -167,6 +168,30 @@ const part =
     );
 export const attachmentContent = part("attachment-content", styles.content);
 export const attachmentActions = part("attachment-actions", styles.actions);
+export const attachmentAction = <Msg>(
+  p: Readonly<{
+    onClick: Msg;
+    label: string;
+    children: ReadonlyArray<Html | string>;
+    layoutStyle?: ComponentLayoutStyle;
+  }>,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  h.button(
+    [
+      h.Type("button"),
+      h.OnClick(p.onClick),
+      h.DataAttribute("slot", "attachment-action"),
+      h.AriaLabel(p.label),
+      h.Class(
+        className(
+          ...buttonVisualStyles({ variant: "ghost", size: "icon-xs" }),
+          p.layoutStyle,
+        ),
+      ),
+    ],
+    [...p.children],
+  );
 export const attachmentGroup = part("attachment-group", styles.group);
 export const attachmentTitle = <Msg>(
   p: ChildrenProps,

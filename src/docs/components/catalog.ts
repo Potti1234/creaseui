@@ -298,7 +298,10 @@ export const view = (
     });
   };
 
-  const renderedExamples = authoredExamples.map((config, index) => {
+  const renderedExamples = authoredExamples
+        .map((config, index) => ({ config, index }))
+        .filter(({ config }) => config.heroOnly !== true)
+        .map(({ config, index }) => {
           const exampleCode = config.code;
           return example<Message>(
             {
@@ -320,23 +323,31 @@ export const view = (
           );
         });
 
-  const firstExample = authoredExamples[0];
+  const heroEntry =
+    authoredExamples
+      .map((config, index) => ({ config, index }))
+      .find(({ config }) => config.heroOnly === true) ??
+    (authoredExamples[0] === undefined
+      ? undefined
+      : { config: authoredExamples[0], index: 0 });
   const heroIndex = authoredExamples.length;
   const heroExample =
-    firstExample === undefined
+    heroEntry === undefined
       ? undefined
       : hero<Message>(
           {
-            title: firstExample.title,
-            preview: previewFor(0, heroIndex),
-            code: firstExample.code,
-            onCopy: CopyFeedback.Message.ClickedDocsCopyCode({ code: firstExample.code }),
-            isCopied: model.copiedCode === firstExample.code,
+            title: heroEntry.config.title,
+            preview: previewFor(heroEntry.index, heroIndex),
+            code: heroEntry.config.code,
+            onCopy: CopyFeedback.Message.ClickedDocsCopyCode({
+              code: heroEntry.config.code,
+            }),
+            isCopied: model.copiedCode === heroEntry.config.code,
             dark,
             codeFileMessage: (message) => GotCodeFileMessage({ message }),
-            ...(firstExample.previewClass === undefined
+            ...(heroEntry.config.previewClass === undefined
               ? {}
-              : { previewClass: firstExample.previewClass }),
+              : { previewClass: heroEntry.config.previewClass }),
           },
           h,
         );
@@ -365,7 +376,9 @@ export const view = (
       onCopyCode: (code) => CopyFeedback.Message.ClickedDocsCopyCode({ code }),
       dark,
       codeFileMessage: (message) => GotCodeFileMessage({ message }),
-      exampleTitles: authoredExamples.map((example) => example.title),
+      exampleTitles: authoredExamples
+        .filter((example) => example.heroOnly !== true)
+        .map((example) => example.title),
       ...(heroExample === undefined ? {} : { heroExample }),
       sidebarScrolled: CopyFeedback.Message.ObservedDocsSidebarScroll(),
       renderer: model.renderer,

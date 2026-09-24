@@ -71,6 +71,7 @@ Source: [`src/ui/attachment.ts`](../src/ui/attachment.ts)
 | `attachmentMedia` | function | `attachmentMedia<Msg>(props: ChildrenProps & Readonly<{ variant?: 'icon' \| 'image' }>, h: HtmlBuilder<Msg>): Html` |
 | `attachmentContent` | function | `attachmentContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `attachmentActions` | function | `attachmentActions<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
+| `attachmentAction` | function | `attachmentAction<Msg>(props: Readonly<{ onClick: Msg; label: string; children: ReadonlyArray<Html \| string>; class?: string; }>, h: HtmlBuilder<Msg>): Html` |
 | `attachmentGroup` | function | `attachmentGroup<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `attachmentTitle` | function | `attachmentTitle<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `attachmentDescription` | function | `attachmentDescription<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |

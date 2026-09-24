@@ -186,6 +186,11 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "attachmentActions<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html"
     },
     {
+      "name": "attachmentAction",
+      "kind": "function",
+      "signature": "attachmentAction<Msg>(props: Readonly<{ onClick: Msg; label: string; children: ReadonlyArray<Html | string>; class?: string; }>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
       "name": "attachmentGroup",
       "kind": "function",
       "signature": "attachmentGroup<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html"
