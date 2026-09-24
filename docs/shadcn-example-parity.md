@@ -11,13 +11,13 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 7 done · 54 todo · 3 crease-only
+Current: 8 done · 53 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
 | `accordion` | 7 | Basic<br>Multiple<br>Disabled<br>Borders<br>Card<br>RTL | done |
 | `alert` | 11 | Basic<br>Destructive<br>Action<br>Custom Colors<br>RTL | done |
-| `alert-dialog` | 2 | Basic<br>Small<br>Media<br>Small with Media<br>Destructive<br>RTL | todo (missing: Basic, Small, Media, Small with Media, Destructive, RTL) |
+| `alert-dialog` | 7 | Basic<br>Small<br>Media<br>Small with Media<br>Destructive<br>RTL | done |
 | `aspect-ratio` | 3 | Square<br>Portrait<br>RTL | done |
 | `attachment` | 2 | Image<br>States<br>Sizes<br>Group<br>Trigger | todo (missing: Image, States, Sizes, Group, Trigger) |
 | `avatar` | 4 | Basic<br>Badge<br>Badge with Icon<br>Avatar Group<br>Avatar Group Count<br>Avatar Group with Icon<br>Sizes<br>Dropdown<br>RTL | todo (missing: Basic, Badge, Badge with Icon, Avatar Group, Avatar Group Count, Avatar Group with Icon, Sizes, Dropdown, RTL) |

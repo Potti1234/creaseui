@@ -111,11 +111,11 @@ A shadcn-styled Alert Dialog component for Foldkit.
 
 Source: `src/ui/alert-dialog.ts`
 
-Examples: Async deletion, Compact decision
+Examples: Basic, Small, Media, Small with Media, Destructive, RTL, Async deletion
 
 - `export * from '@/lib/alert-dialog'` (re-export)
 - `AlertDialogSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; }>` (type)
-- `AlertDialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description: string; media?: ReadonlyArray<Html | string>; actionLabel: string; cancelLabel?: string; pendingLabel?: string; isPending?: boolean; size?…` (type)
+- `AlertDialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description: string; media?: ReadonlyArray<Html | string>; mediaVariant?: keyof typeof MEDIA_VARIANTS; actionLabel: string; cancelLabel?: string; pendi…` (type)
 - `alertDialog<Msg>(props: AlertDialogProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Alert

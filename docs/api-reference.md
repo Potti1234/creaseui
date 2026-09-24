@@ -32,7 +32,7 @@ Source: [`src/ui/alert-dialog.ts`](../src/ui/alert-dialog.ts)
 | --- | --- | --- |
 | `*` | re-export | `export * from '@/lib/alert-dialog'` |
 | `AlertDialogSlots` | type | `AlertDialogSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; }>` |
-| `AlertDialogProps` | type | `AlertDialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description: string; media?: ReadonlyArray<Html \| string>; actionLabel: string; cancelLabel?: string; pendingLabel?: string; isPending?: boolean; size?…` |
+| `AlertDialogProps` | type | `AlertDialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description: string; media?: ReadonlyArray<Html \| string>; mediaVariant?: keyof typeof MEDIA_VARIANTS; actionLabel: string; cancelLabel?: string; pendi…` |
 | `alertDialog` | function | `alertDialog<Msg>(props: AlertDialogProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Alert

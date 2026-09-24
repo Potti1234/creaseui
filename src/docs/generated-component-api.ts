@@ -92,7 +92,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "AlertDialogProps",
       "kind": "type",
-      "signature": "AlertDialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description: string; media?: ReadonlyArray<Html | string>; actionLabel: string; cancelLabel?: string; pendingLabel?: string; isPending?: boolean; size?…"
+      "signature": "AlertDialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description: string; media?: ReadonlyArray<Html | string>; mediaVariant?: keyof typeof MEDIA_VARIANTS; actionLabel: string; cancelLabel?: string; pendi…"
     },
     {
       "name": "alertDialog",

@@ -827,10 +827,72 @@ test("dialog traps focus, closes with Escape, and restores its trigger", async (
   await expect(compactTrigger).toBeFocused();
 });
 
-test("alert dialog emits decisions and keeps async consequences parent owned", async ({
+test("alert dialog matches upstream sections and keeps async consequences parent owned", async ({
   page,
 }) => {
   await page.goto("/docs/components/alert-dialog");
+
+  for (const id of [
+    "basic",
+    "small",
+    "media",
+    "small-with-media",
+    "destructive",
+    "rtl",
+    "async-deletion",
+  ]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+
+  const basic = page.locator("#basic");
+  await basic
+    .getByRole("button", { name: "Show Dialog", exact: true })
+    .click();
+  const alertDialog = page.getByRole("alertdialog");
+  await expect(alertDialog).toBeVisible();
+  await expect(
+    alertDialog.getByRole("button", { name: "Cancel" }),
+  ).toBeFocused();
+  await page
+    .locator('[data-slot="alert-dialog-overlay"]')
+    .click({ position: { x: 5, y: 5 } });
+  await expect(alertDialog).toBeVisible();
+  await alertDialog
+    .getByRole("button", { name: "Continue", exact: true })
+    .click();
+  await expect(alertDialog).toBeHidden();
+
+  const destructive = page.locator("#destructive");
+  await destructive
+    .getByRole("button", { name: "Delete Chat", exact: true })
+    .click();
+  const destructiveDialog = page.getByRole("alertdialog");
+  await expect(
+    destructiveDialog.locator('[data-slot="alert-dialog-media"]'),
+  ).toBeVisible();
+  await destructiveDialog
+    .getByRole("button", { name: "Delete", exact: true })
+    .click();
+  await expect(destructiveDialog).toBeHidden();
+
+  const rtl = page.locator("#rtl");
+  await rtl.locator('[dir="rtl"]').waitFor();
+  await rtl
+    .getByRole("button", { name: "إظهار الحوار", exact: true })
+    .click();
+  const rtlDialog = page.getByRole("alertdialog");
+  await expect(rtlDialog).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(rtlDialog).toBeHidden();
+  await rtl
+    .getByRole("button", { name: "إظهار الحوار (صغير)", exact: true })
+    .click();
+  const rtlSmall = page.getByRole("alertdialog");
+  await expect(
+    rtlSmall.locator('[data-slot="alert-dialog-media"]'),
+  ).toBeVisible();
+  await rtlSmall.getByRole("button", { name: "عدم السماح" }).click();
+  await expect(rtlSmall).toBeHidden();
 
   const example = page.locator("#async-deletion");
   const trigger = example.getByRole("button", {
@@ -838,37 +900,26 @@ test("alert dialog emits decisions and keeps async consequences parent owned", a
     exact: true,
   });
   await trigger.click();
-  const alertDialog = page.getByRole("alertdialog");
-  await expect(alertDialog).toBeVisible();
-  await expect(alertDialog.getByRole("button", { name: "Cancel" })).toBeFocused();
-  await page.locator('[data-slot="alert-dialog-overlay"]').click({ position: { x: 5, y: 5 } });
-  await expect(alertDialog).toBeVisible();
-  const confirm = alertDialog.getByRole("button", {
-    name: "Delete project",
-    exact: true,
-  });
-  await confirm.click();
-  await expect(alertDialog.getByRole("button", { name: "Deleting…" })).toBeDisabled();
-  await expect(alertDialog).toBeHidden();
+  const asyncDialog = page.getByRole("alertdialog");
+  await expect(asyncDialog).toBeVisible();
+  await asyncDialog
+    .getByRole("button", { name: "Delete project", exact: true })
+    .click();
+  await expect(
+    asyncDialog.getByRole("button", { name: "Deleting…" }),
+  ).toBeDisabled();
+  await expect(asyncDialog).toBeHidden();
   await expect(example.getByRole("status")).toHaveText("Project deleted.");
   await expect(trigger).toBeFocused();
 
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
   await expect(page.locator("#async-deletion")).toBeVisible();
-  await expect(page.locator("#compact-decision")).toBeVisible();
+  await expect(page.locator("#rtl")).toBeVisible();
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(example.locator("code")).toContainText("@/stylex/alert-dialog");
+  await expect(example.locator("code")).toContainText(
+    "@/stylex/alert-dialog",
+  );
   await expect(example.getByRole("status")).toHaveText("Project deleted.");
-
-  const compact = page.locator("#compact-decision");
-  const compactTrigger = compact.getByRole("button", { name: "Leave workspace", exact: true });
-  await compactTrigger.click();
-  const compactDialog = page.getByRole("alertdialog");
-  await expect(compactDialog.getByRole("button", { name: "Stay" })).toBeFocused();
-  await page.keyboard.press("Escape");
-  await expect(compactDialog).toBeHidden();
-  await expect(compact.getByRole("status")).toHaveText("No action taken.");
-  await expect(compactTrigger).toBeFocused();
 });
 
 test("sheet compound parts preserve focus and accessible structure", async ({

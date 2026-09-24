@@ -1,20 +1,94 @@
-import type { HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import * as stylex from '@stylexjs/stylex';
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { alertDialogFixtures } from '@/docs/components/pages/alert-dialog/shared';
+import {
+  alertDialogFixtures,
+  type AlertDialogFixture,
+} from '@/docs/components/pages/alert-dialog/shared';
+import * as Icon from '@/lib/icon';
 import * as AlertDialog from '@/stylex/alert-dialog';
 import * as Button from '@/stylex/button';
+import { className } from '@/stylex/style';
 
 const styles = stylex.create({
-  frame: { gap: '0.75rem', display: 'grid', justifyItems: 'center', },
+  frame: { gap: '0.75rem', display: 'grid', justifyItems: 'center' },
+  frameRtl: {
+    alignItems: 'center',
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '0.75rem',
+    justifyContent: 'center',
+  },
+  mediaIcon: { height: '2rem', width: '2rem' },
   status: {
     color: 'var(--muted-foreground)',
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
   },
 });
+
+type PreviewSnapshot = {
+  dialog: AlertDialog.Model;
+  dialogSmall: AlertDialog.Model;
+  status: 'idle' | 'pending' | 'complete';
+  asyncFlow: boolean;
+};
+
+const dialogView = <Msg>(
+  spec: AlertDialogFixture['dialogs'][number],
+  fixture: AlertDialogFixture,
+  dialogModel: AlertDialog.Model,
+  index: number,
+  model: PreviewSnapshot,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  AlertDialog.alertDialog(
+    {
+      model: dialogModel,
+      toParentMessage: message =>
+        onMessageJson(
+          JSON.stringify({
+            _tag:
+              index === 0
+                ? 'GotAlertDialogMessage'
+                : 'GotAlertDialogSmallMessage',
+            message,
+          }),
+        ),
+      title: spec.dialogTitle,
+      description: spec.dialogDescription,
+      actionLabel: spec.actionLabel,
+      cancelLabel: spec.cancelLabel,
+      ...(spec.size === undefined ? {} : { size: spec.size }),
+      ...(spec.mediaIcon === undefined
+        ? {}
+        : {
+            media: [
+              Icon.icon(
+                spec.mediaIcon,
+                { class: className(styles.mediaIcon) },
+                h,
+              ),
+            ],
+          }),
+      ...(spec.mediaVariant === undefined
+        ? {}
+        : { mediaVariant: spec.mediaVariant }),
+      ...(spec.actionVariant === undefined
+        ? {}
+        : { actionVariant: spec.actionVariant }),
+      ...(fixture.async === undefined
+        ? {}
+        : {
+            pendingLabel: fixture.async.pendingLabel,
+            isPending: model.status === 'pending',
+          }),
+    },
+    h,
+  );
 
 export const alertDialogStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -23,37 +97,51 @@ export const alertDialogStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   h: HtmlBuilder<Msg>,
 ) => {
   const fixture = alertDialogFixtures[exampleIndex] ?? alertDialogFixtures[0];
-  const previewModel = model as {
-    dialog: AlertDialog.Model;
-    status: 'idle' | 'pending' | 'complete';
-  };
-  return h.div([h.Class(stylex.props(styles.frame).className ?? '')], [
-    Button.button({
-      variant: exampleIndex === 0 ? 'destructive' : 'outline',
-      onClick: onMessageJson(JSON.stringify({ _tag: 'OpenedAlertDialogPreview' })),
-      children: [fixture.triggerLabel],
-    }, h),
-    AlertDialog.alertDialog({
-      model: previewModel.dialog,
-      toParentMessage: message => onMessageJson(JSON.stringify({
-        _tag: 'GotAlertDialogPreviewMessage',
-        message,
-      })),
-      title: fixture.dialogTitle,
-      description: fixture.dialogDescription,
-      actionLabel: fixture.actionLabel,
-      cancelLabel: fixture.cancelLabel,
-      pendingLabel: fixture.pendingLabel,
-      isPending: previewModel.status === 'pending',
-      ...(exampleIndex === 1 ? { size: 'sm' as const } : {}),
-    }, h),
-    h.p([
-      h.Role('status'),
-      h.Class(stylex.props(styles.status).className ?? ''),
-    ], [
-      previewModel.status === 'complete'
-        ? fixture.completeLabel
-        : previewModel.status === 'pending' ? 'Working…' : 'No action taken.',
-    ]),
+  const previewModel = model as PreviewSnapshot;
+  const children = fixture.dialogs.flatMap((spec, index) => [
+    Button.button(
+      {
+        variant: spec.triggerVariant,
+        onClick: onMessageJson(
+          JSON.stringify({
+            _tag: index === 0 ? 'OpenedAlertDialog' : 'OpenedAlertDialogSmall',
+          }),
+        ),
+        children: [spec.triggerLabel],
+      },
+      h,
+    ),
+    dialogView(
+      spec,
+      fixture,
+      index === 0 ? previewModel.dialog : previewModel.dialogSmall,
+      index,
+      previewModel,
+      onMessageJson,
+      h,
+    ),
+  ]);
+  if (fixture.kind === 'rtl') {
+    return h.div(
+      [h.Dir('rtl'), h.Class(className(styles.frameRtl))],
+      children,
+    );
+  }
+  return h.div([h.Class(className(styles.frame))], [
+    ...children,
+    ...(fixture.async === undefined
+      ? []
+      : [
+          h.p(
+            [h.Role('status'), h.Class(className(styles.status))],
+            [
+              previewModel.status === 'complete'
+                ? fixture.async.completeLabel
+                : previewModel.status === 'pending'
+                  ? 'Working…'
+                  : 'No action taken.',
+            ],
+          ),
+        ]),
   ]);
 };

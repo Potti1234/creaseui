@@ -34,7 +34,12 @@ const TITLE_CLASS =
 const DESCRIPTION_CLASS = 'text-sm text-muted-foreground';
 
 const MEDIA_CLASS =
-  "mb-2 inline-flex size-16 items-center justify-center rounded-md bg-muted sm:group-data-[size=default]/alert-dialog-content:row-span-2 *:[svg:not([class*='size-'])]:size-8";
+  "mb-2 inline-flex size-16 items-center justify-center rounded-md sm:group-data-[size=default]/alert-dialog-content:row-span-2 *:[svg:not([class*='size-'])]:size-8";
+
+const MEDIA_VARIANTS = {
+  muted: 'bg-muted',
+  destructive: 'bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive',
+} as const;
 
 export type AlertDialogSlots = Readonly<{
   closeButton: ReadonlyArray<ChildAttribute>;
@@ -46,11 +51,13 @@ export type AlertDialogProps<Msg> = Readonly<{
   title: string;
   description: string;
   media?: ReadonlyArray<Html | string>;
+  mediaVariant?: keyof typeof MEDIA_VARIANTS;
   actionLabel: string;
   cancelLabel?: string;
   pendingLabel?: string;
   isPending?: boolean;
   size?: 'default' | 'sm';
+  actionVariant?: 'default' | 'destructive';
   actionClass?: string;
   cancelClass?: string;
   class?: string;
@@ -141,7 +148,7 @@ export const alertDialog = <Msg>(
                                     'slot',
                                     'alert-dialog-media',
                                   ),
-                                  hd.Class(MEDIA_CLASS),
+                                  hd.Class(cn(MEDIA_CLASS, MEDIA_VARIANTS[props.mediaVariant ?? 'muted'])),
                                 ],
                                 [...props.media],
                               ),
@@ -199,7 +206,7 @@ export const alertDialog = <Msg>(
                             hd.Class(
                               cn(
                                 buttonVariants({
-                                  variant: 'default',
+                                  variant: props.actionVariant ?? 'default',
                                   size: 'default',
                                 }),
                                 props.actionClass,

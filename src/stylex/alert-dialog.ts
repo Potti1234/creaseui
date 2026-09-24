@@ -23,6 +23,17 @@ const styles = stylex.create({
     justifyContent: 'center',
     height: '2rem',
   },
+  actionDestructive: {
+    borderColor: tokens.transparent,
+    borderRadius: tokens.controlRadius,
+    paddingInline: '0.75rem',
+    alignItems: 'center',
+    backgroundColor: tokens.softDestructiveSurface,
+    color: tokens.destructive,
+    display: 'inline-flex',
+    justifyContent: 'center',
+    height: '2rem',
+  },
   cancel: {
     borderColor: tokens.border,
     borderRadius: tokens.controlRadius,
@@ -33,6 +44,10 @@ const styles = stylex.create({
     display: 'inline-flex',
     justifyContent: 'center',
     height: '2rem',
+  },
+  mediaDestructive: {
+    backgroundColor: tokens.softDestructiveSurface,
+    color: tokens.destructive,
   },
   content: { padding: '1.5rem', gap: '1rem', display: 'grid', maxWidth: '32rem', },
 })
@@ -74,11 +89,13 @@ export type AlertDialogProps<Msg> = Readonly<{
   title: string;
   description: string;
   media?: ReadonlyArray<Html | string>;
+  mediaVariant?: 'muted' | 'destructive';
   actionLabel: string;
   cancelLabel?: string;
   pendingLabel?: string;
   isPending?: boolean;
   size?: 'default' | 'sm';
+  actionVariant?: 'default' | 'destructive';
   actionLayoutStyle?: ComponentLayoutStyle;
   cancelLayoutStyle?: ComponentLayoutStyle;
   layoutStyle?: ComponentLayoutStyle;
@@ -169,7 +186,7 @@ export const alertDialog = <Msg>(
                                     'slot',
                                     'alert-dialog-media',
                                   ),
-                                  hd.Class(className(MEDIA_CLASS)),
+                                  hd.Class(cn(MEDIA_CLASS, props.mediaVariant === 'destructive' && styles.mediaDestructive)),
                                 ],
                                 [...props.media],
                               ),
@@ -223,7 +240,7 @@ export const alertDialog = <Msg>(
                             hd.DataAttribute('slot', 'alert-dialog-action'),
                             hd.Class(
                               cn(
-                                styles.action,
+                                props.actionVariant === 'destructive' ? styles.actionDestructive : styles.action,
                                 props.actionLayoutStyle,
                               ),
                             ),
