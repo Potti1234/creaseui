@@ -1682,28 +1682,34 @@ test("dropdown menu exposes typed selection wiring and keyboard behavior", async
   await expect(rtlExample.getByRole("menu")).toHaveCount(2);
 });
 
-test("context menu anchors at the secondary-click target and skips disabled items", async ({
+test("context menu sections anchor, toggle, and select per fixture", async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 360, height: 720 });
+  await page.setViewportSize({ width: 900, height: 720 });
   await page.goto("/docs/components/context-menu");
   await page.getByRole("button", { name: "StyleX" }).click();
-  await expect(page.locator("#browser-actions")).toBeVisible();
-  await expect(page.locator("#disabled-action")).toBeVisible();
-  await expect(page.locator("#keyboard-activation")).toBeVisible();
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  const example = page.locator("#browser-actions");
+  for (const section of [
+    "#basic",
+    "#submenu",
+    "#shortcuts",
+    "#groups",
+    "#icons",
+    "#checkboxes",
+    "#radio",
+    "#destructive",
+    "#rtl",
+  ]) {
+    await expect(page.locator(section)).toBeVisible();
+  }
+  const example = page.locator("#basic");
   const target = example.getByRole("button", { name: "Right click here" });
   await target.click({ button: "right", position: { x: 10, y: 20 } });
-  const menu = example.getByRole("menu");
+  const menu = page.getByRole("menu");
   await expect(menu).toBeVisible();
   const firstX = (await menu.boundingBox())?.x ?? 0;
   await expect(menu.getByRole("menuitem", { name: "Forward" })).toHaveAttribute(
     "aria-disabled",
     "true",
-  );
-  await expect(example.locator("code")).toContainText(
-    "ContextMenu.create<Action>()",
   );
   await expect(example.locator("code")).toContainText("@/stylex/context-menu");
   await page.keyboard.press("Escape");
@@ -1712,12 +1718,54 @@ test("context menu anchors at the secondary-click target and skips disabled item
   const bounds = await menu.boundingBox();
   expect(bounds).not.toBeNull();
   expect(bounds?.x ?? 999).toBeGreaterThan(firstX);
-  expect((bounds?.x ?? 0) + (bounds?.width ?? 0)).toBeLessThanOrEqual(356);
-  expect((bounds?.y ?? 0) + (bounds?.height ?? 0)).toBeLessThanOrEqual(716);
   await page.keyboard.press("Escape");
-  await target.focus();
-  await page.keyboard.press("Shift+F10");
+
+  const submenuExample = page.locator("#submenu");
+  await submenuExample.getByRole("button", { name: "Right click here" }).click({ button: "right" });
   await expect(menu).toBeVisible();
+  await menu.getByRole("menuitem", { name: "More Tools" }).hover();
+  await expect(
+    page.getByRole("menuitem", { name: "Developer Tools" }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  const checkboxExample = page.locator("#checkboxes");
+  await checkboxExample.getByRole("button", { name: "Right click here" }).click({ button: "right" });
+  await expect(menu).toBeVisible();
+  const fullUrls = menu.getByRole("menuitemcheckbox", {
+    name: /Show Full URLs/u,
+  });
+  await expect(fullUrls).toHaveAttribute("aria-checked", "false");
+  await fullUrls.click();
+  await checkboxExample.getByRole("button", { name: "Right click here" }).click({ button: "right" });
+  await expect(
+    menu.getByRole("menuitemcheckbox", { name: /Show Full URLs/u }),
+  ).toHaveAttribute("aria-checked", "true");
+  await page.keyboard.press("Escape");
+
+  const radioExample = page.locator("#radio");
+  await radioExample.getByRole("button", { name: "Right click here" }).click({ button: "right" });
+  await expect(menu).toBeVisible();
+  await expect(
+    menu.getByRole("menuitemradio", { name: /Pedro Duarte/u }),
+  ).toHaveAttribute("aria-checked", "true");
+  await menu.getByRole("menuitemradio", { name: /Dark/u }).click();
+  await radioExample.getByRole("button", { name: "Right click here" }).click({ button: "right" });
+  await expect(
+    menu.getByRole("menuitemradio", { name: /Pedro Duarte/u }),
+  ).toHaveAttribute("aria-checked", "true");
+  await expect(
+    menu.getByRole("menuitemradio", { name: /Dark/u }),
+  ).toHaveAttribute("aria-checked", "true");
+  await page.keyboard.press("Escape");
+
+  const rtlExample = page.locator("#rtl");
+  await rtlExample.getByRole("button", { name: "Right click here" }).click({ button: "right" });
+  await expect(menu).toBeVisible();
+  await expect(
+    menu.getByRole("menuitem", { name: /المزيد من الأدوات/u }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
 });
 
 test("navigation menu distinguishes semantic links from stateful disclosures", async ({

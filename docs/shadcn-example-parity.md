@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 18 done · 43 todo · 3 crease-only
+Current: 19 done · 42 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -34,7 +34,7 @@ Current: 18 done · 43 todo · 3 crease-only
 | `collapsible` | 14 | Basic<br>Settings Panel<br>File Tree<br>RTL | done |
 | `combobox` | 9 | Basic<br>Multiple<br>Clear Button<br>Groups<br>Custom Items<br>Invalid<br>Disabled<br>Auto Highlight<br>Popup<br>Input Group<br>RTL | todo (missing: Multiple, Auto Highlight, Popup) |
 | `command` | 7 | Basic<br>Shortcuts<br>Groups<br>Scrollable<br>RTL | done |
-| `context-menu` | 3 | Basic<br>Submenu<br>Shortcuts<br>Groups<br>Icons<br>Checkboxes<br>Radio<br>Destructive<br>RTL | todo (missing: Basic, Submenu, Shortcuts, Groups, Icons, Checkboxes, Radio, Destructive, RTL) |
+| `context-menu` | 10 | Basic<br>Submenu<br>Shortcuts<br>Groups<br>Icons<br>Checkboxes<br>Radio<br>Destructive<br>RTL | done |
 | `data-table` | 3 | RTL | todo (missing: RTL) |
 | `date-picker` | 2 | Basic<br>Range Picker<br>Date of Birth<br>Input<br>Time Picker<br>Natural Language Picker<br>RTL | todo (missing: Basic, Range Picker, Date of Birth, Input, Time Picker, Natural Language Picker, RTL) |
 | `dialog` | 2 | Custom Close Button<br>No Close Button<br>Sticky Footer<br>Scrollable Content<br>RTL | todo (missing: Custom Close Button, No Close Button, Sticky Footer, Scrollable Content, RTL) |

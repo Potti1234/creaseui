@@ -1,34 +1,94 @@
 import { Option } from 'effect';
-import type { HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 import * as stylex from '@stylexjs/stylex';
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { contextMenuActions, contextMenuLabel } from '@/docs/components/pages/context-menu/shared';
+import {
+  contextMenuFixtures,
+  fixtureItems,
+  fixtureLabel,
+} from '@/docs/components/pages/context-menu/shared';
+import { resolveItemConfig } from '@/docs/components/pages/dropdown-menu/shared';
+import * as Icon from '@/lib/icon';
 import * as ContextMenu from '@/stylex/context-menu';
+import { className } from '@/stylex/style';
 
 const styles = stylex.create({
-  frame: { gap: '0.75rem', display: 'grid', justifyItems: 'center' },
-  status: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
-  target: { height: '10rem', width: '18rem' },
+  stack: { gap: '0.75rem', display: 'grid', justifyItems: 'center', },
+  target: { aspectRatio: '16 / 9', width: '20rem', },
+  targetInner: {
+    borderColor: 'var(--border)',
+    borderRadius: '0.75rem',
+    borderStyle: 'dashed',
+    borderWidth: '1px',
+    alignItems: 'center',
+    display: 'flex',
+    fontSize: '0.875rem',
+    justifyContent: 'center',
+    height: '100%',
+    width: '100%',
+  },
+  status: { color: 'var(--muted-foreground)', fontSize: '0.875rem', },
+  icon: { height: '1rem', width: '1rem', },
 });
 
-export const contextMenuStyleXPreview: StyleXExamplePreviewProvider = <Msg>(_exampleIndex: number, model: unknown, onMessageJson: (messageJson: string) => Msg, h: HtmlBuilder<Msg>) => {
-  const previewModel = model as { contextMenu: ContextMenu.Model; maybeLastAction: Option.Option<string> };
-  return h.div([h.Class(stylex.props(styles.frame).className ?? '')], [
-    ContextMenu.contextMenu({
-      model: previewModel.contextMenu,
-      toParentMessage: message => onMessageJson(JSON.stringify({ _tag: 'GotContextMenuPreviewMessage', message })),
-      layoutStyle: styles.target,
-      trigger: 'Right click here',
-      ariaLabel: 'Browser actions',
-      items: contextMenuActions,
-      itemToConfig: action => ({ label: contextMenuLabel(action), ...(action === 'forward' ? { isDisabled: true } : {}) }),
-    }, h),
-    h.p([h.Role('status'), h.Class(stylex.props(styles.status).className ?? '')], [
-      Option.match(previewModel.maybeLastAction, {
-        onNone: () => 'No action selected.',
-        onSome: action => `Last action: ${contextMenuLabel(action)}`,
-      }),
-    ]),
-  ]);
+type Preview = Readonly<{
+  menu: ContextMenu.Model;
+  maybeLastAction: Option.Option<string>;
+  checkedValues: ReadonlyArray<string>;
+  peopleValue: Option.Option<string>;
+  themeValue: Option.Option<string>;
+}>;
+
+export const contextMenuStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+  index: number,
+  model: unknown,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html | undefined => {
+  const fixture = contextMenuFixtures[index];
+  if (fixture === undefined) return undefined;
+  const preview = model as Preview;
+  return h.div(
+    [h.Class(className(styles.stack))],
+    [
+      ContextMenu.contextMenu(
+        {
+          model: preview.menu,
+          toParentMessage: message =>
+            onMessageJson(
+              JSON.stringify({ _tag: 'GotContextMenuMessage', message }),
+            ),
+          trigger: h.div(
+            [h.Class(className(styles.targetInner))],
+            ['Right click here'],
+          ),
+          layoutStyle: styles.target,
+          ariaLabel: `${fixture.title} menu`,
+          items: fixtureItems(fixture),
+          itemToConfig: item => {
+            const spec = fixture.items.find(candidate => candidate.value === item);
+            const radioValue =
+              spec?.group === 'People'
+                ? Option.getOrNull(preview.peopleValue) ?? undefined
+                : Option.getOrNull(preview.themeValue) ?? undefined;
+            const state = { checkedValues: preview.checkedValues, radioValue };
+            return spec === undefined
+              ? { label: item }
+              : resolveItemConfig(spec, state, name =>
+                  Icon.icon(name, { class: className(styles.icon) }, h),
+                );
+          },
+          ...(fixture.direction === 'rtl' ? { direction: 'rtl' as const } : {}),
+        },
+        h,
+      ),
+      h.p([h.Role('status'), h.Class(className(styles.status))], [
+        Option.match(preview.maybeLastAction, {
+          onNone: () => 'No action selected.',
+          onSome: action => `Last action: ${fixtureLabel(fixture, action)}`,
+        }),
+      ]),
+    ],
+  );
 };
