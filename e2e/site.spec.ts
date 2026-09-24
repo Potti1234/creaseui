@@ -1618,15 +1618,37 @@ test("badge keeps authored variants across renderers", async ({ page }) => {
   await page.goto("/docs/components/badge");
   const variants = page.locator("#variants");
   await expect(variants.getByText("Default", { exact: true }).first()).toBeVisible();
-  await expect(variants.getByText("Blocked", { exact: true }).first()).toBeVisible();
+  await expect(variants.getByText("Ghost", { exact: true }).first()).toBeVisible();
+  for (const id of [
+    "basic",
+    "variants",
+    "with-icon",
+    "with-spinner",
+    "link",
+    "custom-colors",
+    "rtl",
+  ]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(
+    page.locator("#with-spinner svg.animate-spin").first(),
+  ).toBeVisible();
+  await expect(page.locator("#link a[data-slot='badge']")).toBeVisible();
+  const blue = page.locator("#custom-colors span[data-slot='badge']", {
+    hasText: "Blue",
+  });
+  await expect(blue).toHaveCSS("background-color", "oklch(0.97 0.014 254.604)");
+  await expect(page.locator("#rtl div[dir]")).toHaveAttribute("dir", "rtl");
 
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
   await expect(page.locator("#variants")).toBeVisible();
-  await expect(page.locator("#status")).toBeVisible();
+  await expect(page.locator("#custom-colors")).toBeVisible();
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
   await expect(page.locator("#variants code")).toContainText("@/stylex/badge");
   await expect(variants.getByText("Default", { exact: true }).first()).toBeVisible();
-  await expect(variants.getByText("Blocked", { exact: true }).first()).toBeVisible();
+  await expect(variants.getByText("Ghost", { exact: true }).first()).toBeVisible();
+  await expect(page.locator("#link a[href='#link']:has-text('Open Link')")).toBeVisible();
+  await expect(page.locator("#with-icon svg[data-icon='inline-start']")).toBeVisible();
 });
 
 test("kbd keeps semantic key notation across renderers", async ({ page }) => {

@@ -7,7 +7,7 @@ import ts from 'typescript'
 const MAX_GENERATED_ICON_BYTES = 64 * 1024
 // The complete block catalog includes data-driven sidebar icons. Keep the
 // existing 64 KiB byte ceiling while allowing this larger, explicit subset.
-const MAX_GENERATED_ICON_COUNT = 160
+const MAX_GENERATED_ICON_COUNT = 180
 
 const sourceFiles = (directory: string): ReadonlyArray<string> =>
   readdirSync(directory, { withFileTypes: true }).flatMap(entry => {

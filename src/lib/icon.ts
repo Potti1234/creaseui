@@ -43,6 +43,9 @@ export type IconNode = ReadonlyArray<readonly [IconTag, IconAttributes]>;
 export type IconConfig = Readonly<{
   class?: string;
   ariaLabel?: string;
+  /** Emits data-icon="inline-start|inline-end" — shadcn components use it for
+      icon-position padding compensation. */
+  dataIcon?: 'inline-start' | 'inline-end';
 }>;
 
 type H<Msg> = HtmlBuilder<Msg>;
@@ -108,6 +111,9 @@ export const icon = <Msg>(
       h.StrokeLinejoin('round'),
       h.Class(cn(`lucide lucide-${name}`, config.class)),
       ...(node.length === 0 ? [h.DataAttribute('icon-missing', name)] : []),
+      ...(config.dataIcon === undefined
+        ? []
+        : [h.DataAttribute('icon', config.dataIcon)]),
       ...(config.ariaLabel === undefined
         ? [h.AriaHidden(true)]
         : [h.Role('img'), h.AriaLabel(config.ariaLabel)]),
@@ -123,6 +129,9 @@ const named =
 
 export const arrowLeft = named('arrow-left');
 export const arrowRight = named('arrow-right');
+export const arrowUpRight = named('arrow-up-right');
+export const badgeCheck = named('badge-check');
+export const bookmark = named('bookmark');
 export const arrowDown = named('arrow-down');
 export const arrowUp = named('arrow-up');
 export const calendarIcon = named('calendar');

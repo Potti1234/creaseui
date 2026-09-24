@@ -69,6 +69,8 @@ export const BADGE_VARIANTS = [
   'secondary',
   'destructive',
   'outline',
+  'ghost',
+  'link',
 ] as const
 
 export type BadgeVariant = (typeof BADGE_VARIANTS)[number]

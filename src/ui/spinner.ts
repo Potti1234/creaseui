@@ -8,6 +8,8 @@ type SpinnerAccessibility = Readonly<{ isDecorative: true; label?: never }> | Re
 export type SpinnerProps = SpinnerAccessibility & Readonly<{
   size?: 'sm' | 'md' | 'lg';
   tone?: 'current' | 'muted' | 'primary';
+  /** Emits data-icon="inline-start|inline-end" for parent icon positioning. */
+  dataIcon?: 'inline-start' | 'inline-end';
   class?: string;
 }>;
 
@@ -22,6 +24,7 @@ export const spinner = <Msg>(
     {
       ...(props.isDecorative ? {} : { ariaLabel: props.label }),
       class: cn('animate-spin motion-reduce:animate-none', SIZE_CLASS[props.size ?? 'md'], TONE_CLASS[props.tone ?? 'current'], props.class),
+      ...(props.dataIcon === undefined ? {} : { dataIcon: props.dataIcon }),
     },
     h,
   );

@@ -24,6 +24,12 @@
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --stylex-destructive-surface: var(--destructive);
+  --stylex-badge-destructive-surface: color-mix(
+    in oklab,
+    var(--destructive) 10%,
+    transparent
+  );
+  --stylex-badge-muted-hover: var(--muted);
   --stylex-input-surface: transparent;
   --stylex-outline-surface: var(--background);
   --stylex-outline-hover: var(--accent);
@@ -64,6 +70,16 @@
   --stylex-destructive-surface: color-mix(
     in oklab,
     var(--destructive) 60%,
+    transparent
+  );
+  --stylex-badge-destructive-surface: color-mix(
+    in oklab,
+    var(--destructive) 20%,
+    transparent
+  );
+  --stylex-badge-muted-hover: color-mix(
+    in oklab,
+    var(--muted) 50%,
     transparent
   );
   --stylex-input-surface: color-mix(in oklab, var(--input) 30%, transparent);
