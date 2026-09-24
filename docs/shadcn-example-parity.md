@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 15 done · 46 todo · 3 crease-only
+Current: 16 done · 45 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -30,7 +30,7 @@ Current: 15 done · 46 todo · 3 crease-only
 | `card` | 11 | Size<br>Spacing<br>Spacing<br>Image<br>RTL | done |
 | `carousel` | 8 | Sizes<br>Spacing<br>Orientation<br>API<br>Plugins<br>RTL | done |
 | `chart` | 25 | Your First Chart<br>Your First Chart<br>Your First Chart<br>Your First Chart<br>Your First Chart<br>Tooltip<br>RTL | done |
-| `checkbox` | 4 | Invalid State<br>Basic<br>Description<br>Disabled<br>Group<br>Table<br>RTL | todo (missing: Invalid State, Basic, Description, Group, Table, RTL) |
+| `checkbox` | 14 | Invalid State<br>Basic<br>Description<br>Disabled<br>Group<br>Table<br>RTL | done |
 | `collapsible` | 3 | Basic<br>Settings Panel<br>File Tree<br>RTL | todo (missing: Basic, Settings Panel, File Tree, RTL) |
 | `combobox` | 4 | Basic<br>Multiple<br>Clear Button<br>Groups<br>Custom Items<br>Invalid<br>Disabled<br>Auto Highlight<br>Popup<br>Input Group<br>RTL | todo (missing: Basic, Multiple, Clear Button, Groups, Custom Items, Invalid, Disabled, Auto Highlight, Popup, Input Group, RTL) |
 | `command` | 5 | Basic<br>Shortcuts<br>Groups<br>Scrollable<br>RTL | todo (missing: Basic, Shortcuts, Groups, Scrollable, RTL) |

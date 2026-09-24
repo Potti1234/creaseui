@@ -2838,8 +2838,8 @@ test("controlled helper pages own and update compact local preview state", async
   test.setTimeout(120_000);
   await page.goto("/docs/components/checkbox");
   const checkbox = page
-    .locator("#terms")
-    .getByRole("checkbox", { name: "Accept terms" });
+    .locator("#basic")
+    .getByRole("checkbox", { name: "Accept terms and conditions" });
   await expect(checkbox).not.toBeChecked();
   await checkbox.click();
   await expect(checkbox).toBeChecked();
@@ -3237,18 +3237,61 @@ test("checkbox shares controlled mixed, read-only, and form semantics", async ({
 }) => {
   await page.goto("/docs/components/checkbox");
 
+  await expect(
+    page.locator("#invalid-state").getByRole("checkbox", {
+      name: "Accept terms and conditions",
+    }),
+  ).toHaveAttribute("aria-invalid", "true");
+
   const terms = page
-    .locator("#terms")
-    .getByRole("checkbox", { name: "Accept terms" });
-  const formValue = page.locator('#terms input[type="hidden"][name="terms"]');
-  await expect(terms).toHaveAttribute(
-    "aria-describedby",
-    "docs-checkbox-0-description",
-  );
+    .locator("#basic")
+    .getByRole("checkbox", { name: "Accept terms and conditions" });
+  const formValue = page.locator('#basic input[type="hidden"][name="terms"]');
   await expect(formValue).toHaveValue("");
   await terms.press("Space");
   await expect(terms).toBeChecked();
   await expect(formValue).toHaveValue("accepted");
+
+  await expect(
+    page.locator("#description").getByRole("checkbox", {
+      name: "Accept terms and conditions",
+    }),
+  ).toHaveAttribute("aria-describedby", "docs-checkbox-3-description");
+
+  const disabled = page
+    .locator("#disabled")
+    .getByRole("checkbox", { name: "Enable notifications" });
+  await expect(disabled).toBeDisabled();
+  await expect(disabled).not.toBeChecked();
+
+  const group = page.locator("#group");
+  await expect(
+    group.getByRole("group", { name: "Show these items on the desktop:" }),
+  ).toBeVisible();
+  const servers = group.getByRole("checkbox", { name: "Connected servers" });
+  await expect(servers).not.toBeChecked();
+  await servers.click();
+  await expect(servers).toBeChecked();
+  await expect(
+    group.getByRole("checkbox", { name: "Hard disks" }),
+  ).toBeChecked();
+
+  const table = page.locator("#table");
+  const selectAll = table.getByRole("checkbox", { name: "Select all rows" });
+  await expect(selectAll).not.toBeChecked();
+  await selectAll.click();
+  await expect(selectAll).toBeChecked();
+  await expect(
+    table.getByRole("checkbox", { name: "Select David Kim" }),
+  ).toBeChecked();
+  await selectAll.click();
+  await expect(
+    table.getByRole("checkbox", { name: "Select Sarah Chen" }),
+  ).not.toBeChecked();
+
+  await expect(
+    page.locator("#rtl").locator('[dir="rtl"]'),
+  ).toHaveCount(1);
 
   await expect(
     page.locator("#indeterminate").getByRole("checkbox", {
@@ -3268,11 +3311,21 @@ test("checkbox shares controlled mixed, read-only, and form semantics", async ({
     .getByRole("group", { name: "Preview styling engine" })
     .getByRole("button", { name: "StyleX" })
     .click();
-  for (const id of ["terms", "indeterminate", "disabled", "read-only"]) {
+  for (const id of [
+    "invalid-state",
+    "basic",
+    "description",
+    "disabled",
+    "group",
+    "table",
+    "rtl",
+    "indeterminate",
+    "read-only",
+  ]) {
     await expect(page.locator(`#${id}`)).toBeVisible();
   }
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(page.locator("#terms code")).toContainText("@/stylex/checkbox");
+  await expect(page.locator("#basic code")).toContainText("@/stylex/checkbox");
   await expect(terms).toBeChecked();
   await terms.press("Space");
   await expect(terms).not.toBeChecked();
