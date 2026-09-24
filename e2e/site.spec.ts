@@ -1223,13 +1223,26 @@ test("dropdown menu exposes typed selection wiring and keyboard behavior", async
 }) => {
   await page.goto("/docs/components/dropdown-menu");
   await page.getByRole("button", { name: "StyleX" }).click();
-  await expect(page.locator("#account-actions")).toBeVisible();
-  await expect(page.locator("#destructive-action")).toBeVisible();
-  await expect(page.locator("#submenu-and-disabled-action")).toBeVisible();
-  await expect(page.locator("#rtl-submenu")).toBeVisible();
+  await expect(page.locator('[aria-label="Basic preview"]')).toBeVisible();
+  for (const section of [
+    "#basic",
+    "#submenu",
+    "#shortcuts",
+    "#icons",
+    "#checkboxes",
+    "#checkboxes-icons",
+    "#radio-group",
+    "#radio-icons",
+    "#destructive",
+    "#avatar",
+    "#complex",
+    "#rtl",
+  ]) {
+    await expect(page.locator(section)).toBeVisible();
+  }
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  const example = page.locator("#account-actions");
-  const trigger = example.getByRole("button", { name: "Open account menu" });
+  const example = page.locator("#basic");
+  const trigger = example.getByRole("button", { name: "Open" });
   await expect(trigger).toHaveAttribute("aria-controls", "docs-dropdown-0-content");
   await trigger.focus();
   await page.keyboard.press("Enter");
@@ -1241,31 +1254,67 @@ test("dropdown menu exposes typed selection wiring and keyboard behavior", async
   await expect(trigger).toBeFocused();
   await expect(example.locator("code")).toContainText("maybeSelection");
   await expect(example.locator("code")).toContainText(
-    "DropdownMenu.create<Action>()",
+    "DropdownMenu.create<Item>()",
   );
   await expect(example.locator("code")).toContainText("@/stylex/dropdown-menu");
 
-  const submenuExample = page.locator("#submenu-and-disabled-action");
-  const submenuTrigger = submenuExample.getByRole("button", {
-    name: "Open account menu",
-  });
+  const submenuExample = page.locator("#submenu");
+  const submenuTrigger = submenuExample.getByRole("button", { name: "Open" });
   await submenuTrigger.focus();
   await page.keyboard.press("Enter");
-  await page.keyboard.press("s");
-  const settings = submenuExample.getByRole("menuitem", { name: /Settings/u });
-  await expect(settings).toHaveAttribute("data-active", "true");
+  await page.keyboard.press("i");
+  const invite = submenuExample.getByRole("menuitem", { name: /Invite users/u });
+  await expect(invite).toHaveAttribute("data-active", "true");
   await page.keyboard.press("ArrowRight");
   const menus = submenuExample.getByRole("menu");
   await expect(menus).toHaveCount(2);
-  await expect(
-    submenuExample.getByRole("menuitem", { name: "Billing" }).last(),
-  ).toHaveAttribute("aria-disabled", "true");
   await page.keyboard.press("Escape");
   await expect(menus).toHaveCount(0);
   await expect(submenuTrigger).toBeFocused();
 
-  const rtlExample = page.locator("#rtl-submenu");
-  const rtlTrigger = rtlExample.getByRole("button", { name: "Open account menu" });
+  const shortcutsExample = page.locator("#shortcuts");
+  await shortcutsExample.getByRole("button", { name: "Open" }).click();
+  await shortcutsExample.getByRole("menuitem", { name: /More tools/u }).hover();
+  await expect(
+    shortcutsExample.getByRole("menuitem", { name: /Name window/u }),
+  ).toHaveAttribute("aria-disabled", "true");
+  await page.keyboard.press("Escape");
+
+  const checkboxExample = page.locator("#checkboxes");
+  await checkboxExample
+    .getByRole("button", { name: "View options" })
+    .click();
+  const statusBar = checkboxExample.getByRole("menuitemcheckbox", {
+    name: /Status Bar/u,
+  });
+  await expect(statusBar).toHaveAttribute("aria-checked", "true");
+  await statusBar.click();
+  await checkboxExample
+    .getByRole("button", { name: "View options" })
+    .click();
+  await expect(statusBar).toHaveAttribute("aria-checked", "false");
+  await page.keyboard.press("Escape");
+
+  const radioExample = page.locator("#radio-group");
+  await radioExample.getByRole("button", { name: "Open" }).click();
+  const bottom = radioExample.getByRole("menuitemradio", { name: /Bottom/u });
+  await expect(
+    radioExample.getByRole("menuitemradio", { name: /Top/u }),
+  ).toHaveAttribute("aria-checked", "true");
+  await bottom.click();
+  await radioExample.getByRole("button", { name: "Open" }).click();
+  await expect(bottom).toHaveAttribute("aria-checked", "true");
+  await page.keyboard.press("Escape");
+
+  const destructiveExample = page.locator("#destructive");
+  await destructiveExample.getByRole("button", { name: "Actions" }).click();
+  await expect(
+    destructiveExample.getByRole("menuitem", { name: "Delete" }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  const rtlExample = page.locator("#rtl");
+  const rtlTrigger = rtlExample.getByRole("button", { name: "افتح القائمة" });
   await expect(rtlExample.locator('[data-slot="dropdown-menu"]')).toHaveAttribute(
     "dir",
     "rtl",
@@ -1274,8 +1323,9 @@ test("dropdown menu exposes typed selection wiring and keyboard behavior", async
   await expect(rtlTrigger).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(rtlExample.getByRole("menu")).toHaveCount(1);
-  await page.keyboard.press("s");
-  await expect(rtlExample.getByRole("menuitem", { name: /Settings/u })).toHaveAttribute(
+  await page.keyboard.press("ArrowDown");
+  await page.keyboard.press("ArrowDown");
+  await expect(rtlExample.getByRole("menuitem", { name: /دعوة/u })).toHaveAttribute(
     "data-active",
     "true",
   );

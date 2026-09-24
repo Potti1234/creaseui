@@ -1889,10 +1889,18 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Account actions",
-        "Destructive action",
-        "Submenu and disabled action",
-        "RTL submenu"
+        "Basic",
+        "Submenu",
+        "Shortcuts",
+        "Icons",
+        "Checkboxes",
+        "Checkboxes Icons",
+        "Radio Group",
+        "Radio Icons",
+        "Destructive",
+        "Avatar",
+        "Complex",
+        "RTL"
       ],
       "api": [
         {
