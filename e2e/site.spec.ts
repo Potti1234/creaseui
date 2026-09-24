@@ -1504,40 +1504,67 @@ test("combobox filters items and persists its typed selection output", async ({
   );
 });
 
-test("command search commits a typed parent action", async ({ page }) => {
+test("command dialogs filter and select items per section", async ({
+  page,
+}) => {
   await page.goto("/docs/components/command");
   await page.getByRole("button", { name: "StyleX" }).click();
-  await expect(page.locator("#application-commands")).toBeVisible();
-  await expect(page.locator("#grouped-commands")).toBeVisible();
-  await expect(page.locator("#no-results")).toBeVisible();
-  await expect(page.locator("#remote-loading")).toBeVisible();
-  await expect(page.locator("#large-result-policy")).toBeVisible();
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  const example = page.locator("#application-commands");
-  const input = example.getByRole("combobox", { name: "Application commands" });
-  await input.fill("sett");
-  const option = page.getByRole("option", { name: /Settings/u });
-  await expect(option).toBeVisible();
-  await input.press("ArrowDown");
-  await expect(input).toHaveAttribute("aria-activedescendant", /item/u);
-  await option.click();
-  await expect(input).toHaveValue("Settings");
-  await expect(example.locator("code")).toContainText(
-    "ApplicationCommand.update",
-  );
-  await expect(example.locator("code")).toContainText("@/stylex/command");
+  for (const section of [
+    "#basic",
+    "#shortcuts",
+    "#groups",
+    "#scrollable",
+    "#rtl",
+  ]) {
+    await expect(page.locator(section)).toBeVisible();
+  }
 
-  await expect(page.locator("#no-results").getByRole("status")).toHaveText(
-    "No matching application commands.",
-  );
-  await expect(page.locator("#remote-loading").getByRole("status")).toHaveText(
-    "Loading remote commands…",
-  );
-  const large = page.locator("#large-result-policy");
-  const largeInput = large.getByRole("combobox", { name: "Application commands" });
-  await largeInput.focus();
-  await expect(page.getByRole("option")).toHaveCount(2);
-  await expect(large.getByRole("status")).toContainText("Showing 2 of 3 commands");
+  const basic = page.locator("#basic");
+  await basic.getByRole("button", { name: "Open Menu" }).click();
+  const basicInput = page.getByRole("combobox", { name: "Command menu" });
+  await expect(basicInput).toBeVisible();
+  await basicInput.fill("calc");
+  const calculator = page.getByRole("option", { name: /Calculator/u });
+  await expect(calculator).toBeVisible();
+  await calculator.click();
+  await expect(basicInput).toHaveValue("Calculator");
+  await page.keyboard.press("Escape");
+  await page.keyboard.press("Escape");
+
+  const shortcuts = page.locator("#shortcuts");
+  await shortcuts.getByRole("button", { name: "Open Menu" }).click();
+  const shortcutInput = page.getByRole("combobox", { name: "Command menu" });
+  await expect(shortcutInput).toBeVisible();
+  await shortcutInput.focus();
+  const profile = page.getByRole("option", { name: /Profile/u });
+  await expect(profile).toBeVisible();
+  await expect(
+    page.locator('[data-slot="command-shortcut"]').first(),
+  ).toContainText("⌘P");
+  await page.keyboard.press("Escape");
+  await page.keyboard.press("Escape");
+
+  const scrollable = page.locator("#scrollable");
+  await scrollable.getByRole("button", { name: "Open Menu" }).click();
+  const scrollInput = page.getByRole("combobox", { name: "Command menu" });
+  await expect(scrollInput).toBeVisible();
+  await scrollInput.fill("nonexistent");
+  await expect(
+    page.getByRole("status").filter({ hasText: "No results found." }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+  await page.keyboard.press("Escape");
+
+  const rtl = page.locator("#rtl");
+  await rtl.getByRole("button", { name: "Open Menu" }).click();
+  const rtlInput = page.getByRole("combobox", { name: "قائمة الأوامر" });
+  await expect(rtlInput).toBeVisible();
+  await rtlInput.focus();
+  await expect(
+    page.getByRole("option", { name: /التقويم/u }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+  await page.keyboard.press("Escape");
 });
 
 test("dropdown menu exposes typed selection wiring and keyboard behavior", async ({
