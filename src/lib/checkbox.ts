@@ -40,6 +40,7 @@ export const renderCheckbox = <Msg>(
       isIndeterminate: props.isIndeterminate ?? false,
       ...(props.name === undefined ? {} : { name: props.name }),
       ...(props.value === undefined ? {} : { value: props.value }),
+      hasDescription: props.description !== undefined,
       toView: ({ checkbox, label, description, hiddenInput }) =>
         h.div(
           [h.DataAttribute('slot', 'checkbox-field'), ...visual.root],

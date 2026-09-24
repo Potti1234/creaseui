@@ -80,17 +80,17 @@ const primitiveInspector = (model: Model, h: HtmlBuilder<Message>): Html => {
           h,
         ),
         options('Canvas padding (Box)', settings.boxPadding, ['responsive', 'none', 'sm', 'md', 'xl'], (value) =>
-          BoardStyleX.ChangedPrimitiveBoxPadding({ value }), h),
+          BoardStyleX.Message.ChangedPrimitiveBoxPadding({ value }), h),
         options('Canvas surface (Box)', settings.boxSurface, ['card', 'muted', 'section'], (value) =>
-          BoardStyleX.ChangedPrimitiveBoxSurface({ value }), h),
+          BoardStyleX.Message.ChangedPrimitiveBoxSurface({ value }), h),
         options('Card spacing (Stack)', settings.stackGap, ['responsive', 'sm', 'md', 'xl'], (value) =>
-          BoardStyleX.ChangedPrimitiveStackGap({ value }), h),
+          BoardStyleX.Message.ChangedPrimitiveStackGap({ value }), h),
         options('Board alignment (Inline)', settings.inlineJustify, ['start', 'center', 'end', 'between'], (value) =>
-          BoardStyleX.ChangedPrimitiveInlineJustify({ value }), h),
+          BoardStyleX.Message.ChangedPrimitiveInlineJustify({ value }), h),
         options('Split layout (Grid)', settings.gridColumns, ['one', 'two'], (value) =>
-          BoardStyleX.ChangedPrimitiveGridColumns({ value }), h),
+          BoardStyleX.Message.ChangedPrimitiveGridColumns({ value }), h),
         options('Board text scale (Text)', settings.textVariant, ['inherit', 'caption', 'headingSm', 'headingMd'], (value) =>
-          BoardStyleX.ChangedPrimitiveTextVariant({ value }), h),
+          BoardStyleX.Message.ChangedPrimitiveTextVariant({ value }), h),
       ],
     },
     h,

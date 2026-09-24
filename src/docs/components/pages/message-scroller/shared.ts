@@ -12,26 +12,25 @@ const source = (fixture: (typeof messageScrollerFixtures)[number], renderer: 'ta
   return foldkitApplication({
     title: `Message Scroller — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
 ${isStyleX ? "import * as stylex from '@stylexjs/stylex'\n" : ''}
 import * as Bubble from '@/${isStyleX ? 'stylex' : 'ui'}/bubble'
 import * as MessageScroller from '@/${isStyleX ? 'stylex' : 'ui'}/message-scroller'`,
     model: `${isStyleX ? "const styles = stylex.create({ frame: { overflow: 'hidden', position: 'relative', height: '18rem', width: '100%', maxWidth: '28rem', borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: 1 } })\n" : ''}export const Model = S.Struct({ scroller: MessageScroller.Model })
 export type Model = typeof Model.Type`,
-    messages: `export const GotScrollerMessage = m('GotMessageScrollerMessage${tag}', { message: MessageScroller.Message })
+    messages: `import { taggedStruct } from 'foldkit/schema'
+export const GotScrollerMessage = taggedStruct('GotMessageScrollerMessage${tag}', { message: MessageScroller.Message });
 export const Message = S.Union([GotScrollerMessage])
 export type Message = typeof Message.Type`,
-    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { scroller: MessageScroller.init('conversation') },
-  [],
-]`,
-    update: `export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: { scroller: MessageScroller.init('conversation') } })`,
+    update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'GotMessageScrollerMessage${tag}': {
-      const [scroller, commands] = MessageScroller.update(model.scroller, message.message)
-      return [{ ...model, scroller }, Command.mapMessages(commands, next => GotScrollerMessage({ message: next }))]
+      const scrollerOp__ = MessageScroller.update(model.scroller, message.message);
+    const scroller = scrollerOp__.model;
+    const commands = scrollerOp__.commands ?? [];
+      return { model: { ...model, scroller }, commands: Command.mapMessages(commands, next => GotScrollerMessage({ message: next })) }
     }
   }
 }`,

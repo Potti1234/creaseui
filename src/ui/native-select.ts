@@ -105,6 +105,7 @@ export const nativeSelect = <Msg>(
       isDisabled: props.isDisabled ?? false,
       isInvalid: props.isInvalid ?? false,
       ...(props.name === undefined ? {} : { name: props.name }),
+      hasDescription: props.description !== undefined,
       toView: ({ select: selectAttributes, label, description }) => {
         const selectElement = h.span(
           [

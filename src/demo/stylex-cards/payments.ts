@@ -1,8 +1,9 @@
 import { Match as M, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 import * as stylex from '@stylexjs/stylex'
 
 import * as Icon from '@/demo/icon-preview';
@@ -103,26 +104,27 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const GotMenuMessage = m('GotMenuMessage', {
+
+export const Message = defineMessageUnion({
+  GotMenuMessage: {
   message: DropdownMenu.Message,
+},
 });
-export const Message = S.Union([GotMenuMessage]);
 export type Message = typeof Message.Type;
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotMenuMessage: ({ message: childMessage }) => {
-        const [menu, commands] = DropdownMenu.update(model.menu, childMessage);
-        return [
-          evo(model, { menu: () => menu }),
-          Command.mapMessages(commands, (next) =>
-            GotMenuMessage({ message: next }),
-          ),
-        ];
+        const menuOp__ = DropdownMenu.update(model.menu, childMessage);
+    const menu = menuOp__.model;
+    const commands = menuOp__.commands ?? [];;
+        return { model: modifyFields(model, { menu: () => menu }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotMenuMessage({ message: next }),
+          ) };
       },
     }),
   );
@@ -222,7 +224,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                                   {
                                     model: model.menu,
                                     toParentMessage: (message) =>
-                                      GotMenuMessage({ message }),
+                                      Message.GotMenuMessage({ message }),
                                     trigger: menuTrigger,
                                     items: menuItems,
                                     itemToConfig: (item) => ({

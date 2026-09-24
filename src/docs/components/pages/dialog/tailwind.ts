@@ -1,15 +1,18 @@
 import { Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import { dialogFixtures } from '@/docs/components/pages/dialog/shared';
 import * as Button from '@/ui/button';
 import * as Dialog from '@/ui/dialog';
 
-const OpenedDialogPreview = m('OpenedDialogPreview');
-const GotDialogPreviewMessage = m('GotDialogPreviewMessage', { message: Dialog.Message });
-const DialogPreviewMessage = S.Union([OpenedDialogPreview, GotDialogPreviewMessage]);
+
+
+const DialogPreviewMessage = defineMessageUnion({
+  OpenedDialogPreview: {},
+  GotDialogPreviewMessage: { message: Dialog.Message },
+});
 type DialogPreviewMessage = typeof DialogPreviewMessage.Type;
 const DialogPreviewModel = S.Struct({ _docsPage: S.Literal('dialog'), dialog: Dialog.Model });
 type DialogPreviewModel = typeof DialogPreviewModel.Type;
@@ -22,22 +25,24 @@ export const dialogTailwindPreviewProgram = definePreviewProgram<DialogPreviewMo
     dialog: Dialog.init({ id: `docs-dialog-${String(index)}`, isAnimated: true }),
   }),
   update: (model, message) => {
-    const [dialog, commands] = message._tag === 'OpenedDialogPreview'
+    const dialogOp__ = message._tag === 'OpenedDialogPreview'
       ? Dialog.open(model.dialog)
       : Dialog.update(model.dialog, message.message);
-    return [{ ...model, dialog }, Command.mapMessages(commands, next => GotDialogPreviewMessage({ message: next }))];
+    const dialog = dialogOp__.model;
+    const commands = dialogOp__.commands ?? []
+    return { model: { ...model, dialog }, commands: Command.mapMessages(commands, next => DialogPreviewMessage.GotDialogPreviewMessage({ message: next })) };
   },
   view: (index, model, h) => {
     const fixture = dialogFixtures[index] ?? dialogFixtures[0];
     return h.div([], [
       Button.button({
         ...(index === 1 ? { variant: 'outline' as const } : {}),
-        onClick: OpenedDialogPreview(),
+        onClick: DialogPreviewMessage.OpenedDialogPreview(),
         children: [index === 0 ? 'Open profile' : 'Review change'],
       }, h),
       Dialog.dialog({
         model: model.dialog,
-        toParentMessage: message => GotDialogPreviewMessage({ message }),
+        toParentMessage: message => DialogPreviewMessage.GotDialogPreviewMessage({ message }),
         title: fixture.dialogTitle,
         description: fixture.dialogDescription,
         ...(index === 1 ? { class: 'sm:max-w-sm' } : {}),

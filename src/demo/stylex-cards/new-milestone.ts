@@ -1,7 +1,8 @@
+import type { Update } from 'foldkit'
 import { Match as M, Schema as S } from 'effect';
 import type { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 import * as stylex from '@stylexjs/stylex'
 
 import { button } from '@/stylex/button';
@@ -29,21 +30,21 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const UpdatedGoalName = m('UpdatedGoalName', { value: S.String });
-export const UpdatedTargetAmount = m('UpdatedTargetAmount', {
+
+
+
+export const Message = defineMessageUnion({
+  UpdatedGoalName: { value: S.String },
+  UpdatedTargetAmount: {
   value: S.String,
-});
-export const UpdatedTargetDate = m('UpdatedTargetDate', {
+},
+  UpdatedTargetDate: {
   value: S.String,
+},
 });
-export const Message = S.Union([
-  UpdatedGoalName,
-  UpdatedTargetAmount,
-  UpdatedTargetDate,
-]);
 export type Message = typeof Message.Type;
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const init = (): Model => ({
   goalName: '',
@@ -55,12 +56,9 @@ export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      UpdatedGoalName: ({ value }) => [{ ...model, goalName: value }, []],
-      UpdatedTargetAmount: ({ value }) => [
-        { ...model, targetAmount: value },
-        [],
-      ],
-      UpdatedTargetDate: ({ value }) => [{ ...model, targetDate: value }, []],
+      UpdatedGoalName: ({ value }) => ({ model: { ...model, goalName: value } }),
+      UpdatedTargetAmount: ({ value }) => ({ model: { ...model, targetAmount: value } }),
+      UpdatedTargetDate: ({ value }) => ({ model: { ...model, targetDate: value } }),
     }),
   );
 
@@ -104,7 +102,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                             {
                               id: 'goal-name',
                               value: model.goalName,
-                              onInput: (value) => UpdatedGoalName({ value }),
+                              onInput: (value) => Message.UpdatedGoalName({ value }),
                               placeholder: 'e.g. New Car, Home Downpayment',
                             },
                             h,
@@ -131,7 +129,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                                   id: 'target-amount',
                                   value: model.targetAmount,
                                   onInput: (value) =>
-                                    UpdatedTargetAmount({ value }),
+                                    Message.UpdatedTargetAmount({ value }),
                                 },
                                 h,
                               ),
@@ -154,7 +152,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                                   id: 'target-date',
                                   value: model.targetDate,
                                   onInput: (value) =>
-                                    UpdatedTargetDate({ value }),
+                                    Message.UpdatedTargetDate({ value }),
                                 },
                                 h,
                               ),
@@ -198,7 +196,9 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
 /*
 Minimal wiring:
 const model = init()
-const [nextModel, commands] = update(model, message)
+const nextModelOp__ = update(model, message);
+    const nextModel = nextModelOp__.model;
+    const commands = nextModelOp__.commands ?? [];
 const cardView = view(model)
 */
 // Stateful? yes. Submodels wired: none (local controlled inputs). PORT NOTEs: none.

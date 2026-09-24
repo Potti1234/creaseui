@@ -7,10 +7,10 @@ import * as VirtualTable from '@/lib/virtual-data-table-state'
 describe('VirtualList data table', () => {
   it('keeps filtering, sorting, and selection in a serializable Foldkit model', () => {
     const initial = VirtualTable.init('tasks')
-    const [filtered] = VirtualTable.update(initial, VirtualTable.Filtered({ value: 'platform' }))
-    const [sortedOnce] = VirtualTable.update(filtered, VirtualTable.Sorted({ key: 'status' }))
-    const [sortedTwice] = VirtualTable.update(sortedOnce, VirtualTable.Sorted({ key: 'status' }))
-    const [selected] = VirtualTable.update(sortedTwice, VirtualTable.ToggledRow({ key: 'TSK-101', isSelected: true }))
+    const op1__ = VirtualTable.update(initial, VirtualTable.Message.VirtualDataTableFiltered({ value: 'platform' })); const filtered = op1__.model;
+    const op2__ = VirtualTable.update(filtered, VirtualTable.Message.VirtualDataTableSorted({ key: 'status' })); const sortedOnce = op2__.model;
+    const op3__ = VirtualTable.update(sortedOnce, VirtualTable.Message.VirtualDataTableSorted({ key: 'status' })); const sortedTwice = op3__.model;
+    const op4__ = VirtualTable.update(sortedTwice, VirtualTable.Message.VirtualDataTableToggledRow({ key: 'TSK-101', isSelected: true })); const selected = op4__.model;
 
     assert.equal(filtered.filter, 'platform')
     assert.equal(sortedOnce.sortDirection, 'ascending')

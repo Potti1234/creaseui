@@ -124,6 +124,7 @@ export const nativeSelect = <Msg>(
       isDisabled: p.isDisabled ?? false,
       isInvalid: p.isInvalid ?? false,
       ...(p.name === undefined ? {} : { name: p.name }),
+      hasDescription: p.description !== undefined,
       toView: ({ select, label, description }) => {
         const element = h.span(
           [

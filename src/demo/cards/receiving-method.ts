@@ -1,8 +1,9 @@
 import { Match as M, Option, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 
 import * as Icon from '@/demo/icon-preview';
 import { button } from '@/ui/button';
@@ -33,50 +34,43 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const UpdatedAccountHolder = m('UpdatedAccountHolder', {
+
+
+
+
+export const Message = defineMessageUnion({
+  UpdatedAccountHolder: {
   value: S.String,
-});
-export const SelectedReceivingMethod = m('SelectedReceivingMethod', {
+},
+  SelectedReceivingMethod: {
   value: S.String,
+},
+  UpdatedIban: { value: S.String },
+  'GotReceivingMethodRadioGroupMessage': { message: RadioGroup.Message },
 });
-export const UpdatedIban = m('UpdatedIban', { value: S.String });
-export const GotRadioGroupMessage = m('GotReceivingMethodRadioGroupMessage', { message: RadioGroup.Message });
-export const Message = S.Union([
-  UpdatedAccountHolder,
-  SelectedReceivingMethod,
-  UpdatedIban,
-  GotRadioGroupMessage,
-]);
 export type Message = typeof Message.Type;
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      UpdatedAccountHolder: ({ value }) => [
-        evo(model, { accountHolder: () => value }),
-        [],
-      ],
-      SelectedReceivingMethod: ({ value }) => [
-        { ...model, receivingMethod: value },
-        [],
-      ],
-      UpdatedIban: ({ value }) => [evo(model, { iban: () => value }), []],
+      UpdatedAccountHolder: ({ value }) => ({ model: modifyFields(model, { accountHolder: () => value }) }),
+      SelectedReceivingMethod: ({ value }) => ({ model: { ...model, receivingMethod: value } }),
+      UpdatedIban: ({ value }) => ({ model: modifyFields(model, { iban: () => value }) }),
       GotReceivingMethodRadioGroupMessage: ({ message }) => {
-        const [radioGroup, commands, maybeSelection] = RadioGroup.update(model.radioGroup, message);
-        return [
-          {
+        const { model: radioGroup, commands: radioGroupCommands__, outMessage: radioGroupOut__ } = RadioGroup.update(model.radioGroup, message)
+        const commands = radioGroupCommands__ ?? []
+        const maybeSelection = Option.fromNullishOr(radioGroupOut__)
+        return { model: {
             ...model,
             radioGroup,
             receivingMethod: Option.match(maybeSelection, {
               onNone: () => model.receivingMethod,
               onSome: selection => selection.value,
             }),
-          },
-          Command.mapMessages(commands, childMessage => GotRadioGroupMessage({ message: childMessage })),
-        ];
+          }, commands: Command.mapMessages(commands, childMessage => Message['GotReceivingMethodRadioGroupMessage']({ message: childMessage })) };
       },
     }),
   );
@@ -138,7 +132,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                               id: 'receiving-method-account-holder',
                               value: model.accountHolder,
                               onInput: (value) =>
-                                UpdatedAccountHolder({ value }),
+                                Message.UpdatedAccountHolder({ value }),
                             },
                             h,
                           ),
@@ -160,7 +154,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                             {
                               model: model.radioGroup,
                               selectedValue: Option.some(model.receivingMethod),
-                              toParentMessage: (message) => GotRadioGroupMessage({ message }),
+                              toParentMessage: (message) => Message['GotReceivingMethodRadioGroupMessage']({ message }),
                               ariaLabel: 'Receiving Method',
                               options: [
                                 {
@@ -197,7 +191,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                             {
                               id: 'receiving-method-iban',
                               value: model.iban,
-                              onInput: (value) => UpdatedIban({ value }),
+                              onInput: (value) => Message.UpdatedIban({ value }),
                               placeholder: 'DE89 3704 0044 ....',
                             },
                             h,

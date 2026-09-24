@@ -11,10 +11,7 @@ type Model = Readonly<{ value: string }>
 type Message = Readonly<{ readonly _tag: 'ChangedName'; value: string }>
 
 const ChangedName = (value: string): Message => ({ _tag: 'ChangedName', value })
-const update = (_model: Model, message: Message) => [
-  { value: message.value },
-  [],
-] as const
+const update = (_model: Model, message: Message) => ({ model: { value: message.value } })
 
 type Parts = Readonly<{
   controlId: string

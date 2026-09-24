@@ -1,8 +1,9 @@
 import { Match as M, Option, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 
 import * as Icon from '@/lib/icon';
 import {
@@ -314,31 +315,31 @@ export type Model = typeof Model.Type;
 
 // MESSAGE
 
-export const ToggledSidebar = m('ToggledSidebar');
-export const ToggledMobileSidebar = m('ToggledMobileSidebar');
-export const GotTeamMenuMessage = m('GotTeamMenuMessage', {
+
+
+
+
+
+
+
+export const Message = defineMessageUnion({
+  ToggledMobileSidebar: {},
+  ToggledSidebar: {},
+  GotTeamMenuMessage: {
   message: DropdownMenu.Message,
-});
-export const GotFavoriteMenuMessage = m('GotFavoriteMenuMessage', {
+},
+  GotFavoriteMenuMessage: {
   index: S.Number,
   message: DropdownMenu.Message,
-});
-export const ToggledWorkspace = m('ToggledWorkspace', {
+},
+  ToggledWorkspace: {
   index: S.Number,
   isOpen: S.Boolean,
-});
-export const GotActionsPopoverMessage = m('GotActionsPopoverMessage', {
+},
+  GotActionsPopoverMessage: {
   message: Popover.Message,
+},
 });
-
-export const Message = S.Union([
-  ToggledMobileSidebar,
-  ToggledSidebar,
-  GotTeamMenuMessage,
-  GotFavoriteMenuMessage,
-  ToggledWorkspace,
-  GotActionsPopoverMessage,
-]);
 export type Message = typeof Message.Type;
 
 // INIT
@@ -365,22 +366,21 @@ export const init = (): Model => ({
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledMobileSidebar: () => [evo(model, {isMobileOpen: current => !current}), []],
-      ToggledSidebar: () => [
-        evo(model, { isSidebarOpen: (current) => !current }),
-        [],
-      ],
+      ToggledMobileSidebar: () => ({ model: modifyFields(model, {isMobileOpen: current => !current}) }),
+      ToggledSidebar: () => ({ model: modifyFields(model, { isSidebarOpen: (current) => !current }) }),
       GotTeamMenuMessage: ({ message: childMessage }) => {
-        const [teamMenu, commands, selection] = TeamMenu.update(
+        const { model: teamMenu, commands: teamMenuCommands__, outMessage: teamMenuOut__ } = TeamMenu.update(
           model.teamMenu,
           childMessage,
         );
+        const commands = teamMenuCommands__ ?? []
+        const selection = Option.fromNullishOr(teamMenuOut__)
         const activeTeamIndex = Option.match(selection, {
           onNone: () => model.activeTeamIndex,
           onSome: ({ value }) =>
@@ -393,63 +393,53 @@ export const update = (model: Model, message: Message): UpdateReturn =>
                   : model.activeTeamIndex,
         });
 
-        return [
-          evo(model, {
+        return { model: modifyFields(model, {
             teamMenu: () => teamMenu,
             activeTeamIndex: () => activeTeamIndex,
-          }),
-          Command.mapMessages(commands, (nextMessage) =>
-            GotTeamMenuMessage({ message: nextMessage }),
-          ),
-        ];
+          }), commands: Command.mapMessages(commands, (nextMessage) =>
+            Message.GotTeamMenuMessage({ message: nextMessage }),
+          ) };
       },
       GotFavoriteMenuMessage: ({ index, message: childMessage }) => {
         const current = model.favoriteMenus[index];
 
         if (current === undefined) {
-          return [model, []];
+          return { model: model };
         }
 
-        const [next, commands] = FavoriteMenu.update(current, childMessage);
+        const { model: next, commands: nextCommands__ } = FavoriteMenu.update(current, childMessage);
+        const commands = nextCommands__ ?? []
 
-        return [
-          evo(model, {
+        return { model: modifyFields(model, {
             favoriteMenus: (menus) =>
               menus.map((menu, menuIndex) =>
                 menuIndex === index ? next : menu,
               ),
-          }),
-          Command.mapMessages(commands, (nextMessage) =>
-            GotFavoriteMenuMessage({ index, message: nextMessage }),
-          ),
-        ];
+          }), commands: Command.mapMessages(commands, (nextMessage) =>
+            Message.GotFavoriteMenuMessage({ index, message: nextMessage }),
+          ) };
       },
       ToggledWorkspace: ({ index, isOpen }) => {
         if (model.workspaceOpen[index] === undefined) {
-          return [model, []];
+          return { model: model };
         }
-        return [
-          evo(model, {
+        return { model: modifyFields(model, {
             workspaceOpen: (items) =>
               items.map((open, itemIndex) =>
                 itemIndex === index ? isOpen : open,
               ),
-          }),
-          [],
-        ];
+          }) };
       },
       GotActionsPopoverMessage: ({ message: childMessage }) => {
-        const [actionsPopover, commands] = Popover.update(
+        const { model: actionsPopover, commands: actionsPopoverCommands__ } = Popover.update(
           model.actionsPopover,
           childMessage,
-        );
+        )
+        const commands = actionsPopoverCommands__ ?? []
 
-        return [
-          evo(model, { actionsPopover: () => actionsPopover }),
-          Command.mapMessages(commands, (nextMessage) =>
-            GotActionsPopoverMessage({ message: nextMessage }),
-          ),
-        ];
+        return { model: modifyFields(model, { actionsPopover: () => actionsPopover }), commands: Command.mapMessages(commands, (nextMessage) =>
+            Message.GotActionsPopoverMessage({ message: nextMessage }),
+          ) };
       },
     }),
   );
@@ -472,7 +462,7 @@ const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
               DropdownMenu.dropdownMenu<TeamAction, Message>(
                 {
                   model: model.teamMenu,
-                  toParentMessage: (message) => GotTeamMenuMessage({ message }),
+                  toParentMessage: (message) => Message.GotTeamMenuMessage({ message }),
                   trigger: h.span(
                     [h.Class('contents')],
                     [
@@ -683,7 +673,7 @@ const navFavorites = (
                           {
                             model,
                             toParentMessage: (message) =>
-                              GotFavoriteMenuMessage({ index, message }),
+                              Message.GotFavoriteMenuMessage({ index, message }),
                             trigger: h.span(
                               [h.Class('contents')],
                               [
@@ -765,7 +755,7 @@ const navWorkspaces = (
                                   id: `sidebar-10-workspace-${index}`,
                                   isOpen,
                                   onToggle: (nextIsOpen) =>
-                                    ToggledWorkspace({
+                                    Message.ToggledWorkspace({
                                       index,
                                       isOpen: nextIsOpen,
                                     }),
@@ -973,7 +963,7 @@ const navActions = (model: Popover.Model, h: HtmlBuilder<Message>): Html => {
       Popover.popover(
         {
           model,
-          toParentMessage: (message) => GotActionsPopoverMessage({ message }),
+          toParentMessage: (message) => Message.GotActionsPopoverMessage({ message }),
           trigger: Icon.moreHorizontal({ class: 'size-4' }, h),
           triggerClass: buttonVariants({
             variant: 'ghost',
@@ -995,7 +985,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
 
   return sidebar<Message>(
     {
-      isMobileOpen: model.isMobileOpen, onMobileDismiss: ToggledMobileSidebar(), state,
+      isMobileOpen: model.isMobileOpen, onMobileDismiss: Message.ToggledMobileSidebar(), state,
       class: 'border-r-0',
       children: [
         sidebarHeader(
@@ -1014,7 +1004,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
           },
           h,
         ),
-        sidebarRail({ onClick: ToggledSidebar() }, h),
+        sidebarRail({ onClick: Message.ToggledSidebar() }, h),
       ],
     },
     h,
@@ -1031,7 +1021,7 @@ const pageContent = (model: Popover.Model, h: HtmlBuilder<Message>): Html => {
             h.div(
               [h.Class('flex flex-1 items-center gap-2 px-3')],
               [
-                sidebarTrigger({ onMobileClick: ToggledMobileSidebar(), onClick: ToggledSidebar() }, h),
+                sidebarTrigger({ onMobileClick: Message.ToggledMobileSidebar(), onClick: Message.ToggledSidebar() }, h),
                 separator(
                   {
                     orientation: 'vertical',
@@ -1115,6 +1105,6 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
 
 /* Minimal interactive wiring:
    const model = init()
-   const [nextModel, commands] = update(model, ToggledSidebar())
-   view(nextModel)
+   const next = update(model, ToggledSidebar())
+   view(next.model)
 */

@@ -4,7 +4,7 @@ import type { StyleXExamplePreviewProvider } from '@/docs/components/page-defini
 import { itemFixtures } from '@/docs/components/pages/item/shared';
 import * as Item from '@/stylex/item';
 
-const styles = stylex.create({ wide: { width: '100%', maxWidth: '32rem' } });
+const styles = stylex.create({ wide: { maxWidth: '32rem', width: '100%', } });
 const entry = <Msg>(title: string, description: string, h: HtmlBuilder<Msg>) => Item.item({ element: 'li', children: [Item.itemMedia({ variant: 'icon', children: [title.slice(0, 1)] }, h), Item.itemContent({ children: [Item.itemTitle({ children: [title] }, h), Item.itemDescription({ children: [description] }, h)] }, h)] }, h);
 export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(index: number, _model: unknown, _onMessageJson: (messageJson: string) => Msg, h: HtmlBuilder<Msg>) => {
   const fixture = itemFixtures[index] ?? itemFixtures[0];

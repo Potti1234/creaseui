@@ -7,7 +7,7 @@ import { popoverFixtures } from '@/docs/components/pages/popover/shared';
 import * as Popover from '@/stylex/popover';
 
 const styles = stylex.create({
-  content: { display: 'grid', gap: '0.5rem' },
+  content: { gap: '0.5rem', display: 'grid', },
   heading: { fontWeight: 500 },
   copy: {
     color: 'var(--muted-foreground)',

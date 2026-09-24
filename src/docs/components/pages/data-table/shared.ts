@@ -23,9 +23,8 @@ const source = (fixture: (typeof dataTableFixtures)[number], renderer: 'tailwind
   return foldkitApplication({
     title: `Data Table — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
 ${stylex ? "import * as stylex from '@stylexjs/stylex'\n" : ''}
 import * as DataTable from '@/${stylex ? 'stylex' : 'ui'}/data-table'`,
     model: `type Payment = Readonly<{ id: string; status: string; email: string; amount: number }>
@@ -34,13 +33,14 @@ const payments: ReadonlyArray<Payment> = ${JSON.stringify(payments, null, 2)}
 
 export const Model = S.Struct({ table: DataTable.Model })
 export type Model = typeof Model.Type`,
-    messages: `export const GotDataTableMessage = m('GotDataTableMessage${tag}', { message: DataTable.Message })
+    messages: `import { taggedStruct } from 'foldkit/schema'
+export const GotDataTableMessage = taggedStruct('GotDataTableMessage${tag}', { message: DataTable.Message });
 export const Message = S.Union([GotDataTableMessage])
 export type Message = typeof Message.Type`,
-    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [{ table: DataTable.init(5) }, []]`,
-    update: `export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: { table: DataTable.init(5) } })`,
+    update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
-    case 'GotDataTableMessage${tag}': return [{ ...model, table: DataTable.update(model.table, message.message) }, []]
+    case 'GotDataTableMessage${tag}': return { model: { ...model, table: DataTable.update(model.table, message.message) } }
   }
 }`,
     view: `${stylex ? "const styles = stylex.create({ amount: { display: 'block', textAlign: 'right' } })\n\n" : ''}const columns${stylex ? ' = (h: HtmlBuilder<Message>): ReadonlyArray<DataTable.DataTableColumn<Payment>> =>' : ': ReadonlyArray<DataTable.DataTableColumn<Payment>> ='} [

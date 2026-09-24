@@ -1,15 +1,18 @@
 import { Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import { sheetFixtures } from '@/docs/components/pages/sheet/shared';
 import * as Button from '@/ui/button';
 import * as Sheet from '@/ui/sheet';
 
-const OpenedSheetPreview = m('OpenedSheetPreview');
-const GotSheetPreviewMessage = m('GotSheetPreviewMessage', { message: Sheet.Message });
-const SheetPreviewMessage = S.Union([OpenedSheetPreview, GotSheetPreviewMessage]);
+
+
+const SheetPreviewMessage = defineMessageUnion({
+  OpenedSheetPreview: {},
+  GotSheetPreviewMessage: { message: Sheet.Message },
+});
 type SheetPreviewMessage = typeof SheetPreviewMessage.Type;
 const SheetPreviewModel = S.Struct({ _docsPage: S.Literal('sheet'), sheet: Sheet.Model });
 type SheetPreviewModel = typeof SheetPreviewModel.Type;
@@ -22,22 +25,24 @@ export const sheetTailwindPreviewProgram = definePreviewProgram<SheetPreviewMode
     sheet: Sheet.init({ id: `docs-sheet-${String(index)}`, isAnimated: true }),
   }),
   update: (model, message) => {
-    const [sheet, commands] = message._tag === 'OpenedSheetPreview'
+    const sheetOp__ = message._tag === 'OpenedSheetPreview'
       ? Sheet.open(model.sheet)
       : Sheet.update(model.sheet, message.message);
-    return [{ ...model, sheet }, Command.mapMessages(commands, next => GotSheetPreviewMessage({ message: next }))];
+    const sheet = sheetOp__.model;
+    const commands = sheetOp__.commands ?? []
+    return { model: { ...model, sheet }, commands: Command.mapMessages(commands, next => SheetPreviewMessage.GotSheetPreviewMessage({ message: next })) };
   },
   view: (index, model, h) => {
     const fixture = sheetFixtures[index] ?? sheetFixtures[0];
     return h.div([], [
       Button.button({
         variant: 'outline',
-        onClick: OpenedSheetPreview(),
+        onClick: SheetPreviewMessage.OpenedSheetPreview(),
         children: [`Open ${fixture.side} sheet`],
       }, h),
       Sheet.sheet({
         model: model.sheet,
-        toParentMessage: message => GotSheetPreviewMessage({ message }),
+        toParentMessage: message => SheetPreviewMessage.GotSheetPreviewMessage({ message }),
         side: fixture.side,
         title: fixture.panelTitle,
         description: 'Update the settings, then save or cancel.',

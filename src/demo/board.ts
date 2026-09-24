@@ -1,9 +1,10 @@
 import { Effect, Match as M, Option, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command, Subscription } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 import { defineView } from 'foldkit/submodel';
-import { evo } from 'foldkit/struct';
+import { modifyFields } from 'foldkit/struct';
 
 import * as AccountAccess from '@/demo/cards/account-access';
 import * as CardOverview from '@/demo/cards/card-overview';
@@ -82,107 +83,102 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const GotAccountAccessMessage = m('GotAccountAccessMessage', {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export const Message = defineMessageUnion({
+  GotAccountAccessMessage: {
   message: AccountAccess.Message,
-});
-export const GotFaqMessage = m('GotFaqMessage', {
+},
+  GotFaqMessage: {
   message: Faq.Message,
-});
-export const GotKitchenIslandMessage = m('GotKitchenIslandMessage', {
+},
+  GotKitchenIslandMessage: {
   message: KitchenIsland.Message,
-});
-export const GotNewMilestoneMessage = m('GotNewMilestoneMessage', {
+},
+  GotNewMilestoneMessage: {
   message: NewMilestone.Message,
-});
-export const GotNotificationSettingsMessage = m(
-  'GotNotificationSettingsMessage',
-  { message: NotificationSettings.Message },
-);
-export const GotPaymentsMessage = m('GotPaymentsMessage', {
+},
+  GotNotificationSettingsMessage: { message: NotificationSettings.Message },
+  GotPaymentsMessage: {
   message: Payments.Message,
-});
-export const GotPayoutThresholdMessage = m('GotPayoutThresholdMessage', {
+},
+  GotPayoutThresholdMessage: {
   message: PayoutThreshold.Message,
-});
-export const GotPreferencesMessage = m('GotPreferencesMessage', {
+},
+  GotPreferencesMessage: {
   message: Preferences.Message,
-});
-export const GotReceivingMethodMessage = m('GotReceivingMethodMessage', {
+},
+  GotReceivingMethodMessage: {
   message: ReceivingMethod.Message,
-});
-export const GotRecentTransactionsMessage = m('GotRecentTransactionsMessage', {
+},
+  GotRecentTransactionsMessage: {
   message: RecentTransactions.Message,
-});
-export const GotReleaseCatalogMessage = m('GotReleaseCatalogMessage', {
+},
+  GotReleaseCatalogMessage: {
   message: ReleaseCatalog.Message,
-});
-export const GotRollerShadesMessage = m('GotRollerShadesMessage', {
+},
+  GotRollerShadesMessage: {
   message: RollerShades.Message,
-});
-export const GotSavingsTargetsMessage = m('GotSavingsTargetsMessage', {
+},
+  GotSavingsTargetsMessage: {
   message: SavingsTargets.Message,
-});
-export const GotSocialLinksMessage = m('GotSocialLinksMessage', {
+},
+  GotSocialLinksMessage: {
   message: SocialLinks.Message,
-});
-export const GotStockPerformanceMessage = m('GotStockPerformanceMessage', {
+},
+  GotStockPerformanceMessage: {
   message: StockPerformance.Message,
-});
-export const GotTransferFundsMessage = m('GotTransferFundsMessage', {
+},
+  GotTransferFundsMessage: {
   message: TransferFunds.Message,
-});
-export const GotUpcomingPaymentsMessage = m('GotUpcomingPaymentsMessage', {
+},
+  GotUpcomingPaymentsMessage: {
   message: UpcomingPayments.Message,
-});
-export const ChangedPresetInput = m('ChangedCreatePresetInput', {
+},
+  'ChangedCreatePresetInput': {
   value: S.String,
-});
-export const AppliedPresetInput = m('AppliedCreatePresetInput');
-export const ChangedPresetField = m('ChangedCreatePresetField', {
+},
+  'AppliedCreatePresetInput': {},
+  'ChangedCreatePresetField': {
   field: Preset.Field,
   value: S.String,
-});
-export const ClickedCopyPreset = m('ClickedCopyCreatePreset');
-export const ClickedShufflePreset = m('ClickedShuffleCreatePreset');
-export const CompletedCopyCreatePreset = m('CompletedCopyCreatePreset');
-export const CompletedWaitBeforeClearingCreatePresetCopy = m(
-  'CompletedWaitBeforeClearingCreatePresetCopy',
-);
-export const GotPresetPickerMessage = m('GotCreatePresetPickerMessage', {
+},
+  'ClickedCopyCreatePreset': {},
+  'ClickedShuffleCreatePreset': {},
+  CompletedCopyCreatePreset: {},
+  CompletedWaitBeforeClearingCreatePresetCopy: {},
+  'GotCreatePresetPickerMessage': {
   field: Preset.Field,
   message: Popover.Message,
+},
 });
-
-export const Message = S.Union([
-  GotAccountAccessMessage,
-  GotFaqMessage,
-  GotKitchenIslandMessage,
-  GotNewMilestoneMessage,
-  GotNotificationSettingsMessage,
-  GotPaymentsMessage,
-  GotPayoutThresholdMessage,
-  GotPreferencesMessage,
-  GotReceivingMethodMessage,
-  GotRecentTransactionsMessage,
-  GotReleaseCatalogMessage,
-  GotRollerShadesMessage,
-  GotSavingsTargetsMessage,
-  GotSocialLinksMessage,
-  GotStockPerformanceMessage,
-  GotTransferFundsMessage,
-  GotUpcomingPaymentsMessage,
-  ChangedPresetInput,
-  AppliedPresetInput,
-  ChangedPresetField,
-  ClickedCopyPreset,
-  ClickedShufflePreset,
-  CompletedCopyCreatePreset,
-  CompletedWaitBeforeClearingCreatePresetCopy,
-  GotPresetPickerMessage,
-]);
 export type Message = typeof Message.Type;
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const init = (): Model => ({
   accountAccess: AccountAccess.init(),
@@ -240,18 +236,18 @@ export const init = (): Model => ({
 
 const CopyPreset = Command.define('CopyCreatePreset', {
   args: { code: S.String },
-  messages: [CompletedCopyCreatePreset],
+  messages: [Message.CompletedCopyCreatePreset],
   execute: ({ code }) =>
     Effect.promise(() => navigator.clipboard.writeText(code)).pipe(
-      Effect.as(CompletedCopyCreatePreset()),
+      Effect.as(Message.CompletedCopyCreatePreset()),
     ),
 });
 const WaitBeforeClearingPresetCopy = Command.define(
   'WaitBeforeClearingCreatePresetCopy',
   {
-    messages: [CompletedWaitBeforeClearingCreatePresetCopy],
+    messages: [Message.CompletedWaitBeforeClearingCreatePresetCopy],
     execute: Effect.sleep('1800 millis').pipe(
-      Effect.as(CompletedWaitBeforeClearingCreatePresetCopy()),
+      Effect.as(Message.CompletedWaitBeforeClearingCreatePresetCopy()),
     ),
   },
 );
@@ -260,277 +256,223 @@ export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ChangedCreatePresetInput: ({ value }) => [
-        evo(model, { presetInput: () => value, presetError: () => null }),
-        [],
-      ],
+      ChangedCreatePresetInput: ({ value }) => ({ model: modifyFields(model, { presetInput: () => value, presetError: () => null }) }),
       AppliedCreatePresetInput: () => {
         const preset = Preset.parsePresetInput(model.presetInput);
         return Option.match(preset, {
-          onNone: () => [
-              evo(model, {
+          onNone: () => ({ model: modifyFields(model, {
                 presetError: () =>
                   'Enter a valid shadcn preset code, URL, or --preset flag.',
-              }),
-              [],
-            ],
-          onSome: decoded => [
-              evo(model, {
+              }) }),
+          onSome: decoded => ({ model: modifyFields(model, {
                 preset: () => decoded,
                 presetInput: () => Preset.encodePreset(decoded),
                 presetError: () => null,
-              }),
-              [],
-            ],
+              }) }),
         });
       },
       ChangedCreatePresetField: ({ field, value }) => {
         const preset = { ...model.preset, [field]: value };
-        const [picker, commands] = Popover.close(model.pickerPopovers[field]);
-        return [
-          evo(model, {
+        const { model: picker, commands: pickerCommands__ } = Popover.close(model.pickerPopovers[field])
+        const commands = pickerCommands__ ?? []
+        return { model: modifyFields(model, {
             preset: () => preset,
             presetInput: () => Preset.encodePreset(preset),
             presetError: () => null,
             pickerPopovers: (current) => ({ ...current, [field]: picker }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotPresetPickerMessage({ field, message: next }),
-          ),
-        ];
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message['GotCreatePresetPickerMessage']({ field, message: next }),
+          ) };
       },
-      ClickedCopyCreatePreset: () => [
-        model,
-        [CopyPreset({ code: Preset.presetRegistryJson(model.preset) })],
-      ],
+      ClickedCopyCreatePreset: () => ({ model: model, commands: [CopyPreset({ code: Preset.presetRegistryJson(model.preset) })] }),
       ClickedShuffleCreatePreset: () => {
         const preset = Preset.shufflePreset(model.preset);
-        return [
-          evo(model, {
+        return { model: modifyFields(model, {
             preset: () => preset,
             presetInput: () => Preset.encodePreset(preset),
             presetError: () => null,
-          }),
-          [],
-        ];
+          }) };
       },
-      CompletedCopyCreatePreset: () => [
-        evo(model, { isPresetCopied: () => true }),
-        [WaitBeforeClearingPresetCopy()],
-      ],
-      CompletedWaitBeforeClearingCreatePresetCopy: () => [
-        evo(model, { isPresetCopied: () => false }),
-        [],
-      ],
+      CompletedCopyCreatePreset: () => ({ model: modifyFields(model, { isPresetCopied: () => true }), commands: [WaitBeforeClearingPresetCopy()] }),
+      CompletedWaitBeforeClearingCreatePresetCopy: () => ({ model: modifyFields(model, { isPresetCopied: () => false }) }),
       GotCreatePresetPickerMessage: ({ field, message: childMessage }) => {
-        const [picker, commands] = Popover.update(
+        const { model: picker, commands: pickerCommands__ } = Popover.update(
           model.pickerPopovers[field],
           childMessage,
-        );
-        return [
-          evo(model, {
+        )
+        const commands = pickerCommands__ ?? []
+        return { model: modifyFields(model, {
             pickerPopovers: (current) => ({ ...current, [field]: picker }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotPresetPickerMessage({ field, message: next }),
-          ),
-        ];
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message['GotCreatePresetPickerMessage']({ field, message: next }),
+          ) };
       },
       GotAccountAccessMessage: ({ message: childMessage }) => {
-        const [accountAccess, commands] = AccountAccess.update(
+        const { model: accountAccess, commands: accountAccessCommands__ } = AccountAccess.update(
           model.accountAccess,
           childMessage,
         );
-        return [evo(model, { accountAccess: () => accountAccess }), commands];
+        const commands = accountAccessCommands__ ?? []
+        return { model: modifyFields(model, { accountAccess: () => accountAccess }), commands: Command.mapMessages(commands, (next) =>
+            Message['GotAccountAccessMessage']({ message: next }),
+          ) };
       },
       GotFaqMessage: ({ message: childMessage }) => {
-        const [faq, commands] = Faq.update(model.faq, childMessage);
-        return [
-          evo(model, { faq: () => faq }),
-          Command.mapMessages(commands, (next) =>
-            GotFaqMessage({ message: next }),
-          ),
-        ];
+        const { model: faq, commands: faqCommands__ } = Faq.update(model.faq, childMessage)
+        const commands = faqCommands__ ?? []
+        return { model: modifyFields(model, { faq: () => faq }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotFaqMessage({ message: next }),
+          ) };
       },
       GotKitchenIslandMessage: ({ message: childMessage }) => {
-        const [kitchenIsland, commands] = KitchenIsland.update(
+        const { model: kitchenIsland, commands: kitchenIslandCommands__ } = KitchenIsland.update(
           model.kitchenIsland,
           childMessage,
-        );
-        return [
-          evo(model, { kitchenIsland: () => kitchenIsland }),
-          Command.mapMessages(commands, (next) =>
-            GotKitchenIslandMessage({ message: next }),
-          ),
-        ];
+        )
+        const commands = kitchenIslandCommands__ ?? []
+        return { model: modifyFields(model, { kitchenIsland: () => kitchenIsland }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotKitchenIslandMessage({ message: next }),
+          ) };
       },
       GotNewMilestoneMessage: ({ message: childMessage }) => {
-        const [newMilestone, commands] = NewMilestone.update(
+        const { model: newMilestone, commands: newMilestoneCommands__ } = NewMilestone.update(
           model.newMilestone,
           childMessage,
-        );
-        return [
-          evo(model, { newMilestone: () => newMilestone }),
-          Command.mapMessages(commands, (next) =>
-            GotNewMilestoneMessage({ message: next }),
-          ),
-        ];
+        )
+        const commands = newMilestoneCommands__ ?? []
+        return { model: modifyFields(model, { newMilestone: () => newMilestone }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotNewMilestoneMessage({ message: next }),
+          ) };
       },
       GotNotificationSettingsMessage: ({ message: childMessage }) => {
-        const [notificationSettings, commands] = NotificationSettings.update(
+        const { model: notificationSettings, commands: notificationSettingsCommands__ } = NotificationSettings.update(
           model.notificationSettings,
           childMessage,
-        );
-        return [
-          evo(model, { notificationSettings: () => notificationSettings }),
-          Command.mapMessages(commands, (next) =>
-            GotNotificationSettingsMessage({ message: next }),
-          ),
-        ];
+        )
+        const commands = notificationSettingsCommands__ ?? []
+        return { model: modifyFields(model, { notificationSettings: () => notificationSettings }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotNotificationSettingsMessage({ message: next }),
+          ) };
       },
       GotPaymentsMessage: ({ message: childMessage }) => {
-        const [payments, commands] = Payments.update(
+        const { model: payments, commands: paymentsCommands__ } = Payments.update(
           model.payments,
           childMessage,
-        );
-        return [
-          evo(model, { payments: () => payments }),
-          Command.mapMessages(commands, (next) =>
-            GotPaymentsMessage({ message: next }),
-          ),
-        ];
+        )
+        const commands = paymentsCommands__ ?? []
+        return { model: modifyFields(model, { payments: () => payments }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotPaymentsMessage({ message: next }),
+          ) };
       },
       GotPayoutThresholdMessage: ({ message: childMessage }) => {
-        const [payoutThreshold, commands] = PayoutThreshold.update(
+        const { model: payoutThreshold, commands: payoutThresholdCommands__ } = PayoutThreshold.update(
           model.payoutThreshold,
           childMessage,
-        );
-        return [
-          evo(model, { payoutThreshold: () => payoutThreshold }),
-          Command.mapMessages(commands, (next) =>
-            GotPayoutThresholdMessage({ message: next }),
-          ),
-        ];
+        )
+        const commands = payoutThresholdCommands__ ?? []
+        return { model: modifyFields(model, { payoutThreshold: () => payoutThreshold }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotPayoutThresholdMessage({ message: next }),
+          ) };
       },
       GotPreferencesMessage: ({ message: childMessage }) => {
-        const [preferences, commands] = Preferences.update(
+        const { model: preferences, commands: preferencesCommands__ } = Preferences.update(
           model.preferences,
           childMessage,
-        );
-        return [
-          evo(model, { preferences: () => preferences }),
-          Command.mapMessages(commands, (next) =>
-            GotPreferencesMessage({ message: next }),
-          ),
-        ];
+        )
+        const commands = preferencesCommands__ ?? []
+        return { model: modifyFields(model, { preferences: () => preferences }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotPreferencesMessage({ message: next }),
+          ) };
       },
       GotReceivingMethodMessage: ({ message: childMessage }) => {
-        const [receivingMethod, commands] = ReceivingMethod.update(
+        const { model: receivingMethod, commands: receivingMethodCommands__ } = ReceivingMethod.update(
           model.receivingMethod,
           childMessage,
-        );
-        return [
-          evo(model, { receivingMethod: () => receivingMethod }),
-          Command.mapMessages(commands, (next) =>
-            GotReceivingMethodMessage({ message: next }),
-          ),
-        ];
+        )
+        const commands = receivingMethodCommands__ ?? []
+        return { model: modifyFields(model, { receivingMethod: () => receivingMethod }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotReceivingMethodMessage({ message: next }),
+          ) };
       },
       GotRecentTransactionsMessage: ({ message: childMessage }) => {
-        const [recentTransactions, commands] = RecentTransactions.update(
+        const { model: recentTransactions, commands: recentTransactionsCommands__ } = RecentTransactions.update(
           model.recentTransactions,
           childMessage,
-        );
-        return [
-          evo(model, { recentTransactions: () => recentTransactions }),
-          Command.mapMessages(commands, (next) =>
-            GotRecentTransactionsMessage({ message: next }),
-          ),
-        ];
+        )
+        const commands = recentTransactionsCommands__ ?? []
+        return { model: modifyFields(model, { recentTransactions: () => recentTransactions }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotRecentTransactionsMessage({ message: next }),
+          ) };
       },
       GotReleaseCatalogMessage: ({ message: childMessage }) => {
-        const [releaseCatalog, commands] = ReleaseCatalog.update(
+        const { model: releaseCatalog, commands: releaseCatalogCommands__ } = ReleaseCatalog.update(
           model.releaseCatalog,
           childMessage,
-        );
-        return [
-          evo(model, { releaseCatalog: () => releaseCatalog }),
-          Command.mapMessages(commands, (next) =>
-            GotReleaseCatalogMessage({ message: next }),
-          ),
-        ];
+        )
+        const commands = releaseCatalogCommands__ ?? []
+        return { model: modifyFields(model, { releaseCatalog: () => releaseCatalog }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotReleaseCatalogMessage({ message: next }),
+          ) };
       },
       GotRollerShadesMessage: ({ message: childMessage }) => {
-        const [rollerShades, commands] = RollerShades.update(
+        const { model: rollerShades, commands: rollerShadesCommands__ } = RollerShades.update(
           model.rollerShades,
           childMessage,
-        );
-        return [
-          evo(model, { rollerShades: () => rollerShades }),
-          Command.mapMessages(commands, (next) =>
-            GotRollerShadesMessage({ message: next }),
-          ),
-        ];
+        )
+        const commands = rollerShadesCommands__ ?? []
+        return { model: modifyFields(model, { rollerShades: () => rollerShades }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotRollerShadesMessage({ message: next }),
+          ) };
       },
       GotSavingsTargetsMessage: ({ message: childMessage }) => {
-        const [savingsTargets, commands] = SavingsTargets.update(
+        const { model: savingsTargets, commands: savingsTargetsCommands__ } = SavingsTargets.update(
           model.savingsTargets,
           childMessage,
-        );
-        return [
-          evo(model, { savingsTargets: () => savingsTargets }),
-          Command.mapMessages(commands, (next) =>
-            GotSavingsTargetsMessage({ message: next }),
-          ),
-        ];
+        )
+        const commands = savingsTargetsCommands__ ?? []
+        return { model: modifyFields(model, { savingsTargets: () => savingsTargets }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotSavingsTargetsMessage({ message: next }),
+          ) };
       },
       GotSocialLinksMessage: ({ message: childMessage }) => {
-        const [socialLinks, commands] = SocialLinks.update(
+        const { model: socialLinks, commands: socialLinksCommands__ } = SocialLinks.update(
           model.socialLinks,
           childMessage,
-        );
-        return [
-          evo(model, { socialLinks: () => socialLinks }),
-          Command.mapMessages(commands, (next) =>
-            GotSocialLinksMessage({ message: next }),
-          ),
-        ];
+        )
+        const commands = socialLinksCommands__ ?? []
+        return { model: modifyFields(model, { socialLinks: () => socialLinks }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotSocialLinksMessage({ message: next }),
+          ) };
       },
       GotStockPerformanceMessage: ({ message: childMessage }) => {
-        const [stockPerformance, commands] = StockPerformance.update(
+        const { model: stockPerformance, commands: stockPerformanceCommands__ } = StockPerformance.update(
           model.stockPerformance,
           childMessage,
-        );
-        return [
-          evo(model, { stockPerformance: () => stockPerformance }),
-          Command.mapMessages(commands, (next) =>
-            GotStockPerformanceMessage({ message: next }),
-          ),
-        ];
+        )
+        const commands = stockPerformanceCommands__ ?? []
+        return { model: modifyFields(model, { stockPerformance: () => stockPerformance }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotStockPerformanceMessage({ message: next }),
+          ) };
       },
       GotTransferFundsMessage: ({ message: childMessage }) => {
-        const [transferFunds, commands] = TransferFunds.update(
+        const { model: transferFunds, commands: transferFundsCommands__ } = TransferFunds.update(
           model.transferFunds,
           childMessage,
-        );
-        return [
-          evo(model, { transferFunds: () => transferFunds }),
-          Command.mapMessages(commands, (next) =>
-            GotTransferFundsMessage({ message: next }),
-          ),
-        ];
+        )
+        const commands = transferFundsCommands__ ?? []
+        return { model: modifyFields(model, { transferFunds: () => transferFunds }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotTransferFundsMessage({ message: next }),
+          ) };
       },
       GotUpcomingPaymentsMessage: ({ message: childMessage }) => {
-        const [upcomingPayments, commands] = UpcomingPayments.update(
+        const { model: upcomingPayments, commands: upcomingPaymentsCommands__ } = UpcomingPayments.update(
           model.upcomingPayments,
           childMessage,
-        );
-        return [
-          evo(model, { upcomingPayments: () => upcomingPayments }),
-          Command.mapMessages(commands, (next) =>
-            GotUpcomingPaymentsMessage({ message: next }),
-          ),
-        ];
+        )
+        const commands = upcomingPaymentsCommands__ ?? []
+        return { model: modifyFields(model, { upcomingPayments: () => upcomingPayments }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotUpcomingPaymentsMessage({ message: next }),
+          ) };
       },
     }),
   );
@@ -613,7 +555,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
       {
         model: model.pickerPopovers[field],
         toParentMessage: (message) =>
-          GotPresetPickerMessage({ field, message }),
+          Message['GotCreatePresetPickerMessage']({ field, message }),
         side: 'right',
         align: 'start',
         triggerClass:
@@ -662,7 +604,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
               return h.button(
                 [
                   h.Type('button'),
-                  h.OnClick(ChangedPresetField({ field, value })),
+                  h.OnClick(Message['ChangedCreatePresetField']({ field, value })),
                   h.Class(
                     `flex min-h-10 w-full items-center rounded-md px-3 text-left text-sm font-medium outline-none transition-colors hover:bg-white/10 focus-visible:bg-white/10 ${isSelected ? 'bg-white/15' : ''}`,
                   ),
@@ -780,7 +722,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
                     h.Id('create-preset-input'),
                     h.AriaLabel('Open preset'),
                     h.Value(model.presetInput),
-                    h.OnInput((value) => ChangedPresetInput({ value })),
+                    h.OnInput((value) => Message['ChangedCreatePresetInput']({ value })),
                     h.Placeholder('Paste code or shadcn URL'),
                     h.Class(
                       'h-9 w-full rounded-lg border border-white/10 bg-black/20 px-3 font-mono text-xs text-white outline-none focus-visible:ring-2 focus-visible:ring-white/30',
@@ -791,7 +733,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
                       class:
                         'w-full border-white/10 bg-transparent text-white hover:bg-white/[0.06] dark:bg-transparent',
                       children: ['Apply Preset'],
-                      onClick: AppliedPresetInput(),
+                      onClick: Message['AppliedCreatePresetInput'](),
                       variant: 'outline',
                     },
                     h,
@@ -813,7 +755,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
               class:
                 'w-full border-white/10 bg-transparent text-white hover:bg-white/[0.06] dark:bg-transparent',
               children: ['Shuffle'],
-              onClick: ClickedShufflePreset(),
+              onClick: Message['ClickedShuffleCreatePreset'](),
               variant: 'outline',
             },
             h,
@@ -821,7 +763,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
           Button.button(
             {
               class: 'relative w-full bg-white text-black hover:bg-white/90',
-              onClick: ClickedCopyPreset(),
+              onClick: Message['ClickedCopyCreatePreset'](),
               children: [
                 Icon.icon(
                   'copy',
@@ -903,7 +845,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                     model: model.payoutThreshold,
                     view: payoutThresholdView,
                     toParentMessage: (message) =>
-                      GotPayoutThresholdMessage({ message }),
+                      Message.GotPayoutThresholdMessage({ message }),
                   }),
                   ClaimableBalance.view<Message>(h),
                   h.submodel({
@@ -911,7 +853,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                     model: model.preferences,
                     view: preferencesView,
                     toParentMessage: (message) =>
-                      GotPreferencesMessage({ message }),
+                      Message.GotPreferencesMessage({ message }),
                   }),
                   SavingsProgress.view<Message>(h),
                   h.submodel({
@@ -919,7 +861,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                     model: model.kitchenIsland,
                     view: kitchenIslandView,
                     toParentMessage: (message) =>
-                      GotKitchenIslandMessage({ message }),
+                      Message.GotKitchenIslandMessage({ message }),
                   }),
                 ],
               ),
@@ -935,14 +877,14 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                     model: model.savingsTargets,
                     view: savingsTargetsView,
                     toParentMessage: (message) =>
-                      GotSavingsTargetsMessage({ message }),
+                      Message.GotSavingsTargetsMessage({ message }),
                   }),
                   h.submodel({
                     slotId: 'recent-transactions',
                     model: model.recentTransactions,
                     view: recentTransactionsView,
                     toParentMessage: (message) =>
-                      GotRecentTransactionsMessage({ message }),
+                      Message.GotRecentTransactionsMessage({ message }),
                   }),
                   h.div(
                     [h.Class('grid grid-cols-2 items-start gap-(--gap)')],
@@ -956,7 +898,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                             model: model.faq,
                             view: faqView,
                             toParentMessage: (message) =>
-                              GotFaqMessage({ message }),
+                              Message.GotFaqMessage({ message }),
                           }),
                         ],
                       ),
@@ -968,7 +910,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                             model: model.payments,
                             view: paymentsView,
                             toParentMessage: (message) =>
-                              GotPaymentsMessage({ message }),
+                              Message.GotPaymentsMessage({ message }),
                           }),
                           FrontDoor.view<Message>(h),
                         ],
@@ -980,7 +922,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                     model: model.releaseCatalog,
                     view: releaseCatalogView,
                     toParentMessage: (message) =>
-                      GotReleaseCatalogMessage({ message }),
+                      Message.GotReleaseCatalogMessage({ message }),
                   }),
                 ],
               ),
@@ -996,7 +938,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                     model: model.accountAccess,
                     view: accountAccessView,
                     toParentMessage: (message) =>
-                      GotAccountAccessMessage({ message }),
+                      Message.GotAccountAccessMessage({ message }),
                   }),
                   CardOverview.view<Message>(h),
                   h.submodel({
@@ -1004,7 +946,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                     model: model.transferFunds,
                     view: transferFundsView,
                     toParentMessage: (message) =>
-                      GotTransferFundsMessage({ message }),
+                      Message.GotTransferFundsMessage({ message }),
                   }),
                   CoverArt.view<Message>(h),
                   LoadingCard.view<Message>(h),
@@ -1022,7 +964,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                     model: model.receivingMethod,
                     view: receivingMethodView,
                     toParentMessage: (message) =>
-                      GotReceivingMethodMessage({ message }),
+                      Message.GotReceivingMethodMessage({ message }),
                   }),
                   PowerUsage.view<Message>(h),
                   EmptyConnectBank.view<Message>(h),
@@ -1031,14 +973,14 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                     model: model.upcomingPayments,
                     view: upcomingPaymentsView,
                     toParentMessage: (message) =>
-                      GotUpcomingPaymentsMessage({ message }),
+                      Message.GotUpcomingPaymentsMessage({ message }),
                   }),
                   h.submodel({
                     slotId: 'roller-shades',
                     model: model.rollerShades,
                     view: rollerShadesView,
                     toParentMessage: (message) =>
-                      GotRollerShadesMessage({ message }),
+                      Message.GotRollerShadesMessage({ message }),
                   }),
                 ],
               ),
@@ -1054,7 +996,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                     model: model.stockPerformance,
                     view: stockPerformanceView,
                     toParentMessage: (message) =>
-                      GotStockPerformanceMessage({ message }),
+                      Message.GotStockPerformanceMessage({ message }),
                   }),
                   EmptyExploreCatalog.view<Message>(h),
                   h.submodel({
@@ -1062,21 +1004,21 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                     model: model.newMilestone,
                     view: newMilestoneView,
                     toParentMessage: (message) =>
-                      GotNewMilestoneMessage({ message }),
+                      Message.GotNewMilestoneMessage({ message }),
                   }),
                   h.submodel({
                     slotId: 'social-links',
                     model: model.socialLinks,
                     view: socialLinksView,
                     toParentMessage: (message) =>
-                      GotSocialLinksMessage({ message }),
+                      Message.GotSocialLinksMessage({ message }),
                   }),
                   h.submodel({
                     slotId: 'notification-settings',
                     model: model.notificationSettings,
                     view: notificationSettingsView,
                     toParentMessage: (message) =>
-                      GotNotificationSettingsMessage({ message }),
+                      Message.GotNotificationSettingsMessage({ message }),
                   }),
                 ],
               ),
@@ -1102,14 +1044,14 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
 export const subscriptions = Subscription.aggregate<Model, Message>()(
   Subscription.lift(KitchenIsland.subscriptions)<Model, Message>({
     toChildModel: (model) => model.kitchenIsland,
-    toParentMessage: (message) => GotKitchenIslandMessage({ message }),
+    toParentMessage: (message) => Message.GotKitchenIslandMessage({ message }),
   }),
   Subscription.lift(PayoutThreshold.subscriptions)<Model, Message>({
     toChildModel: (model) => model.payoutThreshold,
-    toParentMessage: (message) => GotPayoutThresholdMessage({ message }),
+    toParentMessage: (message) => Message.GotPayoutThresholdMessage({ message }),
   }),
   Subscription.lift(RollerShades.subscriptions)<Model, Message>({
     toChildModel: (model) => model.rollerShades,
-    toParentMessage: (message) => GotRollerShadesMessage({ message }),
+    toParentMessage: (message) => Message.GotRollerShadesMessage({ message }),
   }),
 );

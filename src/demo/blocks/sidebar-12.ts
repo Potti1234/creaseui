@@ -1,9 +1,10 @@
 import { Match as M, Option, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
 import * as FoldkitCalendar from 'foldkit/calendar';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 
 import * as Icon from '@/lib/icon';
 import { avatar, avatarFallback } from '@/ui/avatar';
@@ -69,25 +70,25 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const ToggledSidebar = m('ToggledSidebar');
-export const ToggledMobileSidebar = m('ToggledMobileSidebar');
-export const GotCalendarMessage = m('GotCalendarMessage', {
+
+
+
+
+
+export const Message = defineMessageUnion({
+  ToggledMobileSidebar: {},
+  ToggledSidebar: {},
+  GotCalendarMessage: {
   message: Calendar.Message,
-});
-export const ToggledCalendarGroup = m('ToggledCalendarGroup', {
+},
+  ToggledCalendarGroup: {
   index: S.Number,
   isOpen: S.Boolean,
-});
-export const GotUserMenuMessage = m('GotUserMenuMessage', {
+},
+  GotUserMenuMessage: {
   message: DropdownMenu.Message,
+},
 });
-export const Message = S.Union([
-  ToggledMobileSidebar,
-  ToggledSidebar,
-  GotCalendarMessage,
-  ToggledCalendarGroup,
-  GotUserMenuMessage,
-]);
 export type Message = typeof Message.Type;
 
 export const init = (): Model => ({
@@ -104,24 +105,22 @@ export const init = (): Model => ({
   }),
 });
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledMobileSidebar: () => [evo(model, {isMobileOpen: current => !current}), []],
-      ToggledSidebar: () => [
-        evo(model, { isSidebarOpen: (current) => !current }),
-        [],
-      ],
+      ToggledMobileSidebar: () => ({ model: modifyFields(model, {isMobileOpen: current => !current}) }),
+      ToggledSidebar: () => ({ model: modifyFields(model, { isSidebarOpen: (current) => !current }) }),
       GotCalendarMessage: ({ message: childMessage }) => {
-        const [calendar, commands, maybeSelection] = Calendar.update(
+        const { model: calendar, commands: calendarCommands__, outMessage: calendarOut__ } = Calendar.update(
           model.calendar,
           childMessage,
-        );
-        return [
-          evo(model, {
+        )
+        const commands = calendarCommands__ ?? []
+        const maybeSelection = Option.fromNullishOr(calendarOut__)
+        return { model: modifyFields(model, {
             calendar: () => calendar,
             selectedDate: (current) =>
               Option.match(maybeSelection, {
@@ -131,35 +130,28 @@ export const update = (model: Model, message: Message): UpdateReturn =>
                     ? Option.some(selection.date)
                     : current,
               }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotCalendarMessage({ message: next }),
-          ),
-        ];
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotCalendarMessage({ message: next }),
+          ) };
       },
       ToggledCalendarGroup: ({ index, isOpen }) => {
-        if (model.calendarGroupsOpen[index] === undefined) return [model, []];
-        return [
-          evo(model, {
+        if (model.calendarGroupsOpen[index] === undefined) return { model: model };
+        return { model: modifyFields(model, {
             calendarGroupsOpen: (groups) =>
               groups.map((open, groupIndex) =>
                 groupIndex === index ? isOpen : open,
               ),
-          }),
-          [],
-        ];
+          }) };
       },
       GotUserMenuMessage: ({ message: childMessage }) => {
-        const [userMenu, commands] = UserMenu.update(
+        const { model: userMenu, commands: userMenuCommands__ } = UserMenu.update(
           model.userMenu,
           childMessage,
         );
-        return [
-          evo(model, { userMenu: () => userMenu }),
-          Command.mapMessages(commands, (next) =>
-            GotUserMenuMessage({ message: next }),
-          ),
-        ];
+        const commands = userMenuCommands__ ?? []
+        return { model: modifyFields(model, { userMenu: () => userMenu }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotUserMenuMessage({ message: next }),
+          ) };
       },
     }),
   );
@@ -198,7 +190,7 @@ const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
               DropdownMenu.dropdownMenu<UserMenuItem, Message>(
                 {
                   model,
-                  toParentMessage: (message) => GotUserMenuMessage({ message }),
+                  toParentMessage: (message) => Message.GotUserMenuMessage({ message }),
                   trigger: h.span(
                     [h.Class('contents')],
                     [
@@ -274,7 +266,7 @@ const datePicker = (
                 {
                   model,
                   maybeSelectedDate,
-                  toParentMessage: (message) => GotCalendarMessage({ message }),
+                  toParentMessage: (message) => Message.GotCalendarMessage({ message }),
                   class:
                     '[&_[role=gridcell]]:w-[33px] [&_[role=gridcell].bg-accent]:bg-sidebar-primary [&_[role=gridcell].bg-accent]:text-sidebar-primary-foreground',
                 },
@@ -306,7 +298,7 @@ const calendars = (
                 id: `sidebar-12-calendar-group-${index}`,
                 isOpen,
                 onToggle: (nextIsOpen) =>
-                  ToggledCalendarGroup({ index, isOpen: nextIsOpen }),
+                  Message.ToggledCalendarGroup({ index, isOpen: nextIsOpen }),
                 class: 'group/collapsible',
                 trigger: h.span(
                   [h.Class('contents')],
@@ -388,7 +380,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
   const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
   return sidebar<Message>(
     {
-      isMobileOpen: model.isMobileOpen, onMobileDismiss: ToggledMobileSidebar(), state,
+      isMobileOpen: model.isMobileOpen, onMobileDismiss: Message.ToggledMobileSidebar(), state,
       children: [
         sidebarHeader(
           {
@@ -437,7 +429,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
           },
           h,
         ),
-        sidebarRail({ onClick: ToggledSidebar() }, h),
+        sidebarRail({ onClick: Message.ToggledSidebar() }, h),
       ],
     },
     h,
@@ -459,7 +451,7 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
             ),
           ],
           [
-            sidebarTrigger({ onMobileClick: ToggledMobileSidebar(), onClick: ToggledSidebar(), class: '-ml-1' }, h),
+            sidebarTrigger({ onMobileClick: Message.ToggledMobileSidebar(), onClick: Message.ToggledSidebar(), class: '-ml-1' }, h),
             separator(
               {
                 orientation: 'vertical',

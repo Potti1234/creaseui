@@ -1,9 +1,10 @@
 import * as stylex from '@stylexjs/stylex';
 import { Match as M, Option, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 
 import * as Icon from '@/demo/icon-preview';
 import { button } from '@/stylex/button';
@@ -73,34 +74,35 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const UpdatedAmount = m('UpdatedAmount', { value: S.String });
-export const GotFromAccountMessage = m('GotFromAccountMessage', {
+
+
+
+export const Message = defineMessageUnion({
+  UpdatedAmount: { value: S.String },
+  GotFromAccountMessage: {
   message: Select.Message,
-});
-export const GotToAccountMessage = m('GotToAccountMessage', {
+},
+  GotToAccountMessage: {
   message: Select.Message,
+},
 });
-export const Message = S.Union([
-  UpdatedAmount,
-  GotFromAccountMessage,
-  GotToAccountMessage,
-]);
 export type Message = typeof Message.Type;
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      UpdatedAmount: ({ value }) => [evo(model, { amount: () => value }), []],
+      UpdatedAmount: ({ value }) => ({ model: modifyFields(model, { amount: () => value }) }),
       GotFromAccountMessage: ({ message: childMessage }) => {
-        const [fromAccount, commands, maybeSelection] = Select.update(
+        const { model: fromAccount, commands: fromAccountCommands__, outMessage: fromAccountOut__ } = Select.update(
           model.fromAccount,
           childMessage,
-        );
-        return [
-          evo(model, {
+        )
+        const commands = fromAccountCommands__ ?? []
+        const maybeSelection = Option.fromNullishOr(fromAccountOut__)
+        return { model: modifyFields(model, {
             fromAccount: () => fromAccount,
             selectedFromAccount: (current) =>
               Option.match(maybeSelection, {
@@ -108,19 +110,18 @@ export const update = (model: Model, message: Message): UpdateReturn =>
                 onSome: (selection) =>
                   selection._tag === 'Selected' ? selection.value : current,
               }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotFromAccountMessage({ message: next }),
-          ),
-        ];
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotFromAccountMessage({ message: next }),
+          ) };
       },
       GotToAccountMessage: ({ message: childMessage }) => {
-        const [toAccount, commands, maybeSelection] = Select.update(
+        const { model: toAccount, commands: toAccountCommands__, outMessage: toAccountOut__ } = Select.update(
           model.toAccount,
           childMessage,
-        );
-        return [
-          evo(model, {
+        )
+        const commands = toAccountCommands__ ?? []
+        const maybeSelection = Option.fromNullishOr(toAccountOut__)
+        return { model: modifyFields(model, {
             toAccount: () => toAccount,
             selectedToAccount: (current) =>
               Option.match(maybeSelection, {
@@ -128,11 +129,9 @@ export const update = (model: Model, message: Message): UpdateReturn =>
                 onSome: (selection) =>
                   selection._tag === 'Selected' ? selection.value : current,
               }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotToAccountMessage({ message: next }),
-          ),
-        ];
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotToAccountMessage({ message: next }),
+          ) };
       },
     }),
   );
@@ -247,7 +246,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                                     id: 'transfer-funds-amount',
                                     value: model.amount,
                                     onInput: (value) =>
-                                      UpdatedAmount({ value }),
+                                      Message.UpdatedAmount({ value }),
                                   },
                                   h,
                                 ),
@@ -276,7 +275,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                                 model.selectedFromAccount,
                               ),
                               toParentMessage: (message) =>
-                                GotFromAccountMessage({ message }),
+                                Message.GotFromAccountMessage({ message }),
                               items: fromAccounts,
                               itemToValue: (account) => account.value,
                               itemToLabel: (account) => account.label,
@@ -304,7 +303,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                                 model.selectedToAccount,
                               ),
                               toParentMessage: (message) =>
-                                GotToAccountMessage({ message }),
+                                Message.GotToAccountMessage({ message }),
                               items: toAccounts,
                               itemToValue: (account) => account.value,
                               itemToLabel: (account) => account.label,

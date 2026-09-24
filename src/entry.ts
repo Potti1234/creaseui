@@ -3,8 +3,6 @@ import { Runtime } from 'foldkit'
 import '@/docs/components/stylex-integration'
 
 import {
-  ChangedUrl,
-  ClickedLink,
   Flags,
   Message,
   Model,
@@ -25,8 +23,8 @@ const application = Runtime.makeApplication({
   container: document.getElementById('root'),
   devTools: { keyframeInterval: 1 },
   routing: {
-    onUrlRequest: request => ClickedLink({ request }),
-    onUrlChange: url => ChangedUrl({ url }),
+    onUrlRequest: request => Message.ClickedLink({ request }),
+    onUrlChange: url => Message.ChangedUrl({ url }),
   },
 })
 

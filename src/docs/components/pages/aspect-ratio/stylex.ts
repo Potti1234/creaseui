@@ -9,15 +9,15 @@ const styles = stylex.create({
   video: { maxWidth: '32rem', width: '100%' },
   square: { width: '12rem' },
   content: {
+    borderRadius: 'var(--radius-lg)',
+    overflow: 'hidden',
     alignItems: 'center',
     backgroundColor: 'var(--muted)',
-    borderRadius: 'var(--radius-lg)',
     color: 'var(--muted-foreground)',
     display: 'flex',
     fontSize: '0.875rem',
-    height: '100%',
     justifyContent: 'center',
-    overflow: 'hidden',
+    height: '100%',
     width: '100%',
   },
 });

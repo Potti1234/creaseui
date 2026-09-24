@@ -8,7 +8,7 @@ import type * as DropdownMenu from '@/stylex/dropdown-menu';
 import * as Menubar from '@/stylex/menubar';
 import { tokens } from '../../../../stylex/tokens.stylex';
 
-const styles = stylex.create({ frame: { display: 'grid', gap: '0.75rem', justifyItems: 'center' }, status: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' } });
+const styles = stylex.create({ frame: { gap: '0.75rem', display: 'grid', justifyItems: 'center', }, status: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' } });
 
 type PreviewModel = Readonly<{ menubar: Menubar.Model; file: DropdownMenu.Model; edit: DropdownMenu.Model; view: DropdownMenu.Model; maybeLastAction: Option.Option<string> }>;
 

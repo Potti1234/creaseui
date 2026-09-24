@@ -1,10 +1,12 @@
 import { Schema as S } from 'effect';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import * as Skeleton from '@/ui/skeleton';
 
-const InteractedWithSkeletonPreview = m('InteractedWithSkeletonPreview');
+const InteractedWithSkeletonPreview = defineMessageUnion({
+  InteractedWithSkeletonPreview: {},
+});
 type InteractedWithSkeletonPreview = typeof InteractedWithSkeletonPreview.Type;
 const SkeletonPreviewModel = S.Struct({ _docsPage: S.Literal('skeleton') });
 type SkeletonPreviewModel = typeof SkeletonPreviewModel.Type;
@@ -16,7 +18,7 @@ export const skeletonTailwindPreviewProgram = definePreviewProgram<
   Model: SkeletonPreviewModel,
   Message: InteractedWithSkeletonPreview,
   init: () => ({ _docsPage: 'skeleton' }),
-  update: model => [model, []],
+  update: model => ({ model: model }),
   view: (index, _model, h) => index === 0
     ? h.div([
         h.Role('status'),

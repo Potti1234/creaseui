@@ -1,15 +1,7 @@
 import { Checkbox as CheckboxPrimitive, VirtualList } from '@foldkit/ui'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import {
-  Filtered,
-  GotVirtualListMessage,
-  Sorted,
-  ToggledRow,
-  ToggledRows,
-  type Message,
-  type Model,
-} from '@/lib/virtual-data-table-state'
+import { type Message, type Model, Message as VirtualDataTableStateMessages } from '@/lib/virtual-data-table-state'
 import * as Icon from '@/lib/icon'
 import type { ComponentLayoutStyle } from '../contracts'
 import { className } from '../style'
@@ -91,7 +83,7 @@ export const virtualDataTable = <Row, Msg>(props: VirtualDataTableProps<Row, Msg
         id: `virtual-table-row-${key}`,
         label: `Select row ${key}`,
         isChecked: isSelected,
-        onToggle: (isChecked) => props.toParentMessage(ToggledRow({ key, isSelected: isChecked })),
+        onToggle: (isChecked) => props.toParentMessage(VirtualDataTableStateMessages.VirtualDataTableToggledRow({ key, isSelected: isChecked })),
       }, h)]),
       ...props.columns.map((column) => h.div([
         h.Role('cell'),
@@ -106,7 +98,7 @@ export const virtualDataTable = <Row, Msg>(props: VirtualDataTableProps<Row, Msg
       h.input([
         h.Type('search'),
         h.Value(props.model.filter),
-        h.OnInput((value) => props.toParentMessage(Filtered({ value }))),
+        h.OnInput((value) => props.toParentMessage(VirtualDataTableStateMessages.VirtualDataTableFiltered({ value }))),
         h.Placeholder(props.filterPlaceholder ?? 'Filter rows…'),
         h.AriaLabel(props.filterPlaceholder ?? 'Filter rows'),
         h.Class(className(styles.filter)),
@@ -124,7 +116,7 @@ export const virtualDataTable = <Row, Msg>(props: VirtualDataTableProps<Row, Msg
               label: allSelected ? 'Deselect all filtered rows' : 'Select all filtered rows',
               isChecked: allSelected,
               isIndeterminate: someSelected,
-              onToggle: (isSelected) => props.toParentMessage(ToggledRows({ keys: filteredKeys, isSelected })),
+              onToggle: (isSelected) => props.toParentMessage(VirtualDataTableStateMessages.VirtualDataTableToggledRows({ keys: filteredKeys, isSelected })),
             }, h)]),
             ...props.columns.map((column) => h.div([
               h.Role('columnheader'),
@@ -133,7 +125,7 @@ export const virtualDataTable = <Row, Msg>(props: VirtualDataTableProps<Row, Msg
               ...(column.numeric === true ? [h.Style({ justifyContent: 'flex-end' })] : []),
             ], column.sortable === false ? [column.header] : [h.button([
               h.Type('button'),
-              h.OnClick(props.toParentMessage(Sorted({ key: column.id }))),
+              h.OnClick(props.toParentMessage(VirtualDataTableStateMessages.VirtualDataTableSorted({ key: column.id }))),
               h.Class(className(styles.sortButton)),
             ], [column.header, Icon.chevronsUpDown<Msg>({ class: className(styles.sortIcon) }, h)])])),
           ]),
@@ -149,7 +141,7 @@ export const virtualDataTable = <Row, Msg>(props: VirtualDataTableProps<Row, Msg
                 overscan: 6,
                 containerClassName: className(styles.viewport),
               },
-              toParentMessage: (message) => props.toParentMessage(GotVirtualListMessage({ message })),
+              toParentMessage: (message) => props.toParentMessage(VirtualDataTableStateMessages.GotVirtualDataTableListMessage({ message })),
             }),
           ]),
         ]),

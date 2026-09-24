@@ -20,7 +20,7 @@ const verifyRenderer = (name: string, Switch: SwitchModule) => {
     it('keeps state parent-owned and exposes form metadata', () => {
       Scene.scene(
         {
-          update: (_model: Model, message: Message) => [{ checked: message.checked }, []] as const,
+          update: (_model: Model, message: Message) => ({ model: { checked: message.checked } }),
           view: (model, h) => Switch.switchControl({
             id: 'notifications', isChecked: model.checked,
             onToggle: checked => ({ _tag: 'Toggled', checked }),
@@ -41,7 +41,7 @@ const verifyRenderer = (name: string, Switch: SwitchModule) => {
     it('keeps read-only RTL state focusable and inert', () => {
       Scene.scene(
         {
-          update: (model: Model) => [model, []] as const,
+          update: (model: Model) => ({ model: model }),
           view: (model, h) => Switch.switchControl({
             id: 'managed', isChecked: model.checked,
             onToggle: checked => ({ _tag: 'Toggled', checked }),

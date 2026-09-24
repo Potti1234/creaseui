@@ -1,6 +1,6 @@
 import { Option, Schema as S } from 'effect';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import * as Icon from '@/lib/icon';
 import { cn } from '@/lib/utils';
@@ -12,19 +12,19 @@ export const Model = S.Struct({
   drag: S.Option(Drag),
 });
 export type Model = typeof Model.Type;
-export const StartedResize = m('StartedResize', { position: S.Number });
-export const DraggedResize = m('DraggedResize', {
+
+
+
+
+export const Message = defineMessageUnion({
+  StartedResize: { position: S.Number },
+  DraggedResize: {
   position: S.Number,
   extent: S.Number,
+},
+  EndedResize: {},
+  NudgedResize: { delta: S.Number },
 });
-export const EndedResize = m('EndedResize');
-export const NudgedResize = m('NudgedResize', { delta: S.Number });
-export const Message = S.Union([
-  StartedResize,
-  DraggedResize,
-  EndedResize,
-  NudgedResize,
-]);
 export type Message = typeof Message.Type;
 
 const clampTo = (value: number, min: number, max: number): number =>
@@ -102,7 +102,7 @@ export const resizable = <Msg>(
         dragging && props.disabled !== true
           ? Option.some(
               props.toParentMessage(
-                DraggedResize({
+                Message.DraggedResize({
                   position: vertical ? screenY : screenX,
                   extent,
                 }),
@@ -112,7 +112,7 @@ export const resizable = <Msg>(
       ),
       h.OnPointerUp(() =>
         dragging
-          ? Option.some(props.toParentMessage(EndedResize()))
+          ? Option.some(props.toParentMessage(Message.EndedResize()))
           : Option.none(),
       ),
       h.Class(
@@ -141,7 +141,7 @@ export const resizable = <Msg>(
             button === 0 && props.disabled !== true
               ? Option.some(
                   props.toParentMessage(
-                    StartedResize({ position: vertical ? screenY : screenX }),
+                    Message.StartedResize({ position: vertical ? screenY : screenX }),
                   ),
                 )
               : Option.none(),
@@ -157,19 +157,19 @@ export const resizable = <Msg>(
             const step = props.keyboardStep ?? 2;
             if (key === (vertical ? 'ArrowUp' : 'ArrowLeft'))
               return Option.some(
-                props.toParentMessage(NudgedResize({ delta: -step })),
+                props.toParentMessage(Message.NudgedResize({ delta: -step })),
               );
             if (key === (vertical ? 'ArrowDown' : 'ArrowRight'))
               return Option.some(
-                props.toParentMessage(NudgedResize({ delta: step })),
+                props.toParentMessage(Message.NudgedResize({ delta: step })),
               );
             if (key === 'Home')
               return Option.some(
-                props.toParentMessage(NudgedResize({ delta: minSize - size })),
+                props.toParentMessage(Message.NudgedResize({ delta: minSize - size })),
               );
             if (key === 'End')
               return Option.some(
-                props.toParentMessage(NudgedResize({ delta: maxSize - size })),
+                props.toParentMessage(Message.NudgedResize({ delta: maxSize - size })),
               );
             return Option.none();
           }),
@@ -234,27 +234,27 @@ export const GroupModel = S.Struct({
   drag: S.Option(GroupDrag),
 });
 export type GroupModel = typeof GroupModel.Type;
-export const StartedGroupResize = m('StartedGroupResize', {
+
+
+
+
+export const GroupMessage = defineMessageUnion({
+  StartedGroupResize: {
   handle: S.Number,
   position: S.Number,
-});
-export const DraggedGroupResize = m('DraggedGroupResize', {
+},
+  DraggedGroupResize: {
   position: S.Number,
   extent: S.Number,
   minSize: S.Number,
-});
-export const EndedGroupResize = m('EndedGroupResize');
-export const NudgedGroupResize = m('NudgedGroupResize', {
+},
+  EndedGroupResize: {},
+  NudgedGroupResize: {
   handle: S.Number,
   delta: S.Number,
   minSize: S.Number,
+},
 });
-export const GroupMessage = S.Union([
-  StartedGroupResize,
-  DraggedGroupResize,
-  EndedGroupResize,
-  NudgedGroupResize,
-]);
 export type GroupMessage = typeof GroupMessage.Type;
 
 const normalizedSizes = (
@@ -393,7 +393,7 @@ export const resizableGroup = <Msg>(
             button === 0 && props.disabled !== true
               ? Option.some(
                   props.toParentMessage(
-                    StartedGroupResize({
+                    GroupMessage.StartedGroupResize({
                       handle: index,
                       position: vertical ? y : x,
                     }),
@@ -410,13 +410,13 @@ export const resizableGroup = <Msg>(
               : key === (vertical ? 'ArrowUp' : 'ArrowLeft')
                 ? Option.some(
                     props.toParentMessage(
-                      NudgedGroupResize({ handle: index, delta: -2, minSize }),
+                      GroupMessage.NudgedGroupResize({ handle: index, delta: -2, minSize }),
                     ),
                   )
                 : key === (vertical ? 'ArrowDown' : 'ArrowRight')
                   ? Option.some(
                       props.toParentMessage(
-                        NudgedGroupResize({ handle: index, delta: 2, minSize }),
+                        GroupMessage.NudgedGroupResize({ handle: index, delta: 2, minSize }),
                       ),
                     )
                   : Option.none(),
@@ -449,7 +449,7 @@ export const resizableGroup = <Msg>(
         dragging && props.disabled !== true
           ? Option.some(
               props.toParentMessage(
-                DraggedGroupResize({
+                GroupMessage.DraggedGroupResize({
                   position: vertical ? y : x,
                   extent: props.extent,
                   minSize,
@@ -460,7 +460,7 @@ export const resizableGroup = <Msg>(
       ),
       h.OnPointerUp(() =>
         dragging
-          ? Option.some(props.toParentMessage(EndedGroupResize()))
+          ? Option.some(props.toParentMessage(GroupMessage.EndedGroupResize()))
           : Option.none(),
       ),
       h.Class(

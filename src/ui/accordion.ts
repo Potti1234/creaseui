@@ -9,11 +9,9 @@ import { cn } from '@/lib/utils';
 
 export {
   AccordionType,
-  ChangedValue,
   Message,
   Model,
   OutMessage,
-  ToggledItem,
   init,
   reflect,
   update,
@@ -64,7 +62,7 @@ const render = <Msg>(
           isOpen,
           onToggle: (nextIsOpen) =>
             toMessage(
-              AccordionBehavior.ToggledItem({
+              AccordionBehavior.Message.ToggledItem({
                 value: item.value,
                 isOpen: nextIsOpen,
               }),

@@ -8,11 +8,11 @@ import { cn } from '@/lib/utils';
 
 export const Model = DrawerBehavior.Model;
 export type Model = typeof Model.Type;
-export const GotDialogMessage = DrawerBehavior.GotDialogMessage;
-export const StartedDrag = DrawerBehavior.StartedDrag;
-export const Dragged = DrawerBehavior.Dragged;
-export const EndedDrag = DrawerBehavior.EndedDrag;
-export const CancelledDrag = DrawerBehavior.CancelledDrag;
+export const GotDialogMessage = DrawerBehavior.Message.GotDrawerDialogMessage;
+export const StartedDrag = DrawerBehavior.Message.StartedDrawerDrag;
+export const Dragged = DrawerBehavior.Message.DraggedDrawer;
+export const EndedDrag = DrawerBehavior.Message.EndedDrawerDrag;
+export const CancelledDrag = DrawerBehavior.Message.CancelledDrawerDrag;
 export const Message = DrawerBehavior.Message;
 export type Message = typeof Message.Type;
 export const OutMessage = DrawerBehavior.OutMessage;

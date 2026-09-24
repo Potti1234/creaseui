@@ -6,7 +6,7 @@ import { badgeVariants } from '@/docs/components/pages/badge/shared';
 import * as Badge from '@/stylex/badge';
 
 const styles = stylex.create({
-  row: { display: 'flex', flexWrap: 'wrap', gap: '0.5rem' },
+  row: { gap: '0.5rem', display: 'flex', flexWrap: 'wrap', },
 });
 
 export const badgeStyleXPreview: StyleXExamplePreviewProvider = <Msg>(

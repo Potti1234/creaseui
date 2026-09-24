@@ -1,7 +1,8 @@
 import { Match as M, Option, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command, Subscription } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 import * as stylex from '@stylexjs/stylex'
 import { Switch as SwitchPrimitive } from '@foldkit/ui'
 
@@ -126,32 +127,32 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const ToggledEnabled = m('ToggledEnabled', { isChecked: S.Boolean });
-export const SelectedScene = m('SelectedScene', { value: S.String });
-export const GotBrightnessMessage = m('GotBrightnessMessage', {
-  message: Slider.Message,
-});
-export const GotColorTempMessage = m('GotColorTempMessage', {
-  message: Slider.Message,
-});
-export const GotVolumeMessage = m('GotVolumeMessage', {
-  message: Slider.Message,
-});
-export const GotFadeMessage = m('GotFadeMessage', {
-  message: Slider.Message,
-});
 
-export const Message = S.Union([
-  ToggledEnabled,
-  SelectedScene,
-  GotBrightnessMessage,
-  GotColorTempMessage,
-  GotVolumeMessage,
-  GotFadeMessage,
-]);
+
+
+
+
+
+
+export const Message = defineMessageUnion({
+  ToggledEnabled: { isChecked: S.Boolean },
+  SelectedScene: { value: S.String },
+  GotBrightnessMessage: {
+  message: Slider.Message,
+},
+  GotColorTempMessage: {
+  message: Slider.Message,
+},
+  GotVolumeMessage: {
+  message: Slider.Message,
+},
+  GotFadeMessage: {
+  message: Slider.Message,
+},
+});
 export type Message = typeof Message.Type;
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const init = (): Model => ({
   isEnabled: true,
@@ -190,101 +191,91 @@ export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledEnabled: ({ isChecked }) => [
-        { ...model, isEnabled: isChecked },
-        [],
-      ],
+      ToggledEnabled: ({ isChecked }) => ({ model: { ...model, isEnabled: isChecked } }),
       SelectedScene: ({ value }) => {
         const preset = scenePreset(value);
         return preset === undefined
-          ? [model, []]
-          : [
-              {
+          ? ({ model: model })
+          : { model: {
                 ...model,
                 scene: value,
                 brightnessValue: preset.brightness,
                 colorTempValue: preset.colorTemp,
                 volumeValue: preset.volume,
                 fadeValue: preset.fade,
-              },
-              [],
-            ];
+              }, };
       },
       GotBrightnessMessage: ({ message: childMessage }) => {
-        const [brightness, commands, maybeChange] = Slider.update(
+        const { model: brightness, commands: brightnessCommands__, outMessage: brightnessOut__ } = Slider.update(
           model.brightness,
           childMessage,
-        );
-        return [
-          {
+        )
+        const commands = brightnessCommands__ ?? []
+        const maybeChange = Option.fromNullishOr(brightnessOut__)
+        return { model: {
             ...model,
             brightness,
             brightnessValue: Option.match(maybeChange, {
               onNone: () => model.brightnessValue,
               onSome: (change) => change.value,
             }),
-          },
-          Command.mapMessages(commands, (next) =>
-            GotBrightnessMessage({ message: next }),
-          ),
-        ];
+          }, commands: Command.mapMessages(commands, (next) =>
+            Message.GotBrightnessMessage({ message: next }),
+          ) };
       },
       GotColorTempMessage: ({ message: childMessage }) => {
-        const [colorTemp, commands, maybeChange] = Slider.update(
+        const { model: colorTemp, commands: colorTempCommands__, outMessage: colorTempOut__ } = Slider.update(
           model.colorTemp,
           childMessage,
-        );
-        return [
-          {
+        )
+        const commands = colorTempCommands__ ?? []
+        const maybeChange = Option.fromNullishOr(colorTempOut__)
+        return { model: {
             ...model,
             colorTemp,
             colorTempValue: Option.match(maybeChange, {
               onNone: () => model.colorTempValue,
               onSome: (change) => change.value,
             }),
-          },
-          Command.mapMessages(commands, (next) =>
-            GotColorTempMessage({ message: next }),
-          ),
-        ];
+          }, commands: Command.mapMessages(commands, (next) =>
+            Message.GotColorTempMessage({ message: next }),
+          ) };
       },
       GotVolumeMessage: ({ message: childMessage }) => {
-        const [volume, commands, maybeChange] = Slider.update(
+        const { model: volume, commands: volumeCommands__, outMessage: volumeOut__ } = Slider.update(
           model.volume,
           childMessage,
-        );
-        return [
-          {
+        )
+        const commands = volumeCommands__ ?? []
+        const maybeChange = Option.fromNullishOr(volumeOut__)
+        return { model: {
             ...model,
             volume,
             volumeValue: Option.match(maybeChange, {
               onNone: () => model.volumeValue,
               onSome: (change) => change.value,
             }),
-          },
-          Command.mapMessages(commands, (next) =>
-            GotVolumeMessage({ message: next }),
-          ),
-        ];
+          }, commands: Command.mapMessages(commands, (next) =>
+            Message.GotVolumeMessage({ message: next }),
+          ) };
       },
       GotFadeMessage: ({ message: childMessage }) => {
-        const [fade, commands, maybeChange] = Slider.update(
+        const { model: fade, commands: fadeCommands__, outMessage: fadeOut__ } = Slider.update(
           model.fade,
           childMessage,
-        );
-        return [
-          {
+        )
+        const commands = fadeCommands__ ?? []
+        const maybeChange = Option.fromNullishOr(fadeOut__)
+        return { model: {
             ...model,
             fade,
             fadeValue: Option.match(maybeChange, {
               onNone: () => model.fadeValue,
               onSome: (change) => change.value,
             }),
-          },
-          Command.mapMessages(commands, (next) =>
-            GotFadeMessage({ message: next }),
-          ),
-        ];
+          }, commands: Command.mapMessages(commands, (next) =>
+            Message.GotFadeMessage({ message: next }),
+          ) };
       },
     }),
   );
@@ -310,7 +301,7 @@ const enabledSwitch = (model: Model, h: HtmlBuilder<Message>): Html =>
       id: 'kitchen-island-enabled',
       isChecked: model.isEnabled,
       isDisabled: false,
-      onToggle: (isChecked) => ToggledEnabled({ isChecked }),
+      onToggle: (isChecked) => Message.ToggledEnabled({ isChecked }),
       toView: ({ button, label }) =>
         h.div([h.Class(className(styles.switchRow))], [
           h.button(
@@ -380,7 +371,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                   toggleGroup(
                     {
                       value: model.scene,
-                      onToggle: (value) => SelectedScene({ value }),
+                      onToggle: (value) => Message.SelectedScene({ value }),
                       arrangement: 'wrapped',
                       variant: 'outline',
                       items: [
@@ -419,7 +410,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                           model: model.brightness,
                           value: model.brightnessValue,
                           toParentMessage: (message) =>
-                            GotBrightnessMessage({ message }),
+                            Message.GotBrightnessMessage({ message }),
                           ariaLabel: 'Brightness',
                           isDisabled,
                         },
@@ -435,7 +426,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                           model: model.colorTemp,
                           value: model.colorTempValue,
                           toParentMessage: (message) =>
-                            GotColorTempMessage({ message }),
+                            Message.GotColorTempMessage({ message }),
                           ariaLabel: 'Color Temp',
                           isDisabled,
                         },
@@ -451,7 +442,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                           model: model.volume,
                           value: model.volumeValue,
                           toParentMessage: (message) =>
-                            GotVolumeMessage({ message }),
+                            Message.GotVolumeMessage({ message }),
                           ariaLabel: 'Volume',
                           isDisabled,
                         },
@@ -467,7 +458,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                           model: model.fade,
                           value: model.fadeValue,
                           toParentMessage: (message) =>
-                            GotFadeMessage({ message }),
+                            Message.GotFadeMessage({ message }),
                           ariaLabel: 'Fade',
                           isDisabled,
                         },
@@ -490,8 +481,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
 /*
 Minimal wiring:
 const model = init()
-const [nextModel, commands] = update(model, message)
-const cardView = view(model)
+const next = update(model, message)
+const cardView = view(next.model)
 */
 // Stateful? yes. Submodels wired: switch and four sliders. PORT NOTEs: visually hidden switch label.
 
@@ -503,28 +494,28 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
     brightnessEscape: Slider.subscriptions.dragEscape,
   })<Model, Message>({
     toChildModel: (model) => model.brightness,
-    toParentMessage: (message) => GotBrightnessMessage({ message }),
+    toParentMessage: (message) => Message.GotBrightnessMessage({ message }),
   }),
   Subscription.lift({
     colorTempPointer: Slider.subscriptions.dragPointer,
     colorTempEscape: Slider.subscriptions.dragEscape,
   })<Model, Message>({
     toChildModel: (model) => model.colorTemp,
-    toParentMessage: (message) => GotColorTempMessage({ message }),
+    toParentMessage: (message) => Message.GotColorTempMessage({ message }),
   }),
   Subscription.lift({
     volumePointer: Slider.subscriptions.dragPointer,
     volumeEscape: Slider.subscriptions.dragEscape,
   })<Model, Message>({
     toChildModel: (model) => model.volume,
-    toParentMessage: (message) => GotVolumeMessage({ message }),
+    toParentMessage: (message) => Message.GotVolumeMessage({ message }),
   }),
   Subscription.lift({
     fadePointer: Slider.subscriptions.dragPointer,
     fadeEscape: Slider.subscriptions.dragEscape,
   })<Model, Message>({
     toChildModel: (model) => model.fade,
-    toParentMessage: (message) => GotFadeMessage({ message }),
+    toParentMessage: (message) => Message.GotFadeMessage({ message }),
   }),
 );
 

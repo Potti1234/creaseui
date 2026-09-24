@@ -1,8 +1,9 @@
 import { Match as M, Option, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 
 import * as Accordion from '@/ui/accordion';
 import { button } from '@/ui/button';
@@ -68,91 +69,84 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const GotTabsMessage = m('GotTabsMessage', {
-  message: Tabs.Message,
-});
-export const GotGeneralMessage = m('GotGeneralMessage', {
-  message: Accordion.Message,
-});
-export const GotBillingMessage = m('GotBillingMessage', {
-  message: Accordion.Message,
-});
-export const GotGoalsMessage = m('GotGoalsMessage', {
-  message: Accordion.Message,
-});
 
-export const Message = S.Union([
-  GotTabsMessage,
-  GotGeneralMessage,
-  GotBillingMessage,
-  GotGoalsMessage,
-]);
+
+
+
+
+export const Message = defineMessageUnion({
+  GotTabsMessage: {
+  message: Tabs.Message,
+},
+  GotGeneralMessage: {
+  message: Accordion.Message,
+},
+  GotBillingMessage: {
+  message: Accordion.Message,
+},
+  GotGoalsMessage: {
+  message: Accordion.Message,
+},
+});
 export type Message = typeof Message.Type;
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotTabsMessage: ({ message: tabsMessage }) => {
-        const [tabs, commands, maybeSelection] = Tabs.update(
+        const { model: tabs, commands: tabsCommands__, outMessage: tabsOut__ } = Tabs.update(
           model.tabs,
           tabsMessage,
-        );
+        )
+        const commands = tabsCommands__ ?? []
+        const maybeSelection = Option.fromNullishOr(tabsOut__)
 
-        return [
-          evo(model, {
+        return { model: modifyFields(model, {
             tabs: () => tabs,
             selectedTab: (current) =>
               Option.match(maybeSelection, {
                 onNone: () => current,
                 onSome: (selection) => selection.value,
               }),
-          }),
-          Command.mapMessages(commands, (nextMessage) =>
-            GotTabsMessage({ message: nextMessage }),
-          ),
-        ];
+          }), commands: Command.mapMessages(commands, (nextMessage) =>
+            Message.GotTabsMessage({ message: nextMessage }),
+          ) };
       },
       GotGeneralMessage: ({ message: accordionMessage }) => {
-        const [general, commands] = Accordion.update(
+        const { model: general, commands: generalCommands__ } = Accordion.update(
           model.general,
           accordionMessage,
         );
+        const commands = generalCommands__ ?? []
 
-        return [
-          evo(model, { general: () => general }),
-          Command.mapMessages(commands, (nextMessage) =>
-            GotGeneralMessage({ message: nextMessage }),
-          ),
-        ];
+        return { model: modifyFields(model, { general: () => general }), commands: Command.mapMessages(commands, (nextMessage) =>
+            Message.GotGeneralMessage({ message: nextMessage }),
+          ) };
       },
       GotBillingMessage: ({ message: accordionMessage }) => {
-        const [billing, commands] = Accordion.update(
+        const { model: billing, commands: billingCommands__ } = Accordion.update(
           model.billing,
           accordionMessage,
         );
+        const commands = billingCommands__ ?? []
 
-        return [
-          evo(model, { billing: () => billing }),
-          Command.mapMessages(commands, (nextMessage) =>
-            GotBillingMessage({ message: nextMessage }),
-          ),
-        ];
+        return { model: modifyFields(model, { billing: () => billing }), commands: Command.mapMessages(commands, (nextMessage) =>
+            Message.GotBillingMessage({ message: nextMessage }),
+          ) };
       },
       GotGoalsMessage: ({ message: accordionMessage }) => {
-        const [goals, commands] = Accordion.update(
+        const { model: goals, commands: goalsCommands__ } = Accordion.update(
           model.goals,
           accordionMessage,
         );
+        const commands = goalsCommands__ ?? []
 
-        return [
-          evo(model, { goals: () => goals }),
-          Command.mapMessages(commands, (nextMessage) =>
-            GotGoalsMessage({ message: nextMessage }),
-          ),
-        ];
+        return { model: modifyFields(model, { goals: () => goals }), commands: Command.mapMessages(commands, (nextMessage) =>
+            Message.GotGoalsMessage({ message: nextMessage }),
+          ) };
       },
     }),
   );
@@ -203,7 +197,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                 {
                   model: model.tabs,
                   selectedValue: model.selectedTab,
-                  toParentMessage: (message) => GotTabsMessage({ message }),
+                  toParentMessage: (message) => Message.GotTabsMessage({ message }),
                   listClass: 'w-full',
                   triggerClass: 'flex-1',
                   tabs: [
@@ -213,7 +207,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                       content: questionList(
                         model.general,
                         GENERAL_QUESTIONS,
-                        (message) => GotGeneralMessage({ message }),
+                        (message) => Message.GotGeneralMessage({ message }),
                         h,
                       ),
                     },
@@ -223,7 +217,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                       content: questionList(
                         model.billing,
                         BILLING_QUESTIONS,
-                        (message) => GotBillingMessage({ message }),
+                        (message) => Message.GotBillingMessage({ message }),
                         h,
                       ),
                     },
@@ -233,7 +227,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                       content: questionList(
                         model.goals,
                         GOALS_QUESTIONS,
-                        (message) => GotGoalsMessage({ message }),
+                        (message) => Message.GotGoalsMessage({ message }),
                         h,
                       ),
                     },

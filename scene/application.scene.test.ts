@@ -9,7 +9,7 @@ import { init, update, view } from '@/main'
 
 const modelAt = (path: string) => {
   const url = Option.getOrThrow(fromString(`https://creaseui.com${path}`))
-  const [model] = init({ isDark: false }, url)
+  const model = init({ isDark: false }, url).model
   return model
 }
 
@@ -29,8 +29,8 @@ describe('application scenes', () => {
       ).toExist(),
       Scene.Mount.resolve(
         Chart.MountChart,
-        Landing.GotChartMessage({
-          message: Chart.ChartMounted({ hostId: 'landing-hero-chart' }),
+        Landing.Message.GotChartMessage({
+          message: Chart.ChartMessage.ChartMounted({ hostId: 'landing-hero-chart' }),
         }),
       ),
     )

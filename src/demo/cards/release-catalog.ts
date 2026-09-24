@@ -1,7 +1,8 @@
+import type { Update } from 'foldkit'
 import { Match as M, Schema as S } from 'effect';
 import type { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import * as Icon from '@/demo/icon-preview';
 import { badge } from '@/ui/badge';
@@ -58,12 +59,15 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const UpdatedSearch = m('UpdatedSearch', { value: S.String });
-export const SelectedCategory = m('SelectedCategory', { value: S.String });
-export const Message = S.Union([UpdatedSearch, SelectedCategory]);
+
+
+export const Message = defineMessageUnion({
+  UpdatedSearch: { value: S.String },
+  SelectedCategory: { value: S.String },
+});
 export type Message = typeof Message.Type;
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const init = (): Model => ({ search: '', category: 'etfs' });
 
@@ -71,8 +75,8 @@ export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      UpdatedSearch: ({ value }) => [{ ...model, search: value }, []],
-      SelectedCategory: ({ value }) => [{ ...model, category: value }, []],
+      UpdatedSearch: ({ value }) => ({ model: { ...model, search: value } }),
+      SelectedCategory: ({ value }) => ({ model: { ...model, category: value } }),
     }),
   );
 
@@ -100,7 +104,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                           {
                             id: 'release-catalog-search',
                             value: model.search,
-                            onInput: (value) => UpdatedSearch({ value }),
+                            onInput: (value) => Message.UpdatedSearch({ value }),
                             placeholder: 'Search holdings or tickers...',
                           },
                           h,
@@ -112,7 +116,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                   toggleGroup(
                     {
                       value: model.category,
-                      onToggle: (value) => SelectedCategory({ value }),
+                      onToggle: (value) => Message.SelectedCategory({ value }),
                       variant: 'outline',
                       class: 'gap-1',
                       items: [
@@ -233,7 +237,9 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
 /*
 Minimal wiring:
 const model = init()
-const [nextModel, commands] = update(model, message)
+const nextModelOp__ = update(model, message);
+    const nextModel = nextModelOp__.model;
+    const commands = nextModelOp__.commands ?? [];
 const cardView = view(model)
 */
 // Stateful? yes. Submodels wired: none (local input and toggle state). PORT NOTEs: none.

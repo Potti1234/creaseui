@@ -249,8 +249,10 @@ export const combobox = StringCombobox.combobox;
    // Init: frameworkCombobox: init({ id: 'framework', isAnimated: true })
    //
    // Update:
-   // const [frameworkCombobox, commands, maybeOutMessage] =
-   //   FrameworkCombobox.update(model.frameworkCombobox, message)
+   // const frameworkComboboxOp__ = //   FrameworkCombobox.update(model.frameworkCombobox, message);
+    const frameworkCombobox = frameworkComboboxOp__.model;
+    const commands = frameworkComboboxOp__.commands ?? [];
+    const maybeOutMessage = Option.fromNullishOr(frameworkComboboxOp__.outMessage);
    //
    // View:
    // combobox<Framework, Framework['value'], AppMessage>({

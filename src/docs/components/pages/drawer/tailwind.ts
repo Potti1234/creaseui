@@ -1,15 +1,18 @@
 import { Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import { drawerFixtures } from '@/docs/components/pages/drawer/shared';
 import * as Button from '@/ui/button';
 import * as Drawer from '@/ui/drawer';
 
-const OpenedDrawerPreview = m('OpenedDrawerPreview');
-const GotDrawerPreviewMessage = m('GotDrawerPreviewMessage', { message: Drawer.Message });
-const DrawerPreviewMessage = S.Union([OpenedDrawerPreview, GotDrawerPreviewMessage]);
+
+
+const DrawerPreviewMessage = defineMessageUnion({
+  OpenedDrawerPreview: {},
+  GotDrawerPreviewMessage: { message: Drawer.Message },
+});
 type DrawerPreviewMessage = typeof DrawerPreviewMessage.Type;
 const DrawerPreviewModel = S.Struct({ _docsPage: S.Literal('drawer'), drawer: Drawer.Model });
 type DrawerPreviewModel = typeof DrawerPreviewModel.Type;
@@ -22,22 +25,24 @@ export const drawerTailwindPreviewProgram = definePreviewProgram<DrawerPreviewMo
     drawer: Drawer.init({ id: `docs-drawer-${String(index)}`, isAnimated: true }),
   }),
   update: (model, message) => {
-    const [drawer, commands] = message._tag === 'OpenedDrawerPreview'
+    const drawerOp__ = message._tag === 'OpenedDrawerPreview'
       ? Drawer.open(model.drawer)
       : Drawer.update(model.drawer, message.message);
-    return [{ ...model, drawer }, Command.mapMessages(commands, next => GotDrawerPreviewMessage({ message: next }))];
+    const drawer = drawerOp__.model;
+    const commands = drawerOp__.commands ?? []
+    return { model: { ...model, drawer }, commands: Command.mapMessages(commands, next => DrawerPreviewMessage.GotDrawerPreviewMessage({ message: next })) };
   },
   view: (index, model, h) => {
     const fixture = drawerFixtures[index] ?? drawerFixtures[0];
     return h.div([], [
       Button.button({
         variant: 'outline',
-        onClick: OpenedDrawerPreview(),
+        onClick: DrawerPreviewMessage.OpenedDrawerPreview(),
         children: [`Open ${fixture.direction} drawer`],
       }, h),
       Drawer.drawer({
         model: model.drawer,
-        toParentMessage: message => GotDrawerPreviewMessage({ message }),
+        toParentMessage: message => DrawerPreviewMessage.GotDrawerPreviewMessage({ message }),
         direction: fixture.direction,
         title: 'Move goal',
         description: 'Set your daily activity goal.',

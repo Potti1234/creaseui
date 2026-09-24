@@ -9,25 +9,28 @@ export const datePickerFixtures = [
 const source = (fixture: (typeof datePickerFixtures)[number], renderer: 'tailwind' | 'stylex'): string => { const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, ''); return foldkitApplication({
   title: `Date Picker — ${fixture.title}`,
   imports: `import { Option, Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import * as FoldkitCalendar from 'foldkit/calendar'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
 
 import * as DatePicker from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/date-picker'`,
   model: `export const Model = S.Struct({ datePicker: DatePicker.Model, selectedDate: S.Option(FoldkitCalendar.CalendarDate) })
 export type Model = typeof Model.Type`,
-  messages: `export const GotDatePickerMessage = m('GotDatePickerMessage${tag}', { message: DatePicker.Message })
+  messages: `import { taggedStruct } from 'foldkit/schema'
+export const GotDatePickerMessage = taggedStruct('GotDatePickerMessage${tag}', { message: DatePicker.Message });
 export const Message = S.Union([GotDatePickerMessage])
 export type Message = typeof Message.Type`,
   init: `const initialDate = { year: 2026, month: 7, day: 18 }
-export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [{ datePicker: DatePicker.init({ id: 'due-date-picker', today: { year: 2026, month: 7, day: 28 }, initialViewDate: initialDate, isAnimated: true }), selectedDate: ${fixture.empty ? 'Option.none()' : 'Option.some(initialDate)'} }, []]`,
-  update: `export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+export const init = (): Update.Return<Model, Message> => ({ model: { datePicker: DatePicker.init({ id: 'due-date-picker', today: { year: 2026, month: 7, day: 28 }, initialViewDate: initialDate, isAnimated: true }), selectedDate: ${fixture.empty ? 'Option.none()' : 'Option.some(initialDate)'} } })`,
+  update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'GotDatePickerMessage${tag}': {
-      const [datePicker, commands, maybeOutput] = DatePicker.update(model.datePicker, message.message)
+      const datePickerOp__ = DatePicker.update(model.datePicker, message.message);
+    const datePicker = datePickerOp__.model;
+    const commands = datePickerOp__.commands ?? [];
+    const maybeOutput = Option.fromNullishOr(datePickerOp__.outMessage);
       const selectedDate = Option.match(maybeOutput, { onNone: () => model.selectedDate, onSome: output => output._tag === 'SelectedDate' ? Option.some(output.date) : output._tag === 'ClearedDate' ? Option.none() : model.selectedDate })
-      return [{ ...model, datePicker, selectedDate }, Command.mapMessages(commands, next => GotDatePickerMessage({ message: next }))]
+      return { model: { ...model, datePicker, selectedDate }, commands: Command.mapMessages(commands, next => GotDatePickerMessage({ message: next })) }
     }
   }
 }`,

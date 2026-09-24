@@ -1,11 +1,13 @@
 import { Schema as S } from 'effect';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import { breadcrumbAriaLabel, breadcrumbRoute, longBreadcrumbRoute } from '@/docs/components/pages/breadcrumb/shared';
 import * as Breadcrumb from '@/ui/breadcrumb';
 
-const InteractedWithBreadcrumbPreview = m('InteractedWithBreadcrumbPreview');
+const InteractedWithBreadcrumbPreview = defineMessageUnion({
+  InteractedWithBreadcrumbPreview: {},
+});
 type InteractedWithBreadcrumbPreview = typeof InteractedWithBreadcrumbPreview.Type;
 const BreadcrumbPreviewModel = S.Struct({ _docsPage: S.Literal('breadcrumb') });
 type BreadcrumbPreviewModel = typeof BreadcrumbPreviewModel.Type;
@@ -14,7 +16,7 @@ export const breadcrumbTailwindPreviewProgram = definePreviewProgram<BreadcrumbP
   Model: BreadcrumbPreviewModel,
   Message: InteractedWithBreadcrumbPreview,
   init: () => ({ _docsPage: 'breadcrumb' }),
-  update: model => [model, []],
+  update: model => ({ model: model }),
   view: (index, _model, h) => index === 2
     ? Breadcrumb.breadcrumbTrail({ items: longBreadcrumbRoute, ariaLabel: 'Resource path' }, h)
     : Breadcrumb.breadcrumbTrail({

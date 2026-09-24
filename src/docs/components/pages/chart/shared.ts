@@ -72,9 +72,8 @@ const lifecycleSource = (renderer: 'tailwind' | 'stylex'): string => foldkitAppl
   title: 'Chart — ECharts lifecycle adapter',
   imports: `import type { EChartsOption } from 'echarts/types/dist/shared'
 import { Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
 
 import * as Chart from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/chart'`,
   model: `export const Model = S.Struct({ variant: S.Literals(['month', 'quarter']) })
@@ -88,16 +87,17 @@ Chart.registerChart(hostId, (theme, variant): EChartsOption => ({
   xAxis: Chart.categoryAxis(theme, variant === 'quarter' ? ['Q1', 'Q2', 'Q3', 'Q4'] : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], { boundaryGap: true }),
   yAxis: Chart.valueAxis(theme, { showLabels: true }),
 }))`,
-  messages: `export const ChangedRange = m('ChangedRange', { variant: S.Literals(['month', 'quarter']) })
+  messages: `import { taggedStruct } from 'foldkit/schema'
+export const ChangedRange = taggedStruct('ChangedRange', { variant: S.Literals(['month', 'quarter']) });
 export const Message = S.Union([Chart.ChartMessage, ChangedRange])
 export type Message = typeof Message.Type`,
-  init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [{ variant: 'month' }, []]`,
-  update: `export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+  init: `export const init = (): Update.Return<Model, Message> => ({ model: { variant: 'month' } })`,
+  update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
-    case 'ChangedRange': return [{ variant: message.variant }, [Chart.SyncChart({ hostId, variant: message.variant })]]
+    case 'ChangedRange': return { model: { variant: message.variant }, commands: [Chart.SyncChart({ hostId, variant: message.variant })] }
     case 'ChartMounted':
     case 'ChartMountFailed':
-    case 'CompletedSyncChart': return [model, []]
+    case 'CompletedSyncChart': return { model: model }
   }
 }`,
   view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
@@ -130,7 +130,7 @@ const familySource = (kind: ChartFamilyKind, renderer: 'tailwind' | 'stylex'): s
   title: `Chart — ${kind} chart`,
   imports: `import type { EChartsOption } from 'echarts/types/dist/shared'
 import { Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
 import * as Chart from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/chart'`,
@@ -144,8 +144,8 @@ Chart.registerChart(hostId, (theme): EChartsOption => ({
 }))`,
   messages: `export const Message = Chart.ChartMessage
 export type Message = typeof Message.Type`,
-  init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [{}, []]`,
-  update: `export const update = (model: Model, _message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [model, []]`,
+  init: `export const init = (): Update.Return<Model, Message> => ({ model: {} })`,
+  update: `export const update = (model: Model, _message: Message): Update.Return<Model, Message> => ({ model: model })`,
   view: `export const view = (_model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${kind[0]?.toUpperCase() ?? ''}${kind.slice(1)} chart',
   body: h.main([], [Chart.eChart({ accessibleAlternative: h.p([], ['${kind} chart showing the documented values.']), ariaLabel: '${kind} chart example', hostId, toMessage: message => message }, h)]),

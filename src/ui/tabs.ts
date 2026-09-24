@@ -176,7 +176,10 @@ export const tabs = StringTabs.tabs;
 /*
 Minimal wiring:
 const model = init({ id: 'account-tabs' })
-const [nextModel, commands, maybeSelection] = update(model, message)
+const nextModelOp__ = update(model, message);
+    const nextModel = nextModelOp__.model;
+    const commands = nextModelOp__.commands ?? [];
+    const maybeSelection = Option.fromNullishOr(nextModelOp__.outMessage);
 tabs({
   model,
   toParentMessage: message => GotTabsMessage({ message }),

@@ -64,16 +64,15 @@ import * as Sidebar from '@/stylex/sidebar'`,
         title: 'Model and messages',
         description: 'Sidebar.Model stores desktop visibility, mobile visibility, and the persistence key. Delegate every Sidebar.Message to Sidebar.update and map its persistence commands back into the parent message.',
         code: `case 'GotSidebarMessage': {
-  const [sidebar, commands] = Sidebar.update(
+  const sidebarOp__ = Sidebar.update(
     model.sidebar,
     message.message,
-  )
-  return [
-    { ...model, sidebar },
-    Command.mapMessages(commands, next =>
+  );
+    const sidebar = sidebarOp__.model;
+    const commands = sidebarOp__.commands ?? [];
+  return { model: { ...model, sidebar }, commands: Command.mapMessages(commands, next =>
       GotSidebarMessage({ message: next }),
-    ),
-  ]
+    ) }
 }`,
       },
       {

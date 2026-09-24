@@ -33,39 +33,42 @@ const source = (
   renderer: 'tailwind' | 'stylex',
 ): string => foldkitApplication({
   title: `Alert Dialog — ${fixture.title}`,
-  imports: `import { Effect, Option, Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+  imports: `import { Effect, Schema as S } from 'effect'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 import * as AlertDialog from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/alert-dialog'
 import * as Button from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/button'`,
   model: `export const Model = S.Struct({ dialog: AlertDialog.Model, status: S.Literals(['idle', 'pending', 'deleted']) })
 export type Model = typeof Model.Type`,
-  messages: `export const ClickedDelete = m('ClickedDelete')
-export const CompletedDelete = m('CompletedDelete')
-export const GotAlertDialogMessage = m('GotAlertDialogMessage', { message: AlertDialog.Message })
-export const Message = S.Union([ClickedDelete, CompletedDelete, GotAlertDialogMessage])
+  messages: `import { defineMessageUnion } from 'foldkit/message'
+
+
+
+export const Message = defineMessageUnion({
+  ClickedDelete: {},
+  CompletedDelete: {},
+  GotAlertDialogMessage: { message: AlertDialog.Message },
+});
 export type Message = typeof Message.Type`,
-  init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { dialog: AlertDialog.init({ id: 'delete-project', isAnimated: true }), status: 'idle' },
-  [],
-]`,
+  init: `export const init = (): Update.Return<Model, Message> => ({ model: { dialog: AlertDialog.init({ id: 'delete-project', isAnimated: true }), status: 'idle' } })`,
   update: `const DeleteProject = Command.define('DeleteProject', {
-  messages: [CompletedDelete],
-  execute: Effect.sleep('500 millis').pipe(Effect.as(CompletedDelete())),
+  messages: [Message.CompletedDelete],
+  execute: Effect.sleep('500 millis').pipe(Effect.as(Message.CompletedDelete())),
 })
 
-const applyDialog = (model: Model, result: ReturnType<typeof AlertDialog.update>): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
-  const [dialog, commands, out] = result
-  const mapped = Command.mapMessages(commands, message => GotAlertDialogMessage({ message }))
-  if (Option.isNone(out)) return [{ ...model, dialog }, mapped]
-  return out.value._tag === 'ConfirmedAlertDialog'
-    ? [{ ...model, dialog, status: 'pending' }, [...mapped, DeleteProject()]]
-    : [{ ...model, dialog, status: 'idle' }, mapped]
+const applyDialog = (model: Model, result: ReturnType<typeof AlertDialog.update>): Update.Return<Model, Message> => {
+  const dialog = result.model
+  const mapped = Command.mapMessages(result.commands, message => Message.GotAlertDialogMessage({ message }))
+  const out = result.outMessage
+  if (out === undefined) return { model: { ...model, dialog }, commands: mapped }
+  return out._tag === 'ConfirmedAlertDialog'
+    ? { model: { ...model, dialog, status: 'pending' }, commands: [...mapped, DeleteProject()] }
+    : { model: { ...model, dialog, status: 'idle' }, commands: mapped }
 }
 
-export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'ClickedDelete': return applyDialog(model, AlertDialog.open(model.dialog))
     case 'CompletedDelete': return applyDialog({ ...model, status: 'deleted' }, AlertDialog.close(model.dialog))
@@ -75,10 +78,10 @@ export const update = (model: Model, message: Message): readonly [Model, Readonl
   view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Alert Dialog — ${fixture.title}',
   body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
-    Button.button({ variant: 'destructive', onClick: ClickedDelete(), children: ['${fixture.triggerLabel}'] }, h),
+    Button.button({ variant: 'destructive', onClick: Message.ClickedDelete(), children: ['${fixture.triggerLabel}'] }, h),
     AlertDialog.alertDialog({
       model: model.dialog,
-      toParentMessage: message => GotAlertDialogMessage({ message }),
+      toParentMessage: message => Message.GotAlertDialogMessage({ message }),
       title: '${fixture.dialogTitle}',
       description: '${fixture.dialogDescription}',
       actionLabel: '${fixture.actionLabel}',

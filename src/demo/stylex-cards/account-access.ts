@@ -1,7 +1,8 @@
+import type { Update } from "foldkit";
 import { Match as M, Schema as S } from "effect";
 import type { Html, HtmlBuilder } from "foldkit/html";
-import { m } from "foldkit/message";
-import { evo } from "foldkit/struct";
+import { defineMessageUnion } from "foldkit/message";
+import { modifyFields } from "foldkit/struct";
 import * as stylex from "@stylexjs/stylex";
 
 import * as Icon from "@/demo/icon-preview";
@@ -57,23 +58,23 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const UpdatedEmail = m("UpdatedEmail", { value: S.String });
-export const UpdatedPassword = m("UpdatedPassword", { value: S.String });
-export const Message = S.Union([UpdatedEmail, UpdatedPassword]);
+
+
+export const Message = defineMessageUnion({
+  UpdatedEmail: { value: S.String },
+  UpdatedPassword: { value: S.String },
+});
 export type Message = typeof Message.Type;
 
 export const update = (
   model: Model,
   message: Message,
-): readonly [Model, readonly []] =>
+): Update.Return<Model, Message> =>
   M.value(message).pipe(
-    M.withReturnType<readonly [Model, readonly []]>(),
+    M.withReturnType<Update.Return<Model, Message>>(),
     M.tagsExhaustive({
-      UpdatedEmail: ({ value }) => [evo(model, { email: () => value }), []],
-      UpdatedPassword: ({ value }) => [
-        evo(model, { password: () => value }),
-        [],
-      ],
+      UpdatedEmail: ({ value }) => ({ model: modifyFields(model, { email: () => value }) }),
+      UpdatedPassword: ({ value }) => ({ model: modifyFields(model, { password: () => value }) }),
     }),
   );
 
@@ -170,7 +171,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                               id: "account-access-email",
                               type: "email",
                               value: model.email,
-                              onInput: (value) => UpdatedEmail({ value }),
+                              onInput: (value) => Message.UpdatedEmail({ value }),
                             },
                             h,
                           ),
@@ -205,7 +206,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                               id: "account-access-password",
                               type: "password",
                               value: model.password,
-                              onInput: (value) => UpdatedPassword({ value }),
+                              onInput: (value) => Message.UpdatedPassword({ value }),
                             },
                             h,
                           ),

@@ -1,8 +1,9 @@
+import type { Update } from 'foldkit'
 import { Match as M, Schema as S } from 'effect';
 import type { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 
 import * as Chart from '@/lib/echarts';
 import * as Icon from '@/lib/icon';
@@ -40,17 +41,17 @@ export type Model = typeof Model.Type;
 
 // MESSAGE
 
-export const DraggedCompare = m('DraggedCompare', { value: S.Number });
-export const ChangedDemoEmail = m('ChangedDemoEmail');
-export const GotChartMessage = m('GotChartMessage', {
-  message: Chart.ChartMessage,
-});
 
-export const Message = S.Union([
-  DraggedCompare,
-  ChangedDemoEmail,
-  GotChartMessage,
-]);
+
+
+
+export const Message = defineMessageUnion({
+  DraggedCompare: { value: S.Number },
+  ChangedDemoEmail: {},
+  GotChartMessage: {
+  message: Chart.ChartMessage,
+},
+});
 export type Message = typeof Message.Type;
 
 // INIT
@@ -59,18 +60,15 @@ export const init = (): Model => ({ comparePercent: 50 });
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      DraggedCompare: ({ value }) => [
-        evo(model, { comparePercent: () => value }),
-        [],
-      ],
-      ChangedDemoEmail: () => [model, []],
-      GotChartMessage: () => [model, []],
+      DraggedCompare: ({ value }) => ({ model: modifyFields(model, { comparePercent: () => value }) }),
+      ChangedDemoEmail: () => ({ model: model }),
+      GotChartMessage: () => ({ model: model }),
     }),
   );
 
@@ -102,7 +100,7 @@ Chart.registerChart(HERO_CHART_ID, (theme) => ({
 // VIEW HELPERS
 
 const toChart = (message: Chart.ChartMessage): Message =>
-  GotChartMessage({ message });
+  Message.GotChartMessage({ message });
 
 const sectionHeading = (
   title: string,
@@ -194,7 +192,7 @@ const heroCollage = (h: HtmlBuilder<Message>): Html => {
                         {
                           id: 'landing-demo-email',
                           value: '',
-                          onInput: () => ChangedDemoEmail(),
+                          onInput: () => Message.ChangedDemoEmail(),
                           label: 'Email',
                           placeholder: 'm@example.com',
                         },
@@ -387,7 +385,7 @@ const comparisonSlider = (model: Model, h: HtmlBuilder<Message>): Html => {
             h.Min('0'),
             h.Max('100'),
             h.Value(String(percent)),
-            h.OnInput((value) => DraggedCompare({ value: Number(value) || 0 })),
+            h.OnInput((value) => Message.DraggedCompare({ value: Number(value) || 0 })),
             h.AriaLabel('Comparison slider between crease/ui and shadcn/ui'),
             h.Class(
               'absolute inset-0 h-full w-full cursor-ew-resize opacity-0',

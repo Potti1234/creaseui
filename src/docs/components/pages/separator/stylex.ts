@@ -5,8 +5,8 @@ import type { StyleXExamplePreviewProvider } from '@/docs/components/page-defini
 import * as Separator from '@/stylex/separator';
 
 const styles = stylex.create({
-  horizontal: { display: 'grid', gap: '1rem', maxWidth: '28rem', width: '100%' },
-  vertical: { alignItems: 'center', display: 'flex', gap: '1rem', height: '1.25rem' },
+  horizontal: { gap: '1rem', display: 'grid', maxWidth: '28rem', width: '100%', },
+  vertical: { gap: '1rem', alignItems: 'center', display: 'flex', height: '1.25rem', },
 });
 
 export const separatorStyleXPreview: StyleXExamplePreviewProvider = <Msg>(

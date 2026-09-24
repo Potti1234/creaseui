@@ -1,5 +1,5 @@
 import { Textarea as TextareaPrimitive } from '@foldkit/ui'
-import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
+import type { Attribute, Html, HtmlBuilder, TextareaAttribute } from 'foldkit/html'
 
 export type ResizePolicy = 'none' | 'vertical' | 'horizontal' | 'both'
 export type WrapPolicy = 'soft' | 'hard' | 'off'
@@ -27,7 +27,7 @@ export type TextareaBehaviorProps<Msg> = Readonly<{
 export type TextareaVisualAttributes<Msg> = Readonly<{
   field: ReadonlyArray<Attribute<Msg>>
   label: ReadonlyArray<Attribute<Msg>>
-  textarea: ReadonlyArray<Attribute<Msg>>
+  textarea: ReadonlyArray<TextareaAttribute<Msg>>
   description: ReadonlyArray<Attribute<Msg>>
 }>
 
@@ -65,7 +65,8 @@ export const renderTextarea = <Msg>(
         const isInteractive = props.isDisabled !== true && props.isReadOnly !== true
         const describedBy = descriptionIds(props)
         const textareaAttributes = primitiveTextarea.filter(
-          (attribute) => attribute._tag !== 'AriaDescribedBy',
+          (attribute): attribute is TextareaAttribute<Msg> =>
+            attribute._tag !== 'AriaDescribedBy',
         )
         const control = h.textarea(
           [
@@ -80,7 +81,6 @@ export const renderTextarea = <Msg>(
             ...(describedBy === undefined ? [] : [h.AriaDescribedBy(describedBy)]),
             ...visual.textarea,
           ],
-          [],
         )
 
         if (props.label === undefined && props.description === undefined) return control

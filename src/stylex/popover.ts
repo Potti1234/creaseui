@@ -34,8 +34,8 @@ export const init = PopoverPrimitive.init;
 export const update = PopoverPrimitive.update;
 export const open = PopoverPrimitive.open;
 export const close = PopoverPrimitive.close;
-export const RequestedOpen = PopoverPrimitive.RequestedOpen;
-export const RequestedClose = PopoverPrimitive.RequestedClose;
+export const RequestedOpen = PopoverPrimitive.Message.RequestedOpen;
+export const RequestedClose = PopoverPrimitive.Message.RequestedClose;
 
 const CONTENT_CLASS = styles.content
 
@@ -122,7 +122,10 @@ export const popover = <Msg>(
 /*
 Minimal wiring:
 const model = init({ id: 'profile-popover', isAnimated: true })
-const [nextModel, commands, maybeVisibility] = update(model, message)
+const nextModelOp__ = update(model, message);
+    const nextModel = nextModelOp__.model;
+    const commands = nextModelOp__.commands ?? [];
+    const maybeVisibility = Option.fromNullishOr(nextModelOp__.outMessage);
 popover({
   model,
   toParentMessage: message => GotPopoverMessage({ message }),

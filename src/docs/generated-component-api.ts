@@ -8,11 +8,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "export { AccordionType } from '@/lib/accordion-state'"
     },
     {
-      "name": "ChangedValue",
-      "kind": "re-export",
-      "signature": "export { ChangedValue } from '@/lib/accordion-state'"
-    },
-    {
       "name": "Message",
       "kind": "re-export",
       "signature": "export { Message } from '@/lib/accordion-state'"
@@ -26,11 +21,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "OutMessage",
       "kind": "re-export",
       "signature": "export { OutMessage } from '@/lib/accordion-state'"
-    },
-    {
-      "name": "ToggledItem",
-      "kind": "re-export",
-      "signature": "export { ToggledItem } from '@/lib/accordion-state'"
     },
     {
       "name": "init",
@@ -226,16 +216,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "Model",
       "kind": "type",
       "signature": "Model = typeof Model.Type"
-    },
-    {
-      "name": "Loaded",
-      "kind": "value",
-      "signature": "Loaded: value"
-    },
-    {
-      "name": "Failed",
-      "kind": "value",
-      "signature": "Failed: value"
     },
     {
       "name": "Message",
@@ -1443,56 +1423,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "Model = typeof Model.Type"
     },
     {
-      "name": "Opened",
-      "kind": "value",
-      "signature": "Opened: value"
-    },
-    {
-      "name": "AnchoredAt",
-      "kind": "value",
-      "signature": "AnchoredAt: value"
-    },
-    {
-      "name": "OpenedFromContext",
-      "kind": "value",
-      "signature": "OpenedFromContext: value"
-    },
-    {
-      "name": "OpenedAt",
-      "kind": "value",
-      "signature": "OpenedAt: value"
-    },
-    {
-      "name": "Closed",
-      "kind": "value",
-      "signature": "Closed: value"
-    },
-    {
-      "name": "ActivatedItem",
-      "kind": "value",
-      "signature": "ActivatedItem: value"
-    },
-    {
-      "name": "OpenedSubmenu",
-      "kind": "value",
-      "signature": "OpenedSubmenu: value"
-    },
-    {
-      "name": "ActivatedSubmenuItem",
-      "kind": "value",
-      "signature": "ActivatedSubmenuItem: value"
-    },
-    {
-      "name": "ClosedSubmenu",
-      "kind": "value",
-      "signature": "ClosedSubmenu: value"
-    },
-    {
-      "name": "SelectedItem",
-      "kind": "value",
-      "signature": "SelectedItem: value"
-    },
-    {
       "name": "Message",
       "kind": "value",
       "signature": "Message: value"
@@ -1501,11 +1431,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "Message",
       "kind": "type",
       "signature": "Message = typeof Message.Type"
-    },
-    {
-      "name": "Selected",
-      "kind": "value",
-      "signature": "Selected: value"
     },
     {
       "name": "OutMessage",
@@ -2635,26 +2560,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "Model = typeof Model.Type"
     },
     {
-      "name": "StartedResize",
-      "kind": "value",
-      "signature": "StartedResize: value"
-    },
-    {
-      "name": "DraggedResize",
-      "kind": "value",
-      "signature": "DraggedResize: value"
-    },
-    {
-      "name": "EndedResize",
-      "kind": "value",
-      "signature": "EndedResize: value"
-    },
-    {
-      "name": "NudgedResize",
-      "kind": "value",
-      "signature": "NudgedResize: value"
-    },
-    {
       "name": "Message",
       "kind": "value",
       "signature": "Message: value"
@@ -2693,26 +2598,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "GroupModel",
       "kind": "type",
       "signature": "GroupModel = typeof GroupModel.Type"
-    },
-    {
-      "name": "StartedGroupResize",
-      "kind": "value",
-      "signature": "StartedGroupResize: value"
-    },
-    {
-      "name": "DraggedGroupResize",
-      "kind": "value",
-      "signature": "DraggedGroupResize: value"
-    },
-    {
-      "name": "EndedGroupResize",
-      "kind": "value",
-      "signature": "EndedGroupResize: value"
-    },
-    {
-      "name": "NudgedGroupResize",
-      "kind": "value",
-      "signature": "NudgedGroupResize: value"
     },
     {
       "name": "GroupMessage",

@@ -1,7 +1,8 @@
 import { Match as M, Option, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command, Subscription } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import {
   card,
@@ -20,14 +21,17 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const GotPositionMessage = m('GotPositionMessage', {
+
+
+export const Message = defineMessageUnion({
+  GotPositionMessage: {
   message: Slider.Message,
+},
+  SelectedPreset: { value: S.String },
 });
-export const SelectedPreset = m('SelectedPreset', { value: S.String });
-export const Message = S.Union([GotPositionMessage, SelectedPreset]);
 export type Message = typeof Message.Type;
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const init = (): Model => ({
   position: Slider.init({
@@ -44,23 +48,22 @@ export const update = (model: Model, message: Message): UpdateReturn =>
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotPositionMessage: ({ message: childMessage }) => {
-        const [position, commands, maybeChange] = Slider.update(
+        const { model: position, commands: positionCommands__, outMessage: positionOut__ } = Slider.update(
           model.position,
           childMessage,
-        );
-        return [
-          {
+        )
+        const commands = positionCommands__ ?? []
+        const maybeChange = Option.fromNullishOr(positionOut__)
+        return { model: {
             ...model,
             position,
             positionValue: Option.match(maybeChange, {
               onNone: () => model.positionValue,
               onSome: (change) => change.value,
             }),
-          },
-          Command.mapMessages(commands, (next) =>
-            GotPositionMessage({ message: next }),
-          ),
-        ];
+          }, commands: Command.mapMessages(commands, (next) =>
+            Message.GotPositionMessage({ message: next }),
+          ) };
       },
       SelectedPreset: ({ value }) => {
         const position =
@@ -73,14 +76,11 @@ export const update = (model: Model, message: Message): UpdateReturn =>
                 : undefined;
 
         return position === undefined
-          ? [model, []]
-          : [
-              {
+          ? ({ model: model })
+          : { model: {
                 ...model,
                 positionValue: position,
-              },
-              [],
-            ];
+              }, };
       },
     }),
   );
@@ -143,7 +143,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                       model: model.position,
                       value: model.positionValue,
                       toParentMessage: (message) =>
-                        GotPositionMessage({ message }),
+                        Message.GotPositionMessage({ message }),
                       ariaLabel: 'Shade position',
                       class: 'flex-1',
                     },
@@ -170,7 +170,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
               toggleGroup(
                 {
                   value: preset,
-                  onToggle: (value) => SelectedPreset({ value }),
+                  onToggle: (value) => Message.SelectedPreset({ value }),
                   variant: 'outline',
                   class: 'w-full gap-1',
                   items: [
@@ -206,8 +206,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
 /*
 Minimal wiring:
 const model = init()
-const [nextModel, commands] = update(model, message)
-const cardView = view(model)
+const next = update(model, message)
+const cardView = view(next.model)
 */
 // Stateful? yes. Submodels wired: position slider. PORT NOTEs: none.
 
@@ -219,6 +219,6 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
     shadePositionEscape: Slider.subscriptions.dragEscape,
   })<Model, Message>({
     toChildModel: (model) => model.position,
-    toParentMessage: (message) => GotPositionMessage({ message }),
+    toParentMessage: (message) => Message.GotPositionMessage({ message }),
   }),
 );

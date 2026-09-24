@@ -10,10 +10,10 @@ import { interactionTokens } from './interaction-tokens.stylex.const'
 
 export const Model = MessageScrollerBehavior.Model
 export type Model = MessageScrollerBehavior.Model
-export const Scrolled = MessageScrollerBehavior.Scrolled
-export const ObservedViewport = MessageScrollerBehavior.ObservedViewport
-export const RequestedScroll = MessageScrollerBehavior.RequestedScroll
-export const CompletedMessageScrollerScrollTo = MessageScrollerBehavior.CompletedMessageScrollerScrollTo
+export const Scrolled = MessageScrollerBehavior.Message.Scrolled
+export const ObservedViewport = MessageScrollerBehavior.Message.ObservedMessageScrollerViewport
+export const RequestedScroll = MessageScrollerBehavior.Message.RequestedScroll
+export const CompletedMessageScrollerScrollTo = MessageScrollerBehavior.Message.CompletedMessageScrollerScrollTo
 export const Message = MessageScrollerBehavior.Message
 export type Message = MessageScrollerBehavior.Message
 export const init = MessageScrollerBehavior.init

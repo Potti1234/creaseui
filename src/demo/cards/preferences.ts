@@ -1,8 +1,9 @@
 import { Match as M, Option, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 
 import * as Icon from '@/demo/icon-preview';
 import { button } from '@/ui/button';
@@ -34,35 +35,36 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const GotCurrencyMessage = m('GotCurrencyMessage', {
+
+
+
+export const Message = defineMessageUnion({
+  GotCurrencyMessage: {
   message: Select.Message,
-});
-export const ToggledPublicStatistics = m('ToggledPublicStatistics', {
+},
+  ToggledPublicStatistics: {
   isChecked: S.Boolean,
-});
-export const ToggledEmailNotifications = m('ToggledEmailNotifications', {
+},
+  ToggledEmailNotifications: {
   isChecked: S.Boolean,
+},
 });
-export const Message = S.Union([
-  GotCurrencyMessage,
-  ToggledPublicStatistics,
-  ToggledEmailNotifications,
-]);
 export type Message = typeof Message.Type;
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotCurrencyMessage: ({ message: childMessage }) => {
-        const [currency, commands, maybeSelection] = Select.update(
+        const { model: currency, commands: currencyCommands__, outMessage: currencyOut__ } = Select.update(
           model.currency,
           childMessage,
-        );
-        return [
-          evo(model, {
+        )
+        const commands = currencyCommands__ ?? []
+        const maybeSelection = Option.fromNullishOr(currencyOut__)
+        return { model: modifyFields(model, {
             currency: () => currency,
             selectedCurrency: (current) =>
               Option.match(maybeSelection, {
@@ -70,20 +72,12 @@ export const update = (model: Model, message: Message): UpdateReturn =>
                 onSome: (selection) =>
                   selection._tag === 'Selected' ? selection.value : current,
               }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotCurrencyMessage({ message: next }),
-          ),
-        ];
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotCurrencyMessage({ message: next }),
+          ) };
       },
-      ToggledPublicStatistics: ({ isChecked }) => [
-        { ...model, publicStatistics: isChecked },
-        [],
-      ],
-      ToggledEmailNotifications: ({ isChecked }) => [
-        { ...model, emailNotifications: isChecked },
-        [],
-      ],
+      ToggledPublicStatistics: ({ isChecked }) => ({ model: { ...model, publicStatistics: isChecked } }),
+      ToggledEmailNotifications: ({ isChecked }) => ({ model: { ...model, emailNotifications: isChecked } }),
     }),
   );
 
@@ -155,7 +149,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                                 model.selectedCurrency,
                               ),
                               toParentMessage: (message) =>
-                                GotCurrencyMessage({ message }),
+                                Message.GotCurrencyMessage({ message }),
                               items: currencies,
                               itemToValue: (currency) => currency.value,
                               itemToLabel: (currency) => currency.label,
@@ -173,7 +167,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                         id: 'preferences-public-statistics',
                         isChecked: model.publicStatistics,
                         onToggle: (isChecked) =>
-                          ToggledPublicStatistics({ isChecked }),
+                          Message.ToggledPublicStatistics({ isChecked }),
                         label: 'Public Statistics',
                         description:
                           'Allow others to see your total stream count and listening activity',
@@ -187,7 +181,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                         id: 'preferences-email-notifications',
                         isChecked: model.emailNotifications,
                         onToggle: (isChecked) =>
-                          ToggledEmailNotifications({ isChecked }),
+                          Message.ToggledEmailNotifications({ isChecked }),
                         label: 'Email Notifications',
                         description:
                           'Monthly royalty reports and distribution updates',

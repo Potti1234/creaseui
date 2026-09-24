@@ -33,8 +33,9 @@ const verifyRenderer = (name: string, Radio: RadioModule) => {
       Scene.scene(
         {
           update: (model: Model, message: Message) => {
-            const [radio, commands, selected] = Radio.update(model.radio, message.message)
-            return [{ ...model, radio, value: Option.match(selected, { onNone: () => model.value, onSome: out => out.value }) }, Command.mapMessages(commands, child => ({ _tag: 'GotRadio', message: child }))] as const
+            const result = Radio.update(model.radio, message.message)
+            const out = result.outMessage
+            return { model: { ...model, radio: result.model, value: out === undefined ? model.value : out.value }, commands: Command.mapMessages(result.commands, child => ({ _tag: 'GotRadio' as const, message: child })) }
           },
           view: (model, h) => Radio.radioGroup({
             model: model.radio, selectedValue: Option.some(model.value),
@@ -51,14 +52,14 @@ const verifyRenderer = (name: string, Radio: RadioModule) => {
         Scene.expect(Scene.role('radio', { name: 'Comfortable' })).toBeChecked(),
         Scene.expect(Scene.selector('input[type="hidden"]')).toHaveValue('comfortable'),
         Scene.expect(Scene.role('radio', { name: 'Compact' })).toHaveAttr('aria-disabled', 'true'),
-        Scene.Command.resolve(RadioGroupPrimitive.FocusOption, RadioGroupPrimitive.CompletedFocusOption()),
+        Scene.Command.resolve(RadioGroupPrimitive.FocusOption, RadioGroupPrimitive.Message.CompletedFocusOption()),
       )
     })
 
     it('keeps read-only selection inert in an RTL group', () => {
       Scene.scene(
         {
-          update: (model: Model) => [model, []] as const,
+          update: (model: Model) => ({ model: model }),
           view: (model, h) => Radio.radioGroup({
             model: model.radio, selectedValue: Option.some(model.value),
             toParentMessage: message => ({ _tag: 'GotRadio', message }),

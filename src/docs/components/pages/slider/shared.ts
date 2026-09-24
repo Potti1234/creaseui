@@ -9,9 +9,8 @@ const sliderSource = (
 ): string => foldkitApplication({
   title: `Slider — ${name}`,
   imports: `import { Option, Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
 
 import * as Slider from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/slider'${
     renderer === 'stylex'
@@ -26,34 +25,32 @@ const styles = stylex.create({ slider: { maxWidth: '24rem' } })`
   volume: S.Number,
 })
 export type Model = typeof Model.Type`,
-  messages: `export const GotSliderMessage = m('GotSliderMessage${name.replaceAll(/[^a-zA-Z0-9]/g, '')}', { message: Slider.Message })
+  messages: `import { taggedStruct } from 'foldkit/schema'
+export const GotSliderMessage = taggedStruct('GotSliderMessage${name.replaceAll(/[^a-zA-Z0-9]/g, '')}', { message: Slider.Message });
 export const Message = S.Union([GotSliderMessage])
 export type Message = typeof Message.Type`,
-  init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  {
+  init: `export const init = (): Update.Return<Model, Message> => ({ model: {
     slider: Slider.init({ id: 'volume', min: 0, max: 100, step: 1 }),
     volume: ${String(initialValue)},
-  },
-  [],
-]`,
+  } })`,
   update: `export const update = (
   model: Model,
   message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'GotSliderMessage${name.replaceAll(/[^a-zA-Z0-9]/g, '')}': {
-      const [slider, commands, maybeChange] = Slider.update(model.slider, message.message)
-      return [
-        {
+      const sliderOp__ = Slider.update(model.slider, message.message);
+    const slider = sliderOp__.model;
+    const commands = sliderOp__.commands ?? [];
+    const maybeChange = Option.fromNullishOr(sliderOp__.outMessage);
+      return { model: {
           ...model,
           slider,
           volume: Option.match(maybeChange, {
             onNone: () => model.volume,
             onSome: change => change.value,
           }),
-        },
-        Command.mapMessages(commands, next => GotSliderMessage({ message: next })),
-      ]
+        }, commands: Command.mapMessages(commands, next => GotSliderMessage({ message: next })) }
     }
   }
 }`,
@@ -92,24 +89,18 @@ const rangeSource = (
 ): string => foldkitApplication({
   title: `Slider — ${name}`,
   imports: `import { Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
 
 import * as Slider from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/slider'`,
   model: `export const Model = S.Struct({ values: S.Tuple([S.Number, S.Number]) })
 export type Model = typeof Model.Type`,
-  messages: `export const ChangedRange = m('ChangedRange${name.replaceAll(/[^a-zA-Z0-9]/g, '')}', { lower: S.Number, upper: S.Number })
+  messages: `import { taggedStruct } from 'foldkit/schema'
+export const ChangedRange = taggedStruct('ChangedRange${name.replaceAll(/[^a-zA-Z0-9]/g, '')}', { lower: S.Number, upper: S.Number });
 export const Message = S.Union([ChangedRange])
 export type Message = typeof Message.Type`,
-  init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { values: [25, 75] },
-  [],
-]`,
-  update: `export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { ...model, values: [message.lower, message.upper] },
-  [],
-]`,
+  init: `export const init = (): Update.Return<Model, Message> => ({ model: { values: [25, 75] } })`,
+  update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => ({ model: { ...model, values: [message.lower, message.upper] } })`,
   view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Slider — ${name}',
   body: h.main([h.Class('mx-auto max-w-md p-8')], [

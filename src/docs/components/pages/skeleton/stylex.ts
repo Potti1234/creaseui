@@ -5,10 +5,10 @@ import type { StyleXExamplePreviewProvider } from '@/docs/components/page-defini
 import * as Skeleton from '@/stylex/skeleton';
 
 const styles = stylex.create({
-  profile: { alignItems: 'center', display: 'flex', gap: '1rem' },
-  lines: { display: 'grid', gap: '0.5rem' },
+  profile: { gap: '1rem', alignItems: 'center', display: 'flex', },
+  lines: { gap: '0.5rem', display: 'grid', },
   wideLine: { width: '12rem' },
-  card: { display: 'grid', gap: '0.75rem', maxWidth: '24rem', width: '100%' },
+  card: { gap: '0.75rem', display: 'grid', maxWidth: '24rem', width: '100%', },
   media: { aspectRatio: 16 / 9, width: '100%' },
   title: { height: '1rem', width: '75%' },
   copy: { height: '1rem', width: '50%' },

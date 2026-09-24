@@ -8,7 +8,7 @@ import * as AlertDialog from '@/stylex/alert-dialog';
 import * as Button from '@/stylex/button';
 
 const styles = stylex.create({
-  frame: { display: 'grid', gap: '0.75rem', justifyItems: 'center' },
+  frame: { gap: '0.75rem', display: 'grid', justifyItems: 'center', },
   status: {
     color: 'var(--muted-foreground)',
     fontSize: '0.875rem',

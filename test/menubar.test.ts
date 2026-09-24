@@ -10,22 +10,22 @@ describe('Menubar focus behavior', () => {
   })
 
   it('emits movement and schedules focus for the target trigger', () => {
-    const [model, commands, maybeMove] = Menubar.update(
+    const op1__ = Menubar.update(
       Menubar.init({ id: 'app-menu' }),
-      Menubar.Moved({ index: 2, triggerId: 'view-trigger' }),
-    )
+      Menubar.Message.MovedMenubarFocus({ index: 2, triggerId: 'view-trigger' }),
+    ); const model = op1__.model; const commands = op1__.commands ?? []; const maybeMove = op1__.outMessage;
     assert.equal(model.activeIndex, 2)
     assert.equal(commands.length, 1)
-    assert.deepEqual(Option.getOrUndefined(maybeMove), { _tag: 'MovedToMenubar', index: 2 })
+    assert.deepEqual(maybeMove, { _tag: 'MovedToMenubar', index: 2 })
   })
 
   it('tracks focus without emitting an application fact', () => {
-    const [model, commands, maybeMove] = Menubar.update(
+    const op2__ = Menubar.update(
       Menubar.init({ id: 'app-menu' }),
-      Menubar.Focused({ index: 1 }),
-    )
+      Menubar.Message.FocusedMenubarTrigger({ index: 1 }),
+    ); const model = op2__.model; const commands = op2__.commands ?? []; const maybeMove = op2__.outMessage;
     assert.equal(model.activeIndex, 1)
     assert.deepEqual(commands, [])
-    assert.equal(Option.isNone(maybeMove), true)
+    assert.equal(maybeMove === undefined, true)
   })
 })

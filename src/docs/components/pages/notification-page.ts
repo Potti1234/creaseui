@@ -18,41 +18,34 @@ const application = (config: NotificationConfig, example: string, variant: Sonne
   return foldkitApplication({
     title: `${config.title} — ${example}`,
     imports: `import { Option, Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
 
 import * as Button from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/button'
 import * as ${config.namespace} from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/${config.slug}'`,
     model: `export const Model = S.Struct({ notifications: ${config.namespace}.Model, maybeLastDismissedTitle: S.Option(S.String) })
 export type Model = typeof Model.Type`,
-    messages: `export const ClickedShow = m('ClickedShow${config.title}${example.replaceAll(/[^a-zA-Z0-9]/g, '')}')
-export const GotNotificationMessage = m('Got${config.title}Message${example.replaceAll(/[^a-zA-Z0-9]/g, '')}', { message: ${config.namespace}.Message })
+    messages: `import { taggedStruct } from 'foldkit/schema'
+export const ClickedShow = taggedStruct('ClickedShow${config.title}${example.replaceAll(/[^a-zA-Z0-9]/g, '')}');
+export const GotNotificationMessage = taggedStruct('Got${config.title}Message${example.replaceAll(/[^a-zA-Z0-9]/g, '')}', { message: ${config.namespace}.Message });
 export const Message = S.Union([ClickedShow, GotNotificationMessage])
 export type Message = typeof Message.Type`,
-    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { notifications: ${config.namespace}.init({ id: '${config.slug}-demo' }), maybeLastDismissedTitle: Option.none() },
-  [],
-]`,
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: { notifications: ${config.namespace}.init({ id: '${config.slug}-demo' }), maybeLastDismissedTitle: Option.none() } })`,
     update: `const mapNotifications = (
   model: Model,
   result: ReturnType<typeof ${config.namespace}.update>,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
-  const [notifications, commands, maybeDismissed] = result
-  return [
-    {
+): Update.Return<Model, Message> => {
+  const out = result.outMessage
+  return { model: {
       ...model,
-      notifications,
-      maybeLastDismissedTitle: Option.match(maybeDismissed, {
-        onNone: () => model.maybeLastDismissedTitle,
-        onSome: output => Option.some(output.entry.payload.title),
-      }),
-    },
-    Command.mapMessages(commands, next => GotNotificationMessage({ message: next })),
-  ]
+      notifications: result.model,
+      maybeLastDismissedTitle: out === undefined
+        ? model.maybeLastDismissedTitle
+        : Option.some(out.entry.payload.title),
+    }, commands: Command.mapMessages(result.commands, next => GotNotificationMessage({ message: next })) }
 }
 
-export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'ClickedShow${config.title}${example.replaceAll(/[^a-zA-Z0-9]/g, '')}':
       return mapNotifications(model, ${config.namespace}.show(model.notifications, ${config.namespace}.${factory}({
@@ -88,7 +81,7 @@ export const notificationExamples = (config: NotificationConfig, renderer: 'tail
 export const notificationDefinition = (config: NotificationConfig): PageDefinition => ({
   kind: config.kind, description: config.description,
   architecture: `${config.title} uses the canonical notification Model. show and updateToast issue versioned delay Commands; stale completions are ignored. ActivatedToast and DismissedToast OutMessages keep application consequences in the parent.`,
-  usage: `const [notifications, commands] = ${config.namespace}.show(
+  usage: `const { model: notifications, commands = [] } = ${config.namespace}.show(
   model.notifications,
   { title: 'Saved', variant: 'Success' },
 )

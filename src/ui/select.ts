@@ -251,8 +251,10 @@ export const select = StringSelect.select;
    // Init: colorSelect: init({ id: 'color', isAnimated: true })
    //
    // Update:
-   // const [colorSelect, commands, maybeOutMessage] =
-   //   ColorSelect.update(model.colorSelect, message)
+   // const colorSelectOp__ = //   ColorSelect.update(model.colorSelect, message);
+    const colorSelect = colorSelectOp__.model;
+    const commands = colorSelectOp__.commands ?? [];
+    const maybeOutMessage = Option.fromNullishOr(colorSelectOp__.outMessage);
    //
    // View:
    // ColorSelect.select<Color, AppMessage>({

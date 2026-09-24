@@ -1,11 +1,13 @@
 import { Schema as S } from 'effect';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import { aspectRatioFixtures } from '@/docs/components/pages/aspect-ratio/shared';
 import * as AspectRatio from '@/ui/aspect-ratio';
 
-const InteractedWithAspectRatioPreview = m('InteractedWithAspectRatioPreview');
+const InteractedWithAspectRatioPreview = defineMessageUnion({
+  InteractedWithAspectRatioPreview: {},
+});
 type InteractedWithAspectRatioPreview = typeof InteractedWithAspectRatioPreview.Type;
 const AspectRatioPreviewModel = S.Struct({
   _docsPage: S.Literal('aspect-ratio'),
@@ -19,7 +21,7 @@ export const aspectRatioTailwindPreviewProgram = definePreviewProgram<
   Model: AspectRatioPreviewModel,
   Message: InteractedWithAspectRatioPreview,
   init: () => ({ _docsPage: 'aspect-ratio' }),
-  update: model => [model, []],
+  update: model => ({ model: model }),
   view: (index, _model, h) => {
     const item = aspectRatioFixtures[index] ?? aspectRatioFixtures[0];
     return AspectRatio.aspectRatio({

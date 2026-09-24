@@ -1,12 +1,14 @@
 import { Schema as S } from 'effect';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import { alertFixtures } from '@/docs/components/pages/alert/shared';
 import * as Icon from '@/lib/icon';
 import * as Alert from '@/ui/alert';
 
-const InteractedWithAlertPreview = m('InteractedWithAlertPreview');
+const InteractedWithAlertPreview = defineMessageUnion({
+  InteractedWithAlertPreview: {},
+});
 type InteractedWithAlertPreview = typeof InteractedWithAlertPreview.Type;
 const AlertPreviewModel = S.Struct({ _docsPage: S.Literal('alert') });
 type AlertPreviewModel = typeof AlertPreviewModel.Type;
@@ -18,7 +20,7 @@ export const alertTailwindPreviewProgram = definePreviewProgram<
   Model: AlertPreviewModel,
   Message: InteractedWithAlertPreview,
   init: () => ({ _docsPage: 'alert' }),
-  update: model => [model, []],
+  update: model => ({ model: model }),
   view: (index, _model, h) => {
     const item = alertFixtures[index] ?? alertFixtures[0];
     const icon = item.icon === 'circleCheck'

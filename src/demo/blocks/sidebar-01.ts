@@ -1,8 +1,9 @@
 import { Match as M, Option, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 
 import * as Icon from '@/lib/icon';
 import {
@@ -120,13 +121,17 @@ export type Model = typeof Model.Type;
 
 // MESSAGE
 
-export const ToggledSidebar = m('ToggledSidebar');
-export const ToggledMobileSidebar = m('ToggledMobileSidebar');
-export const GotVersionMenuMessage = m('GotVersionMenuMessage', {
-  message: DropdownMenu.Message,
-});
 
-export const Message = S.Union([ToggledMobileSidebar, ToggledSidebar, GotVersionMenuMessage]);
+
+
+
+export const Message = defineMessageUnion({
+  ToggledMobileSidebar: {},
+  ToggledSidebar: {},
+  GotVersionMenuMessage: {
+  message: DropdownMenu.Message,
+},
+});
 export type Message = typeof Message.Type;
 
 // INIT
@@ -142,36 +147,33 @@ export const init = (): Model => ({
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledMobileSidebar: () => [evo(model, {isMobileOpen: current => !current}), []],
-      ToggledSidebar: () => [
-        evo(model, { isSidebarOpen: (current) => !current }),
-        [],
-      ],
+      ToggledMobileSidebar: () => ({ model: modifyFields(model, {isMobileOpen: current => !current}) }),
+      ToggledSidebar: () => ({ model: modifyFields(model, { isSidebarOpen: (current) => !current }) }),
       GotVersionMenuMessage: ({ message: childMessage }) => {
-        const [versionMenu, commands, maybeSelection] = VersionMenu.update(
+        const versionMenuOp__ = VersionMenu.update(
           model.versionMenu,
           childMessage,
         );
+    const versionMenu = versionMenuOp__.model;
+    const commands = versionMenuOp__.commands ?? [];
+    const maybeSelection = Option.fromNullishOr(versionMenuOp__.outMessage);;
         const selectedVersion = Option.match(maybeSelection, {
           onNone: () => model.selectedVersion,
           onSome: ({ value }) => value,
         });
 
-        return [
-          evo(model, {
+        return { model: modifyFields(model, {
             versionMenu: () => versionMenu,
             selectedVersion: () => selectedVersion,
-          }),
-          Command.mapMessages(commands, (nextMessage) =>
-            GotVersionMenuMessage({ message: nextMessage }),
-          ),
-        ];
+          }), commands: Command.mapMessages(commands, (nextMessage) =>
+            Message.GotVersionMenuMessage({ message: nextMessage }),
+          ) };
       },
     }),
   );
@@ -211,7 +213,7 @@ const versionSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
                 {
                   model: model.versionMenu,
                   toParentMessage: (message) =>
-                    GotVersionMenuMessage({ message }),
+                    Message.GotVersionMenuMessage({ message }),
                   trigger,
                   triggerClass: sidebarMenuButtonVariants({
                     size: 'lg',
@@ -339,7 +341,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
 
   return sidebar<Message>(
     {
-      isMobileOpen: model.isMobileOpen, onMobileDismiss: ToggledMobileSidebar(), state,
+      isMobileOpen: model.isMobileOpen, onMobileDismiss: Message.ToggledMobileSidebar(), state,
       children: [
         sidebarHeader(
           {
@@ -348,7 +350,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
           h,
         ),
         navMain(h),
-        sidebarRail({ onClick: ToggledSidebar() }, h),
+        sidebarRail({ onClick: Message.ToggledSidebar() }, h),
       ],
     },
     h,
@@ -362,7 +364,7 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
         h.header(
           [h.Class('flex h-16 shrink-0 items-center gap-2 border-b px-4')],
           [
-            sidebarTrigger({ onMobileClick: ToggledMobileSidebar(), onClick: ToggledSidebar(), class: '-ml-1' }, h),
+            sidebarTrigger({ onMobileClick: Message.ToggledMobileSidebar(), onClick: Message.ToggledSidebar(), class: '-ml-1' }, h),
             separator(
               {
                 orientation: 'vertical',

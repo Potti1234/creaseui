@@ -13,8 +13,8 @@ for (const kind of chartFamilyKinds) Chart.registerChart(chartFamilyHostId(kind)
 const styles = stylex.create({
   button: { borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: 1, paddingBlock: '0.5rem', paddingInline: '0.75rem', fontSize: '0.875rem' },
   chart: { maxWidth: '36rem' },
-  frame: { display: 'grid', gap: '0.75rem', width: '100%', maxWidth: '36rem' },
-  stack: { width: '100%', maxWidth: '36rem' },
+  frame: { gap: '0.75rem', display: 'grid', maxWidth: '36rem', width: '100%', },
+  stack: { maxWidth: '36rem', width: '100%', },
 });
 
 const table = <Msg>(h: HtmlBuilder<Msg>) => Table.table({ children: [Table.tableCaption({ children: ['Revenue values shown in the chart.'] }, h), Table.tableHeader({ children: [Table.tableRow({ children: [Table.tableHead({ children: ['Period'] }, h), Table.tableHead({ children: ['Revenue'] }, h)] }, h)] }, h), Table.tableBody({ children: [['Jan', '$186k'], ['Feb', '$305k'], ['Mar', '$237k']].map(([period, value]) => Table.tableRow({ children: [Table.tableHead({ scope: 'row', children: [period ?? ''] }, h), Table.tableCell({ children: [value ?? ''] }, h)] }, h)) }, h)] }, h);

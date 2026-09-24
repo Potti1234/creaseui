@@ -1,7 +1,7 @@
 import { Schema as S } from 'effect';
 import { Command } from 'foldkit';
 import type { HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import { popoverFixtures } from '@/docs/components/pages/popover/shared';
@@ -13,7 +13,9 @@ const content = <Msg>(h: HtmlBuilder<Msg>) => h.div([h.Class('grid gap-2')], [
   h.input([h.Type('number'), h.AriaLabel('Width'), h.Class('rounded-md border px-3 py-2')]),
 ]);
 
-const GotPopoverPreviewMessage = m('GotPopoverPreviewMessage', { message: Popover.Message });
+const GotPopoverPreviewMessage = defineMessageUnion({
+  GotPopoverPreviewMessage: { message: Popover.Message },
+});
 type GotPopoverPreviewMessage = typeof GotPopoverPreviewMessage.Type;
 const PopoverPreviewModel = S.Struct({ _docsPage: S.Literal('popover'), popover: Popover.Model });
 type PopoverPreviewModel = typeof PopoverPreviewModel.Type;
@@ -30,17 +32,15 @@ export const popoverTailwindPreviewProgram = definePreviewProgram<PopoverPreview
     }),
   }),
   update: (model, message) => {
-    const [popover, commands] = Popover.update(model.popover, message.message);
-    return [
-      { ...model, popover },
-      Command.mapMessages(commands, next => GotPopoverPreviewMessage({ message: next })),
-    ];
+    const { model: popover, commands: popoverCommands__ } = Popover.update(model.popover, message.message)
+    const commands = popoverCommands__ ?? []
+    return { model: { ...model, popover }, commands: Command.mapMessages(commands, next => GotPopoverPreviewMessage.GotPopoverPreviewMessage({ message: next })) };
   },
   view: (index, model, h) => {
     const fixture = popoverFixtures[index] ?? popoverFixtures[0];
     return Popover.popover({
       model: model.popover,
-      toParentMessage: message => GotPopoverPreviewMessage({ message }),
+      toParentMessage: message => GotPopoverPreviewMessage.GotPopoverPreviewMessage({ message }),
       trigger: 'Open dimensions',
       triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium',
       side: fixture.side,

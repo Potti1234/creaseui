@@ -9,10 +9,7 @@ type Model = Readonly<{ clicks: number }>
 type Message = Readonly<{ readonly _tag: 'Clicked' }>
 
 const Clicked: Message = { _tag: 'Clicked' }
-const update = (model: Model, _message: Message) => [
-  { clicks: model.clicks + 1 },
-  [],
-] as const
+const update = (model: Model, _message: Message) => ({ model: { clicks: model.clicks + 1 } })
 
 type ButtonModule = Readonly<{
   button: <Msg>(

@@ -1,5 +1,5 @@
 import { Match as M, Schema as S } from "effect";
-import { ts } from "foldkit/schema";
+import { taggedStruct } from "foldkit/schema";
 
 import * as BlocksTailwindFeature from "@/demo/blocks/featured-page";
 import * as SidebarStyleX from "@/demo/blocks-stylex/sidebar-page";
@@ -21,10 +21,10 @@ import * as ComponentCatalog from "@/docs/components/catalog";
 import * as CopyFeedback from "@/docs/copy-feedback";
 import type { AppRoute } from "@/route";
 
-export const Landing = ts("LandingPage", { landing: LandingFeature.Model });
+export const Landing = taggedStruct("LandingPage", { landing: LandingFeature.Model });
 export const CreateRenderer = S.Literals(["tailwind", "stylex"]);
 export type CreateRenderer = typeof CreateRenderer.Type;
-export const Create = ts("CreatePage", {
+export const Create = taggedStruct("CreatePage", {
   renderer: CreateRenderer,
   tailwindBoard: BoardFeature.Model,
   styleXBoard: BoardConstrained.Model,
@@ -35,12 +35,12 @@ export const BlockCodePanel = S.Struct({
   codeFile: S.String,
 });
 export type BlockCodePanel = typeof BlockCodePanel.Type;
-export const BlocksIndex = ts("BlocksIndexPage", { renderer: CreateRenderer, category: BlockCategory, codeBlocks: S.Record(S.String, BlockCodePanel), copiedCode: CopyFeedback.Model });
-export const BlocksStyleXTable = ts("BlocksStyleXTablePage", {
+export const BlocksIndex = taggedStruct("BlocksIndexPage", { renderer: CreateRenderer, category: BlockCategory, codeBlocks: S.Record(S.String, BlockCodePanel), copiedCode: CopyFeedback.Model });
+export const BlocksStyleXTable = taggedStruct("BlocksStyleXTablePage", {
   table: TanStackTableFeature.Model,
 });
-export const Block = ts("BlockPage", { blocks: BlocksFeature.Model, styleXSidebar: SidebarStyleX.Model, styleXFeatured: BlocksStyleXFeature.Model, tailwindFeatured: BlocksTailwindFeature.Model });
-export const Charts = ts("ChartsPage", {
+export const Block = taggedStruct("BlockPage", { blocks: BlocksFeature.Model, styleXSidebar: SidebarStyleX.Model, styleXFeatured: BlocksStyleXFeature.Model, tailwindFeatured: BlocksTailwindFeature.Model });
+export const Charts = taggedStruct("ChartsPage", {
   renderer: CreateRenderer,
   area: ChartsArea.Model,
   bar: ChartsBar.Model,
@@ -51,10 +51,10 @@ export const Charts = ts("ChartsPage", {
   tooltip: ChartsTooltip.Model,
   styleXCharts: ChartsStyleX.Model,
 });
-export const CatalogDocs = ts("CatalogDocsPage", {
+export const CatalogDocs = taggedStruct("CatalogDocsPage", {
   docs: ComponentCatalog.Model,
 });
-export const NotFound = ts("NotFoundPage");
+export const NotFound = taggedStruct("NotFoundPage");
 
 export const Page = S.Union([
   Landing,

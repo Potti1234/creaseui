@@ -1,8 +1,9 @@
 import { Match as M, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 
 import * as Chart from '@/lib/echarts';
 
@@ -32,12 +33,15 @@ export type Model = typeof Model.Type;
 
 // MESSAGE
 
-export const GotChartMessage = m('GotChartMessage', {
-  message: Chart.ChartMessage,
-});
-export const SelectedMonth = m('SelectedMonth', { month: S.String });
 
-export const Message = S.Union([GotChartMessage, SelectedMonth]);
+
+
+export const Message = defineMessageUnion({
+  GotChartMessage: {
+  message: Chart.ChartMessage,
+},
+  SelectedMonth: { month: S.String },
+});
 export type Message = typeof Message.Type;
 
 // INIT
@@ -46,25 +50,22 @@ export const init = (): Model => ({ activeMonth: 'january' });
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      GotChartMessage: () => [model, []],
-      SelectedMonth: ({ month }) => [
-        evo(model, { activeMonth: () => month }),
-        [
+      GotChartMessage: () => ({ model: model }),
+      SelectedMonth: ({ month }) => ({ model: modifyFields(model, { activeMonth: () => month }), commands: [
           Command.mapMessage(
             Chart.SyncChart({
               hostId: PieInteractive.HOST_ID,
               variant: month,
             }),
-            (message) => GotChartMessage({ message }),
+            (message) => Message.GotChartMessage({ message }),
           ),
-        ],
-      ],
+        ] }),
     }),
   );
 
@@ -72,7 +73,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   const toMessage = (message: Chart.ChartMessage): Message =>
-    GotChartMessage({ message });
+    Message.GotChartMessage({ message });
 
   return chartsPageShell<Message>(
     'pie',
@@ -90,7 +91,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       PieInteractive.view(
         {
           activeMonth: model.activeMonth,
-          onMonthChange: (month) => SelectedMonth({ month }),
+          onMonthChange: (month) => Message.SelectedMonth({ month }),
           toMessage,
         },
         h,

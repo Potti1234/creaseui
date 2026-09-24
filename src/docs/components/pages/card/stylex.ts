@@ -5,7 +5,7 @@ import type { StyleXExamplePreviewProvider } from '@/docs/components/page-defini
 import { cardFixtures } from '@/docs/components/pages/card/shared';
 import * as Card from '@/stylex/card';
 
-const styles = stylex.create({ card: { width: '100%', maxWidth: '24rem' }, footerCopy: { marginInlineStart: 'auto', fontSize: '0.875rem', fontWeight: 500 } });
+const styles = stylex.create({ card: { maxWidth: '24rem', width: '100%', }, footerCopy: { fontSize: '0.875rem', fontWeight: 500, marginInlineStart: 'auto', } });
 export const cardStyleXPreview: StyleXExamplePreviewProvider = <Msg>(index: number, _model: unknown, _onMessageJson: (messageJson: string) => Msg, h: HtmlBuilder<Msg>) => {
   const fixture = cardFixtures[index] ?? cardFixtures[0];
   return fixture.title === 'Article'

@@ -1,5 +1,5 @@
 import { Schema as S } from 'effect';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import { fruitOptions } from '@/docs/components/pages/native-select/shared';
@@ -10,7 +10,9 @@ const PreviewModel = S.Struct({
   value: S.String,
 });
 type PreviewModel = typeof PreviewModel.Type;
-const ChangedPreview = m('ChangedNativeSelectPreview', { value: S.String });
+const ChangedPreview = defineMessageUnion({
+  'ChangedNativeSelectPreview': { value: S.String },
+});
 type PreviewMessage = typeof ChangedPreview.Type;
 
 export const nativeSelectTailwindPreviewProgram = definePreviewProgram<
@@ -20,11 +22,11 @@ export const nativeSelectTailwindPreviewProgram = definePreviewProgram<
   Model: PreviewModel,
   Message: ChangedPreview,
   init: () => ({ _docsPage: 'native-select', value: 'apple' }),
-  update: (model, message) => [{ ...model, value: message.value }, []],
+  update: (model, message) => ({ model: { ...model, value: message.value } }),
   view: (index, model, h) => NativeSelect.nativeSelect({
     id: `docs-native-select-${String(index)}`,
     value: model.value,
-    onChange: value => ChangedPreview({ value }),
+    onChange: value => ChangedPreview['ChangedNativeSelectPreview']({ value }),
     label: index === 0 ? 'Fruit' : 'Destination',
     ...(index === 0
       ? {

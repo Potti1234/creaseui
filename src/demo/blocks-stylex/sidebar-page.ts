@@ -1,8 +1,9 @@
 import { Match as M, Option, Schema as S } from "effect";
+import type { Update } from "foldkit";
 import { Command } from "foldkit";
 import * as CalendarDate from "foldkit/calendar";
 import type { Html, HtmlBuilder } from "foldkit/html";
-import { m } from "foldkit/message";
+import { defineMessageUnion } from "foldkit/message";
 import { data as docs } from "@/demo/blocks/sidebar-01";
 import { data as app } from "@/demo/blocks/sidebar-07";
 import { data as mail } from "@/demo/blocks/sidebar-09";
@@ -44,42 +45,42 @@ export const Model = S.Struct({
   submenus: S.Array(Popover.Model),
 });
 export type Model = typeof Model.Type;
-export const ToggledSidebar = m("ToggledStyleXSidebar");
-export const ToggledMobile = m("ToggledStyleXMobileSidebar");
-export const SelectedItem = m("SelectedStyleXSidebarItem", { label: S.String });
-export const ChangedSearch = m("ChangedStyleXSidebarSearch", {
+
+
+
+
+
+
+
+
+
+
+export const Message = defineMessageUnion({
+  'ToggledStyleXSidebar': {},
+  'ToggledStyleXMobileSidebar': {},
+  'SelectedStyleXSidebarItem': { label: S.String },
+  'ChangedStyleXSidebarSearch': {
   value: S.String,
-});
-export const ChangedGroup = m("ChangedStyleXSidebarGroup", {
+},
+  'ChangedStyleXSidebarGroup': {
   id: S.String,
   isOpen: S.Boolean,
-});
-export const GotCalendar = m("GotStyleXSidebarCalendar", {
+},
+  'GotStyleXSidebarCalendar': {
   message: Calendar.Message,
-});
-export const GotDialog = m("GotStyleXSidebarDialog", {
+},
+  'GotStyleXSidebarDialog': {
   message: Dialog.Message,
-});
-export const OpenedDialog = m("OpenedStyleXSidebarDialog");
-export const GotSubmenu = m("GotStyleXSidebarSubmenu", {
+},
+  'OpenedStyleXSidebarDialog': {},
+  'GotStyleXSidebarPopover': {
+  message: Popover.Message,
+},
+  'GotStyleXSidebarSubmenu': {
   index: S.Number,
   message: Popover.Message,
+},
 });
-export const GotPopover = m("GotStyleXSidebarPopover", {
-  message: Popover.Message,
-});
-export const Message = S.Union([
-  ToggledSidebar,
-  ToggledMobile,
-  SelectedItem,
-  ChangedSearch,
-  ChangedGroup,
-  GotCalendar,
-  GotDialog,
-  OpenedDialog,
-  GotPopover,
-  GotSubmenu,
-]);
 export type Message = typeof Message.Type;
 export const init = (): Model => ({
   isOpen: true,
@@ -99,7 +100,6 @@ export const init = (): Model => ({
   selectedDate: Option.none(),
   dialog: Dialog.init({
     id: "stylex-sidebar-settings",
-    isOpen: false,
     isAnimated: true,
   }),
   submenus: docs.navMain.map((_, index) =>
@@ -107,35 +107,24 @@ export const init = (): Model => ({
   ),
   popover: Popover.init({ id: "stylex-sidebar-popover" }),
 });
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledStyleXSidebar: () => [{ ...model, isOpen: !model.isOpen }, []],
-      ToggledStyleXMobileSidebar: () => [
-        { ...model, isMobileOpen: !model.isMobileOpen },
-        [],
-      ],
-      SelectedStyleXSidebarItem: ({ label }) => [
-        { ...model, active: label },
-        [],
-      ],
-      ChangedStyleXSidebarSearch: ({ value }) => [
-        { ...model, query: value },
-        [],
-      ],
-      ChangedStyleXSidebarGroup: ({ id, isOpen }) => [
-        { ...model, expanded: { ...model.expanded, [id]: isOpen } },
-        [],
-      ],
+      ToggledStyleXSidebar: () => ({ model: { ...model, isOpen: !model.isOpen } }),
+      ToggledStyleXMobileSidebar: () => ({ model: { ...model, isMobileOpen: !model.isMobileOpen } }),
+      SelectedStyleXSidebarItem: ({ label }) => ({ model: { ...model, active: label } }),
+      ChangedStyleXSidebarSearch: ({ value }) => ({ model: { ...model, query: value } }),
+      ChangedStyleXSidebarGroup: ({ id, isOpen }) => ({ model: { ...model, expanded: { ...model.expanded, [id]: isOpen } } }),
       GotStyleXSidebarCalendar: ({ message: child }) => {
-        const [calendar, commands, selection] = Calendar.update(
+        const { model: calendar, commands: calendarCommands__, outMessage: calendarOut__ } = Calendar.update(
           model.calendar,
           child,
-        );
-        return [
-          {
+        )
+        const commands = calendarCommands__ ?? []
+        const selection = Option.fromNullishOr(calendarOut__)
+        return { model: {
             ...model,
             calendar,
             selectedDate: Option.match(selection, {
@@ -145,44 +134,34 @@ export const update = (model: Model, message: Message): UpdateReturn =>
                   ? Option.some(s.date)
                   : model.selectedDate,
             }),
-          },
-          Command.mapMessages(commands, (message) => GotCalendar({ message })),
-        ];
+          }, commands: Command.mapMessages(commands, (message) => Message['GotStyleXSidebarCalendar']({ message })) };
       },
       GotStyleXSidebarDialog: ({ message: child }) => {
-        const [dialog, commands] = Dialog.update(model.dialog, child);
-        return [
-          { ...model, dialog },
-          Command.mapMessages(commands, (message) => GotDialog({ message })),
-        ];
+        const { model: dialog, commands: dialogCommands__ } = Dialog.update(model.dialog, child)
+        const commands = dialogCommands__ ?? []
+        return { model: { ...model, dialog }, commands: Command.mapMessages(commands, (message) => Message['GotStyleXSidebarDialog']({ message })) };
       },
       OpenedStyleXSidebarDialog: () => {
-        const [dialog, commands] = Dialog.open(model.dialog);
-        return [
-          { ...model, dialog },
-          Command.mapMessages(commands, (message) => GotDialog({ message })),
-        ];
+        const { model: dialog, commands: dialogCommands__ } = Dialog.open(model.dialog)
+        const commands = dialogCommands__ ?? []
+        return { model: { ...model, dialog }, commands: Command.mapMessages(commands, (message) => Message['GotStyleXSidebarDialog']({ message })) };
       },
       GotStyleXSidebarSubmenu: ({ index, message: child }) => {
         const current = model.submenus[index];
-        if (current === undefined) return [model, []];
-        const [popover, commands] = Popover.update(current, child);
-        return [
-          {
+        if (current === undefined) return { model: model };
+        const { model: popover, commands: popoverCommands__ } = Popover.update(current, child)
+        const commands = popoverCommands__ ?? []
+        return { model: {
             ...model,
             submenus: model.submenus.map((p, i) => (i === index ? popover : p)),
-          },
-          Command.mapMessages(commands, (message) =>
-            GotSubmenu({ index, message }),
-          ),
-        ];
+          }, commands: Command.mapMessages(commands, (message) =>
+            Message['GotStyleXSidebarSubmenu']({ index, message }),
+          ) };
       },
       GotStyleXSidebarPopover: ({ message: child }) => {
-        const [popover, commands] = Popover.update(model.popover, child);
-        return [
-          { ...model, popover },
-          Command.mapMessages(commands, (message) => GotPopover({ message })),
-        ];
+        const { model: popover, commands: popoverCommands__ } = Popover.update(model.popover, child)
+        const commands = popoverCommands__ ?? []
+        return { model: { ...model, popover }, commands: Command.mapMessages(commands, (message) => Message['GotStyleXSidebarPopover']({ message })) };
       },
     }),
   );
@@ -205,7 +184,7 @@ const item = (
             ],
             tooltip: label,
             isActive: model.active === label,
-            onClick: SelectedItem({ label }),
+            onClick: Message['SelectedStyleXSidebarItem']({ label }),
           },
           h,
         ),
@@ -233,7 +212,7 @@ const subItems = (
                     children: [label],
                     href: "#",
                     isActive: model.active === label,
-                    onClick: SelectedItem({ label }),
+                    onClick: Message['SelectedStyleXSidebarItem']({ label }),
                   },
                   h,
                 ),
@@ -273,7 +252,7 @@ const expandable = (
       variant: "sidebar",
       id: "stylex-group-" + id.replaceAll(/[^a-z0-9]/gi, "-"),
       isOpen: model.expanded[id] ?? initiallyOpen,
-      onToggle: (isOpen) => ChangedGroup({ id, isOpen }),
+      onToggle: (isOpen) => Message['ChangedStyleXSidebarGroup']({ id, isOpen }),
       trigger: inline(
         {
           align: "center",
@@ -434,7 +413,7 @@ const search = (model: Model, h: HtmlBuilder<Message>): Html =>
             id: "sidebar-search",
             label: "Search",
             value: model.query,
-            onInput: (value) => ChangedSearch({ value }),
+            onInput: (value) => Message['ChangedStyleXSidebarSearch']({ value }),
             placeholder: "Search the docs…",
           },
           h,
@@ -481,7 +460,7 @@ const documentation = (
                 {
                   variant: "sidebar",
                   model: submenu,
-                  toParentMessage: (message) => GotSubmenu({ index, message }),
+                  toParentMessage: (message) => Message['GotStyleXSidebarSubmenu']({ index, message }),
                   trigger: inline(
                     {
                       width: "full",
@@ -552,7 +531,7 @@ const documentation = (
                               id: "newsletter-email",
                               label: "Email",
                               value: model.query,
-                              onInput: (value) => ChangedSearch({ value }),
+                              onInput: (value) => Message['ChangedStyleXSidebarSearch']({ value }),
                               placeholder: "Email",
                             },
                             h,
@@ -723,7 +702,7 @@ const calendarNav = (
           {
             model: model.calendar,
             maybeSelectedDate: model.selectedDate,
-            toParentMessage: (message) => GotCalendar({ message }),
+            toParentMessage: (message) => Message['GotStyleXSidebarCalendar']({ message }),
           },
           h,
         ),
@@ -741,7 +720,7 @@ const calendarNav = (
                         model.expanded["calendar-" + label] ??
                         label !== "Family",
                       onToggle: (isOpen) =>
-                        ChangedGroup({ id: "calendar-" + label, isOpen }),
+                        Message['ChangedStyleXSidebarGroup']({ id: "calendar-" + label, isOpen }),
                     },
                     h,
                   ),
@@ -776,7 +755,7 @@ const calendarNav = (
 ];
 const trigger = (h: HtmlBuilder<Message>): Html =>
   Sidebar.sidebarTrigger(
-    { onClick: ToggledSidebar(), onMobileClick: ToggledMobile() },
+    { onClick: Message['ToggledStyleXSidebar'](), onMobileClick: Message['ToggledStyleXMobileSidebar']() },
     h,
   );
 const settingsContent = (model: Model, h: HtmlBuilder<Message>): Html =>
@@ -832,12 +811,12 @@ export const view = (
   if (id === "13")
     return blockCenter(
       [
-        button({ children: ["Open Dialog"], onClick: OpenedDialog() }, h),
+        button({ children: ["Open Dialog"], onClick: Message['OpenedStyleXSidebarDialog']() }, h),
         Dialog.dialog(
           {
             size: "settings",
             model: model.dialog,
-            toParentMessage: (message) => GotDialog({ message }),
+            toParentMessage: (message) => Message['GotStyleXSidebarDialog']({ message }),
             title: "Settings",
             description: "Customize your settings here.",
             content: () => [settingsContent(model, h)],
@@ -846,7 +825,7 @@ export const view = (
         ),
       ],
       h,
-      OpenedDialog(),
+      Message['OpenedStyleXSidebarDialog'](),
     );
   const state = model.isOpen ? "expanded" : "collapsed";
   const isApp = ["07", "08", "16"].includes(id);
@@ -914,7 +893,7 @@ export const view = (
       variant: id === "04" ? "floating" : id === "08" ? "inset" : "sidebar",
       collapsible: isApp || id === "09" ? "icon" : "offcanvas",
       isMobileOpen: model.isMobileOpen,
-      onMobileDismiss: ToggledMobile(),
+      onMobileDismiss: Message['ToggledStyleXMobileSidebar'](),
       children: navigation,
     },
     h,
@@ -959,7 +938,7 @@ export const view = (
                           {
                             model: model.popover,
                             toParentMessage: (message) =>
-                              GotPopover({ message }),
+                              Message['GotStyleXSidebarPopover']({ message }),
                             trigger: icon(
                               { ariaLabel: "Page actions", name: "ellipsis" },
                               h,
@@ -1024,7 +1003,7 @@ export const view = (
                       text({ children: [m.subject], variant: "label" }, h),
                       text({ children: [m.teaser], variant: "caption" }, h),
                     ],
-                    SelectedItem({ label: m.subject }),
+                    Message['SelectedStyleXSidebarItem']({ label: m.subject }),
                     h,
                   ),
                 ),

@@ -16,9 +16,9 @@ export const menubarFixtures = [
 const source = (renderer: 'tailwind' | 'stylex'): string => foldkitApplication({
   title: 'Menubar — Coordinated menus',
   imports: `import { Option, Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 import * as DropdownMenu from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/dropdown-menu'
 import * as Menubar from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/menubar'`,
@@ -34,45 +34,49 @@ export const Model = S.Struct({
   maybeLastAction: S.Option(Action),
 })
 export type Model = typeof Model.Type`,
-  messages: `export const GotMenuMessage = m('GotMenubarMenuMessage', { target: MenuTarget, message: DropdownMenu.Message })
-export const GotMenubarMessage = m('GotMenubarBehaviorMessage', { message: Menubar.Message })
-export const Message = S.Union([GotMenuMessage, GotMenubarMessage])
+  messages: `import { defineMessageUnion } from 'foldkit/message'
+
+
+export const Message = defineMessageUnion({
+  'GotMenubarMenuMessage': { target: MenuTarget, message: DropdownMenu.Message },
+  'GotMenubarBehaviorMessage': { message: Menubar.Message },
+});
 export type Message = typeof Message.Type`,
-  init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  {
+  init: `export const init = (): Update.Return<Model, Message> => ({ model: {
     file: DropdownMenu.init({ id: 'file-menu' }),
     edit: DropdownMenu.init({ id: 'edit-menu' }),
     view: DropdownMenu.init({ id: 'view-menu' }),
     menubar: Menubar.init({ id: 'application-menubar' }),
     maybeLastAction: Option.none(),
-  },
-  [],
-]`,
+  } })`,
   update: `const ActionMenu = DropdownMenu.create<Action>()
 const targets: ReadonlyArray<MenuTarget> = ['file', 'edit', 'view']
 
-export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'GotMenubarMenuMessage': {
-      const [menu, commands, maybeSelection] = ActionMenu.update(model[message.target], message.message)
-      return [
-        {
+      const menuOp__ = ActionMenu.update(model[message.target], message.message);
+    const menu = menuOp__.model;
+    const commands = menuOp__.commands ?? [];
+    const maybeSelection = Option.fromNullishOr(menuOp__.outMessage);
+      return { model: {
           ...model,
           [message.target]: menu,
           maybeLastAction: Option.match(maybeSelection, { onNone: () => model.maybeLastAction, onSome: selected => Option.some(selected.value) }),
-        },
-        Command.mapMessages(commands, next => GotMenuMessage({ target: message.target, message: next })),
-      ]
+        }, commands: Command.mapMessages(commands, next => Message['GotMenubarMenuMessage']({ target: message.target, message: next })) }
     }
     case 'GotMenubarBehaviorMessage': {
-      const [menubar, commands, maybeMove] = Menubar.update(model.menubar, message.message)
+      const menubarOp__ = Menubar.update(model.menubar, message.message);
+    const menubar = menubarOp__.model;
+    const commands = menubarOp__.commands ?? [];
+    const maybeMove = Option.fromNullishOr(menubarOp__.outMessage);
       const index = Option.match(maybeMove, { onNone: () => menubar.activeIndex, onSome: move => move.index })
       const target = targets[index]
-      if (target === undefined) return [model, []]
-      const [file] = target === 'file' ? DropdownMenu.open(model.file) : DropdownMenu.close(model.file)
-      const [edit] = target === 'edit' ? DropdownMenu.open(model.edit) : DropdownMenu.close(model.edit)
-      const [view] = target === 'view' ? DropdownMenu.open(model.view) : DropdownMenu.close(model.view)
-      return [{ ...model, file, edit, view, menubar }, Command.mapMessages(commands, next => GotMenubarMessage({ message: next }))]
+      if (target === undefined) return { model: model }
+      const file = (target === 'file' ? DropdownMenu.open(model.file) : DropdownMenu.close(model.file)).model
+      const edit = (target === 'edit' ? DropdownMenu.open(model.edit) : DropdownMenu.close(model.edit)).model
+      const view = (target === 'view' ? DropdownMenu.open(model.view) : DropdownMenu.close(model.view)).model
+      return { model: { ...model, file, edit, view, menubar }, commands: Command.mapMessages(commands, next => Message['GotMenubarBehaviorMessage']({ message: next })) }
     }
   }
 }`,
@@ -85,10 +89,10 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
     Menubar.menubar<Action, Message>({
       ariaLabel: 'Application menu',
       model: model.menubar,
-      toParentMessage: message => GotMenubarMessage({ message }),
+      toParentMessage: message => Message['GotMenubarBehaviorMessage']({ message }),
       menus: ([['file', 'File'], ['edit', 'Edit'], ['view', 'View']] as const).map(([target, label]) => ({
         id: \`\${target}-menu\`, label, model: model[target],
-        toParentMessage: message => GotMenuMessage({ target, message }),
+        toParentMessage: message => Message['GotMenubarMenuMessage']({ target, message }),
         items: actions,
         itemToConfig: action => ({ label: labelFor(action), ...(action === 'save' ? { shortcut: '⌘S', isDisabled: true } : {}), ...(action === 'export' ? { submenu: { items: ['pdf', 'csv'], itemToConfig: child => ({ label: child.toUpperCase() }) } } : {}) }),
       })),

@@ -1,8 +1,9 @@
+import type { Update } from 'foldkit'
 import { Match as M, Schema as S } from 'effect';
 import type { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 
 import { button } from '@/ui/button';
 import {
@@ -37,13 +38,16 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const UpdatedAmount = m('UpdatedAmount', { value: S.String });
-export const UpdatedOrderType = m('UpdatedOrderType', { value: S.String });
 
-export const Message = S.Union([UpdatedAmount, UpdatedOrderType]);
+
+
+export const Message = defineMessageUnion({
+  UpdatedAmount: { value: S.String },
+  UpdatedOrderType: { value: S.String },
+});
 export type Message = typeof Message.Type;
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const init = (): Model => ({
   amount: '1,000.00',
@@ -54,11 +58,8 @@ export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      UpdatedAmount: ({ value }) => [evo(model, { amount: () => value }), []],
-      UpdatedOrderType: ({ value }) => [
-        evo(model, { orderType: () => value }),
-        [],
-      ],
+      UpdatedAmount: ({ value }) => ({ model: modifyFields(model, { amount: () => value }) }),
+      UpdatedOrderType: ({ value }) => ({ model: modifyFields(model, { orderType: () => value }) }),
     }),
   );
 
@@ -230,7 +231,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                                         id: 'savings-targets-invest-amount',
                                         value: model.amount,
                                         onInput: (value) =>
-                                          UpdatedAmount({ value }),
+                                          Message.UpdatedAmount({ value }),
                                       },
                                       h,
                                     ),
@@ -257,7 +258,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                                   id: 'savings-targets-invest-type',
                                   value: model.orderType,
                                   onChange: (value) =>
-                                    UpdatedOrderType({ value }),
+                                    Message.UpdatedOrderType({ value }),
                                   options: [
                                     { value: 'market', label: 'Market Order' },
                                     { value: 'limit', label: 'Limit Order' },

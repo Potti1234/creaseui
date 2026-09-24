@@ -1,6 +1,7 @@
+import type { Update } from 'foldkit'
 import { Duration, Effect, Option, Schema as S } from 'effect'
 import * as Command from 'foldkit/command'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 export const Model = S.Struct({
   id: S.String,
@@ -16,31 +17,34 @@ export const Model = S.Struct({
 })
 export type Model = typeof Model.Type
 
-export const EnteredTrigger = m('EnteredTooltipTrigger')
-export const LeftTrigger = m('LeftTooltipTrigger')
-export const FocusedTrigger = m('FocusedTooltipTrigger')
-export const BlurredTrigger = m('BlurredTooltipTrigger')
-export const PressedEscape = m('PressedEscapeOnTooltip')
-export const PressedPointerOnTrigger = m('PressedPointerOnTooltipTrigger')
-export const CompletedAnchor = m('CompletedTooltipAnchor')
-export const CompletedWaitBeforeShowing = m('CompletedWaitBeforeShowingTooltip', { version: S.Number })
-export const CompletedWaitBeforeClosing = m('CompletedWaitBeforeClosingTooltip', { version: S.Number })
-export const Message = S.Union([
-  EnteredTrigger,
-  LeftTrigger,
-  FocusedTrigger,
-  BlurredTrigger,
-  PressedEscape,
-  PressedPointerOnTrigger,
-  CompletedAnchor,
-  CompletedWaitBeforeShowing,
-  CompletedWaitBeforeClosing,
-])
+
+
+
+
+
+
+
+
+
+export const Message = defineMessageUnion({
+  'EnteredTooltipTrigger': {},
+  'LeftTooltipTrigger': {},
+  'FocusedTooltipTrigger': {},
+  'BlurredTooltipTrigger': {},
+  'PressedEscapeOnTooltip': {},
+  'PressedPointerOnTooltipTrigger': {},
+  'CompletedTooltipAnchor': {},
+  'CompletedWaitBeforeShowingTooltip': { version: S.Number },
+  'CompletedWaitBeforeClosingTooltip': { version: S.Number },
+});
 export type Message = typeof Message.Type
 
-export const Shown = m('ShownTooltip')
-export const Hidden = m('HiddenTooltip')
-export const OutMessage = S.Union([Shown, Hidden])
+
+
+export const OutMessage = defineMessageUnion({
+  'ShownTooltip': {},
+  'HiddenTooltip': {},
+});
 export type OutMessage = typeof OutMessage.Type
 
 export type InitConfig = Readonly<{
@@ -66,29 +70,25 @@ export const init = (config: InitConfig): Model => ({
 
 export const WaitBeforeShowing = Command.define('WaitBeforeShowingTooltip', {
   args: { delayMs: S.Number, version: S.Number },
-  messages: [CompletedWaitBeforeShowing],
+  messages: [Message['CompletedWaitBeforeShowingTooltip']],
   execute: ({ delayMs, version }) => Effect.sleep(`${delayMs} millis`).pipe(
-    Effect.as(CompletedWaitBeforeShowing({ version })),
+    Effect.as(Message['CompletedWaitBeforeShowingTooltip']({ version })),
   ),
 })
 
 export const WaitBeforeClosing = Command.define('WaitBeforeClosingTooltip', {
   args: { delayMs: S.Number, version: S.Number },
-  messages: [CompletedWaitBeforeClosing],
+  messages: [Message['CompletedWaitBeforeClosingTooltip']],
   execute: ({ delayMs, version }) => Effect.sleep(`${delayMs} millis`).pipe(
-    Effect.as(CompletedWaitBeforeClosing({ version })),
+    Effect.as(Message['CompletedWaitBeforeClosingTooltip']({ version })),
   ),
 })
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>, Option.Option<OutMessage>]
+type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
 
-const result = (previous: Model, next: Model, commands: ReadonlyArray<Command.Command<Message>> = []): UpdateReturn => [
-  next,
-  commands,
-  previous.isOpen === next.isOpen
-    ? Option.none()
-    : Option.some(next.isOpen ? Shown() : Hidden()),
-]
+const result = (previous: Model, next: Model, commands: ReadonlyArray<Command.Command<Message>> = []): UpdateReturn => ({ model: next, commands: commands, ...(previous.isOpen === next.isOpen
+    ? {}
+    : { outMessage: next.isOpen ? OutMessage['ShownTooltip']() : OutMessage['HiddenTooltip']() }) })
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
@@ -132,7 +132,7 @@ export const update = (model: Model, message: Message): UpdateReturn => {
         : result(model, model)
     case 'CompletedWaitBeforeClosingTooltip':
       return message.version === model.closeVersion && !model.isHovered && !model.isFocused
-        ? result(model, { ...model, isOpen: false })
+        ? result(model, { ...model })
         : result(model, model)
   }
 }

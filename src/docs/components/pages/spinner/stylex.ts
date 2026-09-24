@@ -6,10 +6,10 @@ import * as Spinner from '@/stylex/spinner';
 
 const styles = stylex.create({
   status: {
+    gap: '0.5rem',
     alignItems: 'center',
     display: 'flex',
     fontSize: '0.875rem',
-    gap: '0.5rem',
   },
 });
 

@@ -26,10 +26,11 @@ const isStaticStyle = (value: unknown): value is StaticStyles =>
 const cn = (...values: ReadonlyArray<unknown>): string =>
   className(...values.filter(isStaticStyle))
 
+import type { Update } from 'foldkit'
 import { Option, Schema as S } from 'effect';
 import type { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import * as Icon from '@/lib/icon';
 import * as Behavior from '@/lib/dropdown-menu-behavior';
@@ -53,37 +54,39 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const Opened = m('Opened');
-export const AnchoredAt = m('AnchoredAt', { x: S.Number, y: S.Number });
-export const OpenedFromContext = m('OpenedFromContext');
-export const OpenedAt = m('OpenedAt', { x: S.Number, y: S.Number });
-export const Closed = m('Closed');
-export const ActivatedItem = m('ActivatedItem', { index: S.Number });
-export const OpenedSubmenu = m('OpenedSubmenu', { index: S.Number });
-export const ActivatedSubmenuItem = m('ActivatedSubmenuItem', {
+
+
+
+
+
+
+
+
+
+
+export const Message = defineMessageUnion({
+  Opened: {},
+  AnchoredAt: { x: S.Number, y: S.Number },
+  OpenedFromContext: {},
+  OpenedAt: { x: S.Number, y: S.Number },
+  Closed: {},
+  ActivatedItem: { index: S.Number },
+  OpenedSubmenu: { index: S.Number },
+  ActivatedSubmenuItem: {
   index: S.Number,
-});
-export const ClosedSubmenu = m('ClosedSubmenu');
-export const SelectedItem = m('SelectedItem', {
+},
+  ClosedSubmenu: {},
+  SelectedItem: {
   item: S.String,
   index: S.Number,
+},
 });
-export const Message = S.Union([
-  Opened,
-  AnchoredAt,
-  OpenedFromContext,
-  OpenedAt,
-  Closed,
-  ActivatedItem,
-  OpenedSubmenu,
-  ActivatedSubmenuItem,
-  ClosedSubmenu,
-  SelectedItem,
-]);
 export type Message = typeof Message.Type;
 
-export const Selected = m('Selected', { value: S.String, index: S.Number });
-export const OutMessage = S.Union([Selected]);
+
+export const OutMessage = defineMessageUnion({
+  Selected: { value: S.String, index: S.Number },
+});
 export type OutMessage<Item extends string = string> = Readonly<{
   _tag: 'Selected';
   value: Item;
@@ -103,37 +106,29 @@ export const init = (
   anchorY: Option.none(),
 });
 
-type UpdateReturn<Item extends string> = readonly [
-  Model,
-  ReadonlyArray<Command.Command<Message>>,
-  Option.Option<OutMessage<Item>>,
-];
+type UpdateReturn<Item extends string> = Update.ReturnWithOutMessage<Model, Message, OutMessage<Item>>;
 
 const updateTyped = <Item extends string>(
   model: Model,
   message: Message,
 ): UpdateReturn<Item> => {
   const result = Behavior.update(model, message);
-  return [
-    result.model,
-    [],
-    Option.map(result.selection, ({ item, index }) =>
-      Selected({ value: item, index }) as OutMessage<Item>,
-    ),
-  ];
+  return { model: result.model, ...(Option.isNone(result.selection) ? {} : {
+      outMessage: OutMessage.Selected({ value: result.selection.value.item, index: result.selection.value.index }) as OutMessage<Item>,
+    }) };
 };
 
 export const create = <Item extends string = string>() => ({
   update: (model: Model, message: Message): UpdateReturn<Item> =>
     updateTyped<Item>(model, message),
   open: (model: Model): UpdateReturn<Item> =>
-    updateTyped<Item>(model, Opened()),
+    updateTyped<Item>(model, Message.Opened()),
   openAt: (model: Model, x: number, y: number): UpdateReturn<Item> =>
-    updateTyped<Item>(model, OpenedAt({ x, y })),
+    updateTyped<Item>(model, Message.OpenedAt({ x, y })),
   close: (model: Model): UpdateReturn<Item> =>
-    updateTyped<Item>(model, Closed()),
+    updateTyped<Item>(model, Message.Closed()),
   selectItem: (model: Model, item: Item, index: number): UpdateReturn<Item> =>
-    updateTyped<Item>(model, SelectedItem({ item, index })),
+    updateTyped<Item>(model, Message.SelectedItem({ item, index })),
 });
 
 export const update = create().update;
@@ -339,18 +334,18 @@ export const dropdownMenu = <Item extends string, Msg>(
               h.OnMouseEnter(
                 props.toParentMessage(
                   isSubmenu
-                    ? ActivatedSubmenuItem({
+                    ? Message.ActivatedSubmenuItem({
                         index: index - props.items.length,
                       })
                     : config.submenu === undefined
-                      ? ActivatedItem({ index })
-                      : OpenedSubmenu({ index }),
+                      ? Message.ActivatedItem({ index })
+                      : Message.OpenedSubmenu({ index }),
                 ),
               ),
             ]),
         ...(config.isDisabled === true || config.submenu !== undefined
           ? []
-          : [h.OnClick(props.toParentMessage(SelectedItem({ item, index })))]),
+          : [h.OnClick(props.toParentMessage(Message.SelectedItem({ item, index })))]),
         h.Class(
           cn(
             ITEM_CLASS,
@@ -479,7 +474,7 @@ export const dropdownMenu = <Item extends string, Msg>(
           h.AriaControls(`${props.model.id}-content`),
           ...(props.openOnContextMenu === true
             ? [
-                h.OnContextMenu(props.toParentMessage(OpenedFromContext())),
+                h.OnContextMenu(props.toParentMessage(Message.OpenedFromContext())),
                 h.OnPointerDown(
                   (
                     _pointerType,
@@ -493,7 +488,7 @@ export const dropdownMenu = <Item extends string, Msg>(
                     button === 2
                       ? Option.some(
                           props.toParentMessage(
-                            AnchoredAt({ x: clientX, y: clientY }),
+                            Message.AnchoredAt({ x: clientX, y: clientY }),
                           ),
                         )
                       : Option.none(),
@@ -502,7 +497,7 @@ export const dropdownMenu = <Item extends string, Msg>(
             : [
                 h.OnClick(
                   props.toParentMessage(
-                    props.model.isOpen ? Closed() : Opened(),
+                    props.model.isOpen ? Message.Closed() : Message.Opened(),
                   ),
                 ),
               ]),
@@ -523,9 +518,9 @@ export const dropdownMenu = <Item extends string, Msg>(
                 )
               : props.openOnContextMenu === true &&
                   (key === 'ContextMenu' || (key === 'F10' && modifiers.shiftKey))
-                ? Opened()
+                ? Message.Opened()
               : key === 'ArrowDown' || key === 'ArrowUp' || key === 'Enter' || key === ' '
-                ? Opened()
+                ? Message.Opened()
                 : undefined;
             return message === undefined
               ? Option.none()
@@ -539,7 +534,7 @@ export const dropdownMenu = <Item extends string, Msg>(
             h.div(
               [
                 h.AriaHidden(true),
-                h.OnClick(props.toParentMessage(Closed())),
+                h.OnClick(props.toParentMessage(Message.Closed())),
                 h.Class(className(styles.backdrop)),
                 h.DataAttribute('slot', 'dropdown-menu-backdrop'),
               ],

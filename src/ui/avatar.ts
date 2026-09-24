@@ -1,6 +1,6 @@
 ﻿import { Schema as S } from 'effect';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { cn } from '@/lib/utils';
 
@@ -8,9 +8,12 @@ export const Model = S.Struct({
   status: S.Literals(['loading', 'loaded', 'error']),
 });
 export type Model = typeof Model.Type;
-export const Loaded = m('Loaded');
-export const Failed = m('Failed');
-export const Message = S.Union([Loaded, Failed]);
+
+
+export const Message = defineMessageUnion({
+  Loaded: {},
+  Failed: {},
+});
 export type Message = typeof Message.Type;
 export const init = (): Model => ({ status: 'loading' });
 export const update = (_model: Model, message: Message): Model => ({
@@ -60,8 +63,8 @@ export const avatarImage = <Msg>(
     ...(props.toParentMessage === undefined
       ? []
       : [
-          h.OnLoad(props.toParentMessage(Loaded())),
-          h.OnError(props.toParentMessage(Failed())),
+          h.OnLoad(props.toParentMessage(Message.Loaded())),
+          h.OnError(props.toParentMessage(Message.Failed())),
         ]),
     ...(props.model?.status === 'loaded'
       ? []

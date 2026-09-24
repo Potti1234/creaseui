@@ -6,36 +6,36 @@ import * as Toast from '../src/lib/toast.ts'
 
 describe('Toast notification behavior', () => {
   it('uses deterministic IDs and schedules non-sticky entries', () => {
-    const [model, commands] = Toast.show(Toast.init({ id: 'notice' }), Toast.success({ title: 'Saved', duration: '2 seconds' }))
+    const op1__ = Toast.show(Toast.init({ id: 'notice' }), Toast.success({ title: 'Saved', duration: '2 seconds' })); const model = op1__.model; const commands = op1__.commands ?? [];
     assert.equal(model.entries[0]?.id, 'notice-0')
     assert.equal(commands.length, 1)
   })
 
   it('ignores a stale timer after an entry update', () => {
-    const [shown] = Toast.show(Toast.init({ id: 'notice' }), Toast.info({ title: 'Uploading' }))
+    const op2__ = Toast.show(Toast.init({ id: 'notice' }), Toast.info({ title: 'Uploading' })); const shown = op2__.model;
     const id = shown.entries[0]!.id
-    const [updated] = Toast.updateToast(shown, id, { title: 'Uploaded', variant: 'Success' })
-    const [afterStale, _commands, out] = Toast.update(updated, Toast.CompletedWait({ id, timerVersion: 0 }))
+    const { model: updated } = Toast.updateToast(shown, id, { title: 'Uploaded', variant: 'Success' })
+    const op3__ = Toast.update(updated, Toast.Message.CompletedWaitBeforeDismissingToast({ id, timerVersion: 0 })); const afterStale = op3__.model; const _commands = op3__.commands ?? []; const out = op3__.outMessage;
     assert.equal(afterStale.entries.length, 1)
-    assert.equal(Option.isNone(out), true)
+    assert.equal(out === undefined, true)
   })
 
   it('pauses expiry and schedules a new generation on resume', () => {
-    const [shown] = Toast.show(Toast.init({ id: 'notice' }), Toast.warning({ title: 'Heads up' }))
+    const op4__ = Toast.show(Toast.init({ id: 'notice' }), Toast.warning({ title: 'Heads up' })); const shown = op4__.model;
     const id = shown.entries[0]!.id
-    const [paused] = Toast.update(shown, Toast.Paused({ id }))
-    const [afterTimer] = Toast.update(paused, Toast.CompletedWait({ id, timerVersion: 0 }))
+    const op5__ = Toast.update(shown, Toast.Message.PausedToast({ id })); const paused = op5__.model;
+    const op6__ = Toast.update(paused, Toast.Message.CompletedWaitBeforeDismissingToast({ id, timerVersion: 0 })); const afterTimer = op6__.model;
     assert.equal(afterTimer.entries.length, 1)
-    const [resumed, commands] = Toast.update(afterTimer, Toast.Resumed({ id }))
+    const op7__ = Toast.update(afterTimer, Toast.Message.ResumedToast({ id })); const resumed = op7__.model; const commands = op7__.commands ?? [];
     assert.equal(resumed.entries[0]?.timerVersion, 1)
     assert.equal(commands.length, 1)
   })
 
   it('emits a typed action fact and removes the acted-on entry', () => {
-    const [shown] = Toast.show(Toast.init({ id: 'notice' }), Toast.error({ title: 'Failed', actionLabel: 'Retry', sticky: true }))
+    const op8__ = Toast.show(Toast.init({ id: 'notice' }), Toast.error({ title: 'Failed', actionLabel: 'Retry', sticky: true })); const shown = op8__.model;
     const id = shown.entries[0]!.id
-    const [next, _commands, out] = Toast.update(shown, Toast.Activated({ id }))
+    const op9__ = Toast.update(shown, Toast.Message.ActivatedToastAction({ id })); const next = op9__.model; const _commands = op9__.commands ?? []; const out = op9__.outMessage;
     assert.equal(next.entries.length, 0)
-    assert.equal(Option.getOrThrow(out)._tag, 'ActivatedToast')
+    assert.equal(out._tag, 'ActivatedToast')
   })
 })

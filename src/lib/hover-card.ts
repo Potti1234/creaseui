@@ -1,6 +1,7 @@
+import type { Update } from 'foldkit'
 import { Duration, Effect, Schema as S } from 'effect'
 import * as Command from 'foldkit/command'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 export const Model = S.Struct({
   id: S.String,
@@ -15,16 +16,26 @@ export const Model = S.Struct({
 })
 export type Model = typeof Model.Type
 
-export const Entered = m('EnteredHoverCard')
-export const Left = m('LeftHoverCard')
-export const Focused = m('FocusedHoverCardTrigger')
-export const Blurred = m('BlurredHoverCardTrigger')
-export const PressedEscape = m('PressedEscapeOnHoverCard')
-export const PressedPointer = m('PressedPointerOnHoverCardTrigger', { pointerType: S.String })
-export const CompletedAnchor = m('CompletedHoverCardAnchor')
-export const CompletedWaitBeforeShowingHoverCard = m('CompletedWaitBeforeShowingHoverCard', { version: S.Number })
-export const CompletedWaitBeforeClosingHoverCard = m('CompletedWaitBeforeClosingHoverCard', { version: S.Number })
-export const Message = S.Union([Entered, Left, Focused, Blurred, PressedEscape, PressedPointer, CompletedAnchor, CompletedWaitBeforeShowingHoverCard, CompletedWaitBeforeClosingHoverCard])
+
+
+
+
+
+
+
+
+
+export const Message = defineMessageUnion({
+  'EnteredHoverCard': {},
+  'LeftHoverCard': {},
+  'FocusedHoverCardTrigger': {},
+  'BlurredHoverCardTrigger': {},
+  'PressedEscapeOnHoverCard': {},
+  'PressedPointerOnHoverCardTrigger': { pointerType: S.String },
+  'CompletedHoverCardAnchor': {},
+  CompletedWaitBeforeShowingHoverCard: { version: S.Number },
+  CompletedWaitBeforeClosingHoverCard: { version: S.Number },
+});
 export type Message = typeof Message.Type
 
 export type InitConfig = Readonly<{ id: string; closeDelay?: Duration.Input; showDelay?: Duration.Input }>
@@ -36,44 +47,44 @@ export const init = (config: InitConfig): Model => ({
 })
 
 export const WaitBeforeShowing = Command.define('WaitBeforeShowingHoverCard', {
-  args: { version: S.Number, delayMs: S.Number }, messages: [CompletedWaitBeforeShowingHoverCard],
-  execute: ({ version, delayMs }) => Effect.sleep(`${delayMs} millis`).pipe(Effect.as(CompletedWaitBeforeShowingHoverCard({ version }))),
+  args: { version: S.Number, delayMs: S.Number }, messages: [Message.CompletedWaitBeforeShowingHoverCard],
+  execute: ({ version, delayMs }) => Effect.sleep(`${delayMs} millis`).pipe(Effect.as(Message.CompletedWaitBeforeShowingHoverCard({ version }))),
 })
 export const WaitBeforeClosing = Command.define('WaitBeforeClosingHoverCard', {
-  args: { version: S.Number, delayMs: S.Number }, messages: [CompletedWaitBeforeClosingHoverCard],
-  execute: ({ version, delayMs }) => Effect.sleep(`${delayMs} millis`).pipe(Effect.as(CompletedWaitBeforeClosingHoverCard({ version }))),
+  args: { version: S.Number, delayMs: S.Number }, messages: [Message.CompletedWaitBeforeClosingHoverCard],
+  execute: ({ version, delayMs }) => Effect.sleep(`${delayMs} millis`).pipe(Effect.as(Message.CompletedWaitBeforeClosingHoverCard({ version }))),
 })
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
+type UpdateReturn = Update.Return<Model, Message>
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
     case 'EnteredHoverCard': {
       const showVersion = model.showVersion + 1
       const next = { ...model, isHovered: true, closeVersion: model.closeVersion + 1, showVersion }
-      return model.isOpen || model.isDismissed ? [next, []] : [next, [WaitBeforeShowing({ version: showVersion, delayMs: model.showDelayMs })]]
+      return model.isOpen || model.isDismissed ? { model: next } : { model: next, commands: [WaitBeforeShowing({ version: showVersion, delayMs: model.showDelayMs })] }
     }
     case 'LeftHoverCard': {
       const closeVersion = model.closeVersion + 1
       const next = { ...model, isHovered: false, isDismissed: model.isFocused && model.isDismissed, showVersion: model.showVersion + 1, closeVersion }
-      return model.isOpen && !model.isFocused ? [next, [WaitBeforeClosing({ version: closeVersion, delayMs: model.closeDelayMs })]] : [next, []]
+      return model.isOpen && !model.isFocused ? { model: next, commands: [WaitBeforeClosing({ version: closeVersion, delayMs: model.closeDelayMs })] } : { model: next }
     }
     case 'FocusedHoverCardTrigger':
-      return model.isDismissed ? [{ ...model, isFocused: true }, []] : [{ ...model, isFocused: true, isOpen: true, showVersion: model.showVersion + 1, closeVersion: model.closeVersion + 1 }, []]
+      return model.isDismissed ? { model: { ...model, isFocused: true }, } : { model: { ...model, isFocused: true, isOpen: true, showVersion: model.showVersion + 1, closeVersion: model.closeVersion + 1 }, }
     case 'BlurredHoverCardTrigger': {
       const closeVersion = model.closeVersion + 1
       const next = { ...model, isFocused: false, isDismissed: model.isHovered && model.isDismissed, closeVersion }
-      return model.isOpen && !model.isHovered ? [next, [WaitBeforeClosing({ version: closeVersion, delayMs: model.closeDelayMs })]] : [next, []]
+      return model.isOpen && !model.isHovered ? { model: next, commands: [WaitBeforeClosing({ version: closeVersion, delayMs: model.closeDelayMs })] } : { model: next }
     }
     case 'PressedPointerOnHoverCardTrigger':
-      return message.pointerType === 'mouse' ? [model, []] : [{ ...model, isOpen: !model.isOpen, isDismissed: false, showVersion: model.showVersion + 1, closeVersion: model.closeVersion + 1 }, []]
+      return message.pointerType === 'mouse' ? ({ model: model }) : { model: { ...model, isOpen: !model.isOpen, isDismissed: false, showVersion: model.showVersion + 1, closeVersion: model.closeVersion + 1 }, }
     case 'CompletedHoverCardAnchor':
-      return [model, []]
+      return { model: model }
     case 'PressedEscapeOnHoverCard':
-      return [{ ...model, isOpen: false, isDismissed: true, showVersion: model.showVersion + 1, closeVersion: model.closeVersion + 1 }, []]
+      return { model: { ...model, isOpen: false, isDismissed: true, showVersion: model.showVersion + 1, closeVersion: model.closeVersion + 1 } }
     case 'CompletedWaitBeforeShowingHoverCard':
-      return message.version === model.showVersion && model.isHovered && !model.isDismissed ? [{ ...model, isOpen: true }, []] : [model, []]
+      return message.version === model.showVersion && model.isHovered && !model.isDismissed ? { model: { ...model, isOpen: true }, } : ({ model: model })
     case 'CompletedWaitBeforeClosingHoverCard':
-      return message.version === model.closeVersion && !model.isHovered && !model.isFocused ? [{ ...model, isOpen: false }, []] : [model, []]
+      return message.version === model.closeVersion && !model.isHovered && !model.isFocused ? { model: { ...model }, } : ({ model: model })
   }
 }
 

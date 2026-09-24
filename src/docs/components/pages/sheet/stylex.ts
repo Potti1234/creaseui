@@ -19,11 +19,11 @@ const styles = stylex.create({
     fontSize: '0.875rem',
   },
   save: {
-    backgroundColor: 'var(--primary)',
     borderRadius: '0.375rem',
-    color: 'var(--primary-foreground)',
     paddingBlock: '0.5rem',
     paddingInline: '1rem',
+    backgroundColor: 'var(--primary)',
+    color: 'var(--primary-foreground)',
     fontSize: '0.875rem',
   },
 });

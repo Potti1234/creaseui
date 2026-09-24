@@ -1,6 +1,6 @@
 import EmblaCarousel, { type EmblaOptionsType, type EmblaPluginType } from 'embla-carousel'
 import { Effect, Queue, Schema as S, Stream } from 'effect'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 export const Model = S.Struct({
   id: S.String,
@@ -10,8 +10,10 @@ export const Model = S.Struct({
 export type Model = typeof Model.Type
 
 /** Selection is reported by the mounted Embla resource; it is not predicted by the view. */
-export const WentTo = m('WentTo', { index: S.Number })
-export const Message = S.Union([WentTo])
+
+export const Message = defineMessageUnion({
+  WentTo: { index: S.Number },
+});
 export type Message = typeof Message.Type
 
 export const init = (id: string, count: number, index = 0): Model => ({
@@ -57,7 +59,7 @@ export const mountCarousel = <Msg>(props: Readonly<{
         },
         reducedMotion ? [] : [...props.plugins],
       )
-      const emitSelection = () => Queue.offerUnsafe(queue, props.toMessage(WentTo({ index: api.selectedScrollSnap() })))
+      const emitSelection = () => Queue.offerUnsafe(queue, props.toMessage(Message.WentTo({ index: api.selectedScrollSnap() })))
       const updateButtons = () => {
         if (previousButton instanceof HTMLButtonElement) previousButton.disabled = !api.canScrollPrev()
         if (nextButton instanceof HTMLButtonElement) nextButton.disabled = !api.canScrollNext()

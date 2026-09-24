@@ -6,7 +6,7 @@ import type { StyleXExamplePreviewProvider } from '@/docs/components/page-defini
 import { comboboxFixtures, comboboxFrameworks, comboboxLabel } from '@/docs/components/pages/combobox/shared';
 import * as Combobox from '@/stylex/combobox';
 
-const styles = stylex.create({ sample: { display: 'grid', gap: '0.5rem' }, status: { color: 'var(--muted-foreground)', fontSize: '0.875rem' } });
+const styles = stylex.create({ sample: { gap: '0.5rem', display: 'grid', }, status: { color: 'var(--muted-foreground)', fontSize: '0.875rem' } });
 
 export const comboboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(index: number, model: unknown, onMessageJson: (messageJson: string) => Msg, h: HtmlBuilder<Msg>) => {
   const fixture = comboboxFixtures[index] ?? comboboxFixtures[0];

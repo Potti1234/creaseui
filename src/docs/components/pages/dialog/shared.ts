@@ -26,37 +26,30 @@ const dialogSource = (
   return foldkitApplication({
     title: `Dialog — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
 ${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\n" : ''}
 import * as Button from '@/${isStyleX ? 'stylex' : 'ui'}/button'
 import * as Dialog from '@/${isStyleX ? 'stylex' : 'ui'}/dialog'${isStyleX ? "\n\nconst styles = stylex.create({\n  body: { fontSize: '0.875rem' },\n  cancel: { borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: '1px', paddingBlock: '0.5rem', paddingInline: '1rem', fontSize: '0.875rem' },\n  confirm: { backgroundColor: 'var(--primary)', borderRadius: '0.375rem', color: 'var(--primary-foreground)', paddingBlock: '0.5rem', paddingInline: '1rem', fontSize: '0.875rem' },\n  compact: { maxWidth: '24rem' },\n})" : ''}`,
     model: `export const Model = S.Struct({ dialog: Dialog.Model })
 export type Model = typeof Model.Type`,
-    messages: `export const ClickedOpen = m('ClickedOpen${tag}')
-export const GotDialogMessage = m('GotDialogMessage${tag}', { message: Dialog.Message })
+    messages: `import { taggedStruct } from 'foldkit/schema'
+export const ClickedOpen = taggedStruct('ClickedOpen${tag}');
+export const GotDialogMessage = taggedStruct('GotDialogMessage${tag}', { message: Dialog.Message });
 export const Message = S.Union([ClickedOpen, GotDialogMessage])
 export type Message = typeof Message.Type`,
-    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { dialog: Dialog.init({ id: 'profile-dialog', isAnimated: true }) },
-  [],
-]`,
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: { dialog: Dialog.init({ id: 'profile-dialog', isAnimated: true }) } })`,
     update: `const mapDialog = (
   model: Model,
   result: ReturnType<typeof Dialog.update>,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
-  const [dialog, commands] = result
-  return [
-    { ...model, dialog },
-    Command.mapMessages(commands, next => GotDialogMessage({ message: next })),
-  ]
+): Update.Return<Model, Message> => {
+  return { model: { ...model, dialog: result.model }, commands: Command.mapMessages(result.commands, next => GotDialogMessage({ message: next })) }
 }
 
 export const update = (
   model: Model,
   message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'ClickedOpen${tag}':
       return mapDialog(model, Dialog.open(model.dialog))

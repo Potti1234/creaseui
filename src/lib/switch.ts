@@ -37,6 +37,7 @@ export const renderSwitch = <Msg>(
       isReadOnly: props.isReadOnly ?? false,
       ...(props.name === undefined ? {} : { name: props.name }),
       ...(props.value === undefined ? {} : { value: props.value }),
+      hasDescription: props.description !== undefined,
       toView: ({ button, label, description, hiddenInput }) =>
         h.div(
           [

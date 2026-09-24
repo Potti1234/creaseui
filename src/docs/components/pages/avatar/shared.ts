@@ -10,27 +10,27 @@ const lifecycleSource = (renderer: 'tailwind' | 'stylex'): string =>
   foldkitApplication({
     title: 'Avatar — Image lifecycle',
     imports: `import { Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 import * as Avatar from '@/${renderer === 'tailwind' ? 'ui' : 'stylex'}/avatar'`,
     model: `export const Model = S.Struct({ avatar: Avatar.Model })
 export type Model = typeof Model.Type`,
-    messages: `export const GotAvatarMessage = m('GotAvatarMessage', { message: Avatar.Message })
-export const Message = S.Union([GotAvatarMessage])
+    messages: `import { defineMessageUnion } from 'foldkit/message'
+
+export const Message = defineMessageUnion({
+  GotAvatarMessage: { message: Avatar.Message },
+});
 export type Message = typeof Message.Type`,
-    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { avatar: Avatar.init() },
-  [],
-]`,
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: { avatar: Avatar.init() } })`,
     update: `export const update = (
   model: Model,
   message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'GotAvatarMessage':
-      return [{ ...model, avatar: Avatar.update(model.avatar, message.message) }, []]
+      return { model: { ...model, avatar: Avatar.update(model.avatar, message.message) } }
   }
 }`,
     view: `const portrait = '${avatarPortrait}'
@@ -43,7 +43,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
         src: portrait,
         alt: 'Ada Lovelace',
         model: model.avatar,
-        toParentMessage: message => GotAvatarMessage({ message }),
+        toParentMessage: message => Message.GotAvatarMessage({ message }),
       }, h),
       Avatar.avatarFallback({ model: model.avatar, children: ['AL'] }, h),
     ] }, h),

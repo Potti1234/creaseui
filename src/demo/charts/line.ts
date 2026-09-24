@@ -1,8 +1,9 @@
 import { Match as M, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 
 import * as LineDefault from '@/demo/charts/cards/line-default';
 import * as LineDots from '@/demo/charts/cards/line-dots';
@@ -33,14 +34,17 @@ export type Model = typeof Model.Type;
 
 // MESSAGE
 
-export const GotChartMessage = m('GotChartMessage', {
-  message: Chart.ChartMessage,
-});
-export const SelectedActiveChart = m('SelectedActiveChart', {
-  activeChart: ActiveChart,
-});
 
-export const Message = S.Union([GotChartMessage, SelectedActiveChart]);
+
+
+export const Message = defineMessageUnion({
+  GotChartMessage: {
+  message: Chart.ChartMessage,
+},
+  SelectedActiveChart: {
+  activeChart: ActiveChart,
+},
+});
 export type Message = typeof Message.Type;
 
 // INIT
@@ -49,25 +53,22 @@ export const init = (): Model => ({ activeChart: 'desktop' });
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      GotChartMessage: () => [model, []],
-      SelectedActiveChart: ({ activeChart }) => [
-        evo(model, { activeChart: () => activeChart }),
-        [
+      GotChartMessage: () => ({ model: model }),
+      SelectedActiveChart: ({ activeChart }) => ({ model: modifyFields(model, { activeChart: () => activeChart }), commands: [
           Command.mapMessage(
             Chart.SyncChart({
               hostId: LineInteractive.HOST_ID,
               variant: activeChart,
             }),
-            (message) => GotChartMessage({ message }),
+            (message) => Message.GotChartMessage({ message }),
           ),
-        ],
-      ],
+        ] }),
     }),
   );
 
@@ -75,7 +76,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   const toMessage = (message: Chart.ChartMessage): Message =>
-    GotChartMessage({ message });
+    Message.GotChartMessage({ message });
 
   return chartsPageShell<Message>(
     'line',
@@ -92,7 +93,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       LineInteractive.view(
         {
           activeChart: model.activeChart,
-          onSelect: (activeChart) => SelectedActiveChart({ activeChart }),
+          onSelect: (activeChart) => Message.SelectedActiveChart({ activeChart }),
           toMessage,
         },
         h,

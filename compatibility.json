@@ -1,10 +1,10 @@
 {
   "$schema": "./docs/compatibility.schema.json",
   "creaseui": "0.1.x",
-  "effect": "4.0.0-rc.109",
-  "foldkit": "0.148.x",
-  "foldkitUi": "0.148.x",
-  "foldkitVitePlugin": "0.16.x",
+  "effect": "4.0.0-rc.116",
+  "foldkit": "0.163.x",
+  "foldkitUi": "0.163.x",
+  "foldkitVitePlugin": "0.24.x",
   "tailwind": "4.x",
   "vite": "8.x"
 }

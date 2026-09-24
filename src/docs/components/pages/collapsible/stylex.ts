@@ -6,7 +6,7 @@ import type { StyleXExamplePreviewProvider } from '@/docs/components/page-defini
 import * as Collapsible from '@/stylex/collapsible';
 
 const styles = stylex.create({
-  stack: { display: 'flex', flexDirection: 'column', gap: '0.75rem' },
+  stack: { gap: '0.75rem', display: 'flex', flexDirection: 'column', },
   externalTrigger: {
     borderColor: 'var(--border)',
     borderRadius: '0.375rem',

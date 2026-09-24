@@ -15,30 +15,30 @@ const source = (fixture: (typeof contextMenuFixtures)[number], renderer: 'tailwi
   return foldkitApplication({
     title: `Context Menu — ${fixture.title}`,
     imports: `import { Option, Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
 ${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\n" : ''}
 import * as ContextMenu from '@/${isStyleX ? 'stylex' : 'ui'}/context-menu'${isStyleX ? "\n\nconst styles = stylex.create({\n  target: { height: '10rem', width: '18rem' },\n})" : ''}`,
     model: `export const Action = S.Literals(['back', 'forward', 'reload'])
 export type Action = typeof Action.Type
 export const Model = S.Struct({ menu: ContextMenu.Model, maybeLastAction: S.Option(Action) })
 export type Model = typeof Model.Type`,
-    messages: `export const GotContextMenuMessage = m('GotContextMenuMessage${tag}', { message: ContextMenu.Message })
+    messages: `import { taggedStruct } from 'foldkit/schema'
+export const GotContextMenuMessage = taggedStruct('GotContextMenuMessage${tag}', { message: ContextMenu.Message });
 export const Message = S.Union([GotContextMenuMessage])
 export type Message = typeof Message.Type`,
-    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { menu: ContextMenu.init({ id: 'browser-context-menu' }), maybeLastAction: Option.none() },
-  [],
-]`,
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: { menu: ContextMenu.init({ id: 'browser-context-menu' }), maybeLastAction: Option.none() } })`,
     update: `const BrowserMenu = ContextMenu.create<Action>()
 
-export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'GotContextMenuMessage${tag}': {
-      const [menu, commands, maybeSelection] = BrowserMenu.update(model.menu, message.message)
+      const menuOp__ = BrowserMenu.update(model.menu, message.message);
+    const menu = menuOp__.model;
+    const commands = menuOp__.commands ?? [];
+    const maybeSelection = Option.fromNullishOr(menuOp__.outMessage);
       const maybeLastAction = Option.match(maybeSelection, { onNone: () => model.maybeLastAction, onSome: selected => Option.some(selected.value) })
-      return [{ ...model, menu, maybeLastAction }, Command.mapMessages(commands, next => GotContextMenuMessage({ message: next }))]
+      return { model: { ...model, menu, maybeLastAction }, commands: Command.mapMessages(commands, next => GotContextMenuMessage({ message: next })) }
     }
   }
 }`,

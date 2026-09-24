@@ -12,10 +12,7 @@ const ChangedTextarea = (value: string): Message => ({
   _tag: 'ChangedTextarea',
   value,
 })
-const update = (_model: Model, message: Message) => [
-  { value: message.value },
-  [],
-] as const
+const update = (_model: Model, message: Message) => ({ model: { value: message.value } })
 
 type TextareaModule = Readonly<{
   textarea: <Msg>(

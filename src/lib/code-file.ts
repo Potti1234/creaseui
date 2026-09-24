@@ -1,6 +1,6 @@
 import { Effect, Schema as S } from 'effect';
 import { Mount } from 'foldkit';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 import { File, registerCustomTheme } from '@pierre/diffs';
 
 /* Pierre File viewer embedded in foldkit. Same mount contract as the ECharts
@@ -164,58 +164,57 @@ const makeScrollableFocusable = (node: HTMLElement): void => {
 
 // MESSAGE
 
-export const MountedCodeFile = m('MountedCodeFile');
-export const FailedCodeFile = m('FailedCodeFile', { reason: S.String });
-export const Message = S.Union([MountedCodeFile, FailedCodeFile]);
+
+
+export const Message = defineMessageUnion({
+  MountedCodeFile: {},
+  FailedCodeFile: { reason: S.String },
+});
 export type Message = typeof Message.Type;
 
 // MOUNT
 
-export const MountCodeFile = Mount.define(
-  'MountCodeFile',
-  {
+export const MountCodeFile = Mount.define('MountCodeFile', {
+  args: {
     fileName: S.String,
     contents: S.String,
     dark: S.Boolean,
     lineNumbers: S.Boolean,
   },
-  MountedCodeFile,
-  FailedCodeFile,
-)(
-  ({ fileName, contents, dark, lineNumbers }) =>
-    (element) =>
-      Effect.acquireRelease(
-        Effect.try({
-          try: () => {
-            if (!(element instanceof HTMLElement)) {
-              throw new Error('Code file host is not an HTMLElement.');
-            }
-            const view = new File({
-              theme: { light: 'crease-light', dark: 'crease-dark' },
-              themeType: dark ? 'dark' : 'light',
-              disableFileHeader: true,
-              disableLineNumbers: !lineNumbers,
-              overflow: 'scroll',
-              unsafeCSS:
-                'pre { height: 100%; } [data-code] { height: 100%; overflow-y: auto; align-content: start; }',
-              onPostRender: (node) => {
-                makeScrollableFocusable(node);
-              },
-            });
-            view.render({
-              file: { name: fileName, contents },
-              containerWrapper: element,
-            });
-            return view;
-          },
-          catch: (error) =>
-            error instanceof Error ? error : new Error(String(error)),
-        }),
-        (view) => Effect.sync(() => view.cleanUp()),
-      ).pipe(
-        Effect.map(() => MountedCodeFile()),
-        Effect.catch((error) =>
-          Effect.succeed(FailedCodeFile({ reason: error.message })),
-        ),
+  messages: [Message.MountedCodeFile, Message.FailedCodeFile],
+  execute: ({ element, fileName, contents, dark, lineNumbers }) =>
+    Effect.acquireRelease(
+      Effect.try({
+        try: () => {
+          if (!(element instanceof HTMLElement)) {
+            throw new Error('Code file host is not an HTMLElement.');
+          }
+          const view = new File({
+            theme: { light: 'crease-light', dark: 'crease-dark' },
+            themeType: dark ? 'dark' : 'light',
+            disableFileHeader: true,
+            disableLineNumbers: !lineNumbers,
+            overflow: 'scroll',
+            unsafeCSS:
+              'pre { height: 100%; } [data-code] { height: 100%; overflow-y: auto; align-content: start; }',
+            onPostRender: (node) => {
+              makeScrollableFocusable(node);
+            },
+          });
+          view.render({
+            file: { name: fileName, contents },
+            containerWrapper: element,
+          });
+          return view;
+        },
+        catch: (error) =>
+          error instanceof Error ? error : new Error(String(error)),
+      }),
+      (view) => Effect.sync(() => view.cleanUp()),
+    ).pipe(
+      Effect.map(() => Message.MountedCodeFile()),
+      Effect.catch((error) =>
+        Effect.succeed(Message.FailedCodeFile({ reason: error.message })),
       ),
-);
+    ),
+});

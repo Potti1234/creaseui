@@ -1,8 +1,9 @@
 import { Match as M, Option, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 
 import { areaChart } from '@/ui/chart';
 import {
@@ -65,14 +66,16 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const GotTickerSelectMessage = m('GotTickerSelectMessage', {
-  message: Select.Message,
-});
 
-export const Message = S.Union([GotTickerSelectMessage]);
+
+export const Message = defineMessageUnion({
+  GotTickerSelectMessage: {
+  message: Select.Message,
+},
+});
 export type Message = typeof Message.Type;
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const init = (): Model => ({
   ticker: 'VOO',
@@ -87,25 +90,24 @@ export const update = (model: Model, message: Message): UpdateReturn =>
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotTickerSelectMessage: ({ message: selectMessage }) => {
-        const [tickerSelect, commands, maybeOutMessage] = TickerSelect.update(
+        const { model: tickerSelect, commands: tickerSelectCommands__, outMessage: tickerSelectOut__ } = TickerSelect.update(
           model.tickerSelect,
           selectMessage,
-        );
+        )
+        const commands = tickerSelectCommands__ ?? []
+        const maybeOutMessage = Option.fromNullishOr(tickerSelectOut__)
         const ticker = Option.match(maybeOutMessage, {
           onNone: () => model.ticker,
           onSome: (outMessage) =>
             outMessage._tag === 'Selected' ? outMessage.value : model.ticker,
         });
 
-        return [
-          evo(model, {
+        return { model: modifyFields(model, {
             ticker: () => ticker,
             tickerSelect: () => tickerSelect,
-          }),
-          Command.mapMessages(commands, (childMessage) =>
-            GotTickerSelectMessage({ message: childMessage }),
-          ),
-        ];
+          }), commands: Command.mapMessages(commands, (childMessage) =>
+            Message.GotTickerSelectMessage({ message: childMessage }),
+          ) };
       },
     }),
   );
@@ -149,7 +151,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                                 model.ticker as Ticker,
                               ),
                               toParentMessage: (childMessage) =>
-                                GotTickerSelectMessage({
+                                Message.GotTickerSelectMessage({
                                   message: childMessage,
                                 }),
                               items: tickers,

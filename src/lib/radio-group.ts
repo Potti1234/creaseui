@@ -72,6 +72,7 @@ export const renderRadioGroup = <Msg>(
       isDisabled: props.isDisabled ?? false,
       isReadOnly: props.isReadOnly ?? false,
       isOptionDisabled: (_value, index) => props.options[index]?.isDisabled === true,
+      hasOptionDescription: (_value, index) => props.options[index]?.description !== undefined,
       ...(props.name === undefined ? {} : { name: props.name }),
       ...(props.orientation === undefined ? {} : { orientation: props.orientation }),
       toView: ({ group, options, hiddenInput }) =>

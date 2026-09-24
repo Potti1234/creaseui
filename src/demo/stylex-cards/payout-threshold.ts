@@ -1,8 +1,9 @@
 import { Match as M, Option, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command, Subscription } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 import * as stylex from '@stylexjs/stylex'
 
 import * as Icon from '@/demo/icon-preview';
@@ -56,33 +57,34 @@ export const Model = S.Struct({
 });
 export type Model = typeof Model.Type;
 
-export const GotCurrencyMessage = m('GotCurrencyMessage', {
+
+
+
+export const Message = defineMessageUnion({
+  GotCurrencyMessage: {
   message: Select.Message,
-});
-export const GotAmountMessage = m('GotAmountMessage', {
+},
+  GotAmountMessage: {
   message: Slider.Message,
+},
+  UpdatedNotes: { value: S.String },
 });
-export const UpdatedNotes = m('UpdatedNotes', { value: S.String });
-export const Message = S.Union([
-  GotCurrencyMessage,
-  GotAmountMessage,
-  UpdatedNotes,
-]);
 export type Message = typeof Message.Type;
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotCurrencyMessage: ({ message: childMessage }) => {
-        const [currency, commands, maybeSelection] = Select.update(
+        const { model: currency, commands: currencyCommands__, outMessage: currencyOut__ } = Select.update(
           model.currency,
           childMessage,
-        );
-        return [
-          evo(model, {
+        )
+        const commands = currencyCommands__ ?? []
+        const maybeSelection = Option.fromNullishOr(currencyOut__)
+        return { model: modifyFields(model, {
             currency: () => currency,
             selectedCurrency: (current) =>
               Option.match(maybeSelection, {
@@ -90,32 +92,29 @@ export const update = (model: Model, message: Message): UpdateReturn =>
                 onSome: (selection) =>
                   selection._tag === 'Selected' ? selection.value : current,
               }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotCurrencyMessage({ message: next }),
-          ),
-        ];
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotCurrencyMessage({ message: next }),
+          ) };
       },
       GotAmountMessage: ({ message: childMessage }) => {
-        const [amount, commands, maybeChange] = Slider.update(
+        const { model: amount, commands: amountCommands__, outMessage: amountOut__ } = Slider.update(
           model.amount,
           childMessage,
-        );
-        return [
-          evo(model, {
+        )
+        const commands = amountCommands__ ?? []
+        const maybeChange = Option.fromNullishOr(amountOut__)
+        return { model: modifyFields(model, {
             amount: () => amount,
             amountValue: (current) =>
               Option.match(maybeChange, {
                 onNone: () => current,
                 onSome: (change) => change.value,
               }),
-          }),
-          Command.mapMessages(commands, (next) =>
-            GotAmountMessage({ message: next }),
-          ),
-        ];
+          }), commands: Command.mapMessages(commands, (next) =>
+            Message.GotAmountMessage({ message: next }),
+          ) };
       },
-      UpdatedNotes: ({ value }) => [evo(model, { notes: () => value }), []],
+      UpdatedNotes: ({ value }) => ({ model: modifyFields(model, { notes: () => value }) }),
     }),
   );
 
@@ -196,7 +195,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                                 model.selectedCurrency,
                               ),
                               toParentMessage: (message) =>
-                                GotCurrencyMessage({ message }),
+                                Message.GotCurrencyMessage({ message }),
                               items: currencies,
                               itemToValue: (currency) => currency.value,
                               itemToLabel: (currency) => currency.label,
@@ -234,7 +233,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                               model: model.amount,
                               value: model.amountValue,
                               toParentMessage: (message) =>
-                                GotAmountMessage({ message }),
+                                Message.GotAmountMessage({ message }),
                               ariaLabel: 'Minimum Payout Amount',
                             },
                             h,
@@ -267,7 +266,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                             {
                               id: 'payout-threshold-notes',
                               value: model.notes,
-                              onInput: (value) => UpdatedNotes({ value }),
+                              onInput: (value) => Message.UpdatedNotes({ value }),
                               placeholder:
                                 'Add any notes for this payout configuration...',
                               layoutStyle: styles.notes,
@@ -310,7 +309,7 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
     payoutAmountEscape: Slider.subscriptions.dragEscape,
   })<Model, Message>({
     toChildModel: (model) => model.amount,
-    toParentMessage: (message) => GotAmountMessage({ message }),
+    toParentMessage: (message) => Message.GotAmountMessage({ message }),
   }),
 );
 

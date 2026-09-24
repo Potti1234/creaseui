@@ -1,10 +1,12 @@
 import { Schema as S } from 'effect';
-import { m } from 'foldkit/message';
+import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import * as Separator from '@/ui/separator';
 
-const InteractedWithSeparatorPreview = m('InteractedWithSeparatorPreview');
+const InteractedWithSeparatorPreview = defineMessageUnion({
+  InteractedWithSeparatorPreview: {},
+});
 type InteractedWithSeparatorPreview = typeof InteractedWithSeparatorPreview.Type;
 const SeparatorPreviewModel = S.Struct({ _docsPage: S.Literal('separator') });
 type SeparatorPreviewModel = typeof SeparatorPreviewModel.Type;
@@ -16,7 +18,7 @@ export const separatorTailwindPreviewProgram = definePreviewProgram<
   Model: SeparatorPreviewModel,
   Message: InteractedWithSeparatorPreview,
   init: () => ({ _docsPage: 'separator' }),
-  update: model => [model, []],
+  update: model => ({ model: model }),
   view: (index, _model, h) => index === 0
     ? h.div([h.Class('w-full max-w-md space-y-4')], [
         'Account',

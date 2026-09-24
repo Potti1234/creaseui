@@ -1,8 +1,9 @@
 import { Match as M, Schema as S } from 'effect';
+import type { Update } from 'foldkit';
 import { Command } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
-import { m } from 'foldkit/message';
-import { evo } from 'foldkit/struct';
+import { defineMessageUnion } from 'foldkit/message';
+import { modifyFields } from 'foldkit/struct';
 
 import * as Icon from '@/lib/icon';
 import {
@@ -119,14 +120,18 @@ export type Model = typeof Model.Type;
 
 // MESSAGE
 
-export const ToggledSidebar = m('ToggledSidebar');
-export const ToggledMobileSidebar = m('ToggledMobileSidebar');
-export const GotSectionMenuMessage = m('GotSectionMenuMessage', {
+
+
+
+
+export const Message = defineMessageUnion({
+  ToggledMobileSidebar: {},
+  ToggledSidebar: {},
+  GotSectionMenuMessage: {
   index: S.Number,
   message: DropdownMenu.Message,
+},
 });
-
-export const Message = S.Union([ToggledMobileSidebar, ToggledSidebar, GotSectionMenuMessage]);
 export type Message = typeof Message.Type;
 
 // INIT
@@ -143,40 +148,36 @@ export const init = (): Model => ({
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>];
+type UpdateReturn = Update.Return<Model, Message>;
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledMobileSidebar: () => [evo(model, {isMobileOpen: current => !current}), []],
-      ToggledSidebar: () => [
-        evo(model, { isSidebarOpen: (current) => !current }),
-        [],
-      ],
+      ToggledMobileSidebar: () => ({ model: modifyFields(model, {isMobileOpen: current => !current}) }),
+      ToggledSidebar: () => ({ model: modifyFields(model, { isSidebarOpen: (current) => !current }) }),
       GotSectionMenuMessage: ({ index, message: childMessage }) => {
         const current = model.sectionMenus[index];
 
         if (current === undefined) {
-          return [model, []];
+          return { model: model };
         }
 
-        const [next, commands] = SectionMenu.update(current, childMessage);
+        const nextOp__ = SectionMenu.update(current, childMessage);
+    const next = nextOp__.model;
+    const commands = nextOp__.commands ?? [];;
 
-        return [
-          evo(model, {
+        return { model: modifyFields(model, {
             sectionMenus: (menus) =>
               menus.map((menu, menuIndex) =>
                 menuIndex === index ? next : menu,
               ),
-          }),
-          Command.mapMessages(commands, (nextMessage) =>
-            GotSectionMenuMessage({
+          }), commands: Command.mapMessages(commands, (nextMessage) =>
+            Message.GotSectionMenuMessage({
               index,
               message: nextMessage,
             }),
-          ),
-        ];
+          ) };
       },
     }),
   );
@@ -207,7 +208,7 @@ const navMain = (
                         {
                           model,
                           toParentMessage: (message) =>
-                            GotSectionMenuMessage({ index, message }),
+                            Message.GotSectionMenuMessage({ index, message }),
                           trigger: h.span(
                             [h.Class('contents')],
                             [
@@ -321,7 +322,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
 
   return sidebar(
     {
-      isMobileOpen: model.isMobileOpen, onMobileDismiss: ToggledMobileSidebar(), state,
+      isMobileOpen: model.isMobileOpen, onMobileDismiss: Message.ToggledMobileSidebar(), state,
       children: [
         sidebarHeader(
           {
@@ -393,7 +394,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
           },
           h,
         ),
-        sidebarRail({ onClick: ToggledSidebar() }, h),
+        sidebarRail({ onClick: Message.ToggledSidebar() }, h),
       ],
     },
     h,
@@ -409,7 +410,7 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
           [
             sidebarTrigger(
               {
-                onMobileClick: ToggledMobileSidebar(), onClick: ToggledSidebar(),
+                onMobileClick: Message.ToggledMobileSidebar(), onClick: Message.ToggledSidebar(),
                 class: '-ml-1',
               },
               h,
@@ -507,6 +508,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
 
 /* Minimal interactive wiring:
    const model = init()
-   const [nextModel, commands] = update(model, ToggledSidebar())
+   const nextModelOp__ = update(model, ToggledSidebar());
+    const nextModel = nextModelOp__.model;
+    const commands = nextModelOp__.commands ?? [];
    view(nextModel)
 */

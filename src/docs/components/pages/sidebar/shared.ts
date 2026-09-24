@@ -51,14 +51,14 @@ return { title: 'Nested sidebar navigation', body: Sidebar.sidebar({ collapsible
 return { title: 'Loading sidebar navigation', body: Sidebar.sidebar({ collapsible: 'none', children: [Sidebar.sidebarContent({ children: [Sidebar.sidebarGroup({ children: [Sidebar.sidebarGroupLabel({ children: ['Projects'] }, h), Sidebar.sidebarGroupContent({ children: [Sidebar.sidebarMenu({ children: rows }, h)] }, h)] }, h)] }, h)] }, h) }`;
 
   return `const state: Sidebar.SidebarState = model.sidebar.isOpen ? 'expanded' : 'collapsed'
-const desktopToggle = GotSidebarMessage({ message: Sidebar.Toggled() })
-const mobileToggle = GotSidebarMessage({ message: Sidebar.ToggledMobile() })
+const desktopToggle = Message.GotSidebarMessage({ message: Sidebar.Message.Toggled() })
+const mobileToggle = Message.GotSidebarMessage({ message: Sidebar.Message.ToggledMobile() })
 
 return {
   title: 'Sidebar application shell',
   body: Sidebar.sidebarProvider({ state${providerWidths}, children: [
-    Sidebar.sidebar({ state, side: '${side}', variant: '${variant}', collapsible: '${collapsible}', isMobileOpen: model.sidebar.isMobileOpen, onMobileDismiss: GotSidebarMessage({ message: Sidebar.SetMobileOpen({ isOpen: false }) }), children: [
-      Sidebar.sidebarHeader({ children: [Sidebar.sidebarInput({ value: model.query, onInput: value => ChangedQuery({ value }), placeholder: 'Search navigation' }, h)] }, h),
+    Sidebar.sidebar({ state, side: '${side}', variant: '${variant}', collapsible: '${collapsible}', isMobileOpen: model.sidebar.isMobileOpen, onMobileDismiss: Message.GotSidebarMessage({ message: Sidebar.Message.SetMobileOpen({ isOpen: false }) }), children: [
+      Sidebar.sidebarHeader({ children: [Sidebar.sidebarInput({ value: model.query, onInput: value => Message.ChangedQuery({ value }), placeholder: 'Search navigation' }, h)] }, h),
       Sidebar.sidebarContent({ children: [Sidebar.sidebarGroup({ children: [Sidebar.sidebarGroupLabel({ children: ['Platform'] }, h), Sidebar.sidebarGroupContent({ children: [navigation(model, h)] }, h)] }, h)] }, h),
       Sidebar.sidebarFooter({ children: [Sidebar.sidebarMenuButton({ size: 'lg', children: [Icon.icon('circle-user-round', {}, h), h.span([], ['Ada Lovelace'])] }, h)] }, h),
       Sidebar.sidebarRail({ onClick: desktopToggle }, h),
@@ -76,44 +76,50 @@ const source = (renderer: 'tailwind' | 'stylex', kind: SidebarFixtureKind): stri
   return foldkitApplication({
     title: `Sidebar - ${kind}`,
     imports: `import { Schema as S } from 'effect'
-import { Command, Runtime, Subscription } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 ${sx ? "import * as stylex from '@stylexjs/stylex'\n\nconst styles = stylex.create({ header: { alignItems: 'center', borderBottomColor: 'var(--border)', borderBottomStyle: 'solid', borderBottomWidth: 1, display: 'flex', gap: '0.5rem', height: '3rem', paddingInline: '1rem' }, main: { padding: '1.5rem' } })\n" : ''}
 import * as Icon from '@/lib/icon'
 import * as DropdownMenu from '@/${sx ? 'stylex' : 'ui'}/dropdown-menu'
 import * as Sidebar from '@/${sx ? 'stylex' : 'ui'}/sidebar'`,
     model: `export const Model = S.Struct({ sidebar: Sidebar.Model, actions: DropdownMenu.Model, query: S.String })
 export type Model = typeof Model.Type`,
-    messages: `export const GotSidebarMessage = m('GotSidebarMessage', { message: Sidebar.Message })
-export const GotActionsMessage = m('GotActionsMessage', { message: DropdownMenu.Message })
-export const ChangedQuery = m('ChangedQuery', { value: S.String })
-export const Message = S.Union([GotSidebarMessage, GotActionsMessage, ChangedQuery])
+    messages: `import { defineMessageUnion } from 'foldkit/message'
+
+
+
+export const Message = defineMessageUnion({
+  GotSidebarMessage: { message: Sidebar.Message },
+  GotActionsMessage: { message: DropdownMenu.Message },
+  ChangedQuery: { value: S.String },
+});
 export type Message = typeof Message.Type`,
-    init: `export const init = (): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-  { sidebar: Sidebar.init({ defaultOpen: true, storageKey: 'workspace_sidebar' }), actions: DropdownMenu.init({ id: 'sidebar-actions' }), query: '' },
-  [],
-]`,
-    update: `export const update = (model: Model, message: Message): readonly [Model, ReadonlyArray<Command.Command<Message>>] => {
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: { sidebar: Sidebar.init({ defaultOpen: true, storageKey: 'workspace_sidebar' }), actions: DropdownMenu.init({ id: 'sidebar-actions' }), query: '' } })`,
+    update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'GotSidebarMessage': {
-      const [sidebar, commands] = Sidebar.update(model.sidebar, message.message)
-      return [{ ...model, sidebar }, Command.mapMessages(commands, next => GotSidebarMessage({ message: next }))]
+      const sidebarOp__ = Sidebar.update(model.sidebar, message.message);
+    const sidebar = sidebarOp__.model;
+    const commands = sidebarOp__.commands ?? [];
+      return { model: { ...model, sidebar }, commands: Command.mapMessages(commands, next => Message.GotSidebarMessage({ message: next })) }
     }
     case 'GotActionsMessage': {
-      const [actions, commands] = DropdownMenu.update(model.actions, message.message)
-      return [{ ...model, actions }, Command.mapMessages(commands, next => GotActionsMessage({ message: next }))]
+      const actionsOp__ = DropdownMenu.update(model.actions, message.message);
+    const actions = actionsOp__.model;
+    const commands = actionsOp__.commands ?? [];
+      return { model: { ...model, actions }, commands: Command.mapMessages(commands, next => Message.GotActionsMessage({ message: next })) }
     }
-    case 'ChangedQuery': return [{ ...model, query: message.value }, []]
+    case 'ChangedQuery': return { model: { ...model, query: message.value } }
   }
 }`,
     subscriptions: `export const subscriptions = Subscription.make<Model, Message>()(() => ({
-  sidebarShortcut: Subscription.persistent(Sidebar.shortcut(next => GotSidebarMessage({ message: next }))),
+  sidebarShortcut: Subscription.persistent(Sidebar.shortcut(next => Message.GotSidebarMessage({ message: next }))),
 }))`,
     view: `const actionItems = ['open', 'rename', 'delete'] as const
 const actionMenu = (model: Model, h: HtmlBuilder<Message>) => DropdownMenu.dropdownMenu({
   model: model.actions,
-  toParentMessage: message => GotActionsMessage({ message }),
+  toParentMessage: message => Message.GotActionsMessage({ message }),
   trigger: Icon.moreHorizontal({}, h),
   ariaLabel: 'Item actions',
   align: 'end',
