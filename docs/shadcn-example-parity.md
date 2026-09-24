@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 20 done · 41 todo · 3 crease-only
+Current: 21 done · 40 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -37,7 +37,7 @@ Current: 20 done · 41 todo · 3 crease-only
 | `context-menu` | 10 | Basic<br>Submenu<br>Shortcuts<br>Groups<br>Icons<br>Checkboxes<br>Radio<br>Destructive<br>RTL | done |
 | `data-table` | 4 | RTL | done |
 | `date-picker` | 2 | Basic<br>Range Picker<br>Date of Birth<br>Input<br>Time Picker<br>Natural Language Picker<br>RTL | todo (missing: Basic, Range Picker, Date of Birth, Input, Time Picker, Natural Language Picker, RTL) |
-| `dialog` | 2 | Custom Close Button<br>No Close Button<br>Sticky Footer<br>Scrollable Content<br>RTL | todo (missing: Custom Close Button, No Close Button, Sticky Footer, Scrollable Content, RTL) |
+| `dialog` | 7 | Custom Close Button<br>No Close Button<br>Sticky Footer<br>Scrollable Content<br>RTL | done |
 | `direction` | 2 | — | crease-only |
 | `drawer` | 3 | Scrollable Content<br>Sides<br>Responsive Dialog<br>RTL | todo (missing: Scrollable Content, Sides, Responsive Dialog, RTL) |
 | `dropdown-menu` | 12 | Basic<br>Submenu<br>Shortcuts<br>Icons<br>Checkboxes<br>Checkboxes Icons<br>Radio Group<br>Radio Icons<br>Destructive<br>Avatar<br>Complex<br>RTL | done |

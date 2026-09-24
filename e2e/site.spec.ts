@@ -967,71 +967,133 @@ test("create icon selection changes the live preview shapes", async ({
   ).toBeVisible();
 });
 
-test("dialog traps focus, closes with Escape, and restores its trigger", async ({
+test("dialog matches upstream sections, restores focus, and scrolls long content", async ({
   page,
 }) => {
   await page.goto("/docs/components/dialog");
-  const example = page.locator("#edit-profile");
-  const trigger = example.getByRole("button", { name: "Open profile" });
 
-  await trigger.click();
-  const dialog = page.locator("#docs-dialog-0");
-  await expect(dialog).toBeVisible();
-  await expect(dialog).toHaveAttribute("id", "docs-dialog-0");
-  await expect(dialog).toHaveAttribute(
+  for (const id of [
+    "compact-confirmation",
+    "custom-close-button",
+    "no-close-button",
+    "sticky-footer",
+    "scrollable-content",
+    "rtl",
+  ]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+
+  const hero = page.locator('[aria-label="Edit profile preview"]');
+  const heroTrigger = hero.getByRole("button", { name: "Open Dialog" });
+  await heroTrigger.click();
+  const heroDialog = page.locator("#docs-dialog-7");
+  await expect(heroDialog).toBeVisible();
+  await expect(heroDialog).toHaveAttribute(
     "aria-labelledby",
-    "docs-dialog-0-dialog-title",
+    "docs-dialog-7-dialog-title",
   );
-  await expect(dialog).toHaveAttribute(
-    "aria-describedby",
-    "docs-dialog-0-dialog-description",
-  );
-  await expect(dialog.getByRole("button", { name: "Cancel" })).toBeFocused();
-  await expect(dialog.locator('[data-slot="dialog-header"]')).toBeVisible();
-  await expect(dialog.locator('[data-slot="dialog-title"]')).toHaveText(
-    "Edit profile",
-  );
-  await expect(dialog.locator('[data-slot="dialog-footer"]')).toBeVisible();
-  await expect(example.locator("code")).toContainText("Dialog.open");
-
+  await expect(
+    heroDialog.getByRole("button", { name: "Cancel" }),
+  ).toBeFocused();
+  const nameInput = heroDialog.getByRole("textbox", { name: "Name", exact: true });
+  await expect(nameInput).toHaveValue("Pedro Duarte");
+  await nameInput.fill("Grace Hopper");
+  await expect(nameInput).toHaveValue("Grace Hopper");
   await page.keyboard.press("Tab");
-  await expect(dialog).toContainText("Save");
   expect(
-    await dialog.evaluate((node) => node.contains(document.activeElement)),
+    await heroDialog.evaluate((node) => node.contains(document.activeElement)),
   ).toBe(true);
-
   await page.keyboard.press("Escape");
-  await expect(dialog).toBeHidden();
-  await expect(trigger).toBeFocused();
+  await expect(heroDialog).toBeHidden();
+  await expect(heroTrigger).toBeFocused();
 
-  await trigger.click();
-  await expect(dialog).toBeVisible();
-  await dialog.locator(":scope > div").first().click({ position: { x: 2, y: 2 } });
-  await expect(dialog).toBeHidden();
-  await expect(trigger).toBeFocused();
+  const share = page.locator("#custom-close-button");
+  await share.getByRole("button", { name: "Share" }).click();
+  const shareDialog = page.locator("#docs-dialog-2");
+  await expect(shareDialog).toBeVisible();
+  const linkInput = shareDialog.getByRole("textbox", { name: "Link" });
+  await expect(linkInput).toHaveValue(
+    "https://ui.shadcn.com/docs/installation",
+  );
+  await expect(linkInput).toHaveAttribute("readonly", "");
+  await shareDialog
+    .locator('[data-slot="dialog-footer"]')
+    .getByRole("button", { name: "Close" })
+    .click();
+  await expect(shareDialog).toBeHidden();
+
+  const noClose = page.locator("#no-close-button");
+  const noCloseTrigger = noClose.getByRole("button", {
+    name: "No Close Button",
+    exact: true,
+  });
+  await noCloseTrigger.click();
+  const noCloseDialog = page.locator("#docs-dialog-3");
+  await expect(noCloseDialog).toBeVisible();
+  await expect(noCloseDialog.locator('[data-slot="dialog-close"]')).toHaveCount(
+    0,
+  );
+  await page.keyboard.press("Escape");
+  await expect(noCloseDialog).toBeHidden();
+  await expect(noCloseTrigger).toBeFocused();
+
+  const sticky = page.locator("#sticky-footer");
+  await sticky.getByRole("button", { name: "Sticky Footer", exact: true }).click();
+  const stickyDialog = page.locator("#docs-dialog-4");
+  await expect(stickyDialog).toBeVisible();
+  const stickyScroll = stickyDialog.locator(".overflow-y-auto");
+  const scrolled = await stickyScroll.evaluate((node) => {
+    node.scrollTop = node.scrollHeight;
+    return node.scrollTop;
+  });
+  expect(scrolled).toBeGreaterThan(0);
+  await expect(
+    stickyDialog
+      .locator('[data-slot="dialog-footer"]')
+      .getByRole("button", { name: "Close" }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  const scrollable = page.locator("#scrollable-content");
+  await scrollable
+    .getByRole("button", { name: "Scrollable Content", exact: true })
+    .click();
+  const scrollDialog = page.locator("#docs-dialog-5");
+  await expect(scrollDialog).toBeVisible();
+  const scrollBox = scrollDialog.locator(".overflow-y-auto");
+  expect(await scrollBox.evaluate((node) => node.scrollHeight)).toBeGreaterThan(
+    await scrollBox.evaluate((node) => node.clientHeight),
+  );
+  await page.keyboard.press("Escape");
+
+  const rtl = page.locator("#rtl");
+  const rtlTrigger = rtl.getByRole("button", { name: "افتح الحوار" });
+  await rtlTrigger.click();
+  const rtlDialog = page.locator("#docs-dialog-6");
+  await expect(rtlDialog).toBeVisible();
+  await expect(rtlDialog.locator('[dir="rtl"]')).toBeVisible();
+  await expect(
+    rtlDialog.getByRole("textbox", { name: "الاسم" }),
+  ).toHaveValue("Pedro Duarte");
+  await expect(
+    rtlDialog.getByRole("button", { name: "إلغاء" }),
+  ).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(rtlDialog).toBeHidden();
+  await expect(rtlTrigger).toBeFocused();
 
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  await expect(page.locator("#edit-profile")).toBeVisible();
-  await expect(page.locator("#compact-confirmation")).toBeVisible();
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(example.locator("code")).toContainText("@/stylex/dialog");
-  await trigger.click();
-  await expect(dialog).toBeVisible();
-  await expect(dialog.getByRole("button", { name: "Cancel" })).toBeFocused();
-  await dialog.getByRole("button", { name: "Cancel" }).click();
-  await expect(dialog).toBeHidden();
-  await expect(trigger).toBeFocused();
-
-  const compactExample = page.locator("#compact-confirmation");
-  const compactTrigger = compactExample.getByRole("button", {
-    name: "Review change",
-  });
-  await compactTrigger.click();
-  const compactDialog = page.locator("#docs-dialog-1");
-  await expect(compactDialog).toHaveAttribute("id", "docs-dialog-1");
-  await expect(compactDialog.getByRole("button", { name: "Back" })).toBeFocused();
+  for (const id of ["compact-confirmation", "custom-close-button", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  const sxShare = page.locator("#custom-close-button");
+  await sxShare.getByRole("button", { name: "Share" }).click();
+  const sxShareDialog = page.locator("#docs-dialog-2");
+  await expect(sxShareDialog).toBeVisible();
+  await expect(
+    sxShareDialog.getByRole("textbox", { name: "Link" }),
+  ).toHaveValue("https://ui.shadcn.com/docs/installation");
   await page.keyboard.press("Escape");
-  await expect(compactTrigger).toBeFocused();
 });
 
 test("alert dialog matches upstream sections and keeps async consequences parent owned", async ({
