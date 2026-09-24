@@ -981,8 +981,14 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Single slide",
-        "Two at a time"
+        "Demo",
+        "Sizes",
+        "Spacing",
+        "Orientation",
+        "Options",
+        "API",
+        "Plugins",
+        "RTL"
       ],
       "api": [
         {

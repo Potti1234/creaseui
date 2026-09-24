@@ -329,7 +329,7 @@ A shadcn-styled Carousel component for Foldkit.
 
 Source: `src/ui/carousel.ts`
 
-Examples: Single slide, Two at a time
+Examples: Demo, Sizes, Spacing, Orientation, Options, API, Plugins, RTL
 
 - `export * from '@/lib/carousel'` (re-export)
 - `CarouselProps<Msg> = Readonly<{ model: CarouselBehavior.Model; toParentMessage: (message: CarouselBehavior.Message) => Msg; items: ReadonlyArray<Html | string>; ariaLabel?: string; orientation?: 'horizontal' | 'vertical'; loop?: boolean; /** Additional Embla …` (type)

@@ -863,25 +863,75 @@ test("authored resizable instances keep axis-specific child state independent", 
   await expect(page.locator("#editor-and-preview code")).toContainText("@/stylex/resizable");
 });
 
-test("authored carousels synchronize Embla selections without sharing state", async ({
+test("carousel sections mirror shadcn examples in both renderers", async ({
   page,
 }) => {
   await page.goto("/docs/components/carousel");
+  for (const id of [
+    "sizes",
+    "spacing",
+    "orientation",
+    "api",
+    "options",
+    "plugins",
+    "rtl",
+  ]) {
+    await expect(page.locator(`[id="${id}"]`)).toBeVisible();
+  }
+
+  const hero = page.locator('[data-slot="carousel"]').first();
+  await expect(
+    hero.getByRole("button", { name: "Previous slide" }),
+  ).toBeDisabled();
+  await hero.getByRole("button", { name: "Next slide" }).click();
+  await expect(
+    hero.getByRole("button", { name: "Previous slide" }),
+  ).toBeEnabled();
+
+  const sizes = page.locator("#sizes");
+  await expect(
+    sizes.locator('[data-slot="carousel-item"]').first(),
+  ).toHaveAttribute("style", /flex-basis:\s*50%/);
+
+  const orientation = page.locator("#orientation");
+  await expect(
+    orientation.locator('[data-slot="carousel-item"]').first(),
+  ).toHaveClass(/pt-4/);
+
+  const options = page.locator("#options");
+  for (let i = 0; i < 5; i++) {
+    await options.getByRole("button", { name: "Next slide" }).click();
+  }
+  await expect(
+    options.getByRole("button", { name: "Next slide" }),
+  ).toBeEnabled();
+
+  const api = page.locator("#api");
+  await expect(api).toContainText("Slide 1 of 5");
+  await api.getByRole("button", { name: "Next slide" }).click();
+  await expect(api).toContainText("Slide 2 of 5");
+
+  const plugins = page.locator("#plugins");
+  await expect(
+    plugins.getByRole("button", { name: "Previous slide" }),
+  ).toBeEnabled({ timeout: 5000 });
+
+  await expect(
+    page.locator("#rtl").locator("div[dir='rtl']").first(),
+  ).toBeVisible();
+
   await page.getByRole("button", { name: "StyleX" }).click();
-  await expect(page.locator("#single-slide")).toBeVisible();
-  await expect(page.locator("#two-at-a-time")).toBeVisible();
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-
-  const single = page.locator("#single-slide");
-  const compact = page.locator("#two-at-a-time");
-  await single.getByRole("button", { name: "Next slide" }).click();
-  await expect(single).toContainText("Slide 2 of 3");
-  await expect(compact).toContainText("Snap 1");
-
-  await compact.getByRole("button", { name: "Next slide" }).click();
-  await expect(compact).toContainText("Snap 2");
-  await expect(single).toContainText("Slide 2 of 3");
-  await expect(single.locator("code")).toContainText("@/stylex/carousel");
+  for (const id of ["sizes", "options", "rtl"]) {
+    await expect(page.locator(`[id="${id}"]`)).toBeVisible();
+  }
+  await expect(page.locator("#sizes").locator("code")).toContainText(
+    "@/stylex/carousel",
+  );
+  const optionsSx = page.locator("#options");
+  await optionsSx.getByRole("button", { name: "Next slide" }).click();
+  await expect(
+    optionsSx.getByRole("button", { name: "Next slide" }),
+  ).toBeEnabled();
 });
 
 test("create icon selection changes the live preview shapes", async ({

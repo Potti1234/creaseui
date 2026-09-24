@@ -1,3 +1,120 @@
-import type { HtmlBuilder } from 'foldkit/html'; import * as stylex from '@stylexjs/stylex'; import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'; import { carouselFixtures } from '@/docs/components/pages/carousel/shared'; import * as Card from '@/stylex/card'; import * as Carousel from '@/stylex/carousel';
-const styles = stylex.create({ single: { maxWidth: '20rem', width: '100%', }, compact: { maxWidth: '24rem', width: '100%', }, cardContent: { padding: '1.5rem', alignItems: 'center', aspectRatio: '1', display: 'flex', fontSize: '2.25rem', fontWeight: 600, justifyContent: 'center', }, status: { color: 'var(--muted-foreground)', fontSize: '0.875rem', textAlign: 'center', marginTop: '1rem', } });
-export const carouselStyleXPreview: StyleXExamplePreviewProvider = <Msg>(index: number, model: unknown, onMessageJson: (messageJson: string) => Msg, h: HtmlBuilder<Msg>) => { const f = carouselFixtures[index] ?? carouselFixtures[0]; const preview = model as { carousel: Carousel.Model }; const cards = Array.from({ length: f.count }, (_, i) => Card.card({ children: [Card.cardContent({ children: [h.div([h.Class(stylex.props(styles.cardContent).className ?? '')], [String(i + 1)])] }, h)] }, h)); return h.div([h.Class(stylex.props(f.itemSize === 100 ? styles.single : styles.compact).className ?? '')], [Carousel.carousel({ model: preview.carousel, toParentMessage: message => onMessageJson(JSON.stringify({ _tag: 'GotCarouselPreviewMessage', message })), ariaLabel: f.label, itemSize: f.itemSize, items: cards }, h), h.p([h.Class(stylex.props(styles.status).className ?? '')], [f.itemSize === 100 ? `Slide ${preview.carousel.index + 1} of ${preview.carousel.count}` : `Snap ${preview.carousel.index + 1}`])]); };
+import * as stylex from '@stylexjs/stylex';
+import Autoplay from 'embla-carousel-autoplay';
+import type { HtmlBuilder } from 'foldkit/html';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import {
+  carouselFixtures,
+  type CarouselFixture,
+} from '@/docs/components/pages/carousel/shared';
+import * as Card from '@/stylex/card';
+import * as Carousel from '@/stylex/carousel';
+import { className } from '@/stylex/style';
+
+const styles = stylex.create({
+  wrap: { maxWidth: '20rem', width: '100%' },
+  cardContent: {
+    alignItems: 'center',
+    aspectRatio: '1/1',
+    display: 'flex',
+    fontSize: '2.25rem',
+    fontWeight: 600,
+    justifyContent: 'center',
+    padding: '1.5rem',
+  },
+  slidePadding: { padding: '0.5rem' },
+  apiStatus: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    paddingBlock: '0.5rem',
+    textAlign: 'center',
+  },
+});
+
+const fixtureOf = (index: number): CarouselFixture =>
+  carouselFixtures[index] ?? {
+    title: 'Demo',
+    description: '',
+    count: 5,
+    label: 'Featured projects',
+    itemSize: 'full',
+  };
+
+const itemSizeOf = (
+  fixture: CarouselFixture,
+): number | ((index: number) => number) => {
+  if (fixture.itemSize === 'first-half')
+    return index => (index === 0 ? 50 : 33.34);
+  if (fixture.itemSize === 'third') return 33.34;
+  return 100;
+};
+
+export const carouselStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+  index: number,
+  model: unknown,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+) => {
+  const fixture = fixtureOf(index);
+  const preview = model as { carousel: Carousel.Model };
+  const cards = Array.from({ length: fixture.count }, (_, i) => {
+    const card = Card.card(
+      {
+        children: [
+          Card.cardContent(
+            {
+              children: [
+                h.div([h.Class(className(styles.cardContent))], [
+                  String(i + 1),
+                ]),
+              ],
+            },
+            h,
+          ),
+        ],
+      },
+      h,
+    );
+    return fixture.padded === true
+      ? h.div([h.Class(className(styles.slidePadding))], [card])
+      : card;
+  });
+  const carousel = Carousel.carousel(
+    {
+      model: preview.carousel,
+      toParentMessage: message =>
+        onMessageJson(
+          JSON.stringify({ _tag: 'GotCarouselPreviewMessage', message }),
+        ),
+      ariaLabel: fixture.label,
+      itemSize: itemSizeOf(fixture),
+      ...(fixture.orientation === 'vertical'
+        ? { orientation: 'vertical' as const }
+        : {}),
+      ...(fixture.loop === true ? { loop: true } : {}),
+      ...(fixture.autoplay === true
+        ? {
+            plugins: [Autoplay({ delay: 2000, stopOnInteraction: true })],
+          }
+        : {}),
+      layoutStyle: styles.wrap,
+      items: cards,
+    },
+    h,
+  );
+  const children =
+    fixture.status === true
+      ? [
+          carousel,
+          h.p([h.Class(className(styles.apiStatus))], [
+            `Slide ${preview.carousel.index + 1} of ${preview.carousel.count}`,
+          ]),
+        ]
+      : [carousel];
+  return h.div(
+    [
+      h.Class(className(styles.wrap)),
+      ...(fixture.direction === 'rtl' ? [h.Dir('rtl')] : []),
+    ],
+    children,
+  );
+};
