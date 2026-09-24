@@ -340,6 +340,7 @@ export const view = (
       : hero<Message>(
           {
             title: heroEntry.config.title,
+            keepIdsCanonical: heroEntry.config.heroOnly === true,
             preview: previewFor(heroEntry.index, heroIndex),
             code: heroEntry.config.code,
             onCopy: CopyFeedback.Message.ClickedDocsCopyCode({

@@ -228,7 +228,12 @@ export const example = <Msg>(
   );
 };
 
-export type HeroExampleConfig<Msg> = Omit<ExampleConfig<Msg>, 'description'>;
+export type HeroExampleConfig<Msg> = Omit<ExampleConfig<Msg>, 'description'> &
+  Readonly<{
+    /** heroOnly examples have no named twin to collide with — keep ids
+        canonical so Foldkit's id-driven Commands still find the element. */
+    keepIdsCanonical?: boolean;
+  }>;
 
 const HERO_ID_SUFFIX = '-hero';
 const HERO_ID_REF_ATTRIBUTES = [
@@ -263,6 +268,7 @@ export const hero = <Msg>(
         f: element => {
           if (!(element instanceof HTMLElement)) return Stream.empty;
           const scopedIds = new Set<string>();
+          if (config.keepIdsCanonical === true) return Stream.empty;
           element.querySelectorAll<HTMLElement>('[id]').forEach(node => {
             if (node.id.length > 0) scopedIds.add(node.id);
           });
