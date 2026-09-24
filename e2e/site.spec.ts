@@ -2093,12 +2093,17 @@ test("chart documents SVG recipes and the complete ECharts family showcase", asy
 test("presentational helpers preserve native semantics and controlled OTP state", async ({ page }) => {
   await page.goto("/docs/components/card");
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  await expect(page.locator("#article")).toBeVisible();
-  await expect(page.locator("#with-footer")).toBeVisible();
+  await expect(page.locator("#basic")).toBeVisible();
+  await expect(page.locator("#size")).toBeVisible();
+  await expect(page.locator("#spacing")).toBeVisible();
+  await expect(page.locator("#edge-to-edge")).toBeVisible();
+  await expect(page.locator("#image")).toBeVisible();
+  await expect(page.locator("#rtl")).toBeVisible();
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(page.locator("#article").getByRole("article").getByRole("heading", { level: 2, name: "Release notes" })).toBeVisible();
-  await expect(page.locator("#with-footer [data-slot=card-footer]")).toContainText("Ready to deploy");
-  await expect(page.locator("#article code")).toContainText("@/stylex/card");
+  await expect(page.locator("#basic").getByRole("heading", { name: "Login to your account" })).toBeVisible();
+  await expect(page.locator("#size [data-slot=card]")).toHaveAttribute("data-size", "sm");
+  await expect(page.locator("#rtl [dir=rtl]")).toHaveCount(1);
+  await expect(page.locator("#basic code")).toContainText("@/stylex/card");
 
   await page.goto("/docs/components/separator");
   await expect(page.locator("#horizontal").getByRole("separator")).toHaveCount(0);
@@ -2110,7 +2115,7 @@ test("presentational helpers preserve native semantics and controlled OTP state"
   await expect(email).toBeFocused();
 
   await page.goto("/docs/components/input-otp");
-  const code = page.getByRole("textbox", { name: "Verification code" });
+  const code = page.locator("#six-digit-code").getByRole("textbox", { name: "Verification code" });
   await code.fill("12a345678");
   await expect(code).toHaveValue("12345");
   await code.fill("12345678");

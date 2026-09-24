@@ -35,7 +35,7 @@ export const aspectRatioFixtures: Readonly<
     caption: 'منظر طبيعي جميل',
     widthClass: { tailwind: 'w-full max-w-sm', stylex: 'w24' },
   },
-] as unknown as Readonly<[AspectRatioFixture, ...Array<AspectRatioFixture>]>;
+]
 
 const source = (
   index: number,
