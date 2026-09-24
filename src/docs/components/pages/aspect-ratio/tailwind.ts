@@ -5,6 +5,8 @@ import { definePreviewProgram } from '@/docs/components/pages/authored-page';
 import { aspectRatioFixtures } from '@/docs/components/pages/aspect-ratio/shared';
 import * as AspectRatio from '@/ui/aspect-ratio';
 
+const IMAGE_URL = 'https://avatar.vercel.sh/shadcn1';
+
 const InteractedWithAspectRatioPreview = defineMessageUnion({
   InteractedWithAspectRatioPreview: {},
 });
@@ -13,6 +15,11 @@ const AspectRatioPreviewModel = S.Struct({
   _docsPage: S.Literal('aspect-ratio'),
 });
 type AspectRatioPreviewModel = typeof AspectRatioPreviewModel.Type;
+
+const ratioValue = (expr: string): number => {
+  const parts = expr.split('/').map(part => Number.parseFloat(part));
+  return (parts[0] ?? 1) / (parts[1] ?? 1);
+};
 
 export const aspectRatioTailwindPreviewProgram = definePreviewProgram<
   AspectRatioPreviewModel,
@@ -23,17 +30,33 @@ export const aspectRatioTailwindPreviewProgram = definePreviewProgram<
   init: () => ({ _docsPage: 'aspect-ratio' }),
   update: model => ({ model: model }),
   view: (index, _model, h) => {
-    const item = aspectRatioFixtures[index] ?? aspectRatioFixtures[0];
-    return AspectRatio.aspectRatio({
-      ratio: item.ratio,
-      class: index === 0
-        ? 'w-full max-w-lg overflow-hidden rounded-lg bg-muted'
-        : 'w-48 overflow-hidden rounded-lg bg-muted',
-      children: [
-        h.div([
-          h.Class('flex size-full items-center justify-center text-sm text-muted-foreground'),
-        ], [item.label]),
+    const fixture = aspectRatioFixtures[index] ?? aspectRatioFixtures[0];
+    return h.figure(
+      [
+        h.Class(fixture.widthClass.tailwind),
+        ...(fixture.direction === 'rtl' ? [h.Dir('rtl')] : []),
       ],
-    }, h);
+      [
+        AspectRatio.aspectRatio({
+          ratio: ratioValue(fixture.ratioExpr),
+          class: 'rounded-lg bg-muted overflow-hidden',
+          children: [
+            h.img([
+              h.Src(IMAGE_URL),
+              h.Alt('Photo'),
+              h.Class('rounded-lg object-cover w-full h-full grayscale dark:brightness-20'),
+            ]),
+          ],
+        }, h),
+        ...(fixture.caption === undefined
+          ? []
+          : [
+              h.figcaption(
+                [h.Class('mt-2 text-center text-sm text-muted-foreground')],
+                [fixture.caption],
+              ),
+            ]),
+      ],
+    );
   },
 });

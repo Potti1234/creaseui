@@ -1590,20 +1590,28 @@ test("alert requires explicit severity and announcement policy", async ({ page }
   );
 });
 
-test("aspect ratio keeps authored examples and geometry across renderers", async ({ page }) => {
+test("aspect ratio keeps upstream-named examples and geometry across renderers", async ({ page }) => {
   await page.goto("/docs/components/aspect-ratio");
-  const video = page.locator("#video").locator('[data-slot="aspect-ratio"]');
   const square = page.locator("#square").locator('[data-slot="aspect-ratio"]');
-  await expect(video).toHaveCSS("aspect-ratio", "1.77778 / 1");
+  const portrait = page.locator("#portrait").locator('[data-slot="aspect-ratio"]');
+  const rtl = page.locator("#rtl").locator('[data-slot="aspect-ratio"]');
   await expect(square).toHaveCSS("aspect-ratio", "1 / 1");
+  await expect(portrait).toHaveCSS("aspect-ratio", "0.5625 / 1");
+  await expect(rtl).toHaveCSS("aspect-ratio", "1.77778 / 1");
+  await expect(page.locator("#rtl figure")).toHaveAttribute("dir", "rtl");
+  await expect(page.locator("#rtl figcaption")).toContainText("منظر طبيعي جميل");
+  await expect(page.locator("#square img")).toBeVisible();
 
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  await expect(page.locator("#video")).toBeVisible();
   await expect(page.locator("#square")).toBeVisible();
+  await expect(page.locator("#portrait")).toBeVisible();
+  await expect(page.locator("#rtl")).toBeVisible();
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(page.locator("#video code")).toContainText("@/stylex/aspect-ratio");
-  await expect(video).toHaveCSS("aspect-ratio", "1.77778 / 1");
+  await expect(page.locator("#square code")).toContainText("@/stylex/aspect-ratio");
   await expect(square).toHaveCSS("aspect-ratio", "1 / 1");
+  await expect(portrait).toHaveCSS("aspect-ratio", "0.5625 / 1");
+  await expect(rtl).toHaveCSS("aspect-ratio", "1.77778 / 1");
+  await expect(page.locator("#rtl figure")).toHaveAttribute("dir", "rtl");
 });
 
 test("badge keeps authored variants across renderers", async ({ page }) => {

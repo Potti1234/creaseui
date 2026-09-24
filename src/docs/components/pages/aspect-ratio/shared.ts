@@ -1,70 +1,90 @@
 import type { DocsExample } from '@/docs/components/page-definition';
 import { staticComponentApplication } from '@/docs/components/pages/authored-page';
 
-export const aspectRatioFixtures = [
-  {
-    title: 'Video',
-    description: 'Use 16 / 9 for common video and landscape media.',
-    ratio: 16 / 9,
-    label: '16:9',
-  },
+const IMAGE_URL = 'https://avatar.vercel.sh/shadcn1';
+
+export type AspectRatioFixture = Readonly<{
+  title: string;
+  description: string;
+  ratioExpr: string;
+  direction?: 'rtl';
+  caption?: string;
+  widthClass: { tailwind: string; stylex: 'w12' | 'w10' | 'w24' };
+}>;
+
+export const aspectRatioFixtures: Readonly<
+  [AspectRatioFixture, ...Array<AspectRatioFixture>]
+> = [
   {
     title: 'Square',
-    description: 'A ratio of 1 keeps avatars and artwork square.',
-    ratio: 1,
-    label: '1:1',
+    description: 'A 1:1 ratio keeps avatars and artwork square.',
+    ratioExpr: '1 / 1',
+    widthClass: { tailwind: 'w-full max-w-48 overflow-hidden rounded-lg bg-muted', stylex: 'w12' },
   },
-] as const;
+  {
+    title: 'Portrait',
+    description: 'A 9:16 ratio for portrait media.',
+    ratioExpr: '9 / 16',
+    widthClass: { tailwind: 'w-full max-w-40 overflow-hidden rounded-lg bg-muted', stylex: 'w10' },
+  },
+  {
+    title: 'RTL',
+    description: 'dir="rtl" with a figure caption for right-to-left layouts.',
+    ratioExpr: '16 / 9',
+    direction: 'rtl',
+    caption: 'منظر طبيعي جميل',
+    widthClass: { tailwind: 'w-full max-w-sm', stylex: 'w24' },
+  },
+] as unknown as Readonly<[AspectRatioFixture, ...Array<AspectRatioFixture>]>;
 
 const source = (
   index: number,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const item = aspectRatioFixtures[index] ?? aspectRatioFixtures[0];
-  const componentInput = renderer === 'tailwind'
-    ? `class: '${index === 0 ? 'w-full max-w-lg overflow-hidden rounded-lg bg-muted' : 'w-48 overflow-hidden rounded-lg bg-muted'}',`
-    : `layoutStyle: styles.${index === 0 ? 'video' : 'square'},`;
-  const componentImports = renderer === 'stylex'
+  const fixture = aspectRatioFixtures[index] ?? aspectRatioFixtures[0];
+  const isStyleX = renderer === 'stylex';
+  const componentImports = isStyleX
     ? `import * as stylex from '@stylexjs/stylex'
-
-const styles = stylex.create({
-  video: { maxWidth: '32rem', width: '100%' },
-  square: { width: '12rem' },
-  content: {
-    alignItems: 'center',
-    backgroundColor: 'var(--muted)',
-    borderRadius: 'var(--radius-lg)',
-    color: 'var(--muted-foreground)',
-    display: 'flex',
-    height: '100%',
-    justifyContent: 'center',
-    overflow: 'hidden',
-    width: '100%',
-  },
-})`
-    : undefined;
-  const childAttributes = renderer === 'tailwind'
-    ? `[h.Class('flex size-full items-center justify-center text-sm text-muted-foreground')]`
-    : `[h.Class(stylex.props(styles.content).className ?? '')]`;
+import { className } from '@/stylex/style'`
+    : '';
+  const styles = isStyleX
+    ? `\nconst styles = stylex.create({
+  frame: { maxWidth: '${fixture.widthClass.stylex === 'w12' ? '12rem' : fixture.widthClass.stylex === 'w10' ? '10rem' : '24rem'}', width: '100%', borderRadius: '0.5rem', backgroundColor: 'var(--muted)', overflow: 'hidden' },
+  content: { borderRadius: '0.5rem', objectFit: 'cover', width: '100%', height: '100%' },
+  caption: { marginTop: '0.5rem', textAlign: 'center', fontSize: '0.875rem', color: 'var(--muted-foreground)' },
+})\n`
+    : '';
+  const imgExpr = `h.img([h.Src('${IMAGE_URL}'), h.Alt('Photo'), h.Class(${
+    isStyleX ? "className(styles.content)" : `'rounded-lg object-cover w-full h-full grayscale dark:brightness-20'`
+  })])`;
+  const caption = fixture.caption
+    ? `,\n      h.figcaption([h.Class(${isStyleX ? 'className(styles.caption)' : `'mt-2 text-center text-sm text-muted-foreground'`})], ['${fixture.caption}'])`
+    : '';
+  const viewBody = `h.figure(
+      [h.Class(${isStyleX ? 'className(styles.frame)' : `'${fixture.widthClass.tailwind}'`})${fixture.direction === 'rtl' ? ", h.Dir('rtl')" : ''}],
+      [
+        AspectRatio.aspectRatio({
+          ratio: ${fixture.ratioExpr},
+          ${renderer === 'tailwind' ? `class: 'rounded-lg bg-muted overflow-hidden',` : ''}
+          children: [${imgExpr}],
+        }, h)${caption}
+      ],
+    )`;
 
   return staticComponentApplication({
     componentName: 'AspectRatio',
     componentSlug: 'aspect-ratio',
     renderer,
-    exampleName: item.title,
-    ...(componentImports === undefined ? {} : { componentImports }),
-    viewBody: `AspectRatio.aspectRatio({
-  ratio: ${index === 0 ? '16 / 9' : '1'},
-  ${componentInput}
-  children: [h.div(${childAttributes}, ['${item.label}'])],
-}, h),`,
+    exampleName: fixture.title,
+    componentImports: `${componentImports}${styles}`,
+    viewBody,
   });
 };
 
 export const aspectRatioExamples = (
   renderer: 'tailwind' | 'stylex',
-): ReadonlyArray<DocsExample> => aspectRatioFixtures.map((_item, index) => ({
-  title: aspectRatioFixtures[index]!.title,
-  description: aspectRatioFixtures[index]!.description,
+): ReadonlyArray<DocsExample> => aspectRatioFixtures.map((fixture, index) => ({
+  title: fixture.title,
+  description: fixture.description,
   code: source(index, renderer),
 }));
