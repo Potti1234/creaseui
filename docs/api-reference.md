@@ -103,7 +103,7 @@ Source: [`src/ui/badge.ts`](../src/ui/badge.ts)
 | --- | --- | --- |
 | `badgeVariants` | value | `badgeVariants: value` |
 | `BadgeVariants` | type | `BadgeVariants = VariantProps<typeof badgeVariants>` |
-| `BadgeProps` | type | `BadgeProps = Readonly<{ children: ReadonlyArray<Html \| string>; variant?: BadgeVariants['variant']; class?: string; }>` |
+| `BadgeProps` | type | `BadgeProps = Readonly<{ children: ReadonlyArray<Html \| string>; variant?: BadgeVariants['variant']; class?: string; /** Renders the badge as an anchor pointing at this URL. */ href?: string; }>` |
 | `badge` | function | `badge<Msg>(props: BadgeProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Breadcrumb
@@ -201,7 +201,7 @@ Source: [`src/ui/card.ts`](../src/ui/card.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `CardProps` | type | `CardProps = Slot & Readonly<{ element?: 'div' \| 'section' \| 'article'; }>` |
+| `CardProps` | type | `CardProps = Slot & Readonly<{ element?: 'div' \| 'section' \| 'article'; size?: 'default' \| 'sm'; }>` |
 | `card` | function | `card<Msg>(props: CardProps, h: HtmlBuilder<Msg>): Html` |
 | `cardHeader` | value | `cardHeader: value` |
 | `CardTitleProps` | type | `CardTitleProps = Slot & Readonly<{ element?: 'h2' \| 'h3' \| 'h4' }>` |
@@ -1003,7 +1003,7 @@ Source: [`src/ui/spinner.ts`](../src/ui/spinner.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `SpinnerProps` | type | `SpinnerProps = SpinnerAccessibility & Readonly<{ size?: 'sm' \| 'md' \| 'lg'; tone?: 'current' \| 'muted' \| 'primary'; class?: string; }>` |
+| `SpinnerProps` | type | `SpinnerProps = SpinnerAccessibility & Readonly<{ size?: 'sm' \| 'md' \| 'lg'; tone?: 'current' \| 'muted' \| 'primary'; /** Emits data-icon="inline-start\|inline-end" for parent icon positioning. */ dataIcon?: 'inline-start' \| 'inline-end'; class?: string; }>` |
 | `spinner` | function | `spinner<Msg>(props: SpinnerProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Switch

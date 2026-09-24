@@ -60,7 +60,16 @@ export const BUTTON_VARIANTS = [
 
 export type ButtonVariant = (typeof BUTTON_VARIANTS)[number]
 
-export const BUTTON_SIZES = ['default', 'sm', 'lg', 'icon'] as const
+export const BUTTON_SIZES = [
+  'default',
+  'xs',
+  'sm',
+  'lg',
+  'icon',
+  'icon-xs',
+  'icon-sm',
+  'icon-lg',
+] as const
 
 export type ButtonSize = (typeof BUTTON_SIZES)[number]
 

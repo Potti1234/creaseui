@@ -33,7 +33,9 @@ export const pagination = <Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html => 
 export const paginationContent = <Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html => h.ul([h.DataAttribute('slot', 'pagination-content'), h.Class(className(styles.content, props.layoutStyle))], [...props.children])
 export const paginationItem = <Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html => h.li([h.DataAttribute('slot', 'pagination-item'), h.Class(className(props.layoutStyle))], [...props.children])
 
-export type PaginationLinkProps = Readonly<{ href: string; children: ReadonlyArray<Html | string>; isActive?: boolean; size?: ButtonSize; ariaLabel?: string; layoutStyle?: ComponentLayoutStyle }>
+export type PaginationLinkSize = Extract<ButtonSize, 'default' | 'sm' | 'lg' | 'icon'>
+
+export type PaginationLinkProps = Readonly<{ href: string; children: ReadonlyArray<Html | string>; isActive?: boolean; size?: PaginationLinkSize; ariaLabel?: string; layoutStyle?: ComponentLayoutStyle }>
 
 export const paginationLink = <Msg>(props: PaginationLinkProps, h: HtmlBuilder<Msg>): Html => {
   const isActive = props.isActive ?? false

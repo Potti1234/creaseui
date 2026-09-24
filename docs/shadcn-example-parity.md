@@ -11,23 +11,23 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 2 done · 59 todo · 3 crease-only
+Current: 6 done · 55 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
 | `accordion` | 2 | Basic<br>Multiple<br>Disabled<br>Borders<br>Card<br>RTL | todo (missing: Basic, Multiple, Disabled, Borders, Card, RTL) |
 | `alert` | 11 | Basic<br>Destructive<br>Action<br>Custom Colors<br>RTL | done |
 | `alert-dialog` | 2 | Basic<br>Small<br>Media<br>Small with Media<br>Destructive<br>RTL | todo (missing: Basic, Small, Media, Small with Media, Destructive, RTL) |
-| `aspect-ratio` | 2 | Square<br>Portrait<br>RTL | todo (missing: Portrait, RTL) |
+| `aspect-ratio` | 3 | Square<br>Portrait<br>RTL | done |
 | `attachment` | 2 | Image<br>States<br>Sizes<br>Group<br>Trigger | todo (missing: Image, States, Sizes, Group, Trigger) |
 | `avatar` | 4 | Basic<br>Badge<br>Badge with Icon<br>Avatar Group<br>Avatar Group Count<br>Avatar Group with Icon<br>Sizes<br>Dropdown<br>RTL | todo (missing: Basic, Badge, Badge with Icon, Avatar Group, Avatar Group Count, Avatar Group with Icon, Sizes, Dropdown, RTL) |
-| `badge` | 2 | Variants<br>With Icon<br>With Spinner<br>Link<br>Custom Colors<br>RTL | todo (missing: With Icon, With Spinner, Link, Custom Colors, RTL) |
+| `badge` | 7 | Variants<br>With Icon<br>With Spinner<br>Link<br>Custom Colors<br>RTL | done |
 | `breadcrumb` | 4 | Basic<br>Custom separator<br>Dropdown<br>Collapsed<br>Link component<br>RTL | todo (missing: Basic, Custom separator, Dropdown, Collapsed, Link component, RTL) |
 | `bubble` | 3 | Variants<br>Alignment<br>Bubble Group<br>Links and Buttons<br>Reactions<br>Show More / Collapsible<br>Tooltip<br>Popover | todo (missing: Variants, Alignment, Bubble Group, Links and Buttons, Reactions, Show More / Collapsible, Tooltip, Popover) |
-| `button` | 7 | Size<br>Default<br>Outline<br>Secondary<br>Ghost<br>Destructive<br>Link<br>Icon<br>With Icon<br>Rounded<br>Spinner<br>Button Group<br>As Child<br>RTL | todo (missing: Size, Default, Outline, Secondary, Ghost, Destructive, Link, Icon, With Icon, Rounded, Spinner, As Child) |
+| `button` | 17 | Size<br>Default<br>Outline<br>Secondary<br>Ghost<br>Destructive<br>Link<br>Icon<br>With Icon<br>Rounded<br>Spinner<br>Button Group<br>As Child<br>RTL | done |
 | `button-group` | 2 | Orientation<br>Size<br>Nested<br>Separator<br>Split<br>Input<br>Input Group<br>Dropdown Menu<br>Select<br>Popover<br>RTL | todo (missing: Orientation, Size, Nested, Separator, Split, Input, Input Group, Dropdown Menu, Select, Popover, RTL) |
 | `calendar` | 4 | Persian / Hijri / Jalali Calendar<br>Basic<br>Range Calendar<br>Month and Year Selector<br>Presets<br>Date and Time Picker<br>Booked dates<br>Custom Cell Size<br>Week Numbers<br>RTL | todo (missing: Persian / Hijri / Jalali Calendar, Basic, Range Calendar, Month and Year Selector, Presets, Date and Time Picker, Booked dates, Custom Cell Size, Week Numbers, RTL) |
-| `card` | 2 | Size<br>Spacing<br>Spacing<br>Image<br>RTL | todo (missing: Size, Spacing, Spacing, Image, RTL) |
+| `card` | 11 | Size<br>Spacing<br>Spacing<br>Image<br>RTL | done |
 | `carousel` | 2 | Sizes<br>Spacing<br>Orientation<br>API<br>Plugins<br>RTL | todo (missing: Sizes, Spacing, Orientation, API, Plugins, RTL) |
 | `chart` | 12 | Your First Chart<br>Your First Chart<br>Your First Chart<br>Your First Chart<br>Your First Chart<br>Tooltip<br>RTL | todo (missing: Your First Chart, Your First Chart, Your First Chart, Your First Chart, Your First Chart, Tooltip, RTL) |
 | `checkbox` | 4 | Invalid State<br>Basic<br>Description<br>Disabled<br>Group<br>Table<br>RTL | todo (missing: Invalid State, Basic, Description, Group, Table, RTL) |

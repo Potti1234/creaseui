@@ -124,6 +124,8 @@ export type DropdownMenuItemConfig<Item extends string = string> = Readonly<{
     items: ReadonlyArray<Item>;
     itemToConfig: (item: Item) => DropdownMenuItemConfig<Item>;
   }>;
+  /** Render a separator above this item (upstream DropdownMenuSeparator). */
+  separatorBefore?: boolean;
 }>;
 
 export type DropdownMenuSide = 'top' | 'right' | 'bottom' | 'left';
@@ -424,7 +426,7 @@ export const dropdownMenu = <Item extends string, Msg>(
   let previousGroup: string | undefined;
   props.items.forEach((item, index) => {
     const config = props.itemToConfig(item);
-    if (config.group !== previousGroup) {
+    if (config.group !== previousGroup || config.separatorBefore === true) {
       if (grouped.length > 0)
         grouped.push(
           h.div(
@@ -432,7 +434,7 @@ export const dropdownMenu = <Item extends string, Msg>(
             [],
           ),
         );
-      if (config.group !== undefined)
+      if (config.group !== previousGroup && config.group !== undefined)
         grouped.push(
           h.div([h.Class('px-2 py-1.5 text-sm font-medium')], [config.group]),
         );

@@ -35,10 +35,7 @@ export const alertTailwindPreviewProgram = definePreviewProgram<
           announcement: item.announcement,
           ...(fixture.colors === undefined
             ? {}
-            : {
-                // eslint-disable-next-line crease/no-component-restyle -- docs example intentionally demonstrating class-based color customization
-                class: fixture.colors,
-              }),
+            : { class: fixture.colors }),
           children: [
             Alert.alertIcon({ children: [Icon.icon(item.icon, { class: 'size-4' }, h)] }, h),
             Alert.alertTitle({ children: [item.title] }, h),

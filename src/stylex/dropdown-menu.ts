@@ -8,7 +8,14 @@ const styles = stylex.create({
   backdrop: { cursor: interactionTokens.cursorDefault, inset: 0, position: 'fixed', zIndex: 40 },
   bottom: { marginTop: '0.25rem', top: '100%' },
   indicator: { alignItems: 'center', display: 'flex', height: '0.875rem', justifyContent: 'center', left: '0.5rem', position: 'absolute', width: '0.875rem' },
-  destructive: { backgroundColor: tokens.destructiveSurface, color: tokens.destructive },
+  destructive: {
+    backgroundColor: {
+      default: tokens.transparent,
+      ':is([data-active], [data-selected])': tokens.softDestructiveSurface,
+      ':hover': tokens.softDestructiveSurface,
+    },
+    color: tokens.destructive,
+  },
   inset: { paddingLeft: '2rem' },
   label: { flexGrow: 1 },
   left: { marginRight: '0.25rem', right: '100%' },
@@ -37,7 +44,8 @@ import * as Behavior from '@/lib/dropdown-menu-behavior';
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
-import type { ComponentLayoutStyle } from './contracts'
+import { buttonVisualStyles } from './button'
+import type { ButtonSize, ButtonVariant, ComponentLayoutStyle } from './contracts'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
@@ -155,6 +163,8 @@ export type DropdownMenuItemConfig<Item extends string = string> = Readonly<{
     items: ReadonlyArray<Item>;
     itemToConfig: (item: Item) => DropdownMenuItemConfig<Item>;
   }>;
+  /** Render a separator above this item (upstream DropdownMenuSeparator). */
+  separatorBefore?: boolean;
 }>;
 
 export type DropdownMenuSide = 'top' | 'right' | 'bottom' | 'left';
@@ -166,6 +176,9 @@ export type DropdownMenuProps<Item extends string, Msg> = Readonly<{
   trigger: Html | string;
   placement?: 'inline' | 'sidebarAction';
   triggerLayoutStyle?: ComponentLayoutStyle;
+  /** Give the trigger a Button recipe look (e.g. an icon-only more-actions). */
+  triggerButtonVariant?: ButtonVariant;
+  triggerButtonSize?: ButtonSize;
   triggerTabindex?: number;
   triggerRole?: string;
   items: ReadonlyArray<Item>;
@@ -440,7 +453,7 @@ export const dropdownMenu = <Item extends string, Msg>(
   let previousGroup: string | undefined;
   props.items.forEach((item, index) => {
     const config = props.itemToConfig(item);
-    if (config.group !== previousGroup) {
+    if (config.group !== previousGroup || config.separatorBefore === true) {
       if (grouped.length > 0)
         grouped.push(
           h.div(
@@ -448,7 +461,7 @@ export const dropdownMenu = <Item extends string, Msg>(
             [],
           ),
         );
-      if (config.group !== undefined)
+      if (config.group !== previousGroup && config.group !== undefined)
         grouped.push(
           h.div([h.Class(className(overlayStyles.label))], [config.group]),
         );
@@ -507,6 +520,18 @@ export const dropdownMenu = <Item extends string, Msg>(
           ...(props.triggerLayoutStyle === undefined
             ? []
             : [h.Class(className(props.triggerLayoutStyle))]),
+          ...(props.triggerButtonVariant === undefined && props.triggerButtonSize === undefined
+            ? []
+            : [
+                h.Class(
+                  className(
+                    ...buttonVisualStyles({
+                      variant: props.triggerButtonVariant ?? 'default',
+                      size: props.triggerButtonSize ?? 'default',
+                    }),
+                  ),
+                ),
+              ]),
           h.OnKeyDownPreventDefault((key, modifiers) => {
             const message = props.model.isOpen
               ? menuKey(

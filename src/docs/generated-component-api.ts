@@ -282,7 +282,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "BadgeProps",
       "kind": "type",
-      "signature": "BadgeProps = Readonly<{ children: ReadonlyArray<Html | string>; variant?: BadgeVariants['variant']; class?: string; }>"
+      "signature": "BadgeProps = Readonly<{ children: ReadonlyArray<Html | string>; variant?: BadgeVariants['variant']; class?: string; /** Renders the badge as an anchor pointing at this URL. */ href?: string; }>"
     },
     {
       "name": "badge",
@@ -574,7 +574,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "CardProps",
       "kind": "type",
-      "signature": "CardProps = Slot & Readonly<{ element?: 'div' | 'section' | 'article'; }>"
+      "signature": "CardProps = Slot & Readonly<{ element?: 'div' | 'section' | 'article'; size?: 'default' | 'sm'; }>"
     },
     {
       "name": "card",
@@ -3165,7 +3165,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "SpinnerProps",
       "kind": "type",
-      "signature": "SpinnerProps = SpinnerAccessibility & Readonly<{ size?: 'sm' | 'md' | 'lg'; tone?: 'current' | 'muted' | 'primary'; class?: string; }>"
+      "signature": "SpinnerProps = SpinnerAccessibility & Readonly<{ size?: 'sm' | 'md' | 'lg'; tone?: 'current' | 'muted' | 'primary'; /** Emits data-icon=\"inline-start|inline-end\" for parent icon positioning. */ dataIcon?: 'inline-start' | 'inline-end'; class?: string; }>"
     },
     {
       "name": "spinner",
