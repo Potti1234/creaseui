@@ -99,9 +99,14 @@ export const contextMenuTailwindPreviewProgram = definePreviewProgram<PreviewMod
           model: model.menu,
           toParentMessage: message =>
             GotContextMenuMessage.GotContextMenuMessage({ message }),
-          trigger: 'Right click here',
-          class:
-            'flex aspect-video w-full max-w-xs items-center justify-center rounded-xl border border-dashed text-sm',
+          trigger: h.div(
+            [
+              h.Class(
+                'flex aspect-video w-80 items-center justify-center rounded-xl border border-dashed text-sm',
+              ),
+            ],
+            ['Right click here'],
+          ),
           ariaLabel: `${fixture.title} menu`,
           items: fixtureItems(fixture),
           itemToConfig: item => {

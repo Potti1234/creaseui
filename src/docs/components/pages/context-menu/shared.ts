@@ -239,8 +239,22 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 import * as ContextMenu from '@/${uiDir}/context-menu'${usesIcons ? `\nimport * as Icon from '@/lib/icon'` : ''}${renderer === 'stylex' ? `
 import * as stylex from '@stylexjs/stylex'
 
+import { className } from '@/stylex/style'
+
 const styles = stylex.create({
   target: { width: '20rem', aspectRatio: '16 / 9' },
+  targetInner: {
+    display: 'flex',
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '0.75rem',
+    borderWidth: '1px',
+    borderStyle: 'dashed',
+    borderColor: 'var(--border)',
+    fontSize: '0.875rem',
+  },
 })` : ''}`,
     model: `export const Item = S.Literals([${literalValues}])
 export type Item = typeof Item.Type
@@ -301,10 +315,10 @@ ${[
       ContextMenu.contextMenu({
         model: model.menu,
         toParentMessage: message => GotMenuMessage({ message }),
-        trigger: 'Right click here',
         ${renderer === 'stylex'
-          ? 'layoutStyle: styles.target,'
-          : "class: 'flex aspect-video w-full max-w-xs items-center justify-center rounded-xl border border-dashed text-sm',"}
+          ? `trigger: h.div([h.Class(className(styles.targetInner))], ['Right click here']),
+        layoutStyle: styles.target,`
+          : `trigger: h.div([h.Class('flex aspect-video w-80 items-center justify-center rounded-xl border border-dashed text-sm')], ['Right click here']),`}
         ariaLabel: '${fixture.title} menu',
         items: [${topLevelValues}]${specs.some(spec => spec.submenu !== undefined) ? ' as ReadonlyArray<Item>' : ''},
         ${itemToConfigSource}
