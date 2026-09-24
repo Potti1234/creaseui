@@ -1804,39 +1804,87 @@ test("sidebar documents persistence and toggles derived shell state", async ({
   await expect(provider).toHaveAttribute("data-state", "expanded");
 });
 
-test("accordion enforces single-open state and publishes complete child wiring", async ({
+test("accordion matches upstream examples and enforces state rules", async ({
   page,
 }) => {
   await page.goto("/docs/components/accordion");
-  const example = page.locator("#single-disclosure");
-  const product = example.getByRole("button", { name: "Is it accessible?" });
-  const style = example.getByRole("button", { name: "Is it styled?" });
-  await expect(product).toHaveAttribute("aria-expanded", "true");
-  await style.click();
-  await expect(style).toHaveAttribute("aria-expanded", "true");
-  await expect(product).toHaveAttribute("aria-expanded", "false");
-  await expect(example.locator("code")).toContainText("Update.foldChild");
-  await expect(example.locator("code")).toContainText("foldOutMessage");
+  const basic = page.locator("#basic");
+  const password = basic.getByRole("button", {
+    name: "How do I reset my password?",
+  });
+  const subscription = basic.getByRole("button", {
+    name: "Can I change my subscription plan?",
+  });
+  await expect(password).toHaveAttribute("aria-expanded", "true");
+  await subscription.click();
+  await expect(subscription).toHaveAttribute("aria-expanded", "true");
+  await expect(password).toHaveAttribute("aria-expanded", "false");
+  await expect(basic.locator("code")).toContainText("Update.foldChild");
+  await expect(basic.locator("code")).toContainText("foldOutMessage");
+
+  const multiple = page.locator("#multiple");
+  const notifications = multiple.getByRole("button", {
+    name: "Notification Settings",
+  });
+  const privacy = multiple.getByRole("button", { name: "Privacy & Security" });
+  const billing = multiple.getByRole("button", {
+    name: "Billing & Subscription",
+  });
+  await expect(notifications).toHaveAttribute("aria-expanded", "true");
+  await privacy.click();
+  await billing.click();
+  await expect(privacy).toHaveAttribute("aria-expanded", "true");
+  await expect(billing).toHaveAttribute("aria-expanded", "true");
+  await expect(notifications).toHaveAttribute("aria-expanded", "true");
+
+  const disabled = page.locator("#disabled");
+  await expect(
+    disabled.getByRole("button", { name: "Premium feature information" }),
+  ).toBeDisabled();
+  await disabled
+    .getByRole("button", { name: "Can I access my account history?" })
+    .click();
+  await expect(
+    disabled.getByRole("button", {
+      name: "Can I access my account history?",
+    }),
+  ).toHaveAttribute("aria-expanded", "true");
+
+  for (const id of ["borders", "card", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#card")).toContainText("Subscription & Billing");
 
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  await expect(page.locator("#single-disclosure")).toBeVisible();
-  await expect(page.locator("#multiple-disclosures")).toBeVisible();
+  for (const id of [
+    "basic",
+    "multiple",
+    "disabled",
+    "borders",
+    "card",
+    "rtl",
+  ]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(page.locator("#single-disclosure code")).toContainText(
+  await expect(page.locator("#basic code")).toContainText(
     "@/stylex/accordion",
   );
 
-  const stylexExample = page.locator("#single-disclosure");
-  const stylexProduct = stylexExample.getByRole("button", {
-    name: "Is it accessible?",
+  // Renderer toggle preserves the shared example model: the Tailwind click
+  // opened item-2, so the StyleX render starts with it open.
+  const stylexBasic = page.locator("#basic");
+  const stylexPassword = stylexBasic.getByRole("button", {
+    name: "How do I reset my password?",
   });
-  const stylexStyle = stylexExample.getByRole("button", {
-    name: "Is it styled?",
+  const stylexSubscription = stylexBasic.getByRole("button", {
+    name: "Can I change my subscription plan?",
   });
-  await expect(stylexProduct).toHaveAttribute("aria-expanded", "false");
-  await stylexProduct.click();
-  await expect(stylexProduct).toHaveAttribute("aria-expanded", "true");
-  await expect(stylexStyle).toHaveAttribute("aria-expanded", "false");
+  await expect(stylexPassword).toHaveAttribute("aria-expanded", "false");
+  await expect(stylexSubscription).toHaveAttribute("aria-expanded", "true");
+  await stylexPassword.click();
+  await expect(stylexPassword).toHaveAttribute("aria-expanded", "true");
+  await expect(stylexSubscription).toHaveAttribute("aria-expanded", "false");
 });
 
 test("attachment explains parent-owned lifecycle through rendered states", async ({

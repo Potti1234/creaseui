@@ -21,8 +21,12 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Single disclosure",
-        "Multiple disclosures"
+        "Basic",
+        "Multiple",
+        "Disabled",
+        "Borders",
+        "Card",
+        "RTL"
       ],
       "api": [
         {

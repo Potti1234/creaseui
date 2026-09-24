@@ -11,11 +11,11 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 6 done · 55 todo · 3 crease-only
+Current: 7 done · 54 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
-| `accordion` | 2 | Basic<br>Multiple<br>Disabled<br>Borders<br>Card<br>RTL | todo (missing: Basic, Multiple, Disabled, Borders, Card, RTL) |
+| `accordion` | 7 | Basic<br>Multiple<br>Disabled<br>Borders<br>Card<br>RTL | done |
 | `alert` | 11 | Basic<br>Destructive<br>Action<br>Custom Colors<br>RTL | done |
 | `alert-dialog` | 2 | Basic<br>Small<br>Media<br>Small with Media<br>Destructive<br>RTL | todo (missing: Basic, Small, Media, Small with Media, Destructive, RTL) |
 | `aspect-ratio` | 3 | Square<br>Portrait<br>RTL | done |

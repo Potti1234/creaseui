@@ -87,7 +87,7 @@ A Foldkit-native Accordion Submodel with stable value-based state and accessible
 
 Source: `src/ui/accordion.ts`
 
-Examples: Single disclosure, Multiple disclosures
+Examples: Basic, Multiple, Disabled, Borders, Card, RTL
 
 - `export { AccordionType } from '@/lib/accordion-state'` (re-export)
 - `export { Message } from '@/lib/accordion-state'` (re-export)
