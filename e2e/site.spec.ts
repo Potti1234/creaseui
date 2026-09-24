@@ -1448,13 +1448,19 @@ test("combobox filters items and persists its typed selection output", async ({
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/docs/components/combobox");
-  await page.getByRole("button", { name: "StyleX" }).click();
-  await expect(page.locator("#framework-search")).toBeVisible();
-  await expect(page.locator("#grouped-frameworks")).toBeVisible();
-  await expect(page.locator("#no-results")).toBeVisible();
-  await expect(page.locator("#read-only-rtl")).toBeVisible();
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  const example = page.locator("#framework-search");
+  for (const id of [
+    "basic",
+    "clear-button",
+    "groups",
+    "custom-items",
+    "invalid",
+    "disabled",
+    "input-group",
+    "rtl",
+  ]) {
+    await expect(page.locator(`[id="${id}"]`)).toBeVisible();
+  }
+  const example = page.locator("#basic");
   const input = example.getByRole("combobox", { name: "Framework" });
   await input.fill("sve");
   await page.keyboard.press("ArrowDown");
@@ -1466,25 +1472,36 @@ test("combobox filters items and persists its typed selection output", async ({
   await expect(page.getByRole("listbox")).toHaveCSS("transition-property", "none");
   await option.click();
   await expect(input).toHaveValue("SvelteKit");
-  await expect(example.locator('input[type="hidden"][name="framework"]')).toHaveValue(
-    "svelte",
-  );
-  await expect(example.locator("code")).toContainText("maybeSelection");
-  await expect(example.locator("code")).toContainText("@/stylex/combobox");
+  await expect(
+    example.locator('input[type="hidden"][name="docs-combobox"]'),
+  ).toHaveValue("sveltekit");
 
-  const emptyExample = page.locator("#no-results");
-  await expect(emptyExample.getByRole("status")).toHaveText(/No frameworks/u);
+  const clearExample = page.locator("#clear-button");
+  const clearInput = clearExample.getByRole("combobox", { name: "Framework" });
+  await expect(clearInput).toHaveValue("Next.js");
+  await clearExample.getByRole("button", { name: "Clear selection" }).click();
+  await expect(clearInput).toHaveValue("");
 
-  const readOnlyExample = page.locator("#read-only-rtl");
-  const readOnlyInput = readOnlyExample.getByRole("combobox", { name: "Framework" });
-  await expect(readOnlyExample.locator('[data-slot="command"]')).toHaveAttribute(
+  const groupsExample = page.locator("#groups");
+  await groupsExample.getByRole("combobox", { name: "Timezone" }).fill("yor");
+  await expect(page.getByRole("option", { name: "(GMT-5) New York" })).toBeVisible();
+  await expect(page.getByText("Americas", { exact: true }).first()).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  const customExample = page.locator("#custom-items");
+  await customExample.getByRole("combobox", { name: "Country" }).fill("jap");
+  await expect(page.getByRole("option", { name: /Japan/u })).toBeVisible();
+
+  const disabledExample = page.locator("#disabled");
+  await expect(
+    disabledExample.getByRole("combobox", { name: "Framework" }),
+  ).toHaveAttribute("aria-disabled", "true");
+
+  const rtlExample = page.locator("#rtl");
+  await expect(rtlExample.locator('[data-slot="command"]')).toHaveAttribute(
     "dir",
     "rtl",
   );
-  await expect(readOnlyInput).toHaveAttribute("readonly", "");
-  await readOnlyInput.focus();
-  await page.keyboard.type("nuxt");
-  await expect(readOnlyInput).toHaveValue("");
 });
 
 test("command search commits a typed parent action", async ({ page }) => {
