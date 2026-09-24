@@ -62,7 +62,7 @@ export const inputOtp = <Msg>(
         // there too so arrow keys / mid-string clicks can't desync them.
         h.Attribute(
           'onselect',
-          'this.setSelectionRange(this.value.length, this.value.length)',
+          'if(this.selectionStart===this.selectionEnd)this.setSelectionRange(this.value.length,this.value.length)',
         ),
         h.Class(
           'peer absolute inset-0 z-10 size-full cursor-text opacity-0 disabled:cursor-not-allowed',

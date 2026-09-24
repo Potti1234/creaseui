@@ -1,10 +1,11 @@
-import { Effect, Match as M, Schema as S } from "effect";
+import { Effect, Equal, Match as M, Schema as S } from "effect";
 import type { Runtime , Update } from "foldkit";
 import { Command, Subscription } from "foldkit";
 import type { Document, Html, HtmlBuilder } from "foldkit/html";
 import { defineMessageUnion } from "foldkit/message";
 import { UrlRequest, load, pushUrl } from "foldkit/navigation";
 import { Url, toString as urlToString } from "foldkit/url";
+import * as Render from "foldkit/render";
 import { defineView } from "foldkit/submodel";
 import { modifyFields } from "foldkit/struct";
 
@@ -105,6 +106,7 @@ export const flags: Effect.Effect<Flags> = Effect.sync(() => ({
 export const Message = defineMessageUnion({
   CompletedNavigateInternal: {},
   CompletedLoadExternal: {},
+  CompletedScrollToTop: {},
   ClickedLink: { request: UrlRequest },
   ChangedUrl: { url: Url },
   ClickedThemeToggle: {},
@@ -212,6 +214,16 @@ const ApplyTheme = Command.define("ApplyTheme", {
     }),
 });
 
+const ScrollToTop = Command.define("ScrollToTop", {
+  messages: [Message.CompletedScrollToTop],
+  execute: Render.afterPaint.pipe(
+    Effect.andThen(
+      Effect.sync(() => window.scrollTo({ top: 0, behavior: "instant" })),
+    ),
+    Effect.as(Message.CompletedScrollToTop()),
+  ),
+});
+
 const LoadBlockCode = Command.define("LoadBlockCode", {
   args: { renderer: Page.CreateRenderer, name: S.String },
   messages: [Message.LoadedBlockCode],
@@ -235,6 +247,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
     withUpdateReturn,
     M.tagsExhaustive({
       CompletedNavigateInternal: () => ({ model: model }),
+      CompletedScrollToTop: () => ({ model: model }),
       CompletedLoadExternal: () => ({ model: model }),
       CompletedApplyTheme: () => ({ model: model }),
       IgnoredBlocksPreviewInput: () => ({ model: model }),
@@ -327,7 +340,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         return { model: modifyFields(model, {
             route: () => route,
             page: () => page,
-          }) };
+          }), commands: Equal.equals(model.route, route) ? [] : [ScrollToTop()] };
       },
 
       GotBoardMessage: ({ message: childMessage }) => {

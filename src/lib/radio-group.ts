@@ -97,7 +97,6 @@ export const renderRadioGroup = <Msg>(
                     ),
                     h.Type('button'),
                     h.DataAttribute('slot', 'radio-group-item'),
-                    ...(option.isReadOnly ? [h.AriaReadonly(true)] : []),
                     ...visual.item(option),
                   ],
                   [

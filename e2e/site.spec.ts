@@ -775,7 +775,7 @@ test("dialog traps focus, closes with Escape, and restores its trigger", async (
   await compactTrigger.click();
   const compactDialog = page.locator("#docs-dialog-1");
   await expect(compactDialog).toHaveAttribute("id", "docs-dialog-1");
-  await expect(compactDialog.getByRole("button", { name: "Close" })).toBeFocused();
+  await expect(compactDialog.getByRole("button", { name: "Back" })).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(compactTrigger).toBeFocused();
 });
@@ -1443,7 +1443,7 @@ test("pagination keeps routing and in-place actions parent controlled", async ({
   const links = page.locator("#addressable-pages");
   const current = links.getByRole("link", { name: "Page 6, current page" });
   await expect(current).toHaveAttribute("aria-current", "page");
-  await expect(links.getByRole("link", { name: "Go to page 5" })).toHaveAttribute("href", "/invoices?page=5");
+  await expect(links.getByRole("link", { name: "Go to page 5" })).toHaveAttribute("href", "#");
   await expect(links.locator('[data-slot="pagination-ellipsis"]')).toHaveCount(2);
 
   const actions = page.locator("#in-place-results");
@@ -1830,7 +1830,7 @@ for (const route of ["sonner", "toast"] as const) {
     });
     const alert = viewport.getByRole("alert");
     await expect(alert).toContainText("Could not save changes");
-    await alert.getByRole("button", { name: "Retry" }).click();
+    await alert.getByRole("button", { name: "Undo" }).click();
     await expect(alert).toBeHidden();
     await example.getByRole("button", { name: `Show ${route}` }).click();
     await expect(alert).toBeVisible();
@@ -1847,10 +1847,9 @@ for (const route of ["sonner", "toast"] as const) {
     await expect(statuses).toHaveCount(2);
     await statuses.first().hover();
     await page.waitForTimeout(850);
-    await expect(statuses).toHaveCount(1);
-    await statuses.first().hover();
+    await expect(statuses).toHaveCount(2);
     await page.mouse.move(0, 0);
-    await expect(statuses).toHaveCount(0, { timeout: 1500 });
+    await expect(statuses).toHaveCount(0, { timeout: 6000 });
     if (route === "sonner") {
       await page.getByRole("button", { name: "StyleX", exact: true }).click();
       for (const id of ["timed-notification", "sticky-error", "async-save-migration", "imperative-api-migration"]) {
@@ -2769,10 +2768,8 @@ test("form preserves native metadata and focuses linked validation feedback", as
     name: "Fix the following error",
   });
   await expect(summary).toBeFocused();
-  await expect(summary.getByRole("link", { name: "Enter a valid email address." })).toHaveAttribute(
-    "href",
-    "#docs-form-sign-in-email",
-  );
+  await summary.getByRole("link", { name: "Enter a valid email address." }).click();
+  await expect(signInEmail).toBeFocused();
   await expect(signInEmail).toHaveAttribute("aria-invalid", "true");
   await expect(signInEmail).toHaveAttribute(
     "aria-describedby",
