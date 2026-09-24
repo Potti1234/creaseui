@@ -9,10 +9,10 @@ Status (foldkit 0.163):
   adds a bounds check on the active index).
 - Slider readonly arrows: already fixed upstream (keydown gated behind
   `isInteractive`).
-- The remaining four are fixed on `Potti1234/foldkit` branch
-  `devin/fix-upstream-findings` (combobox `inputValue` seed, anchor
-  `shift` crossAxis, closed-listbox typeahead, tooltip mount
-  hover-sync); each fix ships a repro page under
+- The remaining four are fixed in
+  https://github.com/Potti1234/foldkit/pull/1 (combobox `inputValue`
+  seed, anchor `shift` crossAxis, closed-listbox typeahead, tooltip
+  mount hover-sync); each fix ships a repro page under
   `examples/findings-repro/` there.
 
 ## Combobox
