@@ -307,7 +307,7 @@ const buttonGroupViewSource = (renderer: 'tailwind' | 'stylex'): string => {
       triggerButtonVariant: 'outline',
       triggerButtonSize: 'icon',`;
   return `ButtonGroup.buttonGroup({ children: [
-      ButtonGroup.buttonGroup({ class: 'hidden sm:flex', children: [
+      ButtonGroup.buttonGroup({${renderer === 'tailwind' ? ` class: 'hidden sm:flex',` : ''} children: [
         ${iconBtn('arrow-left', 'Go Back')},
       ] }, h),
       ButtonGroup.buttonGroup({ children: [

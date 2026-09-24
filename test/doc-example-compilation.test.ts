@@ -23,15 +23,21 @@ describe('copyable documentation applications', () => {
   it('typecheck against the real Foldkit and Crease UI APIs', () => {
     const sources = new Map<string, string>();
     for (const page of Object.values(authoredPages)) {
-      page.definition.examples.forEach((example, index) => {
-        const filename = resolve(
-          'src',
-          'docs',
-          '__example_check__',
-          `${page.slug}-${String(index)}.ts`,
-        );
-        sources.set(filename, example.code);
-      });
+      const variants: ReadonlyArray<readonly [string, ReadonlyArray<{ code: string }>]> = [
+        ['tw', page.definition.examples],
+        ['sx', page.definition.stylexExamples ?? []],
+      ];
+      for (const [variant, examples] of variants) {
+        examples.forEach((example, index) => {
+          const filename = resolve(
+            'src',
+            'docs',
+            '__example_check__',
+            `${page.slug}-${variant}-${String(index)}.ts`,
+          );
+          sources.set(filename, example.code);
+        });
+      }
     }
 
     const options = compilerOptions();

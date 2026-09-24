@@ -51,7 +51,7 @@ export type Message = typeof Message.Type`,
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Data Table — ${fixture.title}',
-  body: h.main([], [DataTable.dataTable({ model: model.table, toParentMessage: message => GotDataTableMessage({ message }), rows: payments, columns${stylex ? '(h)' : ''}, rowKey: row => row.id,${fixture.filter ? " filterText: row => `${row.status} ${row.email}`, filterPlaceholder: 'Filter payments…'," : ''}${fixture.server ? " mode: 'server', rowCount: 42," : ''} enableRowSelection: true, enableColumnVisibility: true, pageSizeOptions: [5, 10, 20], ariaLabel: 'Payments' }, h)]),
+  body: h.main([], [DataTable.dataTable({ model: model.table, toParentMessage: message => GotDataTableMessage({ message }), rows: payments, columns${stylex ? ': columns(h)' : ''}, rowKey: row => row.id,${fixture.filter ? " filterText: row => `${row.status} ${row.email}`, filterPlaceholder: 'Filter payments…'," : ''}${fixture.server ? " mode: 'server', rowCount: 42," : ''} enableRowSelection: true, enableColumnVisibility: true, pageSizeOptions: [5, 10, 20], ariaLabel: 'Payments' }, h)]),
 })`,
   });
 };

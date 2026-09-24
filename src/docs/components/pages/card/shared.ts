@@ -66,6 +66,60 @@ export const cardRtlCopy = {
 const ui = (renderer: 'tailwind' | 'stylex'): string =>
   renderer === 'stylex' ? 'stylex' : 'ui';
 
+const cls = (
+  renderer: 'tailwind' | 'stylex',
+  tailwindValue: string,
+  ...styleKeys: ReadonlyArray<string>
+): string =>
+  renderer === 'tailwind'
+    ? `h.Class('${tailwindValue}')`
+    : `h.Class(stylex.props(${styleKeys.map(k => `styles.${k}`).join(', ')}).className ?? '')`;
+
+const prop = (
+  renderer: 'tailwind' | 'stylex',
+  tailwindValue: string,
+  styleKey: string,
+): string =>
+  renderer === 'tailwind' ? `class: '${tailwindValue}'` : `layoutStyle: styles.${styleKey}`;
+
+const STYLEX_STYLES = {
+  frame: `{ maxWidth: '24rem', width: '100%' }`,
+  smallCard: `{ marginInline: 'auto', maxWidth: '20rem', width: '100%' }`,
+  loginWrap: `{ display: 'grid', gap: '1rem', justifyItems: 'center', maxWidth: '24rem', width: '100%', marginInline: 'auto' }`,
+  fieldGrid: `{ display: 'grid', gap: '0.5rem' }`,
+  fieldRow: `{ display: 'flex', alignItems: 'center' }`,
+  link: `{ color: 'inherit', fontSize: '0.875rem', marginInlineStart: 'auto', textDecorationLine: 'underline', textUnderlineOffset: '4px' }`,
+  footerCol: `{ flexDirection: 'column', gap: '0.5rem', display: 'flex', width: '100%' }`,
+  wFull: `{ width: '100%' }`,
+  list: `{ display: 'grid', gap: '0.5rem', paddingBlock: '0.5rem', fontSize: '0.875rem', listStyle: 'none', paddingInlineStart: 0 }`,
+  li: `{ display: 'flex', gap: '0.5rem' }`,
+  liIcon: `{ marginTop: '0.125rem', flexShrink: 0, color: 'var(--muted-foreground)' }`,
+  liMarker: `{ width: '1rem', height: '1rem' }`,
+  edgeCard: `{ marginInline: 'auto', maxWidth: '24rem', width: '100%' }`,
+  edgeContent: `{ marginBlockEnd: 'calc(var(--card-spacing, 1.5rem) * -1)' }`,
+  edgeScroll: `{ marginInline: 'calc(var(--card-spacing, 1.5rem) * -1)', maxHeight: '12rem', overflowY: 'scroll', borderTopWidth: 1, borderTopStyle: 'solid', borderTopColor: 'var(--border)', backgroundColor: 'color-mix(in oklab, var(--muted) 50%, transparent)', paddingInline: 'var(--card-spacing, 1.5rem)', paddingBlock: '1rem', fontSize: '0.875rem', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '1rem' }`,
+  edgeFooterInner: `{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', width: '100%' }`,
+  imageWrap: `{ position: 'relative', marginInline: 'auto', maxWidth: '24rem', width: '100%' }`,
+  overlay: `{ position: 'absolute', inset: 0, zIndex: 30, aspectRatio: '16 / 9', backgroundColor: 'rgba(0,0,0,0.35)' }`,
+  cover: `{ position: 'relative', zIndex: 20, aspectRatio: '16 / 9', width: '100%', objectFit: 'cover', filter: 'grayscale(100%) brightness(0.6)' }`,
+  footerPad: `{ marginBlockEnd: '1.5rem' }`,
+} as const;
+type StylexStyleKey = keyof typeof STYLEX_STYLES;
+
+const stylexImports = (keys: ReadonlyArray<StylexStyleKey>): string =>
+  `import * as stylex from '@stylexjs/stylex'\n\nconst styles = stylex.create({\n${keys.map(k => `  ${k}: ${STYLEX_STYLES[k]},`).join('\n')}\n})`;
+
+const styleKeysFor = (kind: CardFixture['kind']): ReadonlyArray<StylexStyleKey> => {
+  const login: ReadonlyArray<StylexStyleKey> = ['frame', 'fieldGrid', 'fieldRow', 'link', 'footerCol', 'wFull'];
+  switch (kind) {
+    case 'spacing': return ['loginWrap', ...login];
+    case 'small': return ['smallCard', 'list', 'li', 'liIcon', 'liMarker', 'footerCol', 'wFull'];
+    case 'edge': return ['edgeCard', 'edgeContent', 'edgeScroll', 'edgeFooterInner'];
+    case 'image': return ['imageWrap', 'overlay', 'cover', 'footerPad', 'wFull'];
+    default: return login;
+  }
+};
+
 /** Source for the login card content (Basic, Spacing, RTL fixtures). */
 const loginCardSource = (
   opts: Readonly<{
@@ -104,17 +158,17 @@ const loginCardSource = (
       ? opts.spacingVar === 'dynamic'
         ? `class: \`w-full max-w-sm [--card-spacing:--spacing(\${model.spacing})]\`,`
         : `class: 'w-full max-w-sm${spacingPart}',`
-      : `layoutStyle: styles.card,`;
+      : `layoutStyle: styles.frame,`;
   const inputBlock = (
     id: string,
     label: string,
     opts2: Readonly<{ type: string; placeholder?: string; row?: 'split' }>,
-  ): string => `h.div([h.Class('grid gap-2')], [
+  ): string => `h.div([${cls(opts.renderer, 'grid gap-2', 'fieldGrid')}], [
           ${
             opts2.row === 'split'
-              ? `h.div([h.Class('flex items-center')], [
+              ? `h.div([${cls(opts.renderer, 'flex items-center', 'fieldRow')}], [
             Label.label({ for: '${id}', children: ['${label}'] }, h),
-            h.a([h.Href('#'), h.Class('ml-auto inline-block text-sm underline-offset-4 hover:underline')], ['${copy.forgot}']),
+            h.a([h.Href('#'), ${cls(opts.renderer, 'ml-auto inline-block text-sm underline-offset-4 hover:underline', 'link')}], ['${copy.forgot}']),
           ]),`
               : `Label.label({ for: '${id}', children: ['${label}'] }, h),`
           }
@@ -135,10 +189,17 @@ const loginCardSource = (
       ${inputBlock('card-email', copy.email, { type: 'email', placeholder: 'm@example.com' })},
       ${inputBlock('card-password', copy.password, { type: 'password', row: 'split' })},
     ] }, h),
-    Card.cardFooter({ class: 'flex-col gap-2', children: [
+    ${opts.renderer === 'tailwind'
+      ? `Card.cardFooter({ class: 'flex-col gap-2', children: [
       Button.button({ class: 'w-full', children: ['${copy.login}'] }, h),
       Button.button({ variant: 'outline', class: 'w-full', children: ['${copy.google}'] }, h),
-    ] }, h),
+    ] }, h)`
+      : `Card.cardFooter({ children: [
+      h.div([${cls(opts.renderer, '', 'footerCol')}], [
+      Button.button({ layoutStyle: styles.wFull, children: ['${copy.login}'] }, h),
+      Button.button({ variant: 'outline', layoutStyle: styles.wFull, children: ['${copy.google}'] }, h),
+      ]),
+    ] }, h)`}
   ],
 }, h)`;
 };
@@ -152,25 +213,32 @@ const smallCardSource = (renderer: 'tailwind' | 'stylex'): string => `Card.card(
       Card.cardDescription({ children: ['Weekly snapshots. No more manual exports.'] }, h),
     ] }, h),
     Card.cardContent({ children: [
-      h.ul([h.Class('grid gap-2 py-2 text-sm')], [
-        h.li([h.Class('flex gap-2')], [
-          Icon.icon('chevron-right', { class: 'mt-0.5 size-4 shrink-0 text-muted-foreground' }, h),
+      h.ul([${cls(renderer, 'grid gap-2 py-2 text-sm', 'list')}], [
+        h.li([${cls(renderer, 'flex gap-2', 'li')}], [
+          Icon.icon('chevron-right', { class: ${renderer === 'tailwind' ? `'mt-0.5 size-4 shrink-0 text-muted-foreground'` : `stylex.props(styles.liIcon, styles.liMarker).className ?? ''`} }, h),
           h.span([], ['Choose a schedule (daily, or weekly).']),
         ]),
-        h.li([h.Class('flex gap-2')], [
-          Icon.icon('chevron-right', { class: 'mt-0.5 size-4 shrink-0 text-muted-foreground' }, h),
+        h.li([${cls(renderer, 'flex gap-2', 'li')}], [
+          Icon.icon('chevron-right', { class: ${renderer === 'tailwind' ? `'mt-0.5 size-4 shrink-0 text-muted-foreground'` : `stylex.props(styles.liIcon, styles.liMarker).className ?? ''`} }, h),
           h.span([], ['Send to channels or specific teammates.']),
         ]),
-        h.li([h.Class('flex gap-2')], [
-          Icon.icon('chevron-right', { class: 'mt-0.5 size-4 shrink-0 text-muted-foreground' }, h),
+        h.li([${cls(renderer, 'flex gap-2', 'li')}], [
+          Icon.icon('chevron-right', { class: ${renderer === 'tailwind' ? `'mt-0.5 size-4 shrink-0 text-muted-foreground'` : `stylex.props(styles.liIcon, styles.liMarker).className ?? ''`} }, h),
           h.span([], ['Include charts, tables, and key metrics.']),
         ]),
       ]),
     ] }, h),
-    Card.cardFooter({ class: 'flex-col gap-2', children: [
+    ${renderer === 'tailwind'
+      ? `Card.cardFooter({ class: 'flex-col gap-2', children: [
       Button.button({ size: 'sm', class: 'w-full', children: ['Set up scheduled reports'] }, h),
       Button.button({ variant: 'outline', size: 'sm', class: 'w-full', children: ["See what's new"] }, h),
-    ] }, h),
+    ] }, h)`
+      : `Card.cardFooter({ children: [
+      h.div([${cls(renderer, '', 'footerCol')}], [
+      Button.button({ size: 'sm', layoutStyle: styles.wFull, children: ['Set up scheduled reports'] }, h),
+      Button.button({ variant: 'outline', size: 'sm', layoutStyle: styles.wFull, children: ["See what's new"] }, h),
+      ]),
+    ] }, h)`}
   ],
 }, h)`;
 
@@ -181,29 +249,37 @@ const edgeCardSource = (renderer: 'tailwind' | 'stylex'): string => `Card.card({
       Card.cardTitle({ children: ['Terms of Service'] }, h),
       Card.cardDescription({ children: ['Review the terms before accepting the agreement.'] }, h),
     ] }, h),
-    Card.cardContent({ class: '-mb-(--card-spacing)', children: [
-      h.div([h.Class('-mx-(--card-spacing) max-h-48 space-y-4 overflow-y-scroll border-t bg-muted/50 px-(--card-spacing) py-4 text-sm leading-relaxed')], [
+    Card.cardContent({ ${prop(renderer, '-mb-(--card-spacing)', 'edgeContent')}, children: [
+      h.div([${cls(renderer, '-mx-(--card-spacing) max-h-48 space-y-4 overflow-y-scroll border-t bg-muted/50 px-(--card-spacing) py-4 text-sm leading-relaxed', 'edgeScroll')}], [
         h.p([], ['These terms govern your use of the workspace, including access to shared documents, project files, and collaboration tools.']),
         h.p([], ['You are responsible for the content you upload and for ensuring that your team has the appropriate permissions to view or edit it.']),
         h.p([], ['We may update features or limits as the service evolves. When those changes materially affect your workflow, we will notify your workspace administrators.']),
         h.p([], ["By continuing, you agree to keep your account credentials secure and to follow your organization's acceptable use policies."]),
       ]),
     ] }, h),
-    Card.cardFooter({ class: 'justify-end gap-2', children: [
+    ${renderer === 'tailwind'
+      ? `Card.cardFooter({ class: 'justify-end gap-2', children: [
       Button.button({ variant: 'outline', children: ['Decline'] }, h),
       Button.button({ children: ['Accept'] }, h),
-    ] }, h),
+    ] }, h)`
+      : `Card.cardFooter({ children: [
+      h.div([${cls(renderer, '', 'edgeFooterInner')}], [
+      Button.button({ variant: 'outline', children: ['Decline'] }, h),
+      Button.button({ children: ['Accept'] }, h),
+      ]),
+    ] }, h)`},
   ],
 }, h)`;
 
-const imageCardSource = (renderer: 'tailwind' | 'stylex'): string => `Card.card({
-  ${renderer === 'tailwind' ? `class: 'relative mx-auto w-full max-w-sm pt-0',` : `layoutStyle: styles.imageCard,`}
+const imageCardSource = (renderer: 'tailwind' | 'stylex'): string => {
+  const cardExpr = `Card.card({
+  ${renderer === 'tailwind' ? `class: 'relative mx-auto w-full max-w-sm pt-0',` : `density: 'flush',`}
   children: [
-    h.div([h.Class('absolute inset-0 z-30 aspect-video bg-black/35')]),
+    h.div([${cls(renderer, 'absolute inset-0 z-30 aspect-video bg-black/35', 'overlay')}]),
     h.img([
       h.Src('${IMAGE_URL}'),
       h.Alt('Event cover'),
-      h.Class('relative z-20 aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40'),
+      ${cls(renderer, 'relative z-20 aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40', 'cover')},
     ]),
     Card.cardHeader({ children: [
       Card.cardAction({ children: [
@@ -212,11 +288,17 @@ const imageCardSource = (renderer: 'tailwind' | 'stylex'): string => `Card.card(
       Card.cardTitle({ children: ['Design systems meetup'] }, h),
       Card.cardDescription({ children: ['A practical talk on component APIs, accessibility, and shipping faster.'] }, h),
     ] }, h),
-    Card.cardFooter({ children: [
-      Button.button({ class: 'w-full', children: ['View Event'] }, h),
+    Card.cardFooter({ ${renderer === 'stylex' ? 'layoutStyle: styles.footerPad, ' : ''}children: [
+      Button.button({ ${prop(renderer, 'w-full', 'wFull')}, children: ['View Event'] }, h),
     ] }, h),
   ],
 }, h)`;
+  return renderer === 'tailwind'
+    ? cardExpr
+    : `h.div([${cls(renderer, '', 'imageWrap')}], [
+      ${cardExpr.split('\n').join('\n      ')},
+    ])`;
+};
 
 const fixtureImports = (
   fixture: CardFixture,
@@ -227,15 +309,17 @@ const fixtureImports = (
     `import * as Input from '@/${ui(renderer)}/input'`,
     `import * as Label from '@/${ui(renderer)}/label'`,
   ];
+  const stylesImport =
+    renderer === 'stylex' ? `\n${stylexImports(styleKeysFor(fixture.kind))}` : '';
   switch (fixture.kind) {
     case 'small':
-      return [`import * as Icon from '@/lib/icon'`, `import * as Button from '@/${ui(renderer)}/button'`].join('\n');
+      return [`import * as Icon from '@/lib/icon'`, `import * as Button from '@/${ui(renderer)}/button'`].join('\n') + stylesImport;
     case 'edge':
-      return `import * as Button from '@/${ui(renderer)}/button'`;
+      return `import * as Button from '@/${ui(renderer)}/button'` + stylesImport;
     case 'image':
-      return [`import * as Badge from '@/${ui(renderer)}/badge'`, `import * as Button from '@/${ui(renderer)}/button'`].join('\n');
+      return [`import * as Badge from '@/${ui(renderer)}/badge'`, `import * as Button from '@/${ui(renderer)}/button'`].join('\n') + stylesImport;
     default:
-      return base.join('\n');
+      return base.join('\n') + stylesImport;
   }
 };
 
@@ -293,7 +377,7 @@ const source = (
         init: loginInit,
         update: loginUpdate,
         view: viewWrapper(
-          `h.div(${fixture.kind === 'rtl' ? `[h.Dir('rtl'), h.Class('w-full max-w-sm')]` : `[]`}, [
+          `h.div(${fixture.kind === 'rtl' ? (renderer === 'stylex' ? `[h.Dir('rtl'), ${cls(renderer, '', 'frame')}]` : `[h.Dir('rtl'), h.Class('w-full max-w-sm')]`) : `[]`}, [
         ${loginCardSource({ rtl: fixture.kind === 'rtl', spacingVar: 'none', renderer }).split('\n').join('\n        ')},
       ])`,
         ),
@@ -370,7 +454,7 @@ export const update = (
   body: h.main(
     [h.Class('flex min-h-screen items-center justify-center p-8')],
     [
-      h.div([h.Class('grid w-full max-w-sm gap-4')], [
+      h.div([${cls(renderer, 'grid w-full max-w-sm gap-4', 'loginWrap')}], [
         SpacingToggleGroup.toggleGroup({
           model: model.toggleGroup,
           toParentMessage: message => GotToggleGroupMessage({ message }),

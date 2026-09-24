@@ -108,10 +108,13 @@ const alertSource = (
   colors: string | undefined,
   renderer: 'tailwind' | 'stylex',
 ): string => {
+  const actionClass = renderer === 'stylex'
+    ? `stylex.props(styles.action).className ?? ''`
+    : `'col-start-2 mt-2'`;
   const action = item.actionLabel === undefined
     ? ''
     : `
-    h.div([h.Class('col-start-2 mt-2')], [
+    h.div([h.Class(${actionClass})], [
       Button.button({ size: 'sm', children: ['${item.actionLabel}'] }, h),
     ]),`;
   const classLine = renderer === 'stylex'
@@ -140,12 +143,12 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
     ...(renderer === 'stylex' ? [`import * as stylex from '@stylexjs/stylex'`] : []),
   ].join('\n');
   const styles = renderer === 'stylex'
-    ? `\nconst styles = stylex.create({ wrap: { display: 'grid', gap: '1rem', maxWidth: '28rem', width: '100%' } })\n`
+    ? `\nconst styles = stylex.create({ wrap: { display: 'grid', gap: '1rem', maxWidth: '28rem', width: '100%' }, action: { gridColumnStart: 2, marginTop: '0.5rem' } })\n`
     : '';
   const inner = fixture.alerts.map(item => alertSource(item, fixture.colors, renderer)).join(',\n      ');
   const dirAttr = fixture.direction === 'rtl' ? `h.Dir('${fixture.direction}'), ` : '';
   const wrapClass = renderer === 'stylex'
-    ? 'h.Class(styles.wrap)'
+    ? `h.Class(stylex.props(styles.wrap).className ?? '')`
     : `h.Class('grid w-full max-w-md gap-4')`;
   const viewBody = `h.div(
       [${dirAttr}${wrapClass}],
