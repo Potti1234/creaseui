@@ -667,7 +667,11 @@ const viewBodySource = (
     fixture.direction === 'rtl'
       ? `h.div([h.Dir('rtl')], [\n    GROUP\n  ])`
       : 'GROUP';
-  const group = `ButtonGroup.buttonGroup({
+  const ungrouped =
+    fixture.nodes.length === 1 && fixture.nodes[0]?.t === 'column';
+  const group = ungrouped
+    ? fixture.nodes.map(node => nodeSource(node, fixture, renderer, 2)).join(',\n')
+    : `ButtonGroup.buttonGroup({
     ${groupProps}
     children: [
 ${fixture.nodes.map(node => nodeSource(node, fixture, renderer, 3)).join(',\n')},
