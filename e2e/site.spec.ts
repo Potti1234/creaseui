@@ -2420,35 +2420,118 @@ test("sonner documents the canonical async and imperative migration", async ({ p
   await expect(migration.locator("code")).not.toContainText("toast.promise");
 });
 
-test("calendar emits selection while retaining child navigation state", async ({
+test("calendar sections mirror shadcn examples in both renderers", async ({
   page,
 }) => {
   await page.goto("/docs/components/calendar");
-  await page.getByRole("button", { name: "StyleX" }).click();
-  await expect(page.locator("#selected-date")).toBeVisible();
-  await expect(page.locator("#roomier-cells")).toBeVisible();
-  await expect(page.locator("#parent-owned-range")).toBeVisible();
-  await expect(page.locator("#locale-zone-and-rtl")).toBeVisible();
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  const example = page.locator("#selected-date");
-  const calendar = example.locator('[data-slot="calendar"]');
-  const day = calendar.getByRole("button", { name: "Monday, July 20, 2026" });
+  for (const id of [
+    "basic",
+    "range-calendar",
+    "month-and-year-selector",
+    "presets",
+    "date-and-time-picker",
+    "booked-dates",
+    "custom-cell-size",
+    "week-numbers",
+    "rtl",
+  ]) {
+    await expect(page.locator(`[id="${id}"]`)).toBeVisible();
+  }
+
+  const basic = page
+    .locator("#basic")
+    .locator('[data-slot="calendar"]');
+  const day = basic.getByRole("button", { name: "Monday, July 20, 2026" });
   await day.click();
   await expect(day.locator("..")).toHaveAttribute("data-selected", "");
-  await expect(example.locator("code")).toContainText("maybeOutput");
-  await expect(example.locator("code")).toContainText("SelectedDate");
-  await expect(calendar.getByRole("button", { name: "Sunday, July 19, 2026" })).toBeDisabled();
 
-  const range = page.locator("#parent-owned-range").locator('[data-slot="calendar"]');
-  await expect(range.getByRole("button", { name: "Tuesday, July 14, 2026" }).locator("..")).toHaveAttribute("data-range", "start");
-  await expect(range.getByRole("button", { name: "Friday, July 17, 2026" }).locator("..")).toHaveAttribute("data-range", "middle");
-  await expect(range.getByRole("button", { name: "Monday, July 20, 2026" }).locator("..")).toHaveAttribute("data-range", "end");
+  const range = page
+    .locator("#range-calendar")
+    .locator('[data-slot="calendar"]');
+  await expect(
+    range
+      .getByRole("button", { name: "Tuesday, July 14, 2026" })
+      .locator(".."),
+  ).toHaveAttribute("data-range", "start");
+  await expect(
+    range
+      .getByRole("button", { name: "Friday, July 17, 2026" })
+      .locator(".."),
+  ).toHaveAttribute("data-range", "middle");
+  await expect(
+    range
+      .getByRole("button", { name: "Monday, July 20, 2026" })
+      .locator(".."),
+  ).toHaveAttribute("data-range", "end");
 
-  const localized = page.locator("#locale-zone-and-rtl").locator('[data-slot="calendar"]');
-  await expect(localized).toHaveAttribute("dir", "rtl");
-  await expect(localized).toContainText("Juli 2026");
-  await expect(localized).toContainText("Mo");
-  await expect(example.locator("code")).toContainText("@/stylex/calendar");
+  const caption = page
+    .locator("#month-and-year-selector")
+    .locator('[data-slot="calendar"]');
+  await caption
+    .getByRole("button", { name: "Switch to month picker" })
+    .click();
+  await caption
+    .getByRole("button")
+    .filter({ hasText: "Aug" })
+    .first()
+    .click();
+  await expect(caption).toContainText("August 2026");
+
+  const presets = page.locator("#presets");
+  await presets.getByRole("button", { name: "In a week" }).click();
+  await expect(
+    presets.locator('[data-slot="calendar"] [data-selected]').first(),
+  ).toBeVisible();
+  await expect(presets.locator('[data-slot="calendar"]')).toContainText(
+    "August 2026",
+  );
+
+  const time = page.locator("#date-and-time-picker");
+  await expect(time.locator('input[type="time"]')).toHaveCount(2);
+  const startTime = time.locator('input[type="time"]').first();
+  await startTime.fill("14:45");
+  await expect(startTime).toHaveValue(/14:45/);
+
+  const booked = page
+    .locator("#booked-dates")
+    .locator('[data-slot="calendar"]');
+  await expect(
+    booked.getByRole("button", { name: "Sunday, July 12, 2026" }),
+  ).toBeDisabled();
+
+  const weekNumbers = page
+    .locator("#week-numbers")
+    .locator('[data-slot="calendar"]');
+  await expect(
+    weekNumbers.locator('[data-slot="calendar-week-number"]', {
+      hasText: "30",
+    }),
+  ).toBeVisible();
+
+  const rtl = page.locator("#rtl").locator('[data-slot="calendar"]');
+  await expect(rtl).toHaveAttribute("dir", "rtl");
+  await expect(rtl).toContainText("Juli 2026");
+  await expect(rtl).toContainText("Mo");
+
+  await page.getByRole("button", { name: "StyleX" }).click();
+  for (const id of [
+    "basic",
+    "presets",
+    "week-numbers",
+    "rtl",
+  ]) {
+    await expect(page.locator(`[id="${id}"]`)).toBeVisible();
+  }
+  await expect(
+    page
+      .locator("#week-numbers")
+      .locator('[data-slot="calendar-week-number"]', { hasText: "30" }),
+  ).toBeVisible();
+  await expect(page.locator("#rtl").locator('[data-slot="calendar"]'))
+    .toHaveAttribute("dir", "rtl");
+  await expect(
+    page.locator("#basic").locator("code"),
+  ).toContainText("@/stylex/calendar");
 });
 
 test("date picker composes disclosure and calendar into one child model", async ({

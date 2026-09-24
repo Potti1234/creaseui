@@ -786,10 +786,16 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Selected date",
-        "Roomier cells",
-        "Parent-owned range",
-        "Locale zone and RTL"
+        "Demo",
+        "Basic",
+        "Range Calendar",
+        "Month and Year Selector",
+        "Presets",
+        "Date and Time Picker",
+        "Booked dates",
+        "Custom Cell Size",
+        "Week Numbers",
+        "RTL"
       ],
       "api": [
         {
@@ -875,7 +881,7 @@
         {
           "name": "CalendarViewOptions",
           "kind": "type",
-          "signature": "CalendarViewOptions = Readonly<{ class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; }>"
+          "signature": "CalendarViewOptions = Readonly<{ class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean; }>"
         },
         {
           "name": "calendarView",
@@ -885,7 +891,7 @@
         {
           "name": "CalendarProps",
           "kind": "type",
-          "signature": "CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; previousMonthLabel?: s…"
+          "signature": "CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean;…"
         },
         {
           "name": "calendar",

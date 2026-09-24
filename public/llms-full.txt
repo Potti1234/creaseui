@@ -282,7 +282,7 @@ A shadcn-styled Calendar component for Foldkit.
 
 Source: `src/ui/calendar.ts`
 
-Examples: Selected date, Roomier cells, Parent-owned range, Locale zone and RTL
+Examples: Demo, Basic, Range Calendar, Month and Year Selector, Presets, Date and Time Picker, Booked dates, Custom Cell Size, Week Numbers, RTL
 
 - `export * from '@/lib/calendar'` (re-export)
 - `Model: value` (value)
@@ -300,9 +300,9 @@ Examples: Selected date, Roomier cells, Parent-owned range, Locale zone and RTL
 - `reflectDisabledDates: value` (value)
 - `reflectDisabledDaysOfWeek: value` (value)
 - `dropToDays: value` (value)
-- `CalendarViewOptions = Readonly<{ class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; }>` (type)
+- `CalendarViewOptions = Readonly<{ class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean; }>` (type)
 - `calendarView<Msg>(attributes: CalendarPrimitive.CalendarAttributes, options: CalendarViewOptions, h: HtmlBuilder<Msg>): Html` (function)
-- `CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; previousMonthLabel?: s…` (type)
+- `CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean;…` (type)
 - `calendar<Msg>(props: CalendarProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Card

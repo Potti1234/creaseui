@@ -45,9 +45,10 @@ const ROOT_CLASS =
 const MONTH_CLASS = 'relative flex w-full flex-col gap-4';
 
 const NAV_CLASS =
-  'absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1';
+  'pointer-events-none absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1';
 
 const NAV_BUTTON_CLASS = cn(
+  'pointer-events-auto',
   buttonVariants({ variant: 'ghost', size: 'icon' }),
   'size-(--cell-size) p-0 select-none aria-disabled:opacity-50',
 );
@@ -66,6 +67,24 @@ const WEEKDAY_CLASS =
   'flex size-(--cell-size) flex-1 items-center justify-center rounded-md text-[0.8rem] font-normal text-muted-foreground select-none';
 
 const WEEK_CLASS = 'mt-2 flex w-full';
+
+const WEEK_NUMBER_CLASS =
+  'flex size-(--cell-size) flex-1 items-center justify-center text-[0.8rem] font-normal text-muted-foreground select-none';
+
+const isoWeekNumber = (date: FoldkitCalendar.CalendarDate): number => {
+  const utc = new Date(Date.UTC(date.year, date.month - 1, date.day));
+  utc.setUTCDate(utc.getUTCDate() - ((utc.getUTCDay() + 6) % 7) + 3);
+  const firstThursday = new Date(Date.UTC(utc.getUTCFullYear(), 0, 4));
+  firstThursday.setUTCDate(
+    firstThursday.getUTCDate() - ((firstThursday.getUTCDay() + 6) % 7) + 3,
+  );
+  return (
+    1 +
+    Math.round(
+      (utc.getTime() - firstThursday.getTime()) / (7 * 24 * 60 * 60 * 1000),
+    )
+  );
+};
 
 const DAY_CELL_CLASS =
   'group/day relative aspect-square size-(--cell-size) p-0 text-center select-none data-[today]:rounded-md data-[today]:bg-accent data-[today]:text-accent-foreground data-[outside-month]:text-muted-foreground data-[disabled]:text-muted-foreground data-[disabled]:opacity-50 data-[range=middle]:rounded-none data-[range=middle]:bg-accent data-[range=start]:rounded-l-md data-[range=start]:bg-accent data-[range=end]:rounded-r-md data-[range=end]:bg-accent data-[range=single]:rounded-md data-[range=single]:bg-accent';
@@ -89,6 +108,7 @@ export type CalendarViewOptions = Readonly<{
   class?: string;
   direction?: 'ltr' | 'rtl';
   range?: CalendarBehavior.CalendarRange;
+  weekNumbers?: boolean;
 }>;
 
 const navigationButton = <Msg>(
@@ -151,27 +171,60 @@ const daysView = <Msg>(
             [
               h.div(
                 [...attributes.headerRow, h.Class(HEADER_ROW_CLASS)],
-                attributes.columnHeaders.map((column) =>
-                  h.div(
-                    [...column.attributes, h.Class(WEEKDAY_CLASS)],
-                    [column.name],
+                [
+                  ...(options.weekNumbers === true
+                    ? [
+                        h.div(
+                          [
+                            h.Class(WEEK_NUMBER_CLASS),
+                            h.DataAttribute('slot', 'calendar-week-number'),
+                          ],
+                          [],
+                        ),
+                      ]
+                    : []),
+                  ...attributes.columnHeaders.map((column) =>
+                    h.div(
+                      [...column.attributes, h.Class(WEEKDAY_CLASS)],
+                      [column.name],
+                    ),
                   ),
-                ),
+                ],
               ),
               ...attributes.weeks.map((week) =>
                 h.div(
                   [...week.attributes, h.Class(WEEK_CLASS)],
-                  week.cells.map((cell) =>
-                    h.div(
-                      [...cell.cellAttributes, h.DataAttribute('range', CalendarBehavior.rangePosition(cell.date, options.range)), h.Class(DAY_CELL_CLASS)],
-                      [
-                        h.button(
-                          [...cell.buttonAttributes, h.Class(DAY_BUTTON_CLASS)],
-                          [cell.label],
-                        ),
-                      ],
+                  [
+                    ...(options.weekNumbers === true
+                      ? [
+                          h.div(
+                            [
+                              h.Class(WEEK_NUMBER_CLASS),
+                              h.DataAttribute(
+                                'slot',
+                                'calendar-week-number',
+                              ),
+                            ],
+                            [
+                              week.cells[0] === undefined
+                                ? ''
+                                : String(isoWeekNumber(week.cells[0].date)),
+                            ],
+                          ),
+                        ]
+                      : []),
+                    ...week.cells.map((cell) =>
+                      h.div(
+                        [...cell.cellAttributes, h.DataAttribute('range', CalendarBehavior.rangePosition(cell.date, options.range)), h.Class(DAY_CELL_CLASS)],
+                        [
+                          h.button(
+                            [...cell.buttonAttributes, h.Class(DAY_BUTTON_CLASS)],
+                            [cell.label],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ],
@@ -311,6 +364,7 @@ export type CalendarProps<Msg> = Readonly<{
   class?: string;
   direction?: 'ltr' | 'rtl';
   range?: CalendarBehavior.CalendarRange;
+  weekNumbers?: boolean;
   previousMonthLabel?: string;
   nextMonthLabel?: string;
   previousYearsPageLabel?: string;
@@ -332,7 +386,7 @@ export const calendar = <Msg>(
       toView: (attributes) =>
         calendarView(
           attributes,
-          { ...(props.class === undefined ? {} : { class: props.class }), ...(props.direction === undefined ? {} : { direction: props.direction }), ...(props.range === undefined ? {} : { range: props.range }) },
+          { ...(props.class === undefined ? {} : { class: props.class }), ...(props.direction === undefined ? {} : { direction: props.direction }), ...(props.range === undefined ? {} : { range: props.range }), ...(props.weekNumbers === undefined ? {} : { weekNumbers: props.weekNumbers }) },
           h,
         ),
       ...(props.previousMonthLabel === undefined
