@@ -1661,41 +1661,62 @@ test("pagination keeps routing and in-place actions parent controlled", async ({
   await expect(boundary.getByRole("button", { name: "Page 2, current page" })).toHaveAttribute("aria-current", "page");
 });
 
-test("breadcrumb renders semantic route parts, collapse, and RTL", async ({ page }) => {
+test("breadcrumb sections mirror shadcn examples in both renderers", async ({ page }) => {
   await page.goto("/docs/components/breadcrumb");
 
-  const current = page.locator("#current-path");
-  const nav = current.getByRole("navigation", { name: "Breadcrumb" });
-  await expect(nav.locator("ol")).toBeVisible();
-  await expect(nav.getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
-  const pageName = nav.locator('[data-slot="breadcrumb-page"]');
-  await expect(pageName).toHaveAttribute("aria-current", "page");
-  await expect(pageName).not.toHaveAttribute("role", "link");
-  await expect(nav.locator('[data-slot="breadcrumb-separator"]').first()).toHaveAttribute("aria-hidden", "true");
+  const hero = page.locator('[aria-label="Demo preview"]');
+  const heroNav = hero.getByRole("navigation", { name: "Breadcrumb" });
+  await expect(heroNav.getByRole("link", { name: "Home" })).toHaveAttribute("href", "#");
+  await expect(heroNav.locator('[data-slot="breadcrumb-ellipsis"]')).toBeVisible();
+  await expect(heroNav.locator('[data-slot="breadcrumb-page"]')).toHaveText("Breadcrumb");
 
-  const collapsed = page.locator("#collapsed-middle");
-  await expect(collapsed.getByText("2 omitted levels", { exact: true })).toHaveCSS("position", "absolute");
-  await expect(collapsed.getByRole("link", { name: "Workspace" })).toHaveCount(0);
-  await expect(collapsed.getByRole("link", { name: "Crease UI" })).toBeVisible();
+  for (const id of ["basic", "custom-separator", "dropdown", "collapsed", "link-component", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
 
-  const longLabel = page.locator("#long-resource-label").locator('[data-slot="breadcrumb-page"]');
-  await expect(longLabel).toContainText("A-very-long-unbroken-resource-name");
-  await expect(longLabel).toHaveCSS("overflow-wrap", "break-word");
+  const basic = page.locator("#basic").getByRole("navigation", { name: "Breadcrumb" });
+  await expect(basic.getByRole("link", { name: "Home" })).toHaveAttribute("href", "#");
+  await expect(basic.getByRole("link", { name: "Components" })).toHaveAttribute("href", "#");
+  const basicPage = basic.locator('[data-slot="breadcrumb-page"]');
+  await expect(basicPage).toHaveAttribute("aria-current", "page");
+  await expect(basic.locator('[data-slot="breadcrumb-separator"]').first()).toHaveAttribute("aria-hidden", "true");
 
-  const rtl = page.locator("#rtl-separator").getByRole("navigation", { name: "مسار الصفحة" });
+  const separator = page.locator("#custom-separator").locator('[data-slot="breadcrumb-separator"] svg.lucide-dot');
+  await expect(separator).toHaveCount(2);
+
+  const dropdown = page.locator("#dropdown");
+  await dropdown.getByRole("button", { name: "Components" }).click();
+  const menu = page.getByRole("menu");
+  await expect(menu).toBeVisible();
+  await expect(menu.getByRole("menuitem", { name: "Documentation" })).toBeVisible();
+  await expect(menu.getByRole("menuitem", { name: "GitHub" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("menu")).toHaveCount(0);
+
+  const collapsed = page.locator("#collapsed");
+  await expect(collapsed.locator('[data-slot="breadcrumb-ellipsis"]')).toBeVisible();
+  await expect(collapsed.getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
+
+  const linkComponent = page.locator("#link-component");
+  await expect(linkComponent.getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
+  await expect(linkComponent.getByRole("link", { name: "Components" })).toHaveAttribute("href", "/components");
+
+  const rtl = page.locator("#rtl").getByRole("navigation", { name: "Breadcrumb" });
   await expect(rtl).toHaveAttribute("dir", "rtl");
-  await expect(rtl.locator('[data-slot="breadcrumb-separator"] svg').first()).toHaveCSS("rotate", "180deg");
+  await expect(rtl.locator('[data-slot="breadcrumb-page"]')).toHaveText("مسار التنقل");
+
+  await hero.getByRole("button").first().click();
+  await expect(page.getByRole("menuitem", { name: "Themes" })).toBeVisible();
+  await page.keyboard.press("Escape");
 
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  await expect(page.locator("#current-path")).toBeVisible();
-  await expect(page.locator("#collapsed-middle")).toBeVisible();
-  await expect(page.locator("#long-resource-label")).toBeVisible();
-  await expect(page.locator("#rtl-separator")).toBeVisible();
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(page.locator("#current-path code")).toContainText("@/stylex/breadcrumb");
-  await expect(current.getByRole("navigation", { name: "Breadcrumb" })).toBeVisible();
-  await expect(collapsed.getByText("2 omitted levels", { exact: true })).toHaveCSS("position", "absolute");
-  await expect(page.locator("#rtl-separator").getByRole("navigation", { name: "مسار الصفحة" })).toHaveAttribute("dir", "rtl");
+  await expect(page.locator("#basic code")).toContainText("@/stylex/breadcrumb");
+  const stylexNav = page.locator("#basic").getByRole("navigation", { name: "Breadcrumb" });
+  await expect(stylexNav.getByRole("link", { name: "Home" })).toBeVisible();
+  await expect(page.locator("#rtl").getByRole("navigation", { name: "Breadcrumb" })).toHaveAttribute("dir", "rtl");
+  await page.locator("#dropdown").getByRole("button", { name: "Components" }).click();
+  await expect(page.getByRole("menuitem", { name: "Documentation" })).toBeVisible();
+  await page.keyboard.press("Escape");
 });
 
 test("alert requires explicit severity and announcement policy", async ({ page }) => {
@@ -2039,18 +2060,110 @@ test("attachment sections mirror shadcn examples with working actions", async ({
   );
 });
 
-test("bubble preserves conversational alignment, tone, and reactions", async ({ page }) => {
+test("bubble sections mirror shadcn examples in both renderers", async ({ page }) => {
   await page.goto("/docs/components/bubble");
+
+  const hero = page.locator('[aria-label="Demo preview"]');
+  await expect(hero).toBeVisible();
+  await expect(hero.locator("[data-slot=bubble]").first()).toBeVisible();
+  await expect(hero.getByText("Hey there!")).toBeVisible();
+  await expect(
+    hero.locator('[aria-label="Reactions: thumbs up, fire, eyes, and 2 more"]'),
+  ).toBeVisible();
+  for (const id of [
+    "variants",
+    "alignment",
+    "bubble-group",
+    "links-and-buttons",
+    "reactions",
+    "show-more-/-collapsible",
+    "tooltip",
+    "popover",
+  ]) {
+    await expect(page.locator(`[id="${id}"]`)).toBeVisible();
+  }
+
+  const variants = page.locator('[id="variants"]');
+  await expect(variants.locator("[data-slot=bubble]")).toHaveCount(7);
+  await expect(variants.locator("[data-variant=tinted]")).toContainText(
+    "no console errors",
+  );
+  await expect(variants.locator("[data-variant=ghost]")).toContainText(
+    "markdown",
+  );
+
+  const alignment = page.locator('[id="alignment"]');
+  await expect(alignment.locator("[data-align=start]")).toContainText("Lunch");
+  await expect(alignment.locator("[data-align=end]")).toContainText("Lunch");
+
+  const group = page.locator('[id="bubble-group"]');
+  await expect(
+    group.locator('[aria-label="Reaction: fire"]'),
+  ).toBeVisible();
+  await expect(
+    group.locator('[aria-label="Reactions: eyes"]'),
+  ).toBeVisible();
+
+  const linkButton = page.locator('[id="links-and-buttons"]');
+  const option = linkButton.locator(
+    "button[data-slot=bubble-content]",
+  ).first();
+  await option.click();
+  await expect(linkButton.getByText(/^You clicked:/)).toBeVisible();
+
+  const reactions = page.locator('[id="reactions"]');
+  const runIt = reactions.getByRole("button", { name: "Yes, run it" });
+  await runIt.click();
+  await expect(
+    reactions.getByRole("button", { name: "Ran it" }),
+  ).toBeVisible();
+  await expect(
+    reactions.locator("[data-side=top]"),
+  ).toBeVisible();
+
+  const collapsible = page.locator('[id="show-more-/-collapsible"]');
+  await expect(collapsible).toContainText("really weird things happened");
+  const toggle = collapsible.getByRole("button", { name: "Show more" });
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-expanded", "true");
+  await expect(collapsible.getByRole("button", { name: "Show less" })).toBeVisible();
+
+  const tooltipSection = page.locator('[id="tooltip"]');
+  await tooltipSection
+    .getByRole("button", { name: "Read receipt" })
+    .hover();
+  await expect(
+    page.getByText("Read on Jan 5, 2026 at 4:32 PM"),
+  ).toBeVisible();
+
+  const popoverSection = page.locator('[id="popover"]');
+  await popoverSection
+    .getByRole("button", { name: "Show error details" })
+    .click();
+  await expect(
+    page.getByText("Command failed with exit code 1"),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+
   await page.getByRole("button", { name: "StyleX" }).click();
-  await expect(page.locator("#conversation")).toBeVisible();
-  await expect(page.locator("#reaction")).toBeVisible();
-  await expect(page.locator("#error")).toBeVisible();
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(page.locator("#conversation [data-slot=bubble]")).toHaveCount(2);
-  await expect(page.locator("#conversation [data-align=end]")).toContainText("Yes —");
-  await expect(page.locator("#reaction [data-slot=bubble-reactions]")).toHaveText("👍 3");
-  await expect(page.locator("#error [data-variant=destructive]")).toContainText("Message could not be sent.");
-  await expect(page.locator("#conversation code")).toContainText("@/stylex/bubble");
+  await expect(page.locator('[id="variants"] code')).toContainText(
+    "@/stylex/bubble",
+  );
+  await expect(
+    page.locator('[id="variants"]').locator("[data-variant=tinted]"),
+  ).toContainText("no console errors");
+  const sxPopover = page.locator('[id="popover"]');
+  await sxPopover
+    .getByRole("button", { name: "Show error details" })
+    .click();
+  await expect(
+    page.getByText("Command failed with exit code 1"),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+  const sxLinkButton = page.locator('[id="links-and-buttons"]');
+  await sxLinkButton.locator("button[data-slot=bubble-content]").first().click();
+  await expect(sxLinkButton.getByText(/^You clicked:/)).toBeVisible();
 });
 
 test("item preserves semantic collections and structured metadata", async ({ page }) => {

@@ -501,10 +501,13 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Current path",
-        "Collapsed middle",
-        "Long resource label",
-        "RTL separator"
+        "Demo",
+        "Basic",
+        "Custom separator",
+        "Dropdown",
+        "Collapsed",
+        "Link component",
+        "RTL"
       ],
       "api": [
         {

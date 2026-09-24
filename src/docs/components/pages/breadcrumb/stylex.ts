@@ -1,18 +1,139 @@
-import type { HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html';
+
+import * as stylex from '@stylexjs/stylex';
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { breadcrumbAriaLabel, breadcrumbRoute, longBreadcrumbRoute } from '@/docs/components/pages/breadcrumb/shared';
+import {
+  breadcrumbFixtures,
+  type BreadcrumbFixture,
+  type BreadcrumbItemSpec,
+} from '@/docs/components/pages/breadcrumb/shared';
+import * as Icon from '@/lib/icon';
 import * as Breadcrumb from '@/stylex/breadcrumb';
+import * as DropdownMenu from '@/stylex/dropdown-menu';
+
+const styles = stylex.create({
+  chevron: { fontSize: '0.875rem' },
+  dropdownTrigger: {
+    alignItems: 'center',
+    display: 'flex',
+    gap: '0.25rem',
+  },
+});
+
+type PreviewSnapshot = Readonly<{
+  menu: DropdownMenu.Model;
+}>;
+
+const menuView = <Msg>(
+  model: PreviewSnapshot,
+  item: BreadcrumbItemSpec,
+  fixture: BreadcrumbFixture,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  DropdownMenu.dropdownMenu(
+    {
+      model: model.menu,
+      toParentMessage: message =>
+        onMessageJson(
+          JSON.stringify({ _tag: 'GotMenuMessage', message }),
+        ),
+      trigger:
+        item.kind === 'ellipsisMenu'
+          ? Breadcrumb.breadcrumbEllipsis({}, h)
+          : h.span(
+              [
+                h.Class(
+                  stylex.props(styles.dropdownTrigger).className ?? '',
+                ),
+              ],
+              [
+                item.kind === 'dropdown' ? item.label : '',
+                Icon.icon(
+                  'chevron-down',
+                  { class: stylex.props(styles.chevron).className ?? '' },
+                  h,
+                ),
+              ],
+            ),
+      ...(item.kind === 'ellipsisMenu'
+        ? {
+            triggerButtonVariant: 'ghost' as const,
+            triggerButtonSize: 'icon-sm' as const,
+          }
+        : {}),
+      items: fixture.menuItems ?? [],
+      itemToConfig: entry => ({ label: entry }),
+      ...(fixture.rtl === true ? { direction: 'rtl' as const } : {}),
+    },
+    h,
+  );
+
+const itemContentView = <Msg>(
+  model: PreviewSnapshot,
+  item: BreadcrumbItemSpec,
+  fixture: BreadcrumbFixture,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  switch (item.kind) {
+    case 'link':
+      return Breadcrumb.breadcrumbLink(
+        { href: item.href, children: [item.label] },
+        h,
+      );
+    case 'page':
+      return Breadcrumb.breadcrumbPage({ children: [item.label] }, h);
+    case 'ellipsis':
+      return Breadcrumb.breadcrumbEllipsis({}, h);
+    case 'ellipsisMenu':
+    case 'dropdown':
+      return menuView(model, item, fixture, onMessageJson, h);
+  }
+};
 
 export const breadcrumbStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
-  _model: unknown,
-  _onMessageJson: (messageJson: string) => Msg,
+  model: unknown,
+  onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
-) => exampleIndex === 2
-  ? Breadcrumb.breadcrumbTrail({ items: longBreadcrumbRoute, ariaLabel: 'Resource path' }, h)
-  : Breadcrumb.breadcrumbTrail({
-      items: breadcrumbRoute,
-      maxItems: exampleIndex === 0 ? 5 : 4,
-      ...(exampleIndex === 3 ? { direction: 'rtl' as const, ariaLabel: breadcrumbAriaLabel } : {}),
-    }, h);
+) => {
+  const fixture = breadcrumbFixtures[exampleIndex] ?? breadcrumbFixtures[0];
+  const previewModel = model as PreviewSnapshot;
+  const children: Array<Html> = [];
+  fixture.items.forEach((item, index) => {
+    if (index > 0) {
+      children.push(
+        Breadcrumb.breadcrumbSeparator(
+          {
+            ...(fixture.separator === 'dot'
+              ? { children: [Icon.icon('dot', {}, h)] }
+              : {}),
+            ...(fixture.rtl === true
+              ? { direction: 'rtl' as const }
+              : {}),
+          },
+          h,
+        ),
+      );
+    }
+    children.push(
+      Breadcrumb.breadcrumbItem(
+        {
+          children: [
+            itemContentView(previewModel, item, fixture, onMessageJson, h),
+          ],
+        },
+        h,
+      ),
+    );
+  });
+  return Breadcrumb.breadcrumb(
+    {
+      ...(fixture.rtl === true ? { direction: 'rtl' as const } : {}),
+      children: [Breadcrumb.breadcrumbList({ children }, h)],
+    },
+    h,
+  );
+};

@@ -1227,6 +1227,16 @@ export const iconNodes = {
       }
     ]
   ],
+  "dot": [
+    [
+      "circle",
+      {
+        "cx": "12.1",
+        "cy": "12.1",
+        "r": "1"
+      }
+    ]
+  ],
   "ellipse": [
     [
       "ellipse",

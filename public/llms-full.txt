@@ -212,7 +212,7 @@ A shadcn-styled Breadcrumb component for Foldkit.
 
 Source: `src/ui/breadcrumb.ts`
 
-Examples: Current path, Collapsed middle, Long resource label, RTL separator
+Examples: Demo, Basic, Custom separator, Dropdown, Collapsed, Link component, RTL
 
 - `export * from '@/lib/breadcrumb'` (re-export)
 - `BreadcrumbProps = Slot & Readonly<{ ariaLabel?: string; direction?: 'ltr' | 'rtl'; }>` (type)

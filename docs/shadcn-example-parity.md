@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 10 done · 51 todo · 3 crease-only
+Current: 12 done · 49 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -22,8 +22,8 @@ Current: 10 done · 51 todo · 3 crease-only
 | `attachment` | 6 | Image<br>States<br>Sizes<br>Group<br>Trigger | done |
 | `avatar` | 10 | Basic<br>Badge<br>Badge with Icon<br>Avatar Group<br>Avatar Group Count<br>Avatar Group with Icon<br>Sizes<br>Dropdown<br>RTL | done |
 | `badge` | 7 | Variants<br>With Icon<br>With Spinner<br>Link<br>Custom Colors<br>RTL | done |
-| `breadcrumb` | 4 | Basic<br>Custom separator<br>Dropdown<br>Collapsed<br>Link component<br>RTL | todo (missing: Basic, Custom separator, Dropdown, Collapsed, Link component, RTL) |
-| `bubble` | 3 | Variants<br>Alignment<br>Bubble Group<br>Links and Buttons<br>Reactions<br>Show More / Collapsible<br>Tooltip<br>Popover | todo (missing: Variants, Alignment, Bubble Group, Links and Buttons, Reactions, Show More / Collapsible, Tooltip, Popover) |
+| `breadcrumb` | 7 | Basic<br>Custom separator<br>Dropdown<br>Collapsed<br>Link component<br>RTL | done |
+| `bubble` | 10 | Variants<br>Alignment<br>Bubble Group<br>Links and Buttons<br>Reactions<br>Show More / Collapsible<br>Tooltip<br>Popover | done |
 | `button` | 17 | Size<br>Default<br>Outline<br>Secondary<br>Ghost<br>Destructive<br>Link<br>Icon<br>With Icon<br>Rounded<br>Spinner<br>Button Group<br>As Child<br>RTL | done |
 | `button-group` | 2 | Orientation<br>Size<br>Nested<br>Separator<br>Split<br>Input<br>Input Group<br>Dropdown Menu<br>Select<br>Popover<br>RTL | todo (missing: Orientation, Size, Nested, Separator, Split, Input, Input Group, Dropdown Menu, Select, Popover, RTL) |
 | `calendar` | 4 | Persian / Hijri / Jalali Calendar<br>Basic<br>Range Calendar<br>Month and Year Selector<br>Presets<br>Date and Time Picker<br>Booked dates<br>Custom Cell Size<br>Week Numbers<br>RTL | todo (missing: Persian / Hijri / Jalali Calendar, Basic, Range Calendar, Month and Year Selector, Presets, Date and Time Picker, Booked dates, Custom Cell Size, Week Numbers, RTL) |
