@@ -341,7 +341,7 @@ A shadcn-styled Chart component for Foldkit.
 
 Source: `src/ui/chart.ts`
 
-Examples: Monthly revenue, Traffic trend, ECharts lifecycle, Lifecycle states, Area chart, Bar chart, Line chart, Pie chart, Radar chart, Radial chart
+Examples: Demo, Your First Chart, Tooltip, RTL, Monthly revenue, Traffic trend, ECharts lifecycle, Lifecycle states, Area chart, Bar chart, Line chart, Pie chart, Radar chart, Radial chart
 
 - `EChartProps<Msg> = Omit<ECharts.ChartProps<Msg>, 'accessibleAlternative'> & Readonly<{ accessibleAlternative: Html }>` (type)
 - `ChartMessage = ECharts.ChartMessage` (type)

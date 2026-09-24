@@ -77,7 +77,7 @@ export const COMPONENTS = [
   'Typography',
 ] as const;
 
-const toSlug = (name: string): string =>
+export const toSlug = (name: string): string =>
   name.toLowerCase().replaceAll(' ', '-');
 
 export const componentTitle = (slug: string): string | undefined =>
@@ -85,6 +85,9 @@ export const componentTitle = (slug: string): string | undefined =>
 
 export type ExampleConfig<Msg> = Readonly<{
   title: string;
+  /** DOM anchor id override; defaults to the title slug. Needed when two
+     sections share a title. */
+  sectionId?: string;
   description?: string;
   preview: Html;
   code: string;
@@ -187,13 +190,16 @@ export const example = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   return h.section(
-    [h.Id(toSlug(config.title)), h.Class('scroll-mt-24 space-y-4')],
+    [
+      h.Id(config.sectionId ?? toSlug(config.title)),
+      h.Class('scroll-mt-24 space-y-4'),
+    ],
     [
       h.div(
         [h.Class('space-y-1.5')],
         [
           heading<Msg>(
-            toSlug(config.title),
+            config.sectionId ?? toSlug(config.title),
             config.title,
             'text-xl font-semibold tracking-tight text-balance',
             h,
@@ -212,7 +218,12 @@ export const example = <Msg>(
               ]),
         ],
       ),
-      exampleCard(config, toSlug(config.title), config.title, h),
+      exampleCard(
+        config,
+        config.sectionId ?? toSlug(config.title),
+        config.title,
+        h,
+      ),
     ],
   );
 };
@@ -422,7 +433,7 @@ export type ComponentPageConfig<Msg> = Readonly<{
   heroExample?: Html;
   apiHref: string;
   composition?: string;
-  exampleTitles?: ReadonlyArray<string>;
+  exampleTitles?: ReadonlyArray<readonly [id: string, title: string]>;
   copiedCode?: string | null;
   onCopyCode?: (code: string) => Msg;
   dark?: boolean;
@@ -503,9 +514,7 @@ export const componentPage = <Msg>(
     ...(config.composition === undefined
       ? []
       : [['composition', 'Composition'] as const]),
-    ...(config.exampleTitles ?? []).map(
-      (title) => [toSlug(title), title] as const,
-    ),
+    ...(config.exampleTitles ?? []),
     ...(config.styling === undefined ? [] : [['styling', 'Styling'] as const]),
     ...(config.keyboard === undefined
       ? []

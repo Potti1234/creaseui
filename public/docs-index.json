@@ -1021,6 +1021,10 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
+        "Demo",
+        "Your First Chart",
+        "Tooltip",
+        "RTL",
         "Monthly revenue",
         "Traffic trend",
         "ECharts lifecycle",

@@ -5,7 +5,7 @@ import { Command, Subscription } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 import { defineView } from 'foldkit/submodel';
 
-import { componentPage, componentTitle, example, hero } from '@/docs/component-page';
+import { componentPage, componentTitle, example, hero, toSlug } from '@/docs/component-page';
 import * as CopyFeedback from '@/docs/copy-feedback';
 import * as CodeFile from '@/lib/code-file';
 import type {
@@ -306,6 +306,9 @@ export const view = (
           return example<Message>(
             {
               title: config.title,
+              ...(config.sectionId === undefined
+                ? {}
+                : { sectionId: config.sectionId }),
               ...(config.description === undefined
                 ? {}
                 : { description: config.description }),
@@ -378,7 +381,7 @@ export const view = (
       codeFileMessage: (message) => GotCodeFileMessage({ message }),
       exampleTitles: authoredExamples
         .filter((example) => example.heroOnly !== true)
-        .map((example) => example.title),
+        .map((example) => [example.sectionId ?? toSlug(example.title), example.title] as const),
       ...(heroExample === undefined ? {} : { heroExample }),
       sidebarScrolled: CopyFeedback.Message.ObservedDocsSidebarScroll(),
       renderer: model.renderer,

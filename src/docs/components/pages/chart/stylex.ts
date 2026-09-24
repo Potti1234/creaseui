@@ -3,17 +3,40 @@ import type { EChartsOption } from 'echarts/types/dist/shared';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { chartData, chartFamilyHostId, chartFamilyKinds, chartFamilyOption, chartFixtures, isChartFamilyKind, chartHostId } from '@/docs/components/pages/chart/shared';
+import { chartData, chartFamilyHostId, chartFamilyKinds, chartFamilyOption, chartFixtures, chartUpstreamHostId, chartUpstreamKinds, chartUpstreamOption, demoTotals, isChartFamilyKind, isChartUpstreamKind, chartHostId } from '@/docs/components/pages/chart/shared';
+import * as Card from '@/stylex/card';
 import * as Chart from '@/stylex/chart';
 import * as Table from '@/stylex/table';
 
 Chart.registerChart(chartHostId, (theme, variant): EChartsOption => ({ grid: Chart.compactGrid(), series: [{ data: variant === 'quarter' ? [186, 305, 237, 314] : [186, 305, 237, 273, 209, 314], itemStyle: { color: theme.chart2 }, name: 'Revenue', type: 'bar' }], tooltip: Chart.shadcnTooltip(theme), xAxis: Chart.categoryAxis(theme, variant === 'quarter' ? ['Q1', 'Q2', 'Q3', 'Q4'] : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], { boundaryGap: true }), yAxis: Chart.valueAxis(theme, { showLabels: true }) }));
 for (const kind of chartFamilyKinds) Chart.registerChart(chartFamilyHostId(kind), theme => chartFamilyOption(kind, theme));
+for (const kind of chartUpstreamKinds) Chart.registerChart(chartUpstreamHostId(kind), (theme, variant) => chartUpstreamOption(kind, theme, variant));
 
 const styles = stylex.create({
   button: { borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: 1, paddingBlock: '0.5rem', paddingInline: '0.75rem', fontSize: '0.875rem' },
   chart: { maxWidth: '36rem' },
+  chartHost: { height: '16rem', width: '100%' },
+  demoRow: { display: 'flex', flexDirection: 'column' },
+  demoButtons: { display: 'flex' },
+  demoButton: { borderColor: 'var(--border)',
+ borderStyle: 'solid',
+ gap: '0.25rem',
+ paddingBlock: '0.75rem',
+ paddingInline: '1rem',
+ display: 'flex',
+ flexBasis: '0%',
+ flexDirection: 'column',
+ flexGrow: '1',
+ flexShrink: '1',
+ justifyContent: 'center',
+ textAlign: 'start',
+ borderTopWidth: 1, },
+  demoButtonActive: { backgroundColor: 'var(--muted)' },
+  demoButtonBorder: { borderLeftWidth: 1 },
+  demoLabel: { color: 'var(--muted-foreground)', fontSize: '0.75rem' },
+  demoTotal: { fontSize: '1.125rem', fontWeight: 700, lineHeight: 1 },
   frame: { gap: '0.75rem', display: 'grid', maxWidth: '36rem', width: '100%', },
+  row: { gap: '1rem', display: 'flex', flexWrap: 'wrap', },
   stack: { maxWidth: '36rem', width: '100%', },
 });
 
@@ -22,9 +45,27 @@ const table = <Msg>(h: HtmlBuilder<Msg>) => Table.table({ children: [Table.table
 const frame = <Msg>(children: ReadonlyArray<Html>, h: HtmlBuilder<Msg>): Html => h.div([h.Class(stylex.props(styles.frame).className ?? '')], children);
 
 export const chartStyleXPreview: StyleXExamplePreviewProvider = <Msg>(index: number, model: unknown, onMessageJson: (messageJson: string) => Msg, h: HtmlBuilder<Msg>) => {
-  const variant = (model as { variant: 'month' | 'quarter' }).variant;
+  const { variant, activeChart } = model as { variant: 'month' | 'quarter'; activeChart: 'desktop' | 'mobile' };
   const kind = chartFixtures[index]?.kind;
   const toMessage = (message: Chart.ChartMessage): Msg => onMessageJson(JSON.stringify(message));
+  if (kind === 'demo') return Card.card({ children: [
+    Card.cardHeader({ children: [
+      h.div([h.Class(stylex.props(styles.demoRow).className ?? '')], [
+        h.div([], [Card.cardTitle({ children: ['Bar Chart - Interactive'] }, h), Card.cardDescription({ children: ['Showing total visitors for the last 3 months'] }, h)]),
+        h.div([h.Class(stylex.props(styles.demoButtons).className ?? '')], (['desktop', 'mobile'] as const).map((key, buttonIndex) => h.button([h.Type('button'), h.DataAttribute('active', activeChart === key ? 'true' : 'false'), h.OnClick(onMessageJson(JSON.stringify({ _tag: 'ChangedSeries', series: key }))), h.Class(stylex.props(styles.demoButton, activeChart === key ? styles.demoButtonActive : undefined, buttonIndex === 1 ? styles.demoButtonBorder : undefined).className ?? '')], [h.span([h.Class(stylex.props(styles.demoLabel).className ?? '')], [key === 'desktop' ? 'Desktop' : 'Mobile']), h.span([h.Class(stylex.props(styles.demoTotal).className ?? '')], [demoTotals[key].toLocaleString()])]))),
+      ]),
+    ] }, h),
+    Card.cardContent({ children: [
+      h.div([h.Class(stylex.props(styles.chartHost).className ?? '')], [Chart.eChart({ accessibleAlternative: h.p([], ['Daily page views for April: desktop total 7,324, mobile total 7,250.']), ariaLabel: 'Bar chart of daily page views', hostId: chartUpstreamHostId('demo'), toMessage, variant: activeChart }, h)]),
+    ] }, h),
+  ] }, h);
+  if (kind === 'tooltip') return h.div([h.Class(stylex.props(styles.row).className ?? '')], [
+    Chart.chartTooltipContent({ config: { desktop: { label: 'Desktop', color: 'var(--chart-3)' } }, label: 'Page Views', items: [{ key: 'desktop', value: '12,486' }] }, h),
+    Chart.chartTooltipContent({ config: { chrome: { label: 'Chrome', color: 'var(--chart-3)' }, firefox: { label: 'Firefox', color: 'var(--chart-4)' } }, label: 'Browser', items: [{ key: 'chrome', value: '1,286' }, { key: 'firefox', value: '1,000' }] }, h),
+    Chart.chartTooltipContent({ config: { chrome: { label: 'Chrome', color: 'var(--chart-1)' } }, items: [{ key: 'chrome', value: '1,286' }] }, h),
+  ]);
+  if (kind === 'rtl') return h.div([h.Dir('rtl'), h.Class(stylex.props(styles.stack).className ?? '')], [Chart.eChart({ accessibleAlternative: h.p([], ['Bar chart of monthly desktop and mobile values.']), ariaLabel: 'Right-to-left bar chart example', hostId: chartUpstreamHostId('rtl'), toMessage }, h)]);
+  if (kind !== undefined && isChartUpstreamKind(kind)) return h.div([h.Class(stylex.props(styles.stack).className ?? '')], [Chart.eChart({ accessibleAlternative: h.p([], ['Bar chart of monthly desktop and mobile values.']), ariaLabel: 'Bar chart example', hostId: chartUpstreamHostId(kind), toMessage }, h)]);
   if (kind === 'bar-svg') return Chart.barChart({ layoutStyle: styles.chart, data: chartData }, h);
   if (kind === 'area-svg') return h.div([h.Class(stylex.props(styles.stack).className ?? '')], [Chart.areaChart({ data: chartData.map(item => item.value) }, h), Chart.chartLegend({ config: { visitors: { label: 'Visitors', color: 'var(--chart-2)' } } }, h)]);
   if (kind === 'lifecycle') {

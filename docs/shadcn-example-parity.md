@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 14 done · 47 todo · 3 crease-only
+Current: 15 done · 46 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -29,7 +29,7 @@ Current: 14 done · 47 todo · 3 crease-only
 | `calendar` | 10 | Persian / Hijri / Jalali Calendar<br>Basic<br>Range Calendar<br>Month and Year Selector<br>Presets<br>Date and Time Picker<br>Booked dates<br>Custom Cell Size<br>Week Numbers<br>RTL | todo (missing: Persian / Hijri / Jalali Calendar) |
 | `card` | 11 | Size<br>Spacing<br>Spacing<br>Image<br>RTL | done |
 | `carousel` | 8 | Sizes<br>Spacing<br>Orientation<br>API<br>Plugins<br>RTL | done |
-| `chart` | 12 | Your First Chart<br>Your First Chart<br>Your First Chart<br>Your First Chart<br>Your First Chart<br>Tooltip<br>RTL | todo (missing: Your First Chart, Your First Chart, Your First Chart, Your First Chart, Your First Chart, Tooltip, RTL) |
+| `chart` | 25 | Your First Chart<br>Your First Chart<br>Your First Chart<br>Your First Chart<br>Your First Chart<br>Tooltip<br>RTL | done |
 | `checkbox` | 4 | Invalid State<br>Basic<br>Description<br>Disabled<br>Group<br>Table<br>RTL | todo (missing: Invalid State, Basic, Description, Group, Table, RTL) |
 | `collapsible` | 3 | Basic<br>Settings Panel<br>File Tree<br>RTL | todo (missing: Basic, Settings Panel, File Tree, RTL) |
 | `combobox` | 4 | Basic<br>Multiple<br>Clear Button<br>Groups<br>Custom Items<br>Invalid<br>Disabled<br>Auto Highlight<br>Popup<br>Input Group<br>RTL | todo (missing: Basic, Multiple, Clear Button, Groups, Custom Items, Invalid, Disabled, Auto Highlight, Popup, Input Group, RTL) |

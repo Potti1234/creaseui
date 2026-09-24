@@ -2660,6 +2660,47 @@ test("chart documents SVG recipes and the complete ECharts family showcase", asy
   await expect(page.locator("#lifecycle-states")).toBeVisible();
   await expect(page.locator("#chart-types")).toBeVisible();
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+
+  // Upstream sections: hero demo card + five "Your First Chart" tutorial steps +
+  // static tooltip showcase + RTL.
+  const heroDemo = page.locator('[aria-label="Demo preview"]').first();
+  await expect(
+    heroDemo.getByRole("heading", { name: "Bar Chart - Interactive" }),
+  ).toBeVisible();
+  await expect(heroDemo.getByRole("button", { name: /Desktop 7,324/ })).toBeVisible();
+  await expect(heroDemo.getByRole("button", { name: /Mobile 7,250/ })).toBeVisible();
+  await heroDemo.getByRole("button", { name: /Mobile 7,250/ }).click();
+  await expect(
+    heroDemo.getByRole("button", { name: /Mobile 7,250/ }),
+  ).toHaveAttribute("data-active", "true");
+  await expect(heroDemo.locator('[data-slot="echart"] canvas')).toHaveCount(1);
+
+  for (const step of [
+    "your-first-chart",
+    "your-first-chart-grid",
+    "your-first-chart-axis",
+    "your-first-chart-tooltip",
+    "your-first-chart-legend",
+  ]) {
+    const section = page.locator(`#${step}`);
+    await expect(section).toBeVisible();
+    await expect(
+      section.getByRole("heading", { name: "Your First Chart" }),
+    ).toBeVisible();
+    await expect(section.locator('[data-slot="echart"] canvas')).toHaveCount(1);
+  }
+  await expect(page.locator("#legend")).toHaveCount(0);
+  const tooltipSection = page.locator("#tooltip");
+  await expect(
+    tooltipSection.getByText("Page Views", { exact: true }).first(),
+  ).toBeVisible();
+  await expect(
+    tooltipSection.getByText("12,486").first(),
+  ).toBeVisible();
+  const rtlSection = page.locator("#rtl");
+  await expect(rtlSection.locator('[dir="rtl"]')).toHaveCount(1);
+  await expect(rtlSection.locator('[data-slot="echart"] canvas')).toHaveCount(1);
+
   const bars = page.locator("#monthly-revenue");
   const barChart = bars.getByRole("img", { name: "Bar chart" });
   await expect(barChart).toBeVisible();
@@ -2694,7 +2735,9 @@ test("chart documents SVG recipes and the complete ECharts family showcase", asy
 
   await page.getByRole("button", { name: "Tailwind", exact: true }).click();
   await expect(page.locator("#area-chart code")).toContainText("@/ui/chart");
-  await expect(page.locator('[id$="-chart"] [data-slot="echart"] canvas')).toHaveCount(6);
+  await expect(
+    page.locator('[id$="-chart"] [data-slot="echart"] canvas'),
+  ).toHaveCount(7);
 
   await page.goto("/docs/components/button");
   await expect.poll(() => page.evaluate(() => (window as Window & { __charts?: Map<string, unknown> }).__charts?.size ?? 0)).toBe(0);

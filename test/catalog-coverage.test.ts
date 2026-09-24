@@ -242,6 +242,7 @@ describe('component catalog coverage', () => {
       Array.from({ length: authoredPages['chart']!.definition.examples.length + 1 }, () => ({
         _docsPage: 'chart',
         variant: 'month',
+        activeChart: 'desktop',
       })),
     )
     assert.ok(!('dialog' in (chart.examples[0] ?? {})))
