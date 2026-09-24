@@ -144,8 +144,8 @@ Source: [`src/ui/bubble.ts`](../src/ui/bubble.ts)
 | `BubbleVariant` | type | `BubbleVariant = VariantProps<typeof bubbleVariants>['variant']` |
 | `bubbleGroup` | function | `bubbleGroup<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `bubble` | function | `bubble<Msg>(props: ChildrenProps & Readonly<{ variant?: BubbleVariant; align?: 'start' \| 'end' }>, h: HtmlBuilder<Msg>): Html` |
-| `bubbleContent` | function | `bubbleContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
-| `bubbleReactions` | function | `bubbleReactions<Msg>(props: ChildrenProps & Readonly<{ side?: 'top' \| 'bottom'; align?: 'start' \| 'end' }>, h: HtmlBuilder<Msg>): Html` |
+| `bubbleContent` | function | `bubbleContent<Msg>(props: ChildrenProps & Readonly<{ onClick?: Msg }>, h: HtmlBuilder<Msg>): Html` |
+| `bubbleReactions` | function | `bubbleReactions<Msg>(props: ChildrenProps & Readonly<{ side?: 'top' \| 'bottom'; align?: 'start' \| 'end'; ariaLabel?: string; }>, h: HtmlBuilder<Msg>): Html` |
 
 ## Button Group
 
@@ -155,7 +155,7 @@ Source: [`src/ui/button-group.ts`](../src/ui/button-group.ts)
 | --- | --- | --- |
 | `buttonGroupVariants` | value | `buttonGroupVariants: value` |
 | `ButtonGroupVariants` | type | `ButtonGroupVariants = VariantProps<typeof buttonGroupVariants>` |
-| `ButtonGroupProps` | type | `ButtonGroupProps = Readonly<{ children: ReadonlyArray<Html \| string>; orientation?: ButtonGroupVariants['orientation']; class?: string; }>` |
+| `ButtonGroupProps` | type | `ButtonGroupProps = Readonly<{ children: ReadonlyArray<Html \| string>; orientation?: ButtonGroupVariants['orientation']; class?: string; ariaLabel?: string; }>` |
 | `buttonGroup` | function | `buttonGroup<Msg>(props: ButtonGroupProps, h: HtmlBuilder<Msg>): Html` |
 | `ButtonGroupSeparatorProps` | type | `ButtonGroupSeparatorProps = Readonly<{ orientation?: 'horizontal' \| 'vertical'; class?: string; }>` |
 | `buttonGroupSeparator` | function | `buttonGroupSeparator<Msg>(props: ButtonGroupSeparatorProps = {}, h: HtmlBuilder<Msg>): Html` |

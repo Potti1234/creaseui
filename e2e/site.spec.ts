@@ -570,23 +570,131 @@ test("button preserves authored state and semantics across renderers", async ({ 
   ).toBeVisible();
 });
 
-test("button group preserves orientation and shared action state across renderers", async ({ page }) => {
+test("button-group sections mirror shadcn examples in both renderers", async ({ page }) => {
   await page.goto("/docs/components/button-group");
-  const horizontal = page.locator("#pagination-actions");
-  const current = horizontal.getByRole("button", { name: "Current (0)" });
-  await current.click();
-  await expect(horizontal.getByRole("button", { name: "Current (1)" })).toBeVisible();
-  await expect(horizontal.getByRole("group")).toHaveAttribute("data-orientation", "horizontal");
+
+  const hero = page.locator('[aria-label="Demo preview"]');
+  await expect(hero).toBeVisible();
+  await expect(hero.getByRole("button", { name: "Archive" })).toBeVisible();
+  await expect(hero.getByRole("button", { name: "Report" })).toBeVisible();
+  await expect(hero.getByRole("button", { name: "Snooze" })).toBeVisible();
+  await hero.getByRole("button", { name: "More Options" }).click();
+  await expect(
+    page.getByRole("menu").getByText("Mark as Read"),
+  ).toBeVisible();
+  await page.getByRole("menuitem", { name: /Label As/ }).hover();
+  await page.getByRole("menuitemradio", { name: "Work" }).click();
+  await page.keyboard.press("Escape");
+
+  for (const id of [
+    "orientation",
+    "size",
+    "nested",
+    "separator",
+    "split",
+    "input",
+    "input-group",
+    "dropdown-menu",
+    "select",
+    "popover",
+    "rtl",
+  ]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+
+  await expect(
+    page.locator("#orientation").getByRole("group"),
+  ).toHaveAttribute("data-orientation", "vertical");
+  await expect(
+    page.locator("#orientation").getByRole("group"),
+  ).toHaveAttribute("aria-label", "Media controls");
+
+  const size = page.locator("#size");
+  await expect(
+    size.locator("[data-slot=button-group]"),
+  ).toHaveCount(3);
+
+  const nested = page.locator("#nested");
+  await nested.locator("input[type='text']").fill("hello");
+  await nested.getByRole("button", { name: "Voice Mode" }).hover();
+  await expect(
+    page.getByText("Voice Mode").first(),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  const input = page.locator("#input");
+  await input.locator("input[type='text']").fill("query");
+  await expect(input.getByRole("button", { name: "Search" })).toBeVisible();
+
+  const inputGroup = page.locator("#input-group");
+  const voice = inputGroup.locator("button[aria-pressed]");
+  await expect(voice).toHaveAttribute("aria-pressed", "false");
+  await voice.click();
+  await expect(voice).toHaveAttribute("aria-pressed", "true");
+  await expect(inputGroup.locator("input[type='text']")).toBeDisabled();
+
+  const dropdown = page.locator("#dropdown-menu");
+  await dropdown.getByRole("button", { name: "Options" }).click();
+  await expect(
+    page.getByRole("menuitem", { name: /Mute Conversation/ }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("menuitem", { name: /Delete Conversation/ }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  const select = page.locator("#select");
+  await select.locator("button").first().click();
+  await page.getByRole("option", { name: /Euro/ }).click();
+  await select.locator("input[type='text']").fill("12.34");
+
+  const popover = page.locator("#popover");
+  await popover.getByRole("button", { name: "Open Popover" }).click();
+  await expect(
+    page.getByText("Start a new task with Copilot", { exact: true }),
+  ).toBeVisible();
+  await page.locator("textarea").fill("fix the flake", { force: false });
+  await page.keyboard.press("Escape");
+
+  const rtl = page.locator("#rtl");
+  await expect(rtl.locator("div[dir='rtl']").first()).toBeVisible();
+  await expect(
+    rtl.getByRole("button", { name: "أرشفة" }),
+  ).toBeVisible();
+  await rtl.getByRole("button", { name: "مزيد من الخيارات" }).click();
+  await expect(
+    page.getByRole("menuitem", { name: /سلة المهملات/ }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
 
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  await expect(horizontal).toBeVisible();
-  await expect(page.locator("#vertical-tools")).toBeVisible();
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(horizontal.locator("code")).toContainText("@/stylex/button-group");
-  await expect(horizontal.getByRole("button", { name: "Current (1)" })).toBeVisible();
-  await horizontal.getByRole("button", { name: "Next" }).click();
-  await expect(horizontal.getByRole("button", { name: "Current (2)" })).toBeVisible();
-  await expect(page.locator("#vertical-tools").getByRole("group")).toHaveAttribute("data-orientation", "vertical");
+  await expect(page.locator("#size code")).toContainText("@/stylex/button-group");
+  await expect(
+    page.locator("#orientation").getByRole("group"),
+  ).toHaveAttribute("data-orientation", "vertical");
+  const sxDropdown = page.locator("#dropdown-menu");
+  await sxDropdown.getByRole("button", { name: "Options" }).click();
+  await expect(
+    page.getByRole("menuitem", { name: /Mute Conversation/ }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+  const sxPopover = page.locator("#popover");
+  await sxPopover.getByRole("button", { name: "Open Popover" }).click();
+  await expect(
+    page.getByText("Start a new task with Copilot", { exact: true }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+  // the preview model persists across the renderer toggle, so the toggle
+  // may already be on — assert the click flips whatever state it's in
+  const sxVoice = page
+    .locator("#input-group")
+    .locator("button[aria-pressed]");
+  const before = await sxVoice.getAttribute("aria-pressed");
+  await sxVoice.click();
+  await expect(sxVoice).toHaveAttribute(
+    "aria-pressed",
+    before === "true" ? "false" : "true",
+  );
 });
 
 test("authored tabs keep child instances and selected values independent", async ({
@@ -2066,7 +2174,9 @@ test("bubble sections mirror shadcn examples in both renderers", async ({ page }
   const hero = page.locator('[aria-label="Demo preview"]');
   await expect(hero).toBeVisible();
   await expect(hero.locator("[data-slot=bubble]").first()).toBeVisible();
-  await expect(hero.getByText("Hey there!")).toBeVisible();
+  await expect(
+    hero.locator("[data-slot=bubble-content]", { hasText: "Hey there!" }),
+  ).toBeVisible();
   await expect(
     hero.locator('[aria-label="Reactions: thumbs up, fire, eyes, and 2 more"]'),
   ).toBeVisible();
@@ -2086,20 +2196,22 @@ test("bubble sections mirror shadcn examples in both renderers", async ({ page }
   const variants = page.locator('[id="variants"]');
   await expect(variants.locator("[data-slot=bubble]")).toHaveCount(7);
   await expect(variants.locator("[data-variant=tinted]")).toContainText(
-    "no console errors",
+    "This one is tinted",
   );
   await expect(variants.locator("[data-variant=ghost]")).toContainText(
     "markdown",
   );
 
   const alignment = page.locator('[id="alignment"]');
-  await expect(alignment.locator("[data-align=start]")).toContainText("Lunch");
-  await expect(alignment.locator("[data-align=end]")).toContainText("Lunch");
+  await expect(alignment.locator("[data-align=start]")).toContainText(
+    "aligned to the start",
+  );
+  await expect(alignment.locator("[data-align=end]")).toContainText(
+    "aligned to the end",
+  );
 
   const group = page.locator('[id="bubble-group"]');
-  await expect(
-    group.locator('[aria-label="Reaction: fire"]'),
-  ).toBeVisible();
+  await expect(group.locator("[data-slot=bubble-group]")).toBeVisible();
   await expect(
     group.locator('[aria-label="Reactions: eyes"]'),
   ).toBeVisible();
@@ -2122,12 +2234,20 @@ test("bubble sections mirror shadcn examples in both renderers", async ({ page }
   ).toBeVisible();
 
   const collapsible = page.locator('[id="show-more-/-collapsible"]');
-  await expect(collapsible).toContainText("really weird things happened");
-  const toggle = collapsible.getByRole("button", { name: "Show more" });
+  const collapsibleBody = collapsible
+    .locator("[data-slot=bubble-content]")
+    .nth(1);
+  await expect(collapsibleBody).toContainText("focusable control...");
+  await expect(collapsibleBody).not.toContainText("focus treatment later");
+  const toggle = collapsible.locator("button[aria-expanded]");
   await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await expect(toggle).toHaveText("Show more");
   await toggle.click();
   await expect(toggle).toHaveAttribute("aria-expanded", "true");
-  await expect(collapsible.getByRole("button", { name: "Show less" })).toBeVisible();
+  await expect(
+    collapsible.getByRole("button", { name: "Show less", exact: true }),
+  ).toBeVisible();
+  await expect(collapsibleBody).toContainText("focus treatment later");
 
   const tooltipSection = page.locator('[id="tooltip"]');
   await tooltipSection
@@ -2142,7 +2262,7 @@ test("bubble sections mirror shadcn examples in both renderers", async ({ page }
     .getByRole("button", { name: "Show error details" })
     .click();
   await expect(
-    page.getByText("Command failed with exit code 1"),
+    page.getByText("Command failed with exit code 1", { exact: true }),
   ).toBeVisible();
   await page.keyboard.press("Escape");
 
@@ -2152,13 +2272,13 @@ test("bubble sections mirror shadcn examples in both renderers", async ({ page }
   );
   await expect(
     page.locator('[id="variants"]').locator("[data-variant=tinted]"),
-  ).toContainText("no console errors");
+  ).toContainText("This one is tinted");
   const sxPopover = page.locator('[id="popover"]');
   await sxPopover
     .getByRole("button", { name: "Show error details" })
     .click();
   await expect(
-    page.getByText("Command failed with exit code 1"),
+    page.getByText("Command failed with exit code 1", { exact: true }),
   ).toBeVisible();
   await page.keyboard.press("Escape");
   const sxLinkButton = page.locator('[id="links-and-buttons"]');

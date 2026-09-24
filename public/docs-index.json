@@ -595,9 +595,16 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Conversation",
-        "Reaction",
-        "Error"
+        "Demo",
+        "Variants",
+        "Alignment",
+        "Bubble Group",
+        "Links and Buttons",
+        "Reactions",
+        "Show More / Collapsible",
+        "Tooltip",
+        "Popover",
+        "Command failed with exit code 1"
       ],
       "api": [
         {
@@ -623,12 +630,12 @@
         {
           "name": "bubbleContent",
           "kind": "function",
-          "signature": "bubbleContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html"
+          "signature": "bubbleContent<Msg>(props: ChildrenProps & Readonly<{ onClick?: Msg }>, h: HtmlBuilder<Msg>): Html"
         },
         {
           "name": "bubbleReactions",
           "kind": "function",
-          "signature": "bubbleReactions<Msg>(props: ChildrenProps & Readonly<{ side?: 'top' | 'bottom'; align?: 'start' | 'end' }>, h: HtmlBuilder<Msg>): Html"
+          "signature": "bubbleReactions<Msg>(props: ChildrenProps & Readonly<{ side?: 'top' | 'bottom'; align?: 'start' | 'end'; ariaLabel?: string; }>, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },
@@ -645,8 +652,18 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Pagination actions",
-        "Vertical tools"
+        "Demo",
+        "Orientation",
+        "Size",
+        "Nested",
+        "Separator",
+        "Split",
+        "Input",
+        "Input Group",
+        "Dropdown Menu",
+        "Select",
+        "Popover",
+        "RTL"
       ],
       "api": [
         {
@@ -662,7 +679,7 @@
         {
           "name": "ButtonGroupProps",
           "kind": "type",
-          "signature": "ButtonGroupProps = Readonly<{ children: ReadonlyArray<Html | string>; orientation?: ButtonGroupVariants['orientation']; class?: string; }>"
+          "signature": "ButtonGroupProps = Readonly<{ children: ReadonlyArray<Html | string>; orientation?: ButtonGroupVariants['orientation']; class?: string; ariaLabel?: string; }>"
         },
         {
           "name": "buttonGroup",

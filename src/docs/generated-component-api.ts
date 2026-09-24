@@ -421,12 +421,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "bubbleContent",
       "kind": "function",
-      "signature": "bubbleContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html"
+      "signature": "bubbleContent<Msg>(props: ChildrenProps & Readonly<{ onClick?: Msg }>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "bubbleReactions",
       "kind": "function",
-      "signature": "bubbleReactions<Msg>(props: ChildrenProps & Readonly<{ side?: 'top' | 'bottom'; align?: 'start' | 'end' }>, h: HtmlBuilder<Msg>): Html"
+      "signature": "bubbleReactions<Msg>(props: ChildrenProps & Readonly<{ side?: 'top' | 'bottom'; align?: 'start' | 'end'; ariaLabel?: string; }>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "button-group": [
@@ -443,7 +443,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ButtonGroupProps",
       "kind": "type",
-      "signature": "ButtonGroupProps = Readonly<{ children: ReadonlyArray<Html | string>; orientation?: ButtonGroupVariants['orientation']; class?: string; }>"
+      "signature": "ButtonGroupProps = Readonly<{ children: ReadonlyArray<Html | string>; orientation?: ButtonGroupVariants['orientation']; class?: string; ariaLabel?: string; }>"
     },
     {
       "name": "buttonGroup",

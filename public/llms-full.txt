@@ -235,14 +235,14 @@ A shadcn-styled Bubble component for Foldkit.
 
 Source: `src/ui/bubble.ts`
 
-Examples: Conversation, Reaction, Error
+Examples: Demo, Variants, Alignment, Bubble Group, Links and Buttons, Reactions, Show More / Collapsible, Tooltip, Popover, Command failed with exit code 1
 
 - `bubbleVariants: value` (value)
 - `BubbleVariant = VariantProps<typeof bubbleVariants>['variant']` (type)
 - `bubbleGroup<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 - `bubble<Msg>(props: ChildrenProps & Readonly<{ variant?: BubbleVariant; align?: 'start' | 'end' }>, h: HtmlBuilder<Msg>): Html` (function)
-- `bubbleContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
-- `bubbleReactions<Msg>(props: ChildrenProps & Readonly<{ side?: 'top' | 'bottom'; align?: 'start' | 'end' }>, h: HtmlBuilder<Msg>): Html` (function)
+- `bubbleContent<Msg>(props: ChildrenProps & Readonly<{ onClick?: Msg }>, h: HtmlBuilder<Msg>): Html` (function)
+- `bubbleReactions<Msg>(props: ChildrenProps & Readonly<{ side?: 'top' | 'bottom'; align?: 'start' | 'end'; ariaLabel?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Button Group
 
@@ -250,11 +250,11 @@ A shadcn-styled Button Group component for Foldkit.
 
 Source: `src/ui/button-group.ts`
 
-Examples: Pagination actions, Vertical tools
+Examples: Demo, Orientation, Size, Nested, Separator, Split, Input, Input Group, Dropdown Menu, Select, Popover, RTL
 
 - `buttonGroupVariants: value` (value)
 - `ButtonGroupVariants = VariantProps<typeof buttonGroupVariants>` (type)
-- `ButtonGroupProps = Readonly<{ children: ReadonlyArray<Html | string>; orientation?: ButtonGroupVariants['orientation']; class?: string; }>` (type)
+- `ButtonGroupProps = Readonly<{ children: ReadonlyArray<Html | string>; orientation?: ButtonGroupVariants['orientation']; class?: string; ariaLabel?: string; }>` (type)
 - `buttonGroup<Msg>(props: ButtonGroupProps, h: HtmlBuilder<Msg>): Html` (function)
 - `ButtonGroupSeparatorProps = Readonly<{ orientation?: 'horizontal' | 'vertical'; class?: string; }>` (type)
 - `buttonGroupSeparator<Msg>(props: ButtonGroupSeparatorProps = {}, h: HtmlBuilder<Msg>): Html` (function)
