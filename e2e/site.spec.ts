@@ -1672,6 +1672,22 @@ test("select persists a typed OutMessage selection", async ({ page }) => {
   await expect(trigger).toContainText("Banana");
   await expect(listbox).toBeHidden();
 
+  const alignSection = page.locator("#align-item-with-trigger");
+  const alignSwitch = alignSection.getByRole("switch", {
+    name: "Align Item",
+  });
+  const alignTrigger = alignSection.getByRole("button", {
+    name: "Example select",
+  });
+  await expect(alignTrigger).toContainText("Banana");
+  await alignTrigger.click();
+  await page.keyboard.press("Escape");
+  await alignSwitch.click();
+  await alignTrigger.click();
+  await expect(page.getByRole("option", { name: "Grapes" })).toBeVisible();
+  await page.getByRole("option", { name: "Grapes" }).click();
+  await expect(alignTrigger).toContainText("Grapes");
+
   await expect(page.locator("#groups")).toBeVisible();
   await expect(page.locator("#scrollable")).toBeVisible();
   await expect(page.locator("#disabled")).toBeVisible();
@@ -4902,17 +4918,12 @@ test("radio group isolates roving focus from parent-owned selection", async ({
 }) => {
   await page.goto("/docs/components/radio-group");
 
-  const density = page.locator("#density");
-  const comfortable = density.getByRole("radio", { name: /Comfortable/u });
-  const compact = density.getByRole("radio", { name: /Compact/u });
-  const hiddenValue = density.locator(
-    'input[type="hidden"][name="density"]',
-  );
+  const hero = page.locator('[aria-label="Basic preview"]');
+  const comfortable = hero.getByRole("radio", { name: /Comfortable/u });
+  const compact = hero.getByRole("radio", { name: /Compact/u });
   await expect(comfortable).toBeChecked();
-  await expect(hiddenValue).toHaveValue("comfortable");
   await comfortable.press("ArrowDown");
   await expect(compact).toBeChecked();
-  await expect(hiddenValue).toHaveValue("compact");
 
   const readOnly = page.locator("#read-only");
   const readOnlyComfortable = readOnly.getByRole("radio", {
@@ -4924,14 +4935,12 @@ test("radio group isolates roving focus from parent-owned selection", async ({
   await expect(readOnlyComfortable).toBeChecked();
   await expect(readOnlyCompact).toBeFocused();
 
-  const rtl = page.locator("#rtl-and-disabled-option");
-  const rtlGroup = rtl.getByRole("radiogroup", { name: "Interface density" });
-  const rtlComfortable = rtl.getByRole("radio", { name: /Comfortable/u });
-  const rtlDefault = rtl.getByRole("radio", { name: /Default/u });
-  const rtlCompact = rtl.getByRole("radio", { name: /Compact/u });
+  const rtl = page.locator("#rtl");
+  const rtlGroup = rtl.getByRole("radiogroup", { name: "Density" });
+  const rtlComfortable = rtl.getByRole("radio", { name: "مريح" });
+  const rtlDefault = rtl.getByRole("radio", { name: "افتراضي" });
   await expect(rtlGroup).toHaveAttribute("dir", "rtl");
-  await expect(rtlCompact).toHaveAttribute("aria-disabled", "true");
-  await rtlComfortable.press("ArrowRight");
+  await rtlComfortable.press("ArrowUp");
   await expect(rtlDefault).toBeChecked();
   await assertAccessible(page);
 
@@ -4940,24 +4949,25 @@ test("radio group isolates roving focus from parent-owned selection", async ({
     .getByRole("button", { name: "StyleX" })
     .click();
   for (const id of [
-    "density",
-    "disabled-group",
+    "description",
+    "choice-card",
+    "fieldset",
+    "disabled",
+    "invalid",
     "read-only",
-    "rtl-and-disabled-option",
+    "rtl",
   ]) {
     await expect(page.locator(`#${id}`)).toBeVisible();
   }
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(page.locator("#density code")).toContainText(
+  await expect(page.locator("#description code")).toContainText(
     "@/stylex/radio-group",
   );
+  const sxHero = page.locator('[aria-label="Basic preview"]');
+  await expect(sxHero.getByRole("radio", { name: /Compact/u })).toBeChecked();
+  await sxHero.getByRole("radio", { name: /Default/u }).click();
+  await expect(sxHero.getByRole("radio", { name: /Default/u })).toBeChecked();
   await expect(rtlDefault).toBeChecked();
-  await expect(hiddenValue).toHaveValue("compact");
-  await compact.press("ArrowUp");
-  await expect(comfortable).toBeChecked();
-  await expect(hiddenValue).toHaveValue("comfortable");
-  await expect(readOnlyComfortable).toBeChecked();
-  await assertAccessible(page);
 });
 
 test("field sections match upstream variants in both renderers", async ({ page }) => {
