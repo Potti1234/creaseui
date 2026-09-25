@@ -605,7 +605,7 @@ Source: [`src/ui/input-otp.ts`](../src/ui/input-otp.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `InputOtpProps` | type | `InputOtpProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; length?: number; name?: string; ariaLabel?: string; isDisabled?: boolean; isInvalid?: boolean; class?: string; groupClass?: string; /** Pattern accepted by the control…` |
+| `InputOtpProps` | type | `InputOtpProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; length?: number; name?: string; ariaLabel?: string; isDisabled?: boolean; isInvalid?: boolean; isRequired?: boolean; class?: string; groupClass?: string; /** Pattern a…` |
 | `inputOtp` | function | `inputOtp<Msg>(props: InputOtpProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `inputOtpSeparator` | function | `inputOtpSeparator<Msg>(h: HtmlBuilder<Msg>): Html` |
 

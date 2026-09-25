@@ -1,32 +1,186 @@
-import type { HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { inputOtpAriaLabel } from '@/docs/components/pages/input-otp/shared';
+import {
+  inputOtpFixtures,
+  inputOtpRtlCopy,
+} from '@/docs/components/pages/input-otp/shared';
+import * as Icon from '@/lib/icon';
+import * as Button from '@/stylex/button';
+import * as Card from '@/stylex/card';
+import * as Field from '@/stylex/field';
 import * as InputOtp from '@/stylex/input-otp';
+import { className } from '@/stylex/style';
+
+const styles = stylex.create({
+  stack: { display: 'grid', gap: '0.5rem' },
+  status: { fontSize: '0.875rem', textAlign: 'center' },
+  row: { display: 'flex', alignItems: 'center', justifyContent: 'space-between' },
+  submit: { width: '100%' },
+  support: { fontSize: '0.875rem', color: 'var(--muted-foreground)' },
+  link: { textDecorationLine: 'underline', textUnderlineOffset: '4px' },
+  card: { marginInline: 'auto', maxWidth: '28rem' },
+  medium: { fontWeight: 500 },
+  fieldFit: { width: 'fit-content' },
+  fieldRtl: { marginInline: 'auto', maxWidth: '20rem' },
+});
+
+interface InputOtpPreviewShape {
+  readonly values: { readonly [key: string]: string };
+}
 
 export const inputOtpStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
-  exampleIndex: number,
+  index: number,
   model: unknown,
-  onMessageJson: (messageJson: string) => Msg,
+  onMessageJson: (json: string) => Msg,
   h: HtmlBuilder<Msg>,
-) => InputOtp.inputOtp({
-  id: `docs-input-otp-${String(exampleIndex)}`,
-  value: (model as { value: string }).value,
-  onInput: value => onMessageJson(JSON.stringify({
-    _tag: 'ChangedTextDocsPreview',
-    value,
-  })),
-  length: 6,
-  ariaLabel: inputOtpAriaLabel(exampleIndex),
-  ...(exampleIndex === 1
-    ? {
-        separator: (slot: number) =>
-          slot === 2
-            ? InputOtp.inputOtpSeparator(h)
-            : h.span([], []),
-      }
-    : {}),
-  ...(exampleIndex === 2
-    ? { pattern: /[A-Z0-9]/u, inputMode: 'text' as const }
-    : {}),
-}, h);
+): Html => {
+  const fixture = inputOtpFixtures[index] ?? inputOtpFixtures[0];
+  const m = model as InputOtpPreviewShape;
+
+  const changed = (field: string, value: string): Msg =>
+    onMessageJson(JSON.stringify({ _tag: 'ChangedOtpValue', field, value }));
+
+  const otp = (
+    key: string,
+    id: string,
+    extras: Partial<Parameters<typeof InputOtp.inputOtp<Msg>>[0]> = {},
+  ): Html =>
+    InputOtp.inputOtp({
+      id,
+      value: m.values[key] ?? '',
+      onInput: value => changed(key, value),
+      ...extras,
+    }, h);
+
+  const lbl = (forId: string, text: string): Html =>
+    Field.fieldLabel({ for: forId, children: [text] }, h);
+
+  const sep2 = (index: number): Html =>
+    index === 2 ? InputOtp.inputOtpSeparator(h) : h.span([], []);
+  const sep13 = (index: number): Html =>
+    index === 1 || index === 3 ? InputOtp.inputOtpSeparator(h) : h.span([], []);
+
+  switch (fixture.kind) {
+    case 'demo':
+      return otp('basic', 'otp-basic', { ariaLabel: 'Verification code' });
+    case 'pattern':
+      return Field.field({
+        layoutStyle: styles.fieldFit,
+        children: [
+          lbl('digits-only', 'Digits Only'),
+          otp('pattern', 'digits-only', { pattern: /[0-9]/, ariaLabel: 'Digits only code' }),
+        ],
+      }, h);
+    case 'separator':
+      return otp('separator', 'otp-separator', {
+        ariaLabel: 'Grouped code',
+        separator: sep13,
+      });
+    case 'disabled':
+      return otp('disabled', 'otp-disabled', {
+        isDisabled: true,
+        ariaLabel: 'Verification code',
+        separator: sep2,
+      });
+    case 'controlled':
+      return h.div([h.Class(className(styles.stack))], [
+        otp('controlled', 'otp-controlled', { ariaLabel: 'One-time password' }),
+        h.p([h.Class(className(styles.status))], [
+          m.values['controlled'] === undefined || m.values['controlled'] === ''
+            ? 'Enter your one-time password.'
+            : `You entered: ${m.values['controlled'] ?? ''}`,
+        ]),
+      ]);
+    case 'invalid':
+      return otp('invalid', 'otp-invalid', {
+        isInvalid: true,
+        ariaLabel: 'Verification code',
+        separator: sep13,
+      });
+    case 'fourDigits':
+      return otp('fourDigits', 'otp-four-digits', {
+        length: 4,
+        pattern: /[0-9]/,
+        ariaLabel: 'Four digit code',
+      });
+    case 'alphanumeric':
+      return otp('alphanumeric', 'otp-alphanumeric', {
+        pattern: /[A-Z0-9]/,
+        inputMode: 'text',
+        ariaLabel: 'Invite code',
+        separator: sep2,
+      });
+    case 'form':
+      return Card.card({
+        layoutStyle: styles.card,
+        children: [
+          Card.cardHeader({
+            children: [
+              Card.cardTitle({ children: ['Verify your login'] }, h),
+              Card.cardDescription({
+                children: [
+                  'Enter the verification code we sent to your email address: ',
+                  h.span([h.Class(className(styles.medium))], ['m@example.com']),
+                  '.',
+                ],
+              }, h),
+            ],
+          }, h),
+          Card.cardContent({
+            children: [
+              Field.field({
+                children: [
+                  h.div([h.Class(className(styles.row))], [
+                    lbl('otp-verification', 'Verification code'),
+                    Button.button({
+                      variant: 'outline',
+                      size: 'xs',
+                      children: [Icon.icon('refresh-cw', {}, h), 'Resend Code'],
+                    }, h),
+                  ]),
+                  otp('form', 'otp-verification', {
+                    ariaLabel: 'Verification code',
+                    isRequired: true,
+                    slotSize: 'lg',
+                    separator: sep2,
+                  }),
+                  Field.fieldDescription({
+                    children: [
+                      h.a([h.Href('#')], ['I no longer have access to this email address.']),
+                    ],
+                  }, h),
+                ],
+              }, h),
+            ],
+          }, h),
+          Card.cardFooter({
+            children: [
+              Field.field({
+                children: [
+                  Button.button({ type: 'submit', layoutStyle: styles.submit, children: ['Verify'] }, h),
+                  h.div([h.Class(className(styles.support))], [
+                    'Having trouble signing in? ',
+                    h.a([h.Href('#'), h.Class(className(styles.link))], ['Contact support']),
+                  ]),
+                ],
+              }, h),
+            ],
+          }, h),
+        ],
+      }, h);
+    case 'rtl': {
+      const t = inputOtpRtlCopy;
+      return h.div([h.Dir('rtl'), h.Class('contents')], [
+        Field.field({
+          layoutStyle: styles.fieldRtl,
+          children: [
+            lbl('input-otp-rtl', t.verificationCode),
+            otp('rtl', 'input-otp-rtl', { ariaLabel: t.verificationCode }),
+          ],
+        }, h),
+      ]);
+    }
+  }
+};

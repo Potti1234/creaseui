@@ -3031,27 +3031,6 @@ test("presentational helpers preserve native semantics and controlled OTP state"
   await page.locator('#input-label label[data-slot="label"]').click();
   await expect(email).toBeFocused();
 
-  await page.goto("/docs/components/input-otp");
-  const code = page.locator("#six-digit-code").getByRole("textbox", { name: "Verification code" });
-  await code.fill("12a345678");
-  await expect(code).toHaveValue("12345");
-  await code.fill("12345678");
-  await expect(code).toHaveValue("123456");
-  await expect(code).toHaveAttribute("autocomplete", "one-time-code");
-  await expect(page.locator("#six-digit-code [data-slot=\"input-otp-group\"]")).toHaveAttribute("aria-hidden", "true");
-
-  await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  for (const id of ["six-digit-code", "grouped-code", "alphanumeric"]) {
-    await expect(page.locator(`#${id}`)).toBeVisible();
-  }
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(page.locator("#six-digit-code code")).toContainText("@/stylex/input-otp");
-  await expect(code).toHaveValue("123456");
-  await code.fill("98x7654");
-  await expect(code).toHaveValue("98765");
-  const inviteCode = page.getByRole("textbox", { name: "Invite code" });
-  await inviteCode.fill("aZ-19");
-  await expect(inviteCode).toHaveValue("Z19");
 });
 
 test("data table filters and sorts through its interaction model", async ({
@@ -3304,12 +3283,6 @@ test("controlled helper pages own and update compact local preview state", async
   await expect(deploymentNotes).toHaveAttribute("readonly", "");
   await expect(deploymentNotes).toHaveAttribute("data-resize", "none");
 
-  await page.goto("/docs/components/input-otp");
-  const code = page
-    .locator("#six-digit-code")
-    .getByRole("textbox", { name: "Verification code" });
-  await code.fill("654321");
-  await expect(code).toHaveValue("654321");
 });
 
 test("input sections match upstream variants in both renderers", async ({ page }) => {
@@ -3535,6 +3508,111 @@ test("input-group sections match upstream variants in both renderers", async ({ 
   await expect(heroInput).toHaveValue("docs");
   await heroInput.fill("stylex-docs");
   await expect(heroInput).toHaveValue("stylex-docs");
+});
+
+test("input-otp sections match upstream variants in both renderers", async ({ page }) => {
+  await page.goto("/docs/components/input-otp");
+  for (const id of [
+    "pattern",
+    "separator",
+    "disabled",
+    "controlled",
+    "invalid",
+    "four-digits",
+    "alphanumeric",
+    "form",
+    "rtl",
+  ]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+
+  const hero = page.locator('[aria-label="Basic preview"]');
+  const heroOtp = hero.getByRole("textbox", { name: "Verification code" });
+  await expect(heroOtp).toHaveValue("123456");
+  await heroOtp.fill("65x432");
+  await expect(heroOtp).toHaveValue("65432");
+
+  const pattern = page.locator("#pattern");
+  await expect(pattern.getByText("Digits Only", { exact: true })).toBeVisible();
+  const digitsOnly = pattern.getByRole("textbox", { name: "Digits only code" });
+  await digitsOnly.fill("12a345");
+  await expect(digitsOnly).toHaveValue("12345");
+
+  const separator = page.locator("#separator");
+  await expect(
+    separator.locator("[data-slot='input-otp-separator']"),
+  ).toHaveCount(2);
+
+  const disabled = page.locator("#disabled");
+  await expect(
+    disabled.getByRole("textbox", { name: "Verification code" }),
+  ).toBeDisabled();
+  await expect(
+    disabled.getByRole("textbox", { name: "Verification code" }),
+  ).toHaveValue("123456");
+
+  const controlled = page.locator("#controlled");
+  const controlledOtp = controlled.getByRole("textbox", { name: "One-time password" });
+  await controlledOtp.fill("112233");
+  await expect(
+    controlled.getByText("You entered: 112233", { exact: true }),
+  ).toBeVisible();
+
+  const invalid = page.locator("#invalid");
+  await expect(
+    invalid.getByRole("textbox", { name: "Verification code" }),
+  ).toHaveAttribute("aria-invalid", "true");
+  await expect(
+    invalid.getByRole("textbox", { name: "Verification code" }),
+  ).toHaveValue("000000");
+
+  const fourDigits = page.locator("#four-digits");
+  const fourDigitOtp = fourDigits.getByRole("textbox", { name: "Four digit code" });
+  await fourDigitOtp.fill("987654");
+  await expect(fourDigitOtp).toHaveValue("9876");
+
+  const alphanumeric = page.locator("#alphanumeric");
+  const invite = alphanumeric.getByRole("textbox", { name: "Invite code" });
+  await invite.fill("aZ-19");
+  await expect(invite).toHaveValue("Z19");
+
+  const form = page.locator("#form");
+  await expect(form.getByText("Verify your login", { exact: true })).toBeVisible();
+  await expect(form.getByText("m@example.com", { exact: true })).toBeVisible();
+  await expect(
+    form.getByRole("textbox", { name: "Verification code" }),
+  ).toHaveAttribute("required", "");
+  await expect(
+    form.getByRole("button", { name: "Resend Code" }),
+  ).toBeVisible();
+  await expect(
+    form.getByRole("button", { name: "Verify" }),
+  ).toBeVisible();
+  await expect(
+    form.getByRole("link", { name: "I no longer have access to this email address." }),
+  ).toBeVisible();
+  await expect(
+    form.getByRole("link", { name: "Contact support" }),
+  ).toBeVisible();
+
+  const rtl = page.locator("#rtl");
+  await expect(rtl.locator("div[dir='rtl']").first()).toBeVisible();
+  await expect(
+    rtl.getByRole("textbox", { name: "رمز التحقق" }),
+  ).toHaveValue("123456");
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["pattern", "separator", "disabled", "controlled", "invalid", "four-digits", "alphanumeric", "form", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#pattern code")).toContainText("@/stylex/input-otp");
+  await expect(heroOtp).toHaveValue("65432");
+  await heroOtp.fill("12x345");
+  await expect(heroOtp).toHaveValue("12345");
+  await expect(
+    controlled.getByText("You entered: 112233", { exact: true }),
+  ).toBeVisible();
 });
 
 test("collapsible preserves controlled linkage, external changes, and disabled policy", async ({ page }) => {

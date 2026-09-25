@@ -2699,14 +2699,22 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Basic",
+        "Pattern",
+        "Separator",
+        "Disabled",
+        "Controlled",
+        "Invalid",
+        "Four Digits",
+        "Alphanumeric",
+        "Form",
+        "RTL"
       ],
       "api": [
         {
           "name": "InputOtpProps",
           "kind": "type",
-          "signature": "InputOtpProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; length?: number; name?: string; ariaLabel?: string; isDisabled?: boolean; isInvalid?: boolean; class?: string; groupClass?: string; /** Pattern accepted by the control…"
+          "signature": "InputOtpProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; length?: number; name?: string; ariaLabel?: string; isDisabled?: boolean; isInvalid?: boolean; isRequired?: boolean; class?: string; groupClass?: string; /** Pattern a…"
         },
         {
           "name": "inputOtp",
