@@ -1026,9 +1026,9 @@ A shadcn-styled Scroll Area component for Foldkit.
 
 Source: `src/ui/scroll-area.ts`
 
-Examples: Vertical, Horizontal
+Examples: Basic, Horizontal, RTL
 
-- `ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; orientation?: 'vertical' | 'horizontal' | 'both'; ariaLabel?: string; tabIndex?: number; }>` (type)
+- `ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; orientation?: 'vertical' | 'horizontal' | 'both'; direction?: 'ltr' | 'rtl'; ariaLabel?: string; tabIndex?: number; }>` (type)
 - `scrollArea<Msg>(props: ScrollAreaProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Select

@@ -853,7 +853,7 @@ Source: [`src/ui/scroll-area.ts`](../src/ui/scroll-area.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `ScrollAreaProps` | type | `ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html \| string>; orientation?: 'vertical' \| 'horizontal' \| 'both'; ariaLabel?: string; tabIndex?: number; }>` |
+| `ScrollAreaProps` | type | `ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html \| string>; orientation?: 'vertical' \| 'horizontal' \| 'both'; direction?: 'ltr' \| 'rtl'; ariaLabel?: string; tabIndex?: number; }>` |
 | `scrollArea` | function | `scrollArea<Msg>(props: ScrollAreaProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Select
