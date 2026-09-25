@@ -405,7 +405,7 @@ A shadcn-styled Combobox component for Foldkit.
 
 Source: `src/ui/combobox.ts`
 
-Examples: Demo, Basic, Clear Button, Groups, Custom Items, Invalid, Disabled, Input Group, RTL
+Examples: Demo, Basic, Multiple, Clear Button, Groups, Custom Items, Invalid, Disabled, Auto Highlight, Popup, Input Group, RTL
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -414,11 +414,18 @@ Examples: Demo, Basic, Clear Button, Groups, Custom Items, Invalid, Disabled, In
 - `OutMessage: value` (value)
 - `OutMessage<Value extends string = string> = ComboboxPrimitive.OutMessage<Value>` (type)
 - `init: value` (value)
+- `MultiModel: value` (value)
+- `multiInit: value` (value)
+- `MultiModel = typeof MultiModel.Type` (type)
+- `MultiOutMessage<Value extends string = string> = OutMessage<Value>` (type)
 - `ComboboxSize = 'sm' | 'default'` (type)
 - `ComboboxItemConfig = Readonly<{ content?: Html | string; searchText?: string; class?: string; isDisabled?: boolean; }>` (type)
 - `ComboboxProps<Item, Value extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Value>; restingInputValue: string; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToValue: (item: Item) => Value; itemToLa…` (type)
 - `ComboboxBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ComboboxPrimitive.create<Value>>['update']; combobox: <Item, Msg>(props: ComboboxProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` (type)
-- `create<Value extends string = string>(): ComboboxBundle<Value>` (function)
+- `create<Value extends string = string>(config?: Readonly<{ autoHighlight?: boolean }>): ComboboxBundle<Value>` (function)
+- `ComboboxMultiProps<Item, Value extends string, Msg> = Omit< ComboboxProps<Item, Value, Msg>, 'maybeSelectedValue' | 'restingInputValue' > & Readonly<{ /** The selection the parent owns; selecting an item toggles membership. */ selectedValues: ReadonlyArray<Va…` (type)
+- `ComboboxMultiBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ComboboxPrimitive.Multi.create<Value>>['update']; comboboxMulti: <Item, Msg>( props: ComboboxMultiProps<Item, Value, Msg>, h: HtmlBuilder<Msg>, ) => Html; }>` (type)
+- `createMulti<Value extends string = string>(config?: Readonly<{ autoHighlight?: boolean }>): ComboboxMultiBundle<Value>` (function)
 - `update: value` (value)
 - `combobox: value` (value)
 

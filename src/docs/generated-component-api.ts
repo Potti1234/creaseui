@@ -897,6 +897,26 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "init: value"
     },
     {
+      "name": "MultiModel",
+      "kind": "value",
+      "signature": "MultiModel: value"
+    },
+    {
+      "name": "multiInit",
+      "kind": "value",
+      "signature": "multiInit: value"
+    },
+    {
+      "name": "MultiModel",
+      "kind": "type",
+      "signature": "MultiModel = typeof MultiModel.Type"
+    },
+    {
+      "name": "MultiOutMessage",
+      "kind": "type",
+      "signature": "MultiOutMessage<Value extends string = string> = OutMessage<Value>"
+    },
+    {
       "name": "ComboboxSize",
       "kind": "type",
       "signature": "ComboboxSize = 'sm' | 'default'"
@@ -919,7 +939,22 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "create",
       "kind": "function",
-      "signature": "create<Value extends string = string>(): ComboboxBundle<Value>"
+      "signature": "create<Value extends string = string>(config?: Readonly<{ autoHighlight?: boolean }>): ComboboxBundle<Value>"
+    },
+    {
+      "name": "ComboboxMultiProps",
+      "kind": "type",
+      "signature": "ComboboxMultiProps<Item, Value extends string, Msg> = Omit< ComboboxProps<Item, Value, Msg>, 'maybeSelectedValue' | 'restingInputValue' > & Readonly<{ /** The selection the parent owns; selecting an item toggles membership. */ selectedValues: ReadonlyArray<Va…"
+    },
+    {
+      "name": "ComboboxMultiBundle",
+      "kind": "type",
+      "signature": "ComboboxMultiBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ComboboxPrimitive.Multi.create<Value>>['update']; comboboxMulti: <Item, Msg>( props: ComboboxMultiProps<Item, Value, Msg>, h: HtmlBuilder<Msg>, ) => Html; }>"
+    },
+    {
+      "name": "createMulti",
+      "kind": "function",
+      "signature": "createMulti<Value extends string = string>(config?: Readonly<{ autoHighlight?: boolean }>): ComboboxMultiBundle<Value>"
     },
     {
       "name": "update",

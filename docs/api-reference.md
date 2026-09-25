@@ -299,11 +299,18 @@ Source: [`src/ui/combobox.ts`](../src/ui/combobox.ts)
 | `OutMessage` | value | `OutMessage: value` |
 | `OutMessage` | type | `OutMessage<Value extends string = string> = ComboboxPrimitive.OutMessage<Value>` |
 | `init` | value | `init: value` |
+| `MultiModel` | value | `MultiModel: value` |
+| `multiInit` | value | `multiInit: value` |
+| `MultiModel` | type | `MultiModel = typeof MultiModel.Type` |
+| `MultiOutMessage` | type | `MultiOutMessage<Value extends string = string> = OutMessage<Value>` |
 | `ComboboxSize` | type | `ComboboxSize = 'sm' \| 'default'` |
 | `ComboboxItemConfig` | type | `ComboboxItemConfig = Readonly<{ content?: Html \| string; searchText?: string; class?: string; isDisabled?: boolean; }>` |
 | `ComboboxProps` | type | `ComboboxProps<Item, Value extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Value>; restingInputValue: string; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToValue: (item: Item) => Value; itemToLa…` |
 | `ComboboxBundle` | type | `ComboboxBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ComboboxPrimitive.create<Value>>['update']; combobox: <Item, Msg>(props: ComboboxProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` |
-| `create` | function | `create<Value extends string = string>(): ComboboxBundle<Value>` |
+| `create` | function | `create<Value extends string = string>(config?: Readonly<{ autoHighlight?: boolean }>): ComboboxBundle<Value>` |
+| `ComboboxMultiProps` | type | `ComboboxMultiProps<Item, Value extends string, Msg> = Omit< ComboboxProps<Item, Value, Msg>, 'maybeSelectedValue' \| 'restingInputValue' > & Readonly<{ /** The selection the parent owns; selecting an item toggles membership. */ selectedValues: ReadonlyArray<Va…` |
+| `ComboboxMultiBundle` | type | `ComboboxMultiBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ComboboxPrimitive.Multi.create<Value>>['update']; comboboxMulti: <Item, Msg>( props: ComboboxMultiProps<Item, Value, Msg>, h: HtmlBuilder<Msg>, ) => Html; }>` |
+| `createMulti` | function | `createMulti<Value extends string = string>(config?: Readonly<{ autoHighlight?: boolean }>): ComboboxMultiBundle<Value>` |
 | `update` | value | `update: value` |
 | `combobox` | value | `combobox: value` |
 

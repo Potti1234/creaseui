@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 57 done · 4 todo · 3 crease-only
+Current: 58 done · 3 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -32,7 +32,7 @@ Current: 57 done · 4 todo · 3 crease-only
 | `chart` | 25 | Your First Chart<br>Your First Chart<br>Your First Chart<br>Your First Chart<br>Your First Chart<br>Tooltip<br>RTL | done |
 | `checkbox` | 14 | Invalid State<br>Basic<br>Description<br>Disabled<br>Group<br>Table<br>RTL | done |
 | `collapsible` | 14 | Basic<br>Settings Panel<br>File Tree<br>RTL | done |
-| `combobox` | 9 | Basic<br>Multiple<br>Clear Button<br>Groups<br>Custom Items<br>Invalid<br>Disabled<br>Auto Highlight<br>Popup<br>Input Group<br>RTL | todo (missing: Multiple, Auto Highlight, Popup) |
+| `combobox` | 13 | Basic<br>Multiple<br>Clear Button<br>Groups<br>Custom Items<br>Invalid<br>Disabled<br>Auto Highlight<br>Popup<br>Input Group<br>RTL | done |
 | `command` | 7 | Basic<br>Shortcuts<br>Groups<br>Scrollable<br>RTL | done |
 | `context-menu` | 10 | Basic<br>Submenu<br>Shortcuts<br>Groups<br>Icons<br>Checkboxes<br>Radio<br>Destructive<br>RTL | done |
 | `data-table` | 4 | RTL | done |
