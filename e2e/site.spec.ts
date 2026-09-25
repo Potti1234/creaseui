@@ -1220,30 +1220,64 @@ test("sheet compound parts preserve focus and accessible structure", async ({
   page,
 }) => {
   await page.goto("/docs/components/sheet");
-  const example = page.locator("#compound-layout");
-  const trigger = example.getByRole("button", { name: "Open right sheet" });
+  const hero = page.locator('[aria-label="Basic preview"]');
+  const trigger = hero.getByRole("button", { name: "Open", exact: true });
 
   await trigger.click();
   const sheet = page.getByRole("dialog");
   await expect(sheet).toBeVisible();
-  await expect(sheet.getByRole("button", { name: "Cancel" })).toBeFocused();
+  await expect(
+    sheet.locator("[data-foldkit-dialog-initial-focus]"),
+  ).toBeFocused();
   await expect(sheet.locator('[data-slot="sheet-header"]')).toBeVisible();
   await expect(sheet.locator('[data-slot="sheet-title"]')).toHaveText(
     "Edit profile",
   );
   await expect(sheet.locator('[data-slot="sheet-footer"]')).toBeVisible();
-  await expect(example.locator("code")).toContainText("Sheet.open");
+  const nameInput = sheet.getByRole("textbox", { name: "Name", exact: true });
+  await nameInput.fill("Grace Hopper");
+  await expect(nameInput).toHaveValue("Grace Hopper");
+  await expect(hero.locator("code")).toContainText("Sheet.open");
 
   await page.keyboard.press("Escape");
   await expect(sheet).toBeHidden();
   await expect(trigger).toBeFocused();
 
-  await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  for (const id of ["compound-layout", "bottom-task", "top-sheet", "left-sheet"]) {
+  for (const id of ["side", "no-close-button", "rtl"]) {
     await expect(page.locator(`#${id}`)).toBeVisible();
   }
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(example.locator("code")).toContainText("@/stylex/sheet");
+
+  await page.locator("#side").getByRole("button", { name: "Left" }).click();
+  const sideSheet = page.getByRole("dialog");
+  await expect(sideSheet.locator('[data-slot="sheet-title"]')).toHaveText(
+    "Edit profile",
+  );
+  await page.keyboard.press("Escape");
+  await expect(sideSheet).toBeHidden();
+
+  await page.locator("#no-close-button").getByRole("button", { name: "Open Sheet" }).click();
+  const noClose = page.getByRole("dialog");
+  await expect(noClose.locator('[data-slot="sheet-title"]')).toHaveText(
+    "No Close Button",
+  );
+  await expect(noClose.locator('[data-slot="sheet-close"]')).toHaveCount(0);
+  await page.keyboard.press("Escape");
+  await expect(noClose).toBeHidden();
+
+  await page.locator("#rtl").getByRole("button", { name: "فتح" }).click();
+  const rtlSheet = page.getByRole("dialog");
+  await expect(rtlSheet.locator('[dir="rtl"]')).toBeVisible();
+  await expect(rtlSheet.locator('[data-slot="sheet-title"]')).toHaveText(
+    "تعديل الملف الشخصي",
+  );
+  await page.keyboard.press("Escape");
+  await expect(rtlSheet).toBeHidden();
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["side", "no-close-button", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#side code")).toContainText("@/stylex/sheet");
 });
 
 test("drawer documents its child model and preserves modal focus behavior", async ({
