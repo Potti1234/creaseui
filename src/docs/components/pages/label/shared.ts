@@ -70,6 +70,13 @@ const emitImports = (fixture: LabelFixture, isStyleX: boolean): string => {
   if (kindUsesLabel(fixture.kind)) {
     parts.push(`import * as Label from '@/${base}/label'`);
   }
+  if (fixture.kind === 'field') {
+    parts.push(
+      '',
+      `// @/${base}/label wraps inside @/${base}/field — FieldLabel is Label`,
+      `// applied to form fields; a bare Label import would be unused here.`,
+    );
+  }
   return parts.join('\n');
 };
 
