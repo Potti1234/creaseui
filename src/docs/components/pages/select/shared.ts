@@ -95,7 +95,7 @@ const rtlItems: ReadonlyArray<SelectItem> = [
 
 const wide = 'w-full max-w-48';
 
-export const selectFixtures: ReadonlyArray<SelectFixture> = [
+export const selectFixtures: Readonly<[SelectFixture, ...Array<SelectFixture>]> = [
   {
     title: 'Basic',
     heroOnly: true,
@@ -289,6 +289,6 @@ export const selectExamples = (
   selectFixtures.map(fixture => ({
     title: fixture.title,
     ...(fixture.description === undefined ? {} : { description: fixture.description }),
-    heroOnly: fixture.heroOnly,
+    ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitSource(fixture, renderer === 'stylex'),
   }));

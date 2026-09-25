@@ -6,6 +6,7 @@ import type { StyleXExamplePreviewProvider } from '@/docs/components/page-defini
 import {
   selectFixtures,
   type SelectFixture,
+  type SelectItem,
 } from '@/docs/components/pages/select/shared';
 import * as Field from '@/stylex/field';
 import * as Select from '@/stylex/select';
@@ -42,12 +43,14 @@ export const selectStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     ariaLabel: 'Example select',
     placeholder: fixture.placeholder,
     items: fixture.items,
-    itemToValue: item => item.value,
-    itemToLabel: item => item.label,
-    itemToConfig: item => ({ isDisabled: item.isDisabled ?? false }),
+    itemToValue: (item: SelectItem) => item.value,
+    itemToLabel: (item: SelectItem) => item.label,
+    itemToConfig: (item: SelectItem) => ({
+      isDisabled: item.isDisabled ?? false,
+    }),
     ...(fixture.groups
       ? {
-          itemGroupKey: item => item.group ?? '',
+          itemGroupKey: (item: SelectItem) => item.group ?? '',
           groupToHeading: (group: string) => group,
         }
       : {}),
