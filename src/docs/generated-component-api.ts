@@ -1951,6 +1951,16 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "inputGroupInput",
       "kind": "function",
       "signature": "inputGroupInput<Msg>(props: InputGroupInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "InputGroupTextareaProps",
+      "kind": "type",
+      "signature": "InputGroupTextareaProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; placeholder?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: string; }>"
+    },
+    {
+      "name": "inputGroupTextarea",
+      "kind": "function",
+      "signature": "inputGroupTextarea<Msg>(props: InputGroupTextareaProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "input-otp": [

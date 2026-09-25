@@ -723,7 +723,7 @@ A shadcn-styled Input Group component for Foldkit.
 
 Source: `src/ui/input-group.ts`
 
-Examples: URL prefix, Trailing unit
+Examples: Basic, Align, Icon, Text, Button, Kbd, Dropdown, Spinner, Textarea, Custom Input, RTL
 
 - `inputGroup<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
 - `inputGroupAddonVariants: value` (value)
@@ -737,6 +737,8 @@ Examples: URL prefix, Trailing unit
 - `inputGroupText<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
 - `InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: string; }>` (type)
 - `inputGroupInput<Msg>(props: InputGroupInputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `InputGroupTextareaProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; placeholder?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: string; }>` (type)
+- `inputGroupTextarea<Msg>(props: InputGroupTextareaProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Input Otp
 

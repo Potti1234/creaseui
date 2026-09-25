@@ -3304,16 +3304,6 @@ test("controlled helper pages own and update compact local preview state", async
   await expect(deploymentNotes).toHaveAttribute("readonly", "");
   await expect(deploymentNotes).toHaveAttribute("data-resize", "none");
 
-  await page.goto("/docs/components/input-group");
-  const url = page.locator("#url-prefix").getByRole("textbox");
-  await url.fill("crease.dev");
-  await expect(url).toHaveValue("crease.dev");
-  await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(url).toHaveValue("crease.dev");
-  await expect(page.locator("#url-prefix code")).toContainText("@/stylex/input-group");
-  await expect(page.locator("#trailing-unit")).toContainText("kg");
-
   await page.goto("/docs/components/input-otp");
   const code = page
     .locator("#six-digit-code")
@@ -3434,6 +3424,117 @@ test("input sections match upstream variants in both renderers", async ({ page }
   await expect(
     inputHero.getByRole("textbox"),
   ).toHaveAttribute("placeholder", "Enter text");
+});
+
+test("input-group sections match upstream variants in both renderers", async ({ page }) => {
+  await page.goto("/docs/components/input-group");
+  for (const id of [
+    "align",
+    "icon",
+    "text",
+    "button",
+    "kbd",
+    "dropdown",
+    "spinner",
+    "textarea",
+    "custom-input",
+    "rtl",
+  ]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+
+  const hero = page.locator('[aria-label="Basic preview"]');
+  const heroInput = hero.getByRole("textbox");
+  await expect(heroInput).toHaveAttribute("placeholder", "Search...");
+  await heroInput.fill("docs");
+  await expect(heroInput).toHaveValue("docs");
+  await expect(hero.getByText("12 results", { exact: true })).toBeVisible();
+
+  const align = page.locator("#align");
+  await align
+    .getByRole("textbox", { name: "Input" })
+    .first()
+    .fill("Jordan");
+  await expect(align.getByText("Full Name", { exact: true })).toBeVisible();
+  await expect(align.getByText("USD", { exact: true })).toBeVisible();
+  await expect(align.getByText("0/280", { exact: true })).toBeVisible();
+  await expect(align.getByRole("button", { name: "Post" })).toBeVisible();
+
+  const icon = page.locator("#icon");
+  const email = icon.getByRole("textbox").nth(1);
+  await expect(email).toHaveAttribute("placeholder", "Enter your email");
+
+  const text = page.locator("#text");
+  await expect(text.getByText("https://", { exact: true })).toBeVisible();
+  await expect(text.getByText("@company.com", { exact: true })).toBeVisible();
+  await expect(
+    text.getByText("120 characters left", { exact: true }),
+  ).toBeVisible();
+
+  const buttons = page.locator("#button");
+  await expect(
+    buttons.getByRole("button", { name: "Copy" }),
+  ).toBeVisible();
+  await expect(
+    buttons.getByRole("button", { name: "Search" }),
+  ).toBeVisible();
+
+  const kbd = page.locator("#kbd");
+  await expect(kbd.getByText("⌘K", { exact: true })).toBeVisible();
+
+  const dropdown = page.locator("#dropdown");
+  await dropdown.getByRole("button", { name: "More" }).click();
+  await expect(
+    page.getByRole("menuitem", { name: "Copy path" }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+  await dropdown.getByRole("button", { name: /Search In/ }).click();
+  await expect(
+    page.getByRole("menuitem", { name: "Documentation" }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  const spinner = page.locator("#spinner");
+  await expect(spinner.getByText("Saving...", { exact: true })).toBeVisible();
+  await expect(
+    spinner.getByText("Please wait...", { exact: true }),
+  ).toBeVisible();
+
+  const textarea = page.locator("#textarea");
+  await expect(
+    textarea.getByText("Line 1, Column 1", { exact: true }),
+  ).toBeVisible();
+  await expect(textarea.getByText("script.js", { exact: true })).toBeVisible();
+  await expect(
+    textarea.getByRole("button", { name: /Run/ }),
+  ).toBeVisible();
+
+  const custom = page.locator("#custom-input");
+  const customArea = custom.locator("textarea");
+  await expect(customArea).toHaveAttribute(
+    "placeholder",
+    "Autoresize textarea...",
+  );
+  await expect(
+    custom.getByRole("button", { name: "Submit" }),
+  ).toBeVisible();
+
+  const rtl = page.locator("#rtl");
+  await expect(rtl.locator("div[dir='rtl']").first()).toBeVisible();
+  await expect(rtl.getByText("١٢ نتيجة", { exact: true })).toBeVisible();
+  await expect(
+    rtl.getByRole("button", { name: "نشر" }),
+  ).toBeVisible();
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["align", "icon", "text", "button", "kbd", "dropdown", "spinner", "textarea", "custom-input", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#align code")).toContainText("@/stylex/input-group");
+  await expect(heroInput).toHaveValue("docs");
+  await heroInput.fill("stylex-docs");
+  await expect(heroInput).toHaveValue("stylex-docs");
 });
 
 test("collapsible preserves controlled linkage, external changes, and disabled policy", async ({ page }) => {
