@@ -870,22 +870,43 @@ test("authored resizable instances keep axis-specific child state independent", 
 }) => {
   await page.goto("/docs/components/resizable");
   await page.getByRole("button", { name: "StyleX" }).click();
-  await expect(page.locator("#editor-and-preview")).toBeVisible();
-  await expect(page.locator("#vertical-split")).toBeVisible();
+  await page.waitForTimeout(600);
+  await expect(page.locator("#vertical")).toBeVisible();
+  await expect(page.locator("#handle")).toBeVisible();
+  await expect(page.locator("#rtl")).toBeVisible();
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
 
-  const horizontal = page.locator("#editor-and-preview").getByRole("separator");
-  const vertical = page.locator("#vertical-split").getByRole("separator");
-  await horizontal.focus();
+  const hero = page.locator('[aria-label="Basic preview"]');
+  const outer = hero.getByRole("separator").first();
+  const inner = hero.getByRole("separator").last();
+  await expect(outer).toHaveAttribute("aria-valuenow", "50");
+  await expect(inner).toHaveAttribute("aria-valuenow", "25");
+  await outer.focus();
   await page.keyboard.press("ArrowRight");
-  await expect(horizontal).toHaveAttribute("aria-valuenow", "52");
-  await expect(vertical).toHaveAttribute("aria-valuenow", "40");
+  await expect(outer).toHaveAttribute("aria-valuenow", "52");
+  await expect(inner).toHaveAttribute("aria-valuenow", "25");
 
+  const vertical = page.locator("#vertical").getByRole("separator");
+  await expect(vertical).toHaveAttribute("aria-valuenow", "25");
   await vertical.focus();
   await page.keyboard.press("ArrowDown");
-  await expect(vertical).toHaveAttribute("aria-valuenow", "42");
-  await expect(horizontal).toHaveAttribute("aria-valuenow", "52");
-  await expect(page.locator("#editor-and-preview code")).toContainText("@/stylex/resizable");
+  await expect(vertical).toHaveAttribute("aria-valuenow", "27");
+
+  const handle = page.locator("#handle").getByRole("separator");
+  await expect(handle).toHaveAttribute("aria-valuenow", "25");
+  await handle.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(handle).toHaveAttribute("aria-valuenow", "27");
+
+  const rtl = page.locator("#rtl");
+  await expect(rtl.locator("div[dir='rtl']").first()).toBeVisible();
+  await expect(rtl.getByText("واحد", { exact: true })).toBeVisible();
+  const rtlOuter = rtl.getByRole("separator").first();
+  await expect(rtlOuter).toHaveAttribute("aria-valuenow", "50");
+  await rtlOuter.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(rtlOuter).toHaveAttribute("aria-valuenow", "48");
+  await expect(page.locator("#handle code")).toContainText("@/stylex/resizable");
 });
 
 test("carousel sections mirror shadcn examples in both renderers", async ({
