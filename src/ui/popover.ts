@@ -50,6 +50,7 @@ export type PopoverProps<Msg> = Readonly<{
   align?: PopoverAlign;
   side?: PopoverSide;
   class?: string;
+  direction?: 'ltr' | 'rtl';
   focusSelector?: string;
 }>;
 
@@ -92,6 +93,7 @@ export const popover = <Msg>(
                     [
                       ...panel,
                       hp.DataAttribute('slot', 'popover-content'),
+                      ...(props.direction === undefined ? [] : [hp.Dir(props.direction)]),
                       hp.Class(cn(CONTENT_CLASS, props.class)),
                     ],
                     [props.content],
