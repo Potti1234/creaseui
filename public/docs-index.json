@@ -4581,10 +4581,13 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Settings",
-        "Line variant",
-        "Manual with disabled tab",
-        "RTL route value"
+        "Basic",
+        "Line",
+        "Vertical",
+        "Disabled",
+        "Icons",
+        "RTL",
+        "Manual with disabled tab"
       ],
       "api": [
         {

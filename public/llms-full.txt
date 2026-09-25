@@ -1244,7 +1244,7 @@ A shadcn-styled Tabs component for Foldkit.
 
 Source: `src/ui/tabs.ts`
 
-Examples: Settings, Line variant, Manual with disabled tab, RTL route value
+Examples: Basic, Line, Vertical, Disabled, Icons, RTL, Manual with disabled tab
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
