@@ -85,18 +85,44 @@ export const tooltip = <Msg>(
   return h.div(
           [h.DataAttribute('slot', 'tooltip')],
           [
-            h.button(
-              [
-                h.Id(triggerId), h.Type('button'), h.AriaDescribedBy(panelId), h.Disabled(disabled),
-                ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
-                ...(disabled ? [] : [h.OnMouseEnter(send(TooltipBehavior.Message.EnteredTooltipTrigger())), h.OnMouseLeave(send(TooltipBehavior.Message.LeftTooltipTrigger())), h.OnFocus(send(TooltipBehavior.Message.FocusedTooltipTrigger())), h.OnBlur(send(TooltipBehavior.Message.BlurredTooltipTrigger())), h.OnPointerDown(() => Option.some(send(TooltipBehavior.Message.PressedPointerOnTooltipTrigger()))), h.OnKeyDownPreventDefault(key => key === 'Escape' && props.model.isOpen ? Option.some(send(TooltipBehavior.Message.PressedEscapeOnTooltip())) : Option.none())]),
-                h.DataAttribute('slot', 'tooltip-trigger'),
-                ...(props.triggerClass === undefined
-                  ? []
-                  : [h.Class(cn(props.triggerClass))]),
-              ],
-              [props.trigger],
-            ),
+            ...(disabled
+              ? [
+                  h.span(
+                    [
+                      h.Id(triggerId), h.AriaDescribedBy(panelId), h.DataAttribute('slot', 'tooltip-trigger'),
+                      h.Class('inline-block w-fit'),
+                      h.OnMouseEnter(send(TooltipBehavior.Message.EnteredTooltipTrigger())),
+                      h.OnMouseLeave(send(TooltipBehavior.Message.LeftTooltipTrigger())),
+                      h.OnPointerDown(() => Option.some(send(TooltipBehavior.Message.PressedPointerOnTooltipTrigger()))),
+                    ],
+                    [
+                      h.button(
+                        [
+                          h.Type('button'), h.Disabled(true),
+                          ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
+                          ...(props.triggerClass === undefined
+                            ? []
+                            : [h.Class(cn(props.triggerClass))]),
+                        ],
+                        [props.trigger],
+                      ),
+                    ],
+                  ),
+                ]
+              : [
+                  h.button(
+                    [
+                      h.Id(triggerId), h.Type('button'), h.AriaDescribedBy(panelId), h.Disabled(false),
+                      ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
+                      h.OnMouseEnter(send(TooltipBehavior.Message.EnteredTooltipTrigger())), h.OnMouseLeave(send(TooltipBehavior.Message.LeftTooltipTrigger())), h.OnFocus(send(TooltipBehavior.Message.FocusedTooltipTrigger())), h.OnBlur(send(TooltipBehavior.Message.BlurredTooltipTrigger())), h.OnPointerDown(() => Option.some(send(TooltipBehavior.Message.PressedPointerOnTooltipTrigger()))), h.OnKeyDownPreventDefault(key => key === 'Escape' && props.model.isOpen ? Option.some(send(TooltipBehavior.Message.PressedEscapeOnTooltip())) : Option.none()),
+                      h.DataAttribute('slot', 'tooltip-trigger'),
+                      ...(props.triggerClass === undefined
+                        ? []
+                        : [h.Class(cn(props.triggerClass))]),
+                    ],
+                    [props.trigger],
+                  ),
+                ]),
             ...(props.model.isOpen
               ? [
                   h.div(

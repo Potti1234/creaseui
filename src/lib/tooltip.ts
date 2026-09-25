@@ -132,7 +132,7 @@ export const update = (model: Model, message: Message): UpdateReturn => {
         : result(model, model)
     case 'CompletedWaitBeforeClosingTooltip':
       return message.version === model.closeVersion && !model.isHovered && !model.isFocused
-        ? result(model, { ...model })
+        ? result(model, { ...model, isOpen: false })
         : result(model, model)
   }
 }
