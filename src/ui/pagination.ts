@@ -15,6 +15,7 @@ type SlotProps = Readonly<{
   children: ReadonlyArray<Html | string>;
   class?: string;
   ariaLabel?: string;
+  direction?: 'ltr' | 'rtl';
 }>;
 
 export const pagination = <Msg>(
@@ -26,6 +27,7 @@ export const pagination = <Msg>(
       h.Role('navigation'),
       h.AriaLabel(props.ariaLabel ?? 'Pagination'),
       h.DataAttribute('slot', 'pagination'),
+      ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
       h.Class(cn('mx-auto flex w-full justify-center', props.class)),
     ],
     [...props.children],
@@ -95,17 +97,22 @@ export type PaginationDirectionProps = Readonly<{
   href?: string;
   isDisabled?: boolean;
   class?: string;
+  direction?: 'ltr' | 'rtl';
+  label?: string;
 }>;
 
 export const paginationPrevious = <Msg>(
   props: PaginationDirectionProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
+  const rtl = props.direction === 'rtl';
+  const icon = rtl ? Icon.chevronRight<Msg>({}, h) : Icon.chevronLeft<Msg>({}, h);
+  const label = props.label ?? 'Previous';
   if (props.isDisabled === true || props.href === undefined) return h.span([
     h.Role('link'), h.AriaDisabled(true), h.Tabindex(-1), h.AriaLabel('Go to previous page'),
     h.DataAttribute('slot', 'pagination-previous'),
     h.Class(cn(buttonVariants({ variant: 'ghost', size: 'default' }), 'gap-1 px-2.5 opacity-50 sm:pl-2.5', props.class)),
-  ], [Icon.chevronLeft<Msg>({}, h), h.span([h.Class('hidden sm:block')], ['Previous'])]);
+  ], [icon, h.span([h.Class('hidden sm:block')], [label])]);
   return paginationLink<Msg>(
     {
       href: props.href,
@@ -113,8 +120,8 @@ export const paginationPrevious = <Msg>(
       size: 'default',
       class: cn('gap-1 px-2.5 sm:pl-2.5', props.class),
       children: [
-        Icon.chevronLeft<Msg>({}, h),
-        h.span([h.Class('hidden sm:block')], ['Previous']),
+        icon,
+        h.span([h.Class('hidden sm:block')], [label]),
       ],
     },
     h,
@@ -125,11 +132,14 @@ export const paginationNext = <Msg>(
   props: PaginationDirectionProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
+  const rtl = props.direction === 'rtl';
+  const icon = rtl ? Icon.chevronLeft<Msg>({}, h) : Icon.chevronRight<Msg>({}, h);
+  const label = props.label ?? 'Next';
   if (props.isDisabled === true || props.href === undefined) return h.span([
     h.Role('link'), h.AriaDisabled(true), h.Tabindex(-1), h.AriaLabel('Go to next page'),
     h.DataAttribute('slot', 'pagination-next'),
     h.Class(cn(buttonVariants({ variant: 'ghost', size: 'default' }), 'gap-1 px-2.5 opacity-50 sm:pr-2.5', props.class)),
-  ], [h.span([h.Class('hidden sm:block')], ['Next']), Icon.chevronRight<Msg>({}, h)]);
+  ], [h.span([h.Class('hidden sm:block')], [label]), icon]);
   return paginationLink<Msg>(
     {
       href: props.href,
@@ -137,8 +147,8 @@ export const paginationNext = <Msg>(
       size: 'default',
       class: cn('gap-1 px-2.5 sm:pr-2.5', props.class),
       children: [
-        h.span([h.Class('hidden sm:block')], ['Next']),
-        Icon.chevronRight<Msg>({}, h),
+        h.span([h.Class('hidden sm:block')], [label]),
+        icon,
       ],
     },
     h,
