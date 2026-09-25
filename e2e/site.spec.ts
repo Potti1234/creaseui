@@ -2023,7 +2023,7 @@ test("navigation menu distinguishes semantic links from stateful disclosures", a
   await expect(page.locator("#semantic-links")).toBeVisible();
   await expect(page.locator("#popover-disclosure")).toBeVisible();
   await expect(page.locator("#responsive-fallback")).toBeVisible();
-  await expect(page.locator("#rtl-overflow")).toBeVisible();
+  await expect(page.locator("#rtl")).toBeVisible();
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
   const linksExample = page.locator("#semantic-links");
   await expect(
@@ -2065,7 +2065,7 @@ test("navigation menu distinguishes semantic links from stateful disclosures", a
     (viewport?.width ?? 1280) < 768 ? "column" : "row",
   );
 
-  const overflow = page.locator("#rtl-overflow");
+  const overflow = page.locator("#rtl");
   const overflowNav = overflow.getByRole("navigation", { name: "Primary" });
   await expect(overflowNav).toHaveAttribute("dir", "rtl");
   await expect(overflowNav).toHaveAttribute("data-layout", "scroll");
