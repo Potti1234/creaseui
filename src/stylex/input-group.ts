@@ -10,6 +10,7 @@ import { interactionTokens } from './interaction-tokens.stylex.const'
 type SlotProps = Readonly<{
   children: ReadonlyArray<Html | string>;
   layoutStyle?: ComponentLayoutStyle;
+  radius?: "xl" | "full";
 }>;
 type Align = "inline-start" | "inline-end" | "block-start" | "block-end";
 type GroupButtonSize = "xs" | "sm" | "icon-xs" | "icon-sm";
@@ -22,12 +23,24 @@ const styles = stylex.create({
     alignItems: "center",
     boxShadow: foundationTokens.shadowXs,
     display: "flex",
+    flexDirection: {
+      default: "row",
+      ':has(> [data-align="block-end"])': "column",
+      ':has(> [data-align="block-start"])': "column",
+    },
     outlineStyle: "none",
     position: "relative",
-    height: "2rem",
+    height: {
+      default: "2rem",
+      ':has(> [data-align="block-end"])': "auto",
+      ':has(> [data-align="block-start"])': "auto",
+      ':has(> textarea)': "auto",
+    },
     minWidth: 0,
     width: "100%",
   },
+  radiusXl: { borderRadius: foundationTokens.radiusXl },
+  radiusFull: { borderRadius: foundationTokens.radiusFull },
   addon: {
     gap: "0.5rem",
     paddingBlock: "0.375rem",
@@ -94,15 +107,41 @@ const styles = stylex.create({
     height: "2rem",
     minWidth: 0,
   },
+  textarea: {
+    fieldSizing: "content",
+    borderColor: foundationTokens.transparent,
+    borderRadius: "0px",
+    borderStyle: "solid",
+    borderWidth: 0,
+    flex: "1",
+    paddingBlock: "0.5rem",
+    paddingInline: "0.75rem",
+    backgroundColor: foundationTokens.transparent,
+    boxShadow: foundationTokens.shadowNone,
+    fontFamily: "inherit",
+    fontSize: "0.875rem",
+    outlineStyle: "none",
+    minHeight: "4rem",
+    minWidth: 0,
+    width: "100%",
+  },
   invalid: { color: tokens.destructive },
   disabled: { cursor: interactionTokens.cursorDisabled, opacity: 0.5 },
+  mono: { fontFamily: 'monospace' },
 });
 export const inputGroup = <Msg>(p: SlotProps, h: HtmlBuilder<Msg>): Html =>
   h.div(
     [
       h.DataAttribute("slot", "input-group"),
       h.Role("group"),
-      h.Class(className(styles.group, p.layoutStyle)),
+      h.Class(
+        className(
+          styles.group,
+          p.radius === "xl" && styles.radiusXl,
+          p.radius === "full" && styles.radiusFull,
+          p.layoutStyle,
+        ),
+      ),
     ],
     [...p.children],
   );
@@ -231,6 +270,43 @@ export const inputGroupInput = <Msg>(
         styles.input,
         p.isInvalid && styles.invalid,
         p.isDisabled && styles.disabled,
+        p.layoutStyle,
+      ),
+    ),
+  ]);
+export type InputGroupTextareaProps<Msg> = Readonly<{
+  id: string;
+  value: string;
+  onInput: (value: string) => Msg;
+  placeholder?: string;
+  name?: string;
+  isDisabled?: boolean;
+  isInvalid?: boolean;
+  ariaLabel?: string;
+  /** Monospace control text — upstream `font-mono` on the textarea example. */
+  mono?: boolean;
+  layoutStyle?: ComponentLayoutStyle;
+}>;
+export const inputGroupTextarea = <Msg>(
+  p: InputGroupTextareaProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  h.textarea([
+    h.Id(p.id),
+    h.Value(p.value),
+    h.OnInput(p.onInput),
+    ...(p.name === undefined ? [] : [h.Name(p.name)]),
+    ...(p.placeholder === undefined ? [] : [h.Placeholder(p.placeholder)]),
+    ...(p.ariaLabel === undefined ? [] : [h.AriaLabel(p.ariaLabel)]),
+    ...(p.isDisabled ? [h.Disabled(true)] : []),
+    ...(p.isInvalid ? [h.AriaInvalid(true)] : []),
+    h.DataAttribute("slot", "input-group-control"),
+    h.Class(
+      className(
+        styles.textarea,
+        p.isInvalid && styles.invalid,
+        p.isDisabled && styles.disabled,
+        p.mono === true && styles.mono,
         p.layoutStyle,
       ),
     ),
