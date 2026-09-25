@@ -85,9 +85,38 @@ export type SelectProps<Item, Value extends string, Msg> = Readonly<{
   name?: string;
   form?: string;
   direction?: 'ltr' | 'rtl';
+  /**
+   * 'popper' places the popup below the trigger (default). 'item-aligned'
+   * shifts the popup so the selected item overlaps the trigger, matching
+   * Radix's position="item-aligned" as a static offset approximation.
+   */
+  position?: 'popper' | 'item-aligned';
   itemGroupKey?: (item: Item, index: number) => string;
   groupToHeading?: (groupKey: string) => string | undefined;
 }>;
+
+const ITEM_ALIGNED_ITEM_HEIGHT = 32;
+const ITEM_ALIGNED_BASE_OFFSET = 40;
+
+const buildAnchor = <Item, Value extends string, Msg>(
+  props: SelectProps<Item, Value, Msg>,
+  values: ReadonlyArray<Value>,
+): Readonly<{ anchor: ListboxPrimitive.AnchorConfig }> => {
+  if (props.position !== 'item-aligned') {
+    return { anchor: ANCHOR };
+  }
+  const selectedIndex = Option.match(props.maybeSelectedValue, {
+    onNone: () => 0,
+    onSome: selected =>
+      Math.max(0, values.findIndex(value => value === selected)),
+  });
+  return {
+    anchor: {
+      placement: 'bottom-start',
+      gap: -(ITEM_ALIGNED_BASE_OFFSET + selectedIndex * ITEM_ALIGNED_ITEM_HEIGHT),
+    },
+  };
+};
 
 const renderSelect = <Item, Value extends string, Msg>(
   listbox: ListboxPrimitive.Bundle<Value, Value>,
@@ -167,6 +196,7 @@ const renderSelect = <Item, Value extends string, Msg>(
         ? [hs.DataAttribute('placeholder', '')]
         : []),
     ]),
+    ...buildAnchor(props, values),
     itemsClassName: CONTENT_CLASS,
     itemsAttributes: childAttributes([
       hs.DataAttribute('slot', 'select-content'),
@@ -174,7 +204,6 @@ const renderSelect = <Item, Value extends string, Msg>(
     itemsScrollClassName: VIEWPORT_CLASS,
     backdropClassName: BACKDROP_CLASS,
     backdropAttributes: childAttributes([hs.DataAttribute('slot', 'select-backdrop')]),
-    anchor: ANCHOR,
     attributes: childAttributes([
       hs.DataAttribute('slot', 'select'),
       ...(props.direction === undefined ? [] : [hs.Dir(props.direction)]),
