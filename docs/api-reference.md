@@ -396,6 +396,7 @@ Source: [`src/ui/date-picker.ts`](../src/ui/date-picker.ts)
 | `reflectDisabledDates` | value | `reflectDisabledDates: value` |
 | `reflectDisabledDaysOfWeek` | value | `reflectDisabledDaysOfWeek: value` |
 | `triggerId` | value | `triggerId: value` |
+| `updateForRtl` | function | `updateForRtl(model: Model, message: Message): ReturnType<typeof update>` |
 | `DatePickerProps` | type | `DatePickerProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; placeholder?: string; formatDate?: (date: FoldkitCalendar.CalendarDate) => string; name?: string; isDis…` |
 | `datePicker` | function | `datePicker<Msg>(props: DatePickerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
@@ -601,7 +602,7 @@ Source: [`src/ui/input-group.ts`](../src/ui/input-group.ts)
 | `InputGroupButtonProps` | type | `InputGroupButtonProps<Msg> = Omit< ButtonProps<Msg>, 'size' \| 'class' > & Readonly<{ size?: InputGroupButtonVariants['size']; class?: string; }>` |
 | `inputGroupButton` | function | `inputGroupButton<Msg>(props: InputGroupButtonProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `inputGroupText` | function | `inputGroupText<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` |
-| `InputGroupInputProps` | type | `InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: string; }>` |
+| `InputGroupInputProps` | type | `InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; onKeyDown?: (key: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: str…` |
 | `inputGroupInput` | function | `inputGroupInput<Msg>(props: InputGroupInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `InputGroupTextareaProps` | type | `InputGroupTextareaProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; placeholder?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: string; }>` |
 | `inputGroupTextarea` | function | `inputGroupTextarea<Msg>(props: InputGroupTextareaProps<Msg>, h: HtmlBuilder<Msg>): Html` |

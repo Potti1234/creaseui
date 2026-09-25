@@ -1250,6 +1250,11 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "triggerId: value"
     },
     {
+      "name": "updateForRtl",
+      "kind": "function",
+      "signature": "updateForRtl(model: Model, message: Message): ReturnType<typeof update>"
+    },
+    {
       "name": "DatePickerProps",
       "kind": "type",
       "signature": "DatePickerProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; placeholder?: string; formatDate?: (date: FoldkitCalendar.CalendarDate) => string; name?: string; isDis…"
@@ -1980,7 +1985,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "InputGroupInputProps",
       "kind": "type",
-      "signature": "InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: string; }>"
+      "signature": "InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; onKeyDown?: (key: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: str…"
     },
     {
       "name": "inputGroupInput",

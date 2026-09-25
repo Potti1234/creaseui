@@ -1681,8 +1681,14 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Existing value",
-        "Empty value"
+        "Pick a date",
+        "Basic",
+        "Range Picker",
+        "Date of Birth",
+        "Input",
+        "Time Picker",
+        "Natural Language Picker",
+        "RTL"
       ],
       "api": [
         {
@@ -1774,6 +1780,11 @@
           "name": "triggerId",
           "kind": "value",
           "signature": "triggerId: value"
+        },
+        {
+          "name": "updateForRtl",
+          "kind": "function",
+          "signature": "updateForRtl(model: Model, message: Message): ReturnType<typeof update>"
         },
         {
           "name": "DatePickerProps",
@@ -2706,7 +2717,7 @@
         {
           "name": "InputGroupInputProps",
           "kind": "type",
-          "signature": "InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: string; }>"
+          "signature": "InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; onKeyDown?: (key: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: str…"
         },
         {
           "name": "inputGroupInput",

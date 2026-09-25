@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 58 done · 3 todo · 3 crease-only
+Current: 59 done · 2 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -36,7 +36,7 @@ Current: 58 done · 3 todo · 3 crease-only
 | `command` | 7 | Basic<br>Shortcuts<br>Groups<br>Scrollable<br>RTL | done |
 | `context-menu` | 10 | Basic<br>Submenu<br>Shortcuts<br>Groups<br>Icons<br>Checkboxes<br>Radio<br>Destructive<br>RTL | done |
 | `data-table` | 4 | RTL | done |
-| `date-picker` | 2 | Basic<br>Range Picker<br>Date of Birth<br>Input<br>Time Picker<br>Natural Language Picker<br>RTL | todo (missing: Basic, Range Picker, Date of Birth, Input, Time Picker, Natural Language Picker, RTL) |
+| `date-picker` | 10 | Basic<br>Range Picker<br>Date of Birth<br>Input<br>Time Picker<br>Natural Language Picker<br>RTL | done |
 | `dialog` | 7 | Custom Close Button<br>No Close Button<br>Sticky Footer<br>Scrollable Content<br>RTL | done |
 | `direction` | 2 | — | crease-only |
 | `drawer` | 11 | Scrollable Content<br>Sides<br>Responsive Dialog<br>RTL | done |
