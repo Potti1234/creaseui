@@ -242,6 +242,7 @@ export type InputGroupInputProps<Msg> = Readonly<{
   id: string;
   value: string;
   onInput: (value: string) => Msg;
+  onKeyDown?: (key: string) => Msg;
   placeholder?: string;
   type?: string;
   name?: string;
@@ -258,6 +259,9 @@ export const inputGroupInput = <Msg>(
     h.Id(p.id),
     h.Value(p.value),
     h.OnInput(p.onInput),
+    ...(p.onKeyDown === undefined
+      ? []
+      : [h.OnKeyDown(key => p.onKeyDown!(key))]),
     h.Type(p.type ?? "text"),
     ...(p.name === undefined ? [] : [h.Name(p.name)]),
     ...(p.placeholder === undefined ? [] : [h.Placeholder(p.placeholder)]),
