@@ -268,3 +268,37 @@
   [data-sidebar='menu-action'][data-show-on-hover] {
   opacity: 1;
 }
+
+/* shadcn `shimmer` text utility: a clipped gradient sweep across inline text
+   (marker "thinking" states, attachment processing rows). */
+@utility shimmer {
+  --_spread: var(--shimmer-spread, calc(3ch + 40px));
+  --_base: currentColor;
+  --_highlight: var(--shimmer-color, oklch(from currentColor l c h / calc(alpha * 0.2)));
+  background-image: var(--shimmer-image, linear-gradient(calc(90deg + var(--shimmer-angle, 20deg)), var(--_base) calc(50% - var(--_spread)), color-mix(in oklch, var(--_highlight), var(--_base) 50%) calc(50% - var(--_spread) * 0.5), var(--_highlight) 50%, color-mix(in oklch, var(--_highlight), var(--_base) 50%) calc(50% + var(--_spread) * 0.5), var(--_base) calc(50% + var(--_spread))));
+  background-repeat: no-repeat;
+  background-size: calc(200% + var(--_spread) * 2) 100%;
+  -webkit-text-fill-color: var(--shimmer-text-fill, transparent);
+  animation: tw-shimmer var(--shimmer-duration, 2s) linear infinite;
+  background-position: 0 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.dark .shimmer {
+  --_highlight: var(--shimmer-color, oklch(from currentColor max(0.8, calc(l + 0.4)) c h / calc(alpha + 0.4)));
+}
+
+[dir='rtl'] .shimmer,
+[dir='rtl'].shimmer {
+  animation-direction: reverse;
+}
+
+@keyframes tw-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
