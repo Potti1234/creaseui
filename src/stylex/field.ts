@@ -46,6 +46,9 @@ const styles = stylex.create({
     display: "flex",
     fontSize: "0.875rem",
     fontWeight: 500,
+  },
+  fontNormal: {
+    fontWeight: 400,
     lineHeight: 1.375,
     userSelect: "none",
     width: "fit-content",
@@ -174,6 +177,7 @@ export type FieldProps = Slot &
     orientation?: FieldVariants["orientation"];
     isInvalid?: boolean;
     isDisabled?: boolean;
+    direction?: 'ltr' | 'rtl';
   }>;
 export const field = <Msg>(p: FieldProps, h: HtmlBuilder<Msg>): Html => {
   const orientation = p.orientation ?? "vertical";
@@ -182,6 +186,7 @@ export const field = <Msg>(p: FieldProps, h: HtmlBuilder<Msg>): Html => {
       h.Role("group"),
       h.DataAttribute("slot", "field"),
       h.DataAttribute("orientation", orientation),
+      ...(p.direction === undefined ? [] : [h.Dir(p.direction)]),
       ...(p.isInvalid ? [h.DataAttribute("invalid", "true")] : []),
       ...(p.isDisabled ? [h.DataAttribute("disabled", "")] : []),
       h.Class(
@@ -205,7 +210,7 @@ export const fieldContent = <Msg>(p: Slot, h: HtmlBuilder<Msg>): Html =>
     ],
     [...p.children],
   );
-export type FieldLabelProps = Slot & Readonly<{ for?: string }>;
+export type FieldLabelProps = Slot & Readonly<{ for?: string; weight?: 'normal' | 'medium' }>;
 export const fieldLabel = <Msg>(
   p: FieldLabelProps,
   h: HtmlBuilder<Msg>,
@@ -214,7 +219,7 @@ export const fieldLabel = <Msg>(
     [
       h.DataAttribute("slot", "field-label"),
       ...(p.for === undefined ? [] : [h.For(p.for)]),
-      h.Class(className(styles.label, p.layoutStyle)),
+      h.Class(className(styles.label, p.weight === 'normal' && styles.fontNormal, p.layoutStyle)),
     ],
     [...p.children],
   );

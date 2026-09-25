@@ -15,6 +15,7 @@ type Slot = Readonly<{
 export type CardProps = Slot &
   Readonly<{
     element?: 'div' | 'section' | 'article';
+    size?: 'default' | 'sm';
   }>;
 
 const slotDiv =
@@ -29,9 +30,10 @@ const slotDiv =
 export const card = <Msg>(props: CardProps, h: HtmlBuilder<Msg>): Html => {
   const attributes = [
     h.DataAttribute('slot', 'card'),
+    h.DataAttribute('size', props.size ?? 'default'),
     h.Class(
       cn(
-        'bg-card text-card-foreground flex flex-col gap-4 rounded-xl border py-4 shadow-sm',
+        'group/card bg-card text-card-foreground flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl border py-(--card-spacing) text-sm shadow-sm [--card-spacing:--spacing(6)] has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(4)] *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl',
         props.class,
       ),
     ),
@@ -50,12 +52,12 @@ export const card = <Msg>(props: CardProps, h: HtmlBuilder<Msg>): Html => {
 
 export const cardHeader = slotDiv(
   'card-header',
-  '@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1 px-4 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-4',
+  '@container/card-header grid auto-rows-min items-start gap-1 rounded-t-xl px-(--card-spacing) has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-(--card-spacing)',
 );
 
 export type CardTitleProps = Slot & Readonly<{ element?: 'h2' | 'h3' | 'h4' }>;
 export const cardTitle = <Msg>(props: CardTitleProps, h: HtmlBuilder<Msg>): Html => {
-  const attributes = [h.DataAttribute('slot', 'card-title'), h.Class(cn('leading-none font-semibold', props.class))];
+  const attributes = [h.DataAttribute('slot', 'card-title'), h.Class(cn('text-base leading-normal font-medium group-data-[size=sm]/card:text-sm', props.class))];
   switch (props.element ?? 'h3') {
     case 'h2': return h.h2(attributes, [...props.children]);
     case 'h4': return h.h4(attributes, [...props.children]);
@@ -73,9 +75,9 @@ export const cardAction = slotDiv(
   'col-start-2 row-span-2 row-start-1 self-start justify-self-end',
 );
 
-export const cardContent = slotDiv('card-content', 'px-4');
+export const cardContent = slotDiv('card-content', 'flex flex-col gap-3 px-(--card-spacing)');
 
 export const cardFooter = slotDiv(
   'card-footer',
-  'flex items-center px-4 [.border-t]:pt-4',
+  'flex items-center rounded-b-xl px-(--card-spacing) [.border-t]:pt-(--card-spacing)',
 );

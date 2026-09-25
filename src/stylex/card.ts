@@ -12,13 +12,15 @@ const styles = stylex.create({
     borderRadius: tokens.cardRadius,
     borderStyle: 'solid',
     borderWidth: 1,
-    gap: '1rem',
-    paddingBlock: '1rem',
+    gap: 'var(--card-spacing, 1.5rem)',
+    overflow: 'hidden',
+    paddingBlock: 'var(--card-spacing,1.5rem)',
     backgroundColor: tokens.card,
     boxShadow: tokens.shadowCard,
     color: tokens.cardForeground,
     display: 'flex',
     flexDirection: 'column',
+    fontSize: '0.875rem',
   },
   cardFlush: {
     overflow: 'hidden',
@@ -26,12 +28,13 @@ const styles = stylex.create({
   },
   header: {
     gap: '0.25rem',
-    paddingInline: '1rem',
+    paddingInline: 'var(--card-spacing,1.5rem)',
     display: 'grid',
   },
   title: {
-    fontWeight: 600,
-    lineHeight: 1,
+    fontSize: '1rem',
+    fontWeight: 500,
+    lineHeight: 'normal',
   },
   description: {
     color: tokens.mutedForeground,
@@ -45,9 +48,14 @@ const styles = stylex.create({
     gridRowStart: '1',
     justifySelf: 'end',
   },
-  content: { paddingInline: '1rem' },
+  content: {
+    gap: '0.75rem',
+    paddingInline: 'var(--card-spacing,1.5rem)',
+    display: 'flex',
+    flexDirection: 'column',
+  },
   footer: {
-    paddingInline: '1rem',
+    paddingInline: 'var(--card-spacing,1.5rem)',
     alignItems: 'center',
     display: 'flex',
   },
@@ -62,6 +70,7 @@ type Slot = Readonly<{
 export type CardProps = Slot & Readonly<{
   element?: 'div' | 'section' | 'article'
   density?: 'default' | 'flush'
+  size?: 'default' | 'sm'
 }>
 
 const slot =
@@ -75,7 +84,13 @@ const slot =
 export const card = <Msg>(props: CardProps, h: HtmlBuilder<Msg>): Html => {
   const attributes = [
     h.DataAttribute('slot', 'card'),
-    h.Class(className(styles.card, props.density === 'flush' && styles.cardFlush, props.layoutStyle)),
+    h.DataAttribute('size', props.size ?? 'default'),
+    h.Style({ '--card-spacing': props.size === 'sm' ? '1rem' : '1.5rem' }),
+    h.Class(className(
+      styles.card,
+      props.density === 'flush' && styles.cardFlush,
+      props.layoutStyle,
+    )),
   ]
   const children = [...props.children]
 

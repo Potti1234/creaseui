@@ -24,6 +24,17 @@
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --stylex-destructive-surface: var(--destructive);
+  --stylex-soft-destructive-surface: color-mix(
+    in oklab,
+    var(--destructive) 10%,
+    transparent
+  );
+  --stylex-soft-destructive-hover: color-mix(
+    in oklab,
+    var(--destructive) 20%,
+    transparent
+  );
+  --stylex-muted-hover: var(--muted);
   --stylex-input-surface: transparent;
   --stylex-outline-surface: var(--background);
   --stylex-outline-hover: var(--accent);
@@ -64,6 +75,21 @@
   --stylex-destructive-surface: color-mix(
     in oklab,
     var(--destructive) 60%,
+    transparent
+  );
+  --stylex-soft-destructive-surface: color-mix(
+    in oklab,
+    var(--destructive) 20%,
+    transparent
+  );
+  --stylex-soft-destructive-hover: color-mix(
+    in oklab,
+    var(--destructive) 30%,
+    transparent
+  );
+  --stylex-muted-hover: color-mix(
+    in oklab,
+    var(--muted) 50%,
     transparent
   );
   --stylex-input-surface: color-mix(in oklab, var(--input) 30%, transparent);
@@ -241,4 +267,38 @@
   [data-sidebar='menu-item']:is(:hover, :focus-within)
   [data-sidebar='menu-action'][data-show-on-hover] {
   opacity: 1;
+}
+
+/* shadcn `shimmer` text utility: a clipped gradient sweep across inline text
+   (marker "thinking" states, attachment processing rows). */
+@utility shimmer {
+  --_spread: var(--shimmer-spread, calc(3ch + 40px));
+  --_base: currentColor;
+  --_highlight: var(--shimmer-color, oklch(from currentColor l c h / calc(alpha * 0.2)));
+  background-image: var(--shimmer-image, linear-gradient(calc(90deg + var(--shimmer-angle, 20deg)), var(--_base) calc(50% - var(--_spread)), color-mix(in oklch, var(--_highlight), var(--_base) 50%) calc(50% - var(--_spread) * 0.5), var(--_highlight) 50%, color-mix(in oklch, var(--_highlight), var(--_base) 50%) calc(50% + var(--_spread) * 0.5), var(--_base) calc(50% + var(--_spread))));
+  background-repeat: no-repeat;
+  background-size: calc(200% + var(--_spread) * 2) 100%;
+  -webkit-text-fill-color: var(--shimmer-text-fill, transparent);
+  animation: tw-shimmer var(--shimmer-duration, 2s) linear infinite;
+  background-position: 0 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.dark .shimmer {
+  --_highlight: var(--shimmer-color, oklch(from currentColor max(0.8, calc(l + 0.4)) c h / calc(alpha + 0.4)));
+}
+
+[dir='rtl'] .shimmer,
+[dir='rtl'].shimmer {
+  animation-direction: reverse;
+}
+
+@keyframes tw-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
 }

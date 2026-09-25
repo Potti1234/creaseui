@@ -7,7 +7,14 @@ import { cn } from '@/lib/utils';
 type SlotProps = Readonly<{
   children: ReadonlyArray<Html | string>;
   class?: string;
+  /** Upstream demos restyle the group radius per example (`[--radius:...]`). */
+  radius?: 'xl' | 'full';
 }>;
+
+const GROUP_RADIUS_CLASS = {
+  xl: 'rounded-2xl',
+  full: 'rounded-full',
+} as const;
 
 export const inputGroup = <Msg>(
   props: SlotProps,
@@ -27,6 +34,9 @@ export const inputGroup = <Msg>(
           'has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3',
           'has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-[3px] has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50',
           'has-[[data-slot][aria-invalid=true]]:border-destructive has-[[data-slot][aria-invalid=true]]:ring-destructive/20 dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40',
+          props.radius === undefined
+            ? undefined
+            : GROUP_RADIUS_CLASS[props.radius],
           props.class,
         ),
       ),
@@ -171,6 +181,7 @@ export type InputGroupInputProps<Msg> = Readonly<{
   id: string;
   value: string;
   onInput: (value: string) => Msg;
+  onKeyDown?: (key: string) => Msg;
   placeholder?: string;
   type?: string;
   name?: string;
@@ -191,6 +202,9 @@ export const inputGroupInput = <Msg>(
     h.Id(props.id),
     h.Value(props.value),
     h.OnInput(props.onInput),
+    ...(props.onKeyDown === undefined
+      ? []
+      : [h.OnKeyDown(key => props.onKeyDown!(key))]),
     h.Type(props.type ?? 'text'),
     ...(props.name === undefined ? [] : [h.Name(props.name)]),
     ...(props.placeholder === undefined
@@ -201,5 +215,42 @@ export const inputGroupInput = <Msg>(
     ...((props.isInvalid ?? false) ? [h.AriaInvalid(true)] : []),
     h.DataAttribute('slot', 'input-group-control'),
     h.Class(cn(INPUT_CLASS, INPUT_GROUP_CONTROL_CLASS, props.class)),
+  ]);
+};
+
+export type InputGroupTextareaProps<Msg> = Readonly<{
+  id: string;
+  value: string;
+  onInput: (value: string) => Msg;
+  placeholder?: string;
+  name?: string;
+  isDisabled?: boolean;
+  isInvalid?: boolean;
+  ariaLabel?: string;
+  class?: string;
+}>;
+
+export const inputGroupTextarea = <Msg>(
+  props: InputGroupTextareaProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  return h.textarea([
+    h.Id(props.id),
+    h.Value(props.value),
+    h.OnInput(props.onInput),
+    ...(props.name === undefined ? [] : [h.Name(props.name)]),
+    ...(props.placeholder === undefined
+      ? []
+      : [h.Placeholder(props.placeholder)]),
+    ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
+    ...((props.isDisabled ?? false) ? [h.Disabled(true)] : []),
+    ...((props.isInvalid ?? false) ? [h.AriaInvalid(true)] : []),
+    h.DataAttribute('slot', 'input-group-control'),
+    h.Class(
+      cn(
+        'field-sizing-content min-h-16 w-full flex-1 rounded-none border-0 bg-transparent px-3 py-2 text-base shadow-none outline-none placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-transparent',
+        props.class,
+      ),
+    ),
   ]);
 };

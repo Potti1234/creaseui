@@ -11,7 +11,7 @@ type SlotProps = Readonly<{
 }>;
 export type ItemVariants = Readonly<{
   variant?: "default" | "outline" | "muted" | null;
-  size?: "default" | "sm" | null;
+  size?: "default" | "sm" | "xs" | null;
 }>;
 export type ItemMediaVariants = Readonly<{
   variant?: "default" | "icon" | "image" | null;
@@ -33,6 +33,7 @@ const styles = stylex.create({
   outline: { borderColor: tokens.border },
   muted: { backgroundColor: foundationTokens.mutedSoft },
   sm: { gap: "0.625rem", paddingBlock: "0.625rem", paddingInline: "0.75rem" },
+  xs: { gap: "0.5rem", paddingBlock: "0.5rem", paddingInline: "0.625rem" },
   media: {
     gap: "0.5rem",
     alignItems: "center",
@@ -95,6 +96,9 @@ const styles = stylex.create({
   group: { display: "flex", flexDirection: "column" },
   groupSm: { gap: "0.625rem" },
   groupMd: { gap: "0.75rem" },
+  cols2: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))" },
+  cols3: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))" },
+  cols4: { display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))" },
   separator: { backgroundColor: tokens.border, height: "1px", width: "100%" },
 });
 const slotDiv =
@@ -110,12 +114,16 @@ export const itemVariants = (o: ItemVariants = {}): string =>
     o.variant === "outline" && styles.outline,
     o.variant === "muted" && styles.muted,
     o.size === "sm" && styles.sm,
+    o.size === "xs" && styles.xs,
   );
 export type ItemProps = SlotProps &
   Readonly<{
     variant?: ItemVariants["variant"];
     size?: ItemVariants["size"];
-    element?: "div" | "li" | "article";
+    element?: "div" | "li" | "article" | "a";
+    href?: string;
+    target?: string;
+    rel?: string;
   }>;
 export const item = <Msg>(p: ItemProps, h: HtmlBuilder<Msg>): Html => {
   const variant = p.variant ?? "default",
@@ -131,6 +139,7 @@ export const item = <Msg>(p: ItemProps, h: HtmlBuilder<Msg>): Html => {
           variant === "outline" && styles.outline,
           variant === "muted" && styles.muted,
           size === "sm" && styles.sm,
+          size === "xs" && styles.xs,
           p.layoutStyle,
         ),
       ),
@@ -140,7 +149,17 @@ export const item = <Msg>(p: ItemProps, h: HtmlBuilder<Msg>): Html => {
     ? h.li(attrs, children)
     : p.element === "article"
       ? h.article(attrs, children)
-      : h.div(attrs, children);
+      : p.element === "a"
+        ? h.a(
+            [
+              ...attrs,
+              h.Href(p.href ?? "#"),
+              ...(p.target === undefined ? [] : [h.Attribute("target", p.target)]),
+              ...(p.rel === undefined ? [] : [h.Rel(p.rel)]),
+            ],
+            children,
+          )
+        : h.div(attrs, children);
 };
 export const itemMediaVariants = (o: ItemMediaVariants = {}): string =>
   className(
@@ -180,13 +199,13 @@ export const itemDescription = <Msg>(p: SlotProps, h: HtmlBuilder<Msg>): Html =>
 export const itemActions = slotDiv("item-actions", styles.actions);
 export const itemHeader = slotDiv("item-header", styles.header);
 export const itemFooter = slotDiv("item-footer", styles.footer);
-export type ItemGroupProps = SlotProps & Readonly<{ spacing?: "none" | "sm" | "md" }>;
+export type ItemGroupProps = SlotProps & Readonly<{ spacing?: "none" | "sm" | "md"; columns?: 2 | 3 | 4 }>;
 export const itemGroup = <Msg>(p: ItemGroupProps, h: HtmlBuilder<Msg>): Html =>
   h.div(
     [
       h.Role("list"),
       h.DataAttribute("slot", "item-group"),
-      h.Class(className(styles.group, p.spacing === "sm" && styles.groupSm, p.spacing === "md" && styles.groupMd, p.layoutStyle)),
+      h.Class(className(styles.group, p.spacing === "sm" && styles.groupSm, p.spacing === "md" && styles.groupMd, p.columns === 2 && styles.cols2, p.columns === 3 && styles.cols3, p.columns === 4 && styles.cols4, p.layoutStyle)),
     ],
     [...p.children],
   );

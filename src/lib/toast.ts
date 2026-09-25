@@ -3,13 +3,19 @@ import { Duration, Effect, Option, Schema as S } from 'effect'
 import * as Command from 'foldkit/command'
 import { defineMessageUnion } from 'foldkit/message'
 
+export const Position = S.Literals([
+  'top-left', 'top-center', 'top-right',
+  'bottom-left', 'bottom-center', 'bottom-right',
+])
+export type Position = typeof Position.Type
 export const ToastPayload = S.Struct({
   title: S.String,
   description: S.optional(S.String),
   actionLabel: S.optional(S.String),
+  position: S.optional(Position),
 })
 export type ToastPayload = typeof ToastPayload.Type
-export const Variant = S.Literals(['Success', 'Error', 'Warning', 'Info'])
+export const Variant = S.Literals(['Default', 'Success', 'Error', 'Warning', 'Info'])
 export type Variant = typeof Variant.Type
 export const Entry = S.Struct({
   id: S.String,
@@ -93,6 +99,7 @@ export type ToastInput = Readonly<{
   actionLabel?: string
   duration?: Duration.Input
   sticky?: boolean
+  position?: Position
 }>
 export type ShowInput = ToastInput & Readonly<{ variant: Variant }>
 export type UpdateInput = Partial<Omit<ToastInput, 'duration'>> & Readonly<{ duration?: Duration.Input; variant?: Variant }>
@@ -102,11 +109,13 @@ export const success = (input: ToastInput): ShowInput => toastInput('Success', i
 export const error = (input: ToastInput): ShowInput => toastInput('Error', input)
 export const info = (input: ToastInput): ShowInput => toastInput('Info', input)
 export const warning = (input: ToastInput): ShowInput => toastInput('Warning', input)
+export const plain = (input: ToastInput): ShowInput => toastInput('Default', input)
 
-const payload = (input: Pick<ToastInput, 'title' | 'description' | 'actionLabel'>): ToastPayload => ({
+const payload = (input: Pick<ToastInput, 'title' | 'description' | 'actionLabel' | 'position'>): ToastPayload => ({
   title: input.title,
   ...(input.description === undefined ? {} : { description: input.description }),
   ...(input.actionLabel === undefined ? {} : { actionLabel: input.actionLabel }),
+  ...(input.position === undefined ? {} : { position: input.position }),
 })
 
 export const show = (model: Model, input: ShowInput): UpdateReturn => {
@@ -131,6 +140,7 @@ export const updateToast = (model: Model, id: string, input: UpdateInput): Updat
       title: input.title ?? previous.payload.title,
       ...(input.description === undefined ? (previous.payload.description === undefined ? {} : { description: previous.payload.description }) : { description: input.description }),
       ...(input.actionLabel === undefined ? (previous.payload.actionLabel === undefined ? {} : { actionLabel: previous.payload.actionLabel }) : { actionLabel: input.actionLabel }),
+      ...(input.position === undefined ? (previous.payload.position === undefined ? {} : { position: previous.payload.position }) : { position: input.position }),
     },
     variant: input.variant ?? previous.variant,
     sticky: input.sticky ?? previous.sticky,

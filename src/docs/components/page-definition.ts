@@ -6,6 +6,11 @@ export type DocsExample = Readonly<{
   staticPreview?: <Message>(model: Readonly<Record<string, never>>, h: HtmlBuilder<Message>) => Html;
   code: string;
   previewClass?: string;
+  /** Rendered only as the page hero — no named example section. */
+  heroOnly?: boolean;
+  /** DOM anchor id override; defaults to the title slug. Needed when two
+     sections share a title. */
+  sectionId?: string;
 }>;
 
 export type StyleXExamplePreviewProvider = <Msg>(

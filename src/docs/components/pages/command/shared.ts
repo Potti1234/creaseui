@@ -1,82 +1,208 @@
 import type { DocsExample } from '@/docs/components/page-definition';
 import { foldkitApplication } from '@/docs/components/pages/authored-page';
 
-export const commandActions = ['calendar', 'search', 'settings'] as const;
-export const commandLabel = (value: string): string => value[0]?.toUpperCase() + value.slice(1);
-export const commandFixtures = [
-  { title: 'Application commands', description: 'The parent stores the typed output; executing its domain effect remains an explicit parent decision.', grouped: false, mode: 'ready' },
-  { title: 'Grouped commands', description: 'Group headings and shortcut hints enrich the same complete selection architecture.', grouped: true, mode: 'ready' },
-  { title: 'No results', description: 'An empty result is announced as polite status without inventing an action.', grouped: false, mode: 'empty' },
-  { title: 'Remote loading', description: 'The parent keeps request identity and stale-result rejection in its Commands, then passes explicit loading state.', grouped: false, mode: 'loading' },
-  { title: 'Large result policy', description: 'Bound the rendered result window and announce that a narrower query reveals additional commands.', grouped: false, mode: 'limited' },
-] as const;
+export type CommandFixture = Readonly<{
+  title: string;
+  description?: string;
+  heroOnly?: boolean;
+  kind: 'basic' | 'shortcuts' | 'groups' | 'scrollable' | 'rtl';
+}>;
 
-const source = (fixture: (typeof commandFixtures)[number], renderer: 'tailwind' | 'stylex'): string => {
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
-  const remote = fixture.mode === 'loading';
-  const isStyleX = renderer === 'stylex';
+export const commandFixtures: ReadonlyArray<CommandFixture> = [
+  { title: 'Demo', heroOnly: true, kind: 'basic' },
+  { title: 'Basic', kind: 'basic', description: 'A dialog wraps the always-visible command palette; the parent owns the open state.' },
+  { title: 'Shortcuts', kind: 'shortcuts', description: 'Item configs carry icon content and a trailing shortcut hint.' },
+  { title: 'Groups', kind: 'groups', description: 'itemGroupKey plus groupToHeading render labeled, separated groups.' },
+  { title: 'Scrollable', kind: 'scrollable', description: 'Long item sets scroll inside the dialog while the input stays pinned.' },
+  { title: 'RTL', kind: 'rtl', description: 'A dir="rtl" wrapper mirrors the palette for localized commands.' },
+];
+
+export type CommandItem = Readonly<{
+  value: string;
+  icon?: string;
+  shortcut?: string;
+  group: string;
+}>;
+
+export const commandBasicItems: ReadonlyArray<CommandItem> = [
+  { value: 'Calendar', icon: 'calendar', group: 'Suggestions' },
+  { value: 'Search Emoji', icon: 'smile', group: 'Suggestions' },
+  { value: 'Calculator', icon: 'calculator', group: 'Suggestions' },
+];
+
+export const commandShortcutItems: ReadonlyArray<CommandItem> = [
+  { value: 'Profile', icon: 'user', shortcut: '⌘P', group: 'Settings' },
+  { value: 'Billing', icon: 'credit-card', shortcut: '⌘B', group: 'Settings' },
+  { value: 'Settings', icon: 'settings', shortcut: '⌘S', group: 'Settings' },
+];
+
+export const commandGroupItems: ReadonlyArray<CommandItem> = [
+  ...commandBasicItems,
+  ...commandShortcutItems,
+];
+
+export const commandScrollableItems: ReadonlyArray<CommandItem> = [
+  { value: 'Home', icon: 'house', shortcut: '⌘H', group: 'Navigation' },
+  { value: 'Inbox', icon: 'inbox', group: 'Navigation' },
+  { value: 'Search', icon: 'search', shortcut: '⌘F', group: 'Navigation' },
+  { value: 'Files', icon: 'folder', group: 'Navigation' },
+  { value: 'Images', icon: 'image', group: 'Navigation' },
+  { value: 'Music', icon: 'music', group: 'Navigation' },
+  { value: 'Videos', icon: 'video', group: 'Navigation' },
+  { value: 'Documents', icon: 'file-text', group: 'Navigation' },
+  { value: 'Downloads', icon: 'download', group: 'Navigation' },
+  { value: 'Trash', icon: 'trash-2', group: 'Navigation' },
+  { value: 'New Folder', icon: 'folder-plus', shortcut: '⌘⇧N', group: 'Actions' },
+  { value: 'Copy Path', icon: 'clipboard', shortcut: '⌘⇧C', group: 'Actions' },
+  { value: 'Paste', icon: 'clipboard-paste', shortcut: '⌘V', group: 'Actions' },
+];
+
+export const commandRtlItems: ReadonlyArray<CommandItem> = [
+  { value: 'التقويم', icon: 'calendar', group: 'اقتراحات' },
+  { value: 'بحث عن إيموجي', icon: 'smile', group: 'اقتراحات' },
+  { value: 'الآلة الحاسبة', icon: 'calculator', group: 'اقتراحات' },
+];
+
+export const itemsForFixture = (
+  fixture: CommandFixture,
+): ReadonlyArray<CommandItem> =>
+  fixture.kind === 'shortcuts'
+    ? commandShortcutItems
+    : fixture.kind === 'groups'
+      ? commandGroupItems
+      : fixture.kind === 'scrollable'
+        ? commandScrollableItems
+        : fixture.kind === 'rtl'
+          ? commandRtlItems
+          : commandBasicItems;
+
+const itemsLiteral = (items: ReadonlyArray<CommandItem>): string => {
+  const lines = items.map(
+    item =>
+      `  { value: '${item.value}'${item.icon === undefined ? '' : `, icon: '${item.icon}'`}${item.shortcut === undefined ? '' : `, shortcut: '${item.shortcut}'`}, group: '${item.group}' },`,
+  );
+  return `type CommandItem = Readonly<{ value: string; icon?: string; shortcut?: string; group: string }>
+const commandItems: ReadonlyArray<CommandItem> = [\n${lines.join('\n')}\n]`;
+};
+
+const commandSource = (
+  fixture: CommandFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const dir = renderer === 'stylex' ? 'stylex' : 'ui';
+  const items = itemsForFixture(fixture);
+  const placeholder =
+    fixture.kind === 'rtl' ? 'اكتب أمرًا أو ابحث...' : 'Type a command or search...';
+  const aria = fixture.kind === 'rtl' ? 'قائمة الأوامر' : 'Command menu';
   return foldkitApplication({
     title: `Command — ${fixture.title}`,
     imports: `import { Option, Schema as S } from 'effect'
-import { Command, Runtime, Subscription, Update } from 'foldkit'
+import { Command as FoldkitCommand, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { defineMessageUnion } from 'foldkit/message'
-${isStyleX ? "import * as stylex from '@stylexjs/stylex'\n" : ''}
-import * as CommandMenu from '@/${isStyleX ? 'stylex' : 'ui'}/command'`,
-    model: `export const Action = S.Literals(['calendar', 'search', 'settings'])
-export type Action = typeof Action.Type
-const ApplicationCommand = CommandMenu.create<Action>()
-${isStyleX ? "const styles = stylex.create({ command: { width: '100%', maxWidth: '28rem' } })\n" : ''}export const Model = S.Struct({ command: CommandMenu.Model, maybeAction: S.Option(Action)${remote ? ', items: S.Array(Action), requestId: S.Number, isLoading: S.Boolean' : ''} })
-export type Model = typeof Model.Type`,
+
+import * as Button from '@/${dir}/button'
+import * as CommandMenu from '@/${dir}/command'
+import * as Dialog from '@/${dir}/dialog'
+import * as Icon from '@/lib/icon'`,
+    model: `export const Model = S.Struct({
+  dialog: Dialog.Model,
+  command: CommandMenu.Model,
+  maybeValue: S.Option(S.String),
+})
+export type Model = typeof Model.Type
+
+${itemsLiteral(items)}`,
     messages: `import { taggedStruct } from 'foldkit/schema'
-export const GotCommandMessage = taggedStruct('GotCommandMessage${tag}', { message: CommandMenu.Message });
-${remote ? "import { defineMessageUnion } from 'foldkit/message'\nexport const ReceivedRemoteCommands = defineMessageUnion({\n  ReceivedRemoteCommands: { requestId: S.Number, items: S.Array(Action) },\n});\n" : ''}export const Message = S.Union([GotCommandMessage${remote ? ', ReceivedRemoteCommands' : ''}])
+export const OpenedMenu = taggedStruct('OpenedMenu', {});
+export const GotDialogMessage = taggedStruct('GotDialogMessage', { message: Dialog.Message });
+export const GotCommandMessage = taggedStruct('GotCommandMessage', { message: CommandMenu.Message });
+export const Message = S.Union([OpenedMenu, GotDialogMessage, GotCommandMessage])
 export type Message = typeof Message.Type`,
-    init: `export const init = (): Update.Return<Model, Message> => ({ model: { command: CommandMenu.init({ id: 'application-command', isAnimated: true }), maybeAction: Option.none()${remote ? ', items: [], requestId: 0, isLoading: true' : ''} } })`,
+    init: `export const init = (): Update.Return<Model, Message> => ({
+  model: {
+    dialog: Dialog.init({ id: 'command-dialog', isAnimated: true }),
+    command: CommandMenu.init({ id: 'command-menu', isAnimated: true }),
+    maybeValue: Option.none(),
+  },
+})`,
     update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
-    ${remote ? `case 'ReceivedRemoteCommands':
-      return message.requestId === model.requestId
-        ? { model: { ...model, items: message.items, isLoading: false } }
-        : { model }
-    ` : ''}case 'GotCommandMessage${tag}': {
-      const commandOp__ = ApplicationCommand.update(model.command, message.message);
-    const command = commandOp__.model;
-    const commands = commandOp__.commands ?? [];
-    const maybeSelection = Option.fromNullishOr(commandOp__.outMessage);
-      const maybeAction = Option.match(maybeSelection, {
-        onNone: () => model.maybeAction,
-        onSome: selection => selection._tag === 'Selected' ? Option.some(selection.value) : Option.none<Action>(),
+    case 'OpenedMenu': {
+      const next = Dialog.open(model.dialog)
+      return {
+        model: { ...model, dialog: next.model },
+        commands: FoldkitCommand.mapMessages(next.commands ?? [], child => GotDialogMessage({ message: child })),
+      }
+    }
+    case 'GotDialogMessage': {
+      const next = Dialog.update(model.dialog, message.message)
+      return {
+        model: { ...model, dialog: next.model },
+        commands: FoldkitCommand.mapMessages(next.commands ?? [], child => GotDialogMessage({ message: child })),
+      }
+    }
+    case 'GotCommandMessage': {
+      const next = CommandMenu.update(model.command, message.message)
+      const maybeOut = Option.fromNullishOr(next.outMessage)
+      const maybeValue = Option.match(maybeOut, {
+        onNone: () => model.maybeValue,
+        onSome: out => out._tag === 'Selected' ? Option.some(out.value) : Option.none(),
       })
-      return { model: { ...model, command, maybeAction${remote ? ", requestId: command.inputValue === model.command.inputValue ? model.requestId : model.requestId + 1, isLoading: command.inputValue === model.command.inputValue ? model.isLoading : true" : ''} }, commands: Command.mapMessages(commands, next => GotCommandMessage({ message: next })) }
+      return {
+        model: { ...model, command: next.model, maybeValue },
+        commands: FoldkitCommand.mapMessages(next.commands ?? [], child => GotCommandMessage({ message: child })),
+      }
     }
   }
 }`,
-    view: `const actions: ReadonlyArray<Action> = ['calendar', 'search', 'settings']
-const labelFor = (action: Action): string => action[0]?.toUpperCase() + action.slice(1)
-
-export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
-  title: 'Command — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
-    ApplicationCommand.command({
-      model: model.command,
-      maybeSelectedValue: model.maybeAction,
-      restingInputValue: Option.match(model.maybeAction, { onNone: () => '', onSome: labelFor }),
-      toParentMessage: message => GotCommandMessage({ message }),
-      ${isStyleX ? 'layoutStyle: styles.command,' : "class: 'w-full max-w-md border shadow-md',"}
-      items: ${fixture.mode === 'empty' ? '[] as ReadonlyArray<Action>' : remote ? 'model.items' : 'actions'},
-      itemToConfig: action => ({ content: labelFor(action), ...(action === 'settings' ? { shortcut: '⌘,' } : {}) }),
-      placeholder: 'Type a command or search…',
-      ariaLabel: 'Application commands',${fixture.grouped ? `
-      itemGroupKey: action => action === 'settings' ? 'System' : 'Navigation',
-      groupToHeading: group => group,` : ''}
-      ${fixture.mode === 'empty' ? "emptyContent: 'No matching application commands.'," : ''}
-      ${remote ? "status: model.isLoading ? 'loading' : 'ready',\n      loadingContent: 'Loading remote commands…'," : ''}
-      ${fixture.mode === 'limited' ? 'maxVisibleItems: 2,' : ''}
-    }, h),
+    view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: 'Command menu',
+  body: h.main([], [
+    ${fixture.kind === 'rtl' ? "h.div([h.Dir('rtl')], [" : 'h.div([h.Class(\'flex flex-col gap-4\')], ['}
+      Button.button({ variant: 'outline', onClick: OpenedMenu(), children: ['Open Menu'] }, h),
+      Dialog.dialog({
+        model: model.dialog,
+        toParentMessage: message => GotDialogMessage({ message }),
+        title: '${aria}',
+        content: () => [
+          CommandMenu.command({
+            model: model.command,
+            maybeSelectedValue: model.maybeValue,
+            restingInputValue: '',
+            toParentMessage: message => GotCommandMessage({ message }),
+            items: commandItems.map(item => item.value),
+            itemToConfig: value => {
+              const item = commandItems.find(entry => entry.value === value)
+              return {
+                content: h.span([h.Class('flex items-center gap-2')], [
+                  ...(item?.icon === undefined ? [] : [Icon.icon(item.icon, { class: 'size-4' }, h)]),
+                  h.span([], [value]),
+                ]),
+                ...(item?.shortcut === undefined ? {} : { shortcut: item.shortcut }),
+              }
+            },
+            itemGroupKey: value => commandItems.find(entry => entry.value === value)?.group ?? 'Other',
+            groupToHeading: group => group,
+            placeholder: '${placeholder}',
+            ariaLabel: '${aria}',
+            emptyContent: 'No results found.',
+          }, h),
+        ],
+      }, h),
+    ]),
   ]),
 })`,
   });
 };
 
-export const commandExamples = (renderer: 'tailwind' | 'stylex'): ReadonlyArray<DocsExample> => commandFixtures.map(fixture => ({ title: fixture.title, description: fixture.description, code: source(fixture, renderer) }));
+export const commandExamples = (
+  renderer: 'tailwind' | 'stylex',
+): ReadonlyArray<DocsExample> =>
+  commandFixtures.map(fixture => ({
+    title: fixture.title,
+    ...(fixture.description === undefined
+      ? {}
+      : { description: fixture.description }),
+    ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
+    code: commandSource(fixture, renderer),
+  }));

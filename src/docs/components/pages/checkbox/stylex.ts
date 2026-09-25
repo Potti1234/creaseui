@@ -1,35 +1,93 @@
 import type { HtmlBuilder } from 'foldkit/html';
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { checkboxLabels } from '@/docs/components/pages/checkbox/shared';
+import {
+  checkboxFixtures,
+  checkboxGroupItems,
+  checkboxTableRows,
+} from '@/docs/components/pages/checkbox/shared';
 import * as Checkbox from '@/stylex/checkbox';
+import * as Field from '@/stylex/field';
+import * as Table from '@/stylex/table';
 
 export const checkboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
-) => Checkbox.checkbox({
-  id: `docs-checkbox-${String(exampleIndex)}`,
-  isChecked: (model as { isChecked: boolean }).isChecked,
-  ...(exampleIndex === 1 ? { isIndeterminate: (model as { isIndeterminate: boolean }).isIndeterminate } : {}),
-  onToggle: isChecked => onMessageJson(JSON.stringify({
-    _tag: 'ToggledCheckboxPreview',
-    isChecked,
-  })),
-  label: checkboxLabels[exampleIndex] ?? checkboxLabels[0],
-  ...(exampleIndex === 0
-    ? {
-        description: 'Required before creating the account.',
-        name: 'terms',
-        value: 'accepted',
-      }
-    : {}),
-  ...(exampleIndex === 2 ? { isDisabled: true } : {}),
-  ...(exampleIndex === 3
-    ? {
-        isReadOnly: true,
-        description: 'This status is supplied by your identity provider.',
-      }
-    : {}),
-}, h);
+) => {
+  const preview = model as {
+    isChecked: boolean;
+    isIndeterminate: boolean;
+    disks: boolean;
+    external: boolean;
+    drives: boolean;
+    servers: boolean;
+    selected: ReadonlyArray<string>;
+  };
+  const fixture = checkboxFixtures[exampleIndex];
+  if (fixture === undefined) return undefined;
+  if (fixture.kind === 'group') {
+    return Field.fieldSet({ children: [
+      Field.fieldLegend({ children: ['Show these items on the desktop:'] }, h),
+      Field.fieldDescription({ children: ['Select the items you want to show on the desktop.'] }, h),
+      Field.fieldGroup({ children: checkboxGroupItems.map(item => Checkbox.checkbox({
+        id: `desktop-${item.id}`,
+        isChecked: preview[item.id],
+        onToggle: isChecked => onMessageJson(JSON.stringify({ _tag: 'ToggledGroupItem', item: item.id, isChecked })),
+        label: item.label,
+        name: 'desktop-items',
+        value: item.id,
+      }, h)) }, h),
+    ] }, h);
+  }
+  if (fixture.kind === 'table') {
+    return Table.table({ children: [
+      Table.tableHeader({ children: [
+        Table.tableRow({ children: [
+          Table.tableHead({ children: [Checkbox.checkbox({
+            id: 'select-all',
+            isChecked: preview.selected.length === checkboxTableRows.length,
+            onToggle: isChecked => onMessageJson(JSON.stringify({ _tag: 'ToggledAll', isChecked })),
+            label: 'Select all rows',
+          }, h)] }, h),
+          Table.tableHead({ children: ['Name'] }, h),
+          Table.tableHead({ children: ['Email'] }, h),
+          Table.tableHead({ children: ['Role'] }, h),
+        ] }, h),
+      ] }, h),
+      Table.tableBody({ children: checkboxTableRows.map(row => Table.tableRow({
+        children: [
+          Table.tableCell({ children: [Checkbox.checkbox({
+            id: `row-${row.id}`,
+            isChecked: preview.selected.includes(row.id),
+            onToggle: isChecked => onMessageJson(JSON.stringify({ _tag: 'ToggledRow', id: row.id, isChecked })),
+            label: `Select ${row.name}`,
+          }, h)] }, h),
+          Table.tableCell({ children: [row.name] }, h),
+          Table.tableCell({ children: [row.email] }, h),
+          Table.tableCell({ children: [row.role] }, h),
+        ],
+      }, h)) }, h),
+    ] }, h);
+  }
+  const checkbox = Checkbox.checkbox({
+    id: `docs-checkbox-${String(exampleIndex)}`,
+    isChecked: preview.isChecked,
+    onToggle: isChecked => onMessageJson(JSON.stringify({ _tag: 'ToggledCheckboxPreview', isChecked })),
+    label: fixture.label,
+    ...(fixture.title === 'Invalid State' ? { isInvalid: true } : {}),
+    ...(fixture.title === 'Description' ? { description: 'By clicking this checkbox, you agree to the terms and conditions.' } : {}),
+    ...(fixture.title === 'Disabled' ? { isDisabled: true } : {}),
+    ...(fixture.title === 'Indeterminate' ? { isIndeterminate: preview.isIndeterminate } : {}),
+    ...(fixture.title === 'Read only'
+      ? {
+          isReadOnly: true,
+          description: 'This status is supplied by your identity provider.',
+        }
+      : {}),
+    name: 'terms',
+    value: 'accepted',
+  }, h);
+  return fixture.rtl === true ? h.div([h.Dir('rtl')], [checkbox]) : checkbox;
+};

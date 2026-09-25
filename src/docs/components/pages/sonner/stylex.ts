@@ -1,5 +1,76 @@
 import * as stylex from '@stylexjs/stylex';
-import type { HtmlBuilder } from 'foldkit/html'; import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'; import * as Button from '@/stylex/button'; import * as Sonner from '@/stylex/sonner';
-const styles = stylex.create({ secondViewport: { marginBottom: '6rem' } });
+import type { Html, HtmlBuilder } from 'foldkit/html';
 
-export const sonnerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(_index: number, model: unknown, send: (json: string) => Msg, h: HtmlBuilder<Msg>) => { const notifications = (model as { notifications: Sonner.Model }).notifications; const message = (value: object) => send(JSON.stringify(value)); return h.div([], [Button.button({ onClick: message({ _tag: 'ShowedSonnerPreview' }), children: ['Show sonner'] }, h), Sonner.sonner({ model: notifications, toParentMessage: next => message({ _tag: 'GotSonnerPreviewMessage', message: next }), ariaLabel: 'Sonner notifications', ...(_index === 1 ? { layoutStyle: styles.secondViewport } : {}) }, h)]); };
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import {
+  sonnerFixtures,
+  type SonnerFixture,
+} from '@/docs/components/pages/sonner/shared';
+import * as Button from '@/stylex/button';
+import * as Sonner from '@/stylex/sonner';
+import { className } from '@/stylex/style';
+
+const styles = stylex.create({
+  wrap: { gap: '0.5rem', display: 'flex', flexWrap: 'wrap', },
+  wrapCenter: { justifyContent: 'center' },
+});
+
+interface PreviewShape {
+  readonly notifications: Sonner.Model;
+  readonly pendingPromiseId?: unknown;
+}
+
+export const sonnerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+  exampleIndex: number,
+  model: unknown,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const preview = model as PreviewShape;
+  const fixture: SonnerFixture =
+    sonnerFixtures[exampleIndex] ?? sonnerFixtures[0];
+  const offset = sonnerFixtures
+    .slice(0, exampleIndex)
+    .reduce((total, candidate) => total + candidate.buttons.length, 0);
+  return h.div(
+    [
+      h.Class(
+        className(
+          styles.wrap,
+          ...(fixture.wrap === 'center' ? [styles.wrapCenter] : []),
+        ),
+      ),
+    ],
+    fixture.buttons
+      .map((button, index) =>
+        Button.button(
+          {
+            onClick: onMessageJson(
+              JSON.stringify({
+                _tag: 'ClickedSonnerButton',
+                index: offset + index,
+              }),
+            ),
+            variant: 'outline',
+            children: [button.label],
+          },
+          h,
+        ))
+      .concat([
+        Sonner.sonner(
+          {
+            model: preview.notifications,
+            toParentMessage: message =>
+              onMessageJson(
+                JSON.stringify({
+                  _tag: 'GotSonnerPreviewMessage',
+                  message,
+                }),
+              ),
+            ariaLabel: 'Sonner notifications',
+          },
+          h,
+        ),
+      ]),
+  );
+};

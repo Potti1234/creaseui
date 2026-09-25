@@ -29,6 +29,7 @@ export const itemVariants = cva(
       size: {
         default: 'gap-3 p-3',
         sm: 'gap-2.5 px-3 py-2.5',
+        xs: 'gap-2 px-2.5 py-2 in-data-[slot=dropdown-menu-content]:p-0',
       },
     },
     defaultVariants: {
@@ -44,7 +45,10 @@ export type ItemProps = SlotProps &
   Readonly<{
     variant?: ItemVariants['variant'];
     size?: ItemVariants['size'];
-    element?: 'div' | 'li' | 'article';
+    element?: 'div' | 'li' | 'article' | 'a';
+    href?: string;
+    target?: string;
+    rel?: string;
   }>;
 
 export const item = <Msg>(props: ItemProps, h: HtmlBuilder<Msg>): Html => {
@@ -65,6 +69,18 @@ export const item = <Msg>(props: ItemProps, h: HtmlBuilder<Msg>): Html => {
       return h.li(attributes, children);
     case 'article':
       return h.article(attributes, children);
+    case 'a':
+      return h.a(
+        [
+          ...attributes,
+          h.Href(props.href ?? '#'),
+          ...(props.target === undefined
+            ? []
+            : [h.Attribute('target', props.target)]),
+          ...(props.rel === undefined ? [] : [h.Rel(props.rel)]),
+        ],
+        children,
+      );
     default:
       return h.div(attributes, children);
   }

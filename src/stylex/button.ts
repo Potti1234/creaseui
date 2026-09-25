@@ -1,4 +1,5 @@
 import * as stylex from '@stylexjs/stylex'
+import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import {
@@ -14,6 +15,7 @@ import type {
   ComponentLayoutStyle,
   HasExactlyKeys,
 } from './contracts'
+import { foundationTokens } from './foundations-tokens.stylex'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
@@ -69,48 +71,42 @@ const variants = stylex.create({
   default: {
     backgroundColor: {
       default: tokens.primary,
-      ':hover': tokens.primaryHover,
+      ':hover': tokens.buttonPrimaryHover,
     },
-    boxShadow: tokens.shadowSm,
     color: tokens.primaryForeground,
   },
   destructive: {
     backgroundColor: {
-      default: tokens.destructiveSurface,
-      ':hover': tokens.destructiveHover,
+      default: tokens.softDestructiveSurface,
+      ':hover': tokens.softDestructiveHover,
     },
-    boxShadow: tokens.shadowSm,
-    color: tokens.destructiveForeground,
+    color: tokens.destructive,
   },
   outline: {
     borderColor: tokens.border,
     borderWidth: 1,
     backgroundColor: {
-      default: tokens.outlineSurface,
-      ':hover': tokens.outlineHover,
+      default: tokens.background,
+      ':hover': tokens.muted,
     },
     boxShadow: tokens.shadowSm,
-    color: {
-      default: tokens.foreground,
-      ':hover': tokens.accentForeground,
-    },
+    color: tokens.foreground,
   },
   secondary: {
     backgroundColor: {
       default: tokens.secondary,
-      ':hover': tokens.secondaryHover,
+      ':hover': tokens.buttonSecondaryHover,
     },
-    boxShadow: tokens.shadowSm,
     color: tokens.secondaryForeground,
   },
   ghost: {
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': tokens.accent,
+      ':hover': tokens.mutedHover,
     },
     color: {
       default: tokens.foreground,
-      ':hover': tokens.accentForeground,
+      ':hover': tokens.foreground,
     },
   },
   link: {
@@ -126,45 +122,119 @@ const variants = stylex.create({
 
 const sizes = stylex.create({
   default: {
-    paddingInline: '0.75rem',
-    height: '2rem',
-  },
-  sm: {
     gap: '0.375rem',
     paddingInline: '0.625rem',
-    height: '1.75rem',
+    height: '2.25rem',
+  },
+  xs: {
+    borderRadius: foundationTokens.radiusSm,
+    gap: '0.25rem',
+    paddingInline: '0.5rem',
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
+    height: '1.5rem',
+  },
+  sm: {
+    borderRadius: foundationTokens.radiusSm,
+    gap: '0.25rem',
+    paddingInline: '0.625rem',
+    height: '2rem',
   },
   lg: {
-    paddingInline: '1.5rem',
+    gap: '0.375rem',
+    paddingInline: '0.625rem',
     height: '2.5rem',
   },
   icon: {
     paddingInline: 0,
+    height: '2.25rem',
+    width: '2.25rem',
+  },
+  'icon-xs': {
+    borderRadius: foundationTokens.radiusSm,
+    paddingInline: 0,
+    height: '1.5rem',
+    width: '1.5rem',
+  },
+  'icon-sm': {
+    borderRadius: foundationTokens.radiusSm,
+    paddingInline: 0,
     height: '2rem',
     width: '2rem',
   },
+  'icon-lg': {
+    paddingInline: 0,
+    height: '2.5rem',
+    width: '2.5rem',
+  },
+})
+
+/* Upstream tightens horizontal padding when an icon sits at an edge
+   (has-data-[icon=inline-*]); StyleX cannot select descendants, so the
+   docs pass `iconInset` explicitly. */
+const iconInset = stylex.create({
+  startCompact: { paddingInlineStart: '0.375rem' },
+  startRoomy: { paddingInlineStart: '0.5rem' },
+  endCompact: { paddingInlineEnd: '0.375rem' },
+  endRoomy: { paddingInlineEnd: '0.5rem' },
+})
+
+const shape = stylex.create({
+  rounded: { borderRadius: foundationTokens.radiusFull },
 })
 
 type _VariantMapIsExhaustive = Assert<HasExactlyKeys<typeof variants, ButtonVariant>>
 type _SizeMapIsExhaustive = Assert<HasExactlyKeys<typeof sizes, ButtonSize>>
 
+const iconInsetFor = (size: ButtonSize, inset: 'start' | 'end') => {
+  const compact = size === 'xs' || size === 'sm'
+  return inset === 'start'
+    ? compact
+      ? iconInset.startCompact
+      : iconInset.startRoomy
+    : compact
+      ? iconInset.endCompact
+      : iconInset.endRoomy
+}
+
 export type ButtonProps<Msg> = ButtonBehaviorProps<Msg> & Readonly<{
   variant?: ButtonVariant
   size?: ButtonSize
+  /** Edge-icon padding compensation matching has-data-[icon=inline-*]. */
+  iconInset?: 'start' | 'end'
+  /** Fully rounded pill shape (upstream `rounded-full`). */
+  rounded?: boolean
   /** Parent-layout positioning only. Add visual choices as named variants. */
   layoutStyle?: ComponentLayoutStyle
 }>
 
-export const button = <Msg>(props: ButtonProps<Msg>, h: HtmlBuilder<Msg>): Html =>
-  renderButton(
+/** The full visual recipe for embedding the button look on another element
+   (e.g. a DropdownMenu trigger). Prefer `button()` in normal use. */
+export const buttonVisualStyles = ({
+  variant = 'default',
+  size = 'default',
+}: Readonly<{ variant?: ButtonVariant; size?: ButtonSize }> = {}): ReadonlyArray<StaticStyles> => [
+  base.root,
+  variants[variant],
+  sizes[size],
+]
+
+export const button = <Msg>(props: ButtonProps<Msg>, h: HtmlBuilder<Msg>): Html => {
+  const size = props.size ?? 'default'
+  return renderButton(
     props,
-    [h.Class(className(base.root, variants[props.variant ?? 'default'], sizes[props.size ?? 'default'], (props.isDisabled === true || props.isLoading === true) && base.disabled, props.layoutStyle))],
+    [h.Class(className(base.root, variants[props.variant ?? 'default'], sizes[size], (props.isDisabled === true || props.isLoading === true) && base.disabled, props.rounded === true && shape.rounded, ...(props.iconInset === undefined ? [] : [iconInsetFor(size, props.iconInset)]), props.layoutStyle))],
     h,
   )
+}
 
 export type ButtonLinkProps = ButtonLinkBehaviorProps & Readonly<{
   variant?: ButtonVariant
   size?: ButtonSize
+  /** Edge-icon padding compensation matching has-data-[icon=inline-*]. */
+  iconInset?: 'start' | 'end'
+  /** Fully rounded pill shape (upstream `rounded-full`). */
+  rounded?: boolean
   /** Parent-layout positioning only. Add visual choices as named variants. */
   layoutStyle?: ComponentLayoutStyle
 }>
@@ -172,9 +242,11 @@ export type ButtonLinkProps = ButtonLinkBehaviorProps & Readonly<{
 export const buttonLink = <Msg>(
   props: ButtonLinkProps,
   h: HtmlBuilder<Msg>,
-): Html =>
-  renderButtonLink(
+): Html => {
+  const size = props.size ?? 'default'
+  return renderButtonLink(
     props,
-    [h.Class(className(base.root, variants[props.variant ?? 'default'], sizes[props.size ?? 'default'], props.layoutStyle))],
+    [h.Class(className(base.root, variants[props.variant ?? 'default'], sizes[size], props.rounded === true && shape.rounded, ...(props.iconInset === undefined ? [] : [iconInsetFor(size, props.iconInset)]), props.layoutStyle))],
     h,
   )
+}

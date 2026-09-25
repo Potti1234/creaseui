@@ -21,8 +21,12 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Single disclosure",
-        "Multiple disclosures"
+        "Basic",
+        "Multiple",
+        "Disabled",
+        "Borders",
+        "Card",
+        "RTL"
       ],
       "api": [
         {
@@ -116,8 +120,13 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Async deletion",
-        "Compact decision"
+        "Basic",
+        "Small",
+        "Media",
+        "Small with Media",
+        "Destructive",
+        "RTL",
+        "Async deletion"
       ],
       "api": [
         {
@@ -133,7 +142,7 @@
         {
           "name": "AlertDialogProps",
           "kind": "type",
-          "signature": "AlertDialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description: string; media?: ReadonlyArray<Html | string>; actionLabel: string; cancelLabel?: string; pendingLabel?: string; isPending?: boolean; size?…"
+          "signature": "AlertDialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description: string; media?: ReadonlyArray<Html | string>; mediaVariant?: keyof typeof MEDIA_VARIANTS; actionLabel: string; cancelLabel?: string; pendi…"
         },
         {
           "name": "alertDialog",
@@ -156,10 +165,17 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Deployment window",
-        "Changes saved",
-        "Storage nearly full",
-        "Upload failed"
+        "Basic",
+        "Account updated successfully",
+        "Destructive",
+        "Payment failed",
+        "Action",
+        "Dark mode is now available",
+        "Custom Colors",
+        "Your subscription will expire in 3 days.",
+        "RTL",
+        "تم الدفع بنجاح",
+        "ميزة جديدة متاحة"
       ],
       "api": [
         {
@@ -216,8 +232,9 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Video",
-        "Square"
+        "Square",
+        "Portrait",
+        "RTL"
       ],
       "api": [
         {
@@ -245,8 +262,12 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Uploaded file",
-        "Lifecycle states"
+        "Demo",
+        "Image",
+        "States",
+        "Sizes",
+        "Group",
+        "Trigger"
       ],
       "api": [
         {
@@ -278,6 +299,11 @@
           "name": "attachmentActions",
           "kind": "function",
           "signature": "attachmentActions<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html"
+        },
+        {
+          "name": "attachmentAction",
+          "kind": "function",
+          "signature": "attachmentAction<Msg>(props: Readonly<{ onClick: Msg; label: string; children: ReadonlyArray<Html | string>; class?: string; }>, h: HtmlBuilder<Msg>): Html"
         },
         {
           "name": "attachmentGroup",
@@ -313,8 +339,16 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Image lifecycle",
-        "Initials only"
+        "Demo",
+        "Basic",
+        "Badge",
+        "Badge with Icon",
+        "Avatar Group",
+        "Avatar Group Count",
+        "Avatar Group with Icon",
+        "Sizes",
+        "Dropdown",
+        "RTL"
       ],
       "api": [
         {
@@ -376,6 +410,36 @@
           "name": "avatarFallback",
           "kind": "function",
           "signature": "avatarFallback<Msg>(props: AvatarFallbackProps, h: HtmlBuilder<Msg>): Html"
+        },
+        {
+          "name": "AvatarBadgeProps",
+          "kind": "type",
+          "signature": "AvatarBadgeProps = Readonly<{ class?: string; children?: ReadonlyArray<Html | string>; }>"
+        },
+        {
+          "name": "avatarBadge",
+          "kind": "function",
+          "signature": "avatarBadge<Msg>(props: AvatarBadgeProps, h: HtmlBuilder<Msg>): Html"
+        },
+        {
+          "name": "AvatarGroupProps",
+          "kind": "type",
+          "signature": "AvatarGroupProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; }>"
+        },
+        {
+          "name": "avatarGroup",
+          "kind": "function",
+          "signature": "avatarGroup<Msg>(props: AvatarGroupProps, h: HtmlBuilder<Msg>): Html"
+        },
+        {
+          "name": "AvatarGroupCountProps",
+          "kind": "type",
+          "signature": "AvatarGroupCountProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; }>"
+        },
+        {
+          "name": "avatarGroupCount",
+          "kind": "function",
+          "signature": "avatarGroupCount<Msg>(props: AvatarGroupCountProps, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },
@@ -392,8 +456,13 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
+        "Basic",
         "Variants",
-        "Status"
+        "With Icon",
+        "With Spinner",
+        "Link",
+        "Custom Colors",
+        "RTL"
       ],
       "api": [
         {
@@ -409,7 +478,7 @@
         {
           "name": "BadgeProps",
           "kind": "type",
-          "signature": "BadgeProps = Readonly<{ children: ReadonlyArray<Html | string>; variant?: BadgeVariants['variant']; class?: string; }>"
+          "signature": "BadgeProps = Readonly<{ children: ReadonlyArray<Html | string>; variant?: BadgeVariants['variant']; class?: string; /** Renders the badge as an anchor pointing at this URL. */ href?: string; }>"
         },
         {
           "name": "badge",
@@ -432,10 +501,13 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Current path",
-        "Collapsed middle",
-        "Long resource label",
-        "RTL separator"
+        "Demo",
+        "Basic",
+        "Custom separator",
+        "Dropdown",
+        "Collapsed",
+        "Link component",
+        "RTL"
       ],
       "api": [
         {
@@ -523,9 +595,16 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Conversation",
-        "Reaction",
-        "Error"
+        "Demo",
+        "Variants",
+        "Alignment",
+        "Bubble Group",
+        "Links and Buttons",
+        "Reactions",
+        "Show More / Collapsible",
+        "Tooltip",
+        "Popover",
+        "Command failed with exit code 1"
       ],
       "api": [
         {
@@ -551,12 +630,12 @@
         {
           "name": "bubbleContent",
           "kind": "function",
-          "signature": "bubbleContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html"
+          "signature": "bubbleContent<Msg>(props: ChildrenProps & Readonly<{ onClick?: Msg }>, h: HtmlBuilder<Msg>): Html"
         },
         {
           "name": "bubbleReactions",
           "kind": "function",
-          "signature": "bubbleReactions<Msg>(props: ChildrenProps & Readonly<{ side?: 'top' | 'bottom'; align?: 'start' | 'end' }>, h: HtmlBuilder<Msg>): Html"
+          "signature": "bubbleReactions<Msg>(props: ChildrenProps & Readonly<{ side?: 'top' | 'bottom'; align?: 'start' | 'end'; ariaLabel?: string; }>, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },
@@ -573,8 +652,18 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Pagination actions",
-        "Vertical tools"
+        "Demo",
+        "Orientation",
+        "Size",
+        "Nested",
+        "Separator",
+        "Split",
+        "Input",
+        "Input Group",
+        "Dropdown Menu",
+        "Select",
+        "Popover",
+        "RTL"
       ],
       "api": [
         {
@@ -590,7 +679,7 @@
         {
           "name": "ButtonGroupProps",
           "kind": "type",
-          "signature": "ButtonGroupProps = Readonly<{ children: ReadonlyArray<Html | string>; orientation?: ButtonGroupVariants['orientation']; class?: string; }>"
+          "signature": "ButtonGroupProps = Readonly<{ children: ReadonlyArray<Html | string>; orientation?: ButtonGroupVariants['orientation']; class?: string; ariaLabel?: string; }>"
         },
         {
           "name": "buttonGroup",
@@ -634,11 +723,19 @@
       ],
       "examples": [
         "Basic",
-        "Variants",
-        "Sizes",
-        "Loading",
+        "Size",
+        "Default",
+        "Outline",
+        "Secondary",
+        "Ghost",
+        "Destructive",
+        "Link",
+        "Icon",
+        "With Icon",
+        "Rounded",
+        "Spinner",
         "Button Group",
-        "As Link",
+        "As Child",
         "RTL"
       ],
       "api": [
@@ -689,10 +786,17 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Selected date",
-        "Roomier cells",
-        "Parent-owned range",
-        "Locale zone and RTL"
+        "Demo",
+        "Persian / Hijri / Jalali Calendar",
+        "Basic",
+        "Range Calendar",
+        "Month and Year Selector",
+        "Presets",
+        "Date and Time Picker",
+        "Booked dates",
+        "Custom Cell Size",
+        "Week Numbers",
+        "RTL"
       ],
       "api": [
         {
@@ -778,7 +882,7 @@
         {
           "name": "CalendarViewOptions",
           "kind": "type",
-          "signature": "CalendarViewOptions = Readonly<{ class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; }>"
+          "signature": "CalendarViewOptions = Readonly<{ class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean; }>"
         },
         {
           "name": "calendarView",
@@ -788,7 +892,7 @@
         {
           "name": "CalendarProps",
           "kind": "type",
-          "signature": "CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; previousMonthLabel?: s…"
+          "signature": "CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean;…"
         },
         {
           "name": "calendar",
@@ -809,14 +913,18 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Article",
-        "With Footer"
+        "Basic",
+        "Size",
+        "Spacing",
+        "Edge to Edge",
+        "Image",
+        "RTL"
       ],
       "api": [
         {
           "name": "CardProps",
           "kind": "type",
-          "signature": "CardProps = Slot & Readonly<{ element?: 'div' | 'section' | 'article'; }>"
+          "signature": "CardProps = Slot & Readonly<{ element?: 'div' | 'section' | 'article'; size?: 'default' | 'sm'; }>"
         },
         {
           "name": "card",
@@ -874,8 +982,14 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Single slide",
-        "Two at a time"
+        "Demo",
+        "Sizes",
+        "Spacing",
+        "Orientation",
+        "Options",
+        "API",
+        "Plugins",
+        "RTL"
       ],
       "api": [
         {
@@ -908,6 +1022,10 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
+        "Demo",
+        "Your First Chart",
+        "Tooltip",
+        "RTL",
         "Monthly revenue",
         "Traffic trend",
         "ECharts lifecycle",
@@ -1101,8 +1219,16 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Demo",
+        "Invalid State",
+        "Basic",
+        "Description",
+        "Disabled",
+        "Group",
+        "Table",
+        "RTL",
+        "Indeterminate",
+        "Read only"
       ],
       "api": [
         {
@@ -1129,8 +1255,12 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Demo",
+        "Basic",
+        "Settings Panel",
+        "File Tree",
+        "RTL",
+        "Disabled"
       ],
       "api": [
         {
@@ -1158,10 +1288,18 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Framework search",
-        "Grouped frameworks",
-        "No results",
-        "Read only RTL"
+        "Demo",
+        "Basic",
+        "Multiple",
+        "Clear Button",
+        "Groups",
+        "Custom Items",
+        "Invalid",
+        "Disabled",
+        "Auto Highlight",
+        "Popup",
+        "Input Group",
+        "RTL"
       ],
       "api": [
         {
@@ -1200,6 +1338,26 @@
           "signature": "init: value"
         },
         {
+          "name": "MultiModel",
+          "kind": "value",
+          "signature": "MultiModel: value"
+        },
+        {
+          "name": "multiInit",
+          "kind": "value",
+          "signature": "multiInit: value"
+        },
+        {
+          "name": "MultiModel",
+          "kind": "type",
+          "signature": "MultiModel = typeof MultiModel.Type"
+        },
+        {
+          "name": "MultiOutMessage",
+          "kind": "type",
+          "signature": "MultiOutMessage<Value extends string = string> = OutMessage<Value>"
+        },
+        {
           "name": "ComboboxSize",
           "kind": "type",
           "signature": "ComboboxSize = 'sm' | 'default'"
@@ -1222,7 +1380,22 @@
         {
           "name": "create",
           "kind": "function",
-          "signature": "create<Value extends string = string>(): ComboboxBundle<Value>"
+          "signature": "create<Value extends string = string>(config?: Readonly<{ autoHighlight?: boolean }>): ComboboxBundle<Value>"
+        },
+        {
+          "name": "ComboboxMultiProps",
+          "kind": "type",
+          "signature": "ComboboxMultiProps<Item, Value extends string, Msg> = Omit< ComboboxProps<Item, Value, Msg>, 'maybeSelectedValue' | 'restingInputValue' > & Readonly<{ /** The selection the parent owns; selecting an item toggles membership. */ selectedValues: ReadonlyArray<Va…"
+        },
+        {
+          "name": "ComboboxMultiBundle",
+          "kind": "type",
+          "signature": "ComboboxMultiBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ComboboxPrimitive.Multi.create<Value>>['update']; comboboxMulti: <Item, Msg>( props: ComboboxMultiProps<Item, Value, Msg>, h: HtmlBuilder<Msg>, ) => Html; }>"
+        },
+        {
+          "name": "createMulti",
+          "kind": "function",
+          "signature": "createMulti<Value extends string = string>(config?: Readonly<{ autoHighlight?: boolean }>): ComboboxMultiBundle<Value>"
         },
         {
           "name": "update",
@@ -1250,11 +1423,12 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Application commands",
-        "Grouped commands",
-        "No results",
-        "Remote loading",
-        "Large result policy"
+        "Demo",
+        "Basic",
+        "Shortcuts",
+        "Groups",
+        "Scrollable",
+        "RTL"
       ],
       "api": [
         {
@@ -1361,9 +1535,16 @@
         "Potti1234/creaseui/dropdown-menu"
       ],
       "examples": [
-        "Browser actions",
-        "Disabled action",
-        "Keyboard activation"
+        "Demo",
+        "Basic",
+        "Submenu",
+        "Shortcuts",
+        "Groups",
+        "Icons",
+        "Checkboxes",
+        "Radio",
+        "Destructive",
+        "RTL"
       ],
       "api": [
         {
@@ -1460,7 +1641,8 @@
       "examples": [
         "Sortable payments",
         "Filter and paginate",
-        "Server-owned query"
+        "Server-owned query",
+        "RTL"
       ],
       "api": [
         {
@@ -1500,8 +1682,14 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Existing value",
-        "Empty value"
+        "Pick a date",
+        "Basic",
+        "Range Picker",
+        "Date of Birth",
+        "Input",
+        "Time Picker",
+        "Natural Language Picker",
+        "RTL"
       ],
       "api": [
         {
@@ -1595,6 +1783,11 @@
           "signature": "triggerId: value"
         },
         {
+          "name": "updateForRtl",
+          "kind": "function",
+          "signature": "updateForRtl(model: Model, message: Message): ReturnType<typeof update>"
+        },
+        {
           "name": "DatePickerProps",
           "kind": "type",
           "signature": "DatePickerProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; placeholder?: string; formatDate?: (date: FoldkitCalendar.CalendarDate) => string; name?: string; isDis…"
@@ -1619,7 +1812,12 @@
       ],
       "examples": [
         "Edit profile",
-        "Compact confirmation"
+        "Compact confirmation",
+        "Custom Close Button",
+        "No Close Button",
+        "Sticky Footer",
+        "Scrollable Content",
+        "RTL"
       ],
       "api": [
         {
@@ -1775,7 +1973,11 @@
       ],
       "examples": [
         "Activity goal",
-        "Side drawer"
+        "Side drawer",
+        "Scrollable Content",
+        "Sides",
+        "Responsive Dialog",
+        "RTL"
       ],
       "api": [
         {
@@ -2008,10 +2210,13 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Create First Item",
-        "No Results",
-        "Error recovery",
-        "Permission denied"
+        "Create a project",
+        "Outline",
+        "Background",
+        "Avatar",
+        "Avatar Group",
+        "InputGroup",
+        "RTL"
       ],
       "api": [
         {
@@ -2075,10 +2280,19 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Anatomy",
-        "Validation error",
-        "Async validation",
-        "Field group"
+        "Payment Method",
+        "Input",
+        "Textarea",
+        "Select",
+        "Slider",
+        "Fieldset",
+        "Checkbox",
+        "Radio",
+        "Switch",
+        "Choice Card",
+        "Field Group",
+        "RTL",
+        "Responsive Layout"
       ],
       "api": [
         {
@@ -2144,7 +2358,7 @@
         {
           "name": "FieldProps",
           "kind": "type",
-          "signature": "FieldProps = Slot & Readonly<{ orientation?: FieldVariants['orientation']; isInvalid?: boolean; isDisabled?: boolean; }>"
+          "signature": "FieldProps = Slot & Readonly<{ orientation?: FieldVariants['orientation']; isInvalid?: boolean; isDisabled?: boolean; direction?: 'ltr' | 'rtl'; }>"
         },
         {
           "name": "field",
@@ -2307,8 +2521,9 @@
         "Potti1234/creaseui/hover-card-behavior"
       ],
       "examples": [
-        "Profile preview",
-        "Side placement"
+        "Basic",
+        "Sides",
+        "RTL"
       ],
       "api": [
         {
@@ -2437,8 +2652,17 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "URL prefix",
-        "Trailing unit"
+        "Basic",
+        "Align",
+        "Icon",
+        "Text",
+        "Button",
+        "Kbd",
+        "Dropdown",
+        "Spinner",
+        "Textarea",
+        "Custom Input",
+        "RTL"
       ],
       "api": [
         {
@@ -2494,12 +2718,22 @@
         {
           "name": "InputGroupInputProps",
           "kind": "type",
-          "signature": "InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: string; }>"
+          "signature": "InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; onKeyDown?: (key: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: str…"
         },
         {
           "name": "inputGroupInput",
           "kind": "function",
           "signature": "inputGroupInput<Msg>(props: InputGroupInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
+        },
+        {
+          "name": "InputGroupTextareaProps",
+          "kind": "type",
+          "signature": "InputGroupTextareaProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; placeholder?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: string; }>"
+        },
+        {
+          "name": "inputGroupTextarea",
+          "kind": "function",
+          "signature": "inputGroupTextarea<Msg>(props: InputGroupTextareaProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },
@@ -2515,14 +2749,22 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Basic",
+        "Pattern",
+        "Separator",
+        "Disabled",
+        "Controlled",
+        "Invalid",
+        "Four Digits",
+        "Alphanumeric",
+        "Form",
+        "RTL"
       ],
       "api": [
         {
           "name": "InputOtpProps",
           "kind": "type",
-          "signature": "InputOtpProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; length?: number; name?: string; ariaLabel?: string; isDisabled?: boolean; isInvalid?: boolean; class?: string; groupClass?: string; /** Pattern accepted by the control…"
+          "signature": "InputOtpProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; length?: number; name?: string; ariaLabel?: string; isDisabled?: boolean; isInvalid?: boolean; isRequired?: boolean; class?: string; groupClass?: string; /** Pattern a…"
         },
         {
           "name": "inputOtp",
@@ -2549,8 +2791,20 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Basic",
+        "Field",
+        "Field Group",
+        "Disabled",
+        "Invalid",
+        "File",
+        "Inline",
+        "Grid",
+        "Required",
+        "Badge",
+        "Input Group",
+        "Button Group",
+        "Form",
+        "RTL"
       ],
       "api": [
         {
@@ -2578,9 +2832,17 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Collection",
-        "Outlined",
-        "Header and Footer"
+        "Basic",
+        "Variant",
+        "Size",
+        "Icon",
+        "Avatar",
+        "Image",
+        "Group",
+        "Header",
+        "Link",
+        "Dropdown",
+        "RTL"
       ],
       "api": [
         {
@@ -2596,7 +2858,7 @@
         {
           "name": "ItemProps",
           "kind": "type",
-          "signature": "ItemProps = SlotProps & Readonly<{ variant?: ItemVariants['variant']; size?: ItemVariants['size']; element?: 'div' | 'li' | 'article'; }>"
+          "signature": "ItemProps = SlotProps & Readonly<{ variant?: ItemVariants['variant']; size?: ItemVariants['size']; element?: 'div' | 'li' | 'article' | 'a'; href?: string; target?: string; rel?: string; }>"
         },
         {
           "name": "item",
@@ -2682,8 +2944,12 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Key",
-        "Shortcut"
+        "Basic",
+        "Group",
+        "Button",
+        "Tooltip",
+        "Input Group",
+        "RTL"
       ],
       "api": [
         {
@@ -2710,8 +2976,9 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Input Label",
-        "Supporting Text"
+        "Basic",
+        "Label in Field",
+        "RTL"
       ],
       "api": [
         {
@@ -2739,8 +3006,14 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Basic",
+        "Variants",
+        "Status",
+        "Shimmer",
+        "Separator",
+        "Border",
+        "With Icon",
+        "Links and Buttons"
       ],
       "api": [
         {
@@ -2756,7 +3029,7 @@
         {
           "name": "marker",
           "kind": "function",
-          "signature": "marker<Msg>(props: ChildrenProps & Readonly<{ variant?: VariantProps<typeof markerVariants>['variant']; purpose?: MarkerPurpose; ariaLabel?: string }>, h: HtmlBuilder<Msg>): Html"
+          "signature": "marker<Msg>(props: ChildrenProps & Readonly<{ variant?: VariantProps<typeof markerVariants>['variant']; purpose?: MarkerPurpose; ariaLabel?: string; element?: 'div' | 'a' | 'button'; href?: string; onClick?: () => Msg; }>, h: HtmlBuilder<Msg>): Html"
         },
         {
           "name": "markerIcon",
@@ -2766,7 +3039,7 @@
         {
           "name": "markerContent",
           "kind": "function",
-          "signature": "markerContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html"
+          "signature": "markerContent<Msg>(props: ChildrenProps & Readonly<{ shimmer?: boolean }>, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },
@@ -2784,10 +3057,12 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Coordinated menus",
-        "Shortcut hints",
-        "RTL switching",
-        "Disabled submenu"
+        "Basic",
+        "Checkbox",
+        "Radio",
+        "Submenu",
+        "With Icons",
+        "RTL"
       ],
       "api": [
         {
@@ -2828,7 +3103,7 @@
         {
           "name": "MenubarMenu",
           "kind": "type",
-          "signature": "MenubarMenu<Item extends string, Msg> = Readonly<{ id: string label: string model: DropdownMenu.Model toParentMessage: (message: DropdownMenu.Message) => Msg items: ReadonlyArray<Item> itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Item> }>"
+          "signature": "MenubarMenu<Item extends string, Msg> = Readonly<{ id: string label: string model: DropdownMenu.Model toParentMessage: (message: DropdownMenu.Message) => Msg items: ReadonlyArray<Item> itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Item> co…"
         },
         {
           "name": "MenubarProps",
@@ -2865,8 +3140,16 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Jump to latest",
-        "Jump to beginning"
+        "Anchoring Turns",
+        "Group Chat",
+        "Keeping Context Visible",
+        "Following the Live Edge",
+        "Opening Saved Threads",
+        "Loading Earlier Messages",
+        "Animating New Messages",
+        "Jumping to Messages",
+        "Tracking the Reader’s Position",
+        "Reading Scroll State"
       ],
       "api": [
         {
@@ -2937,7 +3220,7 @@
         {
           "name": "messageScrollerItem",
           "kind": "function",
-          "signature": "messageScrollerItem<Msg>(props: ChildrenProps & Readonly<{ scrollAnchor?: boolean }>, h: HtmlBuilder<Msg>): Html"
+          "signature": "messageScrollerItem<Msg>(props: ChildrenProps & Readonly<{ scrollAnchor?: boolean; messageId?: string }>, h: HtmlBuilder<Msg>): Html"
         },
         {
           "name": "messageScrollerButton",
@@ -2958,9 +3241,12 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Incoming",
-        "Outgoing",
-        "Live recovery"
+        "Basic",
+        "Avatar",
+        "Group",
+        "Header and Footer",
+        "Actions",
+        "Attachment"
       ],
       "api": [
         {
@@ -3023,8 +3309,11 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Basic",
+        "Groups",
+        "Disabled",
+        "Invalid",
+        "RTL"
       ],
       "api": [
         {
@@ -3086,7 +3375,7 @@
         "Semantic links",
         "Popover disclosure",
         "Responsive fallback",
-        "RTL overflow"
+        "RTL"
       ],
       "api": [
         {
@@ -3144,7 +3433,10 @@
         "Addressable pages",
         "In-place results",
         "Compact neighborhood",
-        "Disabled boundary"
+        "Disabled boundary",
+        "Simple",
+        "Icons Only",
+        "RTL"
       ],
       "api": [
         {
@@ -3180,7 +3472,7 @@
         {
           "name": "PaginationDirectionProps",
           "kind": "type",
-          "signature": "PaginationDirectionProps = Readonly<{ href?: string; isDisabled?: boolean; class?: string; }>"
+          "signature": "PaginationDirectionProps = Readonly<{ href?: string; isDisabled?: boolean; class?: string; direction?: 'ltr' | 'rtl'; label?: string; }>"
         },
         {
           "name": "paginationPrevious",
@@ -3221,8 +3513,12 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
+        "Basic",
+        "Align",
+        "With Form",
         "Interactive content",
-        "Right aligned"
+        "Right aligned",
+        "RTL"
       ],
       "api": [
         {
@@ -3298,7 +3594,7 @@
         {
           "name": "PopoverProps",
           "kind": "type",
-          "signature": "PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; content: Html | string; align?: PopoverAlign; side?: PopoverSide; class?: string; focusSelector?: string; }>"
+          "signature": "PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; content: Html | string; align?: PopoverAlign; side?: PopoverSide; class?: string; direction?: 'ltr' | 'rtl'; focusSelector?…"
         },
         {
           "name": "popover",
@@ -3320,14 +3616,19 @@
         "Potti1234/creaseui/progress-normalization"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Basic",
+        "Label",
+        "Controlled",
+        "RTL",
+        "Determinate",
+        "Indeterminate",
+        "Narrow Range"
       ],
       "api": [
         {
           "name": "ProgressProps",
           "kind": "type",
-          "signature": "ProgressProps = Readonly<{ /** `null` renders an indeterminate progress indicator. */ value: number | null; max?: number; ariaLabel?: string; valueText?: string; class?: string; }>"
+          "signature": "ProgressProps = Readonly<{ /** `null` renders an indeterminate progress indicator. */ value: number | null; max?: number; ariaLabel?: string; valueText?: string; id?: string; direction?: 'ltr' | 'rtl'; class?: string; }>"
         },
         {
           "name": "progress",
@@ -3350,8 +3651,14 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Basic",
+        "Description",
+        "Choice Card",
+        "Fieldset",
+        "Disabled",
+        "Invalid",
+        "Read Only",
+        "RTL"
       ],
       "api": [
         {
@@ -3409,8 +3716,10 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Editor and preview",
-        "Vertical split"
+        "Basic",
+        "Vertical",
+        "Handle",
+        "RTL"
       ],
       "api": [
         {
@@ -3446,7 +3755,7 @@
         {
           "name": "ResizableProps",
           "kind": "type",
-          "signature": "ResizableProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; first: Html | string; second: Html | string; direction?: 'horizontal' | 'vertical'; withHandle?: boolean; minSize?: number; maxSize?: number; /** Pixel extent of the pa…"
+          "signature": "ResizableProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; first: Html | string; second: Html | string; direction?: 'horizontal' | 'vertical'; rtl?: boolean; withHandle?: boolean; minSize?: number; maxSize?: number; /** Pixel e…"
         },
         {
           "name": "resizable",
@@ -3486,7 +3795,7 @@
         {
           "name": "ResizableGroupProps",
           "kind": "type",
-          "signature": "ResizableGroupProps<Msg> = Readonly<{ model: GroupModel; toParentMessage: (message: GroupMessage) => Msg; panels: ReadonlyArray<Html | string>; direction?: 'horizontal' | 'vertical'; minSize?: number; extent: number; withHandles?: boolean; disabled?: boolean;…"
+          "signature": "ResizableGroupProps<Msg> = Readonly<{ model: GroupModel; toParentMessage: (message: GroupMessage) => Msg; panels: ReadonlyArray<Html | string>; direction?: 'horizontal' | 'vertical'; rtl?: boolean; minSize?: number; extent: number; withHandles?: boolean; disa…"
         },
         {
           "name": "resizableGroup",
@@ -3507,14 +3816,15 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Vertical",
-        "Horizontal"
+        "Basic",
+        "Horizontal",
+        "RTL"
       ],
       "api": [
         {
           "name": "ScrollAreaProps",
           "kind": "type",
-          "signature": "ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; orientation?: 'vertical' | 'horizontal' | 'both'; ariaLabel?: string; tabIndex?: number; }>"
+          "signature": "ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; orientation?: 'vertical' | 'horizontal' | 'both'; direction?: 'ltr' | 'rtl'; ariaLabel?: string; tabIndex?: number; }>"
         },
         {
           "name": "scrollArea",
@@ -3536,10 +3846,13 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Typed selection",
-        "Grouped fruit",
-        "Disabled option",
-        "Read only RTL"
+        "Basic",
+        "Align Item With Trigger",
+        "Groups",
+        "Scrollable",
+        "Disabled",
+        "Invalid",
+        "RTL"
       ],
       "api": [
         {
@@ -3626,8 +3939,11 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Horizontal",
-        "Vertical"
+        "Basic",
+        "Vertical",
+        "Menu",
+        "List",
+        "RTL"
       ],
       "api": [
         {
@@ -3655,10 +3971,10 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Compound layout",
-        "Bottom task",
-        "Top sheet",
-        "Left sheet"
+        "Basic",
+        "Side",
+        "No Close Button",
+        "RTL"
       ],
       "api": [
         {
@@ -4017,8 +4333,13 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Profile",
-        "Card"
+        "Basic",
+        "Avatar",
+        "Card",
+        "Text",
+        "Form",
+        "Table",
+        "RTL"
       ],
       "api": [
         {
@@ -4046,8 +4367,13 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Basic",
+        "Range",
+        "Multiple Thumbs",
+        "Vertical",
+        "Controlled",
+        "Disabled",
+        "RTL"
       ],
       "api": [
         {
@@ -4134,6 +4460,16 @@
           "name": "slider",
           "kind": "function",
           "signature": "slider<Msg>(props: SliderProps<Msg>, h: HtmlBuilder<Msg>): Html"
+        },
+        {
+          "name": "MultiSliderProps",
+          "kind": "type",
+          "signature": "MultiSliderProps<Msg> = Readonly<{ values: readonly number[]; min: number; max: number; step?: number; onInput: (values: readonly number[]) => Msg; orientation?: 'horizontal' | 'vertical'; direction?: 'ltr' | 'rtl'; ariaLabels?: readonly string[]; isDisabled?…"
+        },
+        {
+          "name": "multiSlider",
+          "kind": "function",
+          "signature": "multiSlider<Msg>(props: MultiSliderProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },
@@ -4151,8 +4487,10 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Async save migration",
-        "Imperative API migration"
+        "Basic",
+        "Types",
+        "Description",
+        "Position"
       ],
       "api": [
         {
@@ -4163,7 +4501,7 @@
         {
           "name": "SonnerProps",
           "kind": "type",
-          "signature": "SonnerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel?: string pausePolicy?: 'none' | 'pointer' class?: string entryClass?: string }>"
+          "signature": "SonnerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel?: string pausePolicy?: 'none' | 'pointer' class?: string entryClass?: string position?: Position }>"
         },
         {
           "name": "sonner",
@@ -4185,14 +4523,20 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Default",
-        "With Label"
+        "Basic",
+        "Customization",
+        "Size",
+        "Button",
+        "Badge",
+        "Input Group",
+        "Empty",
+        "RTL"
       ],
       "api": [
         {
           "name": "SpinnerProps",
           "kind": "type",
-          "signature": "SpinnerProps = SpinnerAccessibility & Readonly<{ size?: 'sm' | 'md' | 'lg'; tone?: 'current' | 'muted' | 'primary'; class?: string; }>"
+          "signature": "SpinnerProps = SpinnerAccessibility & Readonly<{ size?: 'sm' | 'md' | 'lg' | 'xl'; tone?: 'current' | 'muted' | 'primary'; /** Emits data-icon=\"inline-start|inline-end\" for parent icon positioning. */ dataIcon?: 'inline-start' | 'inline-end'; class?: string; …"
         },
         {
           "name": "spinner",
@@ -4214,8 +4558,13 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Basic",
+        "Description",
+        "Choice Card",
+        "Disabled",
+        "Invalid",
+        "Size",
+        "RTL"
       ],
       "api": [
         {
@@ -4252,8 +4601,11 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Component Inventory",
+        "Basic",
         "Footer",
+        "Actions",
+        "RTL",
+        "Component Inventory",
         "Dense overflow",
         "Empty body"
       ],
@@ -4323,10 +4675,13 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Settings",
-        "Line variant",
-        "Manual with disabled tab",
-        "RTL route value"
+        "Basic",
+        "Line",
+        "Vertical",
+        "Disabled",
+        "Icons",
+        "RTL",
+        "Manual with disabled tab"
       ],
       "api": [
         {
@@ -4425,8 +4780,13 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Basic",
+        "Field",
+        "Disabled",
+        "Invalid",
+        "Button",
+        "RTL",
+        "Form And Resize"
       ],
       "api": [
         {
@@ -4483,8 +4843,14 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Basic",
+        "Outline",
+        "Size",
+        "Spacing",
+        "Vertical",
+        "Disabled",
+        "Custom",
+        "RTL"
       ],
       "api": [
         {
@@ -4515,7 +4881,7 @@
         {
           "name": "ToggleGroupProps",
           "kind": "type",
-          "signature": "ToggleGroupProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel: string items: ReadonlyArray<ToggleGroupItem<Value>> direction?: 'ltr' | 'rtl' arrangement?: 'joined' | 'wrapped' variant?: ToggleVarian…"
+          "signature": "ToggleGroupProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel: string items: ReadonlyArray<ToggleGroupItem<Value>> direction?: 'ltr' | 'rtl' arrangement?: 'joined' | 'wrapped' orientation?: 'vertica…"
         },
         {
           "name": "ToggleGroupBundle",
@@ -4562,8 +4928,12 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Basic",
+        "Outline",
+        "With Text",
+        "Size",
+        "Disabled",
+        "RTL"
       ],
       "api": [
         {
@@ -4579,7 +4949,7 @@
         {
           "name": "ToggleProps",
           "kind": "type",
-          "signature": "ToggleProps<Msg> = Readonly<{ isPressed: boolean; onToggle: Msg; variant?: ToggleVariants['variant']; size?: ToggleVariants['size']; children: ReadonlyArray<Html | string>; isDisabled?: boolean; id?: string; ariaLabel?: string; describedBy?: string; class?: s…"
+          "signature": "ToggleProps<Msg> = Readonly<{ isPressed: boolean; onToggle: Msg; variant?: ToggleVariants['variant']; size?: ToggleVariants['size']; children: ReadonlyArray<Html | string>; isDisabled?: boolean; id?: string; ariaLabel?: string; describedBy?: string; direction…"
         },
         {
           "name": "toggle",
@@ -4601,9 +4971,11 @@
         "Potti1234/creaseui/tooltip-behavior"
       ],
       "examples": [
-        "Delayed label",
-        "Side label",
-        "Disabled trigger"
+        "Basic",
+        "Side",
+        "With Keyboard Shortcut",
+        "Disabled Button",
+        "RTL"
       ],
       "api": [
         {
@@ -4690,9 +5062,21 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Article",
-        "Inline Code",
-        "Quotation"
+        "Basic",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "p",
+        "blockquote",
+        "table",
+        "list",
+        "Inline code",
+        "Lead",
+        "Large",
+        "Small",
+        "Muted",
+        "RTL"
       ],
       "api": [
         {

@@ -8,6 +8,7 @@ import { Disclosure as DisclosurePrimitive } from '@foldkit/ui'
 import * as Icon from '@/lib/icon'
 import * as AccordionBehavior from '@/lib/accordion-state'
 import type { ComponentLayoutStyle } from './contracts'
+import { foundationTokens } from './foundations-tokens.stylex'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
@@ -51,6 +52,21 @@ const styles = stylex.create({
     borderBottomColor: tokens.border,
     borderBottomStyle: 'solid',
     borderBottomWidth: 1,
+  },
+  borderedRoot: {
+    borderColor: tokens.border,
+    borderRadius: foundationTokens.radiusLg,
+    borderStyle: 'solid',
+    borderWidth: 1,
+  },
+  itemBordered: {
+    paddingInline: '1rem',
+    borderBottomColor: tokens.border,
+    borderBottomStyle: 'solid',
+    borderBottomWidth: 1,
+  },
+  itemBorderedLast: {
+    borderBottomWidth: 0,
   },
   panel: {
     overflow: 'hidden',
@@ -97,6 +113,8 @@ const cn = (...values: ReadonlyArray<unknown>): string =>
 
 export type ViewInputs = Readonly<{
   items: ReadonlyArray<AccordionBehavior.AccordionItem>
+  /** Render the shadcn bordered variant: rounded frame with divided items. */
+  bordered?: boolean
   layoutStyle?: ComponentLayoutStyle
   itemLayoutStyle?: ComponentLayoutStyle
   triggerLayoutStyle?: ComponentLayoutStyle
@@ -115,11 +133,18 @@ const render = <Msg>(
   h.div(
     [
       h.DataAttribute('slot', 'accordion'),
-      ...(viewInputs.layoutStyle === undefined
+      ...(viewInputs.layoutStyle === undefined && viewInputs.bordered !== true
         ? []
-        : [h.Class(cn(viewInputs.layoutStyle))]),
+        : [
+            h.Class(
+              cn(
+                viewInputs.bordered === true && styles.borderedRoot,
+                viewInputs.layoutStyle,
+              ),
+            ),
+          ]),
     ],
-    viewInputs.items.map((item) => {
+    viewInputs.items.map((item, index) => {
       const isOpen = model.value.includes(item.value)
 
       return DisclosurePrimitive.view(
@@ -140,7 +165,17 @@ const render = <Msg>(
             h.div(
               [
                 h.DataAttribute('slot', 'accordion-item'),
-                h.Class(cn(styles.item, viewInputs.itemLayoutStyle)),
+                h.Class(
+                  cn(
+                    viewInputs.bordered === true
+                      ? styles.itemBordered
+                      : styles.item,
+                    viewInputs.bordered === true &&
+                      index === viewInputs.items.length - 1 &&
+                      styles.itemBorderedLast,
+                    viewInputs.itemLayoutStyle,
+                  ),
+                ),
               ],
               [
                 h.h3(

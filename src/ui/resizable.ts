@@ -70,6 +70,7 @@ export type ResizableProps<Msg> = Readonly<{
   first: Html | string;
   second: Html | string;
   direction?: 'horizontal' | 'vertical';
+  rtl?: boolean;
   withHandle?: boolean;
   minSize?: number;
   maxSize?: number;
@@ -86,6 +87,7 @@ export const resizable = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   const vertical = props.direction === 'vertical';
+  const rtl = props.rtl === true && !vertical;
   const dragging = Option.isSome(props.model.drag);
   const minSize = clampTo(props.minSize ?? 10, 0, 100);
   const maxSize = clampTo(props.maxSize ?? 90, minSize, 100);
@@ -98,12 +100,13 @@ export const resizable = <Msg>(
     [
       h.DataAttribute('slot', 'resizable-panel-group'),
       h.DataAttribute('direction', vertical ? 'vertical' : 'horizontal'),
+      ...(rtl ? [h.Dir('rtl')] : []),
       h.OnPointerMove((screenX, screenY) =>
         dragging && props.disabled !== true
           ? Option.some(
               props.toParentMessage(
                 Message.DraggedResize({
-                  position: vertical ? screenY : screenX,
+                  position: vertical ? screenY : rtl ? -screenX : screenX,
                   extent,
                 }),
               ),
@@ -141,7 +144,9 @@ export const resizable = <Msg>(
             button === 0 && props.disabled !== true
               ? Option.some(
                   props.toParentMessage(
-                    Message.StartedResize({ position: vertical ? screenY : screenX }),
+                    Message.StartedResize({
+                      position: vertical ? screenY : rtl ? -screenX : screenX,
+                    }),
                   ),
                 )
               : Option.none(),
@@ -155,11 +160,11 @@ export const resizable = <Msg>(
             )
               return Option.none();
             const step = props.keyboardStep ?? 2;
-            if (key === (vertical ? 'ArrowUp' : 'ArrowLeft'))
+            if (key === (vertical ? 'ArrowUp' : rtl ? 'ArrowRight' : 'ArrowLeft'))
               return Option.some(
                 props.toParentMessage(Message.NudgedResize({ delta: -step })),
               );
-            if (key === (vertical ? 'ArrowDown' : 'ArrowRight'))
+            if (key === (vertical ? 'ArrowDown' : rtl ? 'ArrowLeft' : 'ArrowRight'))
               return Option.some(
                 props.toParentMessage(Message.NudgedResize({ delta: step })),
               );
@@ -355,6 +360,7 @@ export type ResizableGroupProps<Msg> = Readonly<{
   toParentMessage: (message: GroupMessage) => Msg;
   panels: ReadonlyArray<Html | string>;
   direction?: 'horizontal' | 'vertical';
+  rtl?: boolean;
   minSize?: number;
   extent: number;
   withHandles?: boolean;
@@ -367,6 +373,7 @@ export const resizableGroup = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   const vertical = props.direction === 'vertical';
+  const rtl = props.rtl === true && !vertical;
   const dragging = Option.isSome(props.model.drag);
   const minSize = Math.max(0, props.minSize ?? 5);
   const children: Array<Html> = [];
@@ -395,7 +402,7 @@ export const resizableGroup = <Msg>(
                   props.toParentMessage(
                     GroupMessage.StartedGroupResize({
                       handle: index,
-                      position: vertical ? y : x,
+                      position: vertical ? y : rtl ? -x : x,
                     }),
                   ),
                 )
@@ -407,13 +414,13 @@ export const resizableGroup = <Msg>(
             modifiers.altKey ||
             modifiers.metaKey
               ? Option.none()
-              : key === (vertical ? 'ArrowUp' : 'ArrowLeft')
+              : key === (vertical ? 'ArrowUp' : rtl ? 'ArrowRight' : 'ArrowLeft')
                 ? Option.some(
                     props.toParentMessage(
                       GroupMessage.NudgedGroupResize({ handle: index, delta: -2, minSize }),
                     ),
                   )
-                : key === (vertical ? 'ArrowDown' : 'ArrowRight')
+                : key === (vertical ? 'ArrowDown' : rtl ? 'ArrowLeft' : 'ArrowRight')
                   ? Option.some(
                       props.toParentMessage(
                         GroupMessage.NudgedGroupResize({ handle: index, delta: 2, minSize }),
@@ -445,12 +452,13 @@ export const resizableGroup = <Msg>(
     [
       h.DataAttribute('slot', 'resizable-panel-group'),
       h.DataAttribute('direction', vertical ? 'vertical' : 'horizontal'),
+      ...(rtl ? [h.Dir('rtl')] : []),
       h.OnPointerMove((x, y) =>
         dragging && props.disabled !== true
           ? Option.some(
               props.toParentMessage(
                 GroupMessage.DraggedGroupResize({
-                  position: vertical ? y : x,
+                  position: vertical ? y : rtl ? -x : x,
                   extent: props.extent,
                   minSize,
                 }),

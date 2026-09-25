@@ -2,6 +2,7 @@ import { type VariantProps, cva } from 'class-variance-authority';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import { cn } from '@/lib/utils';
+import { buttonVariants } from '@/ui/button';
 
 export const attachmentVariants = cva(
   'group/attachment relative flex w-fit max-w-full min-w-0 shrink-0 flex-wrap rounded-xl border bg-card text-card-foreground transition-colors focus-within:ring-1 focus-within:ring-ring/50 has-[>a,>button]:hover:bg-muted/50 data-[state=error]:border-destructive/30 data-[state=idle]:border-dashed',
@@ -105,6 +106,30 @@ export const attachmentActions = <Msg>(
     'relative z-20 flex shrink-0 items-center group-data-[orientation=vertical]/attachment:absolute group-data-[orientation=vertical]/attachment:top-3 group-data-[orientation=vertical]/attachment:right-3 group-data-[orientation=vertical]/attachment:gap-1',
     props,
     h,
+  );
+export const attachmentAction = <Msg>(
+  props: Readonly<{
+    onClick: Msg;
+    label: string;
+    children: ReadonlyArray<Html | string>;
+    class?: string;
+  }>,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  h.button(
+    [
+      h.Type('button'),
+      h.OnClick(props.onClick),
+      h.DataAttribute('slot', 'attachment-action'),
+      h.AriaLabel(props.label),
+      h.Class(
+        cn(
+          buttonVariants({ variant: 'ghost', size: 'icon-xs' }),
+          props.class,
+        ),
+      ),
+    ],
+    [...props.children],
   );
 export const attachmentGroup = <Msg>(
   props: ChildrenProps,

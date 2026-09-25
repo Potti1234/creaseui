@@ -79,7 +79,8 @@ export const messageScrollerContent = <Msg>(
 };
 
 export const messageScrollerItem = <Msg>(
-  props: ChildrenProps & Readonly<{ scrollAnchor?: boolean }>,
+  props: ChildrenProps &
+    Readonly<{ scrollAnchor?: boolean; messageId?: string }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
   return h.div(
@@ -88,6 +89,9 @@ export const messageScrollerItem = <Msg>(
       ...(props.scrollAnchor === true
         ? [h.DataAttribute('scroll-anchor', '')]
         : []),
+      ...(props.messageId === undefined
+        ? []
+        : [h.DataAttribute('message-id', props.messageId)]),
       h.Class(
         cn(
           'min-w-0 shrink-0 [contain-intrinsic-size:auto_10rem] [content-visibility:auto]',

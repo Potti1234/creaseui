@@ -7,6 +7,7 @@ export type RadioGroupOption = Readonly<{
   label: Html | string
   description?: Html | string
   isDisabled?: boolean
+  isInvalid?: boolean
 }>
 
 export const Model = RadioGroupPrimitive.Model
@@ -32,6 +33,7 @@ export type RadioGroupBehaviorProps<Msg> = Readonly<{
 }>
 
 type OptionState = Readonly<{
+  index: number
   isSelected: boolean
   isDisabled: boolean
   isReadOnly: boolean
@@ -97,6 +99,7 @@ export const renderRadioGroup = <Msg>(
                     ),
                     h.Type('button'),
                     h.DataAttribute('slot', 'radio-group-item'),
+                    ...(content.isInvalid === true ? [h.AriaInvalid(true)] : []),
                     ...visual.item(option),
                   ],
                   [

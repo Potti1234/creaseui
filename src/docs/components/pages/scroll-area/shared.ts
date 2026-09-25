@@ -1,27 +1,112 @@
 import type { DocsExample } from '@/docs/components/page-definition';
 import { staticComponentApplication } from '@/docs/components/pages/authored-page';
 
-export const scrollAreaItems = Array.from({ length: 18 }, (_, index) => `Component ${String(index + 1)}`);
+export const scrollAreaTags = Array.from(
+  { length: 50 },
+  (_, index) => `v1.2.0-beta.${String(50 - index)}`,
+);
+export const scrollAreaItems = Array.from(
+  { length: 8 },
+  (_, index) => `Component ${String(index + 1)}`,
+);
+
 export const scrollAreaFixtures = [
-  { title: 'Vertical', description: 'Bound the height and label the independently scrollable list.', orientation: 'vertical' },
-  { title: 'Horizontal', description: 'Use horizontal overflow for a deliberate one-line sequence.', orientation: 'horizontal' },
+  { title: 'Basic', kind: 'tags', rtl: false, heading: 'Tags' },
+  { title: 'Horizontal', kind: 'horizontal', rtl: false },
+  { title: 'RTL', kind: 'tags', rtl: true, heading: 'العلامات' },
 ] as const;
-const body = (fixture: (typeof scrollAreaFixtures)[number], renderer: 'tailwind' | 'stylex'): string => fixture.orientation === 'vertical' ? (renderer === 'tailwind' ? `ScrollArea.scrollArea({
-  orientation: 'vertical', ariaLabel: 'Component list', class: 'h-56 w-72 rounded-md border p-3',
-  children: Array.from({ length: 18 }, (_, index) => h.div([h.Class('border-b py-2 text-sm')], [\`Component \${index + 1}\`])),
-}, h)` : `h.div([h.Class(stylex.props(styles.verticalFrame).className ?? '')], [
-  ScrollArea.scrollArea({ orientation: 'vertical', ariaLabel: 'Component list', children: [
-    h.div([h.Class(stylex.props(styles.verticalContent).className ?? '')], Array.from({ length: 18 }, (_, index) =>
-      h.div([h.Class(stylex.props(styles.row).className ?? '')], [\`Component \${index + 1}\`]),
+
+const tagsBody = (fixture: { rtl: boolean; heading: string }, renderer: 'tailwind' | 'stylex'): string =>
+  renderer === 'tailwind'
+    ? `ScrollArea.scrollArea({
+  orientation: 'vertical',
+  ${fixture.rtl ? "direction: 'rtl'," : ''}
+  ariaLabel: 'Version tags',
+  class: 'h-72 w-48 rounded-md border',
+  children: [
+    h.div([h.Class('p-4')], [
+      h.h4([h.Class('mb-4 text-sm font-medium leading-none')], ['${fixture.heading}']),
+      ...scrollAreaTags.map(tag => h.div([], [
+        h.div([h.Class('text-sm')], [tag]),
+        Separator.separator({ class: 'my-2' }, h),
+      ])),
+    ]),
+  ],
+}, h)`
+    : `h.div([h.Class(className(styles.tagsFrame))], [
+  ScrollArea.scrollArea({
+    orientation: 'vertical',
+    ${fixture.rtl ? "direction: 'rtl'," : ''}
+    ariaLabel: 'Version tags',
+    children: [
+    h.div([h.Class(className(styles.tagsContent))], [
+      h.h4([h.Class(className(styles.tagsHeading))], ['${fixture.heading}']),
+      ...scrollAreaTags.map(tag => h.div([], [
+        h.div([h.Class(className(styles.tag))], [tag]),
+        Separator.separator({ layoutStyle: styles.separator }, h),
+      ])),
+    ]),
+    ],
+  }, h),
+])`;
+
+const horizontalBody = (renderer: 'tailwind' | 'stylex'): string =>
+  renderer === 'tailwind'
+    ? `ScrollArea.scrollArea({
+  orientation: 'horizontal',
+  ariaLabel: 'Component versions',
+  class: 'w-80 rounded-md border p-4',
+  children: [
+    h.div([h.Class('flex w-max gap-3')], scrollAreaItems.map(item =>
+      h.span([h.Class('rounded-md bg-muted px-3 py-2 text-sm')], [item]),
     )),
-  ] }, h),
-])`) : (renderer === 'tailwind' ? `ScrollArea.scrollArea({
-  orientation: 'horizontal', ariaLabel: 'Release versions', class: 'w-80 rounded-md border p-4',
-  children: [h.div([h.Class('flex w-max gap-3')], ['Component 1', 'Component 2', 'Component 3', 'Component 4', 'Component 5', 'Component 6', 'Component 7', 'Component 8'].map(version => h.span([h.Class('rounded-md bg-muted px-3 py-2')], [version])))],
-}, h)` : `h.div([h.Class(stylex.props(styles.horizontalFrame).className ?? '')], [
-  ScrollArea.scrollArea({ orientation: 'horizontal', ariaLabel: 'Release versions', children: [
-    h.div([h.Class(stylex.props(styles.horizontalContent).className ?? '')], ['Component 1', 'Component 2', 'Component 3', 'Component 4', 'Component 5', 'Component 6', 'Component 7', 'Component 8'].map(version => h.span([h.Class(stylex.props(styles.pill).className ?? '')], [version]))),
-  ] }, h),
-])`);
-const styleImports = "import * as stylex from '@stylexjs/stylex'\nconst styles = stylex.create({ verticalFrame: { overflow: 'hidden', height: '14rem', width: '18rem', borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: 1 }, verticalContent: { padding: '0.75rem' }, row: { borderBottomColor: 'var(--border)', borderBottomStyle: 'solid', borderBottomWidth: 1, paddingBlock: '0.5rem', fontSize: '0.875rem' }, horizontalFrame: { overflow: 'hidden', height: '5rem', width: '20rem', borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: 1 }, horizontalContent: { gap: '0.75rem', padding: '1rem', display: 'flex', width: 'max-content' }, pill: { borderRadius: '0.375rem', paddingBlock: '0.5rem', paddingInline: '0.75rem', backgroundColor: 'var(--muted)', fontSize: '0.875rem' } })";
-export const scrollAreaExamples = (renderer: 'tailwind' | 'stylex'): ReadonlyArray<DocsExample> => scrollAreaFixtures.map(fixture => ({ title: fixture.title, description: fixture.description, code: staticComponentApplication({ componentName: 'ScrollArea', componentSlug: 'scroll-area', renderer, exampleName: fixture.title, ...(renderer === 'stylex' ? { componentImports: styleImports } : {}), viewBody: body(fixture, renderer) }) }));
+  ],
+}, h)`
+    : `h.div([h.Class(className(styles.horizontalFrame))], [
+  ScrollArea.scrollArea({
+    orientation: 'horizontal',
+    ariaLabel: 'Component versions',
+    children: [
+    h.div([h.Class(className(styles.horizontalContent))], scrollAreaItems.map(item =>
+      h.span([h.Class(className(styles.pill))], [item]),
+    )),
+    ],
+  }, h),
+])`;
+
+const body = (
+  fixture: (typeof scrollAreaFixtures)[number],
+  renderer: 'tailwind' | 'stylex',
+): string =>
+  fixture.kind === 'tags' ? tagsBody(fixture, renderer) : horizontalBody(renderer);
+
+const styleImports = `import * as stylex from '@stylexjs/stylex'
+import { className } from '@/stylex/style'
+const styles = stylex.create({
+  tagsFrame: { height: '18rem', width: '12rem', borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: 1, overflow: 'hidden' },
+  tagsContent: { padding: '1rem' },
+  tagsHeading: { fontSize: '0.875rem', fontWeight: 500, lineHeight: 1, marginBottom: '1rem' },
+  tag: { fontSize: '0.875rem' },
+  separator: { marginBlock: '0.5rem' },
+  horizontalFrame: { width: '20rem', borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: 1, overflow: 'hidden', padding: '1rem' },
+  horizontalContent: { display: 'flex', gap: '0.75rem', width: 'max-content' },
+  pill: { borderRadius: '0.375rem', paddingBlock: '0.5rem', paddingInline: '0.75rem', backgroundColor: 'var(--muted)', fontSize: '0.875rem' },
+})`;
+
+export const scrollAreaExamples = (
+  renderer: 'tailwind' | 'stylex',
+): ReadonlyArray<DocsExample> =>
+  scrollAreaFixtures.map(fixture => ({
+    title: fixture.title,
+    code: staticComponentApplication({
+      componentName: 'ScrollArea',
+      componentSlug: 'scroll-area',
+      renderer,
+      exampleName: fixture.title,
+      componentImports: `import * as Separator from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/separator'
+
+const scrollAreaTags = Array.from({ length: 50 }, (_, index) => \`v1.2.0-beta.\${String(50 - index)}\`)
+const scrollAreaItems = Array.from({ length: 8 }, (_, index) => \`Component \${String(index + 1)}\`)${renderer === 'stylex' ? `\n${styleImports}` : ''}`,
+      viewBody: body(fixture, renderer),
+    }),
+  }));

@@ -5,7 +5,7 @@ export const navigationMenuFixtures = [
   { title: 'Semantic links', description: 'Plain site navigation needs no Foldkit child model; the active route supplies aria-current.' },
   { title: 'Popover disclosure', description: 'A rich navigation disclosure uses an explicit Popover child integration rather than hidden component-local state.' },
   { title: 'Responsive fallback', description: 'A finite responsive layout stacks the list on narrow viewports without moving route data into widget state.' },
-  { title: 'RTL overflow', description: 'A scroll layout contains long navigation sets and preserves RTL reading direction.' },
+  { title: 'RTL', description: 'A scroll layout contains long navigation sets and preserves RTL reading direction.' },
 ] as const;
 
 const staticSource = (renderer: 'tailwind' | 'stylex', exampleIndex: 0 | 2 | 3): string => {
@@ -13,7 +13,7 @@ const staticSource = (renderer: 'tailwind' | 'stylex', exampleIndex: 0 | 2 | 3):
     ? { name: 'Semantic links', layout: '', direction: '', labels: "['Home', 'Components', 'Docs']", active: ', index) =>', activeProp: ', isActive: index === 0' }
     : exampleIndex === 2
       ? { name: 'Responsive fallback', layout: ", layout: 'responsive'", direction: '', labels: "['Home', 'Components', 'Docs']", active: ') =>', activeProp: '' }
-      : { name: 'RTL overflow', layout: ", layout: 'scroll'", direction: ", direction: 'rtl'", labels: "['Home', 'Products', 'Solutions', 'Customers', 'Resources', 'Company', 'Docs']", active: ') =>', activeProp: '' };
+      : { name: 'RTL', layout: ", layout: 'scroll'", direction: ", direction: 'rtl'", labels: "['Home', 'Products', 'Solutions', 'Customers', 'Resources', 'Company', 'Docs']", active: ') =>', activeProp: '' };
   return staticComponentApplication({
     componentName: 'NavigationMenu',
     componentSlug: 'navigation-menu',

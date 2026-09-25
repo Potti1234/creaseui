@@ -9,6 +9,7 @@ export type ScrollAreaProps = Readonly<{
   layoutStyle?: ComponentLayoutStyle
   children: ReadonlyArray<Html | string>
   orientation?: 'vertical' | 'horizontal' | 'both'
+  direction?: 'ltr' | 'rtl'
   ariaLabel?: string
   tabIndex?: number
 }>
@@ -38,6 +39,7 @@ export const scrollArea = <Msg>(props: ScrollAreaProps, h: HtmlBuilder<Msg>): Ht
     [
       h.DataAttribute('slot', 'scroll-area'),
       h.DataAttribute('orientation', orientation),
+      ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
       ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
       h.Tabindex(props.tabIndex ?? 0),
       h.Class(className(styles.base, styles[orientation], props.layoutStyle)),

@@ -73,6 +73,7 @@
     "echarts": "^6.1.0",
     "effect": "4.0.0-rc.116",
     "embla-carousel": "^8.6.0",
+    "embla-carousel-autoplay": "^8.6.0",
     "foldkit": "0.163.0",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.3.1"

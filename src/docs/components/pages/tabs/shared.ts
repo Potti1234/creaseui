@@ -1,11 +1,325 @@
-import type { DocsExample } from '@/docs/components/page-definition'; import { foldkitApplication } from '@/docs/components/pages/authored-page';
-export const settingsTabs = [{ value: 'account', label: 'Account', content: 'Manage your profile details.' }, { value: 'security', label: 'Security', content: 'Review passwords and sessions.' }, { value: 'billing', label: 'Billing', content: 'Update invoices and payment methods.' }] as const;
-export const projectTabs = [{ value: 'overview', label: 'Overview', content: 'Project activity and health.' }, { value: 'deployments', label: 'Deployments', content: 'Recent production releases.' }, { value: 'settings', label: 'Settings', content: 'Project-level configuration.' }] as const;
-export const tabsFixtures = [
-  { title: 'Settings', description: 'Child update manages focus while the parent persists the selected domain value.', set: 'settings', initial: 'account', variant: 'default', manual: false, rtl: false },
-  { title: 'Line variant', description: 'A separate child instance needs its own id, Model, Message routing, and selected value.', set: 'project', initial: 'overview', variant: 'line', manual: false, rtl: false },
-  { title: 'Manual with disabled tab', description: 'Manual activation moves focus without changing the parent-owned value until Enter or Space; disabled tabs are skipped.', set: 'settings', initial: 'account', variant: 'default', manual: true, rtl: false },
-  { title: 'RTL route value', description: 'The selected route remains parent-owned while horizontal tab order and arrow direction mirror in RTL.', set: 'project', initial: 'settings', variant: 'default', manual: false, rtl: true },
-] as const;
-const source = (fixture: (typeof tabsFixtures)[number], renderer: 'tailwind' | 'stylex'): string => { const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, ''); const configs = fixture.set === 'settings' ? settingsTabs : projectTabs; const tabSource = configs.map(tab => `        { value: '${tab.value}', label: '${tab.label}', content: '${tab.content}'${fixture.manual && tab.value === 'security' ? ', isDisabled: true' : ''} },`).join('\n'); return foldkitApplication({ title: `Tabs — ${fixture.title}`, imports: `import { Option, Schema as S } from 'effect'\nimport { Command, Runtime, Subscription, Update } from 'foldkit'\nimport { type Document, type HtmlBuilder } from 'foldkit/html'\nimport { defineMessageUnion } from 'foldkit/message'\n\nimport * as Tabs from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/tabs'`, model: `export const TabValue = S.Literals(['account', 'security', 'billing', 'overview', 'deployments', 'settings'])\nexport type TabValue = typeof TabValue.Type\nconst SettingsTabs = Tabs.create<TabValue>()\nexport const Model = S.Struct({ tabs: Tabs.Model, selectedTab: TabValue })\nexport type Model = typeof Model.Type`, messages: `export const Message = defineMessageUnion({\n  GotTabsMessage${tag}: { message: Tabs.Message },\n})\nexport type Message = typeof Message.Type`, init: `export const init = (): Update.Return<Model, Message> => ({ model: { tabs: Tabs.init({ id: 'settings-tabs'${fixture.manual ? ", activationMode: 'Manual'" : ''} }), selectedTab: '${fixture.initial}' } })`, update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {\n  switch (message._tag) {\n    case 'GotTabsMessage${tag}': {\n      const next = SettingsTabs.update(model.tabs, message.message)\n      const selection = next.outMessage\n      return { model: { ...model, tabs: next.model, selectedTab: selection === undefined ? model.selectedTab : selection.value }, commands: Command.mapMessages(next.commands ?? [], next => Message['GotTabsMessage${tag}']({ message: next })) }\n    }\n  }\n}`, view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({\n  title: 'Tabs — ${fixture.title}',\n  body: h.main([h.Class('mx-auto max-w-xl p-8')], [\n    SettingsTabs.tabs({ model: model.tabs, selectedValue: model.selectedTab, toParentMessage: message => Message['GotTabsMessage${tag}']({ message }), ariaLabel: '${fixture.set === 'settings' ? 'Settings' : 'Project sections'}', tabs: [\n${tabSource}\n      ],${fixture.variant === 'line' ? "\n      variant: 'line'," : ''}${fixture.rtl ? "\n      direction: 'rtl'," : ''}\n    }, h),\n  ]),\n})` }); };
-export const tabsExamples = (renderer: 'tailwind' | 'stylex'): ReadonlyArray<DocsExample> => tabsFixtures.map(fixture => ({ title: fixture.title, description: fixture.description, code: source(fixture, renderer) }));
+import type { DocsExample } from '@/docs/components/page-definition';
+import { foldkitApplication } from '@/docs/components/pages/authored-page';
+
+export interface TabsCardSpec {
+  readonly title: string;
+  readonly description: string;
+  readonly text: string;
+}
+
+export interface TabsTabSpec {
+  readonly value: string;
+  readonly label: string;
+  readonly content: string;
+  readonly isDisabled?: boolean;
+  readonly icon?: string;
+  readonly card?: TabsCardSpec;
+}
+
+export type TabsKind =
+  | 'demo'
+  | 'line'
+  | 'vertical'
+  | 'disabled'
+  | 'icons'
+  | 'rtl'
+  | 'manual';
+
+export interface TabsFixture {
+  readonly title: string;
+  readonly description?: string;
+  readonly heroOnly?: boolean;
+  readonly kind: TabsKind;
+  readonly ariaLabel: string;
+  readonly tabs: ReadonlyArray<TabsTabSpec>;
+  readonly variant?: 'line';
+  readonly orientation?: 'vertical';
+  readonly manual?: boolean;
+  readonly rtl?: boolean;
+}
+
+export const overviewTabs: ReadonlyArray<TabsTabSpec> = [
+  {
+    value: 'overview',
+    label: 'Overview',
+    content: '',
+    card: {
+      title: 'Overview',
+      description:
+        'View your key metrics and recent project activity. Track progress across all your active projects.',
+      text: 'You have 12 active projects and 3 pending tasks.',
+    },
+  },
+  {
+    value: 'analytics',
+    label: 'Analytics',
+    content: '',
+    card: {
+      title: 'Analytics',
+      description:
+        'Track performance and user engagement metrics. Monitor trends and identify growth opportunities.',
+      text: 'Page views are up 25% compared to last month.',
+    },
+  },
+  {
+    value: 'reports',
+    label: 'Reports',
+    content: '',
+    card: {
+      title: 'Reports',
+      description:
+        'Generate and download your detailed reports. Export data in multiple formats for analysis.',
+      text: 'You have 5 reports ready and available to export.',
+    },
+  },
+  {
+    value: 'settings',
+    label: 'Settings',
+    content: '',
+    card: {
+      title: 'Settings',
+      description:
+        'Manage your account preferences and options. Customize your experience to fit your needs.',
+      text: 'Configure notifications, security, and themes.',
+    },
+  },
+];
+
+export const rtlTabs: ReadonlyArray<TabsTabSpec> = [
+  {
+    value: 'overview',
+    label: 'نظرة عامة',
+    content: '',
+    card: {
+      title: 'نظرة عامة',
+      description:
+        'عرض مقاييسك الرئيسية وأنشطة المشروع الأخيرة. تتبع التقدم عبر جميع مشاريعك النشطة.',
+      text: 'لديك ١٢ مشروعًا نشطًا و٣ مهام معلقة.',
+    },
+  },
+  {
+    value: 'analytics',
+    label: 'التحليلات',
+    content: '',
+    card: {
+      title: 'التحليلات',
+      description:
+        'تتبع مقاييس الأداء ومشاركة المستخدمين. راقب الاتجاهات وحدد فرص النمو.',
+      text: 'زادت مشاهدات الصفحة بنسبة ٢٥٪ مقارنة بالشهر الماضي.',
+    },
+  },
+  {
+    value: 'reports',
+    label: 'التقارير',
+    content: '',
+    card: {
+      title: 'التقارير',
+      description:
+        'إنشاء وتنزيل تقاريرك التفصيلية. تصدير البيانات بتنسيقات متعددة للتحليل.',
+      text: 'لديك ٥ تقارير جاهزة ومتاحة للتصدير.',
+    },
+  },
+  {
+    value: 'settings',
+    label: 'الإعدادات',
+    content: '',
+    card: {
+      title: 'الإعدادات',
+      description:
+        'إدارة تفضيلات حسابك وخياراته. تخصيص تجربتك لتناسب احتياجاتك.',
+      text: 'تكوين الإشعارات والأمان والسمات.',
+    },
+  },
+];
+
+export const tabsFixtures: Readonly<[TabsFixture, ...Array<TabsFixture>]> = [
+  {
+    title: 'Basic',
+    heroOnly: true,
+    kind: 'demo',
+    ariaLabel: 'Project overview',
+    tabs: overviewTabs,
+  },
+  {
+    title: 'Line',
+    description: 'The line variant renders an underline selection for section-level navigation.',
+    kind: 'line',
+    ariaLabel: 'Project sections',
+    variant: 'line',
+    tabs: [
+      { value: 'overview', label: 'Overview', content: '' },
+      { value: 'analytics', label: 'Analytics', content: '' },
+      { value: 'reports', label: 'Reports', content: '' },
+    ],
+  },
+  {
+    title: 'Vertical',
+    description: 'Vertical orientation stacks the tab list for settings-style layouts.',
+    kind: 'vertical',
+    ariaLabel: 'Account settings',
+    orientation: 'vertical',
+    tabs: [
+      { value: 'account', label: 'Account', content: '' },
+      { value: 'password', label: 'Password', content: '' },
+      { value: 'notifications', label: 'Notifications', content: '' },
+    ],
+  },
+  {
+    title: 'Disabled',
+    description: 'Disabled tabs are skipped by click and roving keyboard focus.',
+    kind: 'disabled',
+    ariaLabel: 'Home sections',
+    tabs: [
+      { value: 'home', label: 'Home', content: '' },
+      { value: 'settings', label: 'Disabled', content: '', isDisabled: true },
+    ],
+  },
+  {
+    title: 'Icons',
+    description: 'Trigger labels compose icons with text.',
+    kind: 'icons',
+    ariaLabel: 'Preview and code',
+    tabs: [
+      { value: 'preview', label: 'Preview', content: '', icon: 'app-window' },
+      { value: 'code', label: 'Code', content: '', icon: 'code' },
+    ],
+  },
+  {
+    title: 'RTL',
+    description: 'Horizontal tab order and arrow direction mirror in right-to-left contexts.',
+    kind: 'rtl',
+    ariaLabel: 'نظرة عامة على المشروع',
+    rtl: true,
+    tabs: rtlTabs,
+  },
+  {
+    title: 'Manual with disabled tab',
+    description: 'Manual activation moves focus without changing the parent-owned value until Enter or Space; disabled tabs are skipped.',
+    kind: 'manual',
+    ariaLabel: 'Settings',
+    manual: true,
+    tabs: [
+      { value: 'account', label: 'Account', content: 'Manage your profile details.' },
+      { value: 'security', label: 'Security', content: 'Review passwords and sessions.', isDisabled: true },
+      { value: 'billing', label: 'Billing', content: 'Update invoices and payment methods.' },
+    ],
+  },
+];
+
+const esc = (value: string): string => value.replace(/'/g, "\\'");
+
+const cardContent = (
+  card: TabsCardSpec,
+  isStyleX: boolean,
+  indent: string,
+): string => {
+  const contentText = isStyleX
+    ? `h.span([h.Class(stylex.props(styles.cardText).className ?? '')], ['${esc(card.text)}'])`
+    : `'${esc(card.text)}'`;
+  return `Card.card({ children: [
+${indent}  Card.cardHeader({ children: [
+${indent}    Card.cardTitle({ children: ['${esc(card.title)}'] }, h),
+${indent}    Card.cardDescription({ children: ['${esc(card.description)}'] }, h),
+${indent}  ] }, h),
+${indent}  Card.cardContent({ ${isStyleX ? '' : "class: 'text-sm text-muted-foreground', "}children: [${contentText}] }, h),
+${indent}] }, h)`;
+};
+
+const tabEntry = (
+  tab: TabsTabSpec,
+  isStyleX: boolean,
+  indent: string,
+): string => {
+  const label =
+    tab.icon === undefined
+      ? `'${esc(tab.label)}'`
+      : `h.span([], [Icon.icon('${tab.icon}', ${isStyleX ? '{}' : "{ class: 'size-4' }"}, h), '${esc(tab.label)}'])`;
+  const content =
+    tab.card === undefined ? `'${esc(tab.content)}'` : cardContent(tab.card, isStyleX, `${indent}  `);
+  return `${indent}{ value: '${tab.value}', label: ${label}, content: ${content}${tab.isDisabled === true ? ', isDisabled: true' : ''} },`;
+};
+
+const emitSource = (
+  fixture: TabsFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const isStyleX = renderer === 'stylex';
+  const base = isStyleX ? 'stylex' : 'ui';
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
+  const usesCard = fixture.tabs.some(tab => tab.card !== undefined);
+  const usesIcon = fixture.tabs.some(tab => tab.icon !== undefined);
+  const values = fixture.tabs.map(tab => `'${tab.value}'`).join(', ');
+  const sxBlock =
+    isStyleX && usesCard
+      ? `\nconst styles = stylex.create({\n  cardText: { fontSize: '0.875rem', color: 'var(--muted-foreground)' },\n  demoWidth: { width: '25rem' },\n})`
+      : '';
+  return foldkitApplication({
+    title: `Tabs — ${fixture.title}`,
+    imports: `import { Schema as S } from 'effect'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
+import { type Document, type HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+${isStyleX ? "import * as stylex from '@stylexjs/stylex'\n" : ''}${usesCard ? `import * as Card from '@/${base}/card'\n` : ''}${usesIcon ? `import * as Icon from '@/lib/icon'\n` : ''}import * as Tabs from '@/${base}/tabs'${sxBlock}`,
+    model: `export const TabValue = S.Literals([${values}])
+export type TabValue = typeof TabValue.Type
+const ExampleTabs = Tabs.create<TabValue>()
+export const Model = S.Struct({ tabs: Tabs.Model, selectedTab: TabValue })
+export type Model = typeof Model.Type`,
+    messages: `export const Message = defineMessageUnion({
+  GotTabsMessage${tag}: { message: Tabs.Message },
+})
+export type Message = typeof Message.Type`,
+    init: `export const init = (): Update.Return<Model, Message> => ({
+  model: {
+    tabs: Tabs.init({ id: 'docs-tabs'${fixture.manual === true ? ", activationMode: 'Manual'" : ''} }),
+    selectedTab: '${fixture.tabs[0]?.value ?? 'overview'}',
+  },
+})`,
+    update: `export const update = (
+  model: Model,
+  message: Message,
+): Update.Return<Model, Message> => {
+  switch (message._tag) {
+    case 'GotTabsMessage${tag}': {
+      const next = ExampleTabs.update(model.tabs, message.message)
+      const selection = next.outMessage
+      return {
+        model: {
+          ...model,
+          tabs: next.model,
+          selectedTab: selection === undefined ? model.selectedTab : selection.value,
+        },
+        commands: Command.mapMessages(next.commands ?? [], next =>
+          Message['GotTabsMessage${tag}']({ message: next })),
+      }
+    }
+  }
+}`,
+    view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: 'Tabs — ${fixture.title}',
+  body: h.main([h.Class('mx-auto max-w-xl p-8')], [
+    ExampleTabs.tabs({
+      model: model.tabs,
+      selectedValue: model.selectedTab,
+      toParentMessage: message => Message['GotTabsMessage${tag}']({ message }),
+      ariaLabel: '${esc(fixture.ariaLabel)}',
+      tabs: [
+${fixture.tabs.map(tab => tabEntry(tab, isStyleX, '        ')).join('\n')}
+      ],${fixture.variant === 'line' ? "\n      variant: 'line'," : ''}${fixture.orientation === 'vertical' ? "\n      orientation: 'vertical'," : ''}${fixture.rtl === true ? "\n      direction: 'rtl'," : ''}${fixture.kind === 'demo' ? (isStyleX ? '\n      layoutStyle: styles.demoWidth,' : "\n      class: 'w-100',") : ''}
+    }, h),
+  ]),
+})`,
+  });
+};
+
+export const tabsExamples = (
+  renderer: 'tailwind' | 'stylex',
+): ReadonlyArray<DocsExample> =>
+  tabsFixtures.map(fixture => ({
+    title: fixture.title,
+    ...(fixture.description === undefined
+      ? {}
+      : { description: fixture.description }),
+    ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
+    code: emitSource(fixture, renderer),
+  }));

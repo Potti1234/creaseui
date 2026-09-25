@@ -66,26 +66,37 @@ export const bubble = <Msg>(
 };
 
 export const bubbleContent = <Msg>(
-  props: ChildrenProps,
+  props: ChildrenProps & Readonly<{ onClick?: Msg }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  return h.div(
-    [
-      h.DataAttribute('slot', 'bubble-content'),
-      h.Class(
-        cn(
-          'w-fit max-w-full min-w-0 overflow-hidden rounded-xl border border-transparent px-3 py-2 text-sm leading-relaxed wrap-break-word group-data-[align=end]/bubble:self-end',
-          props.class,
-        ),
-      ),
-    ],
-    [...props.children],
-  );
+  const base =
+    'w-fit max-w-full min-w-0 overflow-hidden rounded-xl border border-transparent px-3 py-2 text-sm leading-relaxed wrap-break-word group-data-[align=end]/bubble:self-end';
+  return props.onClick === undefined
+    ? h.div(
+        [
+          h.DataAttribute('slot', 'bubble-content'),
+          h.Class(cn(base, props.class)),
+        ],
+        [...props.children],
+      )
+    : h.button(
+        [
+          h.DataAttribute('slot', 'bubble-content'),
+          h.Class(cn(base, 'cursor-pointer text-left', props.class)),
+          h.Type('button'),
+          h.OnClick(props.onClick),
+        ],
+        [...props.children],
+      );
 };
 
 export const bubbleReactions = <Msg>(
   props: ChildrenProps &
-    Readonly<{ side?: 'top' | 'bottom'; align?: 'start' | 'end' }>,
+    Readonly<{
+      side?: 'top' | 'bottom';
+      align?: 'start' | 'end';
+      ariaLabel?: string;
+    }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
   const side = props.side ?? 'bottom';
@@ -95,6 +106,9 @@ export const bubbleReactions = <Msg>(
       h.DataAttribute('slot', 'bubble-reactions'),
       h.DataAttribute('side', side),
       h.DataAttribute('align', align),
+      ...(props.ariaLabel === undefined
+        ? []
+        : [h.Role('img'), h.AriaLabel(props.ariaLabel)]),
       h.Class(
         cn(
           'absolute z-10 flex w-fit shrink-0 items-center justify-center gap-1 rounded-full bg-muted px-1.5 py-0.5 text-sm ring-3 ring-card',

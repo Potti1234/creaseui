@@ -2,7 +2,7 @@
 
 import { Slider as SliderPrimitive } from '@foldkit/ui';
 
-import { normalizeRange, normalizeRangeValues, updateRangeValue } from '@/lib/slider';
+import { normalizeMultiValues, normalizeRange, normalizeRangeValues, updateMultiValue, updateRangeValue } from '@/lib/slider';
 import { cn } from '@/lib/utils';
 
 export const Model = SliderPrimitive.Model;
@@ -244,3 +244,129 @@ Update: Slider.update(model.volume, message)
 Subscriptions: Slider.subscriptions
 View: Slider.slider({ model: model.volume, value: model.volumeValue, toParentMessage: GotSliderMessage, ariaLabel: 'Volume' })
 */
+
+export type MultiSliderProps<Msg> = Readonly<{
+  values: readonly number[];
+  min: number;
+  max: number;
+  step?: number;
+  onInput: (values: readonly number[]) => Msg;
+  orientation?: 'horizontal' | 'vertical';
+  direction?: 'ltr' | 'rtl';
+  ariaLabels?: readonly string[];
+  isDisabled?: boolean;
+  isReadOnly?: boolean;
+  name?: string;
+  class?: string;
+}>;
+
+/** A controlled N-thumb slider. Fills run between consecutive thumbs; a single
+ * thumb fills from the range minimum. */
+export const multiSlider = <Msg>(
+  props: MultiSliderProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const range = normalizeRange(props.min, props.max, props.step);
+  const values = normalizeMultiValues(props.values, range);
+  const span = Math.max(range.max - range.min, 1);
+  const orientation = props.orientation ?? 'horizontal';
+  const rtl = props.direction === 'rtl' && orientation === 'horizontal';
+  const percent = (value: number): number => ((value - range.min) / span) * 100;
+  const segments: ReadonlyArray<readonly [number, number]> =
+    values.length === 0
+      ? []
+      : values.length === 1
+        ? [[range.min, values[0] ?? range.min]]
+        : values.slice(0, -1).map((value, index) => [value, values[index + 1] ?? value]);
+  const input = (index: number, value: number): Html =>
+    h.input([
+      h.Type('range'),
+      h.Min(String(range.min)),
+      h.Max(String(range.max)),
+      h.Step(String(range.step)),
+      h.Value(String(value)),
+      h.AriaLabel(props.ariaLabels?.[index] ?? `Value ${String(index + 1)}`),
+      ...(props.isReadOnly === true ? [h.AriaReadonly(true)] : []),
+      h.Disabled(props.isDisabled ?? false),
+      ...(props.name === undefined
+        ? []
+        : [h.Name(`${props.name}[${String(index)}]`)]),
+      h.OnInput((next) =>
+        props.onInput(
+          props.isReadOnly === true
+            ? values
+            : updateMultiValue(values, index, Number(next), range),
+        ),
+      ),
+      h.Class(
+        cn(
+          'absolute m-0 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-primary [&::-webkit-slider-thumb]:bg-white',
+          orientation === 'horizontal'
+            ? 'inset-x-0 top-1/2 h-4 w-full -translate-y-1/2'
+            : 'inset-y-0 left-1/2 h-full w-4 -translate-x-1/2 [writing-mode:vertical-lr] [direction:rtl]',
+        ),
+      ),
+    ]);
+  return h.div(
+    [
+      h.DataAttribute('slot', 'slider'),
+      h.DataAttribute('orientation', orientation),
+      ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
+      ...(props.isDisabled === true ? [h.DataAttribute('disabled', '')] : []),
+      ...(props.isReadOnly === true ? [h.DataAttribute('readonly', '')] : []),
+      h.Class(
+        cn(
+          'relative touch-none select-none data-[disabled]:opacity-50',
+          orientation === 'horizontal' ? 'h-5 w-full' : 'h-44 w-5',
+          props.class,
+        ),
+      ),
+    ],
+    [
+      h.div(
+        [
+          h.DataAttribute('slot', 'slider-track'),
+          h.Class(
+            cn(
+              'absolute rounded-full bg-muted',
+              orientation === 'horizontal'
+                ? 'inset-x-0 top-1/2 h-1.5 -translate-y-1/2'
+                : 'inset-y-0 left-1/2 w-1.5 -translate-x-1/2',
+            ),
+          ),
+        ],
+        segments.map(([lower, upper]) => {
+          const start = percent(lower);
+          const end = percent(upper);
+          return h.div(
+            [
+              h.DataAttribute('slot', 'slider-range'),
+              h.Class('absolute rounded-full bg-primary'),
+              h.Style(
+                orientation === 'horizontal'
+                  ? rtl
+                    ? {
+                        right: `${start}%`,
+                        left: `${100 - end}%`,
+                        insetBlock: '0',
+                      }
+                    : {
+                        left: `${start}%`,
+                        right: `${100 - end}%`,
+                        insetBlock: '0',
+                      }
+                  : {
+                      bottom: `${start}%`,
+                      top: `${100 - end}%`,
+                      insetInline: '0',
+                    },
+              ),
+            ],
+            [],
+          );
+        }),
+      ),
+      ...values.map((value, index) => input(index, value)),
+    ],
+  );
+};

@@ -26,22 +26,52 @@ export type MarkerPurpose = 'annotation' | 'status' | 'decorative';
 
 export const marker = <Msg>(
   props: ChildrenProps &
-    Readonly<{ variant?: VariantProps<typeof markerVariants>['variant']; purpose?: MarkerPurpose; ariaLabel?: string }>,
+    Readonly<{
+      variant?: VariantProps<typeof markerVariants>['variant'];
+      purpose?: MarkerPurpose;
+      ariaLabel?: string;
+      element?: 'div' | 'a' | 'button';
+      href?: string;
+      onClick?: () => Msg;
+    }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
   const variant = props.variant ?? 'default';
   const purpose = props.purpose ?? 'annotation';
-  return h.div(
-    [
-      h.DataAttribute('slot', 'marker'),
-      h.DataAttribute('variant', variant ?? 'default'),
-      h.DataAttribute('purpose', purpose),
-      ...(purpose === 'decorative' ? [h.Role('none'), h.AriaHidden(true)] : [h.Role(purpose === 'status' ? 'status' : 'note')]),
-      ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
-      h.Class(cn(markerVariants({ variant }), props.class)),
-    ],
-    [...props.children],
-  );
+  const element = props.element ?? 'div';
+  const attrs = [
+    h.DataAttribute('slot', 'marker'),
+    h.DataAttribute('variant', variant ?? 'default'),
+    h.DataAttribute('purpose', purpose),
+    ...(purpose === 'decorative' ? [h.Role('none'), h.AriaHidden(true)] : [h.Role(purpose === 'status' ? 'status' : 'note')]),
+    ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
+    h.Class(
+      cn(
+        markerVariants({ variant }),
+        element === 'a' && 'w-fit',
+        element === 'button' && 'w-fit cursor-pointer transition-colors hover:text-foreground',
+        props.class,
+      ),
+    ),
+  ];
+  switch (element) {
+    case 'a':
+      return h.a(
+        [...attrs, h.Href(props.href ?? '#')],
+        [...props.children],
+      );
+    case 'button':
+      return h.button(
+        [
+          ...attrs,
+          h.Type('button'),
+          ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick())]),
+        ],
+        [...props.children],
+      );
+    default:
+      return h.div(attrs, [...props.children]);
+  }
 };
 
 export const markerIcon = <Msg>(
@@ -61,7 +91,7 @@ export const markerIcon = <Msg>(
 };
 
 export const markerContent = <Msg>(
-  props: ChildrenProps,
+  props: ChildrenProps & Readonly<{ shimmer?: boolean }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
   return h.span(
@@ -70,6 +100,7 @@ export const markerContent = <Msg>(
       h.Class(
         cn(
           'min-w-0 wrap-break-word group-data-[variant=separator]/marker:flex-none group-data-[variant=separator]/marker:text-center',
+          props.shimmer === true ? 'shimmer' : undefined,
           props.class,
         ),
       ),

@@ -26,6 +26,7 @@ export type ButtonGroupProps = Readonly<{
   children: ReadonlyArray<Html | string>;
   orientation?: ButtonGroupVariants['orientation'];
   class?: string;
+  ariaLabel?: string;
 }>;
 
 export const buttonGroup = <Msg>(
@@ -37,6 +38,9 @@ export const buttonGroup = <Msg>(
   return h.div(
     [
       h.Role('group'),
+      ...(props.ariaLabel === undefined
+        ? []
+        : [h.AriaLabel(props.ariaLabel)]),
       h.DataAttribute('slot', 'button-group'),
       h.DataAttribute('orientation', orientation),
       h.Class(cn(buttonGroupVariants({ orientation }), props.class)),

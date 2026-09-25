@@ -39,6 +39,7 @@ export type ToggleProps<Msg> = Readonly<{
   id?: string;
   ariaLabel?: string;
   describedBy?: string;
+  direction?: 'ltr' | 'rtl';
   class?: string;
 }>;
 
@@ -62,6 +63,7 @@ export const toggle = <Msg>(
             ...(props.describedBy === undefined
               ? []
               : [h.AriaDescribedBy(props.describedBy)]),
+            ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
             h.Class(
               cn(
                 toggleVariants({

@@ -1,46 +1,241 @@
-import type { HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { switchLabels } from '@/docs/components/pages/switch/shared';
+import { switchFixtures } from '@/docs/components/pages/switch/shared';
+import * as Field from '@/stylex/field';
+import * as Label from '@/stylex/label';
+import { className } from '@/stylex/style';
 import * as Switch from '@/stylex/switch';
+
+const styles = stylex.create({
+  row: {
+    gap: '0.5rem',
+    alignItems: 'center',
+    display: 'flex',
+  },
+  wide: {
+    maxWidth: '24rem',
+    width: '100%',
+  },
+  fit: {
+    width: 'fit-content',
+  },
+  narrow: {
+    width: '10rem',
+  },
+});
+
+interface SwitchPreviewShape {
+  readonly states: Readonly<Record<string, boolean>>;
+}
+
+const sw = <Msg>(
+  id: string,
+  shape: SwitchPreviewShape,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+  extra?: Partial<Parameters<typeof Switch.switchControl<Msg>>[0]>,
+): Html =>
+  Switch.switchControl(
+    {
+      id,
+      isChecked: shape.states[id] ?? false,
+      onToggle: isChecked =>
+        onMessageJson(
+          JSON.stringify({ _tag: 'ToggledSwitchPreview', id, isChecked }),
+        ),
+      ...(extra ?? {}),
+    },
+    h,
+  );
+
+const descriptionField = <Msg>(
+  shape: SwitchPreviewShape,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+  direction: 'ltr' | 'rtl' | undefined,
+  isInvalid: boolean,
+): Html =>
+  Field.field(
+    {
+      orientation: 'horizontal',
+      ...(direction === undefined ? {} : { direction }),
+      ...(isInvalid ? { isInvalid: true } : {}),
+      layoutStyle: styles.wide,
+      children: [
+        Field.fieldContent(
+          {
+            children: [
+              Field.fieldLabel(
+                {
+                  for: direction === 'rtl' ? 'switch-focus-mode-rtl' : 'switch-focus-mode',
+                  children:
+                    direction === 'rtl'
+                      ? ['المشاركة عبر الأجهزة']
+                      : isInvalid
+                        ? ['Accept terms and conditions']
+                        : ['Share across devices'],
+                },
+                h,
+              ),
+              Field.fieldDescription(
+                {
+                  children:
+                    direction === 'rtl'
+                      ? ['يتم مشاركة التركيز عبر الأجهزة، ويتم إيقاف تشغيله عند مغادرة التطبيق.']
+                      : isInvalid
+                        ? ['You must accept the terms and conditions to continue.']
+                        : ['Focus is shared across devices, and turns off when you leave the app.'],
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+        sw(
+          direction === 'rtl' ? 'switch-focus-mode-rtl' : isInvalid ? 'switch-terms' : 'switch-focus-mode',
+          shape,
+          onMessageJson,
+          h,
+          {
+            ...(direction === undefined ? {} : { direction }),
+            ...(isInvalid ? { isInvalid: true } : {}),
+          },
+        ),
+      ],
+    },
+    h,
+  );
+
+const choiceCard = <Msg>(
+  id: string,
+  titleText: string,
+  descText: string,
+  shape: SwitchPreviewShape,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  Field.fieldLabel(
+    {
+      for: id,
+      children: [
+        Field.field(
+          {
+            orientation: 'horizontal',
+            children: [
+              Field.fieldContent(
+                {
+                  children: [
+                    Field.fieldTitle({ children: [titleText] }, h),
+                    Field.fieldDescription({ children: [descText] }, h),
+                  ],
+                },
+                h,
+              ),
+              sw(id, shape, onMessageJson, h),
+            ],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
 
 export const switchStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
-) => Switch.switchControl({
-  id: `docs-switch-${String(exampleIndex)}`,
-  isChecked: (model as { isChecked: boolean }).isChecked,
-  onToggle: isChecked => onMessageJson(JSON.stringify({
-    _tag: 'ToggledSwitchPreview',
-    isChecked,
-  })),
-  label: switchLabels[exampleIndex] ?? switchLabels[0],
-  ...(exampleIndex === 0
-    ? {
-        description: 'Receive build and deployment updates.',
-        name: 'notifications',
-        value: 'enabled',
-      }
-    : {}),
-  ...(exampleIndex === 1 ? { size: 'sm' as const } : {}),
-  ...(exampleIndex === 2
-    ? {
-        isDisabled: true,
-        description: 'Required by your organization.',
-      }
-    : {}),
-  ...(exampleIndex === 3
-    ? {
-        isReadOnly: true,
-        description: 'Supplied by your identity provider.',
-      }
-    : {}),
-  ...(exampleIndex === 4
-    ? {
-        direction: 'rtl' as const,
-        description: 'The thumb follows the inline direction.',
-      }
-    : {}),
-}, h);
+) => {
+  const shape = model as SwitchPreviewShape;
+  const fixture = switchFixtures[exampleIndex] ?? switchFixtures[0];
+  switch (fixture.kind) {
+    case 'demo':
+      return h.div([h.Class(className(styles.row))], [
+        sw('airplane-mode', shape, onMessageJson, h),
+        Label.label({ for: 'airplane-mode', children: ['Airplane Mode'] }, h),
+      ]);
+    case 'description':
+      return descriptionField(shape, onMessageJson, h, undefined, false);
+    case 'choiceCard':
+      return Field.fieldGroup(
+        {
+          layoutStyle: styles.wide,
+          children: [
+            choiceCard(
+              'switch-share',
+              'Share across devices',
+              'Focus is shared across devices, and turns off when you leave the app.',
+              shape,
+              onMessageJson,
+              h,
+            ),
+            choiceCard(
+              'switch-notifications',
+              'Enable notifications',
+              'Receive notifications when focus mode is enabled or disabled.',
+              shape,
+              onMessageJson,
+              h,
+            ),
+          ],
+        },
+        h,
+      );
+    case 'disabled':
+      return Field.field(
+        {
+          orientation: 'horizontal',
+          isDisabled: true,
+          layoutStyle: styles.fit,
+          children: [
+            sw('switch-disabled-unchecked', shape, onMessageJson, h, { isDisabled: true }),
+            Field.fieldLabel(
+              { for: 'switch-disabled-unchecked', children: ['Disabled'] },
+              h,
+            ),
+          ],
+        },
+        h,
+      );
+    case 'invalid':
+      return descriptionField(shape, onMessageJson, h, undefined, true);
+    case 'size':
+      return Field.fieldGroup(
+        {
+          layoutStyle: styles.narrow,
+          children: [
+            Field.field(
+              {
+                orientation: 'horizontal',
+                children: [
+                  sw('switch-size-sm', shape, onMessageJson, h, { size: 'sm' }),
+                  Field.fieldLabel({ for: 'switch-size-sm', children: ['Small'] }, h),
+                ],
+              },
+              h,
+            ),
+            Field.field(
+              {
+                orientation: 'horizontal',
+                children: [
+                  sw('switch-size-default', shape, onMessageJson, h, { size: 'default' }),
+                  Field.fieldLabel(
+                    { for: 'switch-size-default', children: ['Default'] },
+                    h,
+                  ),
+                ],
+              },
+              h,
+            ),
+          ],
+        },
+        h,
+      );
+    case 'rtl':
+      return descriptionField(shape, onMessageJson, h, 'rtl', false);
+  }
+};

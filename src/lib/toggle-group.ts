@@ -31,6 +31,7 @@ export type ToggleGroupBehaviorProps<Value extends string, Msg> = Readonly<{
   items: ReadonlyArray<ToggleGroupBehaviorItem<Value>>
   ariaLabel: string
   direction?: 'ltr' | 'rtl'
+  orientation?: 'vertical'
 }>
 
 export type ToggleGroupVisualAttributes<Msg> = Readonly<{
@@ -76,6 +77,7 @@ const renderToggleGroup = <Value extends string, Msg>(
       tabs: orderedItems.map((item) => item.value),
       selectedValue: focusedValue,
       ariaLabel: props.ariaLabel,
+      orientation: props.orientation === 'vertical' ? 'Vertical' : 'Horizontal',
       isTabDisabled: (value) =>
         props.items.find((item) => item.value === value)?.isDisabled === true,
       toView: ({ tabs }) =>

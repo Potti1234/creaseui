@@ -84,7 +84,7 @@ export const update = (model: Model, message: Message): UpdateReturn => {
     case 'CompletedWaitBeforeShowingHoverCard':
       return message.version === model.showVersion && model.isHovered && !model.isDismissed ? { model: { ...model, isOpen: true }, } : ({ model: model })
     case 'CompletedWaitBeforeClosingHoverCard':
-      return message.version === model.closeVersion && !model.isHovered && !model.isFocused ? { model: { ...model }, } : ({ model: model })
+      return message.version === model.closeVersion && !model.isHovered && !model.isFocused ? { model: { ...model, isOpen: false }, } : ({ model: model })
   }
 }
 

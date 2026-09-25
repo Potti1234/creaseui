@@ -11,7 +11,7 @@ import { normalizePagination, paginationItems, type PaginationRecipeProps } from
 
 export * from '@/lib/pagination'
 
-type SlotProps = Readonly<{ children: ReadonlyArray<Html | string>; layoutStyle?: ComponentLayoutStyle; ariaLabel?: string }>
+type SlotProps = Readonly<{ children: ReadonlyArray<Html | string>; layoutStyle?: ComponentLayoutStyle; ariaLabel?: string; direction?: 'ltr' | 'rtl' }>
 
 const styles = stylex.create({
   active: { borderColor: tokens.border, borderStyle: 'solid', borderWidth: 1 },
@@ -29,11 +29,13 @@ const styles = stylex.create({
 
 const sizes = { default: styles.sizeDefault, sm: styles.sizeSm, lg: styles.sizeLg, icon: styles.sizeIcon } as const
 
-export const pagination = <Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html => h.nav([h.Role('navigation'), h.AriaLabel(props.ariaLabel ?? 'Pagination'), h.DataAttribute('slot', 'pagination'), h.Class(className(styles.nav, props.layoutStyle))], [...props.children])
+export const pagination = <Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html => h.nav([h.Role('navigation'), h.AriaLabel(props.ariaLabel ?? 'Pagination'), h.DataAttribute('slot', 'pagination'), ...(props.direction === undefined ? [] : [h.Dir(props.direction)]), h.Class(className(styles.nav, props.layoutStyle))], [...props.children])
 export const paginationContent = <Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html => h.ul([h.DataAttribute('slot', 'pagination-content'), h.Class(className(styles.content, props.layoutStyle))], [...props.children])
 export const paginationItem = <Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html => h.li([h.DataAttribute('slot', 'pagination-item'), h.Class(className(props.layoutStyle))], [...props.children])
 
-export type PaginationLinkProps = Readonly<{ href: string; children: ReadonlyArray<Html | string>; isActive?: boolean; size?: ButtonSize; ariaLabel?: string; layoutStyle?: ComponentLayoutStyle }>
+export type PaginationLinkSize = Extract<ButtonSize, 'default' | 'sm' | 'lg' | 'icon'>
+
+export type PaginationLinkProps = Readonly<{ href: string; children: ReadonlyArray<Html | string>; isActive?: boolean; size?: PaginationLinkSize; ariaLabel?: string; layoutStyle?: ComponentLayoutStyle }>
 
 export const paginationLink = <Msg>(props: PaginationLinkProps, h: HtmlBuilder<Msg>): Html => {
   const isActive = props.isActive ?? false
@@ -43,9 +45,17 @@ export const paginationLink = <Msg>(props: PaginationLinkProps, h: HtmlBuilder<M
   ], [...props.children])
 }
 
-export type PaginationDirectionProps = Readonly<{ href?: string; isDisabled?: boolean; layoutStyle?: ComponentLayoutStyle }>
-export const paginationPrevious = <Msg>(props: PaginationDirectionProps, h: HtmlBuilder<Msg>): Html => props.isDisabled === true || props.href === undefined ? h.span([h.Role('link'), h.AriaDisabled(true), h.Tabindex(-1), h.AriaLabel('Go to previous page'), h.DataAttribute('slot', 'pagination-previous'), h.Class(className(styles.link, styles.sizeDefault, styles.disabled, props.layoutStyle))], [Icon.chevronLeft<Msg>({}, h), 'Previous']) : paginationLink({ href: props.href, ariaLabel: 'Go to previous page', size: 'default', layoutStyle: props.layoutStyle, children: [Icon.chevronLeft<Msg>({}, h), 'Previous'] }, h)
-export const paginationNext = <Msg>(props: PaginationDirectionProps, h: HtmlBuilder<Msg>): Html => props.isDisabled === true || props.href === undefined ? h.span([h.Role('link'), h.AriaDisabled(true), h.Tabindex(-1), h.AriaLabel('Go to next page'), h.DataAttribute('slot', 'pagination-next'), h.Class(className(styles.link, styles.sizeDefault, styles.disabled, props.layoutStyle))], ['Next', Icon.chevronRight<Msg>({}, h)]) : paginationLink({ href: props.href, ariaLabel: 'Go to next page', size: 'default', layoutStyle: props.layoutStyle, children: ['Next', Icon.chevronRight<Msg>({}, h)] }, h)
+export type PaginationDirectionProps = Readonly<{ href?: string; isDisabled?: boolean; layoutStyle?: ComponentLayoutStyle; direction?: 'ltr' | 'rtl'; label?: string }>
+export const paginationPrevious = <Msg>(props: PaginationDirectionProps, h: HtmlBuilder<Msg>): Html => {
+  const icon = props.direction === 'rtl' ? Icon.chevronRight<Msg>({}, h) : Icon.chevronLeft<Msg>({}, h);
+  const label = props.label ?? 'Previous';
+  return props.isDisabled === true || props.href === undefined ? h.span([h.Role('link'), h.AriaDisabled(true), h.Tabindex(-1), h.AriaLabel('Go to previous page'), h.DataAttribute('slot', 'pagination-previous'), h.Class(className(styles.link, styles.sizeDefault, styles.disabled, props.layoutStyle))], [icon, label]) : paginationLink({ href: props.href, ariaLabel: 'Go to previous page', size: 'default', layoutStyle: props.layoutStyle, children: [icon, label] }, h);
+};
+export const paginationNext = <Msg>(props: PaginationDirectionProps, h: HtmlBuilder<Msg>): Html => {
+  const icon = props.direction === 'rtl' ? Icon.chevronLeft<Msg>({}, h) : Icon.chevronRight<Msg>({}, h);
+  const label = props.label ?? 'Next';
+  return props.isDisabled === true || props.href === undefined ? h.span([h.Role('link'), h.AriaDisabled(true), h.Tabindex(-1), h.AriaLabel('Go to next page'), h.DataAttribute('slot', 'pagination-next'), h.Class(className(styles.link, styles.sizeDefault, styles.disabled, props.layoutStyle))], [label, icon]) : paginationLink({ href: props.href, ariaLabel: 'Go to next page', size: 'default', layoutStyle: props.layoutStyle, children: [label, icon] }, h);
+};
 
 export type PaginationEllipsisProps = Readonly<{ layoutStyle?: ComponentLayoutStyle }>
 export const paginationEllipsis = <Msg>(props: PaginationEllipsisProps = {}, h: HtmlBuilder<Msg>): Html => h.span([h.AriaHidden(true), h.DataAttribute('slot', 'pagination-ellipsis'), h.Class(className(styles.ellipsis, props.layoutStyle))], [Icon.moreHorizontal<Msg>({}, h), h.span([h.Class(className(styles.srOnly))], ['More pages'])])

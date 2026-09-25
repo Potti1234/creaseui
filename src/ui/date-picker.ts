@@ -5,6 +5,7 @@ import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html';
 import { DatePicker as DatePickerPrimitive } from '@foldkit/ui';
 
 import * as Icon from '@/lib/icon';
+import { mirrorNavigationKeyForRtl } from '@/lib/calendar';
 import { buttonVariants } from '@/ui/button';
 import { calendarView } from '@/ui/calendar';
 import { cn } from '@/lib/utils';
@@ -37,6 +38,22 @@ export const reflectDisabledDaysOfWeek =
   DatePickerPrimitive.reflectDisabledDaysOfWeek;
 export const triggerId = DatePickerPrimitive.triggerId;
 
+/** Wraps update for right-to-left pickers: the embedded calendar's grid is
+ *  mirrored visually, so ArrowLeft/ArrowRight inside the calendar submodel
+ *  must swap to move the cursor in the visual direction. */
+export const updateForRtl = (
+  model: Model,
+  message: Message,
+): ReturnType<typeof update> =>
+  update(
+    model,
+    message._tag === 'GotCalendarMessage'
+      ? Message.GotCalendarMessage({
+          message: mirrorNavigationKeyForRtl(message.message),
+        })
+      : message,
+  );
+
 const TRIGGER_CLASS = 'w-[240px] justify-start text-left font-normal';
 
 const PANEL_CLASS =
@@ -68,9 +85,12 @@ export type DatePickerProps<Msg> = Readonly<{
   ariaLabelledBy?: string;
   class?: string;
   triggerClass?: string;
+  /** Overrides the trigger's inner content (receives the selected date). */
+  triggerContent?: (maybeDate: Option.Option<FoldkitCalendar.CalendarDate>) => Html;
   panelClass?: string;
   calendarClass?: string;
   mobilePresentation?: 'dialog' | 'popover';
+  direction?: 'ltr' | 'rtl';
 }> & DatePickerTextInput<Msg>;
 
 export const datePicker = <Msg>(
@@ -91,23 +111,30 @@ export const datePicker = <Msg>(
     viewInputs: {
       maybeSelectedDate: props.maybeSelectedDate,
       anchor: { placement: 'bottom-start', gap: 4 },
-      triggerContent: (maybeDate) =>
-        hd.span(
-          [hd.Class('contents')],
-          [
-            Icon.calendarIcon({}, h),
-            Option.match(maybeDate, {
-              onNone: () => props.placeholder ?? 'Pick a date',
-              onSome: formatDate,
-            }),
-          ],
-        ),
+      triggerContent:
+        props.triggerContent ??
+        ((maybeDate) =>
+          hd.span(
+            [hd.Class('contents')],
+            [
+              Icon.calendarIcon({}, h),
+              Option.match(maybeDate, {
+                onNone: () => props.placeholder ?? 'Pick a date',
+                onSome: formatDate,
+              }),
+            ],
+          )),
       toCalendarView: (attributes) =>
         calendarView(
           attributes,
-          props.calendarClass === undefined
-            ? {}
-            : { class: props.calendarClass },
+          {
+            ...(props.calendarClass === undefined
+              ? {}
+              : { class: props.calendarClass }),
+            ...(props.direction === undefined
+              ? {}
+              : { direction: props.direction }),
+          },
           h,
         ),
       isDisabled: props.isDisabled ?? false,

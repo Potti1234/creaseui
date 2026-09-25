@@ -12,14 +12,16 @@ export const payments: ReadonlyArray<Payment> = [
 ];
 
 export const dataTableFixtures = [
-  { title: 'Sortable payments', description: 'Typed columns provide renderers and comparable values while update owns sort direction and page reset.', filter: false, server: false },
-  { title: 'Filter and paginate', description: 'Filtering derives from parent-owned rows, resets the current page, and paginates the resulting collection.', filter: true, server: false },
-  { title: 'Server-owned query', description: 'Server mode keeps query state controlled while rowCount describes pagination beyond the currently loaded rows.', filter: false, server: true },
+  { title: 'Sortable payments', description: 'Typed columns provide renderers and comparable values while update owns sort direction and page reset.', filter: false, server: false, rtl: false },
+  { title: 'Filter and paginate', description: 'Filtering derives from parent-owned rows, resets the current page, and paginates the resulting collection.', filter: true, server: false, rtl: false },
+  { title: 'Server-owned query', description: 'Server mode keeps query state controlled while rowCount describes pagination beyond the currently loaded rows.', filter: false, server: true, rtl: false },
+  { title: 'RTL', description: 'Localized headers under a dir="rtl" wrapper mirror the full table chrome.', filter: true, server: false, rtl: true },
 ] as const;
 
 const source = (fixture: (typeof dataTableFixtures)[number], renderer: 'tailwind' | 'stylex'): string => {
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
   const stylex = renderer === 'stylex';
+  const filterPlaceholder = fixture.rtl ? 'بحث في المدفوعات...' : 'Filter payments…';
   return foldkitApplication({
     title: `Data Table — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -44,14 +46,16 @@ export type Message = typeof Message.Type`,
   }
 }`,
     view: `${stylex ? "const styles = stylex.create({ amount: { display: 'block', textAlign: 'right' } })\n\n" : ''}const columns${stylex ? ' = (h: HtmlBuilder<Message>): ReadonlyArray<DataTable.DataTableColumn<Payment>> =>' : ': ReadonlyArray<DataTable.DataTableColumn<Payment>> ='} [
-  { key: 'status', header: 'Status', cell: row => row.status, sortValue: row => row.status },
-  { key: 'email', header: 'Email', cell: row => row.email, sortValue: row => row.email },
-  { key: 'amount', header: 'Amount', ${stylex ? "cell: row => h.span([h.Class(stylex.props(styles.amount).className ?? '')], [`$${row.amount.toFixed(2)}`])" : "class: 'text-right', cell: row => `$${row.amount.toFixed(2)}`"}, sortValue: row => row.amount },
+  { key: 'status', header: '${fixture.rtl ? 'الحالة' : 'Status'}', cell: row => row.status, sortValue: row => row.status },
+  { key: 'email', header: '${fixture.rtl ? 'البريد الإلكتروني' : 'Email'}', cell: row => row.email, sortValue: row => row.email },
+  { key: 'amount', header: '${fixture.rtl ? 'المبلغ' : 'Amount'}', ${stylex ? "cell: row => h.span([h.Class(stylex.props(styles.amount).className ?? '')], [`$${row.amount.toFixed(2)}`])" : "class: 'text-right', cell: row => `$${row.amount.toFixed(2)}`"}, sortValue: row => row.amount },
 ]
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Data Table — ${fixture.title}',
-  body: h.main([], [DataTable.dataTable({ model: model.table, toParentMessage: message => GotDataTableMessage({ message }), rows: payments, columns${stylex ? '(h)' : ''}, rowKey: row => row.id,${fixture.filter ? " filterText: row => `${row.status} ${row.email}`, filterPlaceholder: 'Filter payments…'," : ''}${fixture.server ? " mode: 'server', rowCount: 42," : ''} enableRowSelection: true, enableColumnVisibility: true, pageSizeOptions: [5, 10, 20], ariaLabel: 'Payments' }, h)]),
+  body: h.main([], [h.div(${fixture.rtl ? "[h.Dir('rtl')], " : '[], '}[
+    DataTable.dataTable({ model: model.table, toParentMessage: message => GotDataTableMessage({ message }), rows: payments, columns${stylex ? ': columns(h)' : ''}, rowKey: row => row.id,${fixture.filter ? ` filterText: row => \`\${row.status} \${row.email}\`, filterPlaceholder: '${filterPlaceholder}',` : ''}${fixture.server ? " mode: 'server', rowCount: 42," : ''} enableRowSelection: true, enableColumnVisibility: true, pageSizeOptions: [5, 10, 20], ariaLabel: '${fixture.rtl ? 'المدفوعات' : 'Payments'}' }, h),
+  ])]),
 })`,
   });
 };

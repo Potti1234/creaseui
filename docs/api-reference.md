@@ -32,7 +32,7 @@ Source: [`src/ui/alert-dialog.ts`](../src/ui/alert-dialog.ts)
 | --- | --- | --- |
 | `*` | re-export | `export * from '@/lib/alert-dialog'` |
 | `AlertDialogSlots` | type | `AlertDialogSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; }>` |
-| `AlertDialogProps` | type | `AlertDialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description: string; media?: ReadonlyArray<Html \| string>; actionLabel: string; cancelLabel?: string; pendingLabel?: string; isPending?: boolean; size?…` |
+| `AlertDialogProps` | type | `AlertDialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description: string; media?: ReadonlyArray<Html \| string>; mediaVariant?: keyof typeof MEDIA_VARIANTS; actionLabel: string; cancelLabel?: string; pendi…` |
 | `alertDialog` | function | `alertDialog<Msg>(props: AlertDialogProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Alert
@@ -71,6 +71,7 @@ Source: [`src/ui/attachment.ts`](../src/ui/attachment.ts)
 | `attachmentMedia` | function | `attachmentMedia<Msg>(props: ChildrenProps & Readonly<{ variant?: 'icon' \| 'image' }>, h: HtmlBuilder<Msg>): Html` |
 | `attachmentContent` | function | `attachmentContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `attachmentActions` | function | `attachmentActions<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
+| `attachmentAction` | function | `attachmentAction<Msg>(props: Readonly<{ onClick: Msg; label: string; children: ReadonlyArray<Html \| string>; class?: string; }>, h: HtmlBuilder<Msg>): Html` |
 | `attachmentGroup` | function | `attachmentGroup<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `attachmentTitle` | function | `attachmentTitle<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `attachmentDescription` | function | `attachmentDescription<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
@@ -94,6 +95,12 @@ Source: [`src/ui/avatar.ts`](../src/ui/avatar.ts)
 | `avatarImage` | function | `avatarImage<Msg>(props: AvatarImageProps & Readonly<{ toParentMessage?: (message: Message) => Msg }>, h: HtmlBuilder<Msg>): Html` |
 | `AvatarFallbackProps` | type | `AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html \| string>; model?: Model; }>` |
 | `avatarFallback` | function | `avatarFallback<Msg>(props: AvatarFallbackProps, h: HtmlBuilder<Msg>): Html` |
+| `AvatarBadgeProps` | type | `AvatarBadgeProps = Readonly<{ class?: string; children?: ReadonlyArray<Html \| string>; }>` |
+| `avatarBadge` | function | `avatarBadge<Msg>(props: AvatarBadgeProps, h: HtmlBuilder<Msg>): Html` |
+| `AvatarGroupProps` | type | `AvatarGroupProps = Readonly<{ class?: string; children: ReadonlyArray<Html \| string>; }>` |
+| `avatarGroup` | function | `avatarGroup<Msg>(props: AvatarGroupProps, h: HtmlBuilder<Msg>): Html` |
+| `AvatarGroupCountProps` | type | `AvatarGroupCountProps = Readonly<{ class?: string; children: ReadonlyArray<Html \| string>; }>` |
+| `avatarGroupCount` | function | `avatarGroupCount<Msg>(props: AvatarGroupCountProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Badge
 
@@ -103,7 +110,7 @@ Source: [`src/ui/badge.ts`](../src/ui/badge.ts)
 | --- | --- | --- |
 | `badgeVariants` | value | `badgeVariants: value` |
 | `BadgeVariants` | type | `BadgeVariants = VariantProps<typeof badgeVariants>` |
-| `BadgeProps` | type | `BadgeProps = Readonly<{ children: ReadonlyArray<Html \| string>; variant?: BadgeVariants['variant']; class?: string; }>` |
+| `BadgeProps` | type | `BadgeProps = Readonly<{ children: ReadonlyArray<Html \| string>; variant?: BadgeVariants['variant']; class?: string; /** Renders the badge as an anchor pointing at this URL. */ href?: string; }>` |
 | `badge` | function | `badge<Msg>(props: BadgeProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Breadcrumb
@@ -137,8 +144,8 @@ Source: [`src/ui/bubble.ts`](../src/ui/bubble.ts)
 | `BubbleVariant` | type | `BubbleVariant = VariantProps<typeof bubbleVariants>['variant']` |
 | `bubbleGroup` | function | `bubbleGroup<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `bubble` | function | `bubble<Msg>(props: ChildrenProps & Readonly<{ variant?: BubbleVariant; align?: 'start' \| 'end' }>, h: HtmlBuilder<Msg>): Html` |
-| `bubbleContent` | function | `bubbleContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
-| `bubbleReactions` | function | `bubbleReactions<Msg>(props: ChildrenProps & Readonly<{ side?: 'top' \| 'bottom'; align?: 'start' \| 'end' }>, h: HtmlBuilder<Msg>): Html` |
+| `bubbleContent` | function | `bubbleContent<Msg>(props: ChildrenProps & Readonly<{ onClick?: Msg }>, h: HtmlBuilder<Msg>): Html` |
+| `bubbleReactions` | function | `bubbleReactions<Msg>(props: ChildrenProps & Readonly<{ side?: 'top' \| 'bottom'; align?: 'start' \| 'end'; ariaLabel?: string; }>, h: HtmlBuilder<Msg>): Html` |
 
 ## Button Group
 
@@ -148,7 +155,7 @@ Source: [`src/ui/button-group.ts`](../src/ui/button-group.ts)
 | --- | --- | --- |
 | `buttonGroupVariants` | value | `buttonGroupVariants: value` |
 | `ButtonGroupVariants` | type | `ButtonGroupVariants = VariantProps<typeof buttonGroupVariants>` |
-| `ButtonGroupProps` | type | `ButtonGroupProps = Readonly<{ children: ReadonlyArray<Html \| string>; orientation?: ButtonGroupVariants['orientation']; class?: string; }>` |
+| `ButtonGroupProps` | type | `ButtonGroupProps = Readonly<{ children: ReadonlyArray<Html \| string>; orientation?: ButtonGroupVariants['orientation']; class?: string; ariaLabel?: string; }>` |
 | `buttonGroup` | function | `buttonGroup<Msg>(props: ButtonGroupProps, h: HtmlBuilder<Msg>): Html` |
 | `ButtonGroupSeparatorProps` | type | `ButtonGroupSeparatorProps = Readonly<{ orientation?: 'horizontal' \| 'vertical'; class?: string; }>` |
 | `buttonGroupSeparator` | function | `buttonGroupSeparator<Msg>(props: ButtonGroupSeparatorProps = {}, h: HtmlBuilder<Msg>): Html` |
@@ -190,9 +197,9 @@ Source: [`src/ui/calendar.ts`](../src/ui/calendar.ts)
 | `reflectDisabledDates` | value | `reflectDisabledDates: value` |
 | `reflectDisabledDaysOfWeek` | value | `reflectDisabledDaysOfWeek: value` |
 | `dropToDays` | value | `dropToDays: value` |
-| `CalendarViewOptions` | type | `CalendarViewOptions = Readonly<{ class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarBehavior.CalendarRange; }>` |
+| `CalendarViewOptions` | type | `CalendarViewOptions = Readonly<{ class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean; }>` |
 | `calendarView` | function | `calendarView<Msg>(attributes: CalendarPrimitive.CalendarAttributes, options: CalendarViewOptions, h: HtmlBuilder<Msg>): Html` |
-| `CalendarProps` | type | `CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarBehavior.CalendarRange; previousMonthLabel?: s…` |
+| `CalendarProps` | type | `CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean;…` |
 | `calendar` | function | `calendar<Msg>(props: CalendarProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Card
@@ -201,7 +208,7 @@ Source: [`src/ui/card.ts`](../src/ui/card.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `CardProps` | type | `CardProps = Slot & Readonly<{ element?: 'div' \| 'section' \| 'article'; }>` |
+| `CardProps` | type | `CardProps = Slot & Readonly<{ element?: 'div' \| 'section' \| 'article'; size?: 'default' \| 'sm'; }>` |
 | `card` | function | `card<Msg>(props: CardProps, h: HtmlBuilder<Msg>): Html` |
 | `cardHeader` | value | `cardHeader: value` |
 | `CardTitleProps` | type | `CardTitleProps = Slot & Readonly<{ element?: 'h2' \| 'h3' \| 'h4' }>` |
@@ -292,11 +299,18 @@ Source: [`src/ui/combobox.ts`](../src/ui/combobox.ts)
 | `OutMessage` | value | `OutMessage: value` |
 | `OutMessage` | type | `OutMessage<Value extends string = string> = ComboboxPrimitive.OutMessage<Value>` |
 | `init` | value | `init: value` |
+| `MultiModel` | value | `MultiModel: value` |
+| `multiInit` | value | `multiInit: value` |
+| `MultiModel` | type | `MultiModel = typeof MultiModel.Type` |
+| `MultiOutMessage` | type | `MultiOutMessage<Value extends string = string> = OutMessage<Value>` |
 | `ComboboxSize` | type | `ComboboxSize = 'sm' \| 'default'` |
 | `ComboboxItemConfig` | type | `ComboboxItemConfig = Readonly<{ content?: Html \| string; searchText?: string; class?: string; isDisabled?: boolean; }>` |
 | `ComboboxProps` | type | `ComboboxProps<Item, Value extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Value>; restingInputValue: string; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToValue: (item: Item) => Value; itemToLa…` |
 | `ComboboxBundle` | type | `ComboboxBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ComboboxPrimitive.create<Value>>['update']; combobox: <Item, Msg>(props: ComboboxProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` |
-| `create` | function | `create<Value extends string = string>(): ComboboxBundle<Value>` |
+| `create` | function | `create<Value extends string = string>(config?: Readonly<{ autoHighlight?: boolean }>): ComboboxBundle<Value>` |
+| `ComboboxMultiProps` | type | `ComboboxMultiProps<Item, Value extends string, Msg> = Omit< ComboboxProps<Item, Value, Msg>, 'maybeSelectedValue' \| 'restingInputValue' > & Readonly<{ /** The selection the parent owns; selecting an item toggles membership. */ selectedValues: ReadonlyArray<Va…` |
+| `ComboboxMultiBundle` | type | `ComboboxMultiBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ComboboxPrimitive.Multi.create<Value>>['update']; comboboxMulti: <Item, Msg>( props: ComboboxMultiProps<Item, Value, Msg>, h: HtmlBuilder<Msg>, ) => Html; }>` |
+| `createMulti` | function | `createMulti<Value extends string = string>(config?: Readonly<{ autoHighlight?: boolean }>): ComboboxMultiBundle<Value>` |
 | `update` | value | `update: value` |
 | `combobox` | value | `combobox: value` |
 
@@ -382,6 +396,7 @@ Source: [`src/ui/date-picker.ts`](../src/ui/date-picker.ts)
 | `reflectDisabledDates` | value | `reflectDisabledDates: value` |
 | `reflectDisabledDaysOfWeek` | value | `reflectDisabledDaysOfWeek: value` |
 | `triggerId` | value | `triggerId: value` |
+| `updateForRtl` | function | `updateForRtl(model: Model, message: Message): ReturnType<typeof update>` |
 | `DatePickerProps` | type | `DatePickerProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; placeholder?: string; formatDate?: (date: FoldkitCalendar.CalendarDate) => string; name?: string; isDis…` |
 | `datePicker` | function | `datePicker<Msg>(props: DatePickerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
@@ -508,7 +523,7 @@ Source: [`src/ui/field.ts`](../src/ui/field.ts)
 | `FieldVariants` | type | `FieldVariants = VariantProps<typeof fieldVariants>` |
 | `ControlFieldProps` | type | `ControlFieldProps<Msg> = SharedControlFieldProps<Msg> & Readonly<{ class?: string }>` |
 | `controlField` | function | `controlField<Msg>(props: ControlFieldProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-| `FieldProps` | type | `FieldProps = Slot & Readonly<{ orientation?: FieldVariants['orientation']; isInvalid?: boolean; isDisabled?: boolean; }>` |
+| `FieldProps` | type | `FieldProps = Slot & Readonly<{ orientation?: FieldVariants['orientation']; isInvalid?: boolean; isDisabled?: boolean; direction?: 'ltr' \| 'rtl'; }>` |
 | `field` | function | `field<Msg>(props: FieldProps, h: HtmlBuilder<Msg>): Html` |
 | `fieldContent` | function | `fieldContent<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
 | `FieldLabelProps` | type | `FieldLabelProps = Slot & Readonly<{ for?: string }>` |
@@ -587,8 +602,10 @@ Source: [`src/ui/input-group.ts`](../src/ui/input-group.ts)
 | `InputGroupButtonProps` | type | `InputGroupButtonProps<Msg> = Omit< ButtonProps<Msg>, 'size' \| 'class' > & Readonly<{ size?: InputGroupButtonVariants['size']; class?: string; }>` |
 | `inputGroupButton` | function | `inputGroupButton<Msg>(props: InputGroupButtonProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `inputGroupText` | function | `inputGroupText<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` |
-| `InputGroupInputProps` | type | `InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: string; }>` |
+| `InputGroupInputProps` | type | `InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; onKeyDown?: (key: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: str…` |
 | `inputGroupInput` | function | `inputGroupInput<Msg>(props: InputGroupInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `InputGroupTextareaProps` | type | `InputGroupTextareaProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; placeholder?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: string; }>` |
+| `inputGroupTextarea` | function | `inputGroupTextarea<Msg>(props: InputGroupTextareaProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Input Otp
 
@@ -596,7 +613,7 @@ Source: [`src/ui/input-otp.ts`](../src/ui/input-otp.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `InputOtpProps` | type | `InputOtpProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; length?: number; name?: string; ariaLabel?: string; isDisabled?: boolean; isInvalid?: boolean; class?: string; groupClass?: string; /** Pattern accepted by the control…` |
+| `InputOtpProps` | type | `InputOtpProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; length?: number; name?: string; ariaLabel?: string; isDisabled?: boolean; isInvalid?: boolean; isRequired?: boolean; class?: string; groupClass?: string; /** Pattern a…` |
 | `inputOtp` | function | `inputOtp<Msg>(props: InputOtpProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `inputOtpSeparator` | function | `inputOtpSeparator<Msg>(h: HtmlBuilder<Msg>): Html` |
 
@@ -617,7 +634,7 @@ Source: [`src/ui/item.ts`](../src/ui/item.ts)
 | --- | --- | --- |
 | `itemVariants` | value | `itemVariants: value` |
 | `ItemVariants` | type | `ItemVariants = VariantProps<typeof itemVariants>` |
-| `ItemProps` | type | `ItemProps = SlotProps & Readonly<{ variant?: ItemVariants['variant']; size?: ItemVariants['size']; element?: 'div' \| 'li' \| 'article'; }>` |
+| `ItemProps` | type | `ItemProps = SlotProps & Readonly<{ variant?: ItemVariants['variant']; size?: ItemVariants['size']; element?: 'div' \| 'li' \| 'article' \| 'a'; href?: string; target?: string; rel?: string; }>` |
 | `item` | function | `item<Msg>(props: ItemProps, h: HtmlBuilder<Msg>): Html` |
 | `itemMediaVariants` | value | `itemMediaVariants: value` |
 | `ItemMediaVariants` | type | `ItemMediaVariants = VariantProps<typeof itemMediaVariants>` |
@@ -659,9 +676,9 @@ Source: [`src/ui/marker.ts`](../src/ui/marker.ts)
 | --- | --- | --- |
 | `markerVariants` | value | `markerVariants: value` |
 | `MarkerPurpose` | type | `MarkerPurpose = 'annotation' \| 'status' \| 'decorative'` |
-| `marker` | function | `marker<Msg>(props: ChildrenProps & Readonly<{ variant?: VariantProps<typeof markerVariants>['variant']; purpose?: MarkerPurpose; ariaLabel?: string }>, h: HtmlBuilder<Msg>): Html` |
+| `marker` | function | `marker<Msg>(props: ChildrenProps & Readonly<{ variant?: VariantProps<typeof markerVariants>['variant']; purpose?: MarkerPurpose; ariaLabel?: string; element?: 'div' \| 'a' \| 'button'; href?: string; onClick?: () => Msg; }>, h: HtmlBuilder<Msg>): Html` |
 | `markerIcon` | function | `markerIcon<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
-| `markerContent` | function | `markerContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
+| `markerContent` | function | `markerContent<Msg>(props: ChildrenProps & Readonly<{ shimmer?: boolean }>, h: HtmlBuilder<Msg>): Html` |
 
 ## Menubar
 
@@ -676,7 +693,7 @@ Source: [`src/ui/menubar.ts`](../src/ui/menubar.ts)
 | `OutMessage` | type | `OutMessage = MenubarBehavior.OutMessage` |
 | `init` | value | `init: value` |
 | `update` | value | `update: value` |
-| `MenubarMenu` | type | `MenubarMenu<Item extends string, Msg> = Readonly<{ id: string label: string model: DropdownMenu.Model toParentMessage: (message: DropdownMenu.Message) => Msg items: ReadonlyArray<Item> itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Item> }>` |
+| `MenubarMenu` | type | `MenubarMenu<Item extends string, Msg> = Readonly<{ id: string label: string model: DropdownMenu.Model toParentMessage: (message: DropdownMenu.Message) => Msg items: ReadonlyArray<Item> itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Item> co…` |
 | `MenubarProps` | type | `MenubarProps<Item extends string, Msg> = SharedProps<Item, Msg> & Readonly<{ model: Model toParentMessage: (message: Message) => Msg }>` |
 | `menubar` | function | `menubar<Item extends string, Msg>(props: MenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` |
 | `menubar` | function | `menubar<Item extends string, Msg>(props: LegacyMenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` |
@@ -701,7 +718,7 @@ Source: [`src/ui/message-scroller.ts`](../src/ui/message-scroller.ts)
 | `messageScroller` | function | `messageScroller<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `messageScrollerViewport` | function | `messageScrollerViewport<Msg>(props: ChildrenProps & Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; }>, h: HtmlBuilder<Msg>): Html` |
 | `messageScrollerContent` | function | `messageScrollerContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
-| `messageScrollerItem` | function | `messageScrollerItem<Msg>(props: ChildrenProps & Readonly<{ scrollAnchor?: boolean }>, h: HtmlBuilder<Msg>): Html` |
+| `messageScrollerItem` | function | `messageScrollerItem<Msg>(props: ChildrenProps & Readonly<{ scrollAnchor?: boolean; messageId?: string }>, h: HtmlBuilder<Msg>): Html` |
 | `messageScrollerButton` | function | `messageScrollerButton<Msg>(props: Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; direction?: 'start' \| 'end'; class?: string; }>, h: HtmlBuilder<Msg>): Html` |
 
 ## Message
@@ -761,7 +778,7 @@ Source: [`src/ui/pagination.ts`](../src/ui/pagination.ts)
 | `paginationItem` | function | `paginationItem<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` |
 | `PaginationLinkProps` | type | `PaginationLinkProps = Readonly<{ href: string; children: ReadonlyArray<Html \| string>; isActive?: boolean; size?: ButtonVariants['size']; ariaLabel?: string; class?: string; }>` |
 | `paginationLink` | function | `paginationLink<Msg>(props: PaginationLinkProps, h: HtmlBuilder<Msg>): Html` |
-| `PaginationDirectionProps` | type | `PaginationDirectionProps = Readonly<{ href?: string; isDisabled?: boolean; class?: string; }>` |
+| `PaginationDirectionProps` | type | `PaginationDirectionProps = Readonly<{ href?: string; isDisabled?: boolean; class?: string; direction?: 'ltr' \| 'rtl'; label?: string; }>` |
 | `paginationPrevious` | function | `paginationPrevious<Msg>(props: PaginationDirectionProps, h: HtmlBuilder<Msg>): Html` |
 | `paginationNext` | function | `paginationNext<Msg>(props: PaginationDirectionProps, h: HtmlBuilder<Msg>): Html` |
 | `PaginationEllipsisProps` | type | `PaginationEllipsisProps = Readonly<{ class?: string; }>` |
@@ -788,7 +805,7 @@ Source: [`src/ui/popover.ts`](../src/ui/popover.ts)
 | `RequestedClose` | value | `RequestedClose: value` |
 | `PopoverSide` | type | `PopoverSide = 'top' \| 'right' \| 'bottom' \| 'left'` |
 | `PopoverAlign` | type | `PopoverAlign = 'start' \| 'center' \| 'end'` |
-| `PopoverProps` | type | `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; content: Html \| string; align?: PopoverAlign; side?: PopoverSide; class?: string; focusSelector?: string; }>` |
+| `PopoverProps` | type | `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; content: Html \| string; align?: PopoverAlign; side?: PopoverSide; class?: string; direction?: 'ltr' \| 'rtl'; focusSelector?…` |
 | `popover` | function | `popover<Msg>(props: PopoverProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Progress
@@ -797,7 +814,7 @@ Source: [`src/ui/progress.ts`](../src/ui/progress.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `ProgressProps` | type | `ProgressProps = Readonly<{ /** `null` renders an indeterminate progress indicator. */ value: number \| null; max?: number; ariaLabel?: string; valueText?: string; class?: string; }>` |
+| `ProgressProps` | type | `ProgressProps = Readonly<{ /** `null` renders an indeterminate progress indicator. */ value: number \| null; max?: number; ariaLabel?: string; valueText?: string; id?: string; direction?: 'ltr' \| 'rtl'; class?: string; }>` |
 | `progress` | function | `progress<Msg>(props: ProgressProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Radio Group
@@ -827,7 +844,7 @@ Source: [`src/ui/resizable.ts`](../src/ui/resizable.ts)
 | `Message` | type | `Message = typeof Message.Type` |
 | `init` | function | `init(id: string, firstSize = 50): Model` |
 | `update` | function | `update(model: Model, message: Message): Model` |
-| `ResizableProps` | type | `ResizableProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; first: Html \| string; second: Html \| string; direction?: 'horizontal' \| 'vertical'; withHandle?: boolean; minSize?: number; maxSize?: number; /** Pixel extent of the pa…` |
+| `ResizableProps` | type | `ResizableProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; first: Html \| string; second: Html \| string; direction?: 'horizontal' \| 'vertical'; rtl?: boolean; withHandle?: boolean; minSize?: number; maxSize?: number; /** Pixel e…` |
 | `resizable` | function | `resizable<Msg>(props: ResizableProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `GroupModel` | value | `GroupModel: value` |
 | `GroupModel` | type | `GroupModel = typeof GroupModel.Type` |
@@ -835,7 +852,7 @@ Source: [`src/ui/resizable.ts`](../src/ui/resizable.ts)
 | `GroupMessage` | type | `GroupMessage = typeof GroupMessage.Type` |
 | `initGroup` | function | `initGroup(id: string, panelCount: number, sizes?: ReadonlyArray<number>): GroupModel` |
 | `updateGroup` | function | `updateGroup(model: GroupModel, message: GroupMessage): GroupModel` |
-| `ResizableGroupProps` | type | `ResizableGroupProps<Msg> = Readonly<{ model: GroupModel; toParentMessage: (message: GroupMessage) => Msg; panels: ReadonlyArray<Html \| string>; direction?: 'horizontal' \| 'vertical'; minSize?: number; extent: number; withHandles?: boolean; disabled?: boolean;…` |
+| `ResizableGroupProps` | type | `ResizableGroupProps<Msg> = Readonly<{ model: GroupModel; toParentMessage: (message: GroupMessage) => Msg; panels: ReadonlyArray<Html \| string>; direction?: 'horizontal' \| 'vertical'; rtl?: boolean; minSize?: number; extent: number; withHandles?: boolean; disa…` |
 | `resizableGroup` | function | `resizableGroup<Msg>(props: ResizableGroupProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Scroll Area
@@ -844,7 +861,7 @@ Source: [`src/ui/scroll-area.ts`](../src/ui/scroll-area.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `ScrollAreaProps` | type | `ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html \| string>; orientation?: 'vertical' \| 'horizontal' \| 'both'; ariaLabel?: string; tabIndex?: number; }>` |
+| `ScrollAreaProps` | type | `ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html \| string>; orientation?: 'vertical' \| 'horizontal' \| 'both'; direction?: 'ltr' \| 'rtl'; ariaLabel?: string; tabIndex?: number; }>` |
 | `scrollArea` | function | `scrollArea<Msg>(props: ScrollAreaProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Select
@@ -986,6 +1003,8 @@ Source: [`src/ui/slider.ts`](../src/ui/slider.ts)
 | `RangeSliderProps` | type | `RangeSliderProps<Msg> = Readonly<{ values: readonly [number, number]; min: number; max: number; step?: number; onInput: (values: readonly [number, number]) => Msg; orientation?: 'horizontal' \| 'vertical'; direction?: 'ltr' \| 'rtl'; ariaLabels?: readonly [stri…` |
 | `rangeSlider` | function | `rangeSlider<Msg>(props: RangeSliderProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `slider` | function | `slider<Msg>(props: SliderProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `MultiSliderProps` | type | `MultiSliderProps<Msg> = Readonly<{ values: readonly number[]; min: number; max: number; step?: number; onInput: (values: readonly number[]) => Msg; orientation?: 'horizontal' \| 'vertical'; direction?: 'ltr' \| 'rtl'; ariaLabels?: readonly string[]; isDisabled?…` |
+| `multiSlider` | function | `multiSlider<Msg>(props: MultiSliderProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Sonner
 
@@ -994,7 +1013,7 @@ Source: [`src/ui/sonner.ts`](../src/ui/sonner.ts)
 | Export | Kind | Signature |
 | --- | --- | --- |
 | `*` | re-export | `export * from '@/lib/toast'` |
-| `SonnerProps` | type | `SonnerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel?: string pausePolicy?: 'none' \| 'pointer' class?: string entryClass?: string }>` |
+| `SonnerProps` | type | `SonnerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel?: string pausePolicy?: 'none' \| 'pointer' class?: string entryClass?: string position?: Position }>` |
 | `sonner` | function | `sonner<Msg>(props: SonnerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Spinner
@@ -1003,7 +1022,7 @@ Source: [`src/ui/spinner.ts`](../src/ui/spinner.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `SpinnerProps` | type | `SpinnerProps = SpinnerAccessibility & Readonly<{ size?: 'sm' \| 'md' \| 'lg'; tone?: 'current' \| 'muted' \| 'primary'; class?: string; }>` |
+| `SpinnerProps` | type | `SpinnerProps = SpinnerAccessibility & Readonly<{ size?: 'sm' \| 'md' \| 'lg' \| 'xl'; tone?: 'current' \| 'muted' \| 'primary'; /** Emits data-icon="inline-start\|inline-end" for parent icon positioning. */ dataIcon?: 'inline-start' \| 'inline-end'; class?: string; …` |
 | `spinner` | function | `spinner<Msg>(props: SpinnerProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Switch
@@ -1086,7 +1105,7 @@ Source: [`src/ui/toggle-group.ts`](../src/ui/toggle-group.ts)
 | `init` | re-export | `export { init } from ` |
 | `OutMessage` | re-export | `export { OutMessage } from ` |
 | `ToggleGroupItem` | type | `ToggleGroupItem<Value extends string = string> = Readonly<{ value: Value children: ReadonlyArray<Html \| string> ariaLabel?: string isDisabled?: boolean class?: string }>` |
-| `ToggleGroupProps` | type | `ToggleGroupProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel: string items: ReadonlyArray<ToggleGroupItem<Value>> direction?: 'ltr' \| 'rtl' arrangement?: 'joined' \| 'wrapped' variant?: ToggleVarian…` |
+| `ToggleGroupProps` | type | `ToggleGroupProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel: string items: ReadonlyArray<ToggleGroupItem<Value>> direction?: 'ltr' \| 'rtl' arrangement?: 'joined' \| 'wrapped' orientation?: 'vertica…` |
 | `ToggleGroupBundle` | type | `ToggleGroupBundle<Value extends string> = Readonly<{ update: BehaviorBundle<Value>['update'] toggleGroup: <Msg>(props: ToggleGroupProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html }>` |
 | `create` | function | `create<Value extends string = string>(): ToggleGroupBundle<Value>` |
 | `update` | value | `update: value` |
@@ -1102,7 +1121,7 @@ Source: [`src/ui/toggle.ts`](../src/ui/toggle.ts)
 | --- | --- | --- |
 | `toggleVariants` | value | `toggleVariants: value` |
 | `ToggleVariants` | type | `ToggleVariants = VariantProps<typeof toggleVariants>` |
-| `ToggleProps` | type | `ToggleProps<Msg> = Readonly<{ isPressed: boolean; onToggle: Msg; variant?: ToggleVariants['variant']; size?: ToggleVariants['size']; children: ReadonlyArray<Html \| string>; isDisabled?: boolean; id?: string; ariaLabel?: string; describedBy?: string; class?: s…` |
+| `ToggleProps` | type | `ToggleProps<Msg> = Readonly<{ isPressed: boolean; onToggle: Msg; variant?: ToggleVariants['variant']; size?: ToggleVariants['size']; children: ReadonlyArray<Html \| string>; isDisabled?: boolean; id?: string; ariaLabel?: string; describedBy?: string; direction…` |
 | `toggle` | function | `toggle<Msg>(props: ToggleProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Tooltip

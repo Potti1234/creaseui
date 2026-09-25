@@ -1,4 +1,4 @@
-import type { Option } from 'effect';
+import { Option } from 'effect';
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html';
 
 import { Combobox as ComboboxPrimitive } from '@foldkit/ui';
@@ -47,6 +47,11 @@ export type OutMessage<Value extends string = string> =
   ComboboxPrimitive.OutMessage<Value>;
 
 export const init = ComboboxPrimitive.init;
+export const MultiModel = ComboboxPrimitive.Multi.Model;
+export const multiInit = ComboboxPrimitive.Multi.init;
+export type MultiModel = typeof MultiModel.Type;
+export type MultiOutMessage<Value extends string = string> =
+  OutMessage<Value>;
 
 const ROOT_CLASS = overlayStyles.root
 
@@ -96,6 +101,15 @@ export type ComboboxProps<Item, Value extends string, Msg> = Readonly<{
   isInvalid?: boolean;
   formName?: string;
   direction?: 'ltr' | 'rtl';
+  /**
+   * Renders foldkit's input-wrapper suffix as a toggle button (chevron),
+   * matching shadcn's trigger-style combobox where a button opens the popup.
+   */
+  trigger?: Readonly<{
+    content: Html | string;
+    layoutStyle?: ComponentLayoutStyle;
+    ariaLabel?: string;
+  }>;
   itemGroupKey?: (item: Item, index: number) => string;
   groupToHeading?: (groupKey: string) => string | undefined;
 }>;
@@ -126,13 +140,38 @@ const renderCombobox = <Item, Value extends string, Msg>(
     )
     .map(props.itemToValue);
 
+  const baseInputs = buildBaseViewInputs(props, values, props.restingInputValue, hc);
   return h.submodel({
     slotId: props.model.id,
     model: props.model,
     view: comboboxPrimitive.view,
     viewInputs: {
+      ...baseInputs,
       maybeSelectedValue: props.maybeSelectedValue,
-      restingInputValue: props.restingInputValue,
+    },
+    toParentMessage: props.toParentMessage,
+  });
+};
+
+type CommonProps<Item, Value extends string, Msg> = Omit<
+  ComboboxProps<Item, Value, Msg>,
+  'maybeSelectedValue' | 'restingInputValue'
+>;
+
+const buildBaseViewInputs = <Item, Value extends string, Msg>(
+  props: CommonProps<Item, Value, Msg>,
+  values: ReadonlyArray<Value>,
+  restingInputValue: string,
+  hc: HtmlBuilder<Msg>,
+): ComboboxPrimitive.BaseViewInputsCommon<Value> => {
+  const itemForValue = (value: Value): Item | undefined =>
+    props.items.find((item) => props.itemToValue(item) === value);
+  const labelForValue = (value: Value): string => {
+    const item = itemForValue(value);
+    return item === undefined ? value : props.itemToLabel(item);
+  };
+  return {
+      restingInputValue,
       items: values,
       itemToValue: (value) => value,
       itemToDisplayText: labelForValue,
@@ -154,7 +193,7 @@ const renderCombobox = <Item, Value extends string, Msg>(
               hc.span([], [config?.content ?? labelForValue(value)]),
               hc.span(
                 [hc.Class(className(INDICATOR_CLASS))],
-                [Icon.check({ class: className(overlayStyles.icon) }, h)],
+                [Icon.check({ class: className(overlayStyles.icon) }, hc)],
               ),
             ],
           ),
@@ -221,9 +260,20 @@ const renderCombobox = <Item, Value extends string, Msg>(
           }),
       ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
       ...(props.ariaLabelledBy === undefined ? {} : { ariaLabelledBy: props.ariaLabelledBy }),
-    },
-    toParentMessage: props.toParentMessage,
-  });
+      ...(props.trigger === undefined
+        ? {}
+        : {
+            buttonContent: hc.span([], [props.trigger.content]),
+            ...(props.trigger.layoutStyle === undefined
+              ? {}
+              : { buttonClassName: className(props.trigger.layoutStyle) }),
+            buttonAttributes: childAttributes(
+              props.trigger.ariaLabel === undefined
+                ? []
+                : [hc.AriaLabel(props.trigger.ariaLabel)],
+            ),
+          }),
+    };
 };
 
 export type ComboboxBundle<Value extends string> = Readonly<{
@@ -231,12 +281,91 @@ export type ComboboxBundle<Value extends string> = Readonly<{
   combobox: <Item, Msg>(props: ComboboxProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html;
 }>;
 
-export const create = <Value extends string = string>(): ComboboxBundle<Value> => {
+export const create = <Value extends string = string>(
+  config?: Readonly<{ autoHighlight?: boolean }>,
+): ComboboxBundle<Value> => {
   const primitive = ComboboxPrimitive.create<Value>();
+  const update =
+    config?.autoHighlight === true
+      ? (model: Model, message: Message) =>
+          primitive.update(
+            model,
+            message._tag === 'Opened' &&
+              Option.isNone(message.maybeActiveItemIndex)
+              ? Message.Opened({ maybeActiveItemIndex: Option.some(0) })
+              : message,
+          )
+      : primitive.update;
   return {
-    update: primitive.update,
+    update,
     combobox: (props, h) => renderCombobox(primitive, props, h),
   };
+};
+
+export type ComboboxMultiProps<Item, Value extends string, Msg> = Omit<
+  ComboboxProps<Item, Value, Msg>,
+  'maybeSelectedValue' | 'restingInputValue'
+> &
+  Readonly<{
+    /** The selection the parent owns; selecting an item toggles membership. */
+    selectedValues: ReadonlyArray<Value>;
+  }>;
+
+export type ComboboxMultiBundle<Value extends string> = Readonly<{
+  update: ReturnType<typeof ComboboxPrimitive.Multi.create<Value>>['update'];
+  comboboxMulti: <Item, Msg>(
+    props: ComboboxMultiProps<Item, Value, Msg>,
+    h: HtmlBuilder<Msg>,
+  ) => Html;
+}>;
+
+/** Multi-select combobox matching shadcn's `Combobox multiple`: selection
+ *  stays open after each pick and the parent toggles value membership from
+ *  the `Selected` OutMessage. `autoHighlight` pre-activates the first item
+ *  on every open, like base-ui's autoHighlight. */
+export const createMulti = <Value extends string = string>(
+  config?: Readonly<{ autoHighlight?: boolean }>,
+): ComboboxMultiBundle<Value> => {
+  const primitive = ComboboxPrimitive.Multi.create<Value>();
+  const update =
+    config?.autoHighlight === true
+      ? (model: MultiModel, message: Message) =>
+          primitive.update(
+            model,
+            message._tag === 'Opened' &&
+              Option.isNone(message.maybeActiveItemIndex)
+              ? Message.Opened({ maybeActiveItemIndex: Option.some(0) })
+              : message,
+          )
+      : primitive.update;
+  const comboboxMulti = <Item, Msg>(
+    props: ComboboxMultiProps<Item, Value, Msg>,
+    h: HtmlBuilder<Msg>,
+  ): Html => {
+    const hc = h;
+    const query = props.model.inputValue.trim().toLocaleLowerCase();
+    const values = props.items
+      .filter(
+        (item) =>
+          query === '' ||
+          (props.itemToConfig?.(item).searchText ?? props.itemToLabel(item))
+            .toLocaleLowerCase()
+            .includes(query),
+      )
+      .map(props.itemToValue);
+    const viewInputs: ComboboxPrimitive.Multi.ViewInputs<Value> = {
+      ...buildBaseViewInputs(props, values, '', hc),
+      selectedValues: props.selectedValues,
+    };
+    return h.submodel({
+      slotId: props.model.id,
+      model: props.model,
+      view: primitive.view,
+      viewInputs,
+      toParentMessage: props.toParentMessage,
+    });
+  };
+  return { update, comboboxMulti };
 };
 
 const StringCombobox = create<string>();

@@ -1,15 +1,317 @@
-import type { HtmlBuilder } from 'foldkit/html';
 import * as stylex from '@stylexjs/stylex';
+import type { Html, HtmlBuilder } from 'foldkit/html';
+
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { messageFixtures, messagePreviewText } from '@/docs/components/pages/message/shared';
+import {
+  messageFixtures,
+  specFor,
+  type BubblePart,
+  type MessagePart,
+  type MessageSpec,
+} from '@/docs/components/pages/message/shared';
+import * as Attachment from '@/stylex/attachment';
+import * as Avatar from '@/stylex/avatar';
 import * as Bubble from '@/stylex/bubble';
 import * as Button from '@/stylex/button';
-import * as MessageUi from '@/stylex/message';
-import { tokens } from '../../../../stylex/tokens.stylex';
+import * as Icon from '@/lib/icon';
+import * as Marker from '@/stylex/marker';
+import * as Message from '@/stylex/message';
+import { className } from '@/stylex/style';
 
-const styles = stylex.create({ message: { maxWidth: '36rem' }, count: { color: tokens.mutedForeground, fontSize: '0.75rem' } });
-export const messageStyleXPreview: StyleXExamplePreviewProvider = <Msg>(index: number, model: unknown, onMessageJson: (messageJson: string) => Msg, h: HtmlBuilder<Msg>) => {
-  const fixture = messageFixtures[index] ?? messageFixtures[0];
-  const row = MessageUi.message({ ...(!fixture.incoming ? { align: 'end' as const } : {}), ...(fixture.live ? { announcement: 'status' as const, ariaLabel: 'New message from Ada' } : {}), layoutStyle: styles.message, children: [MessageUi.messageAvatar({ children: [fixture.incoming ? 'A' : 'Y'] }, h), MessageUi.messageContent({ children: [MessageUi.messageAuthor({ children: [fixture.incoming ? 'Ada' : 'You'] }, h), Bubble.bubble({ ...(fixture.incoming ? { variant: 'secondary' as const } : { align: 'end' as const }), children: [Bubble.bubbleContent({ ...(fixture.incoming ? { variant: 'secondary' as const } : {}), children: [messagePreviewText(index)] }, h)] }, h), MessageUi.messageMetadata({ children: [fixture.live ? 'Delivery failed' : fixture.incoming ? '10:42' : 'Delivered'] }, h), ...(fixture.live ? [MessageUi.messageActions({ children: [Button.button({ variant: 'outline', size: 'sm', onClick: onMessageJson(JSON.stringify({ _tag: 'InteractedWithDocsPreview' })), children: ['Retry delivery'] }, h), h.span([h.Role('status'), h.Class(stylex.props(styles.count).className ?? '')], [`Retried ${String((model as { interactionCount: number }).interactionCount)} times`])] }, h)] : [])] }, h)] }, h);
-  return fixture.live ? MessageUi.messageGroup({ live: 'polite', ariaLabel: 'Project conversation', children: [row] }, h) : MessageUi.messageGroup({ children: [row] }, h);
+const styles = stylex.create({
+  stack: {
+    gap: '2rem',
+    display: 'flex',
+    flexDirection: 'column',
+    maxWidth: '24rem',
+    paddingBottom: '3rem',
+    paddingTop: '3rem',
+    width: '100%',
+  },
+  stackGroup: {
+    gap: '1.5rem',
+    display: 'flex',
+    flexDirection: 'column',
+    maxWidth: '24rem',
+    paddingBottom: '3rem',
+    paddingTop: '3rem',
+    width: '100%',
+  },
+  row: { gap: '0.25rem', alignItems: 'center', display: 'flex', },
+  fontNormal: { fontWeight: 400 },
+  destructive: { color: 'var(--destructive)', fontWeight: 400, },
+  fontMedium: { fontWeight: 500 },
+});
+
+const sx = (style: stylex.StaticStyles): string => className(style);
+
+const send = <Msg>(
+  onMessageJson: (messageJson: string) => Msg,
+  tag: string,
+): Msg => onMessageJson(JSON.stringify({ _tag: tag }));
+
+const ATTACHMENT_IMAGE_URL =
+  'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=900&auto=format&fit=crop&q=80';
+
+const bubble = <Msg>(part: BubblePart, h: HtmlBuilder<Msg>): Html =>
+  Bubble.bubble(
+    {
+      ...(part.variant === 'muted' ? { variant: 'muted' as const } : {}),
+      children: [
+        Bubble.bubbleContent({ children: [part.content] }, h),
+        ...(part.reactions === undefined
+          ? []
+          : [
+              Bubble.bubbleReactions(
+                { ariaLabel: 'Reactions: thumbs up', children: [part.reactions] },
+                h,
+              ),
+            ]),
+      ],
+    },
+    h,
+  );
+
+const part = <Msg>(
+  part: MessagePart,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  switch (part.type) {
+    case 'bubble':
+      return bubble(part, h);
+    case 'bubble-group':
+      return Bubble.bubbleGroup(
+        { children: part.bubbles.map(b => bubble(b, h)) },
+        h,
+      );
+    case 'attachment-image':
+      return Attachment.attachment(
+        {
+          orientation: 'vertical',
+          children: [
+            Attachment.attachmentMedia(
+              {
+                variant: 'image',
+                children: [
+                  h.img([h.Src(ATTACHMENT_IMAGE_URL), h.Alt('Workspace')]),
+                ],
+              },
+              h,
+            ),
+          ],
+        },
+        h,
+      );
+    case 'attachment-file':
+      return Attachment.attachment(
+        {
+          children: [
+            Attachment.attachmentMedia(
+              { children: [Icon.icon('file-text', {}, h)] },
+              h,
+            ),
+            Attachment.attachmentContent(
+              {
+                children: [
+                  Attachment.attachmentTitle(
+                    { children: ['sales-dashboard.pdf'] },
+                    h,
+                  ),
+                  Attachment.attachmentDescription(
+                    { children: ['PDF · 2.4 MB'] },
+                    h,
+                  ),
+                ],
+              },
+              h,
+            ),
+            Attachment.attachmentActions(
+              {
+                children: [
+                  Attachment.attachmentAction(
+                    {
+                      onClick: send(onMessageJson, 'ClickedAction'),
+                      label: 'Download',
+                      children: [Icon.icon('download', {}, h)],
+                    },
+                    h,
+                  ),
+                ],
+              },
+              h,
+            ),
+          ],
+        },
+        h,
+      );
+  }
 };
+
+const footer = <Msg>(
+  spec: MessageSpec,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html | undefined => {
+  if (spec.footer === 'Read Yesterday') {
+    return Message.messageFooter(
+      {
+        children: [
+          h.div([h.Class(sx(styles.row))], [
+            'Read ',
+            h.span([h.Class(sx(styles.fontNormal))], ['Yesterday']),
+          ]),
+        ],
+      },
+      h,
+    );
+  }
+  if (spec.footer !== undefined) {
+    return Message.messageFooter({ children: [spec.footer] }, h);
+  }
+  if (spec.footerActions === 'copyLikeDislike') {
+    const btn = (icon: string, label: string): Html =>
+      Button.button(
+        {
+          variant: 'ghost',
+          size: 'icon',
+          ariaLabel: label,
+          onClick: send(onMessageJson, 'ClickedAction'),
+          children: [Icon.icon(icon, {}, h)],
+        },
+        h,
+      );
+    return Message.messageFooter(
+      {
+        children: [
+          btn('copy', 'Copy'),
+          btn('thumbs-up', 'Like'),
+          btn('thumbs-down', 'Dislike'),
+        ],
+      },
+      h,
+    );
+  }
+  if (spec.footerActions === 'failedRetry') {
+    return Message.messageFooter(
+      {
+        children: [
+          h.span([h.Class(sx(styles.destructive))], ['Failed to send']),
+          Button.button(
+            {
+              variant: 'ghost',
+              size: 'icon-xs',
+              ariaLabel: 'Retry',
+              onClick: send(onMessageJson, 'ClickedAction'),
+              children: [Icon.icon('refresh-ccw', {}, h)],
+            },
+            h,
+          ),
+        ],
+      },
+      h,
+    );
+  }
+  return undefined;
+};
+
+const message = <Msg>(
+  spec: MessageSpec,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const foot = footer(spec, onMessageJson, h);
+  return Message.message(
+    {
+      ...(spec.align === 'end' ? { align: 'end' as const } : {}),
+      children: [
+        ...(spec.avatar === 'empty'
+          ? [Message.messageAvatar({ children: [] }, h)]
+          : spec.avatar === undefined
+            ? []
+            : [
+                Message.messageAvatar(
+                  {
+                    children: [
+                      Avatar.avatar(
+                        {
+                          children: [
+                            Avatar.avatarImage(
+                              { src: spec.avatar.src, alt: spec.avatar.alt },
+                              h,
+                            ),
+                            Avatar.avatarFallback(
+                              { children: [spec.avatar.fallback] },
+                              h,
+                            ),
+                          ],
+                        },
+                        h,
+                      ),
+                    ],
+                  },
+                  h,
+                ),
+              ]),
+        Message.messageContent(
+          {
+            children: [
+              ...(spec.header === undefined
+                ? []
+                : [Message.messageHeader({ children: [spec.header] }, h)]),
+              ...spec.parts.map(p => part(p, onMessageJson, h)),
+              ...(foot === undefined ? [] : [foot]),
+            ],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
+};
+
+const messageSxView = <Msg>(
+  index: number,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const fixture = messageFixtures[index] ?? messageFixtures[0];
+  const spec = specFor(fixture.kind);
+  const isGroupGap = fixture.kind === 'demo' || fixture.kind === 'group';
+  const messages = spec.map(m => message(m, onMessageJson, h));
+  return h.div([h.Class(sx(isGroupGap ? styles.stackGroup : styles.stack))], [
+    ...(fixture.kind === 'group'
+      ? [Message.messageGroup({ children: messages }, h)]
+      : messages),
+    ...(fixture.kind === 'demo'
+      ? [
+          Marker.marker(
+            {
+              purpose: 'status',
+              children: [
+                Marker.markerContent(
+                  {
+                    shimmer: true,
+                    children: [
+                      h.span([h.Class(sx(styles.fontMedium))], ['Oliver']),
+                      ' is typing...',
+                    ],
+                  },
+                  h,
+                ),
+              ],
+            },
+            h,
+          ),
+        ]
+      : []),
+  ]);
+};
+
+export const messageStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+  exampleIndex: number,
+  _model: unknown,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+) => messageSxView(exampleIndex, onMessageJson, h);

@@ -16,12 +16,25 @@ test('both date picker skins expose controlled text and mobile presentation seam
   }
 })
 
-test('the docs parent owns parsing, committed state, and external reflection', () => {
+test('both date picker skins expose trigger content and RTL seams', () => {
+  for (const path of ['src/ui/date-picker.ts', 'src/stylex/date-picker.ts']) {
+    const source = read(path)
+    assert.match(source, /triggerContent\?: /)
+    assert.match(source, /direction\?: 'ltr' \| 'rtl'/)
+    assert.match(source, /updateForRtl/)
+    assert.match(source, /mirrorNavigationKeyForRtl/)
+  }
+})
+
+test('the docs page composes range, input, natural, and RTL examples around shared models', () => {
   const source = read('src/docs/components/pages/date-picker/tailwind.ts')
-  assert.match(source, /CalendarDateFromIsoString/)
-  assert.match(source, /ChangedDatePickerQuery/)
+  assert.match(source, /parseNaturalDate/)
+  assert.match(source, /parseInputDate/)
+  assert.match(source, /PressedKeyInInput/)
   assert.match(source, /DatePicker\.focusDate/)
-  assert.match(source, /LoadedExternalDate/)
+  assert.match(source, /updateForRtl/)
+  assert.match(source, /arabicCalendarLocale/)
+  assert.match(source, /triggerContent/)
   assert.match(source, /fromDateInZone/)
-  assert.match(source, /Europe\/Berlin/)
+  assert.match(source, /rangeStart/)
 })

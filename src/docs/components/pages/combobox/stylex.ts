@@ -1,27 +1,296 @@
 import { Option } from 'effect';
-import type { HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 import * as stylex from '@stylexjs/stylex';
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { comboboxFixtures, comboboxFrameworks, comboboxLabel } from '@/docs/components/pages/combobox/shared';
+import {
+  comboboxCountries,
+  comboboxFixtures,
+  comboboxFrameworks,
+  comboboxRtlCategories,
+  comboboxTimezones,
+  type ComboboxFixture,
+} from '@/docs/components/pages/combobox/shared';
+import * as Icon from '@/lib/icon';
+import * as Button from '@/stylex/button';
 import * as Combobox from '@/stylex/combobox';
+import { className } from '@/stylex/style';
 
-const styles = stylex.create({ sample: { gap: '0.5rem', display: 'grid', }, status: { color: 'var(--muted-foreground)', fontSize: '0.875rem' } });
+const styles = stylex.create({
+  row: { gap: '0.5rem', alignItems: 'center', display: 'flex', },
+  stack: { gap: '0.5rem', display: 'grid', },
+  icon: { height: '1rem', width: '1rem', },
+  itemCol: { display: 'flex', flexDirection: 'column' },
+  itemMeta: { color: 'var(--muted-foreground)', fontSize: '0.75rem' },
+  chipsBox: {
+    gap: '0.25rem',
+    alignItems: 'center',
+    display: 'flex',
+    flexWrap: 'wrap',
+    maxWidth: '20rem',
+    width: '100%',
+  },
+  chip: {
+    borderColor: 'var(--border)',
+    borderRadius: '0.375rem',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    gap: '0.25rem',
+    paddingBlock: '0.125rem',
+    paddingInline: '0.375rem',
+    alignItems: 'center',
+    backgroundColor: 'var(--accent)',
+    display: 'flex',
+    fontSize: '0.75rem',
+    fontWeight: 500,
+  },
+  chipButton: {
+    borderRadius: '0.125rem',
+    alignItems: 'center',
+    display: 'inline-flex',
+    justifyContent: 'center',
+    opacity: { default: 0.6, ':hover': 1 },
+  },
+  chipIcon: { height: '0.75rem', width: '0.75rem' },
+  multiInput: {
+    flexGrow: 1,
+    height: '1.75rem',
+    minWidth: '4rem',
+  },
+  chevron: { opacity: 0.5, height: '1rem', width: '1rem', },
+  toggleButton: {
+    alignSelf: 'center',
+    flexShrink: 0,
+    marginInlineEnd: '0.25rem',
+    height: '1.5rem',
+    width: '1.5rem',
+  },
+});
 
-export const comboboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(index: number, model: unknown, onMessageJson: (messageJson: string) => Msg, h: HtmlBuilder<Msg>) => {
-  const fixture = comboboxFixtures[index] ?? comboboxFixtures[0];
-  const preview = model as { combobox: Combobox.Model; maybeFramework: Option.Option<string> };
-  return h.div([h.Class(stylex.props(styles.sample).className ?? '')], [
-    Combobox.combobox({
-      model: preview.combobox, maybeSelectedValue: preview.maybeFramework,
-      restingInputValue: Option.match(preview.maybeFramework, { onNone: () => '', onSome: comboboxLabel }),
-      toParentMessage: message => onMessageJson(JSON.stringify({ _tag: 'GotComboboxPreviewMessage', message })),
-      items: fixture.empty ? [] : comboboxFrameworks,
-      itemToValue: item => item.value, itemToLabel: item => item.label,
-      placeholder: 'Search frameworks…', ariaLabel: 'Framework', formName: 'framework',
-      ...(fixture.grouped ? { itemGroupKey: (item: typeof comboboxFrameworks[number]) => item.value === 'next' ? 'React' : 'Other', groupToHeading: (group: string) => group } : {}),
-      ...(fixture.readOnly ? { isReadOnly: true, direction: 'rtl' as const } : {}),
-    }, h),
-    ...(fixture.empty ? [h.p([h.Role('status'), h.Class(stylex.props(styles.status).className ?? '')], ['No frameworks match this query.'])] : []),
-  ]);
+type Preview = Readonly<{
+  combobox: Combobox.Model;
+  multi: Combobox.MultiModel;
+  maybeValue: Option.Option<string>;
+  selectedValues: ReadonlyArray<string>;
+  autoHighlight: boolean;
+}>;
+
+const AutoHighlightCombobox = Combobox.create<string>({ autoHighlight: true });
+const MultiCombobox = Combobox.createMulti<string>({ autoHighlight: true });
+
+const labelFor =
+  <Item extends { value: string; label: string }>(items: ReadonlyArray<Item>) =>
+  (value: string): string =>
+    items.find(item => item.value === value)?.label ?? value;
+
+export const comboboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+  index: number,
+  model: unknown,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html | undefined => {
+  const fixture = comboboxFixtures[index];
+  if (fixture === undefined) return undefined;
+  const preview = model as Preview;
+  const toParentMessage = (message: Combobox.Message): Msg =>
+    onMessageJson(JSON.stringify({ _tag: 'GotComboboxPreviewMessage', message }));
+
+  const combo = ((): Html => {
+    if (fixture.kind === 'groups') {
+      return Combobox.combobox(
+        {
+          model: preview.combobox,
+          maybeSelectedValue: preview.maybeValue,
+          restingInputValue: Option.match(preview.maybeValue, {
+            onNone: () => '',
+            onSome: labelFor(comboboxTimezones),
+          }),
+          toParentMessage,
+          items: comboboxTimezones,
+          itemToValue: item => item.value,
+          itemToLabel: item => item.label,
+          placeholder: 'Select a timezone',
+          ariaLabel: 'Timezone',
+          formName: 'docs-combobox',
+          itemGroupKey: item => item.group,
+          groupToHeading: group => group,
+        },
+        h,
+      );
+    }
+    if (fixture.kind === 'custom') {
+      return Combobox.combobox(
+        {
+          model: preview.combobox,
+          maybeSelectedValue: preview.maybeValue,
+          restingInputValue: Option.match(preview.maybeValue, {
+            onNone: () => '',
+            onSome: labelFor(comboboxCountries),
+          }),
+          toParentMessage,
+          items: comboboxCountries,
+          itemToValue: item => item.value,
+          itemToLabel: item => item.label,
+          placeholder: 'Select country',
+          ariaLabel: 'Country',
+          formName: 'docs-combobox',
+          itemToConfig: item => ({
+            content: h.span([h.Class(className(styles.itemCol))], [
+              h.span([], [item.label]),
+              h.span([h.Class(className(styles.itemMeta))], [item.continent]),
+            ]),
+            searchText: `${item.label} ${item.continent}`,
+          }),
+        },
+        h,
+      );
+    }
+    if (fixture.kind === 'rtl') {
+      return Combobox.combobox(
+        {
+          model: preview.combobox,
+          maybeSelectedValue: preview.maybeValue,
+          restingInputValue: Option.match(preview.maybeValue, {
+            onNone: () => '',
+            onSome: labelFor(comboboxRtlCategories),
+          }),
+          toParentMessage,
+          items: comboboxRtlCategories,
+          itemToValue: item => item.value,
+          itemToLabel: item => item.label,
+          placeholder: 'أضف فئات',
+          ariaLabel: 'الفئات',
+          formName: 'docs-combobox',
+          direction: 'rtl',
+        },
+        h,
+      );
+    }
+    if (fixture.kind === 'autoHighlight') {
+      return AutoHighlightCombobox.combobox(
+        {
+          model: preview.combobox,
+          maybeSelectedValue: preview.maybeValue,
+          restingInputValue: Option.match(preview.maybeValue, {
+            onNone: () => '',
+            onSome: labelFor(comboboxFrameworks),
+          }),
+          toParentMessage,
+          items: comboboxFrameworks,
+          itemToValue: item => item.value,
+          itemToLabel: item => item.label,
+          placeholder: 'Select a framework',
+          ariaLabel: 'Framework',
+          formName: 'docs-combobox',
+        },
+        h,
+      );
+    }
+    if (fixture.kind === 'popup') {
+      return Combobox.combobox(
+        {
+          model: preview.combobox,
+          maybeSelectedValue: preview.maybeValue,
+          restingInputValue: Option.match(preview.maybeValue, {
+            onNone: () => '',
+            onSome: labelFor(comboboxCountries),
+          }),
+          toParentMessage,
+          items: comboboxCountries,
+          itemToValue: item => item.value,
+          itemToLabel: item => item.label,
+          placeholder: 'Select country',
+          ariaLabel: 'Country',
+          formName: 'docs-combobox',
+          trigger: {
+            content: Icon.chevronsUpDown({ class: className(styles.chevron) }, h),
+            ariaLabel: 'Toggle options',
+            layoutStyle: styles.toggleButton,
+          },
+        },
+        h,
+      );
+    }
+    return Combobox.combobox(
+      {
+        model: preview.combobox,
+        maybeSelectedValue: preview.maybeValue,
+        restingInputValue: Option.match(preview.maybeValue, {
+          onNone: () => '',
+          onSome: labelFor(comboboxFrameworks),
+        }),
+        toParentMessage,
+        items: comboboxFrameworks,
+        itemToValue: item => item.value,
+        itemToLabel: item => item.label,
+        placeholder: 'Select a framework',
+        ariaLabel: 'Framework',
+        formName: 'docs-combobox',
+        ...(fixture.isInvalid === true ? { isInvalid: true } : {}),
+        ...(fixture.isDisabled === true ? { isDisabled: true } : {}),
+      },
+      h,
+    );
+  })();
+
+  if (fixture.kind === 'multiple') {
+    return h.div([h.Class(className(styles.chipsBox))], [
+      ...preview.selectedValues.map(value =>
+        h.span([h.Class(className(styles.chip))], [
+          comboboxFrameworks.find(item => item.value === value)?.label ??
+            value,
+          h.button(
+            [
+              h.Class(className(styles.chipButton)),
+              h.AriaLabel(`Remove ${value}`),
+              h.OnClick(
+                onMessageJson(
+                  JSON.stringify({ _tag: 'RemovedChip', value }),
+                ),
+              ),
+            ],
+            [Icon.x({ class: className(styles.chipIcon) }, h)],
+          ),
+        ]),
+      ),
+      MultiCombobox.comboboxMulti(
+        {
+          model: preview.multi,
+          selectedValues: preview.selectedValues,
+          toParentMessage: message =>
+            onMessageJson(
+              JSON.stringify({
+                _tag: 'GotMultiComboboxMessage',
+                message,
+              }),
+            ),
+          items: comboboxFrameworks,
+          itemToValue: item => item.value,
+          itemToLabel: item => item.label,
+          placeholder:
+            preview.selectedValues.length === 0
+              ? 'Select a framework'
+              : '',
+          ariaLabel: 'Frameworks',
+          triggerLayoutStyle: styles.multiInput,
+        },
+        h,
+      ),
+    ]);
+  }
+  return fixture.kind === 'clear'
+    ? h.div([h.Class(className(styles.row))], [
+        combo,
+        Button.button(
+          {
+            variant: 'ghost',
+            size: 'icon',
+            ariaLabel: 'Clear selection',
+            onClick: onMessageJson(JSON.stringify({ _tag: 'ClickedClear' })),
+            children: [Icon.icon('x', { class: className(styles.icon) }, h)],
+          },
+          h,
+        ),
+      ])
+    : h.div([h.Class(className(styles.stack))], [combo]);
 };

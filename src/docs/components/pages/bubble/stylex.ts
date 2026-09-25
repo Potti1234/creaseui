@@ -1,16 +1,335 @@
 import type { Html, HtmlBuilder } from 'foldkit/html';
+
 import * as stylex from '@stylexjs/stylex';
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { bubbleFixtures } from '@/docs/components/pages/bubble/shared';
+import {
+  bubbleFixtures,
+  COLLAPSIBLE_TEXT,
+  type BubbleCluster,
+  type BubbleFixture,
+  type BubbleReactionsSpec,
+  type BubbleSpec,
+} from '@/docs/components/pages/bubble/shared';
+import * as Icon from '@/lib/icon';
 import * as Bubble from '@/stylex/bubble';
+import * as Button from '@/stylex/button';
+import * as Popover from '@/stylex/popover';
+import * as Tooltip from '@/stylex/tooltip';
+import { className } from '@/stylex/style';
 
-const styles = stylex.create({ group: { maxWidth: '28rem', width: '100%', } });
-const message = <Msg>(text: string, variant: Exclude<Bubble.BubbleVariant, null>, align: 'start' | 'end', h: HtmlBuilder<Msg>): Html => Bubble.bubble({ variant, align, children: [Bubble.bubbleContent({ variant, children: [text] }, h)] }, h);
+const styles = stylex.create({
+  column4: {
+    gap: '1rem',
+    paddingBlock: '3rem',
+    display: 'flex',
+    flexDirection: 'column',
+    maxWidth: '24rem',
+    width: '100%',
+  },
+  column8: {
+    gap: '2rem',
+    paddingBlock: '3rem',
+    display: 'flex',
+    flexDirection: 'column',
+    maxWidth: '24rem',
+    width: '100%',
+  },
+  column12: {
+    gap: '3rem',
+    paddingBlock: '3rem',
+    display: 'flex',
+    flexDirection: 'column',
+    maxWidth: '24rem',
+    width: '100%',
+  },
+  preLine: { whiteSpace: 'pre-line' },
+  chevron: { fontSize: '1rem' },
+  triggerLink: {
+    padding: 0,
+    gap: '0.25rem',
+    alignItems: 'center',
+    color: 'var(--muted-foreground)',
+    display: 'inline-flex',
+  },
+  icon: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },
+  iconTrigger: { height: '1.5rem', width: '1.5rem' },
+  popoverContent: { gap: '0.25rem', display: 'grid', },
+  popoverTitle: { fontSize: '0.875rem', fontWeight: 500 },
+  popoverCopy: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },
+  feedback: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },
+});
 
-export const bubbleStyleXPreview: StyleXExamplePreviewProvider = <Msg>(index: number, _model: unknown, _onMessageJson: (messageJson: string) => Msg, h: HtmlBuilder<Msg>) => {
-  const fixture = bubbleFixtures[index] ?? bubbleFixtures[0];
-  if (fixture.title === 'Conversation') return Bubble.bubbleGroup({ layoutStyle: styles.group, children: [message('Can you review the Foldkit update?', 'secondary', 'start', h), message('Yes — I will check the model and command flow.', 'default', 'end', h)] }, h);
-  if (fixture.title === 'Reaction') return Bubble.bubble({ variant: 'tinted', children: [Bubble.bubbleContent({ variant: 'tinted', children: ['The documentation build passed.'] }, h), Bubble.bubbleReactions({ children: ['👍 3'] }, h)] }, h);
-  return message('Message could not be sent.', 'destructive', 'end', h);
+type PreviewSnapshot = Readonly<{
+  lastClicked?: string;
+  ranIt: boolean;
+  open: boolean;
+  tooltip: Tooltip.Model;
+  popover: Popover.Model;
+}>;
+
+const reactionsView = <Msg>(
+  model: PreviewSnapshot,
+  reactions: BubbleReactionsSpec,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  switch (reactions.kind) {
+    case 'emoji':
+      return Bubble.bubbleReactions(
+        {
+          ...(reactions.side === 'top' ? { side: 'top' as const } : {}),
+          ...(reactions.align !== undefined && reactions.align !== 'end'
+            ? { align: reactions.align }
+            : {}),
+          ...(reactions.ariaLabel === undefined
+            ? {}
+            : { ariaLabel: reactions.ariaLabel }),
+          children: reactions.items.map(item => h.span([], [item])),
+        },
+        h,
+      );
+    case 'action':
+      return Bubble.bubbleReactions(
+        {
+          children: [
+            Button.button(
+              {
+                variant: 'ghost',
+                size: 'xs',
+                onClick: onMessageJson(
+                  JSON.stringify({ _tag: 'ClickedRunIt' }),
+                ),
+                children: [
+                  model.ranIt ? reactions.clickedLabel : reactions.label,
+                ],
+              },
+              h,
+            ),
+          ],
+        },
+        h,
+      );
+    case 'tooltip':
+      return Bubble.bubbleReactions(
+        {
+          children: [
+            Tooltip.tooltip(
+              {
+                model: model.tooltip,
+                toParentMessage: message =>
+                  onMessageJson(
+                    JSON.stringify({ _tag: 'GotTooltipMessage', message }),
+                  ),
+                trigger: Icon.icon(
+                  reactions.icon,
+                  {
+                    class: className(styles.icon),
+                    ariaLabel: 'Show error details',
+                  },
+                  h,
+                ),
+                triggerLayoutStyle: styles.iconTrigger,
+                content: reactions.content,
+                ariaLabel: 'Read receipt',
+              },
+              h,
+            ),
+          ],
+        },
+        h,
+      );
+    case 'popover':
+      return Bubble.bubbleReactions(
+        {
+          children: [
+            Popover.popover(
+              {
+                model: model.popover,
+                toParentMessage: message =>
+                  onMessageJson(
+                    JSON.stringify({ _tag: 'GotPopoverMessage', message }),
+                  ),
+                trigger: Icon.icon(
+                  reactions.icon,
+                  {
+                    class: className(styles.icon),
+                    ariaLabel: 'Show error details',
+                  },
+                  h,
+                ),
+                triggerLayoutStyle: styles.iconTrigger,
+                content: h.div(
+                  [h.Class(className(styles.popoverContent))],
+                  [
+                    h.p(
+                      [h.Class(className(styles.popoverTitle))],
+                      [reactions.title],
+                    ),
+                    h.p(
+                      [h.Class(className(styles.popoverCopy))],
+                      [reactions.description],
+                    ),
+                  ],
+                ),
+              },
+              h,
+            ),
+          ],
+        },
+        h,
+      );
+  }
+};
+
+const contentView = <Msg>(
+  model: PreviewSnapshot,
+  bubble: BubbleSpec,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  Bubble.bubbleContent(
+    {
+      variant: bubble.variant ?? 'default',
+      ...(bubble.onClick === true
+        ? {
+            onClick: onMessageJson(
+              JSON.stringify({
+                _tag: 'ClickedOption',
+                label: bubble.text[0] ?? '',
+              }),
+            ),
+          }
+        : {}),
+      children: [
+        bubble.collapsible === true
+          ? h.div(
+              [],
+              [
+                model.open
+                  ? COLLAPSIBLE_TEXT.join('\n\n')
+                  : `${COLLAPSIBLE_TEXT.join('\n\n').slice(0, 180)}...`,
+              ],
+            )
+          : bubble.text.length === 1
+            ? (bubble.text[0] ?? '')
+            : h.div(
+                [h.Class(className(styles.preLine))],
+                [bubble.text.join('\n\n')],
+              ),
+        ...(bubble.collapsible === true
+          ? [
+              h.button(
+                [
+                  h.Type('button'),
+                  h.AriaExpanded(model.open),
+                  h.OnClick(
+                    onMessageJson(
+                      JSON.stringify({
+                        _tag: 'ToggledCollapsible',
+                        isOpen: !model.open,
+                      }),
+                    ),
+                  ),
+                  h.Class(className(styles.triggerLink)),
+                ],
+                [
+                  model.open ? 'Show less' : 'Show more',
+                  Icon.icon(
+                    'chevron-down',
+                    { class: className(styles.chevron) },
+                    h,
+                  ),
+                ],
+              ),
+            ]
+          : []),
+      ],
+    },
+    h,
+  );
+
+const bubbleView = <Msg>(
+  model: PreviewSnapshot,
+  bubble: BubbleSpec,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  Bubble.bubble(
+    {
+      ...(bubble.variant === undefined || bubble.variant === 'default'
+        ? {}
+        : { variant: bubble.variant }),
+      ...(bubble.align === undefined ? {} : { align: bubble.align }),
+      children: [
+        contentView(model, bubble, onMessageJson, h),
+        ...(bubble.reactions === undefined
+          ? []
+          : [reactionsView(model, bubble.reactions, onMessageJson, h)]),
+      ],
+    },
+    h,
+  );
+
+const clusterView = <Msg>(
+  model: PreviewSnapshot,
+  cluster: BubbleCluster,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  cluster.grouped === true
+    ? Bubble.bubbleGroup(
+        {
+          children: cluster.bubbles.map(bubble =>
+            bubbleView(model, bubble, onMessageJson, h),
+          ),
+        },
+        h,
+      )
+    : (cluster.bubbles[0] === undefined
+        ? h.empty
+        : cluster.bubbles.length === 1
+          ? bubbleView(model, cluster.bubbles[0], onMessageJson, h)
+          : h.div(
+              [],
+              cluster.bubbles.map(bubble =>
+                bubbleView(model, bubble, onMessageJson, h),
+              ),
+            ));
+
+export const bubbleStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+  exampleIndex: number,
+  model: unknown,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+) => {
+  const fixture = bubbleFixtures[exampleIndex] ?? bubbleFixtures[0];
+  const previewModel = model as PreviewSnapshot;
+  return h.div(
+    [
+      h.Class(
+        className(
+          fixture.gap === '4'
+            ? styles.column4
+            : fixture.gap === '12'
+              ? styles.column12
+              : styles.column8,
+        ),
+      ),
+    ],
+    [
+      ...fixture.clusters.map(cluster =>
+        clusterView(previewModel, cluster, onMessageJson, h),
+      ),
+      ...(fixture.kind === 'linkButton' &&
+      previewModel.lastClicked !== undefined
+        ? [
+            h.p(
+              [h.Class(className(styles.feedback))],
+              [`You clicked: ${previewModel.lastClicked}`],
+            ),
+          ]
+        : []),
+    ],
+  );
 };

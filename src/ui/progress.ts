@@ -9,6 +9,8 @@ export type ProgressProps = Readonly<{
   max?: number;
   ariaLabel?: string;
   valueText?: string;
+  id?: string;
+  direction?: 'ltr' | 'rtl';
   class?: string;
 }>;
 
@@ -20,6 +22,8 @@ export const progress = <Msg>(
 
   return h.div(
     [
+      ...(props.id === undefined ? [] : [h.Id(props.id)]),
+      ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
       h.Role('progressbar'),
       h.AriaValuemin(0),
       h.AriaValuemax(normalized.max),
@@ -44,7 +48,7 @@ export const progress = <Msg>(
             transform:
               normalized.percentage === null
                 ? 'translateX(-60%)'
-                : `translateX(-${100 - normalized.percentage}%)`,
+                : `translateX(${(props.direction === 'rtl' ? 1 : -1) * (100 - normalized.percentage)}%)`,
           }),
           ...(normalized.value === null
             ? [

@@ -11,6 +11,7 @@ export type InputOtpProps<Msg> = Readonly<{
   ariaLabel?: string;
   isDisabled?: boolean;
   isInvalid?: boolean;
+  isRequired?: boolean;
   class?: string;
   groupClass?: string;
   /** Pattern accepted by the control. Defaults to ASCII digits. */
@@ -56,6 +57,9 @@ export const inputOtp = <Msg>(
         h.AriaLabel(props.ariaLabel ?? 'One-time password'),
         h.AriaInvalid(props.isInvalid ?? false),
         h.Disabled(props.isDisabled ?? false),
+        ...(props.isRequired === true
+          ? [h.Required(true), h.AriaRequired(true)]
+          : []),
         ...(props.name === undefined ? [] : [h.Name(props.name)]),
         h.OnInput((next) => props.onInput(normalize(next, length, pattern))),
         // The fake caret always renders at value.length; pin the real caret
