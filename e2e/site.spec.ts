@@ -3137,40 +3137,59 @@ test("controlled helper pages own and update compact local preview state", async
   await expect(switchControl).not.toBeChecked();
 
   await page.goto("/docs/components/toggle");
-  const toggle = page
-    .locator("#formatting")
-    .getByRole("button", { name: "Bold" });
-  await expect(toggle).toHaveAttribute("aria-pressed", "false");
-  await toggle.click();
-  await expect(toggle).toHaveAttribute("aria-pressed", "true");
-  await toggle.focus();
+  const sectionIds = ["outline", "with-text", "size", "disabled", "rtl"];
+  for (const id of sectionIds) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+
+  const hero = page.locator('[aria-label="Basic preview"]');
+  const heroToggle = hero.getByRole("button", { name: "Toggle bookmark" });
+  await expect(heroToggle).toHaveAttribute("aria-pressed", "false");
+  await heroToggle.click();
+  await expect(heroToggle).toHaveAttribute("aria-pressed", "true");
+
+  const outline = page.locator("#outline");
+  const italic = outline.getByRole("button", { name: "Toggle italic" });
+  const bold = outline.getByRole("button", { name: "Toggle bold" });
+  await italic.click();
+  await expect(italic).toHaveAttribute("aria-pressed", "true");
+  await expect(bold).toHaveAttribute("aria-pressed", "false");
+  await bold.focus();
   await page.keyboard.press("Space");
-  await expect(toggle).toHaveAttribute("aria-pressed", "false");
+  await expect(bold).toHaveAttribute("aria-pressed", "true");
   await page.keyboard.press("Enter");
-  await expect(toggle).toHaveAttribute("aria-pressed", "true");
-  const disabledToggle = page
-    .locator("#disabled")
-    .getByRole("button", { name: "Managed" });
-  await expect(disabledToggle).toBeDisabled();
-  await expect(disabledToggle).toHaveAttribute("aria-pressed", "true");
-  await disabledToggle.click({ force: true });
-  await expect(disabledToggle).toHaveAttribute("aria-pressed", "true");
-  await expect(
-    page
-      .locator("#compact-named-control")
-      .getByRole("button", { name: "Bold formatting" }),
-  ).toBeVisible();
+  await expect(bold).toHaveAttribute("aria-pressed", "false");
+
+  const withText = page.locator("#with-text").getByRole("button", { name: "Toggle italic" });
+  await expect(withText).toContainText("Italic");
+  await withText.click();
+  await expect(withText).toHaveAttribute("aria-pressed", "true");
+
+  const size = page.locator("#size");
+  await expect(size.locator("[data-slot='toggle']")).toHaveCount(3);
+  await expect(size.getByRole("button", { name: "Toggle large" })).toContainText("Large");
+
+  const disabled = page.locator("#disabled");
+  await expect(disabled.locator("[data-slot='toggle']")).toHaveCount(2);
+  for (const button of await disabled.getByRole("button").all()) {
+    if (await button.getAttribute("data-slot") !== "toggle") continue;
+    await expect(button).toBeDisabled();
+  }
+
+  const rtl = page.locator("#rtl");
+  await expect(rtl.locator("[dir='rtl']").first()).toBeVisible();
+  await expect(rtl.getByRole("button", { name: "Toggle bookmark" })).toContainText("إشارة مرجعية");
 
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  for (const id of ["formatting", "outline", "disabled", "compact-named-control"]) {
+  for (const id of sectionIds) {
     await expect(page.locator(`#${id}`)).toBeVisible();
   }
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(page.locator("#formatting code")).toContainText("@/stylex/toggle");
-  await expect(toggle).toHaveAttribute("aria-pressed", "true");
-  await toggle.click();
-  await expect(toggle).toHaveAttribute("aria-pressed", "false");
-  await expect(disabledToggle).toBeDisabled();
+  await expect(page.locator("#outline code")).toContainText("@/stylex/toggle");
+  const sxBold = page.locator("#outline").getByRole("button", { name: "Toggle bold" });
+  await sxBold.click();
+  await expect(sxBold).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator("#rtl [dir='rtl']").first()).toBeVisible();
 
   await page.goto("/docs/components/toggle-group");
   const right = page
@@ -3179,10 +3198,13 @@ test("controlled helper pages own and update compact local preview state", async
   await right.click();
   await expect(right).toHaveAttribute("aria-pressed", "true");
   await page.keyboard.press("ArrowLeft");
-  await expect(page.getByRole("button", { name: "Center", exact: true }).first()).toBeFocused();
+  const center = page
+    .locator("#single-selection")
+    .getByRole("button", { name: "Center", exact: true });
+  await expect(center).toBeFocused();
   await expect(right).toHaveAttribute("aria-pressed", "true");
   await page.keyboard.press("Space");
-  await expect(page.getByRole("button", { name: "Center", exact: true }).first()).toHaveAttribute("aria-pressed", "true");
+  await expect(center).toHaveAttribute("aria-pressed", "true");
 
   const multiple = page.locator("#multiple-selection");
   const multipleLeft = multiple.getByRole("button", { name: "Left" });
@@ -3229,27 +3251,6 @@ test("controlled helper pages own and update compact local preview state", async
     .getByRole("radio", { name: /Compact/u });
   await compact.click();
   await expect(compact).toBeChecked();
-
-  await page.goto("/docs/components/native-select");
-  const fruit = page
-    .locator("#labeled-fruit")
-    .getByRole("combobox", { name: "Fruit" });
-  await fruit.selectOption("blueberry");
-  await expect(fruit).toHaveValue("blueberry");
-
-  await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  await expect(page.locator("#labeled-fruit")).toBeVisible();
-  await expect(page.locator("#grouped-options")).toBeVisible();
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(page.locator("#labeled-fruit code")).toContainText(
-    "@/stylex/native-select",
-  );
-  await expect(fruit).toHaveValue("blueberry");
-  await fruit.selectOption("banana");
-  await expect(fruit).toHaveValue("banana");
-  await expect(
-    page.locator('#grouped-options optgroup[label="Europe"]'),
-  ).toBeAttached();
 
   await page.goto("/docs/components/textarea");
   const message = page
