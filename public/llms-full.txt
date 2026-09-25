@@ -894,7 +894,7 @@ A shadcn-styled Native Select component for Foldkit.
 
 Source: `src/ui/native-select.ts`
 
-Examples: Timed notification, Sticky error
+Examples: Basic, Groups, Disabled, Invalid, RTL
 
 - `NativeSelectOption = Readonly<{ value: string; label: string; isDisabled?: boolean; }>` (type)
 - `NativeSelectGroup = Readonly<{ label: string; options: ReadonlyArray<NativeSelectOption>; isDisabled?: boolean; }>` (type)

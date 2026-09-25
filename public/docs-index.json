@@ -3251,8 +3251,11 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Basic",
+        "Groups",
+        "Disabled",
+        "Invalid",
+        "RTL"
       ],
       "api": [
         {
