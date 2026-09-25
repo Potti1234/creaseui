@@ -5,10 +5,11 @@ export type SwitchBehaviorProps<Msg> = Readonly<{
   id: string
   isChecked: boolean
   onToggle: (isChecked: boolean) => Msg
-  label: Html | string
+  label?: Html | string
   description?: Html | string
   isDisabled?: boolean
   isReadOnly?: boolean
+  isInvalid?: boolean
   name?: string
   value?: string
   direction?: 'ltr' | 'rtl'
@@ -56,16 +57,21 @@ export const renderSwitch = <Msg>(
                 ),
                 h.Type('button'),
                 h.DataAttribute('slot', 'switch'),
+                ...((props.isInvalid ?? false) ? [h.AriaInvalid(true)] : []),
                 ...visual.control,
               ],
               [h.span([h.DataAttribute('slot', 'switch-thumb'), ...visual.thumb], [])],
             ),
-            h.div([...visual.text], [
-              h.label([h.For(`${props.id}-control`), ...label, ...visual.label], [props.label]),
-              ...(props.description === undefined
-                ? []
-                : [h.p([...description, ...visual.description], [props.description])]),
-            ]),
+            ...(props.label === undefined
+              ? []
+              : [
+                  h.div([...visual.text], [
+                    h.label([h.For(`${props.id}-control`), ...label, ...visual.label], [props.label]),
+                    ...(props.description === undefined
+                      ? []
+                      : [h.p([...description, ...visual.description], [props.description])]),
+                  ]),
+                ]),
             ...(props.name === undefined ? [] : [h.input([...hiddenInput])]),
           ],
         ),
