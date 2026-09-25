@@ -626,7 +626,7 @@ test("button-group sections mirror shadcn examples in both renderers", async ({ 
   await input.locator("input[type='text']").fill("query");
   await expect(input.getByRole("button", { name: "Search" })).toBeVisible();
 
-  const inputGroup = page.locator("#input-group");
+  const inputGroup = page.locator("#inputgroup");
   const voice = inputGroup.locator("button[aria-pressed]");
   await expect(voice).toHaveAttribute("aria-pressed", "false");
   await voice.click();
@@ -3430,22 +3430,87 @@ test("skeleton and spinner expose explicit loading semantics with reduced motion
   await expect(page.locator("#with-label").getByRole("status")).toContainText("Saving changes");
 });
 
-test("empty variants preserve heading structure, action order, and responsive copy", async ({ page }) => {
+test("empty sections match upstream variants in both renderers", async ({ page }) => {
   await page.goto("/docs/components/empty");
+  const hero = page.locator('[aria-label="Create a project preview"]');
+  await expect(
+    hero.getByRole("heading", { level: 2, name: "No Projects Yet" }),
+  ).toBeVisible();
+  await expect(
+    hero.getByRole("button", { name: "Create Project" }),
+  ).toBeVisible();
+  await expect(hero.getByRole("link", { name: /Learn More/ })).toBeVisible();
+
+  const outline = page.locator("#outline");
+  await expect(
+    outline.getByRole("heading", { level: 2, name: "Cloud Storage Empty" }),
+  ).toBeVisible();
+  await expect(
+    outline.getByRole("button", { name: "Upload Files" }),
+  ).toBeVisible();
+
+  const background = page.locator("#background");
+  await expect(
+    background.getByRole("heading", { level: 2, name: "No Notifications" }),
+  ).toBeVisible();
+  await expect(
+    background.getByRole("button", { name: /Refresh/ }),
+  ).toBeVisible();
+
+  const avatar = page.locator("#avatar");
+  await expect(
+    avatar.getByRole("heading", { level: 2, name: "User Offline" }),
+  ).toBeVisible();
+  await expect(
+    avatar.locator('img[alt="@shadcn"]').first(),
+  ).toBeVisible();
+  await expect(
+    avatar.getByRole("button", { name: "Leave Message" }),
+  ).toBeVisible();
+
+  const avatarGroup = page.locator("#avatar-group");
+  await expect(
+    avatarGroup.getByRole("heading", { level: 2, name: "No Team Members" }),
+  ).toBeVisible();
+  await expect(
+    avatarGroup.locator('[data-slot="avatar-image"]'),
+  ).toHaveCount(3);
+  await expect(
+    avatarGroup.getByRole("button", { name: /Invite Members/ }),
+  ).toBeVisible();
+
+  const inputGroup = page.locator("#inputgroup");
+  await expect(
+    inputGroup.getByRole("heading", { level: 2, name: "404 - Not Found" }),
+  ).toBeVisible();
+  await expect(
+    inputGroup.getByPlaceholder("Try searching for pages..."),
+  ).toBeVisible();
+  await expect(inputGroup.locator('[data-slot="kbd"]')).toHaveText("/");
+  await expect(
+    inputGroup.getByRole("link", { name: "Contact support" }),
+  ).toBeVisible();
+
+  const rtl = page.locator("#rtl");
+  await expect(rtl.locator('[dir="rtl"]')).toHaveCount(1);
+  await expect(
+    rtl.getByRole("heading", { level: 2, name: "لا توجد مشاريع بعد" }),
+  ).toBeVisible();
+  await expect(
+    rtl.getByRole("button", { name: "إنشاء مشروع" }),
+  ).toBeVisible();
+
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  for (const [id, heading, action] of [["create-first-item", "No projects yet", "Create project"], ["no-results", "No matching components", "Clear filters"], ["error-recovery", "Could not load projects", "Retry"], ["permission-denied", "Access required", "Request access"]] as const) {
-    const example = page.locator(`#${id}`);
-    await expect(example.getByRole("heading", { level: 2, name: heading })).toBeVisible();
-    const button = example.getByRole("button", { name: action });
-    await button.focus();
-    await expect(button).toBeFocused();
-    await page.keyboard.press("Enter");
-    expect(await example.locator('[data-slot="empty"]')).toHaveCount(1);
-    const width = await example.locator('[data-slot="empty-description"]').evaluate(element => element.getBoundingClientRect().width);
-    expect(width).toBeLessThanOrEqual(await example.evaluate(element => element.getBoundingClientRect().width));
-  }
-  await expect(page.locator("#create-first-item code")).toContainText("@/stylex/empty");
+  await expect(
+    page.locator("#outline code"),
+  ).toContainText("@/stylex/empty");
+  await expect(
+    page.locator("#avatar-group").locator('[data-slot="avatar-image"]'),
+  ).toHaveCount(3);
+  await expect(
+    page.locator("#rtl").locator('[dir="rtl"]'),
+  ).toHaveCount(1);
 });
 
 test("message exposes live author metadata and parent-owned keyboard actions", async ({ page }) => {
