@@ -3272,36 +3272,6 @@ test("controlled helper pages own and update compact local preview state", async
     page.locator('#grouped-options optgroup[label="Europe"]'),
   ).toBeAttached();
 
-  await page.goto("/docs/components/input");
-  const email = page.locator("#email").getByRole("textbox", { name: "Email" });
-  await email.fill("docs@crease.dev");
-  await expect(email).toHaveValue("docs@crease.dev");
-  await expect(email).toHaveAttribute("autocomplete", "email");
-  await expect(email).toHaveAttribute("inputmode", "email");
-  const emailDescriptionId = await email.getAttribute("aria-describedby");
-  expect(emailDescriptionId).toBe("docs-input-0-description");
-  await expect(page.locator(`#${emailDescriptionId}`)).toContainText(
-    "account notices",
-  );
-  const readOnlyEmail = page
-    .locator("#native-form-attributes")
-    .getByRole("textbox", { name: "Account email" });
-  await expect(readOnlyEmail).toHaveAttribute("readonly", "");
-  await expect(readOnlyEmail).toHaveAttribute("form", "profile");
-  await expect(readOnlyEmail).not.toHaveAttribute("aria-describedby");
-
-  await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  for (const id of ["email", "invalid", "disabled", "native-form-attributes"]) {
-    await expect(page.locator(`#${id}`)).toBeVisible();
-  }
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(page.locator("#email code")).toContainText("@/stylex/input");
-  await expect(email).toHaveValue("docs@crease.dev");
-  await email.fill("stylex@crease.dev");
-  await expect(email).toHaveValue("stylex@crease.dev");
-  await expect(page.locator("#disabled").getByRole("textbox", { name: "Workspace" })).toBeDisabled();
-  await expect(readOnlyEmail).toHaveAttribute("readonly", "");
-
   await page.goto("/docs/components/textarea");
   const message = page
     .locator("#message")
@@ -3350,6 +3320,120 @@ test("controlled helper pages own and update compact local preview state", async
     .getByRole("textbox", { name: "Verification code" });
   await code.fill("654321");
   await expect(code).toHaveValue("654321");
+});
+
+test("input sections match upstream variants in both renderers", async ({ page }) => {
+  await page.goto("/docs/components/input");
+  for (const id of [
+    "field",
+    "field-group",
+    "disabled",
+    "invalid",
+    "file",
+    "inline",
+    "grid",
+    "required",
+    "badge",
+    "input-group",
+    "button-group",
+    "form",
+    "rtl",
+  ]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+
+  const username = page
+    .locator("#field")
+    .getByRole("textbox", { name: "Username" });
+  await username.fill("potti");
+  await expect(username).toHaveValue("potti");
+  await expect(
+    page.locator("#field").getByText("Choose a unique username for your account.", { exact: true }),
+  ).toBeVisible();
+
+  const fieldGroup = page.locator("#field-group");
+  await fieldGroup
+    .getByRole("textbox", { name: "Name" })
+    .fill("Jordan Lee");
+  await fieldGroup
+    .getByRole("textbox", { name: "Email" })
+    .fill("jordan@crease.dev");
+  await expect(
+    fieldGroup.getByRole("button", { name: "Reset" }),
+  ).toBeVisible();
+  await expect(
+    fieldGroup.getByRole("button", { name: "Submit" }),
+  ).toBeVisible();
+
+  await expect(
+    page.locator("#disabled").getByRole("textbox", { name: "Email" }),
+  ).toBeDisabled();
+  await expect(
+    page.locator("#invalid").getByRole("textbox", { name: "Invalid Input" }),
+  ).toHaveAttribute("aria-invalid", "true");
+  await expect(
+    page.locator("#file").locator("input[type='file']"),
+  ).toBeVisible();
+  await expect(
+    page.locator("#inline").getByRole("button", { name: "Search" }),
+  ).toBeVisible();
+  await page
+    .locator("#grid")
+    .getByRole("textbox", { name: "First Name" })
+    .fill("Jordan");
+  const requiredInput = page
+    .locator("#required")
+    .getByRole("textbox", { name: /Required Field/ });
+  await expect(requiredInput).toHaveAttribute("required", "");
+  await expect(requiredInput).toHaveAttribute("aria-required", "true");
+  await expect(
+    page.locator("#badge").getByText("Beta", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.locator("#input-group").getByText("https://", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.locator("#button-group").getByRole("button", { name: "Search" }),
+  ).toBeVisible();
+
+  const inputForm = page.locator("#form");
+  await expect(inputForm.locator("form")).toBeVisible();
+  await inputForm
+    .getByRole("textbox", { name: "Name" })
+    .fill("Evil Rabbit");
+  await inputForm
+    .getByRole("button", { name: "Country" })
+    .click();
+  await page.getByRole("option", { name: "Canada" }).click();
+  await expect(
+    inputForm.getByRole("button", { name: "Cancel" }),
+  ).toBeVisible();
+  await expect(
+    inputForm.getByRole("button", { name: "Submit" }),
+  ).toBeVisible();
+
+  const inputRtl = page.locator("#rtl");
+  await expect(inputRtl.locator("div[dir='rtl']").first()).toBeVisible();
+  await expect(
+    inputRtl.getByText("مفتاح API", { exact: true }),
+  ).toBeVisible();
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["field", "invalid", "disabled", "form", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#field code")).toContainText("@/stylex/input");
+  await expect(username).toHaveValue("potti");
+  await username.fill("stylex-potti");
+  await expect(username).toHaveValue("stylex-potti");
+  await expect(
+    page.locator("#disabled").getByRole("textbox", { name: "Email" }),
+  ).toBeDisabled();
+  const inputHero = page.locator('[aria-label="Basic preview"]');
+  await expect(
+    inputHero.getByRole("textbox"),
+  ).toHaveAttribute("placeholder", "Enter text");
 });
 
 test("collapsible preserves controlled linkage, external changes, and disabled policy", async ({ page }) => {

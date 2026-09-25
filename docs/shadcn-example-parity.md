@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 25 done · 36 todo · 3 crease-only
+Current: 26 done · 35 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -44,7 +44,7 @@ Current: 25 done · 36 todo · 3 crease-only
 | `empty` | 8 | Outline<br>Background<br>Avatar<br>Avatar Group<br>InputGroup<br>RTL | done |
 | `field` | 13 | Input<br>Textarea<br>Select<br>Slider<br>Fieldset<br>Checkbox<br>Radio<br>Switch<br>Choice Card<br>Field Group<br>RTL<br>Responsive Layout | done |
 | `hover-card` | 5 | Basic<br>Sides<br>RTL | done |
-| `input` | 4 | Basic<br>Field<br>Field Group<br>Disabled<br>Invalid<br>File<br>Inline<br>Grid<br>Required<br>Badge<br>Input Group<br>Button Group<br>Form<br>RTL | todo (missing: Basic, Field, Field Group, File, Inline, Grid, Required, Badge, Input Group, Button Group, Form, RTL) |
+| `input` | 14 | Basic<br>Field<br>Field Group<br>Disabled<br>Invalid<br>File<br>Inline<br>Grid<br>Required<br>Badge<br>Input Group<br>Button Group<br>Form<br>RTL | done |
 | `input-group` | 2 | Align<br>Align<br>Align<br>Align<br>Icon<br>Text<br>Button<br>Kbd<br>Dropdown<br>Spinner<br>Textarea<br>Custom Input<br>RTL | todo (missing: Align, Align, Align, Align, Icon, Text, Button, Kbd, Dropdown, Spinner, Textarea, Custom Input, RTL) |
 | `input-otp` | 3 | Pattern<br>Separator<br>Disabled<br>Controlled<br>Invalid<br>Four Digits<br>Alphanumeric<br>Form<br>RTL | todo (missing: Pattern, Separator, Disabled, Controlled, Invalid, Four Digits, Form, RTL) |
 | `item` | 3 | Variant<br>Size<br>Icon<br>Avatar<br>Image<br>Group<br>Header<br>Link<br>Dropdown<br>RTL | todo (missing: Variant, Size, Icon, Avatar, Image, Group, Header, Link, Dropdown, RTL) |

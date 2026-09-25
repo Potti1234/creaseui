@@ -1218,8 +1218,16 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Demo",
+        "Invalid State",
+        "Basic",
+        "Description",
+        "Disabled",
+        "Group",
+        "Table",
+        "RTL",
+        "Indeterminate",
+        "Read only"
       ],
       "api": [
         {
@@ -1246,8 +1254,12 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Demo",
+        "Basic",
+        "Settings Panel",
+        "File Tree",
+        "RTL",
+        "Disabled"
       ],
       "api": [
         {
@@ -1275,10 +1287,15 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Framework search",
-        "Grouped frameworks",
-        "No results",
-        "Read only RTL"
+        "Demo",
+        "Basic",
+        "Clear Button",
+        "Groups",
+        "Custom Items",
+        "Invalid",
+        "Disabled",
+        "Input Group",
+        "RTL"
       ],
       "api": [
         {
@@ -1367,11 +1384,12 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Application commands",
-        "Grouped commands",
-        "No results",
-        "Remote loading",
-        "Large result policy"
+        "Demo",
+        "Basic",
+        "Shortcuts",
+        "Groups",
+        "Scrollable",
+        "RTL"
       ],
       "api": [
         {
@@ -1478,9 +1496,16 @@
         "Potti1234/creaseui/dropdown-menu"
       ],
       "examples": [
-        "Browser actions",
-        "Disabled action",
-        "Keyboard activation"
+        "Demo",
+        "Basic",
+        "Submenu",
+        "Shortcuts",
+        "Groups",
+        "Icons",
+        "Checkboxes",
+        "Radio",
+        "Destructive",
+        "RTL"
       ],
       "api": [
         {
@@ -1577,7 +1602,8 @@
       "examples": [
         "Sortable payments",
         "Filter and paginate",
-        "Server-owned query"
+        "Server-owned query",
+        "RTL"
       ],
       "api": [
         {
@@ -1736,7 +1762,12 @@
       ],
       "examples": [
         "Edit profile",
-        "Compact confirmation"
+        "Compact confirmation",
+        "Custom Close Button",
+        "No Close Button",
+        "Sticky Footer",
+        "Scrollable Content",
+        "RTL"
       ],
       "api": [
         {
@@ -1892,7 +1923,11 @@
       ],
       "examples": [
         "Activity goal",
-        "Side drawer"
+        "Side drawer",
+        "Scrollable Content",
+        "Sides",
+        "Responsive Dialog",
+        "RTL"
       ],
       "api": [
         {
@@ -2125,10 +2160,13 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Create First Item",
-        "No Results",
-        "Error recovery",
-        "Permission denied"
+        "Create a project",
+        "Outline",
+        "Background",
+        "Avatar",
+        "Avatar Group",
+        "InputGroup",
+        "RTL"
       ],
       "api": [
         {
@@ -2192,10 +2230,19 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Anatomy",
-        "Validation error",
-        "Async validation",
-        "Field group"
+        "Payment Method",
+        "Input",
+        "Textarea",
+        "Select",
+        "Slider",
+        "Fieldset",
+        "Checkbox",
+        "Radio",
+        "Switch",
+        "Choice Card",
+        "Field Group",
+        "RTL",
+        "Responsive Layout"
       ],
       "api": [
         {
@@ -2424,8 +2471,9 @@
         "Potti1234/creaseui/hover-card-behavior"
       ],
       "examples": [
-        "Profile preview",
-        "Side placement"
+        "Basic",
+        "Sides",
+        "RTL"
       ],
       "api": [
         {
@@ -2666,8 +2714,20 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Basic",
+        "Field",
+        "Field Group",
+        "Disabled",
+        "Invalid",
+        "File",
+        "Inline",
+        "Grid",
+        "Required",
+        "Badge",
+        "Input Group",
+        "Button Group",
+        "Form",
+        "RTL"
       ],
       "api": [
         {

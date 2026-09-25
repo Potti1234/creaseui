@@ -383,7 +383,7 @@ A shadcn-styled Checkbox component for Foldkit.
 
 Source: `src/ui/checkbox.ts`
 
-Examples: Timed notification, Sticky error
+Examples: Demo, Invalid State, Basic, Description, Disabled, Group, Table, RTL, Indeterminate, Read only
 
 - `CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> & Readonly<{ class?: string }>` (type)
 - `checkbox<Msg>(props: CheckboxProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
@@ -394,7 +394,7 @@ A shadcn-styled Collapsible component for Foldkit.
 
 Source: `src/ui/collapsible.ts`
 
-Examples: Timed notification, Sticky error
+Examples: Demo, Basic, Settings Panel, File Tree, RTL, Disabled
 
 - `CollapsibleProps<Msg> = Readonly<{ id: string; isOpen: boolean; onToggle: (isOpen: boolean) => Msg; trigger: Html | string; content: Html | string; isDisabled?: boolean; ariaLabel?: string; class?: string; triggerClass?: string; contentClass?: string; }>` (type)
 - `collapsible<Msg>(props: CollapsibleProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
@@ -405,7 +405,7 @@ A shadcn-styled Combobox component for Foldkit.
 
 Source: `src/ui/combobox.ts`
 
-Examples: Framework search, Grouped frameworks, No results, Read only RTL
+Examples: Demo, Basic, Clear Button, Groups, Custom Items, Invalid, Disabled, Input Group, RTL
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -428,7 +428,7 @@ A shadcn-styled Command component for Foldkit.
 
 Source: `src/ui/command.ts`
 
-Examples: Application commands, Grouped commands, No results, Remote loading, Large result policy
+Examples: Demo, Basic, Shortcuts, Groups, Scrollable, RTL
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -455,7 +455,7 @@ A shadcn-styled Context Menu component for Foldkit.
 
 Source: `src/ui/context-menu.ts`
 
-Examples: Browser actions, Disabled action, Keyboard activation
+Examples: Demo, Basic, Submenu, Shortcuts, Groups, Icons, Checkboxes, Radio, Destructive, RTL
 
 - `Model: value` (value)
 - `Model = DropdownMenu.Model` (type)
@@ -479,7 +479,7 @@ A shadcn-styled Data Table component for Foldkit.
 
 Source: `src/ui/data-table.ts`
 
-Examples: Sortable payments, Filter and paginate, Server-owned query
+Examples: Sortable payments, Filter and paginate, Server-owned query, RTL
 
 - `export * from '@/lib/data-table-state'` (re-export)
 - `DataTableColumn<Row> = Readonly<{ key: string; header: string; cell: (row: Row) => Html | string; sortValue?: (row: Row) => string | number; isHideable?: boolean; class?: string; }>` (type)
@@ -521,7 +521,7 @@ A shadcn-styled Dialog component for Foldkit.
 
 Source: `src/ui/dialog.ts`
 
-Examples: Edit profile, Compact confirmation
+Examples: Edit profile, Compact confirmation, Custom Close Button, No Close Button, Sticky Footer, Scrollable Content, RTL
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -563,7 +563,7 @@ A shadcn-styled Drawer component for Foldkit.
 
 Source: `src/ui/drawer.ts`
 
-Examples: Activity goal, Side drawer
+Examples: Activity goal, Side drawer, Scrollable Content, Sides, Responsive Dialog, RTL
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -618,7 +618,7 @@ A shadcn-styled Empty component for Foldkit.
 
 Source: `src/ui/empty.ts`
 
-Examples: Create First Item, No Results, Error recovery, Permission denied
+Examples: Create a project, Outline, Background, Avatar, Avatar Group, InputGroup, RTL
 
 - `empty: value` (value)
 - `emptyHeader: value` (value)
@@ -636,7 +636,7 @@ A shadcn-styled Field component for Foldkit.
 
 Source: `src/ui/field.ts`
 
-Examples: Anatomy, Validation error, Async validation, Field group
+Examples: Payment Method, Input, Textarea, Select, Slider, Fieldset, Checkbox, Radio, Switch, Choice Card, Field Group, RTL, Responsive Layout
 
 - `export { ControlFieldParts } from '@/lib/field'` (re-export)
 - `export { FieldError } from '@/lib/field'` (re-export)
@@ -692,7 +692,7 @@ A shadcn-styled Hover Card component for Foldkit.
 
 Source: `src/ui/hover-card.ts`
 
-Examples: Profile preview, Side placement
+Examples: Basic, Sides, RTL
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -756,7 +756,7 @@ A shadcn-styled Input component for Foldkit.
 
 Source: `src/ui/input.ts`
 
-Examples: Timed notification, Sticky error
+Examples: Basic, Field, Field Group, Disabled, Invalid, File, Inline, Grid, Required, Badge, Input Group, Button Group, Form, RTL
 
 - `InputProps<Msg> = InputBehaviorProps<Msg> & Readonly<{ class?: string; }>` (type)
 - `input<Msg>(props: InputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)

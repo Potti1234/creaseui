@@ -29,6 +29,7 @@ export type InputBehaviorProps<Msg> = Readonly<{
   isReadOnly?: boolean
   isInvalid?: boolean
   isAutofocus?: boolean
+  isRequired?: boolean
 }>
 
 export type InputVisualAttributes<Msg> = Readonly<{
@@ -78,6 +79,7 @@ export const renderInput = <Msg>(
           ...(props.onChange === undefined || !isInteractive
             ? []
             : [h.OnChange(props.onChange)]),
+          ...(props.isRequired === true ? [h.Required(true), h.AriaRequired(true)] : []),
           ...(props.form === undefined ? [] : [h.FormAttr(props.form)]),
           ...(props.autocomplete === undefined
             ? []
