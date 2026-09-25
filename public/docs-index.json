@@ -4507,8 +4507,11 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Component Inventory",
+        "Basic",
         "Footer",
+        "Actions",
+        "RTL",
+        "Component Inventory",
         "Dense overflow",
         "Empty body"
       ],

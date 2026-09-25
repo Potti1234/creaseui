@@ -1225,7 +1225,7 @@ A shadcn-styled Table component for Foldkit.
 
 Source: `src/ui/table.ts`
 
-Examples: Component Inventory, Footer, Dense overflow, Empty body
+Examples: Basic, Footer, Actions, RTL, Component Inventory, Dense overflow, Empty body
 
 - `table<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
 - `tableHeader: value` (value)
