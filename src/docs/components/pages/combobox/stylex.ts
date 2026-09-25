@@ -22,12 +22,61 @@ const styles = stylex.create({
   icon: { height: '1rem', width: '1rem', },
   itemCol: { display: 'flex', flexDirection: 'column' },
   itemMeta: { color: 'var(--muted-foreground)', fontSize: '0.75rem' },
+  chipsBox: {
+    gap: '0.25rem',
+    alignItems: 'center',
+    display: 'flex',
+    flexWrap: 'wrap',
+    maxWidth: '20rem',
+    width: '100%',
+  },
+  chip: {
+    borderColor: 'var(--border)',
+    borderRadius: '0.375rem',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    gap: '0.25rem',
+    paddingBlock: '0.125rem',
+    paddingInline: '0.375rem',
+    alignItems: 'center',
+    backgroundColor: 'var(--accent)',
+    display: 'flex',
+    fontSize: '0.75rem',
+    fontWeight: 500,
+  },
+  chipButton: {
+    borderRadius: '0.125rem',
+    alignItems: 'center',
+    display: 'inline-flex',
+    justifyContent: 'center',
+    opacity: { default: 0.6, ':hover': 1 },
+  },
+  chipIcon: { height: '0.75rem', width: '0.75rem' },
+  multiInput: {
+    flexGrow: 1,
+    height: '1.75rem',
+    minWidth: '4rem',
+  },
+  chevron: { opacity: 0.5, height: '1rem', width: '1rem', },
+  toggleButton: {
+    alignSelf: 'center',
+    flexShrink: 0,
+    marginInlineEnd: '0.25rem',
+    height: '1.5rem',
+    width: '1.5rem',
+  },
 });
 
 type Preview = Readonly<{
   combobox: Combobox.Model;
+  multi: Combobox.MultiModel;
   maybeValue: Option.Option<string>;
+  selectedValues: ReadonlyArray<string>;
+  autoHighlight: boolean;
 }>;
+
+const AutoHighlightCombobox = Combobox.create<string>({ autoHighlight: true });
+const MultiCombobox = Combobox.createMulti<string>({ autoHighlight: true });
 
 const labelFor =
   <Item extends { value: string; label: string }>(items: ReadonlyArray<Item>) =>
@@ -117,6 +166,51 @@ export const comboboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         h,
       );
     }
+    if (fixture.kind === 'autoHighlight') {
+      return AutoHighlightCombobox.combobox(
+        {
+          model: preview.combobox,
+          maybeSelectedValue: preview.maybeValue,
+          restingInputValue: Option.match(preview.maybeValue, {
+            onNone: () => '',
+            onSome: labelFor(comboboxFrameworks),
+          }),
+          toParentMessage,
+          items: comboboxFrameworks,
+          itemToValue: item => item.value,
+          itemToLabel: item => item.label,
+          placeholder: 'Select a framework',
+          ariaLabel: 'Framework',
+          formName: 'docs-combobox',
+        },
+        h,
+      );
+    }
+    if (fixture.kind === 'popup') {
+      return Combobox.combobox(
+        {
+          model: preview.combobox,
+          maybeSelectedValue: preview.maybeValue,
+          restingInputValue: Option.match(preview.maybeValue, {
+            onNone: () => '',
+            onSome: labelFor(comboboxCountries),
+          }),
+          toParentMessage,
+          items: comboboxCountries,
+          itemToValue: item => item.value,
+          itemToLabel: item => item.label,
+          placeholder: 'Select country',
+          ariaLabel: 'Country',
+          formName: 'docs-combobox',
+          trigger: {
+            content: Icon.chevronsUpDown({ class: className(styles.chevron) }, h),
+            ariaLabel: 'Toggle options',
+            layoutStyle: styles.toggleButton,
+          },
+        },
+        h,
+      );
+    }
     return Combobox.combobox(
       {
         model: preview.combobox,
@@ -139,6 +233,51 @@ export const comboboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     );
   })();
 
+  if (fixture.kind === 'multiple') {
+    return h.div([h.Class(className(styles.chipsBox))], [
+      ...preview.selectedValues.map(value =>
+        h.span([h.Class(className(styles.chip))], [
+          comboboxFrameworks.find(item => item.value === value)?.label ??
+            value,
+          h.button(
+            [
+              h.Class(className(styles.chipButton)),
+              h.AriaLabel(`Remove ${value}`),
+              h.OnClick(
+                onMessageJson(
+                  JSON.stringify({ _tag: 'RemovedChip', value }),
+                ),
+              ),
+            ],
+            [Icon.x({ class: className(styles.chipIcon) }, h)],
+          ),
+        ]),
+      ),
+      MultiCombobox.comboboxMulti(
+        {
+          model: preview.multi,
+          selectedValues: preview.selectedValues,
+          toParentMessage: message =>
+            onMessageJson(
+              JSON.stringify({
+                _tag: 'GotMultiComboboxMessage',
+                message,
+              }),
+            ),
+          items: comboboxFrameworks,
+          itemToValue: item => item.value,
+          itemToLabel: item => item.label,
+          placeholder:
+            preview.selectedValues.length === 0
+              ? 'Select a framework'
+              : '',
+          ariaLabel: 'Frameworks',
+          triggerLayoutStyle: styles.multiInput,
+        },
+        h,
+      ),
+    ]);
+  }
   return fixture.kind === 'clear'
     ? h.div([h.Class(className(styles.row))], [
         combo,

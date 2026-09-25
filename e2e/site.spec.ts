@@ -1779,11 +1779,14 @@ test("combobox filters items and persists its typed selection output", async ({
   await page.goto("/docs/components/combobox");
   for (const id of [
     "basic",
+    "multiple",
     "clear-button",
     "groups",
     "custom-items",
     "invalid",
     "disabled",
+    "auto-highlight",
+    "popup",
     "input-group",
     "rtl",
   ]) {
@@ -1820,6 +1823,46 @@ test("combobox filters items and persists its typed selection output", async ({
   const customExample = page.locator("#custom-items");
   await customExample.getByRole("combobox", { name: "Country" }).fill("jap");
   await expect(page.getByRole("option", { name: /Japan/u })).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  const multipleExample = page.locator("#multiple");
+  await expect(
+    multipleExample.getByText("Next.js", { exact: true }),
+  ).toBeVisible();
+  await multipleExample.getByRole("combobox", { name: "Frameworks" }).click();
+  await page.getByRole("option", { name: "SvelteKit" }).click();
+  await expect(
+    multipleExample.getByText("SvelteKit", { exact: true }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+  await multipleExample
+    .getByRole("button", { name: "Remove sveltekit" })
+    .click();
+  await expect(
+    multipleExample.getByText("SvelteKit", { exact: true }),
+  ).toBeHidden();
+  await expect(
+    multipleExample.getByText("Next.js", { exact: true }),
+  ).toBeVisible();
+
+  const autoHighlightExample = page.locator("#auto-highlight");
+  const autoInput = autoHighlightExample.getByRole("combobox", {
+    name: "Framework",
+  });
+  await autoInput.click();
+  const activeId = await autoInput.getAttribute("aria-activedescendant");
+  expect(activeId).toBeTruthy();
+  await expect(
+    page.getByRole("option", { name: "Next.js" }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  const popupExample = page.locator("#popup");
+  await popupExample.getByRole("button", { name: "Toggle options" }).click();
+  await expect(
+    page.getByRole("option", { name: "Argentina" }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
 
   const disabledExample = page.locator("#disabled");
   await expect(

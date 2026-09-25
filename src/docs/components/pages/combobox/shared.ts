@@ -5,7 +5,15 @@ export type ComboboxFixture = Readonly<{
   title: string;
   description?: string;
   heroOnly?: boolean;
-  kind: 'frameworks' | 'clear' | 'groups' | 'custom' | 'rtl';
+  kind:
+    | 'frameworks'
+    | 'clear'
+    | 'groups'
+    | 'custom'
+    | 'rtl'
+    | 'multiple'
+    | 'autoHighlight'
+    | 'popup';
   isInvalid?: boolean;
   isDisabled?: boolean;
 }>;
@@ -13,11 +21,14 @@ export type ComboboxFixture = Readonly<{
 export const comboboxFixtures: ReadonlyArray<ComboboxFixture> = [
   { title: 'Demo', heroOnly: true, kind: 'frameworks' },
   { title: 'Basic', kind: 'frameworks' },
+  { title: 'Multiple', kind: 'multiple', description: 'Combobox.createMulti keeps the popup open across picks; the parent toggles each selected value as removable chips.' },
   { title: 'Clear Button', kind: 'clear', description: 'A ghost clear button routes a synthesized UpdatedInputValue through the child update and clears the owned selection.' },
   { title: 'Groups', kind: 'groups', description: 'itemGroupKey plus groupToHeading render labeled, separated option groups.' },
   { title: 'Custom Items', kind: 'custom', description: 'itemToConfig content composes rich option rows without changing selection semantics.' },
   { title: 'Invalid', kind: 'frameworks', isInvalid: true, description: 'aria-invalid styling marks the input and wrapper.' },
   { title: 'Disabled', kind: 'frameworks', isDisabled: true, description: 'The disabled state keeps the model intact while removing interaction.' },
+  { title: 'Auto Highlight', kind: 'autoHighlight', description: 'create({ autoHighlight: true }) pre-activates the first option on every open, like base-ui\'s autoHighlight.' },
+  { title: 'Popup', kind: 'popup', description: 'The input-wrapper suffix renders as a toggle button, matching the trigger-button combobox that opens a searchable popup.' },
   { title: 'Input Group', kind: 'groups', description: 'The grouped timezone list composes inside an input-group layout.' },
   { title: 'RTL', kind: 'rtl', description: 'direction rtl mirrors the input, list, and item layout for Arabic copy.' },
 ];
@@ -96,6 +107,30 @@ const itemsCode = (kind: ComboboxFixture['kind']): string => {
   { value: 'dubai', label: '(GMT+4) Dubai', group: 'Asia/Pacific' },
 ]`;
   }
+  if (kind === 'popup') {
+    return `const countries = [
+  { code: '', value: '', label: 'Select country', continent: '' },
+  { code: 'ar', value: 'argentina', label: 'Argentina', continent: 'South America' },
+  { code: 'au', value: 'australia', label: 'Australia', continent: 'Oceania' },
+  { code: 'br', value: 'brazil', label: 'Brazil', continent: 'South America' },
+  { code: 'ca', value: 'canada', label: 'Canada', continent: 'North America' },
+  { code: 'cn', value: 'china', label: 'China', continent: 'Asia' },
+  { code: 'co', value: 'colombia', label: 'Colombia', continent: 'South America' },
+  { code: 'eg', value: 'egypt', label: 'Egypt', continent: 'Africa' },
+  { code: 'fr', value: 'france', label: 'France', continent: 'Europe' },
+  { code: 'de', value: 'germany', label: 'Germany', continent: 'Europe' },
+  { code: 'it', value: 'italy', label: 'Italy', continent: 'Europe' },
+  { code: 'jp', value: 'japan', label: 'Japan', continent: 'Asia' },
+  { code: 'ke', value: 'kenya', label: 'Kenya', continent: 'Africa' },
+  { code: 'mx', value: 'mexico', label: 'Mexico', continent: 'North America' },
+  { code: 'nz', value: 'new-zealand', label: 'New Zealand', continent: 'Oceania' },
+  { code: 'ng', value: 'nigeria', label: 'Nigeria', continent: 'Africa' },
+  { code: 'za', value: 'south-africa', label: 'South Africa', continent: 'Africa' },
+  { code: 'kr', value: 'south-korea', label: 'South Korea', continent: 'Asia' },
+  { code: 'gb', value: 'united-kingdom', label: 'United Kingdom', continent: 'Europe' },
+  { code: 'us', value: 'united-states', label: 'United States', continent: 'North America' },
+]`;
+  }
   if (kind === 'custom') {
     return `const countries = [
   { code: 'ar', value: 'argentina', label: 'Argentina', continent: 'South America' },
@@ -126,13 +161,13 @@ const itemsCode = (kind: ComboboxFixture['kind']): string => {
 const itemsExpr = (kind: ComboboxFixture['kind']): string =>
   kind === 'groups'
     ? 'timezones'
-    : kind === 'custom'
+    : kind === 'custom' || kind === 'popup'
       ? 'countries'
       : kind === 'rtl'
         ? 'categories'
         : 'frameworks';
 
-const comboboxCall = (fixture: ComboboxFixture): string => {
+const comboboxCall = (fixture: ComboboxFixture, isStyleX: boolean): string => {
   const items = itemsExpr(fixture.kind);
   const extra: string[] = [];
   if (fixture.kind === 'groups') {
@@ -156,10 +191,23 @@ const comboboxCall = (fixture: ComboboxFixture): string => {
   if (fixture.kind === 'rtl') {
     extra.push(`direction: 'rtl',`);
   }
+  if (fixture.kind === 'popup') {
+    extra.push(isStyleX
+      ? `trigger: {
+          content: Icon.chevronsUpDown({ class: className(styles.chevron) }, h),
+          ariaLabel: 'Toggle options',
+          layoutStyle: styles.toggleButton,
+        },`
+      : `trigger: {
+          content: Icon.chevronsUpDown({ class: 'size-4 opacity-50' }, h),
+          ariaLabel: 'Toggle options',
+          class: 'size-6 shrink-0 self-center rounded-sm opacity-70',
+        },`);
+  }
   const placeholder =
     fixture.kind === 'groups'
       ? 'Select a timezone'
-      : fixture.kind === 'custom'
+      : fixture.kind === 'custom' || fixture.kind === 'popup'
         ? 'Select country'
         : fixture.kind === 'rtl'
           ? 'أضف فئات'
@@ -167,12 +215,12 @@ const comboboxCall = (fixture: ComboboxFixture): string => {
   const aria =
     fixture.kind === 'groups'
       ? 'Timezone'
-      : fixture.kind === 'custom'
+      : fixture.kind === 'custom' || fixture.kind === 'popup'
         ? 'Country'
         : fixture.kind === 'rtl'
           ? 'الفئات'
           : 'Framework';
-  return `Combobox.combobox({
+  return `${fixture.kind === 'autoHighlight' ? 'ExampleCombobox' : 'Combobox'}.combobox({
         model: model.combobox,
         maybeSelectedValue: model.maybeValue,
         restingInputValue: Option.match(model.maybeValue, { onNone: () => '', onSome: value => ${items}.find(item => item.value === value)?.label ?? value }),
@@ -187,16 +235,35 @@ const comboboxCall = (fixture: ComboboxFixture): string => {
 };
 
 const comboboxSource = (fixture: ComboboxFixture, renderer: 'tailwind' | 'stylex'): string => {
-  const dir = renderer === 'stylex' ? 'stylex' : 'ui';
+  if (fixture.kind === 'multiple') {
+    return multipleSource(fixture, renderer);
+  }
+  const isStyleX = renderer === 'stylex';
+  const dir = isStyleX ? 'stylex' : 'ui';
   const isClear = fixture.kind === 'clear';
+  const isAuto = fixture.kind === 'autoHighlight';
+  const isPopup = fixture.kind === 'popup';
+  const usesIcon = isClear || isPopup;
   const messages = `import { taggedStruct } from 'foldkit/schema'
 export const GotComboboxMessage = taggedStruct('GotComboboxMessage', { message: Combobox.Message });${isClear ? "\nexport const ClickedClear = taggedStruct('ClickedClear', {});" : ''}
 export const Message = S.Union([GotComboboxMessage${isClear ? ', ClickedClear' : ''}])
-export type Message = typeof Message.Type`;
+export type Message = typeof Message.Type${isClear ? `
+
+const CloseComboboxAfterClear = Command.define('CloseComboboxAfterClear', {
+  messages: [GotComboboxMessage],
+  execute: Effect.succeed(
+    GotComboboxMessage({
+      message: Combobox.Message.BlurredInput({
+        restingInputValue: '',
+        isClearable: true,
+      }),
+    }),
+  ),
+})` : ''}`;
   const update = `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'GotComboboxMessage': {
-      const next = Combobox.update(model.combobox, message.message)
+      const next = ${isAuto ? 'ExampleCombobox' : 'Combobox'}.update(model.combobox, message.message)
       const maybeOut = Option.fromNullishOr(next.outMessage)
       const maybeValue = Option.match(maybeOut, {
         onNone: () => model.maybeValue,
@@ -211,7 +278,10 @@ export type Message = typeof Message.Type`;
       const next = Combobox.update(model.combobox, Combobox.Message.UpdatedInputValue({ value: '' }))
       return {
         model: { ...model, combobox: next.model, maybeValue: Option.none() },
-        commands: Command.mapMessages(next.commands ?? [], child => GotComboboxMessage({ message: child })),
+        commands: [
+          ...Command.mapMessages(next.commands ?? [], child => GotComboboxMessage({ message: child })),
+          CloseComboboxAfterClear(),
+        ],
       }
     }` : ''}
   }
@@ -220,7 +290,7 @@ export type Message = typeof Message.Type`;
   title: '${fixture.title}',
   body: h.main([], [
     h.div([h.Class('flex items-center gap-2')], [
-      ${comboboxCall(fixture)},${isClear ? `
+      ${comboboxCall(fixture, isStyleX)},${isClear ? `
       Button.button({
         variant: 'ghost',
         size: 'icon',
@@ -234,14 +304,28 @@ export type Message = typeof Message.Type`;
 
   return foldkitApplication({
     title: `Combobox — ${fixture.title}`,
-    imports: `import { Option, Schema as S } from 'effect'
+    imports: `import { ${isClear ? 'Effect, ' : ''}Option, Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as Combobox from '@/${dir}/combobox'${isClear ? `
-import * as Button from '@/${dir}/button'
-import * as Icon from '@/lib/icon'` : ''}`,
-    model: `export const Model = S.Struct({
+${isStyleX && isPopup ? `import * as stylex from '@stylexjs/stylex'
+import { className } from '@/stylex/style'
+` : ''}import * as Combobox from '@/${dir}/combobox'${isClear ? `
+import * as Button from '@/${dir}/button'` : ''}${usesIcon ? `
+import * as Icon from '@/lib/icon'` : ''}${isPopup && isStyleX ? `
+
+const styles = stylex.create({
+  chevron: { height: '1rem', width: '1rem', opacity: 0.5 },
+  toggleButton: {
+    height: '1.5rem',
+    width: '1.5rem',
+    flexShrink: 0,
+    alignSelf: 'center',
+    marginInlineEnd: '0.25rem',
+  },
+})` : ''}`,
+    model: `${isAuto ? `const ExampleCombobox = Combobox.create<string>({ autoHighlight: true })
+` : ''}export const Model = S.Struct({
   combobox: Combobox.Model,
   maybeValue: S.Option(S.String),
 })
@@ -260,6 +344,136 @@ ${itemsCode(fixture.kind)}`,
 }`,
     update,
     view,
+  });
+};
+
+const multipleSource = (fixture: ComboboxFixture, renderer: 'tailwind' | 'stylex'): string => {
+  const isStyleX = renderer === 'stylex';
+  const dir = isStyleX ? 'stylex' : 'ui';
+  return foldkitApplication({
+    title: `Combobox — ${fixture.title}`,
+    imports: `import { Option, Schema as S } from 'effect'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
+import { type Document, type HtmlBuilder } from 'foldkit/html'
+
+${isStyleX ? `import * as stylex from '@stylexjs/stylex'
+import { className } from '@/stylex/style'
+` : ''}import * as Combobox from '@/${dir}/combobox'
+import * as Icon from '@/lib/icon'
+
+const frameworks = [
+  { value: 'nextjs', label: 'Next.js' },
+  { value: 'sveltekit', label: 'SvelteKit' },
+  { value: 'nuxt', label: 'Nuxt.js' },
+  { value: 'remix', label: 'Remix' },
+  { value: 'astro', label: 'Astro' },
+]${isStyleX ? `
+
+const styles = stylex.create({
+  chipsBox: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: '0.25rem',
+    width: '100%',
+    maxWidth: '20rem',
+  },
+  chip: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.25rem',
+    borderRadius: '0.375rem',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--accent)',
+    paddingInline: '0.375rem',
+    paddingBlock: '0.125rem',
+    fontSize: '0.75rem',
+    fontWeight: 500,
+  },
+  chipButton: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '0.125rem',
+    opacity: 0.6,
+  },
+  chipIcon: { height: '0.75rem', width: '0.75rem' },
+  multiInput: { height: '1.75rem', minWidth: '4rem', flexGrow: 1 },
+})` : ''}`,
+    model: `const ExampleMulti = Combobox.createMulti<string>({ autoHighlight: true })
+export const Model = S.Struct({
+  multi: Combobox.MultiModel,
+  selectedValues: S.Array(S.String),
+})
+export type Model = typeof Model.Type`,
+    messages: `import { taggedStruct } from 'foldkit/schema'
+export const GotMultiMessage = taggedStruct('GotMultiMessage', { message: Combobox.Message });
+export const RemovedChip = taggedStruct('RemovedChip', { value: S.String });
+export const Message = S.Union([GotMultiMessage, RemovedChip])
+export type Message = typeof Message.Type`,
+    init: `export const init = (): Update.Return<Model, Message> => ({
+  model: {
+    multi: Combobox.multiInit({ id: 'docs-multi-combobox', isAnimated: true }),
+    selectedValues: ['nextjs'],
+  },
+})`,
+    update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
+  switch (message._tag) {
+    case 'GotMultiMessage': {
+      const next = ExampleMulti.update(model.multi, message.message)
+      const maybeOut = Option.fromNullishOr(next.outMessage)
+      const selectedValues = Option.match(maybeOut, {
+        onNone: () => model.selectedValues,
+        onSome: out =>
+          out._tag === 'Selected'
+            ? model.selectedValues.includes(out.value)
+              ? model.selectedValues.filter(value => value !== out.value)
+              : [...model.selectedValues, out.value]
+            : model.selectedValues,
+      })
+      return {
+        model: { ...model, multi: next.model, selectedValues },
+        commands: Command.mapMessages(next.commands ?? [], child => GotMultiMessage({ message: child })),
+      }
+    }
+    case 'RemovedChip':
+      return {
+        model: {
+          ...model,
+          selectedValues: model.selectedValues.filter(value => value !== message.value),
+        },
+      }
+  }
+}`,
+    view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: 'Multiple',
+  body: h.main([], [
+    h.div([${isStyleX ? `h.Class(className(styles.chipsBox))` : `h.Class('flex w-full max-w-xs flex-wrap items-center gap-1')`}], [
+      ...model.selectedValues.map(value =>
+        h.span([${isStyleX ? `h.Class(className(styles.chip))` : `h.Class('flex items-center gap-1 rounded-md border bg-accent px-1.5 py-0.5 text-xs font-medium')`}], [
+          frameworks.find(item => item.value === value)?.label ?? value,
+          h.button([
+            ${isStyleX ? `h.Class(className(styles.chipButton)),` : `h.Class('inline-flex items-center justify-center rounded-sm opacity-60 hover:opacity-100'),`}
+            h.AriaLabel(\`Remove \${value}\`),
+            h.OnClick(RemovedChip({ value })),
+          ], [Icon.x({ class: ${isStyleX ? `className(styles.chipIcon)` : `'size-3'`} }, h)]),
+        ])),
+      ExampleMulti.comboboxMulti({
+        model: model.multi,
+        selectedValues: model.selectedValues,
+        toParentMessage: message => GotMultiMessage({ message }),
+        items: frameworks,
+        itemToValue: item => item.value,
+        itemToLabel: item => item.label,
+        placeholder: model.selectedValues.length === 0 ? 'Select a framework' : '',
+        ariaLabel: 'Frameworks',
+        ${isStyleX ? `triggerLayoutStyle: styles.multiInput,` : `triggerClass: 'h-7 min-w-16 flex-1 border-none px-1',`}
+      }, h),
+    ]),
+  ]),
+})`,
   });
 };
 
