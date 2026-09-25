@@ -1,67 +1,300 @@
 import type { DocsExample } from '@/docs/components/page-definition';
-import { controlledBooleanApplication } from '@/docs/components/pages/authored-page';
+import { foldkitApplication } from '@/docs/components/pages/authored-page';
 
-export const switchInitialValues = [true, false, true, true, true] as const;
-export const switchLabels = [
-  'Notifications',
-  'Compact mode',
-  'Security scanning',
-  'Account verified',
-  'واجهة عربية',
-] as const;
+export type SwitchKind =
+  | 'demo'
+  | 'description'
+  | 'choiceCard'
+  | 'disabled'
+  | 'invalid'
+  | 'size'
+  | 'rtl';
 
-const metadata = [
+export interface SwitchFixture {
+  readonly title: string;
+  readonly description?: string;
+  readonly heroOnly?: boolean;
+  readonly kind: SwitchKind;
+  readonly switchIds: ReadonlyArray<string>;
+  readonly checkedIds: ReadonlyArray<string>;
+}
+
+export const switchFixtures: Readonly<[SwitchFixture, ...Array<SwitchFixture>]> = [
   {
-    title: 'Notifications',
-    description: 'Apply an immediate preference through a typed toggle Message.',
-    config: `description: 'Receive build and deployment updates.',`,
+    title: 'Basic',
+    heroOnly: true,
+    kind: 'demo',
+    switchIds: ['airplane-mode'],
+    checkedIds: [],
   },
   {
-    title: 'Small',
-    description: 'Use the compact size in a dense but still clearly labeled settings row.',
-    config: `size: 'sm',`,
+    title: 'Description',
+    description: 'Pair the control with explanatory copy inside a horizontal Field.',
+    kind: 'description',
+    switchIds: ['switch-focus-mode'],
+    checkedIds: [],
+  },
+  {
+    title: 'Choice Card',
+    description: 'Wrap each Field in a FieldLabel to make the whole card clickable.',
+    kind: 'choiceCard',
+    switchIds: ['switch-share', 'switch-notifications'],
+    checkedIds: ['switch-notifications'],
   },
   {
     title: 'Disabled',
-    description: 'Explain organization-managed state in adjacent copy.',
-    config: `isDisabled: true,
-  description: 'Required by your organization.',`,
+    description: 'Disabled state prevents activation while keeping the row readable.',
+    kind: 'disabled',
+    switchIds: ['switch-disabled-unchecked'],
+    checkedIds: [],
   },
   {
-    title: 'Read only',
-    description: 'Keep an externally managed state focusable and understandable without allowing changes.',
-    config: `isReadOnly: true,
-  description: 'Supplied by your identity provider.',`,
+    title: 'Invalid',
+    description: 'Mark the control invalid when the terms must be accepted.',
+    kind: 'invalid',
+    switchIds: ['switch-terms'],
+    checkedIds: [],
+  },
+  {
+    title: 'Size',
+    description: 'Small and default sizes cover compact and roomy rows.',
+    kind: 'size',
+    switchIds: ['switch-size-sm', 'switch-size-default'],
+    checkedIds: [],
   },
   {
     title: 'RTL',
-    description: 'Mirror thumb travel when the switch is rendered in a right-to-left subtree.',
-    config: `direction: 'rtl',`,
+    description: 'Label, description and thumb travel mirror in right-to-left contexts.',
+    kind: 'rtl',
+    switchIds: ['switch-focus-mode-rtl'],
+    checkedIds: [],
   },
-] as const;
+];
+
+const sw = (id: string, extra: string): string =>
+  `Switch.switchControl({
+      id: '${id}',
+      isChecked: model.states['${id}'] ?? false,
+      onToggle: isChecked => Toggled({ id: '${id}', isChecked }),${extra}
+    }, h)`;
+
+const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
+  const row = isStyleX ? 'className(styles.row)' : "'flex items-center gap-2'";
+  switch (fixture.kind) {
+    case 'demo':
+      return `  h.div([h.Class(${row})], [
+    ${sw('airplane-mode', '')},
+    Label.label({
+      for: 'airplane-mode',
+      children: ['Airplane Mode'],
+    }, h),
+  ])`;
+    case 'description':
+      return `  Field.field({
+    orientation: 'horizontal',
+    ${isStyleX ? 'layoutStyle: styles.wide' : "class: 'w-full max-w-sm'"},
+    children: [
+      Field.fieldContent({ children: [
+        Field.fieldLabel({
+          for: 'switch-focus-mode',
+          children: ['Share across devices'],
+        }, h),
+        Field.fieldDescription({
+          children: ['Focus is shared across devices, and turns off when you leave the app.'],
+        }, h),
+      ] }, h),
+      ${sw('switch-focus-mode', '')},
+    ],
+  }, h)`;
+    case 'choiceCard': {
+      const card = (id: string, titleText: string, descText: string) => `Field.fieldLabel({
+      for: '${id}',
+      children: [
+        Field.field({
+          orientation: 'horizontal',
+          children: [
+            Field.fieldContent({ children: [
+              Field.fieldTitle({ children: ['${titleText}'] }, h),
+              Field.fieldDescription({
+                children: ['${descText}'],
+              }, h),
+            ] }, h),
+            ${sw(id, '')},
+          ],
+        }, h),
+      ],
+    }, h)`;
+      return `  Field.fieldGroup({
+    ${isStyleX ? 'layoutStyle: styles.wide' : "class: 'w-full max-w-sm'"},
+    children: [
+      ${card('switch-share', 'Share across devices', 'Focus is shared across devices, and turns off when you leave the app.')},
+      ${card('switch-notifications', 'Enable notifications', 'Receive notifications when focus mode is enabled or disabled.')},
+    ],
+  }, h)`;
+    }
+    case 'disabled':
+      return `  Field.field({
+    orientation: 'horizontal',
+    isDisabled: true,
+    ${isStyleX ? 'layoutStyle: styles.fit' : "class: 'w-fit'"},
+    children: [
+      ${sw('switch-disabled-unchecked', '\n      isDisabled: true,')},
+      Field.fieldLabel({
+        for: 'switch-disabled-unchecked',
+        children: ['Disabled'],
+      }, h),
+    ],
+  }, h)`;
+    case 'invalid':
+      return `  Field.field({
+    orientation: 'horizontal',
+    isInvalid: true,
+    ${isStyleX ? 'layoutStyle: styles.wide' : "class: 'w-full max-w-sm'"},
+    children: [
+      Field.fieldContent({ children: [
+        Field.fieldLabel({
+          for: 'switch-terms',
+          children: ['Accept terms and conditions'],
+        }, h),
+        Field.fieldDescription({
+          children: ['You must accept the terms and conditions to continue.'],
+        }, h),
+      ] }, h),
+      ${sw('switch-terms', '\n      isInvalid: true,')},
+    ],
+  }, h)`;
+    case 'size': {
+      const sizeField = (id: string, size: string, labelText: string) => `Field.field({
+      orientation: 'horizontal',
+      children: [
+        ${sw(id, `\n        size: '${size}',`)},
+        Field.fieldLabel({
+          for: '${id}',
+          children: ['${labelText}'],
+        }, h),
+      ],
+    }, h)`;
+      return `  Field.fieldGroup({
+    ${isStyleX ? 'layoutStyle: styles.narrow' : "class: 'w-40'"},
+    children: [
+      ${sizeField('switch-size-sm', 'sm', 'Small')},
+      ${sizeField('switch-size-default', 'default', 'Default')},
+    ],
+  }, h)`;
+    }
+    case 'rtl':
+      return `  Field.field({
+    orientation: 'horizontal',
+    direction: 'rtl',
+    ${isStyleX ? 'layoutStyle: styles.wide' : "class: 'w-full max-w-sm'"},
+    children: [
+      Field.fieldContent({ children: [
+        Field.fieldLabel({
+          for: 'switch-focus-mode-rtl',
+          children: ['المشاركة عبر الأجهزة'],
+        }, h),
+        Field.fieldDescription({
+          children: ['يتم مشاركة التركيز عبر الأجهزة، ويتم إيقاف تشغيله عند مغادرة التطبيق.'],
+        }, h),
+      ] }, h),
+      ${sw('switch-focus-mode-rtl', "\n      direction: 'rtl',")},
+    ],
+  }, h)`;
+  }
+};
+
+const emitImports = (fixture: SwitchFixture, isStyleX: boolean): string => {
+  const base = isStyleX ? 'stylex' : 'ui';
+  const parts = [
+    `import { Schema as S } from 'effect'`,
+    `import { Command, Runtime, Subscription, Update } from 'foldkit'`,
+    `import { type Document, type HtmlBuilder } from 'foldkit/html'`,
+    `import { taggedStruct } from 'foldkit/schema'`,
+  ];
+  if (isStyleX) {
+    parts.push(`import * as stylex from '@stylexjs/stylex'`);
+  }
+  if (fixture.kind !== 'demo') {
+    parts.push(`import * as Field from '@/${base}/field'`);
+  }
+  parts.push(`import * as Switch from '@/${base}/switch'`);
+  if (fixture.kind === 'demo') {
+    parts.push(`import * as Label from '@/${base}/label'`);
+  }
+  if (isStyleX) {
+    parts.push(`import { className } from '@/stylex/style'`);
+  }
+  return parts.join('\n');
+};
+
+const emitStyles = (fixture: SwitchFixture): string => {
+  const lines: string[] = [];
+  if (fixture.kind === 'demo') {
+    lines.push(`  row: { display: 'flex', alignItems: 'center', gap: '0.5rem' },`);
+  }
+  if (fixture.kind === 'description' || fixture.kind === 'choiceCard'
+      || fixture.kind === 'invalid' || fixture.kind === 'rtl') {
+    lines.push(`  wide: { width: '100%', maxWidth: '24rem' },`);
+  }
+  if (fixture.kind === 'disabled') {
+    lines.push(`  fit: { width: 'fit-content' },`);
+  }
+  if (fixture.kind === 'size') {
+    lines.push(`  narrow: { width: '10rem' },`);
+  }
+  return lines.join('\n');
+};
+
+const emitApplication = (
+  fixture: SwitchFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const isStyleX = renderer === 'stylex';
+  const stylesBlock = isStyleX
+    ? `\n\nconst styles = stylex.create({\n${emitStyles(fixture)}\n})`
+    : '';
+  const initEntries = fixture.switchIds
+    .map(id => `'${id}': ${fixture.checkedIds.includes(id)}`)
+    .join(', ');
+  return foldkitApplication({
+    title: `Switch — ${fixture.title}`,
+    imports: `${emitImports(fixture, isStyleX)}${stylesBlock}`,
+    model: `export const Model = S.Struct({ states: S.Record(S.String, S.Boolean) })
+export type Model = typeof Model.Type`,
+    messages: `export const Toggled = taggedStruct('Toggled', { id: S.String, isChecked: S.Boolean })
+export const Message = S.Union([Toggled])
+export type Message = typeof Message.Type`,
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: { states: { ${initEntries} } } })`,
+    update: `export const update = (
+  model: Model,
+  message: Message,
+): Update.Return<Model, Message> => {
+  switch (message._tag) {
+    case 'Toggled':
+      return {
+        model: {
+          states: { ...model.states, [message.id]: message.isChecked },
+        },
+      }
+  }
+}`,
+    view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: 'Switch — ${fixture.title}',
+  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+${emitBody(fixture, isStyleX)}
+  ]),
+})`,
+  });
+};
 
 export const switchExamples = (
   renderer: 'tailwind' | 'stylex',
-): ReadonlyArray<DocsExample> => metadata.map((item, index) => ({
-  title: item.title,
-  description: item.description,
-  code: controlledBooleanApplication({
-    componentName: 'Switch',
-    componentSlug: 'switch',
-    renderer,
-    exampleName: item.title,
-    field: 'notificationsEnabled',
-    initialValue: switchInitialValues[index] ?? false,
-    messageName: 'ToggledNotifications',
-    messageField: 'isChecked',
-    viewBody: `Switch.switchControl({
-  id: 'notifications',
-  isChecked: model.notificationsEnabled,
-  onToggle: isChecked => ToggledNotifications({ isChecked }),
-  label: 'Notifications',
-  name: 'notifications',
-  value: 'enabled',
-  ${item.config}
-}, h),`,
-  }),
-}));
+): ReadonlyArray<DocsExample> =>
+  switchFixtures.map(fixture => ({
+    title: fixture.title,
+    ...(fixture.description === undefined
+      ? {}
+      : { description: fixture.description }),
+    ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
+    code: emitApplication(fixture, renderer),
+  }));

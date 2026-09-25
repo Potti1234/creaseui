@@ -3129,12 +3129,48 @@ test("controlled helper pages own and update compact local preview state", async
   await expect(rtlPanel).toContainText("عنوان الشحن");
 
   await page.goto("/docs/components/switch");
-  const switchControl = page
-    .locator("#notifications")
-    .getByRole("switch", { name: "Notifications" });
-  await expect(switchControl).toBeChecked();
-  await switchControl.click();
-  await expect(switchControl).not.toBeChecked();
+  const switchSectionIds = ["description", "choice-card", "disabled", "invalid", "size", "rtl"];
+  for (const id of switchSectionIds) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+
+  const switchHero = page.locator('[aria-label="Basic preview"]');
+  const heroSwitch = switchHero.getByRole("switch");
+  await expect(heroSwitch).not.toBeChecked();
+  await heroSwitch.click();
+  await expect(heroSwitch).toBeChecked();
+  await expect(switchHero).toContainText("Airplane Mode");
+
+  const switchDesc = page.locator("#description");
+  await expect(switchDesc).toContainText("Share across devices");
+  await expect(switchDesc).toContainText("turns off when you leave the app");
+  const descSwitch = switchDesc.locator("#switch-focus-mode-control");
+  await descSwitch.click();
+  await expect(descSwitch).toBeChecked();
+
+  const choiceCard = page.locator("#choice-card");
+  await expect(choiceCard.locator("[data-slot='switch']")).toHaveCount(2);
+  await expect(choiceCard).toContainText("Enable notifications");
+  await expect(choiceCard.locator("#switch-notifications-control")).toBeChecked();
+  await expect(choiceCard.locator("#switch-share-control")).not.toBeChecked();
+
+  await expect(page.locator("#disabled [data-slot='switch']").first()).toBeDisabled();
+  const invalidSwitch = page.locator("#invalid #switch-terms-control");
+  await expect(invalidSwitch).toHaveAttribute("aria-invalid", "true");
+  await expect(page.locator("#invalid")).toContainText("Accept terms and conditions");
+
+  await expect(page.locator("#size [data-slot='switch']")).toHaveCount(2);
+  await expect(page.locator("#rtl [dir='rtl']").first()).toBeVisible();
+  await expect(page.locator("#rtl")).toContainText("المشاركة عبر الأجهزة");
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of switchSectionIds) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#description code")).toContainText("@/stylex/switch");
+  await expect(page.locator("#choice-card [data-slot='switch']")).toHaveCount(2);
+  await expect(page.locator("#rtl [dir='rtl']").first()).toBeVisible();
 
   await page.goto("/docs/components/toggle");
   const sectionIds = ["outline", "with-text", "size", "disabled", "rtl"];
