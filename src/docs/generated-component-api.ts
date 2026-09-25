@@ -3187,6 +3187,16 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "slider",
       "kind": "function",
       "signature": "slider<Msg>(props: SliderProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "MultiSliderProps",
+      "kind": "type",
+      "signature": "MultiSliderProps<Msg> = Readonly<{ values: readonly number[]; min: number; max: number; step?: number; onInput: (values: readonly number[]) => Msg; orientation?: 'horizontal' | 'vertical'; direction?: 'ltr' | 'rtl'; ariaLabels?: readonly string[]; isDisabled?…"
+    },
+    {
+      "name": "multiSlider",
+      "kind": "function",
+      "signature": "multiSlider<Msg>(props: MultiSliderProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "sonner": [

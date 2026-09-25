@@ -1163,7 +1163,7 @@ A shadcn-styled Slider component for Foldkit.
 
 Source: `src/ui/slider.ts`
 
-Examples: Timed notification, Sticky error
+Examples: Basic, Range, Multiple Thumbs, Vertical, Controlled, Disabled, RTL
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -1182,6 +1182,8 @@ Examples: Timed notification, Sticky error
 - `RangeSliderProps<Msg> = Readonly<{ values: readonly [number, number]; min: number; max: number; step?: number; onInput: (values: readonly [number, number]) => Msg; orientation?: 'horizontal' | 'vertical'; direction?: 'ltr' | 'rtl'; ariaLabels?: readonly [stri…` (type)
 - `rangeSlider<Msg>(props: RangeSliderProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `slider<Msg>(props: SliderProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `MultiSliderProps<Msg> = Readonly<{ values: readonly number[]; min: number; max: number; step?: number; onInput: (values: readonly number[]) => Msg; orientation?: 'horizontal' | 'vertical'; direction?: 'ltr' | 'rtl'; ariaLabels?: readonly string[]; isDisabled?…` (type)
+- `multiSlider<Msg>(props: MultiSliderProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Sonner
 

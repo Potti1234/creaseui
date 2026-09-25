@@ -995,6 +995,8 @@ Source: [`src/ui/slider.ts`](../src/ui/slider.ts)
 | `RangeSliderProps` | type | `RangeSliderProps<Msg> = Readonly<{ values: readonly [number, number]; min: number; max: number; step?: number; onInput: (values: readonly [number, number]) => Msg; orientation?: 'horizontal' \| 'vertical'; direction?: 'ltr' \| 'rtl'; ariaLabels?: readonly [stri…` |
 | `rangeSlider` | function | `rangeSlider<Msg>(props: RangeSliderProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `slider` | function | `slider<Msg>(props: SliderProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `MultiSliderProps` | type | `MultiSliderProps<Msg> = Readonly<{ values: readonly number[]; min: number; max: number; step?: number; onInput: (values: readonly number[]) => Msg; orientation?: 'horizontal' \| 'vertical'; direction?: 'ltr' \| 'rtl'; ariaLabels?: readonly string[]; isDisabled?…` |
+| `multiSlider` | function | `multiSlider<Msg>(props: MultiSliderProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Sonner
 
