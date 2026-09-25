@@ -125,6 +125,7 @@ export type SheetProps<Msg> = Readonly<{
   layout?: (parts: SheetParts<Msg>) => ReadonlyArray<Html>;
   side?: SheetSide;
   showCloseButton?: boolean;
+  direction?: 'ltr' | 'rtl';
   class?: string;
 }>;
 
@@ -217,6 +218,7 @@ export const sheet = <Msg>(
                     ...panel,
                     ...panelFocusAttributes,
                     hd.DataAttribute('slot', 'sheet-content'),
+                    ...(props.direction === 'rtl' ? [hd.Dir('rtl')] : []),
                     hd.Class(cn(CONTENT_CLASS, SIDE_CLASS[side], props.class)),
                   ],
                   content,
