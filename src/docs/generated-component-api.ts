@@ -2627,7 +2627,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ResizableProps",
       "kind": "type",
-      "signature": "ResizableProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; first: Html | string; second: Html | string; direction?: 'horizontal' | 'vertical'; withHandle?: boolean; minSize?: number; maxSize?: number; /** Pixel extent of the pa…"
+      "signature": "ResizableProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; first: Html | string; second: Html | string; direction?: 'horizontal' | 'vertical'; rtl?: boolean; withHandle?: boolean; minSize?: number; maxSize?: number; /** Pixel e…"
     },
     {
       "name": "resizable",
@@ -2667,7 +2667,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ResizableGroupProps",
       "kind": "type",
-      "signature": "ResizableGroupProps<Msg> = Readonly<{ model: GroupModel; toParentMessage: (message: GroupMessage) => Msg; panels: ReadonlyArray<Html | string>; direction?: 'horizontal' | 'vertical'; minSize?: number; extent: number; withHandles?: boolean; disabled?: boolean;…"
+      "signature": "ResizableGroupProps<Msg> = Readonly<{ model: GroupModel; toParentMessage: (message: GroupMessage) => Msg; panels: ReadonlyArray<Html | string>; direction?: 'horizontal' | 'vertical'; rtl?: boolean; minSize?: number; extent: number; withHandles?: boolean; disa…"
     },
     {
       "name": "resizableGroup",

@@ -836,7 +836,7 @@ Source: [`src/ui/resizable.ts`](../src/ui/resizable.ts)
 | `Message` | type | `Message = typeof Message.Type` |
 | `init` | function | `init(id: string, firstSize = 50): Model` |
 | `update` | function | `update(model: Model, message: Message): Model` |
-| `ResizableProps` | type | `ResizableProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; first: Html \| string; second: Html \| string; direction?: 'horizontal' \| 'vertical'; withHandle?: boolean; minSize?: number; maxSize?: number; /** Pixel extent of the pa…` |
+| `ResizableProps` | type | `ResizableProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; first: Html \| string; second: Html \| string; direction?: 'horizontal' \| 'vertical'; rtl?: boolean; withHandle?: boolean; minSize?: number; maxSize?: number; /** Pixel e…` |
 | `resizable` | function | `resizable<Msg>(props: ResizableProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `GroupModel` | value | `GroupModel: value` |
 | `GroupModel` | type | `GroupModel = typeof GroupModel.Type` |
@@ -844,7 +844,7 @@ Source: [`src/ui/resizable.ts`](../src/ui/resizable.ts)
 | `GroupMessage` | type | `GroupMessage = typeof GroupMessage.Type` |
 | `initGroup` | function | `initGroup(id: string, panelCount: number, sizes?: ReadonlyArray<number>): GroupModel` |
 | `updateGroup` | function | `updateGroup(model: GroupModel, message: GroupMessage): GroupModel` |
-| `ResizableGroupProps` | type | `ResizableGroupProps<Msg> = Readonly<{ model: GroupModel; toParentMessage: (message: GroupMessage) => Msg; panels: ReadonlyArray<Html \| string>; direction?: 'horizontal' \| 'vertical'; minSize?: number; extent: number; withHandles?: boolean; disabled?: boolean;…` |
+| `ResizableGroupProps` | type | `ResizableGroupProps<Msg> = Readonly<{ model: GroupModel; toParentMessage: (message: GroupMessage) => Msg; panels: ReadonlyArray<Html \| string>; direction?: 'horizontal' \| 'vertical'; rtl?: boolean; minSize?: number; extent: number; withHandles?: boolean; disa…` |
 | `resizableGroup` | function | `resizableGroup<Msg>(props: ResizableGroupProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Scroll Area
