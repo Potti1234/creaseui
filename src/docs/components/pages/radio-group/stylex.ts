@@ -1,14 +1,56 @@
+import * as stylex from '@stylexjs/stylex';
 import { Option } from 'effect';
-import type { HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { radioGroupOptions } from '@/docs/components/pages/radio-group/shared';
+import {
+  radioGroupFixtures,
+  type RadioGroupFixture,
+} from '@/docs/components/pages/radio-group/shared';
+import * as Field from '@/stylex/field';
 import * as RadioGroup from '@/stylex/radio-group';
+
+const styles = stylex.create({
+  fit: {
+    width: 'fit-content',
+  },
+  wide: {
+    maxWidth: '24rem',
+    width: '100%',
+  },
+  wideXs: {
+    maxWidth: '20rem',
+    width: '100%',
+  },
+});
 
 type PreviewModel = Readonly<{
   value: string;
   radioGroup: RadioGroup.Model;
 }>;
+
+const group = <Msg>(
+  fixture: RadioGroupFixture,
+  model: PreviewModel,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  RadioGroup.radioGroup(
+    {
+      model: model.radioGroup,
+      selectedValue: Option.some(model.value),
+      toParentMessage: message =>
+        onMessageJson(
+          JSON.stringify({ _tag: 'GotDocsRadioGroupMessage', message }),
+        ),
+      ariaLabel: fixture.ariaLabel,
+      layoutStyle: fixture.width === 'fit' ? styles.fit : styles.wide,
+      ...(fixture.direction === 'rtl' ? { direction: 'rtl' as const } : {}),
+      ...(fixture.isReadOnly === true ? { isReadOnly: true } : {}),
+      options: fixture.options,
+    },
+    h,
+  );
 
 export const radioGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -17,31 +59,22 @@ export const radioGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   h: HtmlBuilder<Msg>,
 ) => {
   const previewModel = model as PreviewModel;
-  return RadioGroup.radioGroup({
-    model: previewModel.radioGroup,
-    selectedValue: Option.some(previewModel.value),
-    toParentMessage: message => onMessageJson(JSON.stringify({
-      _tag: 'GotDocsRadioGroupMessage',
-      message,
-    })),
-    ariaLabel: 'Interface density',
-    name: 'density',
-    ...(exampleIndex === 1
-      ? {
-          isDisabled: true,
-          options: radioGroupOptions.map(({ value, label }) => ({ value, label })),
-        }
-      : exampleIndex === 2
-        ? { isReadOnly: true, options: radioGroupOptions }
-        : exampleIndex === 3
-          ? {
-              direction: 'rtl' as const,
-              orientation: 'Horizontal' as const,
-              options: radioGroupOptions.map((option, optionIndex) => ({
-                ...option,
-                isDisabled: optionIndex === 2,
-              })),
-            }
-          : { options: radioGroupOptions }),
-  }, h);
+  const fixture = radioGroupFixtures[exampleIndex] ?? radioGroupFixtures[0];
+  if (fixture.kind === 'fieldset') {
+    return Field.fieldSet(
+      {
+        layoutStyle: styles.wideXs,
+        children: [
+          Field.fieldLegend({ children: [fixture.fieldLegend ?? ''] }, h),
+          Field.fieldDescription(
+            { children: [fixture.fieldDescription ?? ''] },
+            h,
+          ),
+          group(fixture, previewModel, onMessageJson, h),
+        ],
+      },
+      h,
+    );
+  }
+  return group(fixture, previewModel, onMessageJson, h);
 };

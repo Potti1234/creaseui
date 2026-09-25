@@ -3282,11 +3282,22 @@ test("controlled helper pages own and update compact local preview state", async
   await expect(disabledGroup.getByRole("button", { name: "Center" })).toBeDisabled();
 
   await page.goto("/docs/components/radio-group");
+  const radioGroupSectionIds = ["description", "choice-card", "fieldset", "disabled", "invalid", "read-only", "rtl"];
+  for (const id of radioGroupSectionIds) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
   const compact = page
-    .locator("#density")
+    .locator("#description")
     .getByRole("radio", { name: /Compact/u });
   await compact.click();
   await expect(compact).toBeChecked();
+  await expect(page.locator("#description")).toContainText("Minimal spacing for dense layouts.");
+  await expect(page.locator("#choice-card [data-slot='radio-group']")).toHaveCount(1);
+  await expect(page.locator("#choice-card")).toContainText("For growing businesses.");
+  await expect(page.locator("#fieldset legend")).toContainText("Subscription Plan");
+  await expect(page.locator("#disabled [data-slot='radio-group-item']").first()).toBeDisabled();
+  await expect(page.locator("#invalid [data-slot='radio-group-item']").first()).toHaveAttribute("aria-invalid", "true");
+  await expect(page.locator("#rtl [dir='rtl']")).toBeVisible();
 
   await page.goto("/docs/components/textarea");
   const textareaSectionIds = ["field", "disabled", "invalid", "button", "rtl", "form-and-resize"];
