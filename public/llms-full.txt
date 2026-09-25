@@ -831,7 +831,7 @@ A shadcn-styled Menubar component for Foldkit.
 
 Source: `src/ui/menubar.ts`
 
-Examples: Basic, Checkbox, Radio, Submenu, Icons, RTL
+Examples: Basic, Checkbox, Radio, Submenu, With Icons, RTL
 
 - `Model: value` (value)
 - `Model = MenubarBehavior.Model` (type)
@@ -876,7 +876,7 @@ A shadcn-styled Message component for Foldkit.
 
 Source: `src/ui/message.ts`
 
-Examples: Incoming, Outgoing, Live recovery
+Examples: Basic, Avatar, Group, Header and Footer, Actions, Attachment
 
 - `messageGroup<Msg>(props: MessageGroupProps, h: HtmlBuilder<Msg>): Html` (function)
 - `message<Msg>(props: ChildrenProps & Readonly<{ align?: 'start' | 'end'; announcement?: 'none' | 'status'; ariaLabel?: string }>, h: HtmlBuilder<Msg>): Html` (function)

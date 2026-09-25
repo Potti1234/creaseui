@@ -3849,6 +3849,55 @@ test("marker sections match upstream variants in both renderers", async ({ page 
   await expect(sxLinks.getByText("You clicked the revert button", { exact: true })).toBeVisible();
 });
 
+test("message sections match upstream variants in both renderers", async ({ page }) => {
+  await page.goto("/docs/components/message");
+  for (const id of ["avatar", "group", "header-and-footer", "actions", "attachment"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+
+  const hero = page.locator('[aria-label="Basic preview"]');
+  await expect(hero.getByText("Deploying to prod real quick.", { exact: true })).toBeVisible();
+  await expect(hero.getByText("Delivered", { exact: true })).toBeVisible();
+  await expect(hero.getByText("Oliver is typing...", { exact: true })).toBeVisible();
+  await expect(hero.locator("[data-slot='bubble-group']")).toBeVisible();
+  await expect(hero.getByText("👍", { exact: true })).toBeVisible();
+
+  const avatar = page.locator("#avatar");
+  await expect(avatar.getByText("The build failed during dependency installation.", { exact: true })).toBeVisible();
+  await expect(avatar.getByText("Can you share the exact error?", { exact: true })).toBeVisible();
+
+  const group = page.locator("#group");
+  await expect(group.locator("[data-slot='message-group']")).toBeVisible();
+  await expect(group.getByText("I checked the registry addresses.", { exact: true })).toBeVisible();
+
+  const headerFooter = page.locator("#header-and-footer");
+  await expect(headerFooter.getByText("Olivia", { exact: true })).toBeVisible();
+  await expect(headerFooter.getByText("Yesterday", { exact: true })).toBeVisible();
+
+  const actions = page.locator("#actions");
+  const actionFooters = actions.locator("[data-slot='message-footer']");
+  await expect(actionFooters.getByRole("button", { name: "Copy", exact: true })).toBeVisible();
+  await expect(actionFooters.getByRole("button", { name: "Like", exact: true })).toBeVisible();
+  await expect(actionFooters.getByRole("button", { name: "Dislike", exact: true })).toBeVisible();
+  await expect(actions.getByText("Failed to send", { exact: true })).toBeVisible();
+  await expect(actionFooters.getByRole("button", { name: "Retry", exact: true })).toBeVisible();
+
+  const attachment = page.locator("#attachment");
+  await expect(attachment.getByAltText("Workspace")).toBeVisible();
+  await expect(attachment.getByText("sales-dashboard.pdf", { exact: true })).toBeVisible();
+  await expect(attachment.getByRole("button", { name: "Download" })).toBeVisible();
+  await expect(attachment.getByText("Thanks. Looks good.", { exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["avatar", "group", "header-and-footer", "actions", "attachment"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#attachment code")).toContainText("@/stylex/attachment");
+  const sxHero = page.locator('[aria-label="Basic preview"]');
+  await expect(sxHero.getByText("Deploying to prod real quick.", { exact: true })).toBeVisible();
+  await expect(sxHero.getByText("Oliver is typing...", { exact: true })).toBeVisible();
+});
+
 test("menubar sections match upstream variants in both renderers", async ({ page }) => {
   await page.goto("/docs/components/menubar");
   for (const id of ["checkbox", "radio", "submenu", "with-icons", "rtl"]) {

@@ -3011,7 +3011,7 @@
         "Checkbox",
         "Radio",
         "Submenu",
-        "Icons",
+        "With Icons",
         "RTL"
       ],
       "api": [
@@ -3183,9 +3183,12 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Incoming",
-        "Outgoing",
-        "Live recovery"
+        "Basic",
+        "Avatar",
+        "Group",
+        "Header and Footer",
+        "Actions",
+        "Attachment"
       ],
       "api": [
         {
