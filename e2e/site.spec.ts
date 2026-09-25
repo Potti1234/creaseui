@@ -3849,6 +3849,43 @@ test("marker sections match upstream variants in both renderers", async ({ page 
   await expect(sxLinks.getByText("You clicked the revert button", { exact: true })).toBeVisible();
 });
 
+test("separator sections match upstream variants in both renderers", async ({ page }) => {
+  await page.goto("/docs/components/separator");
+  for (const id of ["vertical", "menu", "list", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+
+  const hero = page.locator('[aria-label="Basic preview"]');
+  await expect(hero.getByText("The Foundation for your Design System", { exact: true })).toBeVisible();
+  await expect(hero.locator("[data-slot='separator']")).toHaveCount(1);
+
+  const vertical = page.locator("#vertical");
+  await expect(vertical.locator("[data-orientation='vertical']")).toHaveCount(2);
+  await expect(vertical.getByText("Source", { exact: true })).toBeVisible();
+
+  const menu = page.locator("#menu");
+  await expect(menu.getByText("Settings", { exact: true })).toBeVisible();
+  await expect(menu.getByText("Profile & security", { exact: true })).toBeVisible();
+
+  const list = page.locator("#list");
+  await expect(list.locator("dl")).toHaveCount(3);
+  await expect(list.locator("[data-orientation='horizontal']")).toHaveCount(2);
+  await expect(list.getByText("Value 3", { exact: true })).toBeVisible();
+
+  const rtl = page.locator("#rtl");
+  await expect(rtl.locator("[dir='rtl']").first()).toBeVisible();
+  await expect(rtl.getByText("الأساس لنظام التصميم الخاص بك", { exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["vertical", "menu", "list", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  const sxList = page.locator("#list");
+  await expect(sxList.locator("dl")).toHaveCount(3);
+  const sxRtl = page.locator("#rtl");
+  await expect(sxRtl.locator("[dir='rtl']").first()).toBeVisible();
+});
+
 test("native-select sections match upstream variants in both renderers", async ({ page }) => {
   await page.goto("/docs/components/native-select");
   for (const id of ["groups", "disabled", "invalid", "rtl"]) {
