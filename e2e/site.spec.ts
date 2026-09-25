@@ -3708,6 +3708,55 @@ test("item sections match upstream variants in both renderers", async ({ page })
   await page.keyboard.press("Escape");
 });
 
+test("kbd sections match upstream variants in both renderers", async ({ page }) => {
+  await page.goto("/docs/components/kbd");
+  for (const id of ["group", "button", "tooltip", "input-group", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+
+  const hero = page.locator('[aria-label="Basic preview"]');
+  await expect(hero.locator("[data-slot='kbd-group']")).toHaveCount(2);
+  await expect(hero.getByText("⌘", { exact: true })).toBeVisible();
+
+  const group = page.locator("#group");
+  await expect(group.getByText("Ctrl + B", { exact: true })).toBeVisible();
+  await expect(group.getByText("Ctrl + K", { exact: true })).toBeVisible();
+  await expect(group.getByText(/to open the command palette/)).toBeVisible();
+
+  const button = page.locator("#button");
+  const accept = button.getByRole("button", { name: /Accept/ });
+  await expect(accept).toBeVisible();
+  await expect(accept.locator("kbd")).toHaveText("⏎");
+
+  const tooltip = page.locator("#tooltip");
+  const save = tooltip.getByRole("button", { name: "Save" });
+  await save.hover();
+  await expect(page.locator("[data-slot='tooltip-content']").getByText(/Save Changes/)).toBeVisible();
+  await page.locator("body").hover({ position: { x: 5, y: 5 } });
+
+  const inputGroup = page.locator("#input-group");
+  const search = inputGroup.getByPlaceholder("Search...");
+  await expect(search).toBeVisible();
+  await search.fill("quick");
+  await expect(search).toHaveValue("quick");
+  await expect(inputGroup.locator("[data-align='inline-end'] kbd").first()).toBeVisible();
+
+  const rtl = page.locator("#rtl");
+  await expect(rtl.locator("div[dir='rtl']").first()).toBeVisible();
+  await expect(rtl.getByText("⌃", { exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["group", "button", "tooltip", "input-group", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#group code")).toContainText("@/stylex/kbd");
+  await expect(page.locator("#button").getByRole("button", { name: /Accept/ })).toBeVisible();
+  const sxSearch = page.locator("#input-group").getByPlaceholder("Search...");
+  await sxSearch.fill("quick");
+  await expect(sxSearch).toHaveValue("quick");
+  await expect(page.locator("#rtl").locator("div[dir='rtl']").first()).toBeVisible();
+});
+
 test("collapsible preserves controlled linkage, external changes, and disabled policy", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/docs/components/collapsible");

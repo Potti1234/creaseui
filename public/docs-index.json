@@ -2894,8 +2894,12 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Key",
-        "Shortcut"
+        "Basic",
+        "Group",
+        "Button",
+        "Tooltip",
+        "Input Group",
+        "RTL"
       ],
       "api": [
         {

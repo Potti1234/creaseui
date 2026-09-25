@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 29 done · 32 todo · 3 crease-only
+Current: 30 done · 31 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -48,7 +48,7 @@ Current: 29 done · 32 todo · 3 crease-only
 | `input-group` | 11 | Align<br>Align<br>Align<br>Align<br>Icon<br>Text<br>Button<br>Kbd<br>Dropdown<br>Spinner<br>Textarea<br>Custom Input<br>RTL | done |
 | `input-otp` | 10 | Pattern<br>Separator<br>Disabled<br>Controlled<br>Invalid<br>Four Digits<br>Alphanumeric<br>Form<br>RTL | done |
 | `item` | 17 | Variant<br>Size<br>Icon<br>Avatar<br>Image<br>Group<br>Header<br>Link<br>Dropdown<br>RTL | done |
-| `kbd` | 2 | Group<br>Button<br>Tooltip<br>Input Group<br>RTL | todo (missing: Group, Button, Tooltip, Input Group, RTL) |
+| `kbd` | 6 | Group<br>Button<br>Tooltip<br>Input Group<br>RTL | done |
 | `label` | 2 | Label in Field<br>RTL | todo (missing: Label in Field, RTL) |
 | `marker` | 3 | Variants<br>Status<br>Shimmer<br>Separator<br>Border<br>With Icon<br>Links and Buttons | todo (missing: Variants, Status, Shimmer, Links and Buttons) |
 | `menubar` | 6 | Checkbox<br>Radio<br>Submenu<br>With Icons<br>RTL | todo (missing: Checkbox, Radio, Submenu, With Icons, RTL) |

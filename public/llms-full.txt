@@ -795,7 +795,7 @@ A shadcn-styled Kbd component for Foldkit.
 
 Source: `src/ui/kbd.ts`
 
-Examples: Key, Shortcut
+Examples: Basic, Group, Button, Tooltip, Input Group, RTL
 
 - `kbd<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
 - `kbdGroup<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
