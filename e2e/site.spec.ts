@@ -4400,6 +4400,27 @@ test("message exposes live author metadata and parent-owned keyboard actions", a
 
 test("table preserves native captions, scoped headers, overflow, and empty rows", async ({ page }) => {
   await page.goto("/docs/components/table");
+  await expect(page.locator('[aria-label="Basic preview"]')).toBeVisible();
+  await expect(page.locator('[aria-label="Basic preview"]').getByRole("cell", { name: "INV007" })).toBeVisible();
+  await expect(page.locator('[aria-label="Basic preview"]').getByRole("cell", { name: "$2,500.00" })).toBeVisible();
+
+  const footer = page.locator("#footer").getByRole("table", { name: "A list of your recent invoices." });
+  await expect(footer.getByRole("cell", { name: "INV001" })).toBeVisible();
+  await expect(footer.getByRole("cell", { name: "INV007" })).toHaveCount(0);
+
+  const actions = page.locator("#actions");
+  await expect(actions.getByRole("cell", { name: "Mechanical Keyboard" })).toBeVisible();
+  await actions.getByRole("button", { name: "Open menu" }).nth(2).click();
+  const menu = page.getByRole("menu");
+  await expect(menu.getByRole("menuitem", { name: "Edit" })).toBeVisible();
+  await expect(menu.getByRole("menuitem", { name: "Duplicate" })).toBeVisible();
+  await expect(menu.getByRole("menuitem", { name: "Delete" })).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  const rtl = page.locator("#rtl [dir='rtl']");
+  await expect(rtl).toBeVisible();
+  await expect(rtl.getByRole("cell", { name: "مدفوع" }).first()).toBeVisible();
+
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
   await expect(page.locator("#component-inventory")).toBeVisible();
   await expect(page.locator("#footer")).toBeVisible();

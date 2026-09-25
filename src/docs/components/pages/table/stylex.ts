@@ -1,3 +1,274 @@
-import type { HtmlBuilder } from 'foldkit/html'; import * as stylex from '@stylexjs/stylex'; import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'; import { tableFixtures, tableRows } from '@/docs/components/pages/table/shared'; import * as Table from '@/stylex/table';
-const styles = stylex.create({ table: { maxWidth: '36rem' }, dense: { minWidth: '44rem' }, right: { display: 'block', textAlign: 'right' }, empty: { paddingBlock: '2rem', color: 'var(--muted-foreground)', display: 'block', textAlign: 'center', } });
-export const tableStyleXPreview: StyleXExamplePreviewProvider = <Msg>(index: number, _model: unknown, _onMessageJson: (messageJson: string) => Msg, h: HtmlBuilder<Msg>) => { const f = tableFixtures[index] ?? tableFixtures[0]; if (f.title === 'Component Inventory') return Table.table({ layoutStyle: styles.table, children: [Table.tableCaption({ children: ['Foldkit ownership by component.'] }, h), Table.tableHeader({ children: [Table.tableRow({ children: [Table.tableHead({ children: ['Component'] }, h), Table.tableHead({ children: ['State'] }, h)] }, h)] }, h), Table.tableBody({ children: tableRows.map(([name, state]) => Table.tableRow({ children: [Table.tableHead({ scope: 'row', children: [name] }, h), Table.tableCell({ children: [state] }, h)] }, h)) }, h)] }, h); if (f.title === 'Footer') return Table.table({ layoutStyle: styles.table, children: [Table.tableBody({ children: [Table.tableRow({ children: [Table.tableCell({ children: ['Authored pages'] }, h), Table.tableCell({ children: [h.span([h.Class(stylex.props(styles.right).className ?? '')], ['22'])] }, h)] }, h)] }, h), Table.tableFooter({ children: [Table.tableRow({ children: [Table.tableCell({ children: ['Total routes'] }, h), Table.tableCell({ children: [h.span([h.Class(stylex.props(styles.right).className ?? '')], ['65'])] }, h)] }, h)] }, h)] }, h); if (f.title === 'Dense overflow') return Table.table({ layoutStyle: styles.dense, children: [Table.tableCaption({ children: ['Deployment inventory with intentionally wide columns.'] }, h), Table.tableHeader({ children: [Table.tableRow({ children: ['Service', 'Owner', 'Region', 'Status', 'Last deployment'].map(label => Table.tableHead({ children: [label] }, h)) }, h)] }, h), Table.tableBody({ children: [Table.tableRow({ children: [Table.tableHead({ scope: 'row', children: ['Documentation'] }, h), ...['Platform', 'Europe', 'Healthy', 'Today at 10:42'].map(value => Table.tableCell({ children: [value] }, h))] }, h)] }, h)] }, h); return Table.table({ layoutStyle: styles.table, children: [Table.tableCaption({ children: ['Filtered component inventory.'] }, h), Table.tableHeader({ children: [Table.tableRow({ children: [Table.tableHead({ children: ['Component'] }, h), Table.tableHead({ children: ['State'] }, h)] }, h)] }, h), Table.tableBody({ children: [Table.tableRow({ children: [Table.tableCell({ colspan: 2, children: [h.span([h.Class(stylex.props(styles.empty).className ?? '')], ['No components match this filter.'])] }, h)] }, h)] }, h)] }, h); };
+import * as stylex from '@stylexjs/stylex';
+import type { Html, HtmlBuilder } from 'foldkit/html';
+
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import {
+  actionRows,
+  invoices,
+  rtlInvoices,
+  tableFixtures,
+  tableRows,
+  type TableFixture,
+} from '@/docs/components/pages/table/shared';
+import * as DropdownMenu from '@/stylex/dropdown-menu';
+import * as Icon from '@/lib/icon';
+import * as Table from '@/stylex/table';
+
+const styles = stylex.create({
+  table: { maxWidth: '36rem' },
+  invoiceHead: { width: '6.25rem' },
+  medium: { fontWeight: 500 },
+  right: { display: 'block', textAlign: 'right' },
+  dense: { minWidth: '44rem' },
+  empty: {
+    paddingBlock: '2rem',
+    color: 'var(--muted-foreground)',
+    display: 'block',
+    textAlign: 'center',
+  },
+  menuCell: { display: 'flex', justifyContent: 'flex-end' },
+  iconTrigger: { height: '2rem', width: '2rem', },
+  triggerContent: { alignItems: 'center', display: 'inline-flex', },
+  srOnly: {
+    margin: '-1px',
+    padding: 0,
+    borderWidth: 0,
+    overflow: 'hidden',
+    clip: 'rect(0, 0, 0, 0)',
+    position: 'absolute',
+    whiteSpace: 'nowrap',
+    height: '1px',
+    width: '1px',
+  },
+});
+
+interface TablePreviewShape {
+  readonly menus: Readonly<Record<string, DropdownMenu.Model>>;
+}
+
+const rightText = <Msg>(content: string, h: HtmlBuilder<Msg>): Html =>
+  h.span([h.Class(stylex.props(styles.right).className ?? '')], [content]);
+
+const medium = <Msg>(content: string, h: HtmlBuilder<Msg>): Html =>
+  h.span([h.Class(stylex.props(styles.medium).className ?? '')], [content]);
+
+const invoiceTable = <Msg>(
+  fixture: TableFixture,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const rtl = fixture.kind === 'rtl';
+  const rows = rtl ? rtlInvoices : invoices;
+  const sliced = fixture.kind === 'footer' ? rows.slice(0, 3) : rows;
+  const heads = rtl
+    ? ['الفاتورة', 'الحالة', 'الطريقة', 'المبلغ']
+    : ['Invoice', 'Status', 'Method', 'Amount'];
+  const caption = rtl
+    ? 'قائمة بفواتيرك الأخيرة.'
+    : 'A list of your recent invoices.';
+  const table = Table.table({
+    layoutStyle: styles.table,
+    children: [
+      Table.tableCaption({ children: [caption] }, h),
+      Table.tableHeader({
+        children: [
+          Table.tableRow({
+            children: [
+              Table.tableHead({ layoutStyle: styles.invoiceHead, children: [heads[0] ?? 'Invoice'] }, h),
+              Table.tableHead({ children: [heads[1] ?? 'Status'] }, h),
+              Table.tableHead({ children: [heads[2] ?? 'Method'] }, h),
+              Table.tableHead({ children: [rightText(heads[3] ?? 'Amount', h)] }, h),
+            ],
+          }, h),
+        ],
+      }, h),
+      Table.tableBody({
+        children: sliced.map(([invoice, status, amount, method]) =>
+          Table.tableRow({
+            children: [
+              Table.tableCell({ children: [medium(invoice, h)] }, h),
+              Table.tableCell({ children: [status] }, h),
+              Table.tableCell({ children: [method] }, h),
+              Table.tableCell({ children: [rightText(amount, h)] }, h),
+            ],
+          }, h)),
+      }, h),
+      Table.tableFooter({
+        children: [
+          Table.tableRow({
+            children: [
+              Table.tableCell({ colspan: 3, children: [rtl ? 'المجموع' : 'Total'] }, h),
+              Table.tableCell({ children: [rightText('$2,500.00', h)] }, h),
+            ],
+          }, h),
+        ],
+      }, h),
+    ],
+  }, h);
+  return rtl ? h.div([h.Dir('rtl')], [table]) : table;
+};
+
+const actionsTable = <Msg>(
+  shape: TablePreviewShape,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  Table.table({
+    children: [
+      Table.tableHeader({
+        children: [
+          Table.tableRow({
+            children: [
+              Table.tableHead({ children: ['Product'] }, h),
+              Table.tableHead({ children: ['Price'] }, h),
+              Table.tableHead({ children: [rightText('Actions', h)] }, h),
+            ],
+          }, h),
+        ],
+      }, h),
+      Table.tableBody({
+        children: actionRows.map(([product, price], index) =>
+          Table.tableRow({
+            children: [
+              Table.tableCell({ children: [medium(product, h)] }, h),
+              Table.tableCell({ children: [price] }, h),
+              Table.tableCell({
+                children: [
+                  h.div([h.Class(stylex.props(styles.menuCell).className ?? '')], [
+                    DropdownMenu.dropdownMenu({
+                      model:
+                        shape.menus[`menu-${String(index)}`] ??
+                        DropdownMenu.init({ id: `menu-${String(index)}` }),
+                      toParentMessage: message =>
+                        onMessageJson(
+                          JSON.stringify({
+                            _tag: 'GotDocsTableMenuMessage',
+                            id: `menu-${String(index)}`,
+                            message,
+                          }),
+                        ),
+                      trigger: h.span(
+                        [h.Class(stylex.props(styles.triggerContent).className ?? '')],
+                        [
+                          Icon.icon('ellipsis', {}, h),
+                          h.span([h.Class(stylex.props(styles.srOnly).className ?? '')], ['Open menu']),
+                        ],
+                      ),
+                      triggerLayoutStyle: styles.iconTrigger,
+                      ariaLabel: `${product} menu`,
+                      align: 'end',
+                      items: ['Edit', 'Duplicate', 'Delete'],
+                      itemToConfig: item =>
+                        item === 'Delete'
+                          ? {
+                              label: item,
+                              variant: 'destructive',
+                              separatorBefore: true,
+                            }
+                          : { label: item },
+                    }, h),
+                  ]),
+                ],
+              }, h),
+            ],
+          }, h)),
+      }, h),
+    ],
+  }, h);
+
+export const tableStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+  exampleIndex: number,
+  model: unknown,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+) => {
+  const shape = model as TablePreviewShape;
+  const fixture = tableFixtures[exampleIndex] ?? tableFixtures[0];
+  switch (fixture.kind) {
+    case 'demo':
+    case 'footer':
+    case 'rtl':
+      return invoiceTable(fixture, h);
+    case 'actions':
+      return actionsTable(shape, onMessageJson, h);
+    case 'inventory':
+      return Table.table({
+        layoutStyle: styles.table,
+        children: [
+          Table.tableCaption({ children: ['Foldkit ownership by component.'] }, h),
+          Table.tableHeader({
+            children: [
+              Table.tableRow({
+                children: [
+                  Table.tableHead({ children: ['Component'] }, h),
+                  Table.tableHead({ children: ['State'] }, h),
+                ],
+              }, h),
+            ],
+          }, h),
+          Table.tableBody({
+            children: tableRows.map(([name, state]) =>
+              Table.tableRow({
+                children: [
+                  Table.tableHead({ scope: 'row', children: [medium(name, h)] }, h),
+                  Table.tableCell({ children: [state] }, h),
+                ],
+              }, h)),
+          }, h),
+        ],
+      }, h);
+    case 'dense':
+      return Table.table({
+        layoutStyle: styles.dense,
+        children: [
+          Table.tableCaption({ children: ['Deployment inventory with intentionally wide columns.'] }, h),
+          Table.tableHeader({
+            children: [
+              Table.tableRow({
+                children: ['Service', 'Owner', 'Region', 'Status', 'Last deployment'].map(label =>
+                  Table.tableHead({ children: [label] }, h)),
+              }, h),
+            ],
+          }, h),
+          Table.tableBody({
+            children: [
+              Table.tableRow({
+                children: [
+                  Table.tableHead({ scope: 'row', children: ['Documentation'] }, h),
+                  ...['Platform', 'Europe', 'Healthy', 'Today at 10:42'].map(value =>
+                    Table.tableCell({ children: [value] }, h)),
+                ],
+              }, h),
+            ],
+          }, h),
+        ],
+      }, h);
+    case 'empty':
+      return Table.table({
+        layoutStyle: styles.table,
+        children: [
+          Table.tableCaption({ children: ['Filtered component inventory.'] }, h),
+          Table.tableHeader({
+            children: [
+              Table.tableRow({
+                children: [
+                  Table.tableHead({ children: ['Component'] }, h),
+                  Table.tableHead({ children: ['State'] }, h),
+                ],
+              }, h),
+            ],
+          }, h),
+          Table.tableBody({
+            children: [
+              Table.tableRow({
+                children: [
+                  Table.tableCell({ colspan: 2, children: [
+                    h.span([h.Class(stylex.props(styles.empty).className ?? '')], ['No components match this filter.']),
+                  ] }, h),
+                ],
+              }, h),
+            ],
+          }, h),
+        ],
+      }, h);
+  }
+};
