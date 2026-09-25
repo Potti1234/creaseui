@@ -1561,52 +1561,63 @@ test("tooltip opens from keyboard focus and dismisses without moving focus", asy
 test("select persists a typed OutMessage selection", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/docs/components/select");
-  await page.getByRole("button", { name: "StyleX" }).click();
-  await expect(page.locator("#typed-selection")).toBeVisible();
-  await expect(page.locator("#grouped-fruit")).toBeVisible();
-  await expect(page.locator("#disabled-option")).toBeVisible();
-  await expect(page.locator("#read-only-rtl")).toBeVisible();
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  const example = page.locator("#typed-selection");
-  const trigger = example.getByRole("button", { name: "Fruit" });
-  const controls = await trigger.getAttribute("aria-controls");
-  expect(controls).toBeTruthy();
+
+  const hero = page.locator('[aria-label="Basic preview"]');
+  const trigger = hero.getByRole("button", { name: "Example select" });
   await trigger.click();
-  const listbox = page.locator(`#${controls}`);
+  const listbox = page.getByRole("listbox");
   await expect(listbox).toBeVisible();
-  await expect(listbox).toHaveAttribute("role", "listbox");
   await expect(listbox).toHaveCSS("transition-property", "none");
   await page.getByRole("option", { name: "Banana" }).click();
   await expect(trigger).toContainText("Banana");
   await expect(listbox).toBeHidden();
-  await expect(example.locator('input[type="hidden"][name="fruit"]')).toHaveValue(
-    "banana",
-  );
-  await expect(example.locator("code")).toContainText("maybeSelection");
-  await expect(example.locator("code")).toContainText(
-    "selection._tag === 'Selected'",
-  );
-  await expect(example.locator("code")).toContainText("@/stylex/select");
 
-  const disabledExample = page.locator("#disabled-option");
-  const disabledTrigger = disabledExample.getByRole("button", { name: "Fruit" });
-  await disabledTrigger.click();
-  const disabledOption = page.getByRole("option", { name: "Banana" });
-  await expect(disabledOption).toHaveAttribute("aria-disabled", "true");
-  await disabledOption.click({ force: true });
-  await expect(disabledTrigger).toContainText("Apple");
+  await expect(page.locator("#groups")).toBeVisible();
+  await expect(page.locator("#scrollable")).toBeVisible();
+  await expect(page.locator("#disabled")).toBeVisible();
+  await expect(page.locator("#invalid")).toBeVisible();
+  await expect(page.locator("#rtl")).toBeVisible();
 
+  const groups = page.locator("#groups");
+  await groups.getByRole("button", { name: "Example select" }).click();
+  await expect(page.getByRole("option", { name: "Carrot" })).toBeVisible();
+  await page.getByRole("option", { name: "Carrot" }).click();
+  await expect(
+    groups.getByRole("button", { name: "Example select" }),
+  ).toContainText("Carrot");
+
+  const scrollable = page.locator("#scrollable");
+  await scrollable.getByRole("button", { name: "Example select" }).click();
+  await expect(
+    page.getByRole("option", { name: "Argentina Time" }),
+  ).toBeAttached();
   await page.keyboard.press("Escape");
-  const readOnlyExample = page.locator("#read-only-rtl");
-  const readOnlyTrigger = readOnlyExample.getByRole("button", { name: "Fruit" });
-  await expect(readOnlyExample.locator('[data-slot="select"]')).toHaveAttribute(
-    "dir",
-    "rtl",
+
+  await expect(
+    page.locator("#disabled").getByRole("button", { name: "Example select" }),
+  ).toBeDisabled();
+
+  const invalid = page.locator("#invalid");
+  await expect(invalid.locator('[data-slot="field"]')).toHaveAttribute(
+    "data-invalid",
+    "true",
   );
-  await readOnlyTrigger.click();
-  await page.keyboard.press("End");
-  await page.keyboard.press("Enter");
-  await expect(readOnlyTrigger).toContainText("Apple");
+  await expect(invalid).toContainText("Please select a fruit.");
+
+  const rtl = page.locator("#rtl");
+  await rtl.getByRole("button", { name: "Example select" }).click();
+  await page.getByRole("option", { name: "جزر" }).click();
+  await expect(
+    rtl.getByRole("button", { name: "Example select" }),
+  ).toContainText("جزر");
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  const sxHero = page.locator('[aria-label="Basic preview"]');
+  const sxTrigger = sxHero.getByRole("button", { name: "Example select" });
+  await sxTrigger.click();
+  await page.getByRole("option", { name: "Pineapple" }).click();
+  await expect(sxTrigger).toContainText("Pineapple");
+  await expect(page.locator("#groups code")).toContainText("@/stylex/select");
 });
 
 test("tooltip rejects stale hover timers and pointer-induced touch focus", async ({
