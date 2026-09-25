@@ -11,15 +11,18 @@ import {
 } from '@/docs/components/pages/select/shared';
 import * as Field from '@/ui/field';
 import * as Select from '@/ui/select';
+import * as Switch from '@/ui/switch';
 
 const GotSelectPreviewMessage = defineMessageUnion({
   GotSelectPreviewMessage: { message: Select.Message },
+  ChangedAlignItem: { isChecked: S.Boolean },
 });
-type GotSelectPreviewMessage = typeof GotSelectPreviewMessage.Type;
+type SelectPreviewMessage = typeof GotSelectPreviewMessage.Type;
 const SelectPreviewModel = S.Struct({
   _docsPage: S.Literal('select'),
   select: Select.Model,
   maybeSelected: S.Option(S.String),
+  alignItem: S.Boolean,
 });
 type SelectPreviewModel = typeof SelectPreviewModel.Type;
 
@@ -28,7 +31,7 @@ const ExampleSelect = Select.create<string>();
 const fixtureView = (
   fixture: SelectFixture,
   model: SelectPreviewModel,
-  h: HtmlBuilder<GotSelectPreviewMessage>,
+  h: HtmlBuilder<SelectPreviewMessage>,
 ): Html => {
   const select = ExampleSelect.select({
     model: model.select,
@@ -52,10 +55,34 @@ const fixtureView = (
     ...(fixture.isDisabled === true ? { isDisabled: true } : {}),
     ...(fixture.kind === 'invalid' ? { isInvalid: true } : {}),
     ...(fixture.rtl === true ? { direction: 'rtl' as const } : {}),
+    ...(fixture.kind === 'alignItem'
+      ? { position: model.alignItem ? ('item-aligned' as const) : ('popper' as const) }
+      : {}),
     ...(fixture.triggerClass === undefined
       ? {}
       : { triggerClass: fixture.triggerClass }),
   }, h);
+  if (fixture.kind === 'alignItem') {
+    return Field.fieldGroup({
+      children: [
+        Field.field({
+          children: [
+            Switch.switchControl({
+              id: 'align-item',
+              isChecked: model.alignItem,
+              onToggle: isChecked =>
+                GotSelectPreviewMessage.ChangedAlignItem({ isChecked }),
+              label: 'Align Item',
+              description: 'Toggle to align the item with the trigger.',
+            }, h),
+          ],
+        }, h),
+        Field.field({
+          children: [select],
+        }, h),
+      ],
+    }, h);
+  }
   return fixture.kind === 'invalid'
     ? h.div([], [
         Field.field({
@@ -72,7 +99,7 @@ const fixtureView = (
 
 export const selectTailwindPreviewProgram = definePreviewProgram<
   SelectPreviewModel,
-  GotSelectPreviewMessage
+  SelectPreviewMessage
 >({
   Model: SelectPreviewModel,
   Message: GotSelectPreviewMessage,
@@ -82,9 +109,16 @@ export const selectTailwindPreviewProgram = definePreviewProgram<
       id: `docs-select-${String(index)}`,
       isAnimated: true,
     }),
-    maybeSelected: Option.none(),
+    maybeSelected:
+      (selectFixtures[index] ?? selectFixtures[0]).kind === 'alignItem'
+        ? Option.some('banana')
+        : Option.none(),
+    alignItem: true,
   }),
   update: (model, message) => {
+    if (message._tag === 'ChangedAlignItem') {
+      return { model: { ...model, alignItem: message.isChecked } };
+    }
     const {
       model: select,
       commands: selectCommands,

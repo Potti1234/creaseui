@@ -12,7 +12,7 @@ export type SelectFixture = Readonly<{
   title: string;
   description?: string;
   heroOnly?: boolean;
-  kind: 'basic' | 'invalid';
+  kind: 'basic' | 'invalid' | 'alignItem';
   placeholder: string;
   items: ReadonlyArray<SelectItem>;
   groups: boolean;
@@ -93,6 +93,14 @@ const rtlItems: ReadonlyArray<SelectItem> = [
   { value: 'spinach', label: 'سبانخ', group: 'الخضروات' },
 ];
 
+const alignItems: ReadonlyArray<SelectItem> = [
+  { value: 'apple', label: 'Apple' },
+  { value: 'banana', label: 'Banana' },
+  { value: 'blueberry', label: 'Blueberry' },
+  { value: 'grapes', label: 'Grapes' },
+  { value: 'pineapple', label: 'Pineapple' },
+];
+
 const wide = 'w-full max-w-48';
 
 export const selectFixtures: Readonly<[SelectFixture, ...Array<SelectFixture>]> = [
@@ -103,6 +111,16 @@ export const selectFixtures: Readonly<[SelectFixture, ...Array<SelectFixture>]> 
     placeholder: 'Select a fruit',
     items: fruitItems,
     groups: true,
+    triggerClass: wide,
+    triggerWidthStylex: 'triggerWide',
+  },
+  {
+    title: 'Align Item With Trigger',
+    description: 'Toggle to align the selected item over the trigger.',
+    kind: 'alignItem',
+    placeholder: 'Select a fruit',
+    items: alignItems,
+    groups: false,
     triggerClass: wide,
     triggerWidthStylex: 'triggerWide',
   },
@@ -203,9 +221,29 @@ const emitSource = (
     isDisabled: true,` : ''}${fixture.kind === 'invalid' ? `
     isInvalid: true,` : ''}${fixture.rtl === true ? `
     direction: 'rtl',` : ''}
-    ${isStyleX ? `triggerLayoutStyle: styles.${fixture.triggerWidthStylex ?? 'triggerWide'},` : `triggerClass: '${fixture.triggerClass ?? wide}',`}
+    ${isStyleX ? `triggerLayoutStyle: styles.${fixture.triggerWidthStylex ?? 'triggerWide'},` : `triggerClass: '${fixture.triggerClass ?? wide}',`}${fixture.kind === 'alignItem' ? `
+    position: model.alignItem ? 'item-aligned' : 'popper',` : ''}
   }, h)`;
-  const body = fixture.kind === 'invalid'
+  const body = fixture.kind === 'alignItem'
+    ? `    Field.fieldGroup({ children: [
+      Field.field({
+        children: [
+          Switch.switch({
+            id: 'align-item',
+            isChecked: model.alignItem,
+            onToggle: isChecked => ChangedAlignItem({ isChecked }),
+            label: 'Align Item',
+            description: 'Toggle to align the item with the trigger.',
+          }, h),
+        ],
+      }, h),
+      Field.field({
+        children: [
+          ${selectCall},
+        ],
+      }, h),
+    ] }, h)`
+    : fixture.kind === 'invalid'
     ? `    Field.field({
       isInvalid: true,
       children: [
@@ -223,7 +261,9 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
 ${isStyleX ? `import * as stylex from '@stylexjs/stylex'
 ` : ''}import * as Select from '@/${lib}/select'${fixture.kind === 'invalid' ? `
-import * as Field from '@/${lib}/field'` : ''}
+import * as Field from '@/${lib}/field'` : ''}${fixture.kind === 'alignItem' ? `
+import * as Field from '@/${lib}/field'
+import * as Switch from '@/${lib}/switch'` : ''}
 ${itemsSource(fixture.items)}
 ${isStyleX ? `const styles = stylex.create({
   triggerWide: { width: '100%', maxWidth: '12rem' },
@@ -234,18 +274,24 @@ ${isStyleX ? `const styles = stylex.create({
     model: `const ExampleSelect = Select.create<string>()
 export const Model = S.Struct({
   select: Select.Model,
-  maybeSelected: S.Option(S.String),
+  maybeSelected: S.Option(S.String),${fixture.kind === 'alignItem' ? `
+  alignItem: S.Boolean,` : ''}
 })
 export type Model = typeof Model.Type`,
     messages: `export const GotSelectMessage = taggedStruct('GotSelectMessage${tag}', {
   message: Select.Message,
+})${fixture.kind === 'alignItem' ? `
+export const ChangedAlignItem = taggedStruct('ChangedAlignItem${tag}', {
+  isChecked: S.Boolean,
 })
-export const Message = S.Union([GotSelectMessage])
+export const Message = S.Union([GotSelectMessage, ChangedAlignItem])` : `
+export const Message = S.Union([GotSelectMessage])`}
 export type Message = typeof Message.Type`,
     init: `export const init = (): Update.Return<Model, Message> => ({
   model: {
     select: Select.init({ id: 'select-${tag}' }),
-    maybeSelected: Option.none(),
+    maybeSelected: ${fixture.kind === 'alignItem' ? `Option.some('banana'),` : `Option.none(),`}${fixture.kind === 'alignItem' ? `
+    alignItem: true,` : ''}
   },
 })`,
     update: `export const update = (
@@ -271,7 +317,9 @@ export type Message = typeof Message.Type`,
         commands: Command.mapMessages(commands, next =>
           GotSelectMessage({ message: next })),
       }
-    }
+    }${fixture.kind === 'alignItem' ? `
+    case 'ChangedAlignItem${tag}':
+      return { model: { ...model, alignItem: message.isChecked } }` : ''}
   }
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({

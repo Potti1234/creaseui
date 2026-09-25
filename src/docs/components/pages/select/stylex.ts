@@ -10,6 +10,7 @@ import {
 } from '@/docs/components/pages/select/shared';
 import * as Field from '@/stylex/field';
 import * as Select from '@/stylex/select';
+import * as Switch from '@/stylex/switch';
 
 const styles = stylex.create({
   triggerWide: { maxWidth: '12rem', width: '100%', },
@@ -22,6 +23,7 @@ const Bundle = Select.create<string>();
 interface SelectPreviewShape {
   readonly select: Select.Model;
   readonly maybeSelected: Option.Option<string>;
+  readonly alignItem: boolean;
 }
 
 export const selectStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
@@ -56,6 +58,13 @@ export const selectStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       : {}),
     ...(fixture.isDisabled === true ? { isDisabled: true } : {}),
     ...(fixture.kind === 'invalid' ? { isInvalid: true } : {}),
+    ...(fixture.kind === 'alignItem'
+      ? {
+          position: preview.alignItem
+            ? ('item-aligned' as const)
+            : ('popper' as const),
+        }
+      : {}),
     ...(fixture.rtl === true ? { direction: 'rtl' as const } : {}),
     ...(fixture.triggerWidthStylex === undefined
       ? {}
@@ -64,6 +73,33 @@ export const selectStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             styles[fixture.triggerWidthStylex as keyof typeof styles],
         }),
   }, h);
+  if (fixture.kind === 'alignItem') {
+    return Field.fieldGroup({
+      children: [
+        Field.field({
+          children: [
+            Switch.switchControl(
+              {
+                id: 'align-item',
+                isChecked: preview.alignItem,
+                onToggle: isChecked =>
+                  onMessageJson(
+                    JSON.stringify({
+                      _tag: 'ChangedAlignItem',
+                      isChecked,
+                    }),
+                  ),
+                label: 'Align Item',
+                description: 'Toggle to align the item with the trigger.',
+              },
+              h,
+            ),
+          ],
+        }, h),
+        Field.field({ children: [select] }, h),
+      ],
+    }, h);
+  }
   return fixture.kind === 'invalid'
     ? h.div([], [
         Field.field({
