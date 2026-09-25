@@ -3789,6 +3789,7 @@
       ],
       "examples": [
         "Basic",
+        "Align Item With Trigger",
         "Groups",
         "Scrollable",
         "Disabled",

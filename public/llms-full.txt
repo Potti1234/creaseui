@@ -1037,7 +1037,7 @@ A shadcn-styled Select component for Foldkit.
 
 Source: `src/ui/select.ts`
 
-Examples: Basic, Groups, Scrollable, Disabled, Invalid, RTL
+Examples: Basic, Align Item With Trigger, Groups, Scrollable, Disabled, Invalid, RTL
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
