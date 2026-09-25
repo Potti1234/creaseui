@@ -3849,6 +3849,49 @@ test("marker sections match upstream variants in both renderers", async ({ page 
   await expect(sxLinks.getByText("You clicked the revert button", { exact: true })).toBeVisible();
 });
 
+test("native-select sections match upstream variants in both renderers", async ({ page }) => {
+  await page.goto("/docs/components/native-select");
+  for (const id of ["groups", "disabled", "invalid", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+
+  const hero = page.locator('[aria-label="Basic preview"]');
+  const heroSelect = hero.locator("select");
+  await expect(heroSelect.locator("option", { hasText: "Select status" })).toHaveCount(1);
+  await heroSelect.selectOption("in-progress");
+  await expect(heroSelect).toHaveValue("in-progress");
+
+  const groups = page.locator("#groups");
+  const groupsSelect = groups.locator("select");
+  await expect(groupsSelect.locator("optgroup", { has: page.locator("option[value='frontend']") })).toHaveCount(1);
+  await expect(groupsSelect.locator("optgroup[label='Engineering']")).toHaveCount(1);
+  await expect(groupsSelect.locator("optgroup[label='Sales']")).toHaveCount(1);
+  await expect(groupsSelect.locator("optgroup[label='Operations']")).toHaveCount(1);
+  await groupsSelect.selectOption("devops");
+  await expect(groupsSelect).toHaveValue("devops");
+
+  const disabled = page.locator("#disabled");
+  await expect(disabled.locator("select")).toBeDisabled();
+
+  const invalid = page.locator("#invalid");
+  await expect(invalid.locator("select")).toHaveAttribute("aria-invalid", "true");
+
+  const rtl = page.locator("#rtl");
+  await expect(rtl.locator("select")).toHaveAttribute("dir", "rtl");
+  await expect(rtl.locator("option", { hasText: "اختر الحالة" })).toHaveCount(1);
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["groups", "disabled", "invalid", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  const sxRtl = page.locator("#rtl");
+  await expect(sxRtl.locator("select")).toHaveAttribute("dir", "rtl");
+  const sxGroups = page.locator("#groups");
+  await expect(sxGroups.locator("select optgroup[label='Engineering']")).toHaveCount(1);
+  await sxGroups.locator("select").selectOption("backend");
+  await expect(sxGroups.locator("select")).toHaveValue("backend");
+});
+
 test("message sections match upstream variants in both renderers", async ({ page }) => {
   await page.goto("/docs/components/message");
   for (const id of ["avatar", "group", "header-and-footer", "actions", "attachment"]) {

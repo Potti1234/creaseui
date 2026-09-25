@@ -1,35 +1,37 @@
 import type { HtmlBuilder } from 'foldkit/html';
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { fruitOptions } from '@/docs/components/pages/native-select/shared';
+import {
+  nativeSelectFixtures,
+  nativeSelectSpecs,
+} from '@/docs/components/pages/native-select/shared';
 import * as NativeSelect from '@/stylex/native-select';
+
+interface NativeSelectPreviewShape {
+  readonly value: string;
+}
 
 export const nativeSelectStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
-) => NativeSelect.nativeSelect({
-  id: `docs-native-select-${String(exampleIndex)}`,
-  value: (model as { value: string }).value,
-  onChange: value => onMessageJson(JSON.stringify({
-    _tag: 'ChangedNativeSelectPreview',
-    value,
-  })),
-  label: exampleIndex === 0 ? 'Fruit' : 'Destination',
-  ...(exampleIndex === 0
-    ? {
-        description: 'Choose one for the delivery.',
-        options: fruitOptions,
-      }
-    : {
-        options: [{ value: 'apple', label: 'Local pickup' }],
-        groups: [{
-          label: 'Europe',
-          options: [
-            { value: 'banana', label: 'Berlin' },
-            { value: 'blueberry', label: 'Paris' },
-          ],
-        }],
-      }),
-}, h);
+) => {
+  const shape = model as NativeSelectPreviewShape;
+  const fixture = nativeSelectFixtures[exampleIndex] ?? nativeSelectFixtures[0];
+  const spec = nativeSelectSpecs[fixture.kind];
+  return NativeSelect.nativeSelect(
+    {
+      id: `docs-native-select-sx-${String(exampleIndex)}`,
+      value: shape.value,
+      onChange: value =>
+        onMessageJson(JSON.stringify({ _tag: 'ChangedValue', value })),
+      options: [{ value: '', label: spec.placeholder }, ...spec.options],
+      ...(spec.groups === undefined ? {} : { groups: spec.groups }),
+      ...(spec.isDisabled === true ? { isDisabled: true } : {}),
+      ...(spec.isInvalid === true ? { isInvalid: true } : {}),
+      ...(spec.direction === undefined ? {} : { direction: spec.direction }),
+    },
+    h,
+  );
+};
