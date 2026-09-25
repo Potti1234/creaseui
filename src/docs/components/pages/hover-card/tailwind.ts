@@ -1,40 +1,113 @@
 import { Schema as S } from 'effect';
 import { Command } from 'foldkit';
-import type { HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
-import { hoverCardFixtures } from '@/docs/components/pages/hover-card/shared';
+import {
+  hoverCardFixtures,
+  hoverCardRtlSides,
+  hoverCardSides,
+} from '@/docs/components/pages/hover-card/shared';
+import * as Button from '@/ui/button';
 import * as HoverCard from '@/ui/hover-card';
 
-const card = <Msg>(h: HtmlBuilder<Msg>) => h.div([h.Class('space-y-1')], [
-  h.h4([h.Class('font-semibold')], ['@foldkit']),
-  h.p([h.Class('text-sm')], ['Typed functional web applications without a virtual DOM.']),
-]);
-
-const GotHoverCardPreviewMessage = defineMessageUnion({
-  GotHoverCardPreviewMessage: { message: HoverCard.Message },
+const HoverCardPreviewMessage = defineMessageUnion({
+  GotHoverCardMessage: { index: S.Number, message: HoverCard.Message },
 });
-type GotHoverCardPreviewMessage = typeof GotHoverCardPreviewMessage.Type;
-const HoverCardPreviewModel = S.Struct({ _docsPage: S.Literal('hover-card'), hoverCard: HoverCard.Model });
+type HoverCardPreviewMessage = typeof HoverCardPreviewMessage.Type;
+
+const HoverCardPreviewModel = S.Struct({
+  _docsPage: S.Literal('hover-card'),
+  hoverCards: S.Array(HoverCard.Model),
+});
 type HoverCardPreviewModel = typeof HoverCardPreviewModel.Type;
 
-export const hoverCardTailwindPreviewProgram = definePreviewProgram<HoverCardPreviewModel, GotHoverCardPreviewMessage>({
+const basicCard = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div([h.Class('flex w-64 flex-col gap-0.5')], [
+    h.div([h.Class('font-semibold')], ['@nextjs']),
+    h.div([], ['The React Framework – created and maintained by @vercel.']),
+    h.div([h.Class('mt-1 text-xs text-muted-foreground')], ['Joined December 2021']),
+  ]);
+
+const sideCard = (side: string) => <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div([h.Class('flex flex-col gap-1')], [
+    h.h4([h.Class('font-medium')], ['Hover Card']),
+    h.p([], [`This hover card appears on the ${side} side of the trigger.`]),
+  ]);
+
+const rtlCard = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div([h.Dir('rtl'), h.Class('flex w-64 flex-col gap-1')], [
+    h.div([h.Class('font-semibold')], ['سماعات لاسلكية']),
+    h.div([h.Class('text-sm text-muted-foreground')], ['٩٩.٩٩ $']),
+  ]);
+
+export const hoverCardTailwindPreviewProgram = definePreviewProgram<HoverCardPreviewModel, HoverCardPreviewMessage>({
   Model: HoverCardPreviewModel,
-  Message: GotHoverCardPreviewMessage,
-  init: index => ({ _docsPage: 'hover-card', hoverCard: HoverCard.init({ id: `docs-hover-card-${String(index)}`, showDelay: 200, closeDelay: 150 }) }),
-  update: (model, message) => {
-    const { model: hoverCard, commands: hoverCardCommands__ } = HoverCard.update(model.hoverCard, message.message)
-    const commands = hoverCardCommands__ ?? []
-    return { model: { ...model, hoverCard }, commands: Command.mapMessages(commands, next => GotHoverCardPreviewMessage.GotHoverCardPreviewMessage({ message: next })) };
+  Message: HoverCardPreviewMessage,
+  init: index => {
+    const fixture = hoverCardFixtures[index] ?? hoverCardFixtures[0];
+    const count = fixture.kind === 'basic' ? 1 : hoverCardSides.length;
+    return {
+      _docsPage: 'hover-card',
+      hoverCards: Array.from({ length: count }, (_unused, cardIndex) =>
+        HoverCard.init({ id: `docs-hover-card-${String(index)}-${String(cardIndex)}`, showDelay: 10, closeDelay: 100 })),
+    };
   },
-  view: (index, model, h) => HoverCard.hoverCard({
-    model: model.hoverCard,
-    toParentMessage: message => GotHoverCardPreviewMessage.GotHoverCardPreviewMessage({ message }),
-    trigger: '@foldkit',
-    triggerClass: 'underline underline-offset-4',
-    ariaLabel: 'Preview the Foldkit profile',
-    side: (hoverCardFixtures[index] ?? hoverCardFixtures[0]).side,
-    content: card(h),
-  }, h),
+  update: (model, message) => {
+    const target = model.hoverCards[message.index];
+    if (target === undefined) {
+      return { model };
+    }
+    const { model: next, commands: nextCommands__ } = HoverCard.update(target, message.message);
+    const hoverCards = model.hoverCards.map((hoverCard, cardIndex) => (cardIndex === message.index ? next : hoverCard));
+    const commands = nextCommands__ ?? [];
+    return {
+      model: { ...model, hoverCards },
+      commands: Command.mapMessages(commands, nextMessage => HoverCardPreviewMessage.GotHoverCardMessage({ index: message.index, message: nextMessage })),
+    };
+  },
+  view: (index, model, h) => {
+    const fixture = hoverCardFixtures[index] ?? hoverCardFixtures[0];
+    const firstCard = model.hoverCards[0];
+    if (fixture.kind === 'basic' && firstCard !== undefined) {
+      return HoverCard.hoverCard({
+        model: firstCard,
+        toParentMessage: message => HoverCardPreviewMessage.GotHoverCardMessage({ index: 0, message }),
+        trigger: Button.button({ variant: 'link', children: ['Hover Here'] }, h),
+        ariaLabel: 'Preview the Next.js profile',
+        content: basicCard(h),
+      }, h);
+    }
+    if (fixture.kind === 'rtl') {
+      return h.div(
+        [h.Class('flex flex-wrap justify-center gap-2')],
+        model.hoverCards.map((hoverCard, cardIndex) => {
+          const entry = hoverCardRtlSides[cardIndex] ?? hoverCardRtlSides[0];
+          return HoverCard.hoverCard({
+            model: hoverCard,
+            toParentMessage: message => HoverCardPreviewMessage.GotHoverCardMessage({ index: cardIndex, message }),
+            trigger: Button.button({ variant: 'outline', children: [entry.label] }, h),
+            ariaLabel: `Hover card on the ${entry.side} side`,
+            side: entry.side,
+            content: rtlCard(h),
+          }, h);
+        }),
+      );
+    }
+    return h.div(
+      [h.Class('flex flex-wrap justify-center gap-2')],
+      model.hoverCards.map((hoverCard, cardIndex) => {
+        const side = hoverCardSides[cardIndex] ?? 'bottom';
+        return HoverCard.hoverCard({
+          model: hoverCard,
+          toParentMessage: message => HoverCardPreviewMessage.GotHoverCardMessage({ index: cardIndex, message }),
+          trigger: Button.button({ variant: 'outline', children: [side.charAt(0).toUpperCase() + side.slice(1)] }, h),
+          ariaLabel: `Hover card on the ${side} side`,
+          side,
+          content: sideCard(side)(h),
+        }, h);
+      }),
+    );
+  },
 });

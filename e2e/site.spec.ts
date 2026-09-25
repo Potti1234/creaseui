@@ -1431,51 +1431,84 @@ test("sheet renders every edge from view input with Dialog focus behavior", asyn
   }
 });
 
-test("hover card is available to keyboard focus and closes after blur", async ({
+test("hover-card sections match upstream variants in both renderers", async ({
   page,
 }) => {
-  await page.goto("/docs/components/hover-card");
-  await page.getByRole("button", { name: "StyleX" }).click();
-  await expect(page.locator("#profile-preview")).toBeVisible();
-  await expect(page.locator("#side-placement")).toBeVisible();
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  const example = page.locator("#profile-preview");
-  const trigger = example.getByRole("button", {
-    name: "Preview the Foldkit profile",
-  });
-  const panel = example.locator('[data-slot="hover-card-content"]');
-  await trigger.focus();
-  await expect(panel).toBeVisible();
-  await expect(trigger).toHaveAttribute("aria-expanded", "true");
-  await expect(example.locator("code")).toContainText("closeDelay");
-  await expect(example.locator("code")).toContainText("showDelay");
-  await expect(example.locator("code")).toContainText("@/stylex/hover-card");
-  await page.keyboard.press("Escape");
-  await expect(panel).toBeHidden();
-  await expect(trigger).toBeFocused();
-  await page.getByRole("link", { name: "crease/ui" }).focus();
-  await expect(panel).toBeHidden({ timeout: 2_000 });
-});
-
-test("hover card survives pointer crossing and supports touch fallback", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/docs/components/hover-card");
-  await page.getByRole("button", { name: "StyleX" }).click();
-  const example = page.locator("#profile-preview");
-  const trigger = example.getByRole("button", { name: "Preview the Foldkit profile" });
-  const panel = example.locator('[data-slot="hover-card-content"]');
 
-  await trigger.hover();
-  await expect(panel).toBeVisible();
-  await expect(panel).toHaveCSS("transition-property", "none");
-  await panel.hover();
+  const hero = page.locator('[aria-label="Basic preview"]');
+  const heroTrigger = hero.getByRole("button", {
+    name: "Preview the Next.js profile",
+  });
+  await expect(heroTrigger).toBeVisible();
+  await heroTrigger.focus();
+  const heroPanel = hero.locator('[data-slot="hover-card-content"]');
+  await expect(heroPanel).toBeVisible();
+  await expect(heroTrigger).toHaveAttribute("aria-expanded", "true");
+  await expect(heroPanel).toContainText("@nextjs");
+  await expect(heroPanel).toContainText("Joined December 2021");
+  await page.keyboard.press("Escape");
+  await expect(heroPanel).toBeHidden();
+  await expect(heroTrigger).toBeFocused();
+
+  const sides = page.locator("#sides");
+  await expect(sides).toBeVisible();
+  for (const side of ["Left", "Top", "Bottom", "Right"] as const) {
+    await expect(
+      sides.getByRole("button", { name: `Hover card on the ${side.toLowerCase()} side`, exact: true }),
+    ).toBeVisible();
+  }
+  await sides
+    .getByRole("button", { name: "Hover card on the right side", exact: true })
+    .hover();
+  const sidePanel = sides.locator('[data-slot="hover-card-content"]');
+  await expect(sidePanel).toBeVisible();
+  await expect(sidePanel).toContainText("right side of the trigger");
+  await sidePanel.hover();
   await page.waitForTimeout(200);
-  await expect(panel).toBeVisible();
+  await expect(sidePanel).toBeVisible();
   await page.mouse.move(0, 0);
-  await expect(panel).toBeHidden({ timeout: 2_000 });
+  await expect(sidePanel).toBeHidden({ timeout: 2_000 });
 
-  await trigger.evaluate((element) => element.dispatchEvent(new PointerEvent("pointerdown", { pointerType: "touch", bubbles: true })));
-  await expect(panel).toBeVisible();
+  await sides
+    .getByRole("button", { name: "Hover card on the left side", exact: true })
+    .evaluate((element) =>
+      element.dispatchEvent(
+        new PointerEvent("pointerdown", { pointerType: "touch", bubbles: true }),
+      ),
+    );
+  await expect(sidePanel).toBeVisible();
+  await expect(sidePanel).toContainText("left side of the trigger");
+  await sides
+    .getByRole("button", { name: "Hover card on the left side", exact: true })
+    .evaluate((element) =>
+      element.dispatchEvent(
+        new PointerEvent("pointerdown", { pointerType: "touch", bubbles: true }),
+      ),
+    );
+  await expect(sidePanel).toBeHidden();
+
+  const rtl = page.locator("#rtl");
+  await expect(rtl).toBeVisible();
+  await expect(rtl.locator('[dir="rtl"]')).toHaveCount(0);
+  await rtl.getByRole("button", { name: "يسار", exact: true }).hover();
+  const rtlPanel = rtl.locator('[data-slot="hover-card-content"]');
+  await expect(rtlPanel).toBeVisible();
+  await expect(rtlPanel.locator('[dir="rtl"]')).toContainText("سماعات لاسلكية");
+  await expect(rtlPanel).toContainText("٩٩.٩٩ $");
+
+  await page.getByRole("button", { name: "StyleX" }).click();
+  const sxHero = page.locator('[aria-label="Basic preview"]');
+  await sxHero
+    .getByRole("button", { name: "Preview the Next.js profile" })
+    .focus();
+  const sxPanel = sxHero.locator('[data-slot="hover-card-content"]');
+  await expect(sxPanel).toBeVisible();
+  await expect(sxPanel).toHaveCSS("transition-property", "none");
+  await expect(page.locator("#sides")).toBeVisible();
+  await expect(page.locator("#rtl")).toBeVisible();
+  await expect(sxHero.locator("code")).toContainText("@/stylex/hover-card");
 });
 
 test("tooltip opens from keyboard focus and dismisses without moving focus", async ({
