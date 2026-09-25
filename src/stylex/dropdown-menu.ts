@@ -598,13 +598,13 @@ export const dropdownMenu = <Item extends string, Msg>(
                   cn(
                     CONTENT_CLASS,
                     styles.menuContent,
-                    ...(props.contentLayoutStyle === undefined ? [] : [className(props.contentLayoutStyle)]),
                     ...(anchorX !== undefined
                       ? []
                       : positionClass(
                           props.side ?? 'bottom',
                           props.align ?? 'start',
                         )),
+                    ...(props.contentLayoutStyle === undefined ? [] : [className(props.contentLayoutStyle)]),
                   ),
                 ),
               ],
