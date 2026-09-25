@@ -61,12 +61,13 @@ export type CalendarFixture = Readonly<{
   title: string;
   description: string;
   heroOnly?: boolean;
-  layout: 'single' | 'range' | 'presets' | 'time';
+  layout: 'single' | 'range' | 'presets' | 'time' | 'jalali';
   bordered?: boolean;
   card?: boolean;
   weekNumbers?: boolean;
   direction?: 'rtl';
   roomy?: boolean;
+  sectionId?: string;
   booked?: boolean;
   localized?: boolean;
 }>;
@@ -79,6 +80,13 @@ export const calendarFixtures: Readonly<Array<CalendarFixture>> = [
     heroOnly: true,
     layout: 'single',
     bordered: true,
+  },
+  {
+    title: 'Persian / Hijri / Jalali Calendar',
+    description:
+      'A Persian calendar — Jalali month grid via the shared conversion helpers.',
+    layout: 'jalali',
+    sectionId: 'persian-hijri-jalali-calendar',
   },
   {
     title: 'Basic',
@@ -364,7 +372,287 @@ ${parts.join('\n')}
 });`;
 };
 
+
+const jalaliSource = (
+  f: CalendarFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const isSx = renderer === 'stylex';
+  const dayButton = isSx
+    ? `const jalaliDayButton = (
+  cell: JalaliCell,
+  model: Model,
+  h: HtmlBuilder<Message>,
+) => {
+  const selected =
+    Option.isSome(model.selectedDay) && isSameDay(model.selectedDay.value, cell)
+  const today = isSameDay(model.today, cell)
+  return h.button(
+    [
+      h.Type('button'),
+      h.Class(
+        cx(
+          styles.day,
+          cell.inMonth ? styles.dayInMonth : styles.dayOutside,
+          today && styles.dayToday,
+          selected && styles.daySelected,
+        ),
+      ),
+      ...(selected ? [h.AriaCurrent('date')] : []),
+      h.OnClick(
+        Message.ClickedDay({
+          date: { year: cell.year, month: cell.month, day: cell.day },
+        }),
+      ),
+    ],
+    [faDigits(cell.day)],
+  )
+}`
+    : `const jalaliDayButton = (
+  cell: JalaliCell,
+  model: Model,
+  h: HtmlBuilder<Message>,
+) => {
+  const selected =
+    Option.isSome(model.selectedDay) && isSameDay(model.selectedDay.value, cell)
+  const today = isSameDay(model.today, cell)
+  return h.button(
+    [
+      h.Type('button'),
+      h.Class(
+        \`flex h-8 w-8 items-center justify-center rounded-md text-[0.8rem] transition-colors \${
+          selected
+            ? 'bg-primary text-primary-foreground'
+            : today
+              ? 'bg-accent text-accent-foreground'
+              : 'hover:bg-accent'
+        } \${cell.inMonth ? '' : 'text-muted-foreground opacity-50'}\`,
+      ),
+      ...(selected ? [h.AriaCurrent('date')] : []),
+      h.OnClick(
+        Message.ClickedDay({
+          date: { year: cell.year, month: cell.month, day: cell.day },
+        }),
+      ),
+    ],
+    [faDigits(cell.day)],
+  )
+}`;
+
+  const dayNameCell = isSx
+    ? `h.span([h.Class(cx(styles.dayName))], [dayName])`
+    : `h.span(
+              [
+                h.Class(
+                  'flex h-8 w-8 items-center justify-center text-[0.8rem] font-normal text-muted-foreground',
+                ),
+              ],
+              [dayName],
+            )`;
+
+  return foldkitApplication({
+    title: `Calendar — ${f.title}`,
+    imports: `import { Option, Schema as S } from 'effect'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
+import { type Document, type HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+
+import * as Button from '@/${isSx ? 'stylex' : 'ui'}/button'
+import * as Icon from '@/lib/icon'
+import {
+  FA_DAY_NAMES,
+  FA_MONTH_NAMES,
+  faDigits,
+  jalaliMonthCells,
+  toJalaali,
+  type JalaliCell,
+  type JalaliDate,
+} from '@/lib/jalali'
+
+// @/${isSx ? 'stylex' : 'ui'}/calendar is Gregorian-only — the Jalali grid
+// below implements the upstream Persian example via the conversion helpers.${isSx ? `
+import { className } from '@/stylex/style'
+import * as stylex from '@stylexjs/stylex'
+import type { StaticStyles } from '@stylexjs/stylex'
+
+const isStaticStyle = (value: unknown): value is StaticStyles =>
+  typeof value === 'object' && value !== null
+const cx = (...values: ReadonlyArray<unknown>): string =>
+  className(...values.filter(isStaticStyle))
+
+const styles = stylex.create({
+  container: {
+    borderColor: 'var(--border)',
+    borderRadius: '0.5rem',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    padding: '0.75rem',
+    width: 'fit-content',
+  },
+  header: { alignItems: 'center', display: 'flex', justifyContent: 'space-between' },
+  title: { fontSize: '0.875rem', fontWeight: 500 },
+  grid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(7, minmax(0, 1fr))',
+    marginTop: '0.5rem',
+  },
+  dayName: {
+    alignItems: 'center',
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    fontSize: '0.8rem',
+    height: '2rem',
+    justifyContent: 'center',
+    width: '2rem',
+  },
+  day: {
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    borderRadius: '0.375rem',
+    borderStyle: 'none',
+    cursor: 'pointer',
+    display: 'flex',
+    fontSize: '0.8rem',
+    height: '2rem',
+    justifyContent: 'center',
+    transitionProperty: 'background-color, color',
+    transitionDuration: '150ms',
+    width: '2rem',
+  },
+  dayInMonth: { color: 'var(--foreground)' },
+  dayOutside: { color: 'var(--muted-foreground)', opacity: 0.5 },
+  dayToday: { backgroundColor: 'var(--accent)', color: 'var(--accent-foreground)' },
+  daySelected: {
+    backgroundColor: 'var(--primary)',
+    color: 'var(--primary-foreground)',
+  },
+  icon: { height: '1rem', width: '1rem' },
+})` : ''}
+
+const JalaliDay = S.Struct({
+  year: S.Int,
+  month: S.Int,
+  day: S.Int,
+})`,
+    model: `export const Model = S.Struct({
+  viewYear: S.Int,
+  viewMonth: S.Int,
+  selectedDay: S.Option(JalaliDay),
+  today: JalaliDay,
+})
+export type Model = typeof Model.Type`,
+    messages: `import { defineMessageUnion } from 'foldkit/message'
+
+export const Message = defineMessageUnion({
+  ClickedDay: { date: JalaliDay },
+  PressedPreviousMonth: {},
+  PressedNextMonth: {},
+});
+export type Message = typeof Message.Type`,
+    init: `export const init = (): Update.Return<Model, Message> => {
+  const now = new Date()
+  return {
+    model: {
+      viewYear: 1404,
+      viewMonth: 3,
+      selectedDay: Option.some({ year: 1404, month: 3, day: 22 }),
+      today: toJalaali({
+        year: now.getFullYear(),
+        month: now.getMonth() + 1,
+        day: now.getDate(),
+      }),
+    },
+  }
+}`,
+    update: `export const update = (
+  model: Model,
+  message: Message,
+): Update.Return<Model, Message> => {
+  switch (message._tag) {
+    case 'ClickedDay':
+      return { model: { ...model, selectedDay: Option.some(message.date) } }
+    case 'PressedPreviousMonth':
+      return {
+        model: {
+          ...model,
+          viewYear:
+            model.viewMonth === 1 ? model.viewYear - 1 : model.viewYear,
+          viewMonth: model.viewMonth === 1 ? 12 : model.viewMonth - 1,
+        },
+      }
+    case 'PressedNextMonth':
+      return {
+        model: {
+          ...model,
+          viewYear:
+            model.viewMonth === 12 ? model.viewYear + 1 : model.viewYear,
+          viewMonth: model.viewMonth === 12 ? 1 : model.viewMonth + 1,
+        },
+      }
+  }
+}`,
+    view: `const isSameDay = (a: JalaliDate, b: JalaliDate): boolean =>
+  a.year === b.year && a.month === b.month && a.day === b.day
+
+${dayButton}
+
+const jalaliView = (model: Model, h: HtmlBuilder<Message>) => {
+  const cells = jalaliMonthCells(model.viewYear, model.viewMonth)
+  return h.div(
+    [h.Dir('rtl'), h.Class(${isSx ? 'cx(styles.container)' : `'rounded-lg border p-3 w-fit'`})],
+    [
+      h.div([h.Class(${isSx ? 'cx(styles.header)' : `'flex items-center justify-between'`})], [
+        Button.button(
+          {
+            variant: 'ghost',
+            size: 'icon',
+            ariaLabel: 'Previous month',
+            onClick: Message.PressedPreviousMonth(),
+            children: [Icon.chevronRight({ class: ${isSx ? 'cx(styles.icon)' : `'size-4'`} }, h)],
+          },
+          h,
+        ),
+        h.span(
+          [h.Class(${isSx ? 'cx(styles.title)' : `'text-sm font-medium'`})],
+          [
+            \`\${FA_MONTH_NAMES[model.viewMonth - 1] ?? ''} \${faDigits(model.viewYear)}\`,
+          ],
+        ),
+        Button.button(
+          {
+            variant: 'ghost',
+            size: 'icon',
+            ariaLabel: 'Next month',
+            onClick: Message.PressedNextMonth(),
+            children: [Icon.chevronLeft({ class: ${isSx ? 'cx(styles.icon)' : `'size-4'`} }, h)],
+          },
+          h,
+        ),
+      ]),
+      h.div(
+        [h.Class(${isSx ? 'cx(styles.grid)' : `'mt-2 grid grid-cols-7 gap-0'`})],
+        [
+          ...FA_DAY_NAMES.map(dayName =>
+            ${dayNameCell},
+          ),
+          ...cells.map(cell => jalaliDayButton(cell, model, h)),
+        ],
+      ),
+    ],
+  )
+}
+
+export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: 'Calendar — ${f.title}',
+  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+    jalaliView(model, h),
+  ]),
+})`,
+  });
+};
+
 const source = (f: CalendarFixture, renderer: 'tailwind' | 'stylex'): string => {
+  if (f.layout === 'jalali') return jalaliSource(f, renderer);
   const needs = needsFor(f);
   const tag = f.title.replaceAll(/[^a-zA-Z0-9]/g, '');
   const modelFields = [
@@ -513,5 +801,8 @@ export const calendarExamples = (
     title: fixture.title,
     description: fixture.description,
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
+    ...(fixture.sectionId === undefined
+      ? {}
+      : { sectionId: fixture.sectionId }),
     code: source(fixture, renderer),
   }));

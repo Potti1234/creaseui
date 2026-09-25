@@ -3043,6 +3043,7 @@ test("calendar sections mirror shadcn examples in both renderers", async ({
 }) => {
   await page.goto("/docs/components/calendar");
   for (const id of [
+    "persian-hijri-jalali-calendar",
     "basic",
     "range-calendar",
     "month-and-year-selector",
@@ -3055,6 +3056,17 @@ test("calendar sections mirror shadcn examples in both renderers", async ({
   ]) {
     await expect(page.locator(`[id="${id}"]`)).toBeVisible();
   }
+
+  const jalali = page.locator("#persian-hijri-jalali-calendar");
+  await expect(jalali.locator("[dir=rtl]")).toBeVisible();
+  await expect(jalali).toContainText("خرداد ۱۴۰۴");
+  await expect(jalali.locator("[aria-current=date]")).toContainText("۲۲");
+  await jalali.getByRole("button", { name: "Next month" }).click();
+  await expect(jalali).toContainText("تیر ۱۴۰۴");
+  await jalali.getByRole("button", { name: "Previous month" }).click();
+  await expect(jalali).toContainText("خرداد ۱۴۰۴");
+  await jalali.getByRole("button", { name: "۱۰", exact: true }).click();
+  await expect(jalali.locator("[aria-current=date]")).toContainText("۱۰");
 
   const basic = page
     .locator("#basic")
