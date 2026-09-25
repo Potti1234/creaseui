@@ -3757,6 +3757,57 @@ test("kbd sections match upstream variants in both renderers", async ({ page }) 
   await expect(page.locator("#rtl").locator("div[dir='rtl']").first()).toBeVisible();
 });
 
+test("label sections match upstream variants in both renderers", async ({ page }) => {
+  await page.goto("/docs/components/label");
+  for (const id of ["label-in-field", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+
+  const hero = page.locator('[aria-label="Basic preview"]');
+  const checkbox = hero.locator("[data-slot='checkbox']");
+  await expect(checkbox).toBeVisible();
+  await expect(hero.getByText("Accept terms and conditions", { exact: true })).toBeVisible();
+  await checkbox.click();
+  await expect(checkbox).toHaveAttribute("data-checked", "");
+
+  const field = page.locator("#label-in-field");
+  await expect(field.getByText("Payment Method", { exact: true })).toBeVisible();
+  await expect(field.getByText("Billing Address", { exact: true })).toBeVisible();
+  const name = field.locator("#checkout-card-name");
+  await expect(name).toHaveAttribute("required", "");
+  await name.fill("Test User");
+  await expect(name).toHaveValue("Test User");
+  const month = field.locator("[data-slot='select-trigger']").first();
+  await month.click();
+  await page.getByRole("option", { name: "06" }).click();
+  await expect(month).toContainText("06");
+  const sameAsShipping = field.locator("[data-slot='checkbox']").first();
+  await expect(sameAsShipping).toHaveAttribute("data-checked", "");
+  await sameAsShipping.click();
+  await expect(sameAsShipping).not.toHaveAttribute("data-checked", "");
+  const comments = field.locator("#checkout-comments");
+  await comments.fill("note");
+  await expect(comments).toHaveValue("note");
+  await expect(field.getByRole("button", { name: "Submit" })).toBeVisible();
+  await expect(field.getByRole("button", { name: "Cancel" })).toBeVisible();
+
+  const rtl = page.locator("#rtl");
+  await expect(rtl.locator("div[dir='rtl']").first()).toBeVisible();
+  await expect(rtl.getByText("قبول الشروط والأحكام", { exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["label-in-field", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#label-in-field code")).toContainText("@/stylex/label");
+  const sxField = page.locator("#label-in-field");
+  await expect(sxField.getByText("Payment Method", { exact: true })).toBeVisible();
+  const sxName = sxField.locator("#checkout-card-name");
+  await sxName.fill("Test User");
+  await expect(sxName).toHaveValue("Test User");
+  await expect(page.locator("#rtl").getByText("قبول الشروط والأحكام", { exact: true })).toBeVisible();
+});
+
 test("collapsible preserves controlled linkage, external changes, and disabled policy", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/docs/components/collapsible");

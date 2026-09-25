@@ -2926,8 +2926,9 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Input Label",
-        "Supporting Text"
+        "Basic",
+        "Label in Field",
+        "RTL"
       ],
       "api": [
         {

@@ -806,7 +806,7 @@ A shadcn-styled Label component for Foldkit.
 
 Source: `src/ui/label.ts`
 
-Examples: Input Label, Supporting Text
+Examples: Basic, Label in Field, RTL
 
 - `LabelProps = Readonly<{ for?: string; isRequired?: boolean; isDisabled?: boolean; class?: string; children: ReadonlyArray<Html | string>; }>` (type)
 - `label<Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html` (function)
