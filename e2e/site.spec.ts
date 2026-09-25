@@ -1516,12 +1516,12 @@ test("tooltip opens from keyboard focus and dismisses without moving focus", asy
 }) => {
   await page.goto("/docs/components/tooltip");
   await page.getByRole("button", { name: "StyleX" }).click();
-  await expect(page.locator("#delayed-label")).toBeVisible();
-  await expect(page.locator("#side-label")).toBeVisible();
-  await expect(page.locator("#disabled-trigger")).toBeVisible();
+  for (const id of ["side", "with-keyboard-shortcut", "disabled-button", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  const example = page.locator("#delayed-label");
-  const trigger = example.getByRole("button", { name: "Add item to library" });
+  const example = page.locator("#side");
+  const trigger = example.getByRole("button", { name: "Top", exact: true });
   await trigger.focus();
   const panel = page.locator('[data-slot="tooltip-content"]');
   await expect(panel).toBeVisible();
@@ -1590,8 +1590,8 @@ test("tooltip rejects stale hover timers and pointer-induced touch focus", async
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/docs/components/tooltip");
   await page.getByRole("button", { name: "StyleX" }).click();
-  const example = page.locator("#delayed-label");
-  const trigger = example.getByRole("button", { name: "Add item to library" });
+  const example = page.locator("#side");
+  const trigger = example.getByRole("button", { name: "Top", exact: true });
   const panel = page.locator('[data-slot="tooltip-content"]');
 
   await trigger.hover();
@@ -1606,12 +1606,17 @@ test("tooltip rejects stale hover timers and pointer-induced touch focus", async
   await expect(panel).toBeHidden();
   await expect(example.locator("code")).toContainText("closeDelay");
 
-  const disabled = page.locator("#disabled-trigger").getByRole("button", {
-    name: "Unavailable action",
+  const disabled = page.locator("#disabled-button").getByRole("button", {
+    name: "Disabled",
+    exact: true,
   });
   await expect(disabled).toBeDisabled();
-  await disabled.hover();
-  await page.waitForTimeout(500);
+  const disabledTrigger = page.locator("#disabled-button [data-slot='tooltip-trigger']");
+  await disabledTrigger.hover();
+  await expect(panel).toBeVisible();
+  await expect(panel).toHaveText(/currently unavailable/u);
+  await page.mouse.move(0, 0);
+  await page.waitForTimeout(600);
   await expect(panel).toBeHidden();
 });
 

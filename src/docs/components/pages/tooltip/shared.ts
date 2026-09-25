@@ -1,60 +1,205 @@
 import type { DocsExample } from '@/docs/components/page-definition';
 import { foldkitApplication } from '@/docs/components/pages/authored-page';
 
-export const tooltipFixtures = [
-  { title: 'Delayed label', description: 'The complete application maps the primitive’s delayed-show Command through its parent Message.', side: 'top', showArrow: true, isDisabled: false, ariaLabel: 'Add item to library' },
-  { title: 'Side label', description: 'Placement and arrow visibility are view inputs; the child lifecycle remains unchanged.', side: 'right', showArrow: false, isDisabled: false, ariaLabel: 'Add item to library' },
-  { title: 'Disabled trigger', description: 'A disabled trigger exposes native disabled semantics and never starts tooltip timers.', side: 'top', showArrow: true, isDisabled: true, ariaLabel: 'Unavailable action' },
-] as const;
+export interface TooltipTipSpec {
+  readonly id: string;
+  readonly label: string;
+  readonly side?: 'top' | 'right' | 'bottom' | 'left';
+  readonly isDisabled?: boolean;
+  readonly iconTrigger?: boolean;
+  readonly kbd?: string;
+}
 
-const source = (fixture: (typeof tooltipFixtures)[number], renderer: 'tailwind' | 'stylex'): string => {
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
+export type TooltipKind = 'demo' | 'sides' | 'kbd' | 'disabled' | 'rtl';
+
+export interface TooltipFixture {
+  readonly title: string;
+  readonly description?: string;
+  readonly heroOnly?: boolean;
+  readonly kind: TooltipKind;
+  readonly content: string;
+  readonly tips: ReadonlyArray<TooltipTipSpec>;
+}
+
+const sideTips = (
+  labels: Readonly<[string, string, string, string]>,
+  prefix: string,
+): ReadonlyArray<TooltipTipSpec> =>
+  (['left', 'top', 'bottom', 'right'] as const).map((side, index) => ({
+    id: `${prefix}-${side}`,
+    label: labels[index] ?? side,
+    side,
+  }));
+
+export const tooltipFixtures: Readonly<[TooltipFixture, ...Array<TooltipFixture>]> = [
+  {
+    title: 'Basic',
+    heroOnly: true,
+    kind: 'demo',
+    content: 'Add to library',
+    tips: [{ id: 'tip-hover', label: 'Hover', side: 'top' }],
+  },
+  {
+    title: 'Side',
+    description: 'Placement follows the side input per tooltip.',
+    kind: 'sides',
+    content: 'Add to library',
+    tips: sideTips(['Left', 'Top', 'Bottom', 'Right'], 'tip'),
+  },
+  {
+    title: 'With Keyboard Shortcut',
+    description: 'Content composes with other primitives such as Kbd.',
+    kind: 'kbd',
+    content: 'Save Changes',
+    tips: [{ id: 'tip-save', label: '', side: 'top', iconTrigger: true, kbd: 'S' }],
+  },
+  {
+    title: 'Disabled Button',
+    description: 'A span trigger explains why the action is unavailable on hover.',
+    kind: 'disabled',
+    content: 'This feature is currently unavailable',
+    tips: [{ id: 'tip-disabled', label: 'Disabled', side: 'top', isDisabled: true }],
+  },
+  {
+    title: 'RTL',
+    description: 'Side labels and content mirror in right-to-left contexts.',
+    kind: 'rtl',
+    content: 'إضافة إلى المكتبة',
+    tips: sideTips(['يسار', 'أعلى', 'أسفل', 'يمين'], 'tip-rtl'),
+  },
+];
+
+const esc = (value: string): string => value.replace(/'/g, "\\'");
+
+const tipCall = (
+  tip: TooltipTipSpec,
+  fixture: TooltipFixture,
+  isStyleX: boolean,
+  indent: string,
+): string => {
+  const trigger = tip.iconTrigger === true
+    ? "Icon.icon('save', {}, h)"
+    : `'${esc(tip.label)}'`;
+  const content = tip.kbd === undefined
+    ? `'${esc(fixture.content)}'`
+    : `h.span([], ['${esc(fixture.content)} ', Kbd.kbd({ children: ['${tip.kbd}'] }, h)])`;
+  const triggerClass = isStyleX
+    ? tip.iconTrigger === true
+      ? '    triggerLayoutStyle: styles.iconTrigger,'
+      : ''
+    : tip.iconTrigger === true
+      ? "    triggerClass: 'inline-flex size-9 items-center justify-center rounded-md border',"
+      : "    triggerClass: 'w-fit rounded-md border px-3 py-2 text-sm capitalize',";
+  return `${indent}Tooltip.tooltip({
+    model: model.tooltips['${tip.id}'] ?? Tooltip.init({ id: '${tip.id}' }),
+    toParentMessage: message => GotTooltipMessage({ id: '${tip.id}', message }),
+    trigger: ${trigger},
+    content: ${content},
+    side: '${tip.side ?? 'top'}',
+${tip.isDisabled === true ? '    isDisabled: true,\n' : ''}${triggerClass === '' ? '' : `${triggerClass}\n`}  }, h)`;
+};
+
+const emitBody = (fixture: TooltipFixture, isStyleX: boolean): string => {
+  if (fixture.kind === 'sides' || fixture.kind === 'rtl') {
+    const wrapClass = isStyleX
+      ? 'className(styles.row)'
+      : "'flex flex-wrap gap-2'";
+    const dir = fixture.kind === 'rtl' ? ', h.Dir(\'rtl\')' : '';
+    return `  h.div([h.Class(${wrapClass})${dir}], [
+${fixture.tips.map(tip => tipCall(tip, fixture, isStyleX, '    ')).join(',\n')}
+  ])`;
+  }
+  const tip = fixture.tips[0];
+  return tipCall(tip === undefined ? { id: 'tip', label: 'Hover' } : tip, fixture, isStyleX, '  ');
+};
+
+const emitApplication = (
+  fixture: TooltipFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
   const isStyleX = renderer === 'stylex';
+  const base = isStyleX ? 'stylex' : 'ui';
+  const usesIcon = fixture.tips.some(tip => tip.iconTrigger === true);
+  const usesKbd = fixture.tips.some(tip => tip.kbd !== undefined);
+  const usesRow = fixture.kind === 'sides' || fixture.kind === 'rtl';
+  const stylesBlock = isStyleX
+    ? `\n\nconst styles = stylex.create({${
+      usesRow ? "\n  row: { display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }," : ''
+    }${
+      usesIcon
+        ? "\n  iconTrigger: { width: '2.25rem', height: '2.25rem' },"
+        : ''
+    }\n})`
+    : '';
   return foldkitApplication({
     title: `Tooltip — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-
-import * as Tooltip from '@/${isStyleX ? 'stylex' : 'ui'}/tooltip'`,
-    model: `export const Model = S.Struct({ tooltip: Tooltip.Model })
+import { taggedStruct } from 'foldkit/schema'
+${isStyleX ? "import * as stylex from '@stylexjs/stylex'\n" : ''}${isStyleX && usesRow ? "import { className } from '@/stylex/style'\n" : ''}${usesIcon ? `import * as Icon from '@/lib/icon'\n` : ''}${usesKbd ? `import * as Kbd from '@/${base}/kbd'\n` : ''}import * as Tooltip from '@/${base}/tooltip'${stylesBlock}`,
+    model: `export const Model = S.Struct({
+  tooltips: S.Record(S.String, Tooltip.Model),
+})
 export type Model = typeof Model.Type`,
-    messages: `import { taggedStruct } from 'foldkit/schema'
-export const GotTooltipMessage = taggedStruct('GotTooltipMessage${tag}', { message: Tooltip.Message });
+    messages: `export const GotTooltipMessage = taggedStruct('GotTooltipMessage', {
+  id: S.String,
+  message: Tooltip.Message,
+})
 export const Message = S.Union([GotTooltipMessage])
 export type Message = typeof Message.Type`,
-    init: `export const init = (): Update.Return<Model, Message> => ({ model: { tooltip: Tooltip.init({ id: 'library-tooltip', showDelay: 400, closeDelay: 100 }) } })`,
-    update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
+    init: `export const init = (): Update.Return<Model, Message> => ({
+  model: {
+    tooltips: {
+${fixture.tips
+  .map(
+    tip =>
+      `      '${tip.id}': Tooltip.init({ id: '${tip.id}', showDelay: 400, closeDelay: 100 }),`,
+  )
+  .join('\n')}
+    },
+  },
+})`,
+    update: `export const update = (
+  model: Model,
+  message: Message,
+): Update.Return<Model, Message> => {
   switch (message._tag) {
-    case 'GotTooltipMessage${tag}': {
-      const tooltipOp__ = Tooltip.update(model.tooltip, message.message);
-    const tooltip = tooltipOp__.model;
-    const commands = tooltipOp__.commands ?? [];
-      return { model: { ...model, tooltip }, commands: Command.mapMessages(commands, next => GotTooltipMessage({ message: next })) }
+    case 'GotTooltipMessage': {
+      const current = model.tooltips[message.id]
+      if (current === undefined) {
+        return { model }
+      }
+      const tooltipOp__ = Tooltip.update(current, message.message)
+      const commands = tooltipOp__.commands ?? []
+      return {
+        model: {
+          ...model,
+          tooltips: { ...model.tooltips, [message.id]: tooltipOp__.model },
+        },
+        commands: Command.mapMessages(commands, next =>
+          GotTooltipMessage({ id: message.id, message: next })),
+      }
     }
   }
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Tooltip — ${fixture.title}',
   body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
-    Tooltip.tooltip({
-      model: model.tooltip,
-      toParentMessage: message => GotTooltipMessage({ message }),
-      trigger: 'Add',
-      ${isStyleX ? '' : "triggerClass: 'rounded-md border px-3 py-2 text-sm',"}
-      ariaLabel: '${fixture.ariaLabel}',
-      content: 'Add to library',
-      side: '${fixture.side}',
-      showArrow: ${String(fixture.showArrow)},
-      isDisabled: ${String(fixture.isDisabled)},
-    }, h),
+${emitBody(fixture, isStyleX)}
   ]),
 })`,
   });
 };
 
-export const tooltipExamples = (renderer: 'tailwind' | 'stylex'): ReadonlyArray<DocsExample> => tooltipFixtures.map(fixture => ({
-  title: fixture.title,
-  description: fixture.description,
-  code: source(fixture, renderer),
-}));
+export const tooltipExamples = (
+  renderer: 'tailwind' | 'stylex',
+): ReadonlyArray<DocsExample> =>
+  tooltipFixtures.map(fixture => ({
+    title: fixture.title,
+    ...(fixture.description === undefined
+      ? {}
+      : { description: fixture.description }),
+    ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
+    code: emitApplication(fixture, renderer),
+  }));
