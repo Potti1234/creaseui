@@ -1312,11 +1312,11 @@ A shadcn-styled Toggle component for Foldkit.
 
 Source: `src/ui/toggle.ts`
 
-Examples: Timed notification, Sticky error
+Examples: Basic, Outline, With Text, Size, Disabled, RTL
 
 - `toggleVariants: value` (value)
 - `ToggleVariants = VariantProps<typeof toggleVariants>` (type)
-- `ToggleProps<Msg> = Readonly<{ isPressed: boolean; onToggle: Msg; variant?: ToggleVariants['variant']; size?: ToggleVariants['size']; children: ReadonlyArray<Html | string>; isDisabled?: boolean; id?: string; ariaLabel?: string; describedBy?: string; class?: s…` (type)
+- `ToggleProps<Msg> = Readonly<{ isPressed: boolean; onToggle: Msg; variant?: ToggleVariants['variant']; size?: ToggleVariants['size']; children: ReadonlyArray<Html | string>; isDisabled?: boolean; id?: string; ariaLabel?: string; describedBy?: string; direction…` (type)
 - `toggle<Msg>(props: ToggleProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Tooltip
