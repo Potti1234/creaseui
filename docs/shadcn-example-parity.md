@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 41 done · 20 todo · 3 crease-only
+Current: 42 done · 19 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -59,7 +59,7 @@ Current: 41 done · 20 todo · 3 crease-only
 | `pagination` | 4 | Simple<br>Icons Only<br>RTL | todo (missing: Simple, Icons Only, RTL) |
 | `popover` | 2 | Basic<br>Align<br>With Form<br>RTL | todo (missing: Basic, Align, With Form, RTL) |
 | `progress` | 7 | Label<br>Controlled<br>RTL | done |
-| `radio-group` | 4 | Description<br>Choice Card<br>Fieldset<br>Disabled<br>Invalid<br>RTL | todo (missing: Description, Choice Card, Fieldset, Disabled, Invalid, RTL) |
+| `radio-group` | 8 | Description<br>Choice Card<br>Fieldset<br>Disabled<br>Invalid<br>RTL | done |
 | `resizable` | 2 | Vertical<br>Handle<br>RTL | todo (missing: Vertical, Handle, RTL) |
 | `scroll-area` | 2 | Horizontal<br>RTL | todo (missing: RTL) |
 | `select` | 4 | Align Item With Trigger<br>Groups<br>Scrollable<br>Disabled<br>Invalid<br>RTL | todo (missing: Align Item With Trigger, Groups, Scrollable, Disabled, Invalid, RTL) |

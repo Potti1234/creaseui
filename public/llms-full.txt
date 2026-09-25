@@ -984,7 +984,7 @@ A shadcn-styled Radio Group component for Foldkit.
 
 Source: `src/ui/radio-group.ts`
 
-Examples: Timed notification, Sticky error
+Examples: Basic, Description, Choice Card, Fieldset, Disabled, Invalid, Read Only, RTL
 
 - `export { RadioGroupOption } from '@/lib/radio-group'` (re-export)
 - `RadioGroupProps<Msg> = RadioGroupBehaviorProps<Msg> & Readonly<{ class?: string; }>` (type)

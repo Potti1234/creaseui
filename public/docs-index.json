@@ -3586,8 +3586,14 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Basic",
+        "Description",
+        "Choice Card",
+        "Fieldset",
+        "Disabled",
+        "Invalid",
+        "Read Only",
+        "RTL"
       ],
       "api": [
         {
