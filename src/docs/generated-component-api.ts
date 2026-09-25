@@ -2006,7 +2006,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ItemProps",
       "kind": "type",
-      "signature": "ItemProps = SlotProps & Readonly<{ variant?: ItemVariants['variant']; size?: ItemVariants['size']; element?: 'div' | 'li' | 'article'; }>"
+      "signature": "ItemProps = SlotProps & Readonly<{ variant?: ItemVariants['variant']; size?: ItemVariants['size']; element?: 'div' | 'li' | 'article' | 'a'; href?: string; target?: string; rel?: string; }>"
     },
     {
       "name": "item",

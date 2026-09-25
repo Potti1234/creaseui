@@ -626,7 +626,7 @@ Source: [`src/ui/item.ts`](../src/ui/item.ts)
 | --- | --- | --- |
 | `itemVariants` | value | `itemVariants: value` |
 | `ItemVariants` | type | `ItemVariants = VariantProps<typeof itemVariants>` |
-| `ItemProps` | type | `ItemProps = SlotProps & Readonly<{ variant?: ItemVariants['variant']; size?: ItemVariants['size']; element?: 'div' \| 'li' \| 'article'; }>` |
+| `ItemProps` | type | `ItemProps = SlotProps & Readonly<{ variant?: ItemVariants['variant']; size?: ItemVariants['size']; element?: 'div' \| 'li' \| 'article' \| 'a'; href?: string; target?: string; rel?: string; }>` |
 | `item` | function | `item<Msg>(props: ItemProps, h: HtmlBuilder<Msg>): Html` |
 | `itemMediaVariants` | value | `itemMediaVariants: value` |
 | `ItemMediaVariants` | type | `ItemMediaVariants = VariantProps<typeof itemMediaVariants>` |

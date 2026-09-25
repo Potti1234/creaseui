@@ -769,11 +769,11 @@ A shadcn-styled Item component for Foldkit.
 
 Source: `src/ui/item.ts`
 
-Examples: Collection, Outlined, Header and Footer
+Examples: Basic, Variant, Size, Icon, Avatar, Image, Group, Header, Link, Dropdown, RTL
 
 - `itemVariants: value` (value)
 - `ItemVariants = VariantProps<typeof itemVariants>` (type)
-- `ItemProps = SlotProps & Readonly<{ variant?: ItemVariants['variant']; size?: ItemVariants['size']; element?: 'div' | 'li' | 'article'; }>` (type)
+- `ItemProps = SlotProps & Readonly<{ variant?: ItemVariants['variant']; size?: ItemVariants['size']; element?: 'div' | 'li' | 'article' | 'a'; href?: string; target?: string; rel?: string; }>` (type)
 - `item<Msg>(props: ItemProps, h: HtmlBuilder<Msg>): Html` (function)
 - `itemMediaVariants: value` (value)
 - `ItemMediaVariants = VariantProps<typeof itemMediaVariants>` (type)

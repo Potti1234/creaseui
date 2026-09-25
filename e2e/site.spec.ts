@@ -3615,6 +3615,99 @@ test("input-otp sections match upstream variants in both renderers", async ({ pa
   ).toBeVisible();
 });
 
+test("item sections match upstream variants in both renderers", async ({ page }) => {
+  await page.goto("/docs/components/item");
+  for (const id of [
+    "variant",
+    "size",
+    "icon",
+    "avatar",
+    "image",
+    "group",
+    "header",
+    "link",
+    "dropdown",
+    "rtl",
+  ]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+
+  const hero = page.locator('[aria-label="Basic preview"]');
+  await expect(hero.getByText("Basic Item", { exact: true })).toBeVisible();
+  await expect(hero.getByRole("button", { name: "Action" })).toBeVisible();
+  await expect(
+    hero.getByRole("link", { name: /Your profile has been verified\./ }),
+  ).toBeVisible();
+
+  const variant = page.locator("#variant");
+  await expect(variant.getByText("Default Variant", { exact: true })).toBeVisible();
+  await expect(variant.getByText("Outline Variant", { exact: true })).toBeVisible();
+  await expect(variant.getByText("Muted Variant", { exact: true })).toBeVisible();
+
+  const size = page.locator("#size");
+  await expect(size.locator("[data-size='default']")).toHaveCount(1);
+  await expect(size.locator("[data-size='sm']")).toHaveCount(1);
+  await expect(size.locator("[data-size='xs']")).toHaveCount(1);
+  await expect(size.getByText("Extra Small Size", { exact: true })).toBeVisible();
+
+  const icon = page.locator("#icon");
+  await expect(icon.getByText("Security Alert", { exact: true })).toBeVisible();
+  await expect(icon.getByRole("button", { name: "Review" })).toBeVisible();
+
+  const avatar = page.locator("#avatar");
+  await expect(avatar.getByText("Evil Rabbit", { exact: true })).toBeVisible();
+  await expect(avatar.getByRole("button", { name: "Invite", exact: true })).toBeVisible();
+  await expect(avatar.getByText("No Team Members", { exact: true })).toBeVisible();
+
+  const image = page.locator("#image");
+  await expect(image.getByText(/Midnight City Lights/)).toBeVisible();
+  await expect(image.getByText("3:45", { exact: true })).toBeVisible();
+  await expect(image.locator("img")).toHaveCount(3);
+
+  const group = page.locator("#group");
+  await expect(group.getByText("shadcn", { exact: true })).toBeVisible();
+  await expect(group.getByText("maxleiter@vercel.com", { exact: true })).toBeVisible();
+  await expect(group.getByRole("button", { name: "Invite evilrabbit" })).toBeVisible();
+
+  const header = page.locator("#header");
+  await expect(header.getByText("v0-1.5-sm", { exact: true })).toBeVisible();
+  await expect(header.getByText("v0-2.0-mini", { exact: true })).toBeVisible();
+  await expect(header.locator("[data-slot='item-header'] img")).toHaveCount(3);
+
+  const link = page.locator("#link");
+  await expect(
+    link.getByRole("link", { name: /Visit our documentation/ }),
+  ).toBeVisible();
+  const external = link.getByRole("link", { name: /External resource/ });
+  await expect(external).toHaveAttribute("target", "_blank");
+  await expect(external).toHaveAttribute("rel", "noopener noreferrer");
+
+  const dropdown = page.locator("#dropdown");
+  await dropdown.getByRole("button", { name: "Select" }).click();
+  await expect(page.getByRole("menu")).toBeVisible();
+  await expect(page.getByRole("menu").getByText("evilrabbit@vercel.com")).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  const rtl = page.locator("#rtl");
+  await expect(rtl.locator("div[dir='rtl']").first()).toBeVisible();
+  await expect(rtl.getByText("عنصر أساسي", { exact: true })).toBeVisible();
+  await expect(rtl.getByRole("button", { name: "إجراء" })).toBeVisible();
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["variant", "size", "icon", "avatar", "image", "group", "header", "link", "dropdown", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
+  await expect(page.locator("#variant code")).toContainText("@/stylex/item");
+  await expect(icon.getByRole("button", { name: "Review" })).toBeVisible();
+  await expect(rtl.getByText("عنصر أساسي", { exact: true })).toBeVisible();
+  const sxDropdown = page.locator("#dropdown");
+  await sxDropdown.getByRole("button", { name: "Select" }).click();
+  await expect(page.getByRole("menu")).toBeVisible();
+  await expect(page.getByRole("menu").getByText("shadcn@vercel.com")).toBeVisible();
+  await page.keyboard.press("Escape");
+});
+
 test("collapsible preserves controlled linkage, external changes, and disabled policy", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/docs/components/collapsible");

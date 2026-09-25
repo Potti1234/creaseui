@@ -2782,9 +2782,17 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Collection",
-        "Outlined",
-        "Header and Footer"
+        "Basic",
+        "Variant",
+        "Size",
+        "Icon",
+        "Avatar",
+        "Image",
+        "Group",
+        "Header",
+        "Link",
+        "Dropdown",
+        "RTL"
       ],
       "api": [
         {
@@ -2800,7 +2808,7 @@
         {
           "name": "ItemProps",
           "kind": "type",
-          "signature": "ItemProps = SlotProps & Readonly<{ variant?: ItemVariants['variant']; size?: ItemVariants['size']; element?: 'div' | 'li' | 'article'; }>"
+          "signature": "ItemProps = SlotProps & Readonly<{ variant?: ItemVariants['variant']; size?: ItemVariants['size']; element?: 'div' | 'li' | 'article' | 'a'; href?: string; target?: string; rel?: string; }>"
         },
         {
           "name": "item",
