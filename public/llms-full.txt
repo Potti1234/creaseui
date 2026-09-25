@@ -860,7 +860,7 @@ A shadcn-styled Message Scroller component for Foldkit.
 
 Source: `src/ui/message-scroller.ts`
 
-Examples: Jump to latest, Jump to beginning
+Examples: Anchoring Turns, Group Chat, Keeping Context Visible, Following the Live Edge, Opening Saved Threads, Loading Earlier Messages, Animating New Messages, Jumping to Messages, Tracking the Reader’s Position, Reading Scroll State
 
 - `Model: value` (value)
 - `Model = MessageScrollerBehavior.Model` (type)
@@ -875,7 +875,7 @@ Examples: Jump to latest, Jump to beginning
 - `messageScroller<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 - `messageScrollerViewport<Msg>(props: ChildrenProps & Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; }>, h: HtmlBuilder<Msg>): Html` (function)
 - `messageScrollerContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
-- `messageScrollerItem<Msg>(props: ChildrenProps & Readonly<{ scrollAnchor?: boolean }>, h: HtmlBuilder<Msg>): Html` (function)
+- `messageScrollerItem<Msg>(props: ChildrenProps & Readonly<{ scrollAnchor?: boolean; messageId?: string }>, h: HtmlBuilder<Msg>): Html` (function)
 - `messageScrollerButton<Msg>(props: Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; direction?: 'start' | 'end'; class?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Message

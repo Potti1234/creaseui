@@ -3140,8 +3140,16 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Jump to latest",
-        "Jump to beginning"
+        "Anchoring Turns",
+        "Group Chat",
+        "Keeping Context Visible",
+        "Following the Live Edge",
+        "Opening Saved Threads",
+        "Loading Earlier Messages",
+        "Animating New Messages",
+        "Jumping to Messages",
+        "Tracking the Reader’s Position",
+        "Reading Scroll State"
       ],
       "api": [
         {
@@ -3212,7 +3220,7 @@
         {
           "name": "messageScrollerItem",
           "kind": "function",
-          "signature": "messageScrollerItem<Msg>(props: ChildrenProps & Readonly<{ scrollAnchor?: boolean }>, h: HtmlBuilder<Msg>): Html"
+          "signature": "messageScrollerItem<Msg>(props: ChildrenProps & Readonly<{ scrollAnchor?: boolean; messageId?: string }>, h: HtmlBuilder<Msg>): Html"
         },
         {
           "name": "messageScrollerButton",

@@ -2301,7 +2301,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "messageScrollerItem",
       "kind": "function",
-      "signature": "messageScrollerItem<Msg>(props: ChildrenProps & Readonly<{ scrollAnchor?: boolean }>, h: HtmlBuilder<Msg>): Html"
+      "signature": "messageScrollerItem<Msg>(props: ChildrenProps & Readonly<{ scrollAnchor?: boolean; messageId?: string }>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "messageScrollerButton",

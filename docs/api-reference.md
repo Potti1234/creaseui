@@ -718,7 +718,7 @@ Source: [`src/ui/message-scroller.ts`](../src/ui/message-scroller.ts)
 | `messageScroller` | function | `messageScroller<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `messageScrollerViewport` | function | `messageScrollerViewport<Msg>(props: ChildrenProps & Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; }>, h: HtmlBuilder<Msg>): Html` |
 | `messageScrollerContent` | function | `messageScrollerContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
-| `messageScrollerItem` | function | `messageScrollerItem<Msg>(props: ChildrenProps & Readonly<{ scrollAnchor?: boolean }>, h: HtmlBuilder<Msg>): Html` |
+| `messageScrollerItem` | function | `messageScrollerItem<Msg>(props: ChildrenProps & Readonly<{ scrollAnchor?: boolean; messageId?: string }>, h: HtmlBuilder<Msg>): Html` |
 | `messageScrollerButton` | function | `messageScrollerButton<Msg>(props: Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; direction?: 'start' \| 'end'; class?: string; }>, h: HtmlBuilder<Msg>): Html` |
 
 ## Message
