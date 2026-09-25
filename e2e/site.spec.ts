@@ -4123,9 +4123,31 @@ test("collapsible preserves controlled linkage, external changes, and disabled p
   await expect(disabled).toHaveAttribute("aria-expanded", "false");
 });
 
-test("progress normalizes custom ranges and reduced-motion indeterminate state", async ({ page }) => {
+test("progress sections match upstream variants and normalize custom ranges", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/docs/components/progress");
+
+  const sectionIds = ["label", "controlled", "rtl", "determinate", "indeterminate", "narrow-range"];
+  for (const id of sectionIds) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+
+  const hero = page.locator('[aria-label="Basic preview"]');
+  await expect(hero.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "66");
+
+  const label = page.locator("#label");
+  await expect(label).toContainText("Upload progress");
+  await expect(label).toContainText("66%");
+  await expect(label.locator("#progress-upload")).toHaveAttribute("aria-valuenow", "66");
+
+  const controlled = page.locator("#controlled");
+  const controlledBar = controlled.getByRole("progressbar");
+  await expect(controlledBar).toHaveAttribute("aria-valuenow", "50");
+  await expect(controlled.locator("[data-slot='slider']")).toHaveCount(1);
+
+  const rtl = page.locator("#rtl");
+  await expect(rtl.locator("[dir='rtl']").first()).toBeVisible();
+  await expect(rtl).toContainText("٦٦%");
 
   const determinate = page.locator("#determinate").getByRole("progressbar", { name: "Upload progress" });
   await expect(determinate).toHaveAttribute("aria-valuemin", "0");
@@ -4144,7 +4166,7 @@ test("progress normalizes custom ranges and reduced-motion indeterminate state",
   expect(await narrow.evaluate(element => element.getBoundingClientRect().width)).toBeLessThanOrEqual(100);
 
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  for (const id of ["determinate", "indeterminate", "narrow-range"]) {
+  for (const id of sectionIds) {
     await expect(page.locator(`#${id}`)).toBeVisible();
   }
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
@@ -4155,6 +4177,10 @@ test("progress normalizes custom ranges and reduced-motion indeterminate state",
   await expect(indeterminate).not.toHaveAttribute("aria-valuenow", /.+/u);
   await expect(indeterminate.locator('[data-slot="progress-indicator"]')).toHaveCSS("animation-name", "none");
   expect(await narrow.evaluate(element => element.getBoundingClientRect().width)).toBeLessThanOrEqual(100);
+  const sxControlled = page.locator("#controlled");
+  await expect(sxControlled.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "50");
+  await expect(sxControlled.locator("[data-slot='slider']")).toHaveCount(1);
+  await expect(page.locator("#rtl [dir='rtl']").first()).toBeVisible();
 });
 
 test("skeleton and spinner expose explicit loading semantics with reduced motion", async ({ page }) => {
