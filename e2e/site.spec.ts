@@ -1469,7 +1469,7 @@ test("popover delegates disclosure commands and mirrors shadcn examples", async 
   await expect(example).toBeVisible();
   await expect(page.locator("#right-aligned")).toBeVisible();
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(example.locator("code")).toContainText("@/stylex/popover");
+  await expect(example.locator("code")).toContainText("@/stylex/date-picker");
   const trigger = example.getByRole("button", { name: "Open dimensions" });
   await trigger.click();
   // Foldkit's anchor layer portals positioned content outside the example article.
@@ -3152,52 +3152,87 @@ test("calendar sections mirror shadcn examples in both renderers", async ({
   ).toContainText("@/stylex/calendar");
 });
 
-test("date picker composes disclosure and calendar into one child model", async ({
+test("date picker covers every upstream section in both renderers", async ({
   page,
 }) => {
   const pageErrors: Array<string> = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
   await page.goto("/docs/components/date-picker");
-  const example = page.locator("#existing-value");
-  const input = example.getByLabel("Due date (YYYY-MM-DD)");
-  const hiddenInput = example.locator('input[name="dueDate"]');
-  await expect(hiddenInput).toHaveValue("2026-07-18");
-  await input.fill("2026-08-05");
-  await expect(hiddenInput).toHaveValue("2026-08-05");
-  await input.fill("2026-02-30");
-  await expect(example.getByRole("alert")).toContainText("YYYY-MM-DD");
-  await expect(hiddenInput).toHaveValue("2026-08-05");
-  await example.getByRole("button", { name: "Load saved date" }).click();
-  await expect(input).toHaveValue("2026-08-12");
-  await expect(hiddenInput).toHaveValue("2026-08-12");
-  const trigger = example.getByRole("button", { name: "Change due date" });
-  await trigger.click();
-  const panel = page.locator('[data-slot="popover-content"]');
-  await expect(panel).toHaveAttribute("role", "dialog");
-  await expect(panel).toContainText("August 2026");
-  if ((page.viewportSize()?.width ?? 1000) < 640) {
-    await expect(panel).toHaveCSS("position", "fixed");
-  }
-  const day = page
-    .locator('[data-slot="popover-content"]')
-    .getByRole("button", { name: "Thursday, August 20, 2026" });
-  await day.click();
-  await expect(trigger).toContainText("August 20, 2026");
-  await expect(input).toHaveValue("2026-08-20");
-  await expect(hiddenInput).toHaveValue("2026-08-20");
-  await expect(page.locator('[data-slot="popover-content"]')).toBeHidden();
-  await expect(example.locator("code")).toContainText("ClearedDate");
-  await expect(example.locator("code")).toContainText("Command.mapMessages");
-  await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  for (const id of ["existing-value", "empty-value"]) {
+  for (const id of [
+    "basic",
+    "range-picker",
+    "date-of-birth",
+    "input",
+    "time-picker",
+    "natural-language-picker",
+    "rtl",
+  ]) {
     await expect(page.locator(`#${id}`)).toBeVisible();
   }
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(example.locator("code")).toContainText("@/stylex/date-picker");
-  await expect(input).toHaveValue("2026-08-20");
-  await expect(hiddenInput).toHaveValue("2026-08-20");
-  await trigger.click();
-  await expect(page.locator('[data-slot="popover-content"]')).toContainText("August 2026");
+
+  // Hero demo: open the popover, pick a day, the trigger shows the selection.
+  const hero = page.getByRole("button", { name: "Pick a date" }).first();
+  await hero.click();
+  const heroPanel = page.locator('[data-slot="popover-content"]');
+  await heroPanel.getByRole("button", { name: /15, \d{4}/ }).click();
+  await expect(hero).toContainText(/15, \d{4}/);
+  await expect(heroPanel).toBeHidden();
+
+  // Range picker: seeded Jan 20 – Feb 9 2026; clicking resets then orders the pair.
+  const range = page.locator("#range-picker");
+  await range.getByRole("button", { name: /Jan 20, 2026/ }).click();
+  const rangePanel = page.locator('[data-slot="popover-content"]');
+  await rangePanel
+    .getByRole("button", { name: "Saturday, January 10, 2026" })
+    .click();
+  await rangePanel
+    .getByRole("button", { name: "Wednesday, January 28, 2026" })
+    .click();
+  await expect(range.getByRole("button", { name: /Jan 10, 2026/ })).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  // Input: seeded June 01, 2025; typing parses; ArrowDown opens the calendar.
+  const input = page.locator("#input");
+  const inputField = input.getByRole("textbox");
+  await expect(inputField).toHaveValue("June 01, 2025");
+  await inputField.fill("July 15, 2025");
+  await inputField.press("ArrowDown");
+  const inputPanel = page.locator('[data-slot="popover-content"]');
+  await inputPanel
+    .getByRole("button", { name: "Sunday, July 20, 2025" })
+    .click();
+  await expect(inputField).toHaveValue("July 20, 2025");
+  await expect(inputPanel).toBeHidden();
+
+  // Natural language picker: accepts phrases like "tomorrow".
+  const natural = page.locator("#natural-language-picker");
+  const naturalField = natural.getByRole("textbox");
+  await expect(naturalField).toHaveValue("In 2 days");
+  await naturalField.fill("tomorrow");
+  await naturalField.press("ArrowDown");
+  await expect(page.locator('[data-slot="popover-content"]')).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  // Time picker: date field plus a time input.
+  const time = page.locator("#time-picker");
+  await expect(time.locator('input[type="time"]')).toBeVisible();
+
+  // RTL: Arabic labels and dir=rtl inside the example.
+  const rtl = page.locator("#rtl");
+  await expect(rtl.getByRole("button", { name: /اختر/ })).toBeVisible();
+  await expect(rtl.locator('[dir="rtl"]').first()).toBeAttached();
+
+  // Code emits reference both renderers.
+  await expect(input.locator("code")).toContainText("@/ui/date-picker");
+  await expect(input.locator("code")).toContainText("PressedKeyInInput");
+
+  // StyleX renderer parity.
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await expect(inputField).toHaveValue("July 20, 2025");
+  await expect(range.getByRole("button", { name: /Jan 10, 2026/ })).toBeVisible();
+  await expect(input.locator("code")).toContainText("@/stylex/date-picker");
+  await inputField.press("ArrowDown");
+  await expect(page.locator('[data-slot="popover-content"]')).toBeVisible();
   await page.keyboard.press("Escape");
   await page.waitForTimeout(100);
   expect(pageErrors).toEqual([]);
