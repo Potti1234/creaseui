@@ -3289,11 +3289,29 @@ test("controlled helper pages own and update compact local preview state", async
   await expect(compact).toBeChecked();
 
   await page.goto("/docs/components/textarea");
-  const message = page
-    .locator("#message")
-    .getByRole("textbox", { name: "Message" });
+  const textareaSectionIds = ["field", "disabled", "invalid", "button", "rtl", "form-and-resize"];
+  for (const id of textareaSectionIds) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+
+  const textareaHero = page.locator('[aria-label="Basic preview"]');
+  const heroTextarea = textareaHero.getByRole("textbox");
+  await expect(heroTextarea).toHaveAttribute("placeholder", "Type your message here.");
+
+  const fieldSection = page.locator("#field");
+  await expect(fieldSection).toContainText("Enter your message below.");
+  const message = fieldSection.getByRole("textbox", { name: "Message" });
   await message.fill("A complete Foldkit example.");
   await expect(message).toHaveValue("A complete Foldkit example.");
+
+  await expect(page.locator("#disabled textarea")).toBeDisabled();
+  const invalidArea = page.locator("#invalid textarea");
+  await expect(invalidArea).toHaveAttribute("aria-invalid", "true");
+  await expect(page.locator("#invalid")).toContainText("Please enter a valid message.");
+  await expect(page.locator("#button").getByRole("button", { name: "Send message" })).toBeVisible();
+  await expect(page.locator("#rtl [dir='rtl']").first()).toBeVisible();
+  await expect(page.locator("#rtl textarea")).toHaveAttribute("rows", "4");
+
   const deploymentNotes = page
     .locator("#form-and-resize")
     .getByRole("textbox", { name: "Deployment notes" });
@@ -3309,16 +3327,17 @@ test("controlled helper pages own and update compact local preview state", async
   expect(submittedNotes).toBe("First line\nSecond line");
 
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  for (const id of ["message", "invalid", "disabled", "form-and-resize"]) {
+  for (const id of textareaSectionIds) {
     await expect(page.locator(`#${id}`)).toBeVisible();
   }
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(page.locator("#message code")).toContainText("@/stylex/textarea");
-  await expect(message).toHaveValue("A complete Foldkit example.");
-  await message.fill("Styled with StyleX.");
-  await expect(message).toHaveValue("Styled with StyleX.");
+  await expect(page.locator("#field code")).toContainText("@/stylex/textarea");
+  const sxMessage = page.locator("#field").getByRole("textbox", { name: "Message" });
+  await sxMessage.fill("Styled with StyleX.");
+  await expect(sxMessage).toHaveValue("Styled with StyleX.");
   await expect(deploymentNotes).toHaveAttribute("readonly", "");
   await expect(deploymentNotes).toHaveAttribute("data-resize", "none");
+  await expect(page.locator("#rtl [dir='rtl']").first()).toBeVisible();
 
 });
 
