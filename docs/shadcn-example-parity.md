@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 36 done · 25 todo · 3 crease-only
+Current: 37 done · 24 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -66,7 +66,7 @@ Current: 36 done · 25 todo · 3 crease-only
 | `separator` | 9 | Vertical<br>Menu<br>List<br>RTL | done |
 | `sheet` | 4 | Side<br>No Close Button<br>RTL | todo (missing: Side, No Close Button, RTL) |
 | `sidebar` | 12 | — | crease-only |
-| `skeleton` | 2 | Avatar<br>Card<br>Text<br>Form<br>Table<br>RTL | todo (missing: Avatar, Text, Form, Table, RTL) |
+| `skeleton` | 7 | Avatar<br>Card<br>Text<br>Form<br>Table<br>RTL | done |
 | `slider` | 5 | Range<br>Multiple Thumbs<br>Vertical<br>Controlled<br>Disabled<br>RTL | todo (missing: Range, Multiple Thumbs, Vertical, Controlled, Disabled, RTL) |
 | `sonner` | 7 | Types<br>Description<br>Position | todo (missing: Types, Description, Position) |
 | `spinner` | 2 | Customization<br>Size<br>Button<br>Badge<br>Input Group<br>Empty<br>RTL | todo (missing: Customization, Size, Button, Badge, Input Group, Empty, RTL) |

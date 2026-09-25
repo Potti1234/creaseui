@@ -3849,6 +3849,53 @@ test("marker sections match upstream variants in both renderers", async ({ page 
   await expect(sxLinks.getByText("You clicked the revert button", { exact: true })).toBeVisible();
 });
 
+test("skeleton sections match upstream variants in both renderers", async ({ page }) => {
+  await page.goto("/docs/components/skeleton");
+  for (const id of ["avatar", "card", "text", "form", "table", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+
+  const hero = page.locator('[aria-label="Basic preview"]');
+  await expect(hero.locator("[data-slot='skeleton']")).toHaveCount(3);
+  const radius = await hero
+    .locator("[data-slot='skeleton']")
+    .first()
+    .evaluate(el => parseFloat(getComputedStyle(el).borderRadius));
+  expect(radius).toBeGreaterThan(24);
+
+  const avatar = page.locator("#avatar");
+  await expect(avatar.locator("[data-slot='skeleton']")).toHaveCount(3);
+
+  const card = page.locator("#card");
+  await expect(card.locator("[data-slot='card']")).toHaveCount(1);
+  await expect(card.locator("[data-slot='card-header'] [data-slot='skeleton']")).toHaveCount(2);
+  await expect(card.locator("[data-slot='card-content'] [data-slot='skeleton']")).toHaveCount(1);
+
+  const text = page.locator("#text");
+  await expect(text.locator("[data-slot='skeleton']")).toHaveCount(3);
+
+  const form = page.locator("#form");
+  await expect(form.locator("[data-slot='skeleton']")).toHaveCount(5);
+
+  const table = page.locator("#table");
+  await expect(table.locator("[data-slot='skeleton']")).toHaveCount(15);
+
+  const rtl = page.locator("#rtl");
+  await expect(rtl.locator("[dir='rtl']").first()).toBeVisible();
+  await expect(rtl.locator("[data-slot='skeleton']")).toHaveCount(3);
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["avatar", "card", "text", "form", "table", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  const sxTable = page.locator("#table");
+  await expect(sxTable.locator("[data-slot='skeleton']")).toHaveCount(15);
+  const sxCard = page.locator("#card");
+  await expect(sxCard.locator("[data-slot='card']")).toHaveCount(1);
+  const sxRtl = page.locator("#rtl");
+  await expect(sxRtl.locator("[dir='rtl']").first()).toBeVisible();
+});
+
 test("separator sections match upstream variants in both renderers", async ({ page }) => {
   await page.goto("/docs/components/separator");
   for (const id of ["vertical", "menu", "list", "rtl"]) {
