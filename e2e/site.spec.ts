@@ -3269,58 +3269,73 @@ test("controlled helper pages own and update compact local preview state", async
   await expect(page.locator("#rtl [dir='rtl']").first()).toBeVisible();
 
   await page.goto("/docs/components/toggle-group");
-  const right = page
-    .locator("#single-selection")
-    .getByRole("button", { name: "Right" });
-  await right.click();
-  await expect(right).toHaveAttribute("aria-pressed", "true");
-  await page.keyboard.press("ArrowLeft");
-  const center = page
-    .locator("#single-selection")
-    .getByRole("button", { name: "Center", exact: true });
-  await expect(center).toBeFocused();
-  await expect(right).toHaveAttribute("aria-pressed", "true");
-  await page.keyboard.press("Space");
-  await expect(center).toHaveAttribute("aria-pressed", "true");
 
-  const multiple = page.locator("#multiple-selection");
-  const multipleLeft = multiple.getByRole("button", { name: "Left" });
-  const multipleRight = multiple.getByRole("button", { name: "Right" });
-  await expect(multipleLeft).toHaveAttribute("aria-pressed", "true");
-  await multipleRight.click();
-  await expect(multipleLeft).toHaveAttribute("aria-pressed", "true");
-  await expect(multipleRight).toHaveAttribute("aria-pressed", "true");
+  const tgHero = page.locator('[aria-label="Basic preview"]').last();
+  const tgBold = tgHero.getByRole("button", { name: "Toggle bold", exact: true });
+  await expect(tgBold).toHaveAttribute("aria-pressed", "false");
+  await tgBold.click();
+  await expect(tgBold).toHaveAttribute("aria-pressed", "true");
 
-  const disabledGroup = page.locator("#disabled-item");
-  const disabledLeft = disabledGroup.getByRole("button", { name: "Left" });
-  const disabledRight = disabledGroup.getByRole("button", { name: "Right" });
-  await disabledLeft.focus();
-  await page.keyboard.press("ArrowRight");
-  await expect(disabledRight).toBeFocused();
-
-  await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  for (const id of [
-    "single-selection",
-    "multiple-selection",
-    "rtl",
-    "disabled-item",
-    "form-policy",
-  ]) {
+  for (const id of ["outline", "size", "spacing", "vertical", "disabled", "custom", "rtl"]) {
     await expect(page.locator(`#${id}`)).toBeVisible();
   }
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(page.locator("#single-selection code")).toContainText(
-    "@/stylex/toggle-group",
-  );
-  await expect(right).toHaveAttribute("aria-pressed", "false");
-  await right.click();
-  await expect(right).toHaveAttribute("aria-pressed", "true");
-  await multiple.getByRole("button", { name: "Center" }).click();
-  await expect(multiple.getByRole("button", { name: "Center" })).toHaveAttribute(
+
+  const outlineSection = page.locator("#outline");
+  const missed = outlineSection.getByRole("button", { name: "Toggle missed" });
+  await missed.click();
+  await expect(missed).toHaveAttribute("aria-pressed", "true");
+  await expect(
+    outlineSection.getByRole("button", { name: "Toggle all" }),
+  ).toHaveAttribute("aria-pressed", "false");
+
+  const sizeSection = page.locator("#size");
+  const sizeGroups = sizeSection.locator('[data-slot="toggle-group"]');
+  await expect(sizeGroups).toHaveCount(2);
+  await expect(sizeGroups.first().locator("button").first()).toHaveAttribute(
     "aria-pressed",
     "true",
   );
-  await expect(disabledGroup.getByRole("button", { name: "Center" })).toBeDisabled();
+
+  const verticalSection = page.locator("#vertical");
+  await expect(verticalSection.locator('[data-slot="toggle-group"]')).toHaveAttribute(
+    "data-orientation",
+    "vertical",
+  );
+  const strike = verticalSection.getByRole("button", {
+    name: "Toggle strikethrough",
+  });
+  await strike.click();
+  await expect(strike).toHaveAttribute("aria-pressed", "true");
+  await expect(
+    verticalSection.getByRole("button", { name: "Toggle bold", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+
+  await expect(
+    page.locator("#disabled").getByRole("button", { name: "Toggle bold", exact: true }),
+  ).toBeDisabled();
+
+  const customSection = page.locator("#custom");
+  await customSection.getByRole("button", { name: "Bold", exact: true }).click();
+  await expect(customSection.locator("code").first()).toContainText("font-bold");
+
+  const rtlSection = page.locator("#rtl");
+  const gridItem = rtlSection.getByRole("button", { name: "شبكة" });
+  await gridItem.click();
+  await expect(gridItem).toHaveAttribute("aria-pressed", "true");
+  await expect(rtlSection.getByRole("button", { name: "قائمة" })).toHaveAttribute(
+    "aria-pressed",
+    "false",
+  );
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await page.waitForTimeout(600);
+  const sxHero = page.locator('[aria-label="Basic preview"]');
+  const sxGroupItalic = sxHero.getByRole("button", { name: "Toggle italic" });
+  await sxGroupItalic.click();
+  await expect(sxGroupItalic).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator("#outline code")).toContainText(
+    "@/stylex/toggle-group",
+  );
 
   await page.goto("/docs/components/radio-group");
   const radioGroupSectionIds = ["description", "choice-card", "fieldset", "disabled", "invalid", "read-only", "rtl"];
