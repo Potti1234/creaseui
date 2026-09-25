@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 59 done · 2 todo · 3 crease-only
+Current: 60 done · 1 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -26,7 +26,7 @@ Current: 59 done · 2 todo · 3 crease-only
 | `bubble` | 10 | Variants<br>Alignment<br>Bubble Group<br>Links and Buttons<br>Reactions<br>Show More / Collapsible<br>Tooltip<br>Popover | done |
 | `button` | 17 | Size<br>Default<br>Outline<br>Secondary<br>Ghost<br>Destructive<br>Link<br>Icon<br>With Icon<br>Rounded<br>Spinner<br>Button Group<br>As Child<br>RTL | done |
 | `button-group` | 12 | Orientation<br>Size<br>Nested<br>Separator<br>Split<br>Input<br>Input Group<br>Dropdown Menu<br>Select<br>Popover<br>RTL | done |
-| `calendar` | 10 | Persian / Hijri / Jalali Calendar<br>Basic<br>Range Calendar<br>Month and Year Selector<br>Presets<br>Date and Time Picker<br>Booked dates<br>Custom Cell Size<br>Week Numbers<br>RTL | todo (missing: Persian / Hijri / Jalali Calendar) |
+| `calendar` | 11 | Persian / Hijri / Jalali Calendar<br>Basic<br>Range Calendar<br>Month and Year Selector<br>Presets<br>Date and Time Picker<br>Booked dates<br>Custom Cell Size<br>Week Numbers<br>RTL | done |
 | `card` | 11 | Size<br>Spacing<br>Spacing<br>Image<br>RTL | done |
 | `carousel` | 8 | Sizes<br>Spacing<br>Orientation<br>API<br>Plugins<br>RTL | done |
 | `chart` | 25 | Your First Chart<br>Your First Chart<br>Your First Chart<br>Your First Chart<br>Your First Chart<br>Tooltip<br>RTL | done |

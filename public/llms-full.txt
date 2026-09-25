@@ -282,7 +282,7 @@ A shadcn-styled Calendar component for Foldkit.
 
 Source: `src/ui/calendar.ts`
 
-Examples: Demo, Basic, Range Calendar, Month and Year Selector, Presets, Date and Time Picker, Booked dates, Custom Cell Size, Week Numbers, RTL
+Examples: Demo, Persian / Hijri / Jalali Calendar, Basic, Range Calendar, Month and Year Selector, Presets, Date and Time Picker, Booked dates, Custom Cell Size, Week Numbers, RTL
 
 - `export * from '@/lib/calendar'` (re-export)
 - `Model: value` (value)

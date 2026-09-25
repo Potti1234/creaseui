@@ -787,6 +787,7 @@
       ],
       "examples": [
         "Demo",
+        "Persian / Hijri / Jalali Calendar",
         "Basic",
         "Range Calendar",
         "Month and Year Selector",
