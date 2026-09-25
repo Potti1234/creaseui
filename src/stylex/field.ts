@@ -177,6 +177,7 @@ export type FieldProps = Slot &
     orientation?: FieldVariants["orientation"];
     isInvalid?: boolean;
     isDisabled?: boolean;
+    direction?: 'ltr' | 'rtl';
   }>;
 export const field = <Msg>(p: FieldProps, h: HtmlBuilder<Msg>): Html => {
   const orientation = p.orientation ?? "vertical";
@@ -185,6 +186,7 @@ export const field = <Msg>(p: FieldProps, h: HtmlBuilder<Msg>): Html => {
       h.Role("group"),
       h.DataAttribute("slot", "field"),
       h.DataAttribute("orientation", orientation),
+      ...(p.direction === undefined ? [] : [h.Dir(p.direction)]),
       ...(p.isInvalid ? [h.DataAttribute("invalid", "true")] : []),
       ...(p.isDisabled ? [h.DataAttribute("disabled", "")] : []),
       h.Class(
