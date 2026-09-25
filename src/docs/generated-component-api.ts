@@ -2429,7 +2429,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "PaginationDirectionProps",
       "kind": "type",
-      "signature": "PaginationDirectionProps = Readonly<{ href?: string; isDisabled?: boolean; class?: string; }>"
+      "signature": "PaginationDirectionProps = Readonly<{ href?: string; isDisabled?: boolean; class?: string; direction?: 'ltr' | 'rtl'; label?: string; }>"
     },
     {
       "name": "paginationPrevious",
@@ -2531,7 +2531,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "PopoverProps",
       "kind": "type",
-      "signature": "PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; content: Html | string; align?: PopoverAlign; side?: PopoverSide; class?: string; focusSelector?: string; }>"
+      "signature": "PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; content: Html | string; align?: PopoverAlign; side?: PopoverSide; class?: string; direction?: 'ltr' | 'rtl'; focusSelector?…"
     },
     {
       "name": "popover",

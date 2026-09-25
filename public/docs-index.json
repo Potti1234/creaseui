@@ -3317,7 +3317,7 @@
         "Semantic links",
         "Popover disclosure",
         "Responsive fallback",
-        "RTL overflow"
+        "RTL"
       ],
       "api": [
         {
@@ -3375,7 +3375,10 @@
         "Addressable pages",
         "In-place results",
         "Compact neighborhood",
-        "Disabled boundary"
+        "Disabled boundary",
+        "Simple",
+        "Icons Only",
+        "RTL"
       ],
       "api": [
         {
@@ -3411,7 +3414,7 @@
         {
           "name": "PaginationDirectionProps",
           "kind": "type",
-          "signature": "PaginationDirectionProps = Readonly<{ href?: string; isDisabled?: boolean; class?: string; }>"
+          "signature": "PaginationDirectionProps = Readonly<{ href?: string; isDisabled?: boolean; class?: string; direction?: 'ltr' | 'rtl'; label?: string; }>"
         },
         {
           "name": "paginationPrevious",
@@ -3452,8 +3455,12 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
+        "Basic",
+        "Align",
+        "With Form",
         "Interactive content",
-        "Right aligned"
+        "Right aligned",
+        "RTL"
       ],
       "api": [
         {
@@ -3529,7 +3536,7 @@
         {
           "name": "PopoverProps",
           "kind": "type",
-          "signature": "PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; content: Html | string; align?: PopoverAlign; side?: PopoverSide; class?: string; focusSelector?: string; }>"
+          "signature": "PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; content: Html | string; align?: PopoverAlign; side?: PopoverSide; class?: string; direction?: 'ltr' | 'rtl'; focusSelector?…"
         },
         {
           "name": "popover",

@@ -770,7 +770,7 @@ Source: [`src/ui/pagination.ts`](../src/ui/pagination.ts)
 | `paginationItem` | function | `paginationItem<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` |
 | `PaginationLinkProps` | type | `PaginationLinkProps = Readonly<{ href: string; children: ReadonlyArray<Html \| string>; isActive?: boolean; size?: ButtonVariants['size']; ariaLabel?: string; class?: string; }>` |
 | `paginationLink` | function | `paginationLink<Msg>(props: PaginationLinkProps, h: HtmlBuilder<Msg>): Html` |
-| `PaginationDirectionProps` | type | `PaginationDirectionProps = Readonly<{ href?: string; isDisabled?: boolean; class?: string; }>` |
+| `PaginationDirectionProps` | type | `PaginationDirectionProps = Readonly<{ href?: string; isDisabled?: boolean; class?: string; direction?: 'ltr' \| 'rtl'; label?: string; }>` |
 | `paginationPrevious` | function | `paginationPrevious<Msg>(props: PaginationDirectionProps, h: HtmlBuilder<Msg>): Html` |
 | `paginationNext` | function | `paginationNext<Msg>(props: PaginationDirectionProps, h: HtmlBuilder<Msg>): Html` |
 | `PaginationEllipsisProps` | type | `PaginationEllipsisProps = Readonly<{ class?: string; }>` |
@@ -797,7 +797,7 @@ Source: [`src/ui/popover.ts`](../src/ui/popover.ts)
 | `RequestedClose` | value | `RequestedClose: value` |
 | `PopoverSide` | type | `PopoverSide = 'top' \| 'right' \| 'bottom' \| 'left'` |
 | `PopoverAlign` | type | `PopoverAlign = 'start' \| 'center' \| 'end'` |
-| `PopoverProps` | type | `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; content: Html \| string; align?: PopoverAlign; side?: PopoverSide; class?: string; focusSelector?: string; }>` |
+| `PopoverProps` | type | `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; content: Html \| string; align?: PopoverAlign; side?: PopoverSide; class?: string; direction?: 'ltr' \| 'rtl'; focusSelector?…` |
 | `popover` | function | `popover<Msg>(props: PopoverProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Progress
