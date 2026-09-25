@@ -4997,9 +4997,21 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Article",
-        "Inline Code",
-        "Quotation"
+        "Basic",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "p",
+        "blockquote",
+        "table",
+        "list",
+        "Inline code",
+        "Lead",
+        "Large",
+        "Small",
+        "Muted",
+        "RTL"
       ],
       "api": [
         {

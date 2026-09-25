@@ -1350,7 +1350,7 @@ A shadcn-styled Typography component for Foldkit.
 
 Source: `src/ui/typography.ts`
 
-Examples: Article, Inline Code, Quotation
+Examples: Basic, h1, h2, h3, h4, p, blockquote, table, list, Inline code, Lead, Large, Small, Muted, RTL
 
 - `typographyH1<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` (function)
 - `typographyH2<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` (function)
