@@ -4513,39 +4513,73 @@ test("progress sections match upstream variants and normalize custom ranges", as
 test("skeleton and spinner expose explicit loading semantics with reduced motion", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/docs/components/skeleton");
-  const profile = page.locator("#profile");
-  await expect(profile.getByRole("status", { name: "Loading profile" })).toHaveAttribute("aria-busy", "true");
-  const skeletons = profile.locator('[data-slot="skeleton"]');
-  await expect(skeletons).toHaveCount(3);
+  const skeletonHero = page.locator('[aria-label="Basic preview"]');
+  const skeletons = skeletonHero.locator('[data-slot="skeleton"]');
+  await expect(skeletons.first()).toBeVisible();
   for (const skeleton of await skeletons.all()) {
     await expect(skeleton).toHaveAttribute("aria-hidden", "true");
     await expect(skeleton).toHaveCSS("animation-name", "none");
   }
+  await expect(
+    page.locator("#avatar").locator('[data-slot="skeleton"]'),
+  ).toHaveCount(3);
+  await expect(
+    page.locator("#rtl").locator('[data-slot="skeleton"]').first(),
+  ).toBeVisible();
 
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  await expect(page.locator("#profile")).toBeVisible();
+  await page.waitForTimeout(600);
+  await expect(page.locator("#avatar")).toBeVisible();
   await expect(page.locator("#card")).toBeVisible();
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(page.locator("#profile code")).toContainText("@/stylex/skeleton");
-  await expect(profile.getByRole("status", { name: "Loading profile" })).toHaveAttribute("aria-busy", "true");
-  await expect(profile.locator('[data-slot="skeleton"]')).toHaveCount(3);
+  await expect(page.locator("#avatar code")).toContainText("@/stylex/skeleton");
+  await expect(
+    page.locator("#avatar").locator('[data-slot="skeleton"]'),
+  ).toHaveCount(3);
 
   await page.goto("/docs/components/spinner");
-  const standalone = page.locator("#default").getByRole("img", { name: "Loading content" });
-  await expect(standalone).toHaveCSS("animation-name", "none");
-  const namedStatus = page.locator("#with-label").getByRole("status");
-  await expect(namedStatus).toContainText("Saving changes");
-  const decorative = namedStatus.locator("svg");
-  await expect(decorative).toHaveAttribute("aria-hidden", "true");
-  await expect(namedStatus.getByRole("img")).toHaveCount(0);
+
+  const hero = page.locator('[aria-label="Basic preview"]');
+  await expect(hero).toContainText("Processing payment...");
+  await expect(hero).toContainText("$100.00");
+  await expect(hero.locator("svg").first()).toHaveCSS("animation-name", "none");
+
+  await expect(
+    page.locator("#customization").getByRole("img", { name: "Loading" }),
+  ).toBeVisible();
+  await expect(page.locator("#size").locator("svg.animate-spin")).toHaveCount(4);
+  const spinnerButtons = page.locator("#button");
+  await expect(spinnerButtons.getByRole("button", { name: "Loading..." })).toBeDisabled();
+  await expect(spinnerButtons.getByRole("button", { name: "Please wait" })).toBeDisabled();
+  await expect(spinnerButtons.getByRole("button", { name: "Processing" })).toBeDisabled();
+  await expect(page.locator("#badge")).toContainText("Syncing");
+  await expect(page.locator("#badge")).toContainText("Updating");
+  const inputGroup = page.locator("#input-group");
+  await expect(inputGroup.locator("input").first()).toBeDisabled();
+  await expect(inputGroup.locator("textarea")).toBeDisabled();
+  await expect(inputGroup).toContainText("Validating...");
+  const empty = page.locator("#empty");
+  await expect(empty).toContainText("Processing your request");
+  await expect(empty.getByRole("button", { name: "Cancel" })).toBeVisible();
+  const rtl = page.locator("#rtl");
+  await expect(rtl.locator("div[dir='rtl']")).toBeVisible();
+  await expect(rtl).toContainText("جاري معالجة الدفع...");
 
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  await expect(page.locator("#default")).toBeVisible();
-  await expect(page.locator("#with-label")).toBeVisible();
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(page.locator("#default code")).toContainText("@/stylex/spinner");
-  await expect(page.locator("#default").getByRole("img", { name: "Loading content" })).toHaveCSS("animation-name", "none");
-  await expect(page.locator("#with-label").getByRole("status")).toContainText("Saving changes");
+  await page.waitForTimeout(600);
+  for (const id of [
+    "customization",
+    "size",
+    "button",
+    "badge",
+    "input-group",
+    "empty",
+    "rtl",
+  ]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#size code")).toContainText("@/stylex/spinner");
+  await expect(hero).toContainText("Processing payment...");
 });
 
 test("empty sections match upstream variants in both renderers", async ({ page }) => {
