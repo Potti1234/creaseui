@@ -4674,8 +4674,13 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Basic",
+        "Field",
+        "Disabled",
+        "Invalid",
+        "Button",
+        "RTL",
+        "Form And Resize"
       ],
       "api": [
         {

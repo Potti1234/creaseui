@@ -1269,7 +1269,7 @@ A shadcn-styled Textarea component for Foldkit.
 
 Source: `src/ui/textarea.ts`
 
-Examples: Timed notification, Sticky error
+Examples: Basic, Field, Disabled, Invalid, Button, RTL, Form And Resize
 
 - `TextareaProps<Msg> = TextareaBehaviorProps<Msg> & Readonly<{ class?: string; }>` (type)
 - `textarea<Msg>(props: TextareaProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
