@@ -188,6 +188,7 @@ export type DropdownMenuProps<Item extends string, Msg> = Readonly<{
   ariaLabel?: string;
   openOnContextMenu?: boolean;
   direction?: 'ltr' | 'rtl';
+  contentLayoutStyle?: ComponentLayoutStyle;
 }>;
 
 const positionClass = (
@@ -597,6 +598,7 @@ export const dropdownMenu = <Item extends string, Msg>(
                   cn(
                     CONTENT_CLASS,
                     styles.menuContent,
+                    ...(props.contentLayoutStyle === undefined ? [] : [className(props.contentLayoutStyle)]),
                     ...(anchorX !== undefined
                       ? []
                       : positionClass(

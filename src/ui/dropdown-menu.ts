@@ -147,6 +147,7 @@ export type DropdownMenuProps<Item extends string, Msg> = Readonly<{
   ariaLabel?: string;
   openOnContextMenu?: boolean;
   direction?: 'ltr' | 'rtl';
+  contentClass?: string;
 }>;
 
 const positionClass = (
@@ -557,6 +558,7 @@ export const dropdownMenu = <Item extends string, Msg>(
                 h.Class(
                   cn(
                     CONTENT_CLASS,
+                    props.contentClass,
                     anchorX !== undefined
                       ? 'fixed'
                       : positionClass(

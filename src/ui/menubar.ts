@@ -20,6 +20,7 @@ export type MenubarMenu<Item extends string, Msg> = Readonly<{
   toParentMessage: (message: DropdownMenu.Message) => Msg
   items: ReadonlyArray<Item>
   itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Item>
+  contentClass?: string
 }>
 
 type SharedProps<Item extends string, Msg> = Readonly<{
@@ -76,6 +77,7 @@ const menuView = <Item extends string, Msg>(
       triggerClass: cn(TRIGGER_CLASS, activeIndex === index ? 'bg-accent' : undefined),
       items: menu.items,
       itemToConfig: menu.itemToConfig,
+      ...(menu.contentClass === undefined ? {} : { contentClass: menu.contentClass }),
       align: 'start',
       ariaLabel: menu.label,
       ...(props.direction === undefined ? {} : { direction: props.direction }),
