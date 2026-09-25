@@ -1325,7 +1325,7 @@ A shadcn-styled Tooltip component for Foldkit.
 
 Source: `src/ui/tooltip.ts`
 
-Examples: Delayed label, Side label, Disabled trigger
+Examples: Basic, Side, With Keyboard Shortcut, Disabled Button, RTL
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)

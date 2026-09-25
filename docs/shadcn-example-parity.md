@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 42 done · 19 todo · 3 crease-only
+Current: 43 done · 18 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -77,5 +77,5 @@ Current: 42 done · 19 todo · 3 crease-only
 | `toast` | 1 | — | crease-only |
 | `toggle` | 6 | Outline<br>With Text<br>Size<br>Disabled<br>RTL | done |
 | `toggle-group` | 5 | Outline<br>Size<br>Spacing<br>Vertical<br>Disabled<br>Custom<br>RTL | todo (missing: Outline, Size, Spacing, Vertical, Disabled, Custom) |
-| `tooltip` | 3 | Side<br>With Keyboard Shortcut<br>Disabled Button<br>RTL | todo (missing: Side, With Keyboard Shortcut, Disabled Button, RTL) |
+| `tooltip` | 5 | Side<br>With Keyboard Shortcut<br>Disabled Button<br>RTL | done |
 | `typography` | 3 | h1<br>h2<br>h3<br>h4<br>p<br>blockquote<br>table<br>list<br>Inline code<br>Lead<br>Large<br>Small<br>Muted<br>RTL | todo (missing: h1, h2, h3, h4, p, blockquote, table, list, Lead, Large, Small, Muted, RTL) |
