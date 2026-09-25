@@ -1,69 +1,244 @@
 import { Option, Schema as S } from 'effect';
 import { Command } from 'foldkit';
 import { defineMessageUnion } from 'foldkit/message';
+import type { HtmlBuilder } from 'foldkit/html';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
-import { menubarActions, menubarFixtures, menubarLabel, menubarLabels, menubarTargets, type MenubarTarget } from '@/docs/components/pages/menubar/shared';
+import {
+  checkboxField,
+  menubarFixtures,
+  menubarSpecs,
+  menubarTargets,
+  radioField,
+  type MarkerSpecItem,
+} from '@/docs/components/pages/menubar/shared';
 import * as DropdownMenu from '@/ui/dropdown-menu';
+import * as Icon from '@/lib/icon';
 import * as Menubar from '@/ui/menubar';
 
-const MenuTarget = S.Literals(['file', 'edit', 'view']);
+const MenuTarget = S.Literals(menubarTargets);
+type MenuTarget = typeof MenuTarget.Type;
 
+const MenubarPreviewModel = S.Struct({
+  _docsPage: S.Literal('menubar'),
+  file: DropdownMenu.Model,
+  edit: DropdownMenu.Model,
+  view: DropdownMenu.Model,
+  profiles: DropdownMenu.Model,
+  format: DropdownMenu.Model,
+  theme: DropdownMenu.Model,
+  more: DropdownMenu.Model,
+  menubar: Menubar.Model,
+  menuTargets: S.Array(MenuTarget),
+  checkedBookmarksBar: S.Boolean,
+  checkedFullUrls: S.Boolean,
+  checkedStrikethrough: S.Boolean,
+  checkedCode: S.Boolean,
+  checkedSuperscript: S.Boolean,
+  radioUser: S.String,
+  radioTheme: S.String,
+});
+type MenubarPreviewModel = S.Schema.Type<typeof MenubarPreviewModel>;
 
 const MenubarPreviewMessage = defineMessageUnion({
-  GotMenubarPreviewMessage: { target: MenuTarget, message: DropdownMenu.Message },
-  GotMenubarBehaviorPreview: { message: Menubar.Message },
+  GotMenuMessage: { target: MenuTarget, message: DropdownMenu.Message },
+  GotMenubarMessage: { message: Menubar.Message },
 });
 type MenubarPreviewMessage = typeof MenubarPreviewMessage.Type;
-const MenubarPreviewModel = S.Struct({ _docsPage: S.Literal('menubar'), menubar: Menubar.Model, file: DropdownMenu.Model, edit: DropdownMenu.Model, view: DropdownMenu.Model, maybeLastAction: S.Option(S.String) });
-type MenubarPreviewModel = typeof MenubarPreviewModel.Type;
+
 const ActionMenu = DropdownMenu.create<string>();
 
-export const menubarTailwindPreviewProgram = definePreviewProgram<MenubarPreviewModel, MenubarPreviewMessage>({
+const checkedValue = (
+  item: MarkerSpecItem,
+  model: MenubarPreviewModel,
+): boolean => {
+  const field = checkboxField[item.id];
+  if (item.kind === 'checkbox' && field !== undefined) {
+    return model[field];
+  }
+  const rfield = radioField[item.id];
+  if (item.kind === 'radio' && rfield !== undefined) {
+    return model[rfield] === item.id;
+  }
+  return false;
+};
+
+const configFor = (
+  item: MarkerSpecItem,
+  model: MenubarPreviewModel,
+  h: HtmlBuilder<MenubarPreviewMessage>,
+): DropdownMenu.DropdownMenuItemConfig<string> => ({
+  label: item.label,
+  ...(item.icon === undefined
+    ? {}
+    : { icon: Icon.icon(item.icon, {}, h) }),
+  ...(item.shortcut === undefined ? {} : { shortcut: item.shortcut }),
+  ...(item.kind === undefined ? {} : { kind: item.kind }),
+  ...(item.kind === undefined ? {} : { isChecked: checkedValue(item, model) }),
+  ...(item.inset === true ? { isInset: true } : {}),
+  ...(item.disabled === true ? { isDisabled: true } : {}),
+  ...(item.destructive === true ? { variant: 'destructive' as const } : {}),
+  ...(item.separatorBefore === true ? { separatorBefore: true } : {}),
+  ...(item.submenu === undefined
+    ? {}
+    : {
+        submenu: {
+          items: item.submenu.map(child => child.id),
+          itemToConfig: (
+            child: string,
+          ): DropdownMenu.DropdownMenuItemConfig<string> =>
+            configFor(
+              item.submenu?.find(candidate => candidate.id === child) ?? {
+                id: child,
+                label: child,
+              },
+              model,
+              h,
+            ),
+        },
+      }),
+});
+
+const applySelection = (
+  model: MenubarPreviewModel,
+  value: string,
+): MenubarPreviewModel => {
+  const field = checkboxField[value];
+  if (field !== undefined) {
+    return { ...model, [field]: !model[field] };
+  }
+  const rfield = radioField[value];
+  if (rfield !== undefined) {
+    return { ...model, [rfield]: value };
+  }
+  return model;
+};
+
+export const menubarTailwindPreviewProgram = definePreviewProgram<
+  MenubarPreviewModel,
+  MenubarPreviewMessage
+>({
   Model: MenubarPreviewModel,
   Message: MenubarPreviewMessage,
-  init: index => ({ _docsPage: 'menubar', menubar: Menubar.init({ id: `docs-menubar-${String(index)}` }), file: DropdownMenu.init({ id: `docs-menubar-file-${String(index)}` }), edit: DropdownMenu.init({ id: `docs-menubar-edit-${String(index)}` }), view: DropdownMenu.init({ id: `docs-menubar-view-${String(index)}` }), maybeLastAction: Option.none() }),
-  update: (model, message) => {
-    if (message._tag === 'GotMenubarBehaviorPreview') {
-      const menubarOp__ = Menubar.update(model.menubar, message.message);
-    const menubar = menubarOp__.model;
-    const commands = menubarOp__.commands ?? [];
-    const maybeMove = Option.fromNullishOr(menubarOp__.outMessage);;
-      const index = Option.match(maybeMove, { onNone: () => menubar.activeIndex, onSome: move => move.index });
-      const target = menubarTargets[index];
-      if (target === undefined) return { model: model };
-      const { model: file } = target === 'file' ? DropdownMenu.open(model.file) : DropdownMenu.close(model.file);
-      const { model: edit } = target === 'edit' ? DropdownMenu.open(model.edit) : DropdownMenu.close(model.edit);
-      const { model: view } = target === 'view' ? DropdownMenu.open(model.view) : DropdownMenu.close(model.view);
-      return { model: { ...model, file, edit, view, menubar }, commands: Command.mapMessages(commands, next => MenubarPreviewMessage.GotMenubarBehaviorPreview({ message: next })) };
-    }
-    const menuOp__ = ActionMenu.update(model[message.target], message.message);
-    const menu = menuOp__.model;
-    const commands = menuOp__.commands ?? [];
-    const maybeSelection = Option.fromNullishOr(menuOp__.outMessage);;
-    const file = message.target === 'file' ? menu : DropdownMenu.close(model.file).model;
-    const edit = message.target === 'edit' ? menu : DropdownMenu.close(model.edit).model;
-    const view = message.target === 'view' ? menu : DropdownMenu.close(model.view).model;
-    return { model: { ...model, file, edit, view, maybeLastAction: Option.match(maybeSelection, { onNone: () => model.maybeLastAction, onSome: selection => Option.some(selection.value) }) }, commands: Command.mapMessages(commands, next => MenubarPreviewMessage.GotMenubarPreviewMessage({ target: message.target, message: next })) };
+  init: index => {
+    const fixture = menubarFixtures[index] ?? menubarFixtures[0];
+    return {
+      _docsPage: 'menubar',
+      file: DropdownMenu.init({ id: `menu-file-${String(index)}` }),
+      edit: DropdownMenu.init({ id: `menu-edit-${String(index)}` }),
+      view: DropdownMenu.init({ id: `menu-view-${String(index)}` }),
+      profiles: DropdownMenu.init({ id: `menu-profiles-${String(index)}` }),
+      format: DropdownMenu.init({ id: `menu-format-${String(index)}` }),
+      theme: DropdownMenu.init({ id: `menu-theme-${String(index)}` }),
+      more: DropdownMenu.init({ id: `menu-more-${String(index)}` }),
+      menubar: Menubar.init({ id: `application-menubar-${String(index)}` }),
+      menuTargets: menubarSpecs[fixture.kind].map(menu => menu.target),
+      checkedBookmarksBar: false,
+      checkedFullUrls: true,
+      checkedStrikethrough: true,
+      checkedCode: false,
+      checkedSuperscript: false,
+      radioUser: 'benoit',
+      radioTheme: 'system',
+    };
   },
-  view: (index, model, h) => h.div([h.Class('grid justify-items-center gap-3')], [
-    Menubar.menubar<string, MenubarPreviewMessage>({
-    model: model.menubar,
-    toParentMessage: message => MenubarPreviewMessage.GotMenubarBehaviorPreview({ message }),
-    ariaLabel: 'Application menu',
-    ...(menubarFixtures[index]?.direction === 'rtl' ? { direction: 'rtl' as const } : {}),
-    menus: menubarLabels.map(([target, label]) => ({
-      id: `docs-menubar-${target}`, label, model: model[target],
-      toParentMessage: message => MenubarPreviewMessage.GotMenubarPreviewMessage({ target: target as MenubarTarget, message }),
-      items: menubarActions,
-      itemToConfig: item => ({ label: menubarLabel(item), ...(item === 'save' ? { shortcut: '⌘S', isDisabled: true } : {}), ...(item === 'export' ? { submenu: { items: ['pdf', 'csv'], itemToConfig: child => ({ label: child.toUpperCase() }) } } : {}) }),
-    })),
-    }, h),
-    h.p([h.Role('status'), h.Class('text-sm text-muted-foreground')], [
-      Option.match(model.maybeLastAction, {
-        onNone: () => 'No action selected.',
-        onSome: action => `Last action: ${menubarLabel(action)}`,
-      }),
-    ]),
-  ]),
+  update: (model, message) => {
+    switch (message._tag) {
+      case 'GotMenuMessage': {
+        const menuOp = ActionMenu.update(model[message.target], message.message);
+        const commands = menuOp.commands ?? [];
+        const maybeSelection = Option.fromNullishOr(menuOp.outMessage);
+        const toggled = Option.match(maybeSelection, {
+          onNone: () => model,
+          onSome: selection => applySelection(model, selection.value),
+        });
+        const next = menubarTargets.reduce<MenubarPreviewModel>(
+          (acc, target) => ({
+            ...acc,
+            [target]:
+              target === message.target
+                ? menuOp.model
+                : DropdownMenu.close(acc[target]).model,
+          }),
+          toggled,
+        );
+        return {
+          model: next,
+          commands: Command.mapMessages(
+            commands,
+            next2 =>
+              MenubarPreviewMessage.GotMenuMessage({
+                target: message.target,
+                message: next2,
+              }),
+          ),
+        };
+      }
+      case 'GotMenubarMessage': {
+        const menubarOp = Menubar.update(model.menubar, message.message);
+        const commands = menubarOp.commands ?? [];
+        const maybeMove = Option.fromNullishOr(menubarOp.outMessage);
+        const index = Option.match(maybeMove, {
+          onNone: () => menubarOp.model.activeIndex,
+          onSome: move => move.index,
+        });
+        const target = model.menuTargets[index];
+        if (target === undefined) return { model: model };
+        const next = menubarTargets.reduce<MenubarPreviewModel>(
+          (acc, t) => ({
+            ...acc,
+            [t]: (t === target
+              ? DropdownMenu.open(acc[t])
+              : DropdownMenu.close(acc[t])).model,
+          }),
+          { ...model, menubar: menubarOp.model },
+        );
+        return {
+          model: next,
+          commands: Command.mapMessages(
+            commands,
+            next2 =>
+              MenubarPreviewMessage.GotMenubarMessage({ message: next2 }),
+          ),
+        };
+      }
+    }
+  },
+  view: (index, model, h) => {
+    const fixture = menubarFixtures[index] ?? menubarFixtures[0];
+    const spec = menubarSpecs[fixture.kind];
+    return h.div([h.Class('flex flex-col items-center')], [
+      Menubar.menubar<string, MenubarPreviewMessage>({
+        model: model.menubar,
+        toParentMessage: message =>
+          MenubarPreviewMessage.GotMenubarMessage({ message }),
+        ariaLabel: 'Application menu',
+        class: 'w-72',
+        ...(fixture.direction === 'rtl' ? { direction: 'rtl' as const } : {}),
+        menus: spec.map(menu => ({
+          id: `menu-${menu.target}-${String(index)}`,
+          label: menu.label,
+          model: model[menu.target],
+          ...(menu.contentWidth === undefined
+            ? {}
+            : { contentClass: menu.contentWidth === '11rem' ? 'w-44' : 'w-64' }),
+          toParentMessage: message =>
+            MenubarPreviewMessage.GotMenuMessage({
+              target: menu.target as MenuTarget,
+              message,
+            }),
+          items: menu.items.map(item => item.id),
+          itemToConfig: item =>
+            configFor(
+              menu.items.find(candidate => candidate.id === item) ?? {
+                id: item,
+                label: item,
+              },
+              model,
+              h,
+            ),
+        })),
+      }, h),
+    ]);
+  },
 });

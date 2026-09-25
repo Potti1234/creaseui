@@ -685,7 +685,7 @@ Source: [`src/ui/menubar.ts`](../src/ui/menubar.ts)
 | `OutMessage` | type | `OutMessage = MenubarBehavior.OutMessage` |
 | `init` | value | `init: value` |
 | `update` | value | `update: value` |
-| `MenubarMenu` | type | `MenubarMenu<Item extends string, Msg> = Readonly<{ id: string label: string model: DropdownMenu.Model toParentMessage: (message: DropdownMenu.Message) => Msg items: ReadonlyArray<Item> itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Item> }>` |
+| `MenubarMenu` | type | `MenubarMenu<Item extends string, Msg> = Readonly<{ id: string label: string model: DropdownMenu.Model toParentMessage: (message: DropdownMenu.Message) => Msg items: ReadonlyArray<Item> itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Item> co…` |
 | `MenubarProps` | type | `MenubarProps<Item extends string, Msg> = SharedProps<Item, Msg> & Readonly<{ model: Model toParentMessage: (message: Message) => Msg }>` |
 | `menubar` | function | `menubar<Item extends string, Msg>(props: MenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` |
 | `menubar` | function | `menubar<Item extends string, Msg>(props: LegacyMenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` |

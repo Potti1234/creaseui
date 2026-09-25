@@ -3849,6 +3849,65 @@ test("marker sections match upstream variants in both renderers", async ({ page 
   await expect(sxLinks.getByText("You clicked the revert button", { exact: true })).toBeVisible();
 });
 
+test("menubar sections match upstream variants in both renderers", async ({ page }) => {
+  await page.goto("/docs/components/menubar");
+  for (const id of ["checkbox", "radio", "submenu", "with-icons", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+
+  const hero = page.locator('[aria-label="Basic preview"]');
+  const heroBar = hero.locator("[role='menubar']");
+  for (const label of ["File", "Edit", "View", "Profiles"]) {
+    await expect(heroBar.getByText(label, { exact: true })).toBeVisible();
+  }
+  await heroBar.getByText("View", { exact: true }).click();
+  const heroContent = hero.locator("[role='menu']").first();
+  const bookmarks = heroContent.getByRole("menuitemcheckbox", { name: "Bookmarks Bar" });
+  await expect(bookmarks).toHaveAttribute("aria-checked", "false");
+  await bookmarks.click();
+  await heroBar.getByText("View", { exact: true }).click();
+  await expect(heroContent.getByRole("menuitemcheckbox", { name: "Bookmarks Bar" })).toHaveAttribute("aria-checked", "true");
+  const fullUrls = heroContent.getByRole("menuitemcheckbox", { name: "Full URLs" });
+  await expect(fullUrls).toHaveAttribute("aria-checked", "true");
+  await page.keyboard.press("Escape");
+
+  const radio = page.locator("#radio");
+  await radio.locator("[role='menubar']").getByText("Profiles", { exact: true }).click();
+  const radioContent = radio.locator("[role='menu']").first();
+  await expect(radioContent.getByRole("menuitemradio", { name: "Benoit" })).toHaveAttribute("aria-checked", "true");
+  await radioContent.getByRole("menuitemradio", { name: "Luis" }).click();
+  await radio.locator("[role='menubar']").getByText("Profiles", { exact: true }).click();
+  await expect(radioContent.getByRole("menuitemradio", { name: "Luis" })).toHaveAttribute("aria-checked", "true");
+  await expect(radioContent.getByRole("menuitemradio", { name: "Benoit" })).toHaveAttribute("aria-checked", "false");
+  await page.keyboard.press("Escape");
+
+  const submenu = page.locator("#submenu");
+  await submenu.locator("[role='menubar']").getByText("File", { exact: true }).click();
+  await submenu.locator("[role='menu']").first().getByText("Share", { exact: true }).hover();
+  await expect(submenu.getByText("Email link", { exact: true })).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  const icons = page.locator("#with-icons");
+  await icons.locator("[role='menubar']").getByText("More", { exact: true }).click();
+  await expect(icons.locator("[role='menu']").first().getByText("Delete", { exact: true })).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  const rtl = page.locator("#rtl");
+  await expect(rtl.locator("[dir='rtl']").first()).toBeVisible();
+  await expect(rtl.getByText("ملف", { exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["checkbox", "radio", "submenu", "with-icons", "rtl"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#checkbox code")).toContainText("@/stylex/menubar");
+  const sxCheckbox = page.locator("#checkbox");
+  await sxCheckbox.locator("[role='menubar']").getByText("Format", { exact: true }).click();
+  await sxCheckbox.locator("[role='menu']").first().getByRole("menuitemcheckbox", { name: "Code" }).click();
+  await sxCheckbox.locator("[role='menubar']").getByText("Format", { exact: true }).click();
+  await expect(sxCheckbox.locator("[role='menu']").first().getByRole("menuitemcheckbox", { name: "Code" })).toHaveAttribute("aria-checked", "true");
+});
+
 test("collapsible preserves controlled linkage, external changes, and disabled policy", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/docs/components/collapsible");

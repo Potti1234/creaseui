@@ -1,38 +1,154 @@
-import { Option } from 'effect';
-import type { HtmlBuilder } from 'foldkit/html';
 import * as stylex from '@stylexjs/stylex';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { menubarActions, menubarFixtures, menubarLabel, menubarLabels, type MenubarTarget } from '@/docs/components/pages/menubar/shared';
+import {
+  checkboxField,
+  menubarFixtures,
+  menubarSpecs,
+  radioField,
+  type MarkerSpecItem,
+} from '@/docs/components/pages/menubar/shared';
+import * as Icon from '@/lib/icon';
 import type * as DropdownMenu from '@/stylex/dropdown-menu';
 import * as Menubar from '@/stylex/menubar';
-import { tokens } from '../../../../stylex/tokens.stylex';
+import { className } from '@/stylex/style';
 
-const styles = stylex.create({ frame: { gap: '0.75rem', display: 'grid', justifyItems: 'center', }, status: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' } });
+const styles = stylex.create({
+  menubar: { width: '18rem' },
+  content44: { width: '11rem' },
+  content64: { width: '16rem' },
+});
 
-type PreviewModel = Readonly<{ menubar: Menubar.Model; file: DropdownMenu.Model; edit: DropdownMenu.Model; view: DropdownMenu.Model; maybeLastAction: Option.Option<string> }>;
+const sx = (style: stylex.StaticStyles): string => className(style);
 
-export const menubarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(exampleIndex: number, model: unknown, onMessageJson: (messageJson: string) => Msg, h: HtmlBuilder<Msg>) => {
-  const preview = model as PreviewModel;
-  const fixture = menubarFixtures[exampleIndex] ?? menubarFixtures[0];
-  return h.div([h.Class(stylex.props(styles.frame).className ?? '')], [
+interface MenubarPreviewShape {
+  readonly file: DropdownMenu.Model;
+  readonly edit: DropdownMenu.Model;
+  readonly view: DropdownMenu.Model;
+  readonly profiles: DropdownMenu.Model;
+  readonly format: DropdownMenu.Model;
+  readonly theme: DropdownMenu.Model;
+  readonly more: DropdownMenu.Model;
+  readonly menubar: Menubar.Model;
+  readonly checkedBookmarksBar: boolean;
+  readonly checkedFullUrls: boolean;
+  readonly checkedStrikethrough: boolean;
+  readonly checkedCode: boolean;
+  readonly checkedSuperscript: boolean;
+  readonly radioUser: string;
+  readonly radioTheme: string;
+}
+
+const send = <Msg>(
+  onMessageJson: (messageJson: string) => Msg,
+  tag: string,
+  fields?: Readonly<Record<string, unknown>>,
+): Msg => onMessageJson(JSON.stringify({ _tag: tag, ...(fields ?? {}) }));
+
+const checkedValue = (
+  item: MarkerSpecItem,
+  model: MenubarPreviewShape,
+): boolean => {
+  const field = checkboxField[item.id];
+  if (item.kind === 'checkbox' && field !== undefined) {
+    return model[field];
+  }
+  const rfield = radioField[item.id];
+  if (item.kind === 'radio' && rfield !== undefined) {
+    return model[rfield] === item.id;
+  }
+  return false;
+};
+
+const configFor = <Msg>(
+  item: MarkerSpecItem,
+  model: MenubarPreviewShape,
+  h: HtmlBuilder<Msg>,
+): DropdownMenu.DropdownMenuItemConfig<string> => ({
+  label: item.label,
+  ...(item.icon === undefined ? {} : { icon: Icon.icon(item.icon, {}, h) }),
+  ...(item.shortcut === undefined ? {} : { shortcut: item.shortcut }),
+  ...(item.kind === undefined ? {} : { kind: item.kind }),
+  ...(item.kind === undefined ? {} : { isChecked: checkedValue(item, model) }),
+  ...(item.inset === true ? { isInset: true } : {}),
+  ...(item.disabled === true ? { isDisabled: true } : {}),
+  ...(item.destructive === true ? { variant: 'destructive' as const } : {}),
+  ...(item.separatorBefore === true ? { separatorBefore: true } : {}),
+  ...(item.submenu === undefined
+    ? {}
+    : {
+        submenu: {
+          items: item.submenu.map(child => child.id),
+          itemToConfig: (
+            child: string,
+          ): DropdownMenu.DropdownMenuItemConfig<string> =>
+            configFor(
+              item.submenu?.find(candidate => candidate.id === child) ?? {
+                id: child,
+                label: child,
+              },
+              model,
+              h,
+            ),
+        },
+      }),
+});
+
+const menubarSxView = <Msg>(
+  index: number,
+  model: MenubarPreviewShape,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const fixture = menubarFixtures[index] ?? menubarFixtures[0];
+  const spec = menubarSpecs[fixture.kind];
+  return h.div([h.Class('flex flex-col items-center')], [
     Menubar.menubar<string, Msg>({
-      model: preview.menubar,
-      toParentMessage: message => onMessageJson(JSON.stringify({ _tag: 'GotMenubarBehaviorPreview', message })),
+      model: model.menubar,
+      toParentMessage: message =>
+        send(onMessageJson, 'GotMenubarMessage', { message }),
       ariaLabel: 'Application menu',
+      layoutStyle: styles.menubar,
       ...(fixture.direction === 'rtl' ? { direction: 'rtl' as const } : {}),
-      menus: menubarLabels.map(([target, label]) => ({
-        id: `docs-menubar-${target}`, label, model: preview[target],
-        toParentMessage: message => onMessageJson(JSON.stringify({ _tag: 'GotMenubarPreviewMessage', target: target as MenubarTarget, message })),
-        items: menubarActions,
-        itemToConfig: item => ({ label: menubarLabel(item), ...(item === 'save' ? { shortcut: '⌘S', isDisabled: true } : {}), ...(item === 'export' ? { submenu: { items: ['pdf', 'csv'], itemToConfig: child => ({ label: child.toUpperCase() }) } } : {}) }),
+      menus: spec.map(menu => ({
+        id: `sx-menu-${menu.target}-${String(index)}`,
+        label: menu.label,
+        model: model[menu.target],
+        ...(menu.contentWidth === undefined
+          ? {}
+          : {
+              contentLayoutStyle:
+                menu.contentWidth === '11rem'
+                  ? styles.content44
+                  : styles.content64,
+            }),
+        toParentMessage: (message: DropdownMenu.Message) =>
+          send(onMessageJson, 'GotMenuMessage', { target: menu.target, message }),
+        items: menu.items.map(item => item.id),
+        itemToConfig: item =>
+          configFor(
+            menu.items.find(candidate => candidate.id === item) ?? {
+              id: item,
+              label: item,
+            },
+            model,
+            h,
+          ),
       })),
     }, h),
-    h.p([h.Role('status'), h.Class(stylex.props(styles.status).className ?? '')], [
-      Option.match(preview.maybeLastAction, {
-        onNone: () => 'No action selected.',
-        onSome: action => `Last action: ${menubarLabel(action)}`,
-      }),
-    ]),
   ]);
 };
+
+export const menubarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+  exampleIndex: number,
+  model: unknown,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+) =>
+  menubarSxView(
+    exampleIndex,
+    model as MenubarPreviewShape,
+    onMessageJson,
+    h,
+  );

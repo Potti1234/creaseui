@@ -9,7 +9,7 @@ import * as InputGroup from '@/stylex/input-group';
 import * as Kbd from '@/stylex/kbd';
 import * as Tooltip from '@/stylex/tooltip';
 import { className } from '@/stylex/style';
-import { tokens } from '@/stylex/tokens.stylex';
+import { tokens } from '../../../../stylex/tokens.stylex';
 import { kbdFixtures, type KbdKind } from './shared';
 
 const styles = stylex.create({

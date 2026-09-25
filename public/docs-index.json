@@ -3007,10 +3007,12 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Coordinated menus",
-        "Shortcut hints",
-        "RTL switching",
-        "Disabled submenu"
+        "Basic",
+        "Checkbox",
+        "Radio",
+        "Submenu",
+        "Icons",
+        "RTL"
       ],
       "api": [
         {
@@ -3051,7 +3053,7 @@
         {
           "name": "MenubarMenu",
           "kind": "type",
-          "signature": "MenubarMenu<Item extends string, Msg> = Readonly<{ id: string label: string model: DropdownMenu.Model toParentMessage: (message: DropdownMenu.Message) => Msg items: ReadonlyArray<Item> itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Item> }>"
+          "signature": "MenubarMenu<Item extends string, Msg> = Readonly<{ id: string label: string model: DropdownMenu.Model toParentMessage: (message: DropdownMenu.Message) => Msg items: ReadonlyArray<Item> itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Item> co…"
         },
         {
           "name": "MenubarProps",
