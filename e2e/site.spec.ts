@@ -2788,15 +2788,25 @@ test("item preserves semantic collections and structured metadata", async ({ pag
 test("scroll area preserves labeled native overflow on both axes", async ({ page }) => {
   await page.goto("/docs/components/scroll-area");
   await page.getByRole("button", { name: "StyleX" }).click();
-  await expect(page.locator("#vertical")).toBeVisible();
+  await page.waitForTimeout(600);
   await expect(page.locator("#horizontal")).toBeVisible();
+  await expect(page.locator("#rtl")).toBeVisible();
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  const vertical = page.getByLabel("Component list");
-  const horizontal = page.getByLabel("Release versions");
+
+  const hero = page.locator('[aria-label="Basic preview"]');
+  await expect(hero.getByText("Tags", { exact: true })).toBeVisible();
+  const vertical = hero.getByLabel("Version tags");
   expect(await vertical.evaluate(element => element.scrollHeight > element.clientHeight)).toBe(true);
-  expect(await horizontal.evaluate(element => element.scrollWidth > element.clientWidth)).toBe(true);
   await expect(vertical).toHaveAttribute("tabindex", "0");
-  await expect(page.locator("#vertical code")).toContainText("@/stylex/scroll-area");
+  await expect(vertical.getByText("v1.2.0-beta.50")).toBeVisible();
+
+  const horizontal = page.locator("#horizontal").getByLabel("Component versions");
+  expect(await horizontal.evaluate(element => element.scrollWidth > element.clientWidth)).toBe(true);
+
+  const rtl = page.locator("#rtl");
+  await expect(rtl.getByLabel("Version tags")).toHaveAttribute("dir", "rtl");
+  await expect(rtl.getByRole("heading", { name: "العلامات" })).toBeVisible();
+  await expect(page.locator("#horizontal code")).toContainText("@/stylex/scroll-area");
 });
 
 test("message scroller measures overflow and maps its scroll command", async ({
