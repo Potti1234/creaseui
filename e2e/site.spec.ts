@@ -2132,6 +2132,9 @@ test("pagination keeps routing and in-place actions parent controlled", async ({
   await expect(page.locator("#in-place-results")).toBeVisible();
   await expect(page.locator("#compact-neighborhood")).toBeVisible();
   await expect(page.locator("#disabled-boundary")).toBeVisible();
+  await expect(page.locator("#simple")).toBeVisible();
+  await expect(page.locator("#icons-only")).toBeVisible();
+  await expect(page.locator("#rtl")).toBeVisible();
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
 
   const links = page.locator("#addressable-pages");
@@ -2156,6 +2159,39 @@ test("pagination keeps routing and in-place actions parent controlled", async ({
   await expect(previous).not.toBeFocused();
   await boundary.getByRole("button", { name: "Go to next page" }).click();
   await expect(boundary.getByRole("button", { name: "Page 2, current page" })).toHaveAttribute("aria-current", "page");
+
+  const simple = page.locator("#simple");
+  await expect(
+    simple.getByRole("link", { name: "2", exact: true }),
+  ).toHaveAttribute("aria-current", "page");
+  await expect(simple.getByRole("link", { name: "5", exact: true })).toBeVisible();
+
+  const iconsOnly = page.locator("#icons-only");
+  await expect(
+    iconsOnly.getByRole("button", { name: "Rows per page" }),
+  ).toContainText("25");
+  await iconsOnly.getByRole("button", { name: "Rows per page" }).click();
+  await page.getByRole("option", { name: "50" }).click();
+  await expect(
+    iconsOnly.getByRole("button", { name: "Rows per page" }),
+  ).toContainText("50");
+  await expect(
+    iconsOnly.getByRole("link", { name: "Go to previous page" }),
+  ).toBeVisible();
+  await expect(
+    iconsOnly.getByRole("link", { name: "Go to next page" }),
+  ).toBeVisible();
+  await expect(iconsOnly.locator("code")).toContainText("rowsPerPage");
+
+  const rtlExample = page.locator("#rtl");
+  await expect(rtlExample.getByRole("navigation")).toHaveAttribute("dir", "rtl");
+  await expect(
+    rtlExample.getByRole("link", { name: "Go to previous page" }),
+  ).toContainText("السابق");
+  await expect(
+    rtlExample.getByRole("link", { name: "Go to next page" }),
+  ).toContainText("التالي");
+  await expect(rtlExample.locator("code")).toContainText("direction: 'rtl'");
 });
 
 test("breadcrumb sections mirror shadcn examples in both renderers", async ({ page }) => {
