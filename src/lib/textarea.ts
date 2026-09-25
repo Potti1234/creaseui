@@ -18,6 +18,7 @@ export type TextareaBehaviorProps<Msg> = Readonly<{
   wrap?: WrapPolicy
   resize?: ResizePolicy
   describedBy?: string
+  direction?: 'ltr' | 'rtl'
   isDisabled?: boolean
   isReadOnly?: boolean
   isInvalid?: boolean
@@ -78,6 +79,7 @@ export const renderTextarea = <Msg>(
               : [h.OnChange(props.onChange)]),
             ...(props.form === undefined ? [] : [h.FormAttr(props.form)]),
             ...(props.wrap === undefined ? [] : [h.Wrap(props.wrap)]),
+            ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
             ...(describedBy === undefined ? [] : [h.AriaDescribedBy(describedBy)]),
             ...visual.textarea,
           ],
