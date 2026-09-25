@@ -15,9 +15,9 @@ import * as DropdownMenu from '@/stylex/dropdown-menu';
 const styles = stylex.create({
   chevron: { fontSize: '0.875rem' },
   dropdownTrigger: {
+    gap: '0.25rem',
     alignItems: 'center',
     display: 'flex',
-    gap: '0.25rem',
   },
 });
 

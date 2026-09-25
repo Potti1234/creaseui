@@ -11,8 +11,8 @@ const IMAGE_URL = 'https://avatar.vercel.sh/shadcn1';
 const styles = stylex.create({
   frame: {
     borderRadius: '0.5rem',
-    backgroundColor: 'var(--muted)',
     overflow: 'hidden',
+    backgroundColor: 'var(--muted)',
     width: '100%',
   },
   w12: { maxWidth: '12rem' },
@@ -20,16 +20,16 @@ const styles = stylex.create({
   w24: { maxWidth: '24rem' },
   image: {
     borderRadius: '0.5rem',
-    objectFit: 'cover',
-    width: '100%',
-    height: '100%',
     filter: 'grayscale(100%)',
+    objectFit: 'cover',
+    height: '100%',
+    width: '100%',
   },
   caption: {
-    marginTop: '0.5rem',
-    textAlign: 'center',
-    fontSize: '0.875rem',
     color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    textAlign: 'center',
+    marginTop: '0.5rem',
   },
 });
 

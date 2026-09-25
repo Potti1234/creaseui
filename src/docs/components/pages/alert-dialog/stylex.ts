@@ -15,10 +15,10 @@ import { className } from '@/stylex/style';
 const styles = stylex.create({
   frame: { gap: '0.75rem', display: 'grid', justifyItems: 'center' },
   frameRtl: {
+    gap: '0.75rem',
     alignItems: 'center',
     display: 'flex',
     flexWrap: 'wrap',
-    gap: '0.75rem',
     justifyContent: 'center',
   },
   mediaIcon: { height: '2rem', width: '2rem' },

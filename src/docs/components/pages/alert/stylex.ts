@@ -9,7 +9,7 @@ import * as Alert from '@/stylex/alert';
 import * as Button from '@/stylex/button';
 
 const styles = stylex.create({
-  wrap: { display: 'grid', gap: '1rem', maxWidth: '28rem', width: '100%' },
+  wrap: { gap: '1rem', display: 'grid', maxWidth: '28rem', width: '100%', },
   action: { gridColumnStart: '2', marginTop: '0.5rem' },
 });
 

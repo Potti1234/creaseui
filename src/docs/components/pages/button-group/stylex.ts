@@ -24,24 +24,24 @@ import { tokens } from '../../../../stylex/tokens.stylex';
 
 const styles = stylex.create({
   stack: {
+    gap: '2rem',
     alignItems: 'flex-start',
     display: 'flex',
     flexDirection: 'column',
-    gap: '2rem',
   },
   voiceButton: {
-    alignItems: 'center',
     borderRadius: '0.5rem',
+    alignItems: 'center',
     color: tokens.mutedForeground,
     display: 'inline-flex',
-    height: '1.5rem',
     justifyContent: 'center',
+    height: '1.5rem',
     width: '1.5rem',
   },
   captionIcon: { fontSize: '0.875rem' },
   iconSm: { fontSize: '0.875rem' },
-  popoverBody: { display: 'grid', fontSize: '0.875rem', gap: '0.75rem' },
-  popoverHead: { display: 'grid', gap: '0.25rem' },
+  popoverBody: { gap: '0.75rem', display: 'grid', fontSize: '0.875rem', },
+  popoverHead: { gap: '0.25rem', display: 'grid', },
   popoverTitle: { fontSize: '0.875rem', fontWeight: 500 },
   popoverCopy: { color: tokens.mutedForeground, fontSize: '0.875rem' },
   popoverFootnote: {

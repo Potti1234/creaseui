@@ -16,21 +16,21 @@ import { className } from '@/stylex/style';
 
 const styles = stylex.create({
   hero: {
-    alignItems: 'center',
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
     gap: {
       default: '1.5rem',
       '@media (min-width: 768px)': '3rem',
     },
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   sizesRow: {
+    gap: '0.5rem',
     alignItems: 'center',
     display: 'flex',
     filter: 'grayscale(100%)',
     flexWrap: 'wrap',
-    gap: '0.5rem',
   },
   badgeIcon: { fontSize: '0.5rem' },
   countIcon: { fontSize: '1rem' },

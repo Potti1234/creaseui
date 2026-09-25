@@ -14,11 +14,11 @@ import * as InputOtp from '@/stylex/input-otp';
 import { className } from '@/stylex/style';
 
 const styles = stylex.create({
-  stack: { display: 'grid', gap: '0.5rem' },
+  stack: { gap: '0.5rem', display: 'grid', },
   status: { fontSize: '0.875rem', textAlign: 'center' },
-  row: { display: 'flex', alignItems: 'center', justifyContent: 'space-between' },
+  row: { alignItems: 'center', display: 'flex', justifyContent: 'space-between', },
   submit: { width: '100%' },
-  support: { fontSize: '0.875rem', color: 'var(--muted-foreground)' },
+  support: { color: 'var(--muted-foreground)', fontSize: '0.875rem', },
   link: { textDecorationLine: 'underline', textUnderlineOffset: '4px' },
   card: { marginInline: 'auto', maxWidth: '28rem' },
   medium: { fontWeight: 500 },

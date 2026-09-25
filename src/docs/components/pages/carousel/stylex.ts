@@ -13,19 +13,19 @@ import { className } from '@/stylex/style';
 const styles = stylex.create({
   wrap: { maxWidth: '20rem', width: '100%' },
   cardContent: {
+    padding: '1.5rem',
     alignItems: 'center',
     aspectRatio: '1/1',
     display: 'flex',
     fontSize: '2.25rem',
     fontWeight: 600,
     justifyContent: 'center',
-    padding: '1.5rem',
   },
   slidePadding: { padding: '0.5rem' },
   apiStatus: {
+    paddingBlock: '0.5rem',
     color: 'var(--muted-foreground)',
     fontSize: '0.875rem',
-    paddingBlock: '0.5rem',
     textAlign: 'center',
   },
 });
