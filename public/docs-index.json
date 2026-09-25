@@ -2308,7 +2308,7 @@
         {
           "name": "FieldProps",
           "kind": "type",
-          "signature": "FieldProps = Slot & Readonly<{ orientation?: FieldVariants['orientation']; isInvalid?: boolean; isDisabled?: boolean; }>"
+          "signature": "FieldProps = Slot & Readonly<{ orientation?: FieldVariants['orientation']; isInvalid?: boolean; isDisabled?: boolean; direction?: 'ltr' | 'rtl'; }>"
         },
         {
           "name": "field",
@@ -3551,14 +3551,19 @@
         "Potti1234/creaseui/progress-normalization"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Basic",
+        "Label",
+        "Controlled",
+        "RTL",
+        "Determinate",
+        "Indeterminate",
+        "Narrow Range"
       ],
       "api": [
         {
           "name": "ProgressProps",
           "kind": "type",
-          "signature": "ProgressProps = Readonly<{ /** `null` renders an indeterminate progress indicator. */ value: number | null; max?: number; ariaLabel?: string; valueText?: string; class?: string; }>"
+          "signature": "ProgressProps = Readonly<{ /** `null` renders an indeterminate progress indicator. */ value: number | null; max?: number; ariaLabel?: string; valueText?: string; id?: string; direction?: 'ltr' | 'rtl'; class?: string; }>"
         },
         {
           "name": "progress",
@@ -3857,8 +3862,11 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Horizontal",
-        "Vertical"
+        "Basic",
+        "Vertical",
+        "Menu",
+        "List",
+        "RTL"
       ],
       "api": [
         {
@@ -4248,8 +4256,13 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Profile",
-        "Card"
+        "Basic",
+        "Avatar",
+        "Card",
+        "Text",
+        "Form",
+        "Table",
+        "RTL"
       ],
       "api": [
         {

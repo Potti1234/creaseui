@@ -650,7 +650,7 @@ Examples: Payment Method, Input, Textarea, Select, Slider, Fieldset, Checkbox, R
 - `FieldVariants = VariantProps<typeof fieldVariants>` (type)
 - `ControlFieldProps<Msg> = SharedControlFieldProps<Msg> & Readonly<{ class?: string }>` (type)
 - `controlField<Msg>(props: ControlFieldProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-- `FieldProps = Slot & Readonly<{ orientation?: FieldVariants['orientation']; isInvalid?: boolean; isDisabled?: boolean; }>` (type)
+- `FieldProps = Slot & Readonly<{ orientation?: FieldVariants['orientation']; isInvalid?: boolean; isDisabled?: boolean; direction?: 'ltr' | 'rtl'; }>` (type)
 - `field<Msg>(props: FieldProps, h: HtmlBuilder<Msg>): Html` (function)
 - `fieldContent<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
 - `FieldLabelProps = Slot & Readonly<{ for?: string }>` (type)
@@ -973,9 +973,9 @@ A shadcn-styled Progress component for Foldkit.
 
 Source: `src/ui/progress.ts`
 
-Examples: Timed notification, Sticky error
+Examples: Basic, Label, Controlled, RTL, Determinate, Indeterminate, Narrow Range
 
-- `ProgressProps = Readonly<{ /** `null` renders an indeterminate progress indicator. */ value: number | null; max?: number; ariaLabel?: string; valueText?: string; class?: string; }>` (type)
+- `ProgressProps = Readonly<{ /** `null` renders an indeterminate progress indicator. */ value: number | null; max?: number; ariaLabel?: string; valueText?: string; id?: string; direction?: 'ltr' | 'rtl'; class?: string; }>` (type)
 - `progress<Msg>(props: ProgressProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Radio Group
@@ -1060,7 +1060,7 @@ A shadcn-styled Separator component for Foldkit.
 
 Source: `src/ui/separator.ts`
 
-Examples: Horizontal, Vertical
+Examples: Basic, Vertical, Menu, List, RTL
 
 - `SeparatorProps = Readonly<{ orientation?: 'horizontal' | 'vertical'; decorative?: boolean; class?: string; }>` (type)
 - `separator<Msg>(props: SeparatorProps = {}, h: HtmlBuilder<Msg>): Html` (function)
@@ -1152,7 +1152,7 @@ A shadcn-styled Skeleton component for Foldkit.
 
 Source: `src/ui/skeleton.ts`
 
-Examples: Profile, Card
+Examples: Basic, Avatar, Card, Text, Form, Table, RTL
 
 - `SkeletonProps = Readonly<{ shape?: 'text' | 'rectangle' | 'circle'; size?: 'sm' | 'md' | 'lg'; class?: string; }>` (type)
 - `skeleton<Msg>(props: SkeletonProps = {}, h: HtmlBuilder<Msg>): Html` (function)

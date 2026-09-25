@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 37 done · 24 todo · 3 crease-only
+Current: 38 done · 23 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -58,7 +58,7 @@ Current: 37 done · 24 todo · 3 crease-only
 | `navigation-menu` | 6 | RTL | todo (missing: RTL) |
 | `pagination` | 4 | Simple<br>Icons Only<br>RTL | todo (missing: Simple, Icons Only, RTL) |
 | `popover` | 2 | Basic<br>Align<br>With Form<br>RTL | todo (missing: Basic, Align, With Form, RTL) |
-| `progress` | 3 | Label<br>Controlled<br>RTL | todo (missing: Label, Controlled, RTL) |
+| `progress` | 7 | Label<br>Controlled<br>RTL | done |
 | `radio-group` | 4 | Description<br>Choice Card<br>Fieldset<br>Disabled<br>Invalid<br>RTL | todo (missing: Description, Choice Card, Fieldset, Disabled, Invalid, RTL) |
 | `resizable` | 2 | Vertical<br>Handle<br>RTL | todo (missing: Vertical, Handle, RTL) |
 | `scroll-area` | 2 | Horizontal<br>RTL | todo (missing: RTL) |

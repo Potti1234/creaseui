@@ -515,7 +515,7 @@ Source: [`src/ui/field.ts`](../src/ui/field.ts)
 | `FieldVariants` | type | `FieldVariants = VariantProps<typeof fieldVariants>` |
 | `ControlFieldProps` | type | `ControlFieldProps<Msg> = SharedControlFieldProps<Msg> & Readonly<{ class?: string }>` |
 | `controlField` | function | `controlField<Msg>(props: ControlFieldProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-| `FieldProps` | type | `FieldProps = Slot & Readonly<{ orientation?: FieldVariants['orientation']; isInvalid?: boolean; isDisabled?: boolean; }>` |
+| `FieldProps` | type | `FieldProps = Slot & Readonly<{ orientation?: FieldVariants['orientation']; isInvalid?: boolean; isDisabled?: boolean; direction?: 'ltr' \| 'rtl'; }>` |
 | `field` | function | `field<Msg>(props: FieldProps, h: HtmlBuilder<Msg>): Html` |
 | `fieldContent` | function | `fieldContent<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
 | `FieldLabelProps` | type | `FieldLabelProps = Slot & Readonly<{ for?: string }>` |
@@ -806,7 +806,7 @@ Source: [`src/ui/progress.ts`](../src/ui/progress.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `ProgressProps` | type | `ProgressProps = Readonly<{ /** `null` renders an indeterminate progress indicator. */ value: number \| null; max?: number; ariaLabel?: string; valueText?: string; class?: string; }>` |
+| `ProgressProps` | type | `ProgressProps = Readonly<{ /** `null` renders an indeterminate progress indicator. */ value: number \| null; max?: number; ariaLabel?: string; valueText?: string; id?: string; direction?: 'ltr' \| 'rtl'; class?: string; }>` |
 | `progress` | function | `progress<Msg>(props: ProgressProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Radio Group
