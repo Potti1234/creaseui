@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 48 done · 13 todo · 3 crease-only
+Current: 49 done · 12 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -55,7 +55,7 @@ Current: 48 done · 13 todo · 3 crease-only
 | `message` | 6 | Avatar<br>Group<br>Header and Footer<br>Actions<br>Attachment | done |
 | `message-scroller` | 2 | Core Concepts<br>Core Concepts<br>Core Concepts<br>Core Concepts<br>Core Concepts<br>Core Concepts<br>Core Concepts<br>Core Concepts<br>Core Concepts<br>Core Concepts | todo (missing: Core Concepts, Core Concepts, Core Concepts, Core Concepts, Core Concepts, Core Concepts, Core Concepts, Core Concepts, Core Concepts, Core Concepts) |
 | `native-select` | 5 | Groups<br>Disabled<br>Invalid<br>RTL | done |
-| `navigation-menu` | 6 | RTL | todo (missing: RTL) |
+| `navigation-menu` | 6 | RTL | done |
 | `pagination` | 4 | Simple<br>Icons Only<br>RTL | todo (missing: Simple, Icons Only, RTL) |
 | `popover` | 2 | Basic<br>Align<br>With Form<br>RTL | todo (missing: Basic, Align, With Form, RTL) |
 | `progress` | 7 | Label<br>Controlled<br>RTL | done |
