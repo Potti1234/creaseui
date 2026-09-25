@@ -35,6 +35,7 @@ export type ToggleGroupProps<Value extends string, Msg> = Readonly<{
   items: ReadonlyArray<ToggleGroupItem<Value>>
   direction?: 'ltr' | 'rtl'
   arrangement?: 'joined' | 'wrapped'
+  orientation?: 'vertical'
   variant?: ToggleVariants['variant']
   size?: ToggleVariants['size']
   class?: string
@@ -46,15 +47,18 @@ type LegacyToggleGroupProps<Value extends string, Msg> = Readonly<{
   ariaLabel?: string
   direction?: 'ltr' | 'rtl'
   arrangement?: 'joined' | 'wrapped'
+  orientation?: 'vertical'
   variant?: ToggleVariants['variant']
   size?: ToggleVariants['size']
   class?: string
 }> & (SingleSelection<Value> | MultipleSelection<Value>)
 
 const GROUP_CLASS =
-  'group/toggle-group flex w-fit items-center gap-0 rounded-md data-[variant=outline]:shadow-xs data-[arrangement=wrapped]:flex-wrap data-[arrangement=wrapped]:gap-1'
+  'group/toggle-group flex w-fit items-center gap-0 rounded-md data-[variant=outline]:shadow-xs data-[arrangement=wrapped]:flex-wrap data-[arrangement=wrapped]:gap-1 data-[orientation=vertical]:flex-col data-[orientation=vertical]:items-stretch'
 const ITEM_CLASS =
   'w-auto min-w-0 shrink-0 rounded-none px-3 shadow-none first:rounded-l-md last:rounded-r-md focus:z-10 focus-visible:z-10 data-[variant=outline]:border-l-0 first:data-[variant=outline]:border-l group-data-[arrangement=wrapped]/toggle-group:rounded-md group-data-[arrangement=wrapped]/toggle-group:data-[variant=outline]:border-l'
+const ITEM_CLASS_VERTICAL =
+  'w-auto min-w-0 shrink-0 rounded-none px-3 shadow-none first:rounded-t-md last:rounded-b-md focus:z-10 focus-visible:z-10 data-[variant=outline]:border-t-0 first:data-[variant=outline]:border-t group-data-[arrangement=wrapped]/toggle-group:rounded-md group-data-[arrangement=wrapped]/toggle-group:data-[variant=outline]:border-t'
 
 const renderToggleGroup = <Value extends string, Msg>(
   behavior: BehaviorBundle<Value>,
@@ -64,6 +68,7 @@ const renderToggleGroup = <Value extends string, Msg>(
   const variant = props.variant ?? 'default'
   const size = props.size ?? 'default'
   const arrangement = props.arrangement ?? 'joined'
+  const vertical = props.orientation === 'vertical'
   const selectedValues: ReadonlyArray<Value> =
     props.values === undefined ? [props.value] : props.values
 
@@ -75,6 +80,7 @@ const renderToggleGroup = <Value extends string, Msg>(
       items: props.items,
       ariaLabel: props.ariaLabel,
       ...(props.direction === undefined ? {} : { direction: props.direction }),
+      ...(vertical ? { orientation: 'vertical' as const } : {}),
     },
     {
       group: [
@@ -82,6 +88,7 @@ const renderToggleGroup = <Value extends string, Msg>(
         h.DataAttribute('variant', variant),
         h.DataAttribute('size', size),
         h.DataAttribute('arrangement', arrangement),
+        h.DataAttribute('orientation', vertical ? 'vertical' : 'horizontal'),
         h.Class(cn(GROUP_CLASS, props.class)),
       ],
       item: () => [],
@@ -99,7 +106,7 @@ const renderToggleGroup = <Value extends string, Msg>(
               ht.AriaPressed(item.isPressed ? 'true' : 'false'),
               ...(props.direction === undefined ? [] : [ht.Dir(props.direction)]),
               ...(content.ariaLabel === undefined ? [] : [ht.AriaLabel(content.ariaLabel)]),
-              ht.Class(cn(toggleVariants({ variant, size }), ITEM_CLASS, content.class)),
+              ht.Class(cn(toggleVariants({ variant, size }), vertical ? ITEM_CLASS_VERTICAL : ITEM_CLASS, content.class)),
             ],
             [...content.children],
           )
@@ -115,6 +122,7 @@ const renderLegacyToggleGroup = <Value extends string, Msg>(
   const variant = props.variant ?? 'default'
   const size = props.size ?? 'default'
   const arrangement = props.arrangement ?? 'joined'
+  const vertical = props.orientation === 'vertical'
   const selectedValues: ReadonlyArray<Value> = props.values === undefined ? [props.value] : props.values
   return h.div(
     [
@@ -125,6 +133,7 @@ const renderLegacyToggleGroup = <Value extends string, Msg>(
       h.DataAttribute('variant', variant),
       h.DataAttribute('size', size),
       h.DataAttribute('arrangement', arrangement),
+      h.DataAttribute('orientation', vertical ? 'vertical' : 'horizontal'),
       h.Class(cn(GROUP_CLASS, props.class)),
     ],
     props.items.map((item) => h.button(
@@ -137,7 +146,7 @@ const renderLegacyToggleGroup = <Value extends string, Msg>(
         h.DataAttribute('slot', 'toggle-group-item'),
         h.DataAttribute('variant', variant),
         h.DataAttribute('size', size),
-        h.Class(cn(toggleVariants({ variant, size }), ITEM_CLASS, item.class)),
+        h.Class(cn(toggleVariants({ variant, size }), vertical ? ITEM_CLASS_VERTICAL : ITEM_CLASS, item.class)),
       ],
       [...item.children],
     )),
