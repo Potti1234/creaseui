@@ -1003,7 +1003,7 @@ Source: [`src/ui/sonner.ts`](../src/ui/sonner.ts)
 | Export | Kind | Signature |
 | --- | --- | --- |
 | `*` | re-export | `export * from '@/lib/toast'` |
-| `SonnerProps` | type | `SonnerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel?: string pausePolicy?: 'none' \| 'pointer' class?: string entryClass?: string }>` |
+| `SonnerProps` | type | `SonnerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel?: string pausePolicy?: 'none' \| 'pointer' class?: string entryClass?: string position?: Position }>` |
 | `sonner` | function | `sonner<Msg>(props: SonnerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Spinner
@@ -1095,7 +1095,7 @@ Source: [`src/ui/toggle-group.ts`](../src/ui/toggle-group.ts)
 | `init` | re-export | `export { init } from ` |
 | `OutMessage` | re-export | `export { OutMessage } from ` |
 | `ToggleGroupItem` | type | `ToggleGroupItem<Value extends string = string> = Readonly<{ value: Value children: ReadonlyArray<Html \| string> ariaLabel?: string isDisabled?: boolean class?: string }>` |
-| `ToggleGroupProps` | type | `ToggleGroupProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel: string items: ReadonlyArray<ToggleGroupItem<Value>> direction?: 'ltr' \| 'rtl' arrangement?: 'joined' \| 'wrapped' variant?: ToggleVarian…` |
+| `ToggleGroupProps` | type | `ToggleGroupProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel: string items: ReadonlyArray<ToggleGroupItem<Value>> direction?: 'ltr' \| 'rtl' arrangement?: 'joined' \| 'wrapped' orientation?: 'vertica…` |
 | `ToggleGroupBundle` | type | `ToggleGroupBundle<Value extends string> = Readonly<{ update: BehaviorBundle<Value>['update'] toggleGroup: <Msg>(props: ToggleGroupProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html }>` |
 | `create` | function | `create<Value extends string = string>(): ToggleGroupBundle<Value>` |
 | `update` | value | `update: value` |

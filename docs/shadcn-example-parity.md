@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 47 done · 14 todo · 3 crease-only
+Current: 48 done · 13 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -64,7 +64,7 @@ Current: 47 done · 14 todo · 3 crease-only
 | `scroll-area` | 2 | Horizontal<br>RTL | todo (missing: RTL) |
 | `select` | 6 | Align Item With Trigger<br>Groups<br>Scrollable<br>Disabled<br>Invalid<br>RTL | todo (missing: Align Item With Trigger) |
 | `separator` | 9 | Vertical<br>Menu<br>List<br>RTL | done |
-| `sheet` | 4 | Side<br>No Close Button<br>RTL | todo (missing: Side, No Close Button, RTL) |
+| `sheet` | 4 | Side<br>No Close Button<br>RTL | done |
 | `sidebar` | 12 | — | crease-only |
 | `skeleton` | 7 | Avatar<br>Card<br>Text<br>Form<br>Table<br>RTL | done |
 | `slider` | 5 | Range<br>Multiple Thumbs<br>Vertical<br>Controlled<br>Disabled<br>RTL | todo (missing: Range, Multiple Thumbs, Vertical, Controlled, Disabled, RTL) |

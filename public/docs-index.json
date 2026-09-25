@@ -3902,10 +3902,10 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Compound layout",
-        "Bottom task",
-        "Top sheet",
-        "Left sheet"
+        "Basic",
+        "Side",
+        "No Close Button",
+        "RTL"
       ],
       "api": [
         {
