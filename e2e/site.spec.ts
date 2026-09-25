@@ -701,32 +701,62 @@ test("authored tabs keep child instances and selected values independent", async
   page,
 }) => {
   await page.goto("/docs/components/tabs");
-  await page.getByRole("button", { name: "StyleX" }).click();
-  await expect(page.locator("#settings")).toBeVisible();
-  await expect(page.locator("#line-variant")).toBeVisible();
-  await expect(page.locator("#manual-with-disabled-tab")).toBeVisible();
-  await expect(page.locator("#rtl-route-value")).toBeVisible();
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
 
-  const settings = page.locator("#settings");
-  const line = page.locator("#line-variant");
-  await settings.getByRole("tab", { name: "Security" }).click();
-  await expect(settings.getByRole("tabpanel")).toHaveText(
-    "Review passwords and sessions.",
-  );
+  const hero = page.locator('[aria-label="Basic preview"]');
+  await expect(hero.getByRole("tab", { name: "Analytics" })).toBeVisible();
+  await expect(hero.getByRole("tabpanel")).toContainText("12 active projects");
+  await hero.getByRole("tab", { name: "Analytics" }).click();
+  await expect(hero.getByRole("tabpanel")).toContainText("Page views are up 25%");
+
+  await expect(page.locator("#line")).toBeVisible();
+  await expect(page.locator("#vertical")).toBeVisible();
+  await expect(page.locator("#disabled")).toBeVisible();
+  await expect(page.locator("#icons")).toBeVisible();
+  await expect(page.locator("#rtl")).toBeVisible();
+
+  const line = page.locator("#line");
   await expect(line.getByRole("tab", { name: "Overview" })).toHaveAttribute(
     "aria-selected",
     "true",
   );
-
-  await line.getByRole("tab", { name: "Deployments" }).click();
-  await expect(line.getByRole("tabpanel")).toHaveText(
-    "Recent production releases.",
-  );
-  await expect(settings.getByRole("tab", { name: "Security" })).toHaveAttribute(
+  await line.getByRole("tab", { name: "Reports" }).click();
+  await expect(line.getByRole("tab", { name: "Reports" })).toHaveAttribute(
     "aria-selected",
     "true",
   );
+  await expect(hero.getByRole("tab", { name: "Analytics" })).toHaveAttribute(
+    "aria-selected",
+    "true",
+  );
+
+  const vertical = page.locator("#vertical");
+  await expect(vertical.locator('[data-slot="tabs"]')).toHaveAttribute(
+    "data-orientation",
+    "vertical",
+  );
+  await vertical.getByRole("tab", { name: "Password" }).click();
+  await expect(vertical.getByRole("tab", { name: "Password" })).toHaveAttribute(
+    "aria-selected",
+    "true",
+  );
+
+  await expect(
+    page.locator("#disabled").getByRole("tab", { name: "Disabled" }),
+  ).toBeDisabled();
+  await expect(
+    page.locator("#icons").getByRole("tab", { name: "Preview" }),
+  ).toBeVisible();
+
+  const rtl = page.locator("#rtl");
+  const rtlTabs = rtl.locator('[data-slot="tabs"]');
+  await expect(rtlTabs).toHaveAttribute("dir", "rtl");
+  await rtl.getByRole("tab", { name: "التحليلات" }).click();
+  await page.keyboard.press("ArrowRight");
+  await expect(rtl.getByRole("tab", { name: "نظرة عامة" })).toHaveAttribute(
+    "aria-selected",
+    "true",
+  );
+  await expect(rtl.getByRole("tabpanel")).toContainText("مشروعًا نشطًا");
 
   const manual = page.locator("#manual-with-disabled-tab");
   const accountTab = manual.getByRole("tab", { name: "Account" });
@@ -743,17 +773,12 @@ test("authored tabs keep child instances and selected values independent", async
   expect(panelId).toBeTruthy();
   await expect(manual.locator(`#${panelId}`)).toHaveText(/invoices/u);
 
-  const rtl = page.locator("#rtl-route-value");
-  const rtlTabs = rtl.locator('[data-slot="tabs"]');
-  await expect(rtlTabs).toHaveAttribute("dir", "rtl");
-  const rtlSettings = rtl.getByRole("tab", { name: "Settings" });
-  await rtlSettings.focus();
-  await page.keyboard.press("ArrowRight");
-  await expect(rtl.getByRole("tab", { name: "Deployments" })).toHaveAttribute(
-    "aria-selected",
-    "true",
-  );
-  await expect(settings.locator("code")).toContainText("@/stylex/tabs");
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  const sxHero = page.locator('[aria-label="Basic preview"]');
+  await expect(sxHero.getByRole("tab", { name: "Reports" })).toBeVisible();
+  await sxHero.getByRole("tab", { name: "Reports" }).click();
+  await expect(sxHero.getByRole("tabpanel")).toContainText("5 reports ready");
+  await expect(page.locator("#line code")).toContainText("@/stylex/tabs");
 });
 
 test("authored slider delegates keyboard changes and stores its output value", async ({
