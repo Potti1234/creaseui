@@ -1212,7 +1212,7 @@ A shadcn-styled Switch component for Foldkit.
 
 Source: `src/ui/switch.ts`
 
-Examples: Timed notification, Sticky error
+Examples: Basic, Description, Choice Card, Disabled, Invalid, Size, RTL
 
 - `SwitchSize = 'sm' | 'default'` (type)
 - `SwitchProps<Msg> = SwitchBehaviorProps<Msg> & Readonly<{ size?: SwitchSize; class?: string; }>` (type)

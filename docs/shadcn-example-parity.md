@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 39 done · 22 todo · 3 crease-only
+Current: 40 done · 21 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -70,7 +70,7 @@ Current: 39 done · 22 todo · 3 crease-only
 | `slider` | 5 | Range<br>Multiple Thumbs<br>Vertical<br>Controlled<br>Disabled<br>RTL | todo (missing: Range, Multiple Thumbs, Vertical, Controlled, Disabled, RTL) |
 | `sonner` | 7 | Types<br>Description<br>Position | todo (missing: Types, Description, Position) |
 | `spinner` | 2 | Customization<br>Size<br>Button<br>Badge<br>Input Group<br>Empty<br>RTL | todo (missing: Customization, Size, Button, Badge, Input Group, Empty, RTL) |
-| `switch` | 5 | Description<br>Choice Card<br>Disabled<br>Invalid<br>Size<br>RTL | todo (missing: Description, Choice Card, Invalid, Size) |
+| `switch` | 7 | Description<br>Choice Card<br>Disabled<br>Invalid<br>Size<br>RTL | done |
 | `table` | 4 | Footer<br>Actions<br>RTL | todo (missing: Actions, RTL) |
 | `tabs` | 4 | Line<br>Vertical<br>Disabled<br>Icons<br>RTL | todo (missing: Line, Vertical, Disabled, Icons, RTL) |
 | `textarea` | 4 | Field<br>Disabled<br>Invalid<br>Button<br>RTL | todo (missing: Field, Button, RTL) |
