@@ -1189,10 +1189,10 @@ A shadcn-styled Sonner component for Foldkit.
 
 Source: `src/ui/sonner.ts`
 
-Examples: Async save migration, Imperative API migration
+Examples: Basic, Types, Description, Position
 
 - `export * from '@/lib/toast'` (re-export)
-- `SonnerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel?: string pausePolicy?: 'none' | 'pointer' class?: string entryClass?: string }>` (type)
+- `SonnerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel?: string pausePolicy?: 'none' | 'pointer' class?: string entryClass?: string position?: Position }>` (type)
 - `sonner<Msg>(props: SonnerProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Spinner
