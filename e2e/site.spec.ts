@@ -1397,11 +1397,47 @@ test("drawer documents its child model and preserves modal focus behavior", asyn
   await expect(sideTrigger).toBeFocused();
 });
 
-test("popover delegates disclosure commands and restores trigger focus", async ({
+test("popover delegates disclosure commands and mirrors shadcn examples", async ({
   page,
 }) => {
   await page.goto("/docs/components/popover");
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await page.waitForTimeout(600);
+
+  const hero = page.locator('[aria-label="Basic preview"]');
+  await expect(hero.getByRole("button", { name: "Open Popover" })).toBeVisible();
+  await expect(page.locator("#align")).toBeVisible();
+  await expect(page.locator("#with-form")).toBeVisible();
+  await expect(page.locator("#rtl")).toBeVisible();
+
+  const align = page.locator("#align");
+  await align.getByRole("button", { name: "End", exact: true }).click();
+  await expect(
+    page.locator('[data-slot="popover-content"]'),
+  ).toContainText("Aligned to end");
+  await page.keyboard.press("Escape");
+
+  const form = page.locator("#with-form");
+  await form.getByRole("button", { name: "Open Popover" }).click();
+  const formPanel = page.locator('[data-slot="popover-content"]');
+  await expect(formPanel.getByRole("textbox", { name: "Width" })).toHaveValue(
+    "100%",
+  );
+  await formPanel
+    .getByRole("textbox", { name: "Height" })
+    .fill("50px");
+  await expect(
+    formPanel.getByRole("textbox", { name: "Height" }),
+  ).toHaveValue("50px");
+  await page.keyboard.press("Escape");
+
+  const rtl = page.locator("#rtl");
+  await rtl.getByRole("button", { name: "أسفل" }).click();
+  const rtlPanel = page.locator('[data-slot="popover-content"]');
+  await expect(rtlPanel).toHaveAttribute("dir", "rtl");
+  await expect(rtlPanel).toContainText("الأبعاد");
+  await page.keyboard.press("Escape");
+
   const example = page.locator("#interactive-content");
   await expect(example).toBeVisible();
   await expect(page.locator("#right-aligned")).toBeVisible();
@@ -1412,9 +1448,12 @@ test("popover delegates disclosure commands and restores trigger focus", async (
   // Foldkit's anchor layer portals positioned content outside the example article.
   const panel = page.locator('[data-slot="popover-content"]');
   await expect(panel).toBeVisible();
-  await expect(trigger).toHaveAttribute("id", "docs-popover-0-button");
-  await expect(trigger).toHaveAttribute("aria-controls", "docs-popover-0-panel");
-  await expect(panel).toHaveAttribute("id", "docs-popover-0-panel");
+  await expect(trigger).toHaveAttribute("id", "docs-popover-main-3-button");
+  await expect(trigger).toHaveAttribute(
+    "aria-controls",
+    "docs-popover-main-3-panel",
+  );
+  await expect(panel).toHaveAttribute("id", "docs-popover-main-3-panel");
   await expect(panel).toContainText("Set the dimensions");
   const panelBox = await panel.boundingBox();
   const viewport = page.viewportSize();

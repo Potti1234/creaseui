@@ -1,46 +1,214 @@
-import type { HtmlBuilder } from 'foldkit/html';
-
 import * as stylex from '@stylexjs/stylex';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { popoverFixtures } from '@/docs/components/pages/popover/shared';
+import {
+  popoverFixtures,
+  type PopoverFixture,
+  type PopoverInstance,
+} from '@/docs/components/pages/popover/shared';
+import * as Field from '@/stylex/field';
+import * as Input from '@/stylex/input';
 import * as Popover from '@/stylex/popover';
+import { className } from '@/stylex/style';
 
 const styles = stylex.create({
-  content: { gap: '0.5rem', display: 'grid', },
-  heading: { fontWeight: 500 },
-  copy: {
-    color: 'var(--muted-foreground)',
-    fontSize: '0.875rem',
-    lineHeight: '1.25rem',
+  wrap: {
+    gap: '1.5rem',
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
   },
-  input: { borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: '1px', paddingBlock: '0.5rem', paddingInline: '0.75rem' },
+  wrapTight: {
+    gap: '0.5rem',
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+  panel: { width: '10rem' },
+  panelWide: { width: '16rem' },
+  content: { gap: '0.5rem', display: 'grid', },
+  contentWide: { gap: '1rem', display: 'grid', },
+  heading: { fontWeight: 500 },
+  copy: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },
+  labelHalf: { width: '50%' },
 });
 
+interface PreviewShape {
+  readonly popovers: Readonly<Record<string, Popover.Model>>;
+  readonly values: Readonly<Record<string, string>>;
+}
+
+const popoverFor = <Msg>(
+  id: string,
+  model: PreviewShape,
+  onMessageJson: (messageJson: string) => Msg,
+  extra: Omit<Popover.PopoverProps<Msg>, 'model' | 'toParentMessage'>,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  Popover.popover(
+    {
+      model:
+        model.popovers[id] ??
+        Popover.init({ id: `popover-${id}`, isAnimated: true }),
+      toParentMessage: message =>
+        onMessageJson(
+          JSON.stringify({ _tag: 'GotPopoverMessage', id, message }),
+        ),
+      ...extra,
+    },
+    h,
+  );
+
+const headerContent = <Msg>(rtl: boolean, h: HtmlBuilder<Msg>): Html =>
+  h.div([h.Class(className(styles.content))], [
+    h.h4([h.Class(className(styles.heading))], [rtl ? 'الأبعاد' : 'Dimensions']),
+    h.p(
+      [h.Class(className(styles.copy))],
+      [rtl ? 'تعيين الأبعاد للطبقة.' : 'Set the dimensions for the layer.'],
+    ),
+  ]);
+
+const legacyView = <Msg>(
+  index: number,
+  model: PreviewShape,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const fixture = popoverFixtures[index];
+  const side = fixture?.kind === 'legacy' ? fixture.side : 'bottom';
+  const align = fixture?.kind === 'legacy' ? fixture.align : 'start';
+  return popoverFor(
+    'main',
+    model,
+    onMessageJson,
+    {
+      trigger: 'Open dimensions',
+      side,
+      align,
+      focusSelector: '[data-slot=popover-content] input',
+      content: h.div([h.Class(className(styles.content))], [
+        h.h4([h.Class(className(styles.heading))], ['Dimensions']),
+        h.p(
+          [h.Class(className(styles.copy))],
+          ['Set the dimensions for the layer.'],
+        ),
+        h.input([h.Type('number'), h.AriaLabel('Width')]),
+      ]),
+    },
+    h,
+  );
+};
+
+const formView = <Msg>(
+  model: PreviewShape,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const fieldInput = (id: string, label: string, value: string): Html =>
+    Field.field(
+      {
+        orientation: 'horizontal',
+        children: [
+          Field.fieldLabel(
+            { for: id, children: [label], layoutStyle: styles.labelHalf },
+            h,
+          ),
+          Input.input(
+            {
+              id,
+              value: model.values[id] ?? value,
+              onInput: value =>
+                onMessageJson(
+                  JSON.stringify({ _tag: 'ChangedFieldInput', id, value }),
+                ),
+            },
+            h,
+          ),
+        ],
+      },
+      h,
+    );
+  return popoverFor(
+    'form',
+    model,
+    onMessageJson,
+    {
+      trigger: 'Open Popover',
+      align: 'start',
+      layoutStyle: styles.panelWide,
+      focusSelector: '[data-slot=popover-content] input',
+      content: h.div([h.Class(className(styles.contentWide))], [
+        headerContent(false, h),
+        h.div([h.Class(className(styles.contentWide))], [
+          fieldInput('width', 'Width', '100%'),
+          fieldInput('height', 'Height', '25px'),
+        ]),
+      ]),
+    },
+    h,
+  );
+};
+
+const instanceView = <Msg>(
+  instance: PopoverInstance,
+  model: PreviewShape,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  popoverFor(
+    instance.id,
+    model,
+    onMessageJson,
+    {
+      trigger: instance.trigger,
+      side: instance.side,
+      align: instance.align,
+      layoutStyle: styles.panel,
+      ...(instance.rtl === true ? { direction: 'rtl' as const } : {}),
+      content:
+        instance.rtl === true ? headerContent(true, h) : instance.text,
+    },
+    h,
+  );
+
 export const popoverStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
-  exampleIndex: number,
+  index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
-) => {
-  const fixture = popoverFixtures[exampleIndex] ?? popoverFixtures[0];
-  const popoverModel = (model as { popover: Popover.Model }).popover;
-  return Popover.popover({
-    model: popoverModel,
-    toParentMessage: message => onMessageJson(JSON.stringify({
-      _tag: 'GotPopoverPreviewMessage',
-      message,
-    })),
-    trigger: 'Open dimensions',
-    side: fixture.side,
-    align: fixture.align,
-    focusSelector: 'input',
-    content: h.div([h.Class(stylex.props(styles.content).className ?? '')], [
-      h.h4([h.Class(stylex.props(styles.heading).className ?? '')], ['Dimensions']),
-      h.p([h.Class(stylex.props(styles.copy).className ?? '')], [
-        'Set the dimensions for the layer.',
-      ]),
-      h.input([h.Type('number'), h.AriaLabel('Width'), h.Class(stylex.props(styles.input).className ?? '')]),
-    ]),
-  }, h);
+): Html => {
+  const preview = model as PreviewShape;
+  const fixture: PopoverFixture =
+    popoverFixtures[index] ?? popoverFixtures[0];
+  switch (fixture.kind) {
+    case 'legacy':
+      return legacyView(index, preview, onMessageJson, h);
+    case 'basic':
+      return popoverFor(
+        'basic',
+        preview,
+        onMessageJson,
+        {
+          trigger: 'Open Popover',
+              align: 'start',
+          content: headerContent(false, h),
+        },
+        h,
+      );
+    case 'form':
+      return formView(preview, onMessageJson, h);
+    case 'align':
+      return h.div(
+        [h.Class(className(styles.wrap))],
+        fixture.instances.map(instance =>
+          instanceView(instance, preview, onMessageJson, h)),
+      );
+    case 'rtl':
+      return h.div(
+        [h.Class(className(styles.wrapTight))],
+        fixture.instances.map(instance =>
+          instanceView(instance, preview, onMessageJson, h)),
+      );
+  }
 };
