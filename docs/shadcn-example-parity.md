@@ -62,7 +62,7 @@ Current: 45 done · 16 todo · 3 crease-only
 | `radio-group` | 8 | Description<br>Choice Card<br>Fieldset<br>Disabled<br>Invalid<br>RTL | done |
 | `resizable` | 2 | Vertical<br>Handle<br>RTL | todo (missing: Vertical, Handle, RTL) |
 | `scroll-area` | 2 | Horizontal<br>RTL | todo (missing: RTL) |
-| `select` | 4 | Align Item With Trigger<br>Groups<br>Scrollable<br>Disabled<br>Invalid<br>RTL | todo (missing: Align Item With Trigger, Groups, Scrollable, Disabled, Invalid, RTL) |
+| `select` | 6 | Align Item With Trigger<br>Groups<br>Scrollable<br>Disabled<br>Invalid<br>RTL | todo (missing: Align Item With Trigger) |
 | `separator` | 9 | Vertical<br>Menu<br>List<br>RTL | done |
 | `sheet` | 4 | Side<br>No Close Button<br>RTL | todo (missing: Side, No Close Button, RTL) |
 | `sidebar` | 12 | — | crease-only |

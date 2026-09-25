@@ -3778,10 +3778,12 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Typed selection",
-        "Grouped fruit",
-        "Disabled option",
-        "Read only RTL"
+        "Basic",
+        "Groups",
+        "Scrollable",
+        "Disabled",
+        "Invalid",
+        "RTL"
       ],
       "api": [
         {
