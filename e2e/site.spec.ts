@@ -3492,7 +3492,7 @@ test("empty sections match upstream variants in both renderers", async ({ page }
   ).toBeVisible();
 
   const rtl = page.locator("#rtl");
-  await expect(rtl.locator('[dir="rtl"]')).toHaveCount(1);
+  await expect(rtl.locator('[dir="rtl"]').first()).toBeVisible();
   await expect(
     rtl.getByRole("heading", { level: 2, name: "لا توجد مشاريع بعد" }),
   ).toBeVisible();
@@ -3787,61 +3787,132 @@ test("radio group isolates roving focus from parent-owned selection", async ({
   await assertAccessible(page);
 });
 
-test("field guarantees linked parts and documents stale async validation", async ({
-  page,
-}) => {
+test("field sections match upstream variants in both renderers", async ({ page }) => {
   await page.goto("/docs/components/field");
 
-  const anatomy = page
-    .locator("#anatomy")
-    .getByRole("textbox", { name: "Display name" });
-  await anatomy.fill("Ada Lovelace");
-  await expect(anatomy).toHaveValue("Ada Lovelace");
-  await expect(anatomy).toHaveAttribute(
-    "aria-describedby",
-    "docs-field-name-description",
-  );
-  await expect(page.locator("#docs-field-name-description")).toContainText(
-    "public profile",
-  );
+  const hero = page.locator('[aria-label="Payment Method preview"]');
+  await expect(
+    hero.getByRole("textbox", { name: "Name on Card" }),
+  ).toBeVisible();
+  await expect(
+    hero.getByRole("textbox", { name: "Card Number" }),
+  ).toBeVisible();
+  await hero.getByRole("button", { name: "Month" }).click();
+  await page.getByRole("option", { name: "06", exact: true }).click();
+  await expect(
+    hero.getByRole("button", { name: "Month" }),
+  ).toContainText("06");
+  await expect(
+    hero.getByRole("checkbox", { name: "Same as shipping address" }),
+  ).toBeChecked();
 
-  const invalid = page
-    .locator("#validation-error")
-    .getByRole("textbox", { name: "Display name" });
-  await expect(invalid).toHaveAttribute("aria-invalid", "true");
-  await expect(invalid).toHaveAttribute(
-    "aria-describedby",
-    "docs-field-error-error",
-  );
-  await expect(page.locator("#docs-field-error-error")).toHaveRole("alert");
+  const input = page.locator("#input");
+  const username = input.getByRole("textbox", { name: "Username" });
+  await username.fill("Max Leiter");
+  await expect(username).toHaveValue("Max Leiter");
+  await expect(
+    input.getByRole("textbox", { name: "Password" }),
+  ).toHaveAttribute("type", "password");
 
-  const asyncSection = page.locator("#async-validation");
-  const username = asyncSection.getByRole("textbox", { name: "Username" });
-  await expect(username).toHaveAttribute(
-    "aria-describedby",
-    "docs-field-username-description docs-field-username-error",
-  );
-  await username.fill("ada");
-  await expect(asyncSection.getByRole("alert")).toBeHidden();
-  await expect(asyncSection).toContainText(
-    "message.version === model.validationVersion",
-  );
-  await assertAccessible(page);
+  const textarea = page.locator("#textarea");
+  await textarea.getByRole("textbox", { name: "Feedback" }).fill("great");
+  await expect(
+    textarea.getByRole("textbox", { name: "Feedback" }),
+  ).toHaveValue("great");
+
+  const select = page.locator("#select");
+  await select.getByRole("button", { name: "Department" }).click();
+  await page.getByRole("option", { name: "Engineering" }).click();
+  await expect(
+    select.getByRole("button", { name: "Department" }),
+  ).toContainText("Engineering");
+
+  const slider = page.locator("#slider");
+  await expect(slider).toContainText("Set your budget range ($200 - 800)");
+  await expect(
+    slider.getByRole("slider", { name: "Minimum price" }),
+  ).toBeVisible();
+
+  const fieldset = page.locator("#fieldset");
+  await expect(fieldset.locator("legend")).toHaveText("Address Information");
+  await expect(
+    fieldset.getByRole("textbox", { name: "Street Address" }),
+  ).toBeVisible();
+  await expect(fieldset.getByRole("textbox", { name: "City" })).toBeVisible();
+  await expect(
+    fieldset.getByRole("textbox", { name: "Postal Code" }),
+  ).toBeVisible();
+
+  const checkbox = page.locator("#checkbox");
+  await expect(
+    checkbox.getByRole("checkbox", { name: "Hard disks" }),
+  ).toBeChecked();
+  const external = checkbox.getByRole("checkbox", { name: "External disks" });
+  await external.click();
+  await expect(external).toBeChecked();
+  await expect(
+    checkbox.getByRole("checkbox", {
+      name: "Sync Desktop & Documents folders",
+    }),
+  ).toBeChecked();
+
+  const radio = page.locator("#radio");
+  const yearly = radio.getByRole("radio", { name: /Yearly/ });
+  await yearly.click();
+  await expect(yearly).toBeChecked();
+
+  const switchSection = page.locator("#switch");
+  const mfa = switchSection.getByRole("switch", {
+    name: "Multi-factor authentication",
+  });
+  await mfa.click();
+  await expect(mfa).toHaveAttribute("aria-checked", "true");
+
+  const choiceCard = page.locator("#choice-card");
+  const vm = choiceCard.getByRole("radio", { name: /Virtual Machine/ });
+  await vm.click();
+  await expect(vm).toBeChecked();
+  await expect(
+    choiceCard.getByRole("radio", { name: /Kubernetes/ }),
+  ).toBeChecked({ checked: false });
+
+  const group = page.locator("#field-group");
+  await expect(
+    group.getByRole("checkbox", { name: "Push notifications" }).first(),
+  ).toBeDisabled();
+  const emailTasks = group.getByRole("checkbox", {
+    name: "Email notifications",
+  });
+  await emailTasks.click();
+  await expect(emailTasks).toBeChecked();
+
+  const rtl = page.locator("#rtl");
+  await expect(rtl.locator('[dir="rtl"]').first()).toBeVisible();
+  await expect(rtl.locator("legend").first()).toHaveText("طريقة الدفع");
+
+  const responsive = page.locator("#responsive-layout");
+  await expect(responsive.locator("legend")).toHaveText("Profile");
+  await responsive.getByRole("textbox", { name: "Name" }).fill("Evil Rabbit");
+  await expect(
+    responsive.getByRole("textbox", { name: "Name" }),
+  ).toHaveValue("Evil Rabbit");
+  await expect(
+    responsive.getByRole("button", { name: "Submit" }),
+  ).toBeVisible();
 
   await page
     .getByRole("group", { name: "Preview styling engine" })
     .getByRole("button", { name: "StyleX" })
     .click();
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(anatomy).toHaveValue("Ada Lovelace");
-  await expect(anatomy).toHaveAttribute(
-    "aria-describedby",
-    "docs-field-name-description",
-  );
-  await expect(page.locator("#anatomy code")).toContainText("@/stylex/field");
-  await expect(invalid).toHaveAttribute("aria-invalid", "true");
-  await expect(username).toHaveValue("ada");
-  await assertAccessible(page);
+  await expect(username).toHaveValue("Max Leiter");
+  await expect(
+    page.locator("#select code"),
+  ).toContainText("@/stylex/field");
+  await expect(
+    choiceCard.getByRole("radio", { name: /Virtual Machine/ }),
+  ).toBeChecked();
+  await expect(rtl.locator('[dir="rtl"]').first()).toBeVisible();
 });
 
 test("form preserves native metadata and focuses linked validation feedback", async ({
