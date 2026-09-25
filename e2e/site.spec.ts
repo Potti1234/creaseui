@@ -2900,47 +2900,182 @@ test("scroll area preserves labeled native overflow on both axes", async ({ page
   await expect(page.locator("#horizontal code")).toContainText("@/stylex/scroll-area");
 });
 
-test("message scroller measures overflow and maps its scroll command", async ({
+test("message scroller covers every upstream core-concept section in both renderers", async ({
   page,
 }) => {
   await page.goto("/docs/components/message-scroller");
   await page.getByRole("button", { name: "StyleX" }).click();
-  await expect(page.locator("#jump-to-latest")).toBeVisible();
-  await expect(page.locator("#jump-to-beginning")).toBeVisible();
-  await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  const example = page.locator("#jump-to-latest");
-  const viewport = example.locator('[data-slot="message-scroller-viewport"]');
-  await expect(viewport).toHaveAttribute("data-pending-scroll", "false");
-  await expect.poll(() => viewport.evaluate((node) => Math.round(node.scrollTop + node.clientHeight - node.scrollHeight))).toBeGreaterThanOrEqual(-1);
-  await viewport.evaluate((node) => {
+  for (const id of [
+    "anchoring-turns",
+    "group-chat",
+    "keeping-context-visible",
+    "following-the-live-edge",
+    "opening-saved-threads",
+    "loading-earlier-messages",
+    "animating-new-messages",
+    "jumping-to-messages",
+    "tracking-the-reader’s-position",
+    "reading-scroll-state",
+  ]) {
+    await expect(page.locator(`[id="${id}"]`)).toBeVisible();
+  }
+
+  const anchoring = page.locator("#anchoring-turns");
+  const anchorViewport = anchoring.locator(
+    '[data-slot="message-scroller-viewport"]',
+  );
+  await expect(anchorViewport).toHaveAttribute("data-pending-scroll", "false");
+  await anchoring.getByRole("button", { name: "Send message" }).click();
+  await expect(anchoring).toContainText("Thanks — that covers it.");
+  const lastAnchor = anchoring
+    .locator('[data-scroll-anchor]')
+    .last();
+  await expect(lastAnchor).toContainText("Thanks — that covers it.");
+  await expect
+    .poll(() =>
+      lastAnchor.evaluate(
+        (node) => node.getBoundingClientRect().top -
+          (node.closest('[data-slot="message-scroller-viewport"]')?.getBoundingClientRect().top ?? 0),
+      ),
+    )
+    .toBeLessThan(120);
+
+  const groupChat = page.locator("#group-chat");
+  await groupChat
+    .getByRole("button", { name: "Marcus joins the chat" })
+    .click();
+  await expect(groupChat).toContainText("Priya joined the chat");
+  await expect(
+    groupChat
+      .locator('[data-scroll-anchor]')
+      .filter({ hasText: "Priya joined the chat" }),
+  ).toHaveCount(1);
+
+  const streaming = page.locator("#following-the-live-edge");
+  await streaming.getByRole("button", { name: "Start streaming" }).click();
+  await expect(streaming).toContainText("Streaming tokens land chunk by chunk");
+  await expect(streaming).toContainText("Following the live edge");
+
+  const opening = page.locator("#opening-saved-threads");
+  const openingViewport = opening.locator(
+    '[data-slot="message-scroller-viewport"]',
+  );
+  await expect
+    .poll(async () =>
+      opening
+        .locator('[data-message-id="msg-5"]')
+        .evaluate(
+          (node) => {
+            const v = node.closest('[data-slot="message-scroller-viewport"]');
+            if (v === null) return 9999;
+            const r = node.getBoundingClientRect();
+            const vr = v.getBoundingClientRect();
+            return Math.abs(r.top + r.height / 2 - (vr.top + vr.height / 2));
+          },
+        ),
+      { timeout: 8000 },
+    )
+    .toBeLessThan(80);
+
+  const history = page.locator("#loading-earlier-messages");
+  const historyViewport = history.locator(
+    '[data-slot="message-scroller-viewport"]',
+  );
+  await expect(historyViewport).toHaveAttribute(
+    "data-pending-scroll",
+    "false",
+  );
+  await historyViewport.evaluate((node) => {
+    node.scrollTop = node.scrollHeight * 0.55;
+    node.dispatchEvent(new Event("scroll"));
+  });
+  await expect(historyViewport).toHaveAttribute("data-following", "false");
+  const rowOffset = async (id: string) =>
+    historyViewport.evaluate((node, messageId) => {
+      const item = node.querySelector(`[data-message-id="${messageId}"]`);
+      if (item === null) return null;
+      return (
+        item.getBoundingClientRect().top - node.getBoundingClientRect().top
+      );
+    }, id);
+  const anchorId = "msg-6";
+  await historyViewport.evaluate((node, messageId) => {
+    const item = node.querySelector(`[data-message-id="${messageId}"]`);
+    if (item === null) return;
+    node.scrollTop +=
+      item.getBoundingClientRect().top - node.getBoundingClientRect().top - 40;
+    node.dispatchEvent(new Event("scroll"));
+  }, anchorId);
+  await expect(historyViewport).toHaveAttribute("data-following", "false");
+  const anchorBefore = await rowOffset(anchorId);
+  await history
+    .getByRole("button", { name: "Load earlier messages" })
+    .click();
+  await expect(history).toContainText("History loaded");
+  await expect
+    .poll(async () => {
+      const after = await rowOffset(anchorId);
+      if (anchorBefore === null || after === null) return 9999;
+      return Math.abs(after - anchorBefore);
+    })
+    .toBeLessThan(40);
+
+  const animating = page.locator("#animating-new-messages");
+  await animating.getByRole("button", { name: "Send message" }).click();
+  const newRow = animating.locator(
+    '[data-slot="message-scroller-item"]',
+    { hasText: "Thanks — that covers it." },
+  );
+  await expect(newRow).toBeVisible();
+  await expect
+    .poll(() => newRow.getAttribute("class"))
+    .not.toContain("opacity-0");
+
+  const jumping = page.locator("#jumping-to-messages");
+  await jumping
+    .getByRole("button", { name: "Jump to the RTL answer" })
+    .click();
+  await expect
+    .poll(async () =>
+      jumping
+        .locator('[data-message-id="msg-8"]')
+        .evaluate((node) => {
+          const v = node.closest('[data-slot="message-scroller-viewport"]');
+          if (v === null) return 9999;
+          const r = node.getBoundingClientRect();
+          const vr = v.getBoundingClientRect();
+          return Math.abs(r.top + r.height / 2 - (vr.top + vr.height / 2));
+        }),
+    )
+    .toBeLessThan(80);
+
+  const tracking = page.locator(
+    `[id="tracking-the-reader’s-position"]`,
+  );
+  await expect(tracking).toContainText("In view: msg-", { timeout: 8000 });
+
+  const reading = page.locator("#reading-scroll-state");
+  await expect(reading).toContainText("scrollTop:");
+  await expect(reading).toContainText("scrollHeight:");
+  const readingViewport = reading.locator(
+    '[data-slot="message-scroller-viewport"]',
+  );
+  await expect(readingViewport).toHaveAttribute(
+    "data-pending-scroll",
+    "false",
+  );
+  await readingViewport.evaluate((node) => {
     node.scrollTop = 40;
     node.dispatchEvent(new Event("scroll"));
   });
-  const button = example.getByRole("button", { name: "Scroll to end" });
-  await expect(viewport).toHaveAttribute("data-following", "false");
-  await expect(button).toHaveAttribute("data-active", "true");
-  await viewport.evaluate((node) => {
-    const appended = document.createElement("div");
-    appended.style.height = "120px";
-    appended.textContent = "Appended message";
-    node.querySelector('[data-slot="message-scroller-content"]')?.append(appended);
-  });
-  await expect(viewport).toHaveAttribute("data-new-messages", "true");
-  await button.click();
-  await expect(viewport).toHaveAttribute("data-following", "true");
-  await expect(viewport).toHaveAttribute("data-new-messages", "false");
-  await expect
-    .poll(() =>
-      viewport.evaluate((node) =>
-        Math.round(node.scrollTop + node.clientHeight - node.scrollHeight),
-      ),
-    )
-    .toBeGreaterThanOrEqual(-1);
-  await viewport.evaluate((node) => { node.style.height = "240px"; });
-  await expect(viewport).toHaveAttribute("data-pending-scroll", "false");
-  await expect(example.locator("code")).toContainText("Command.mapMessages");
-  await expect(example.locator("code")).toContainText("MessageScroller.update");
-  await expect(example.locator("code")).toContainText("@/stylex/message-scroller");
+  await expect(reading).toContainText("Not following");
+  await expect(readingViewport).toHaveAttribute("data-following", "false");
+  await reading.getByRole("button", { name: "Scroll to end" }).click();
+  await expect(readingViewport).toHaveAttribute("data-following", "true");
+  await expect(reading).toContainText("Following the live edge");
+  await expect(
+    reading.locator("code"),
+  ).toContainText("@/stylex/message-scroller");
 });
 
 for (const route of ["sonner", "toast"] as const) {
