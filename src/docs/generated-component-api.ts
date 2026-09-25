@@ -3220,7 +3220,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "SpinnerProps",
       "kind": "type",
-      "signature": "SpinnerProps = SpinnerAccessibility & Readonly<{ size?: 'sm' | 'md' | 'lg'; tone?: 'current' | 'muted' | 'primary'; /** Emits data-icon=\"inline-start|inline-end\" for parent icon positioning. */ dataIcon?: 'inline-start' | 'inline-end'; class?: string; }>"
+      "signature": "SpinnerProps = SpinnerAccessibility & Readonly<{ size?: 'sm' | 'md' | 'lg' | 'xl'; tone?: 'current' | 'muted' | 'primary'; /** Emits data-icon=\"inline-start|inline-end\" for parent icon positioning. */ dataIcon?: 'inline-start' | 'inline-end'; class?: string; …"
     },
     {
       "name": "spinner",
