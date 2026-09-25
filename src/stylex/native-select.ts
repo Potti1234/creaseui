@@ -110,6 +110,7 @@ export type NativeSelectProps<Msg> = Readonly<{
   size?: "sm" | "default";
   isDisabled?: boolean;
   isInvalid?: boolean;
+  direction?: 'ltr' | 'rtl';
   layoutStyle?: ComponentLayoutStyle;
 }>;
 export const nativeSelect = <Msg>(
@@ -135,6 +136,7 @@ export const nativeSelect = <Msg>(
             h.select(
               [
                 ...select,
+                ...(p.direction === undefined ? [] : [h.Dir(p.direction)]),
                 h.DataAttribute("slot", "native-select"),
                 h.DataAttribute("size", p.size ?? "default"),
                 h.Class(

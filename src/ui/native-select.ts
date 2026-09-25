@@ -90,6 +90,7 @@ export type NativeSelectProps<Msg> = Readonly<{
   size?: 'sm' | 'default';
   isDisabled?: boolean;
   isInvalid?: boolean;
+  direction?: 'ltr' | 'rtl';
   class?: string;
 }>;
 
@@ -116,6 +117,9 @@ export const nativeSelect = <Msg>(
             h.select(
               [
                 ...selectAttributes,
+                ...(props.direction === undefined
+                  ? []
+                  : [h.Dir(props.direction)]),
                 h.DataAttribute('slot', 'native-select'),
                 h.DataAttribute('size', props.size ?? 'default'),
                 h.Class(cn(SELECT_CLASS, props.class)),
