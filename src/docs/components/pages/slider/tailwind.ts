@@ -1,108 +1,155 @@
 import { Option, Schema as S } from 'effect';
 import { Command, Subscription } from 'foldkit';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 import { defineMessageUnion } from 'foldkit/message';
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import {
+  sliderFixtures,
+  type SliderFixture,
+  type SliderInstance,
+} from '@/docs/components/pages/slider/shared';
 import * as Slider from '@/ui/slider';
 
-
-
-const SliderPreviewMessage = defineMessageUnion({
-  GotSliderPreviewMessage: {
-  message: Slider.Message,
-},
-  'ChangedRangeSliderPreview': {
-  lower: S.Number,
-  upper: S.Number,
-},
+const Got = defineMessageUnion({
+  GotSliderMessage: { message: Slider.Message },
+  ChangedSliderValues: { id: S.String, values: S.Array(S.Number) },
 });
-type SliderPreviewMessage = typeof SliderPreviewMessage.Type;
-const SliderPreviewModel = S.Struct({
+type Got = typeof Got.Type;
+const Model = S.Struct({
   _docsPage: S.Literal('slider'),
   slider: Slider.Model,
   value: S.Number,
-  range: S.Tuple([S.Number, S.Number]),
+  values: S.Record(S.String, S.Array(S.Number)),
 });
-type SliderPreviewModel = typeof SliderPreviewModel.Type;
+type Model = typeof Model.Type;
 
-export const sliderTailwindPreviewProgram = definePreviewProgram<
-  SliderPreviewModel,
-  SliderPreviewMessage
->({
-  Model: SliderPreviewModel,
-  Message: SliderPreviewMessage,
-  init: index => ({
-    _docsPage: 'slider',
-    slider: Slider.init({
-      id: `docs-slider-${String(index)}`,
-      min: 0,
-      max: 100,
-      step: index === 1 ? 5 : 1,
-    }),
-    value: index === 0 ? 50 : 65,
-    range: [25, 75],
-  }),
-  update: (model, message) => {
-    if (message._tag === 'ChangedRangeSliderPreview') {
-      return { model: { ...model, range: [message.lower, message.upper] } };
-    }
-    const { model: slider, commands: sliderCommands__, outMessage: sliderOut__ } = Slider.update(model.slider, message.message);    const commands = sliderCommands__ ?? []
-    const maybeChange = Option.fromNullishOr(sliderOut__)
-    return { model: {
-        ...model,
-        slider,
-        value: Option.match(maybeChange, {
-          onNone: () => model.value,
-          onSome: change => change.value,
-        }),
-      }, commands: Command.mapMessages(
-        commands,
-        next => SliderPreviewMessage.GotSliderPreviewMessage({ message: next }),
-      ) };
+const instanceView = (
+  instance: SliderInstance,
+  model: Model,
+  h: HtmlBuilder<Got>,
+): Html =>
+  Slider.multiSlider(
+    {
+      values: model.values[instance.id] ?? instance.values,
+      min: instance.min,
+      max: instance.max,
+      step: instance.step,
+      onInput: values =>
+        Got.ChangedSliderValues({ id: instance.id, values }),
+      ...(instance.orientation === 'vertical'
+        ? { orientation: 'vertical' as const }
+        : {}),
+      ...(instance.direction === 'rtl'
+        ? { direction: 'rtl' as const }
+        : {}),
+      class: instance.orientation === 'vertical' ? 'h-40' : 'w-full',
+    },
+    h,
+  );
+
+const multiView = (
+  fixture: Extract<SliderFixture, { kind: 'multi' }>,
+  model: Model,
+  h: HtmlBuilder<Got>,
+): Html => {
+  const sliders = fixture.instances.map(instance =>
+    instanceView(instance, model, h));
+  if ('vertical' in fixture && fixture.vertical === true) {
+    return h.div(
+      [h.Class('flex w-full max-w-xs items-center justify-center gap-6')],
+      sliders,
+    );
+  }
+  if ('controlled' in fixture && fixture.controlled === true) {
+    return h.div([h.Class('grid w-full max-w-xs gap-3')], [
+      h.div([h.Class('flex items-center justify-between gap-2')], [
+        h.span([h.Class('text-sm font-medium')], ['Temperature']),
+        h.span([h.Class('text-sm text-muted-foreground')], [
+          (model.values['temperature'] ?? [0.3, 0.7]).join(', '),
+        ]),
+      ]),
+      ...sliders,
+    ]);
+  }
+  return h.div([h.Class('w-full max-w-xs')], sliders);
+};
+
+export const sliderTailwindPreviewProgram = definePreviewProgram<Model, Got>({
+  Model,
+  Message: Got,
+  init: index => {
+    const fixture = sliderFixtures[index] ?? sliderFixtures[0];
+    return {
+      _docsPage: 'slider',
+      slider: Slider.init({
+        id: `docs-slider-${String(index)}`,
+        min: 0,
+        max: 100,
+        step: 1,
+      }),
+      value: fixture.kind === 'slider' ? fixture.initialValue : 50,
+      values: Object.fromEntries(
+        (fixture.kind === 'multi' ? fixture.instances : []).map(instance => [
+          instance.id,
+          [...instance.values],
+        ]),
+      ),
+    };
   },
-  subscriptions: Subscription.lift({
-    pointer: Slider.subscriptions.dragPointer,
-    escape: Slider.subscriptions.dragEscape,
-  })<SliderPreviewModel, SliderPreviewMessage>({
-    toChildModel: model => model.slider,
-    toParentMessage: message => SliderPreviewMessage.GotSliderPreviewMessage({ message }),
-  }),
-  view: (index, model, h) => index === 0
-    ? h.div([h.Class('w-full max-w-sm')], [
-        Slider.slider({
+  update: (model, message) => {
+    switch (message._tag) {
+      case 'GotSliderMessage': {
+        const next = Slider.update(model.slider, message.message);
+        const commands = next.commands ?? [];
+        const maybeChange = Option.fromNullishOr(next.outMessage);
+        return {
+          model: {
+            ...model,
+            slider: next.model,
+            value: Option.match(maybeChange, {
+              onNone: () => model.value,
+              onSome: change => change.value,
+            }),
+          },
+          commands: Command.mapMessages(commands, next =>
+            Got.GotSliderMessage({ message: next })),
+        };
+      }
+      case 'ChangedSliderValues':
+        return {
+          model: {
+            ...model,
+            values: { ...model.values, [message.id]: message.values },
+          },
+        };
+    }
+  },
+  subscriptions: Subscription.aggregate<Model, Got>()(
+    Subscription.lift({
+      pointer: Slider.subscriptions.dragPointer,
+      escape: Slider.subscriptions.dragEscape,
+    })<Model, Got>({
+      toChildModel: model => model.slider,
+      toParentMessage: message => Got.GotSliderMessage({ message }),
+    }),
+  ),
+  view: (index, model, h) => {
+    const fixture = sliderFixtures[index] ?? sliderFixtures[0];
+    if (fixture.kind === 'multi') {
+      return multiView(fixture, model, h);
+    }
+    return h.div([h.Class('w-full max-w-xs')], [
+      Slider.slider(
+        {
           model: model.slider,
           value: model.value,
-          toParentMessage: message => SliderPreviewMessage.GotSliderPreviewMessage({ message }),
-          label: 'Volume',
-          formatValue: value => `${Math.round(value)} percent`,
-          name: 'volume',
-        }, h),
-        h.p([h.Class('mt-3 text-sm text-muted-foreground')], [
-          `Current value: ${Math.round(model.value)}`,
-        ]),
-      ])
-    : index === 1
-      ? Slider.slider({
-          model: model.slider,
-          value: model.value,
-          toParentMessage: message => SliderPreviewMessage.GotSliderPreviewMessage({ message }),
-          label: 'Managed volume',
-          isReadOnly: true,
-          class: 'max-w-sm',
-        }, h)
-      : h.div([h.Class(index === 3 ? 'h-48' : 'w-full max-w-sm')], [
-          Slider.rangeSlider({
-            values: model.range,
-            min: index === 4 ? 100 : 0,
-            max: index === 4 ? 0 : 100,
-            step: index === 4 ? 0 : 1,
-            onInput: ([lower, upper]) =>
-              SliderPreviewMessage['ChangedRangeSliderPreview']({ lower, upper }),
-            orientation: index === 3 ? 'vertical' : 'horizontal',
-            ...(index === 2 ? { direction: 'rtl' as const } : {}),
-            ariaLabels: ['Minimum price', 'Maximum price'],
-            formatValue: value => `$${String(value)}`,
-            name: 'price',
-          }, h),
-        ]),
+          toParentMessage: message => Got.GotSliderMessage({ message }),
+          ariaLabel: 'Slider',
+          ...(fixture.isDisabled ? { isDisabled: true } : {}),
+        },
+        h,
+      ),
+    ]);
+  },
 });

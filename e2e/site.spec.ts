@@ -781,20 +781,19 @@ test("authored tabs keep child instances and selected values independent", async
   await expect(page.locator("#line code")).toContainText("@/stylex/tabs");
 });
 
-test("authored slider delegates keyboard changes and stores its output value", async ({
+test("authored slider delegates keyboard changes and mirrors shadcn examples", async ({
   page,
 }) => {
   await page.goto("/docs/components/slider");
 
-  const example = page.locator("#controlled-volume");
-  const slider = example.getByRole("slider", { name: "Volume" });
+  const hero = page.locator('[aria-label="Basic preview"]');
+  const slider = hero.getByRole("slider", { name: "Slider" });
+  await expect(slider).toHaveAttribute("aria-valuenow", "75");
   await slider.focus();
   await page.keyboard.press("ArrowRight");
-  await expect(slider).toHaveAttribute("aria-valuenow", "51");
-  await expect(slider).toHaveAttribute("aria-valuetext", "51 percent");
-  await expect(example).toContainText("Current value: 51");
+  await expect(slider).toHaveAttribute("aria-valuenow", "76");
 
-  const track = example.locator('[data-slot="slider-track"]');
+  const track = hero.locator('[data-slot="slider-track"]');
   const box = await track.boundingBox();
   const thumbBox = await slider.boundingBox();
   expect(box).not.toBeNull();
@@ -804,65 +803,72 @@ test("authored slider delegates keyboard changes and stores its output value", a
     await page.mouse.down();
     await page.waitForTimeout(50);
     await page.mouse.move(box.x + box.width * 0.8, box.y + box.height / 2);
-    await expect(slider).not.toHaveAttribute("aria-valuenow", "51");
+    await expect(slider).not.toHaveAttribute("aria-valuenow", "76");
     await page.keyboard.press("Escape");
     await page.mouse.up();
-    await expect(slider).toHaveAttribute("aria-valuenow", "51");
+    await expect(slider).toHaveAttribute("aria-valuenow", "76");
   }
 
-  const readOnly = page
-    .locator("#read-only-value")
-    .getByRole("slider", { name: "Managed volume" });
-  await expect(readOnly).toHaveAttribute("aria-readonly", "true");
-  await readOnly.focus();
+  const range = page.locator("#range");
+  const lower = range.getByRole("slider", { name: "Value 1" });
+  const upper = range.getByRole("slider", { name: "Value 2" });
+  await expect(lower).toHaveValue("25");
+  await expect(upper).toHaveValue("50");
+  await lower.focus();
   await page.keyboard.press("ArrowRight");
-  await expect(readOnly).toHaveAttribute("aria-valuenow", "65");
+  await expect(lower).toHaveValue("30");
 
-  const rtlRange = page.locator("#rtl-price-range");
-  const minimum = rtlRange.getByRole("slider", { name: "Minimum price" });
-  const maximum = rtlRange.getByRole("slider", { name: "Maximum price" });
-  await expect(minimum).toHaveAttribute("aria-valuetext", "$25");
-  await minimum.focus();
-  await page.keyboard.press("End");
-  await expect(minimum).toHaveValue("75");
-  await expect(maximum).toHaveValue("75");
+  const multiple = page.locator("#multiple-thumbs");
+  await expect(multiple.getByRole("slider")).toHaveCount(3);
+  await expect(multiple.getByRole("slider", { name: "Value 3" })).toHaveValue("70");
 
-  const verticalMinimum = page
-    .locator("#vertical-range")
-    .getByRole("slider", { name: "Minimum price" });
-  await verticalMinimum.focus();
+  const vertical = page.locator("#vertical");
+  const verticalSliders = vertical.locator('[data-orientation="vertical"]');
+  await expect(verticalSliders).toHaveCount(2);
+  const v1 = vertical.getByRole("slider", { name: "Value 1" }).first();
+  await expect(v1).toHaveValue("50");
+  await v1.focus();
   await page.keyboard.press("ArrowUp");
-  await expect(verticalMinimum).toHaveValue("26");
+  await expect(v1).toHaveValue("51");
 
-  const normalized = page
-    .locator("#normalized-bounds")
-    .getByRole("slider", { name: "Minimum price" });
-  await expect(normalized).toHaveAttribute("min", "0");
-  await expect(normalized).toHaveAttribute("max", "100");
-  await expect(normalized).toHaveAttribute("step", "1");
+  const controlled = page.locator("#controlled");
+  await expect(controlled).toContainText("Temperature");
+  await expect(controlled).toContainText("0.3, 0.7");
+  const tempLow = controlled.getByRole("slider", { name: "Value 1" });
+  await tempLow.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(controlled).toContainText("0.4, 0.7");
+
+  const disabled = page.locator("#disabled");
+  await expect(
+    disabled.locator('[data-slot="slider"][data-disabled]'),
+  ).toBeVisible();
+
+  const rtl = page.locator("#rtl");
+  await expect(rtl.locator("div[dir='rtl']")).toBeVisible();
+  const rtlSlider = rtl.getByRole("slider", { name: "Value 1" });
+  await expect(rtlSlider).toHaveValue("75");
+  await rtlSlider.focus();
+  await page.keyboard.press("ArrowLeft");
+  await expect(rtlSlider).toHaveValue("76");
 
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  await page.waitForTimeout(600);
   for (const id of [
-    "controlled-volume",
-    "read-only-value",
-    "rtl-price-range",
-    "vertical-range",
-    "normalized-bounds",
+    "range",
+    "multiple-thumbs",
+    "vertical",
+    "controlled",
+    "disabled",
+    "rtl",
   ]) {
     await expect(page.locator(`#${id}`)).toBeVisible();
   }
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(page.locator("#controlled-volume code")).toContainText(
-    "@/stylex/slider",
-  );
-  await expect(slider).toHaveAttribute("aria-valuenow", "51");
-  await slider.focus();
-  await page.keyboard.press("ArrowRight");
-  await expect(slider).toHaveAttribute("aria-valuenow", "52");
-  await expect(example).toContainText("Current value: 52");
-  await expect(readOnly).toHaveAttribute("aria-valuenow", "65");
-  await expect(minimum).toHaveValue("75");
-  await expect(normalized).toHaveAttribute("step", "1");
+  await expect(page.locator("#range code")).toContainText("@/stylex/slider");
+  await expect(slider).toHaveAttribute("aria-valuenow", "76");
+  await expect(lower).toHaveValue("30");
+  await expect(rtlSlider).toHaveValue("76");
 });
 
 test("authored resizable instances keep axis-specific child state independent", async ({
