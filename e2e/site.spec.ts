@@ -2482,22 +2482,48 @@ test("separator keeps decorative and semantic boundaries across renderers", asyn
   await expect(vertical.getByRole("separator")).toHaveAttribute("aria-orientation", "vertical");
 });
 
-test("typography keeps semantic prose examples across renderers", async ({ page }) => {
+test("typography mirrors the shadcn example set across renderers", async ({ page }) => {
   await page.goto("/docs/components/typography");
-  const article = page.locator("#article");
-  await expect(article.getByRole("heading", { level: 2, name: "Foldkit architecture" })).toBeVisible();
-  await expect(page.locator("#inline-code").locator("code[data-slot=\"typography-inline-code\"]")).toHaveText("h.submodel");
-  await expect(page.locator("#quotation").locator("blockquote")).toBeVisible();
+
+  const hero = page.locator('[aria-label="Basic preview"]');
+  await expect(
+    hero.getByRole("heading", { level: 1, name: "Taxing Laughter: The Joke Tax Chronicles" }),
+  ).toBeVisible();
+  await expect(hero.getByRole("heading", { name: "The King’s Plan" })).toBeVisible();
+  await expect(hero.locator("blockquote")).toContainText("good joke");
+  await expect(hero.getByRole("table")).toBeVisible();
+  await expect(hero.locator("li")).toHaveCount(3);
+
+  await expect(
+    page.locator("#h2").getByRole("heading", { level: 2, name: "The People of the Kingdom" }),
+  ).toBeVisible();
+  await expect(
+    page.locator("#p").locator("p[data-slot='typography-p']"),
+  ).toContainText("repealed the joke tax");
+  await expect(page.locator("#blockquote blockquote")).toContainText("good joke");
+  await expect(
+    page.locator("#table").locator("td").filter({ hasText: "Overflowing" }),
+  ).toHaveCount(1);
+  await expect(page.locator("#list li")).toHaveCount(3);
+  await expect(
+    page.locator("#inline-code").locator("code[data-slot='typography-inline-code']"),
+  ).toHaveText("@radix-ui/react-alert-dialog");
+  await expect(page.locator("#muted")).toContainText("Enter your email address.");
+
+  const rtl = page.locator("#rtl");
+  await expect(rtl.locator("article[dir='rtl']")).toBeVisible();
+  await expect(
+    rtl.getByRole("heading", { level: 1, name: "فرض الضرائب على الضحك: سجلات ضريبة النكتة" }),
+  ).toBeVisible();
+  await expect(rtl.locator("li")).toHaveCount(3);
 
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
-  await expect(article).toBeVisible();
-  await expect(page.locator("#inline-code")).toBeVisible();
-  await expect(page.locator("#quotation")).toBeVisible();
+  await page.waitForTimeout(600);
+  await expect(hero.getByRole("heading", { level: 1, name: "Taxing Laughter: The Joke Tax Chronicles" })).toBeVisible();
+  await expect(hero.getByRole("table")).toBeVisible();
+  await expect(page.locator("#rtl article[dir='rtl']")).toBeVisible();
+  await expect(page.locator("#h1 code")).toContainText("@/stylex/typography");
   await expect(page.locator("#stylex-specimen")).toHaveCount(0);
-  await expect(article.locator("code")).toContainText("@/stylex/typography");
-  await expect(article.getByRole("heading", { level: 2, name: "Foldkit architecture" })).toBeVisible();
-  await expect(page.locator("#inline-code").locator("code[data-slot=\"typography-inline-code\"]")).toHaveText("h.submodel");
-  await expect(page.locator("#quotation").locator("blockquote")).toBeVisible();
 });
 
 test("sidebar documents persistence and toggles derived shell state", async ({
