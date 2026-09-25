@@ -668,9 +668,9 @@ Source: [`src/ui/marker.ts`](../src/ui/marker.ts)
 | --- | --- | --- |
 | `markerVariants` | value | `markerVariants: value` |
 | `MarkerPurpose` | type | `MarkerPurpose = 'annotation' \| 'status' \| 'decorative'` |
-| `marker` | function | `marker<Msg>(props: ChildrenProps & Readonly<{ variant?: VariantProps<typeof markerVariants>['variant']; purpose?: MarkerPurpose; ariaLabel?: string }>, h: HtmlBuilder<Msg>): Html` |
+| `marker` | function | `marker<Msg>(props: ChildrenProps & Readonly<{ variant?: VariantProps<typeof markerVariants>['variant']; purpose?: MarkerPurpose; ariaLabel?: string; element?: 'div' \| 'a' \| 'button'; href?: string; onClick?: () => Msg; }>, h: HtmlBuilder<Msg>): Html` |
 | `markerIcon` | function | `markerIcon<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
-| `markerContent` | function | `markerContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
+| `markerContent` | function | `markerContent<Msg>(props: ChildrenProps & Readonly<{ shimmer?: boolean }>, h: HtmlBuilder<Msg>): Html` |
 
 ## Menubar
 

@@ -2117,7 +2117,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "marker",
       "kind": "function",
-      "signature": "marker<Msg>(props: ChildrenProps & Readonly<{ variant?: VariantProps<typeof markerVariants>['variant']; purpose?: MarkerPurpose; ariaLabel?: string }>, h: HtmlBuilder<Msg>): Html"
+      "signature": "marker<Msg>(props: ChildrenProps & Readonly<{ variant?: VariantProps<typeof markerVariants>['variant']; purpose?: MarkerPurpose; ariaLabel?: string; element?: 'div' | 'a' | 'button'; href?: string; onClick?: () => Msg; }>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "markerIcon",
@@ -2127,7 +2127,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "markerContent",
       "kind": "function",
-      "signature": "markerContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html"
+      "signature": "markerContent<Msg>(props: ChildrenProps & Readonly<{ shimmer?: boolean }>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "menubar": [

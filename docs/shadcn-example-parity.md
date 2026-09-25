@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 31 done · 30 todo · 3 crease-only
+Current: 32 done · 29 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -50,7 +50,7 @@ Current: 31 done · 30 todo · 3 crease-only
 | `item` | 17 | Variant<br>Size<br>Icon<br>Avatar<br>Image<br>Group<br>Header<br>Link<br>Dropdown<br>RTL | done |
 | `kbd` | 6 | Group<br>Button<br>Tooltip<br>Input Group<br>RTL | done |
 | `label` | 3 | Label in Field<br>RTL | done |
-| `marker` | 3 | Variants<br>Status<br>Shimmer<br>Separator<br>Border<br>With Icon<br>Links and Buttons | todo (missing: Variants, Status, Shimmer, Links and Buttons) |
+| `marker` | 9 | Variants<br>Status<br>Shimmer<br>Separator<br>Border<br>With Icon<br>Links and Buttons | done |
 | `menubar` | 6 | Checkbox<br>Radio<br>Submenu<br>With Icons<br>RTL | todo (missing: Checkbox, Radio, Submenu, With Icons, RTL) |
 | `message` | 3 | Avatar<br>Group<br>Header and Footer<br>Actions<br>Attachment | todo (missing: Avatar, Group, Header and Footer, Actions, Attachment) |
 | `message-scroller` | 2 | Core Concepts<br>Core Concepts<br>Core Concepts<br>Core Concepts<br>Core Concepts<br>Core Concepts<br>Core Concepts<br>Core Concepts<br>Core Concepts<br>Core Concepts | todo (missing: Core Concepts, Core Concepts, Core Concepts, Core Concepts, Core Concepts, Core Concepts, Core Concepts, Core Concepts, Core Concepts, Core Concepts) |

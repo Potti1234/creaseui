@@ -2956,8 +2956,14 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Basic",
+        "Variants",
+        "Status",
+        "Shimmer",
+        "Separator",
+        "Border",
+        "With Icon",
+        "Links and Buttons"
       ],
       "api": [
         {
@@ -2973,7 +2979,7 @@
         {
           "name": "marker",
           "kind": "function",
-          "signature": "marker<Msg>(props: ChildrenProps & Readonly<{ variant?: VariantProps<typeof markerVariants>['variant']; purpose?: MarkerPurpose; ariaLabel?: string }>, h: HtmlBuilder<Msg>): Html"
+          "signature": "marker<Msg>(props: ChildrenProps & Readonly<{ variant?: VariantProps<typeof markerVariants>['variant']; purpose?: MarkerPurpose; ariaLabel?: string; element?: 'div' | 'a' | 'button'; href?: string; onClick?: () => Msg; }>, h: HtmlBuilder<Msg>): Html"
         },
         {
           "name": "markerIcon",
@@ -2983,7 +2989,7 @@
         {
           "name": "markerContent",
           "kind": "function",
-          "signature": "markerContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html"
+          "signature": "markerContent<Msg>(props: ChildrenProps & Readonly<{ shimmer?: boolean }>, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },

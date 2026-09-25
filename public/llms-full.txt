@@ -817,13 +817,13 @@ A shadcn-styled Marker component for Foldkit.
 
 Source: `src/ui/marker.ts`
 
-Examples: Timed notification, Sticky error
+Examples: Basic, Variants, Status, Shimmer, Separator, Border, With Icon, Links and Buttons
 
 - `markerVariants: value` (value)
 - `MarkerPurpose = 'annotation' | 'status' | 'decorative'` (type)
-- `marker<Msg>(props: ChildrenProps & Readonly<{ variant?: VariantProps<typeof markerVariants>['variant']; purpose?: MarkerPurpose; ariaLabel?: string }>, h: HtmlBuilder<Msg>): Html` (function)
+- `marker<Msg>(props: ChildrenProps & Readonly<{ variant?: VariantProps<typeof markerVariants>['variant']; purpose?: MarkerPurpose; ariaLabel?: string; element?: 'div' | 'a' | 'button'; href?: string; onClick?: () => Msg; }>, h: HtmlBuilder<Msg>): Html` (function)
 - `markerIcon<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
-- `markerContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+- `markerContent<Msg>(props: ChildrenProps & Readonly<{ shimmer?: boolean }>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Menubar
 

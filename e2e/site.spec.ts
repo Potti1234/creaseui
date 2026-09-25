@@ -3808,6 +3808,47 @@ test("label sections match upstream variants in both renderers", async ({ page }
   await expect(page.locator("#rtl").getByText("قبول الشروط والأحكام", { exact: true })).toBeVisible();
 });
 
+test("marker sections match upstream variants in both renderers", async ({ page }) => {
+  await page.goto("/docs/components/marker");
+  for (const id of ["variants", "status", "shimmer", "separator", "border", "with-icon", "links-and-buttons"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+
+  const hero = page.locator('[aria-label="Basic preview"]');
+  await expect(hero.getByText("Switched to a new branch", { exact: true })).toBeVisible();
+  await expect(hero.getByText("Thinking...", { exact: true })).toBeVisible();
+  await expect(hero.getByText("Conversation compacted", { exact: true })).toBeVisible();
+  await expect(hero.getByText("Explored 4 files", { exact: true })).toBeVisible();
+  await expect(hero.locator("[role='status']")).toBeVisible();
+
+  await expect(page.locator("#status").locator("[role='status']").first()).toBeVisible();
+  await expect(page.locator("#shimmer").locator("[role='status']").first()).toBeVisible();
+  const shimmerContent = page.locator("#shimmer").locator("[data-slot='marker-content']").first();
+  await expect(shimmerContent).toHaveClass(/shimmer/);
+  const sep = page.locator("#separator").locator("[data-variant='separator']");
+  await expect(sep).toHaveCount(3);
+  await expect(page.locator("#separator").getByText("Worked for 42s", { exact: true })).toBeVisible();
+  const borders = page.locator("#border").locator("[data-variant='border']");
+  await expect(borders).toHaveCount(3);
+  await expect(page.locator("#with-icon").locator("[data-slot='marker-icon']").first()).toBeVisible();
+
+  const links = page.locator("#links-and-buttons");
+  const link = links.locator("a[data-slot='marker']").first();
+  await expect(link).toHaveAttribute("href", "#links-and-buttons");
+  const revert = links.locator("button[data-slot='marker']").first();
+  await revert.click();
+  await expect(links.getByText("You clicked the revert button", { exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: "StyleX", exact: true }).click();
+  for (const id of ["variants", "status", "shimmer", "separator", "border", "with-icon", "links-and-buttons"]) {
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  }
+  await expect(page.locator("#links-and-buttons code")).toContainText("@/stylex/marker");
+  const sxLinks = page.locator("#links-and-buttons");
+  await sxLinks.locator("button[data-slot='marker']").first().click();
+  await expect(sxLinks.getByText("You clicked the revert button", { exact: true })).toBeVisible();
+});
+
 test("collapsible preserves controlled linkage, external changes, and disabled policy", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/docs/components/collapsible");
