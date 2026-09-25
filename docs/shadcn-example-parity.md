@@ -11,7 +11,7 @@ Status legend: **done** = every upstream section name has a matching example;
 **todo** = one or more upstream sections missing (names listed);
 **crease-only** = no upstream example sections (creaseui-native page).
 
-Current: 60 done · 1 todo · 3 crease-only
+Current: 61 done · 0 todo · 3 crease-only
 
 | Component | Ours | Upstream sections | Status |
 | --- | --- | --- | --- |
@@ -53,7 +53,7 @@ Current: 60 done · 1 todo · 3 crease-only
 | `marker` | 9 | Variants<br>Status<br>Shimmer<br>Separator<br>Border<br>With Icon<br>Links and Buttons | done |
 | `menubar` | 6 | Checkbox<br>Radio<br>Submenu<br>With Icons<br>RTL | done |
 | `message` | 6 | Avatar<br>Group<br>Header and Footer<br>Actions<br>Attachment | done |
-| `message-scroller` | 2 | Core Concepts<br>Core Concepts<br>Core Concepts<br>Core Concepts<br>Core Concepts<br>Core Concepts<br>Core Concepts<br>Core Concepts<br>Core Concepts<br>Core Concepts | todo (missing: Core Concepts, Core Concepts, Core Concepts, Core Concepts, Core Concepts, Core Concepts, Core Concepts, Core Concepts, Core Concepts, Core Concepts) |
+| `message-scroller` | 10 | Anchoring Turns<br>Group Chat<br>Keeping Context Visible<br>Following the Live Edge<br>Opening Saved Threads<br>Loading Earlier Messages<br>Animating New Messages<br>Jumping to Messages<br>Tracking the Reader's Position<br>Reading Scroll State | done |
 | `native-select` | 5 | Groups<br>Disabled<br>Invalid<br>RTL | done |
 | `navigation-menu` | 6 | RTL | done |
 | `pagination` | 9 | Simple<br>Icons Only<br>RTL | done |
