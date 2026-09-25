@@ -4751,8 +4751,14 @@
         "Potti1234/creaseui/utils"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Basic",
+        "Outline",
+        "Size",
+        "Spacing",
+        "Vertical",
+        "Disabled",
+        "Custom",
+        "RTL"
       ],
       "api": [
         {
@@ -4783,7 +4789,7 @@
         {
           "name": "ToggleGroupProps",
           "kind": "type",
-          "signature": "ToggleGroupProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel: string items: ReadonlyArray<ToggleGroupItem<Value>> direction?: 'ltr' | 'rtl' arrangement?: 'joined' | 'wrapped' variant?: ToggleVarian…"
+          "signature": "ToggleGroupProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel: string items: ReadonlyArray<ToggleGroupItem<Value>> direction?: 'ltr' | 'rtl' arrangement?: 'joined' | 'wrapped' orientation?: 'vertica…"
         },
         {
           "name": "ToggleGroupBundle",

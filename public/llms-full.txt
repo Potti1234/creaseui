@@ -1291,14 +1291,14 @@ A shadcn-styled Toggle Group component for Foldkit.
 
 Source: `src/ui/toggle-group.ts`
 
-Examples: Timed notification, Sticky error
+Examples: Basic, Outline, Size, Spacing, Vertical, Disabled, Custom, RTL
 
 - `export { Message } from ` (re-export)
 - `export { Model } from ` (re-export)
 - `export { init } from ` (re-export)
 - `export { OutMessage } from ` (re-export)
 - `ToggleGroupItem<Value extends string = string> = Readonly<{ value: Value children: ReadonlyArray<Html | string> ariaLabel?: string isDisabled?: boolean class?: string }>` (type)
-- `ToggleGroupProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel: string items: ReadonlyArray<ToggleGroupItem<Value>> direction?: 'ltr' | 'rtl' arrangement?: 'joined' | 'wrapped' variant?: ToggleVarian…` (type)
+- `ToggleGroupProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel: string items: ReadonlyArray<ToggleGroupItem<Value>> direction?: 'ltr' | 'rtl' arrangement?: 'joined' | 'wrapped' orientation?: 'vertica…` (type)
 - `ToggleGroupBundle<Value extends string> = Readonly<{ update: BehaviorBundle<Value>['update'] toggleGroup: <Msg>(props: ToggleGroupProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html }>` (type)
 - `create<Value extends string = string>(): ToggleGroupBundle<Value>` (function)
 - `update: value` (value)
