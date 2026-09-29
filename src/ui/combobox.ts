@@ -164,17 +164,27 @@ const buildBaseViewInputs = <Item, Value extends string, Msg>(
     const item = itemForValue(value);
     return item === undefined ? value : props.itemToLabel(item);
   };
+  const isItemDisabled = (value: Value): boolean => {
+    const item = itemForValue(value);
+    return item === undefined
+      ? false
+      : (props.itemToConfig?.(item).isDisabled ?? false);
+  };
+  const isDisabled = props.isDisabled ?? false;
+  const isReadOnly = props.isReadOnly ?? false;
+  const firstEnabledIndex = values.findIndex(
+    (value) => !isItemDisabled(value),
+  );
+  const lastEnabledIndex = values.reduce(
+    (last, value, index) => (isItemDisabled(value) ? last : index),
+    -1,
+  );
   return {
       restingInputValue,
       items: values,
       itemToValue: (value) => value,
       itemToDisplayText: labelForValue,
-      isItemDisabled: (value) => {
-        const item = itemForValue(value);
-        return item === undefined
-          ? false
-          : (props.itemToConfig?.(item).isDisabled ?? false);
-      },
+      isItemDisabled,
       itemToConfig: (value) => {
         const item = itemForValue(value);
         const config =
@@ -196,6 +206,57 @@ const buildBaseViewInputs = <Item, Value extends string, Msg>(
       inputClassName: INPUT_CLASS,
       inputAttributes: childAttributes([
         hc.DataAttribute('slot', 'command-input'),
+        // Base UI emits aria-autocomplete="none" while the input is readOnly.
+        ...(isReadOnly ? [hc.Attribute('aria-autocomplete', 'none')] : []),
+        ...(isDisabled
+          ? []
+          : [
+              /* Base UI never opens the popup on focus alone (openOnInputClick
+                 only). The primitive's no-op suppression marker acknowledges
+                 the event so the scene DSL can still emit focus. */
+              hc.OnFocus(
+                props.toParentMessage(
+                  ComboboxPrimitive.Message.SuppressedItemCommit(),
+                ),
+              ),
+              ...(props.model.isOpen
+                ? []
+                : [
+                    hc.OnClick(
+                      props.toParentMessage(
+                        ComboboxPrimitive.Message.Opened({
+                          maybeActiveItemIndex: Option.none(),
+                        }),
+                      ),
+                    ),
+                  ]),
+              /* Base UI maps PageDown/PageUp to the last/first enabled
+                 option; foldkit's input keymap ignores them, so the view
+                 layer fills the gap. */
+              hc.OnKeyDownPreventDefault((key) => {
+                if (key !== 'PageDown' && key !== 'PageUp') {
+                  return Option.none();
+                }
+                const index =
+                  key === 'PageDown' ? lastEnabledIndex : firstEnabledIndex;
+                const item = index === -1 ? undefined : values[index];
+                if (!props.model.isOpen || item === undefined) {
+                  return Option.none();
+                }
+                return Option.some(
+                  props.toParentMessage(
+                    ComboboxPrimitive.Message.ActivatedItem({
+                      index,
+                      activationTrigger: 'Keyboard',
+                      maybeImmediateSelection:
+                        isReadOnly || !props.model.immediate
+                          ? Option.none()
+                          : Option.some({ item }),
+                    }),
+                  ),
+                );
+              }),
+            ]),
       ]),
       ...(props.placeholder === undefined
         ? {}
@@ -205,7 +266,6 @@ const buildBaseViewInputs = <Item, Value extends string, Msg>(
         hc.DataAttribute('slot', 'command-input-wrapper'),
         hc.DataAttribute('size', props.size ?? 'default'),
       ]),
-      openOnFocus: true,
       itemsClassName: CONTENT_CLASS,
       itemsAttributes: childAttributes([
         hc.DataAttribute('slot', 'command-list'),
@@ -219,8 +279,8 @@ const buildBaseViewInputs = <Item, Value extends string, Msg>(
         ...(props.direction === undefined ? [] : [hc.Dir(props.direction)]),
       ]),
       anchor: { placement: 'bottom-start', gap: 4 },
-      isDisabled: props.isDisabled ?? false,
-      isReadOnly: props.isReadOnly ?? false,
+      isDisabled,
+      isReadOnly,
       isInvalid: props.isInvalid ?? false,
       ...(props.formName === undefined ? {} : { formName: props.formName }),
       ...(props.itemGroupKey === undefined
@@ -261,11 +321,15 @@ const buildBaseViewInputs = <Item, Value extends string, Msg>(
             ...(props.trigger.class === undefined
               ? {}
               : { buttonClassName: props.trigger.class }),
-            buttonAttributes: childAttributes(
-              props.trigger.ariaLabel === undefined
+            buttonAttributes: childAttributes([
+              /* Base UI's trigger is an ordinary focusable button; foldkit's
+                 toggle is pointer-only (tabIndex -1). Restoring tabIndex 0
+                 keeps it in the keyboard tab order. */
+              ...(isDisabled ? [] : [hc.Tabindex(0)]),
+              ...(props.trigger.ariaLabel === undefined
                 ? []
-                : [hc.AriaLabel(props.trigger.ariaLabel)],
-            ),
+                : [hc.AriaLabel(props.trigger.ariaLabel)]),
+            ]),
           }),
     };
 };
@@ -279,17 +343,30 @@ export const create = <Value extends string = string>(
   config?: Readonly<{ autoHighlight?: boolean }>,
 ): ComboboxBundle<Value> => {
   const primitive = ComboboxPrimitive.create<Value>();
-  const update =
-    config?.autoHighlight === true
-      ? (model: Model, message: Message) =>
-          primitive.update(
-            model,
-            message._tag === 'Opened' &&
-              Option.isNone(message.maybeActiveItemIndex)
-              ? Message.Opened({ maybeActiveItemIndex: Option.some(0) })
-              : message,
-          )
-      : primitive.update;
+  const update = (model: Model, message: Message) => {
+    const next = primitive.update(model, message);
+    /* Base UI's autoHighlight only kicks in once filtering starts — neither
+       opening nor typing highlights on its own when it is off. foldkit's
+       UpdatedInputValue pre-activates index 0, so strip it back out. */
+    const typedModel =
+      message._tag === 'UpdatedInputValue' && config?.autoHighlight !== true
+        ? { ...next.model, maybeActiveItemIndex: Option.none() }
+        : next.model;
+    /* Base UI deselects immediately when a nullable single-select input is
+       emptied, while the popup stays open. */
+    if (
+      message._tag === 'UpdatedInputValue' &&
+      message.value === '' &&
+      model.nullable
+    ) {
+      return {
+        ...next,
+        model: typedModel,
+        outMessage: OutMessage.ClearedSelection(),
+      };
+    }
+    return { ...next, model: typedModel };
+  };
   return {
     update,
     combobox: (props, h) => renderCombobox(primitive, props, h),
@@ -315,23 +392,20 @@ export type ComboboxMultiBundle<Value extends string> = Readonly<{
 
 /** Multi-select combobox matching shadcn's `Combobox multiple`: selection
  *  stays open after each pick and the parent toggles value membership from
- *  the `Selected` OutMessage. `autoHighlight` pre-activates the first item
- *  on every open, like base-ui's autoHighlight. */
+ *  the `Selected` OutMessage. `autoHighlight` activates the first matching
+ *  item while typing, like base-ui's autoHighlight. */
 export const createMulti = <Value extends string = string>(
   config?: Readonly<{ autoHighlight?: boolean }>,
 ): ComboboxMultiBundle<Value> => {
   const primitive = ComboboxPrimitive.Multi.create<Value>();
-  const update =
-    config?.autoHighlight === true
-      ? (model: MultiModel, message: Message) =>
-          primitive.update(
-            model,
-            message._tag === 'Opened' &&
-              Option.isNone(message.maybeActiveItemIndex)
-              ? Message.Opened({ maybeActiveItemIndex: Option.some(0) })
-              : message,
-          )
-      : primitive.update;
+  const update = (model: MultiModel, message: Message) => {
+    const next = primitive.update(model, message);
+    const typedModel =
+      message._tag === 'UpdatedInputValue' && config?.autoHighlight !== true
+        ? { ...next.model, maybeActiveItemIndex: Option.none() }
+        : next.model;
+    return { ...next, model: typedModel };
+  };
   const comboboxMulti = <Item, Msg>(
     props: ComboboxMultiProps<Item, Value, Msg>,
     h: HtmlBuilder<Msg>,

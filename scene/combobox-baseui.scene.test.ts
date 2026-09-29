@@ -296,7 +296,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.expect(input).toHaveAttr('aria-expanded', 'true'),
           Scene.expect(input).toHaveAttr('aria-controls', 'fruit-items'),
@@ -363,13 +363,12 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
     })
 
     describe('opening and closing the popup', () => {
-      it('opens the popup when the input is focused', () => {
+      it('opens the popup when the input is clicked', () => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
           Scene.given(initModel()),
-          // foldkit opens on focus (`openOnFocus: true`); the scene DSL has no
-          // input click to drive `openOnInputClick`.
-          Scene.focus(input),
+          // Base UI's openOnInputClick: a click on the input opens the popup.
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.expect(listbox).toExist(),
           Scene.expect(input).toHaveAttr('data-open', ''),
@@ -378,10 +377,9 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI does not open on focus alone — a Tab-focus leaves
-      // the popup closed until a click or keystroke; creaseui hardcodes
-      // openOnFocus: true, so focusing the input opens it.
-      it.fails('does not open the popup on focus alone', () => {
+      // Base UI does not open on focus alone — a Tab-focus leaves the
+      // popup closed until a click or keystroke.
+      it('does not open the popup on focus alone', () => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
           Scene.given(initModel()),
@@ -434,7 +432,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.keydown(input, 'Escape'),
           // Focus restoration is a Command in foldkit — assert and resolve it.
@@ -451,7 +449,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.expect(backdrop).toExist(),
           Scene.click(backdrop),
@@ -465,7 +463,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.blur(input),
           // A blur-driven close does not refocus the input.
@@ -538,7 +536,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
               combobox: TailwindCombobox.init({ id: 'fruit', isModal: true }),
             }),
           ),
-          Scene.focus(input),
+          Scene.click(input),
           Scene.Command.expectHas(ComboboxPrimitive.LockScroll),
           Scene.Command.expectHas(ComboboxPrimitive.InertOthers),
           Scene.Command.resolve(
@@ -626,10 +624,9 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI's Combobox.Trigger is an ordinary focusable
-      // button; foldkit's toggle is a pointer-only control (`tabIndex: -1`),
-      // so keyboard users reach the popup through the input instead.
-      it.fails('keeps the trigger in the keyboard tab order', () => {
+      // Base UI's Combobox.Trigger is an ordinary focusable button, so the
+      // toggle stays in the keyboard tab order (tabIndex 0, not -1).
+      it('keeps the trigger in the keyboard tab order', () => {
         Scene.scene(
           {
             update,
@@ -649,7 +646,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.keydown(input, 'ArrowDown'),
           resolveScrollIntoView,
@@ -708,7 +705,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.keydown(input, 'End'),
           resolveScrollIntoView,
@@ -764,7 +761,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.keydown(input, 'ArrowDown'),
           Scene.Command.expectHas(ComboboxPrimitive.ScrollIntoView),
@@ -772,17 +769,16 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI maps PageDown/PageUp to the last/first option;
-      // foldkit's input keymap handles only Arrow/Home/End and ignores
-      // PageDown/PageUp entirely.
-      it.fails('moves the highlight to the last option on PageDown', () => {
+      // Base UI maps PageDown/PageUp to the last/first option; creaseui's
+      // view layer adds the keymap entries foldkit's primitive lacks.
+      it('moves the highlight to the last option on PageDown', () => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.keydown(input, 'PageDown'),
-          Scene.expectIgnored(),
+          resolveScrollIntoView,
           Scene.expect(input).toHaveAttr(
             'aria-activedescendant',
             'fruit-item-2',
@@ -794,7 +790,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS_WITH_DISABLED) },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.expect(option('apple')).toHaveHandler('pointermove'),
           Scene.expect(option('banana')).not.toHaveHandler('pointermove'),
@@ -812,7 +808,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.click(option('banana')),
           Scene.expectOutMessage(
@@ -829,7 +825,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.keydown(input, 'ArrowDown'),
           resolveScrollIntoView,
@@ -850,7 +846,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.keydown(input, 'Enter'),
           Scene.expectIgnored(),
@@ -863,7 +859,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.click(option('apple')),
           Scene.expectOutMessage(
@@ -871,7 +867,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
           ),
           resolveFocusInput,
           expectPanelUnmounted(),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.click(option('apple')),
           Scene.expectOutMessage(
@@ -887,12 +883,12 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.click(option('banana')),
           resolveFocusInput,
           expectPanelUnmounted(),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.expect(option('banana')).toHaveAttr('aria-selected', 'true'),
           Scene.expect(option('banana')).toHaveAttr('data-selected', ''),
@@ -905,12 +901,12 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.click(option('apple')),
           resolveFocusInput,
           expectPanelUnmounted(),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.expectAll(allOptions).toHaveCount(3),
         )
@@ -920,7 +916,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
           Scene.given(initModel({ maybeValue: Option.some('banana') })),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.type(input, 'zzz'),
           expectPanelUnmounted(),
@@ -940,7 +936,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
               maybeValue: Option.some('banana'),
             }),
           ),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           // An emptied query matches everything, so the panel stays mounted.
           Scene.type(input, ''),
@@ -956,7 +952,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
           Scene.given(initModel({ maybeValue: Option.some('banana') })),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.type(input, ''),
           Scene.keydown(input, 'Escape'),
@@ -967,15 +963,18 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI deselects immediately when the input text is
-      // cleared — the option's aria-selected flips while the popup is still
-      // open. creaseui only clears on close (and only when `nullable`), so a
-      // cleared input leaves the previous option marked selected.
-      it.fails('clears the selection as soon as the input is emptied', () => {
+      // Base UI deselects immediately when the input text is cleared — the
+      // option's aria-selected flips while the popup is still open.
+      it('clears the selection as soon as the input is emptied', () => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
-          Scene.given(initModel({ maybeValue: Option.some('banana') })),
-          Scene.focus(input),
+          Scene.given(
+            initModel({
+              combobox: TailwindCombobox.init({ id: 'fruit', nullable: true }),
+              maybeValue: Option.some('banana'),
+            }),
+          ),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.type(input, ''),
           Scene.expect(option('banana')).toHaveAttr('aria-selected', 'false'),
@@ -1049,7 +1048,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.type(input, 'zzz'),
           Scene.expect(listbox).toExist(),
@@ -1135,7 +1134,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
             view: singleView(Single, FRUITS, { isReadOnly: true }),
           },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.expect(listbox).toExist(),
           Scene.expect(listbox).toHaveAttr('aria-readonly', 'true'),
@@ -1176,9 +1175,9 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI flips the input to aria-autocomplete="none" while
-      // readOnly since typing is frozen; foldkit always emits "list".
-      it.fails('sets aria-autocomplete="none" while readOnly', () => {
+      // Base UI flips the input to aria-autocomplete="none" while readOnly
+      // since typing is frozen.
+      it('sets aria-autocomplete="none" while readOnly', () => {
         Scene.scene(
           {
             update,
@@ -1200,7 +1199,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: groupedView },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.expectAll(allGroups).toHaveCount(2),
           // Groups render role=group + aria-labelledby pointing at the
@@ -1222,7 +1221,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: groupedView },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.expectAll(Scene.all.role('separator')).toHaveCount(1),
         )
@@ -1232,7 +1231,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: groupedView },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.type(input, 'carr'),
           Scene.expectAll(allGroups).toHaveCount(1),
@@ -1267,7 +1266,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
             view: singleView(Single, FRUITS, { formName: 'fruit' }),
           },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.click(option('apple')),
           resolveFocusInput,
@@ -1295,7 +1294,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: multiView(FRUITS) },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.click(option('apple')),
           Scene.expectOutMessage(
@@ -1310,7 +1309,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: multiView(FRUITS) },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.click(option('apple')),
           Scene.expectOutMessage(
@@ -1330,7 +1329,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: multiView(FRUITS) },
           Scene.given(initModel({ selectedValues: ['apple'] })),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.expect(option('apple')).toHaveAttr('aria-selected', 'true'),
           Scene.click(option('apple')),
@@ -1346,7 +1345,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: multiView(FRUITS) },
           Scene.given(initModel()),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.expect(listbox).toHaveAttr('aria-multiselectable', 'true'),
         )
@@ -1415,30 +1414,27 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
           Scene.given(initModel({ maybeValue: Option.some('banana') })),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.expect(option('banana')).toHaveAttr('aria-selected', 'true'),
           Scene.expect(input).not.toHaveAttr('aria-activedescendant'),
         )
       })
 
-      // DIVERGENCE: Base UI's autoHighlight only kicks in once filtering
-      // starts — opening never highlights. creaseui's autoHighlight
-      // pre-activates index 0 on every open.
-      it.fails('does not highlight any option on open', () => {
+      // Base UI's autoHighlight only kicks in once filtering starts —
+      // opening never highlights.
+      it('does not highlight any option on open', () => {
         Scene.scene(
           { update, view: singleView(SingleAutoHighlight, FRUITS) },
           Scene.given(initModel({ autoHighlight: true })),
-          Scene.focus(input),
+          Scene.click(input),
           ...resolveOpenedMounts,
           Scene.expect(input).not.toHaveAttr('aria-activedescendant'),
         )
       })
 
-      // DIVERGENCE: foldkit activates the first filtered option on every
-      // input change, so typing highlights a match even with autoHighlight
-      // off — Base UI only highlights while typing when autoHighlight is on.
-      it.fails('does not highlight a match on typing when autoHighlight is off', () => {
+      // Base UI only highlights while typing when autoHighlight is on.
+      it('does not highlight a match on typing when autoHighlight is off', () => {
         Scene.scene(
           { update, view: singleView(Single, FRUITS) },
           Scene.given(initModel()),
