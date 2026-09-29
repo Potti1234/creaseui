@@ -2308,7 +2308,7 @@
         {
           "name": "FieldSetProps",
           "kind": "type",
-          "signature": "FieldSetProps = Slot & Readonly<{ isDisabled?: boolean }>"
+          "signature": "FieldSetProps = Slot & Readonly<{ id?: string; isDisabled?: boolean }>"
         },
         {
           "name": "fieldSet",
@@ -2318,7 +2318,7 @@
         {
           "name": "FieldLegendProps",
           "kind": "type",
-          "signature": "FieldLegendProps = Slot & Readonly<{ variant?: 'legend' | 'label' }>"
+          "signature": "FieldLegendProps = Slot & Readonly<{ variant?: 'legend' | 'label'; id?: string }>"
         },
         {
           "name": "fieldLegend",

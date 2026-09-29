@@ -20,7 +20,8 @@ import * as TailwindInput from '@/ui/input'
  * caller-supplied control and exposes the linked ids through `parts`. Only
  * the static contract — associations, ARIA wiring, data attributes, error
  * rendering, fieldset disabling — is portable, so the suite below covers
- * those cases and records divergences with `it.fails`.
+ * those cases. Fieldset-level context (legend registration, disabled
+ * propagation) is mirrored by `fieldSet` post-processing its child vnodes.
  *
  * Skipped groups (no creaseui analogue, or React/DOM-internal):
  *  - describeConformance cases: ref forwarding, element instanceof,
@@ -486,11 +487,7 @@ const verifyRenderer = (name: string, Field: FieldModule, Input: InputModule) =>
         )
       })
 
-      // DIVERGENCE: Base UI mirrors data-disabled onto every field part
-      // (root, control, label, description). creaseui marks only the field
-      // root and the control — label and description carry no data-disabled
-      // (Tailwind styles them through group-data-[disabled] instead).
-      it.fails('should add data-disabled style hook to all components', () => {
+      it('should add data-disabled style hook to all components', () => {
         Scene.scene(
           {
             update,
@@ -514,12 +511,7 @@ const verifyRenderer = (name: string, Field: FieldModule, Input: InputModule) =>
         )
       })
 
-      // DIVERGENCE: Base UI mirrors data-invalid onto every part and keeps
-      // aria-invalid off a disabled control (it does not participate in
-      // constraint validation). creaseui never marks label/description and
-      // the input primitive always emits aria-invalid when isInvalid is set,
-      // regardless of disabled.
-      it.fails(
+      it(
         'keeps an explicitly invalid field marked invalid while disabled',
         () => {
           Scene.scene(
@@ -595,11 +587,7 @@ const verifyRenderer = (name: string, Field: FieldModule, Input: InputModule) =>
         )
       })
 
-      // DIVERGENCE: Base UI only emits data-invalid while the field is
-      // invalid; creaseui always emits it as a valued attribute
-      // (data-invalid="false"), so presence-based selectors would match a
-      // valid field.
-      it.fails('omits data-invalid when the field is valid', () => {
+      it('omits data-invalid when the field is valid', () => {
         Scene.scene(
           {
             update,
@@ -634,13 +622,7 @@ const verifyRenderer = (name: string, Field: FieldModule, Input: InputModule) =>
         )
       })
 
-      // DIVERGENCE: Base UI propagates fieldset disabled through context so
-      // nested Field parts and custom controls receive data-disabled plus a
-      // real disabled attribute. creaseui's fieldSet emits only the native
-      // attribute — descendants keep their own isDisabled=false and get no
-      // disabled/data-disabled hooks (native DOM inheritance still covers
-      // plain inputs in a real browser, which the DSL cannot observe).
-      it.fails(
+      it(
         'keeps nested fieldsets disabled when an ancestor fieldset is disabled',
         () => {
           Scene.scene(
@@ -685,10 +667,7 @@ const verifyRenderer = (name: string, Field: FieldModule, Input: InputModule) =>
     })
 
     describe('Fieldset.Legend', () => {
-      // DIVERGENCE: Base UI registers the legend and points the fieldset's
-      // aria-labelledby at it. creaseui's fieldLegend carries no id and the
-      // fieldSet wires no association, so the group ends up unnamed.
-      it.fails('should set aria-labelledby on the fieldset automatically', () => {
+      it('should set aria-labelledby on the fieldset automatically', () => {
         Scene.scene(
           {
             update,

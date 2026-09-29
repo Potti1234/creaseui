@@ -4,6 +4,7 @@ import {
   type ControlFieldProps as SharedControlFieldProps,
   type FieldError,
   fieldErrorMessages,
+  prepareFieldsetChildren,
   renderControlField,
 } from "@/lib/field";
 import type { ComponentLayoutStyle } from "./contracts";
@@ -95,18 +96,27 @@ const styles = stylex.create({
     marginInlineStart: "1rem",
   },
 });
-export type FieldSetProps = Slot & Readonly<{ isDisabled?: boolean }>;
-export const fieldSet = <Msg>(p: FieldSetProps, h: HtmlBuilder<Msg>): Html =>
-  h.fieldset(
+export type FieldSetProps = Slot &
+  Readonly<{ id?: string; isDisabled?: boolean }>;
+export const fieldSet = <Msg>(p: FieldSetProps, h: HtmlBuilder<Msg>): Html => {
+  const legendId = prepareFieldsetChildren(p.children, {
+    ...(p.id === undefined ? {} : { id: p.id }),
+    ...(p.isDisabled === undefined ? {} : { isDisabled: p.isDisabled }),
+  });
+  return h.fieldset(
     [
       h.DataAttribute("slot", "field-set"),
+      ...(p.id === undefined ? [] : [h.Id(p.id)]),
+      ...(legendId === undefined ? [] : [h.AriaLabelledBy(legendId)]),
       ...(p.isDisabled === undefined ? [] : [h.Disabled(p.isDisabled)]),
+      ...(p.isDisabled === true ? [h.DataAttribute("disabled", "")] : []),
       h.Class(className(styles.set, p.layoutStyle)),
     ],
     [...p.children],
   );
+};
 export type FieldLegendProps = Slot &
-  Readonly<{ variant?: "legend" | "label" }>;
+  Readonly<{ variant?: "legend" | "label"; id?: string }>;
 export const fieldLegend = <Msg>(
   p: FieldLegendProps,
   h: HtmlBuilder<Msg>,
@@ -115,6 +125,7 @@ export const fieldLegend = <Msg>(
     [
       h.DataAttribute("slot", "field-legend"),
       h.DataAttribute("variant", p.variant ?? "legend"),
+      ...(p.id === undefined ? [] : [h.Id(p.id)]),
       h.Class(
         className(
           styles.legend,
