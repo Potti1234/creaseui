@@ -63,6 +63,7 @@ const itemView = (
         Avatar.avatarFallback(
           {
             model: avatarModel(model, item.key),
+            src: item.src,
             children: [item.fallback],
           },
           h,
@@ -125,6 +126,7 @@ const clusterView = (
               Avatar.avatarFallback(
                 {
                   model: avatarModel(model, item.key),
+                  src: item.src,
                   children: [item.fallback],
                 },
                 h,
