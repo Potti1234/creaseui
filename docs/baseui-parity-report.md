@@ -130,18 +130,34 @@ docs pages against `shadcn/ui` v4 (`/docs/components/base/*`).
   `typography` uses a different story than `typeset` but renders the same
   prose hierarchy.
 
-## Runtime bug found while screenshotting
+## Runtime bug found while screenshotting (fixed in this PR)
 
-**Foldkit crashes on mid-session viewport resize to very tall heights.**
-Playwright `fullPage` screenshots (which resize the viewport to the
-content height, ~5–16k px) reliably trigger creaseui's "Application Crash"
-screen. Loading a page *fresh* at the same tall viewport does not crash,
-so the defect is in foldkit's resize handling. Repro:
+**Resizing the window on any docs page crashed the app.**
+Playwright `fullPage` screenshots resize the viewport to the content
+height (~5–16k px), which reliably triggered the "Application Crash"
+screen:
 
-```ts
-await page.goto('http://127.0.0.1:4173/docs/components/button')
-await page.setViewportSize({ width: 1440, height: 9000 }) // → crash banner
 ```
+TypeError: Cannot read properties of undefined (reading '_tag')
+  at update (src/lib/dropdown-menu-behavior.ts)
+  at updateTyped (src/ui/dropdown-menu.ts)
+  at update (src/docs/components/pages/button/tailwind.ts)
+  at update (src/docs/components/pages/authored-page.ts → catalog.ts → main.ts GotCatalogDocsMessage)
+```
+
+Root cause: `src/docs/components/catalog.ts` lifts **every** page's
+preview-program subscriptions for all example slots with no `when` gate,
+and `GotExampleMessage` carries no slug — so the drawer page's
+`window resize` subscription (`ChangedViewport`) emitted on **every** docs
+page and was fed to the *current* page's preview program. On the button
+page, `update` read `message.message` (a `GotMenuMessage` field that a
+`ChangedViewport` doesn't have) → `DropdownMenu.update(model.menu,
+undefined)` → `undefined._tag` crash.
+
+Fix: `when: model => model.slug === slug` on the lifted subscriptions so a
+page's subscriptions only emit while that page is active. Any resize on
+any docs page previously crashed the app — not just tall viewports; the
+fullPage screenshot was simply an easy trigger.
 
 ## Files
 

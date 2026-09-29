@@ -125,6 +125,10 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
                 ? model.examples[index] ?? program.init(index)
                 : program.init(index),
             toParentMessage: message => GotExampleMessage({ index, message: message as RoutedDocsPreviewMessage }),
+            // A lifted subscription must only fire while its own page is
+            // active: GotExampleMessage is routed to authoredPages[model.slug],
+            // so emitting on another page feeds it a foreign message shape.
+            when: model => model.slug === slug,
           });
           return Object.fromEntries(Object.entries(lifted).map(([key, subscription]) => [
             `local${String(programIndex)}Example${String(index)}${key}`,
