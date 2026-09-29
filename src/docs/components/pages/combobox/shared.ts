@@ -27,7 +27,7 @@ export const comboboxFixtures: ReadonlyArray<ComboboxFixture> = [
   { title: 'Custom Items', kind: 'custom', description: 'itemToConfig content composes rich option rows without changing selection semantics.' },
   { title: 'Invalid', kind: 'frameworks', isInvalid: true, description: 'aria-invalid styling marks the input and wrapper.' },
   { title: 'Disabled', kind: 'frameworks', isDisabled: true, description: 'The disabled state keeps the model intact while removing interaction.' },
-  { title: 'Auto Highlight', kind: 'autoHighlight', description: 'create({ autoHighlight: true }) pre-activates the first option on every open, like base-ui\'s autoHighlight.' },
+  { title: 'Auto Highlight', kind: 'autoHighlight', description: 'create({ autoHighlight: true }) activates the first matching option while typing, like base-ui\'s autoHighlight.' },
   { title: 'Popup', kind: 'popup', description: 'The input-wrapper suffix renders as a toggle button, matching the trigger-button combobox that opens a searchable popup.' },
   { title: 'Input Group', kind: 'groups', description: 'The grouped timezone list composes inside an input-group layout.' },
   { title: 'RTL', kind: 'rtl', description: 'direction rtl mirrors the input, list, and item layout for Arabic copy.' },
