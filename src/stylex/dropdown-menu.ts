@@ -54,9 +54,11 @@ export const Model = S.Struct({
   id: S.String,
   isOpen: S.Boolean,
   isAnimated: S.Boolean,
-  activeIndex: S.Number,
-  activeSubmenuIndex: S.Number,
-  openSubmenuIndex: S.Option(S.Number),
+  isModal: S.Boolean,
+  activePath: S.Array(S.Number),
+  openSubmenuPath: S.Array(S.Number),
+  typeaheadQuery: S.String,
+  typeaheadAnchorIndex: S.Number,
   anchorX: S.Option(S.Number),
   anchorY: S.Option(S.Number),
 });
@@ -74,19 +76,23 @@ export type Model = typeof Model.Type;
 
 export const Message = defineMessageUnion({
   Opened: {},
+  OpenedToItem: { index: S.Number },
   AnchoredAt: { x: S.Number, y: S.Number },
   OpenedFromContext: {},
   OpenedAt: { x: S.Number, y: S.Number },
   Closed: {},
-  ActivatedItem: { index: S.Number },
-  OpenedSubmenu: { index: S.Number },
-  ActivatedSubmenuItem: {
-  index: S.Number,
-},
+  ActivatedItem: { path: S.Array(S.Number) },
+  OpenedSubmenu: { path: S.Array(S.Number) },
   ClosedSubmenu: {},
   SelectedItem: {
   item: S.String,
-  index: S.Number,
+  path: S.Array(S.Number),
+  closeOnClick: S.Boolean,
+},
+  Typeahead: {
+  query: S.String,
+  anchorIndex: S.Number,
+  matchedPath: S.Array(S.Number),
 },
 });
 export type Message = typeof Message.Type;
@@ -107,9 +113,11 @@ export const init = (
   id: config.id,
   isOpen: false,
   isAnimated: config.isAnimated ?? false,
-  activeIndex: 0,
-  activeSubmenuIndex: 0,
-  openSubmenuIndex: Option.none(),
+  isModal: config.isModal ?? true,
+  activePath: [],
+  openSubmenuPath: [],
+  typeaheadQuery: '',
+  typeaheadAnchorIndex: -1,
   anchorX: Option.none(),
   anchorY: Option.none(),
 });
@@ -136,7 +144,7 @@ export const create = <Item extends string = string>() => ({
   close: (model: Model): UpdateReturn<Item> =>
     updateTyped<Item>(model, Message.Closed()),
   selectItem: (model: Model, item: Item, index: number): UpdateReturn<Item> =>
-    updateTyped<Item>(model, Message.SelectedItem({ item, index })),
+    updateTyped<Item>(model, Message.SelectedItem({ item, path: [index], closeOnClick: true })),
 });
 
 export const update = create().update;
@@ -163,6 +171,9 @@ export type DropdownMenuItemConfig<Item extends string = string> = Readonly<{
     items: ReadonlyArray<Item>;
     itemToConfig: (item: Item) => DropdownMenuItemConfig<Item>;
   }>;
+  /** Base UI's closeOnClick: whether activating the item closes the menu
+   * tree. Defaults to true for plain items, false for checkable items. */
+  closeOnClick?: boolean;
   /** Render a separator above this item (upstream DropdownMenuSeparator). */
   separatorBefore?: boolean;
 }>;
@@ -256,6 +267,7 @@ const menuKey = <Item extends string>(
   itemToConfig: (item: Item) => DropdownMenuItemConfig<Item>,
   key: string,
   direction: 'ltr' | 'rtl' = 'ltr',
+  modifiers?: Readonly<{ ctrlKey: boolean; altKey: boolean; metaKey: boolean }>,
 ): Message | undefined => {
   const toBehavior = (
     item: Item,
@@ -263,6 +275,9 @@ const menuKey = <Item extends string>(
   ): Behavior.MenuItemBehavior<Item> => ({
     label: typeof config.label === 'string' ? config.label : item,
     isDisabled: config.isDisabled === true,
+    closeOnClick:
+      config.closeOnClick ??
+      (config.kind !== 'checkbox' && config.kind !== 'radio'),
     ...(config.submenu === undefined
       ? {}
       : {
@@ -279,6 +294,7 @@ const menuKey = <Item extends string>(
     (item) => toBehavior(item, itemToConfig(item)),
     key,
     direction,
+    modifiers,
   );
 };
 
@@ -288,28 +304,38 @@ export const dropdownMenu = <Item extends string, Msg>(
 ): Html => {
   const anchorX = Option.getOrUndefined(props.model.anchorX);
   const anchorY = Option.getOrUndefined(props.model.anchorY);
-  const keyMessage = (key: string) => {
+  const keyMessage = (
+    key: string,
+    modifiers: Readonly<{ ctrlKey: boolean; altKey: boolean; metaKey: boolean }>,
+  ) => {
     const message = menuKey(
       props.model,
       props.items,
       props.itemToConfig,
       key,
       props.direction,
+      modifiers,
     );
     return message === undefined
       ? Option.none()
       : Option.some(props.toParentMessage(message));
   };
 
+  // `prefix` is an index-path prefix of `path` — the highlight propagates up
+  // the chain so an open submenu's trigger stays data-active while one of
+  // its descendants carries the roving tabindex.
+  const isPathPrefix = (
+    prefix: ReadonlyArray<number>,
+    path: ReadonlyArray<number>,
+  ): boolean => prefix.every((segment, i) => path[i] === segment);
+
   const renderItem = (
     item: Item,
-    index: number,
+    path: ReadonlyArray<number>,
     config: DropdownMenuItemConfig<Item>,
-    isSubmenu = false,
   ): Html => {
-    const active = isSubmenu
-      ? props.model.activeSubmenuIndex === index - props.items.length
-      : props.model.activeIndex === index;
+    const active = isPathPrefix(path, props.model.activePath);
+    const pathKey = path.join('-');
     const checked = config.isChecked ?? false;
     const role =
       config.kind === 'checkbox'
@@ -325,7 +351,10 @@ export const dropdownMenu = <Item extends string, Msg>(
         h.Tabindex(active ? 0 : -1),
         h.DataAttribute('active', String(active)),
         ...(config.kind === 'checkbox' || config.kind === 'radio'
-          ? [h.AriaChecked(checked)]
+          ? [
+              h.AriaChecked(checked),
+              h.DataAttribute(checked ? 'checked' : 'unchecked', ''),
+            ]
           : []),
         ...(config.isDisabled === true
           ? [h.AriaDisabled(true), h.DataAttribute('disabled', '')]
@@ -334,12 +363,10 @@ export const dropdownMenu = <Item extends string, Msg>(
           ? []
           : [
               h.AriaHasPopup('menu'),
-              h.AriaExpanded(
-                Option.contains(props.model.openSubmenuIndex, index),
-              ),
-              h.AriaControls(`${props.model.id}-submenu-${String(index)}`),
+              h.AriaExpanded(isPathPrefix(path, props.model.openSubmenuPath)),
+              h.AriaControls(`${props.model.id}-submenu-${pathKey}`),
               h.Style({
-                anchorName: `--${props.model.id}-sub-${String(index)}`,
+                anchorName: `--${props.model.id}-sub-${pathKey}`,
               }),
             ]),
         ...(config.isDisabled === true
@@ -347,19 +374,26 @@ export const dropdownMenu = <Item extends string, Msg>(
           : [
               h.OnMouseEnter(
                 props.toParentMessage(
-                  isSubmenu
-                    ? Message.ActivatedSubmenuItem({
-                        index: index - props.items.length,
+                  config.submenu === undefined
+                    ? Message.ActivatedItem({ path })
+                    : Message.OpenedSubmenu({ path }),
+                ),
+              ),
+              h.OnClick(
+                props.toParentMessage(
+                  config.submenu === undefined
+                    ? Message.SelectedItem({
+                        item,
+                        path,
+                        closeOnClick:
+                          config.closeOnClick ??
+                          (config.kind !== 'checkbox' &&
+                            config.kind !== 'radio'),
                       })
-                    : config.submenu === undefined
-                      ? Message.ActivatedItem({ index })
-                      : Message.OpenedSubmenu({ index }),
+                    : Message.OpenedSubmenu({ path }),
                 ),
               ),
             ]),
-        ...(config.isDisabled === true || config.submenu !== undefined
-          ? []
-          : [h.OnClick(props.toParentMessage(Message.SelectedItem({ item, index })))]),
         h.Class(
           cn(
             ITEM_CLASS,
@@ -407,48 +441,59 @@ export const dropdownMenu = <Item extends string, Msg>(
     );
   };
 
-  const submenuPanels: Array<Html> = [];
-  props.items.forEach((item, index) => {
-    const config = props.itemToConfig(item);
-    if (
-      config.submenu === undefined ||
-      !Option.contains(props.model.openSubmenuIndex, index)
-    )
-      return;
-    submenuPanels.push(
-      h.div(
-        [
-          h.Role('menu'),
-          h.AriaLabel(
-            `${typeof config.label === 'string' ? config.label : 'Submenu'} submenu`,
-          ),
-          h.Id(`${props.model.id}-submenu-${String(index)}`),
-          h.Class(cn(SUBMENU_CLASS, styles.submenuPanel)),
-          // Anchored to the parent item and rendered outside the scrollable
-          // panel so the panel's overflow-y clip can't hide it.
-          h.Style({
-            position: 'fixed',
-            positionAnchor: `--${props.model.id}-sub-${String(index)}`,
-            ...(props.direction === 'rtl'
-              ? { right: 'anchor(left)', marginRight: '0.25rem' }
-              : { left: 'anchor(right)', marginLeft: '0.25rem' }),
-            top: 'anchor(top)',
-            positionTry: 'flip-inline',
-            maxHeight: 'calc(100vh - 8px)',
-            overflowY: 'auto',
-          }),
-        ],
-        config.submenu.items.map((child, childIndex) =>
-          renderItem(
-            child,
-            props.items.length + childIndex,
-            config.submenu?.itemToConfig(child) ?? { label: child },
-            true,
+  // Open submenu panels at every depth. Each trigger along openSubmenuPath
+  // renders its panel next to (not inside) the parent panel so overflow-y
+  // clipping can't hide it; deeper panels anchor to their own trigger.
+  const collectPanels = (
+    items: ReadonlyArray<Item>,
+    parentPath: ReadonlyArray<number>,
+    itemToConfig: (item: Item) => DropdownMenuItemConfig<Item>,
+  ): Array<Html> =>
+    items.flatMap((item, index) => {
+      const path = [...parentPath, index];
+      const config = itemToConfig(item);
+      const submenu = config.submenu;
+      if (
+        submenu === undefined ||
+        !isPathPrefix(path, props.model.openSubmenuPath)
+      )
+        return [];
+      const pathKey = path.join('-');
+      return [
+        h.div(
+          [
+            h.Role('menu'),
+            h.AriaLabel(
+              `${typeof config.label === 'string' ? config.label : 'Submenu'} submenu`,
+            ),
+            h.Id(`${props.model.id}-submenu-${pathKey}`),
+            h.Class(cn(SUBMENU_CLASS, styles.submenuPanel)),
+            // Anchored to the parent item and rendered outside the scrollable
+            // panel so the panel's overflow-y clip can't hide it.
+            h.Style({
+              position: 'fixed',
+              positionAnchor: `--${props.model.id}-sub-${pathKey}`,
+              ...(props.direction === 'rtl'
+                ? { right: 'anchor(left)', marginRight: '0.25rem' }
+                : { left: 'anchor(right)', marginLeft: '0.25rem' }),
+              top: 'anchor(top)',
+              positionTry: 'flip-inline',
+              maxHeight: 'calc(100vh - 8px)',
+              overflowY: 'auto',
+            }),
+          ],
+          submenu.items.map((child, childIndex) =>
+            renderItem(
+              child,
+              [...path, childIndex],
+              submenu.itemToConfig(child) ?? { label: child },
+            ),
           ),
         ),
-      ),
-    );
-  });
+        ...collectPanels(submenu.items, path, submenu.itemToConfig),
+      ];
+    });
+  const submenuPanels = collectPanels(props.items, [], props.itemToConfig);
 
   const grouped: Array<Html> = [];
   let previousGroup: string | undefined;
@@ -464,11 +509,14 @@ export const dropdownMenu = <Item extends string, Msg>(
         );
       if (config.group !== previousGroup && config.group !== undefined)
         grouped.push(
-          h.div([h.Class(className(overlayStyles.label))], [config.group]),
+          h.div(
+            [h.AriaHidden(true), h.Class(className(overlayStyles.label))],
+            [config.group],
+          ),
         );
       previousGroup = config.group;
     }
-    grouped.push(renderItem(item, index, config));
+    grouped.push(renderItem(item, [index], config));
   });
 
   return h.div(
@@ -486,6 +534,12 @@ export const dropdownMenu = <Item extends string, Msg>(
           h.Id(`${props.model.id}-trigger`),
           h.AriaExpanded(props.model.isOpen),
           h.AriaControls(`${props.model.id}-content`),
+          ...(props.model.isOpen
+            ? [
+                h.DataAttribute('popup-open', ''),
+                h.DataAttribute('pressed', ''),
+              ]
+            : []),
           ...(props.openOnContextMenu === true
             ? [
                 h.OnContextMenu(props.toParentMessage(Message.OpenedFromContext())),
@@ -541,13 +595,17 @@ export const dropdownMenu = <Item extends string, Msg>(
                   props.itemToConfig,
                   key,
                   props.direction,
+                  modifiers,
                 )
-              : props.openOnContextMenu === true &&
-                  (key === 'ContextMenu' || (key === 'F10' && modifiers.shiftKey))
-                ? Message.Opened()
-              : key === 'ArrowDown' || key === 'ArrowUp' || key === 'Enter' || key === ' '
-                ? Message.Opened()
-                : undefined;
+              : props.openOnContextMenu === true
+                ? key === 'ContextMenu' || (key === 'F10' && modifiers.shiftKey)
+                  ? Message.OpenedToItem({ index: 0 })
+                  : undefined
+                : key === 'ArrowDown' || key === 'Enter' || key === ' '
+                  ? Message.OpenedToItem({ index: 0 })
+                  : key === 'ArrowUp'
+                    ? Message.OpenedToItem({ index: props.items.length - 1 })
+                    : undefined;
             return message === undefined
               ? Option.none()
               : Option.some(props.toParentMessage(message));
@@ -557,15 +615,19 @@ export const dropdownMenu = <Item extends string, Msg>(
       ),
       ...(props.model.isOpen
         ? [
-            h.div(
-              [
-                h.AriaHidden(true),
-                h.OnClick(props.toParentMessage(Message.Closed())),
-                h.Class(className(styles.backdrop)),
-                h.DataAttribute('slot', 'dropdown-menu-backdrop'),
-              ],
-              [],
-            ),
+            ...(props.model.isModal
+              ? [
+                  h.div(
+                    [
+                      h.AriaHidden(true),
+                      h.OnClick(props.toParentMessage(Message.Closed())),
+                      h.Class(className(styles.backdrop)),
+                      h.DataAttribute('slot', 'dropdown-menu-backdrop'),
+                    ],
+                    [],
+                  ),
+                ]
+              : []),
             h.div(
               [
                 h.Role('menu'),

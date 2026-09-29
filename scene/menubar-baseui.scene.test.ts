@@ -352,10 +352,9 @@ const verifyRenderer = (name: string, Menubar: MenubarModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI marks the menubar with `data-has-submenu-open`
-      // while a menu is open; creaseui gates hover-focus internally but
-      // exposes no such attribute.
-      it.fails('marks the menubar with data-has-submenu-open while a menu is open', () => {
+      // Base UI marks the menubar with `data-has-submenu-open` while a menu
+      // is open.
+      it('marks the menubar with data-has-submenu-open while a menu is open', () => {
         Scene.scene(
           { update, view: fixtureView() },
           Scene.given(initialModel()),
@@ -365,9 +364,8 @@ const verifyRenderer = (name: string, Menubar: MenubarModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI SubmenuTrigger also opens on click; creaseui's
-      // submenu-trigger items carry hover/keyboard handlers only.
-      it.fails('opens the submenu when its trigger is clicked', () => {
+      // Base UI SubmenuTrigger also opens on click.
+      it('opens the submenu when its trigger is clicked', () => {
         Scene.scene(
           { update, view: fixtureView() },
           Scene.given(initialModel()),
@@ -411,10 +409,9 @@ const verifyRenderer = (name: string, Menubar: MenubarModule) => {
     })
 
     describe('closeOnClick on nested items behavior', () => {
-      // DIVERGENCE: Base UI radio items default to closeOnClick=false so the
-      // menu stays open after a selection. creaseui has no closeOnClick —
-      // every leaf item's click dispatches SelectedItem, which closes the tree.
-      it.fails('should respect closeOnClick on nested items when the menu was opened on click', () => {
+      // Base UI radio items default to closeOnClick=false so the menu stays
+      // open after a selection.
+      it('should respect closeOnClick on nested items when the menu was opened on click', () => {
         Scene.scene(
           { update, view: fixtureView() },
           Scene.given(initialModel()),
@@ -429,7 +426,7 @@ const verifyRenderer = (name: string, Menubar: MenubarModule) => {
         )
       })
 
-      it.fails('should respect closeOnClick on nested items when the menu was opened on hover', () => {
+      it('should respect closeOnClick on nested items when the menu was opened on hover', () => {
         Scene.scene(
           { update, view: fixtureView() },
           Scene.given(initialModel()),
@@ -623,10 +620,9 @@ const verifyRenderer = (name: string, Menubar: MenubarModule) => {
     })
 
     describe('mixed mouse and keyboard interactions', () => {
-      // DIVERGENCE: Base UI highlights file-item-1 on the first ArrowDown
-      // after a mouse-open. creaseui pre-activates index 0 on open, so the
-      // first ArrowDown lands on file-item-2.
-      it.fails('should allow keyboard navigation after opening a menu with mouse click', () => {
+      // Base UI highlights the first item on the first ArrowDown after a
+      // mouse-open (mouse opens start with no highlighted item).
+      it('should allow keyboard navigation after opening a menu with mouse click', () => {
         Scene.scene(
           { update, view: fixtureView() },
           Scene.given(initialModel()),
@@ -699,7 +695,9 @@ const verifyRenderer = (name: string, Menubar: MenubarModule) => {
       it.todo('disables menu items while the menubar is disabled — no menubar disabled prop')
 
       // Item-level `isDisabled` is the ported portion of the disabled suite.
-      it('a disabled menu item is inert and skipped by arrow navigation', () => {
+      // Base UI's focusableWhenDisabled keeps aria-disabled items in the
+      // arrow-key rotation — inert, but highlightable.
+      it('a disabled menu item is inert and stays in the arrow rotation', () => {
         Scene.scene(
           { update, view: fixtureView({ fileItems: ['open', 'disabled-item', 'save'] }) },
           Scene.given(initialModel()),
@@ -710,8 +708,13 @@ const verifyRenderer = (name: string, Menubar: MenubarModule) => {
           Scene.expect(item('Disabled item')).not.toHaveHandler('mouseenter'),
           Scene.keydown(fileMenu, 'ArrowDown'),
           Scene.expectHandled(),
+          Scene.expect(item('Open')).toHaveAttr('data-active', 'true'),
+          Scene.keydown(fileMenu, 'ArrowDown'),
+          Scene.expectHandled(),
+          Scene.expect(item('Disabled item')).toHaveAttr('data-active', 'true'),
+          Scene.keydown(fileMenu, 'ArrowDown'),
+          Scene.expectHandled(),
           Scene.expect(item('Save')).toHaveAttr('data-active', 'true'),
-          Scene.expect(item('Disabled item')).toHaveAttr('data-active', 'false'),
         )
       })
     })

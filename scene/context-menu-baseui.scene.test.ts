@@ -270,12 +270,11 @@ const verifyRenderer = (name: string, ContextMenu: ContextMenuModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI's ContextMenu.Trigger is a plain <div> with no
-      // key handling — Enter/Space/arrows never open the menu; only the
-      // contextmenu gesture (or its native keyboard equivalents) does.
-      // creaseui reuses the dropdown-menu trigger wiring, so those keys
-      // open the closed menu.
-      it.fails('ignores Enter and Space on the closed trigger', () => {
+      // Base UI's ContextMenu.Trigger is a plain <div> with no key handling
+      // — Enter/Space/arrows never open the menu; only the contextmenu
+      // gesture (or its native keyboard equivalents: ContextMenu, Shift+F10)
+      // does.
+      it('ignores Enter and Space on the closed trigger', () => {
         Scene.scene(
           { update, view: menuView },
           Scene.given(initialModel()),
@@ -295,7 +294,8 @@ const verifyRenderer = (name: string, ContextMenu: ContextMenuModule) => {
           Scene.contextMenu(trigger),
           Scene.expectHandled(),
           Scene.expect(submenuTrigger).toHaveHandler('mouseenter'),
-          Scene.expect(submenuTrigger).not.toHaveHandler('click'),
+          // Clicking a submenu trigger opens it (Base UI click-open), but a
+          // bare button-2 release never activates anything.
           Scene.expect(submenuTrigger).not.toHaveHandler('mouseup'),
           Scene.expect(submenuTrigger).not.toHaveHandler('pointerup'),
           Scene.expect(Scene.selector('#ctx-submenu-1')).toBeAbsent(),
@@ -338,10 +338,13 @@ const verifyRenderer = (name: string, ContextMenu: ContextMenuModule) => {
           Scene.expect(Scene.selector('#ctx-submenu-1')).toExist(),
           Scene.click(Scene.role('menuitem', { name: 'Deep action' })),
           Scene.expectHandled(),
+          // Selection indices are level-local: 'Deep action' is index 0 in
+          // the open submenu (its position in the outer item list is not
+          // observable to Base UI consumers either).
           Scene.expectOutMessage({
             _tag: 'Selected',
             value: 'deep-action',
-            index: 2,
+            index: 0,
           }),
           Scene.expect(Scene.selector('#ctx-submenu-1')).toBeAbsent(),
           Scene.expect(menu).toBeAbsent(),
@@ -458,10 +461,8 @@ const verifyRenderer = (name: string, ContextMenu: ContextMenuModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI marks the trigger data-popup-open while the
-      // menu is open. creaseui tracks openness only via aria-expanded; the
-      // attribute does not exist on the trigger.
-      it.fails('marks the trigger data-popup-open while open', () => {
+      // Base UI marks the trigger data-popup-open while the menu is open.
+      it('marks the trigger data-popup-open while open', () => {
         Scene.scene(
           { update, view: menuView },
           Scene.given(initialModel()),

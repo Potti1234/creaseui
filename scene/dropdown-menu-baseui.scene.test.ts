@@ -261,12 +261,11 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         )
       })
 
-      it.fails(
+      it(
         'has the data-popup-open and data-pressed attributes when the menu is open',
         () => {
-          // DIVERGENCE (low): Base UI marks the open trigger with
-          // data-popup-open and data-pressed. creaseui only toggles
-          // aria-expanded; styling hooks use data-slot + aria-*.
+          // Base UI marks the open trigger with data-popup-open and
+          // data-pressed.
           Scene.scene(
             { update, view },
             givenStandard,
@@ -336,6 +335,10 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
           Scene.expectHandled(),
           Scene.keydown(rootMenu, 'ArrowDown'),
           Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
           Scene.keydown(rootMenu, 'ArrowRight'),
           Scene.expectHandled(),
           Scene.expect(submenuPanel('Item 4')).toExist(),
@@ -347,11 +350,9 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         )
       })
 
-      it.fails('opens the submenu when its trigger is clicked', () => {
-        // DIVERGENCE (high): Base UI opens a submenu on trigger click when
-        // openOnHover is false. creaseui submenu triggers have no click
-        // handler — only hover or the forward key opens them — so the DSL
-        // click throws before the assertion runs.
+      it('opens the submenu when its trigger is clicked', () => {
+        // Base UI opens a submenu on trigger click when openOnHover is
+        // false.
         Scene.scene(
           { update, view },
           givenStandard,
@@ -362,10 +363,26 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         )
       })
 
-      it.todo(
-        'prop: closeOnClick={false} keeps the menu open after item click ' +
-          '(creaseui closes on every activation and has no closeOnClick prop)',
-      )
+      it('prop: closeOnClick={false} keeps the menu open after item click', () => {
+        // creaseui's per-item closeOnClick config mirrors Base UI's
+        // Menu.Item closeOnClick prop.
+        Scene.scene(
+          {
+            update,
+            view: makeView(Menu, () => item => ({
+              label: item,
+              ...(item === 'Item 2' ? { closeOnClick: false } : {}),
+            })),
+          },
+          givenStandard,
+          Scene.click(trigger),
+          Scene.expectHandled(),
+          Scene.click(menuItem('Item 2')),
+          Scene.expectHandled(),
+          Scene.expectOutMessage(selected('Item 2', 1)),
+          Scene.expect(rootMenu).toExist(),
+        )
+      })
     })
 
     describe('keyboard navigation: closed menu', () => {
@@ -409,10 +426,9 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         )
       })
 
-      it.fails('focuses the last item when up arrow key opens the menu', () => {
-        // DIVERGENCE (medium): Base UI highlights the last item when the menu
-        // is opened with ArrowUp. creaseui opens with activeIndex=0 in both
-        // directions, so Item 1 keeps the highlight.
+      it('focuses the last item when up arrow key opens the menu', () => {
+        // Base UI highlights the last item when the menu is opened with
+        // ArrowUp.
         Scene.scene(
           { update, view },
           givenStandard,
@@ -435,20 +451,20 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
           Scene.expect(menuItem('Item 2')).toHaveAttr('data-active', 'true'),
           Scene.expect(menuItem('Item 2')).toHaveAttr('tabIndex', '0'),
           Scene.expect(menuItem('Item 1')).toHaveAttr('tabIndex', '-1'),
-          // Item 3 is disabled and skipped; see the it.fails divergence below.
+          // Item 3 is disabled but stays in the arrow-key rotation
+          // (focusableWhenDisabled); see the case below.
           Scene.keydown(rootMenu, 'ArrowDown'),
           Scene.expectHandled(),
-          Scene.expect(menuItem('Item 4')).toHaveAttr('data-active', 'true'),
+          Scene.expect(menuItem('Item 3')).toHaveAttr('data-active', 'true'),
           Scene.keydown(rootMenu, 'ArrowUp'),
           Scene.expectHandled(),
           Scene.expect(menuItem('Item 2')).toHaveAttr('data-active', 'true'),
         )
       })
 
-      it.fails('includes disabled items during keyboard navigation', () => {
-        // DIVERGENCE (medium): Base UI moves the highlight onto aria-disabled
-        // items (focusableWhenDisabled). creaseui filters disabled items out
-        // of the keyboard rotation entirely.
+      it('includes disabled items during keyboard navigation', () => {
+        // Base UI moves the highlight onto aria-disabled items
+        // (focusableWhenDisabled).
         Scene.scene(
           { update, view },
           givenStandard,
@@ -497,6 +513,10 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
           Scene.expectHandled(),
           Scene.expect(Scene.role('separator')).toExist(),
           Scene.expect(Scene.text('Citrus')).toExist(),
+          // Mouse-open starts with no highlight; the first ArrowDown lands
+          // on Apple, the second on Banana.
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
           Scene.keydown(rootMenu, 'ArrowDown'),
           Scene.expectHandled(),
           Scene.expect(menuItem('Banana')).toHaveAttr('data-active', 'true'),
@@ -517,6 +537,8 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
           givenStandard,
           Scene.click(trigger),
           Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
           Scene.keydown(rootMenu, 'Enter'),
           Scene.expectHandled(),
           Scene.expectOutMessage(selected('Item 1', 0)),
@@ -529,6 +551,8 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
           { update, view },
           givenStandard,
           Scene.click(trigger),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
           Scene.expectHandled(),
           Scene.keydown(rootMenu, 'ArrowDown'),
           Scene.expectHandled(),
@@ -564,14 +588,13 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
           Scene.expectIgnored(),
           Scene.keydown(rootMenu, 'ArrowDown'),
           Scene.expectHandled(),
-          Scene.expect(menuItem('Item 2')).toHaveAttr('data-active', 'true'),
+          Scene.expect(menuItem('Item 1')).toHaveAttr('data-active', 'true'),
         )
       })
 
-      it.fails('does not activate a disabled item with Enter', () => {
-        // DIVERGENCE (medium): creaseui leaves activeIndex=0 on open, so when
-        // the first item is disabled it still shows data-active and Enter
-        // selects it. Base UI never activates a disabled item.
+      it('does not activate a disabled item with Enter', () => {
+        // aria-disabled items stay in the arrow-key rotation
+        // (focusableWhenDisabled) but are never activated.
         Scene.scene(
           {
             update,
@@ -583,6 +606,12 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
           Scene.given(initialModel(Menu, ['Disabled item', 'Item 2'])),
           Scene.click(trigger),
           Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
+          Scene.expect(menuItem('Disabled item')).toHaveAttr(
+            'data-active',
+            'true',
+          ),
           Scene.keydown(rootMenu, 'Enter'),
           Scene.expectHandled(),
           Scene.expect(rootMenu).toExist(),
@@ -611,17 +640,15 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
           Scene.expectHandled(),
           Scene.expect(menuItem('Ca')).toHaveAttr('data-active', 'true'),
           Scene.expect(menuItem('Ca')).toHaveAttr('tabIndex', '0'),
-          // The Base UI second keystroke asserts an accumulated "cd" query —
-          // covered as a divergence in the it.fails below.
+          // The accumulated "cd" continuation is covered by the case below.
         )
       })
 
-      it.fails(
+      it(
         'changes the highlighted item with an accumulated multi-character query',
         () => {
-          // DIVERGENCE (medium): Base UI accumulates keystrokes — "cd" still
-          // matches "Cd". creaseui queries each keystroke alone, so 'd' after
-          // 'c' matches nothing and the highlight stays put.
+          // Base UI accumulates keystrokes — "cd" still matches "Cd" — and
+          // every printable key is consumed while the menu is open.
           Scene.scene(
             { update, view: typeaheadView },
             Scene.given(initialModel(Menu, typeaheadItems)),
@@ -630,7 +657,7 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
             Scene.keydown(rootMenu, 'c'),
             Scene.expectHandled(),
             Scene.keydown(rootMenu, 'd'),
-            Scene.expectIgnored(),
+            Scene.expectHandled(),
             Scene.expect(menuItem('Cd')).toHaveAttr('data-active', 'true'),
           )
         },
@@ -676,35 +703,35 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
       })
 
       it('cycles through matching items on each repeated keystroke', () => {
-        // creaseui re-queries with the latest single character and advances to
-        // the next match; repeated 'b' cycles Ba → Bb → Bc → Ba.
+        // Base UI's rapid-succession rule: when no label repeats its first
+        // letter as its second, retyping 'b' restarts the query at the last
+        // match and cycles Bag → Bat → Baz → Bag. (Labels like 'Ba' would
+        // accumulate 'bb' instead.)
         Scene.scene(
           {
             update,
             view: makeView(Menu, () => item => ({ label: item })),
           },
-          Scene.given(initialModel(Menu, ['Aa', 'Ba', 'Bb', 'Bc'])),
+          Scene.given(initialModel(Menu, ['Axe', 'Bag', 'Bat', 'Baz'])),
           Scene.click(trigger),
           Scene.expectHandled(),
           Scene.keydown(rootMenu, 'b'),
           Scene.expectHandled(),
-          Scene.expect(menuItem('Ba')).toHaveAttr('data-active', 'true'),
+          Scene.expect(menuItem('Bag')).toHaveAttr('data-active', 'true'),
           Scene.keydown(rootMenu, 'b'),
           Scene.expectHandled(),
-          Scene.expect(menuItem('Bb')).toHaveAttr('data-active', 'true'),
+          Scene.expect(menuItem('Bat')).toHaveAttr('data-active', 'true'),
           Scene.keydown(rootMenu, 'b'),
           Scene.expectHandled(),
-          Scene.expect(menuItem('Bc')).toHaveAttr('data-active', 'true'),
+          Scene.expect(menuItem('Baz')).toHaveAttr('data-active', 'true'),
         )
       })
 
-      it.fails(
+      it(
         'matches "Item 2" after "Item " currently matches "Item 1"',
         () => {
-          // DIVERGENCE (medium): Base UI accumulates pressed keys into a
-          // multi-character query and absorbs Space while typing. creaseui
-          // treats each keystroke as an independent single-char query and
-          // Space always activates, so the sequence selects an item mid-typing.
+          // Base UI accumulates pressed keys into a multi-character query
+          // and absorbs Space while typing.
           Scene.scene(
             {
               update,
@@ -716,11 +743,11 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
             Scene.keydown(rootMenu, 'i'),
             Scene.expectHandled(),
             Scene.keydown(rootMenu, 't'),
-            Scene.expectIgnored(),
+            Scene.expectHandled(),
             Scene.keydown(rootMenu, 'e'),
-            Scene.expectIgnored(),
+            Scene.expectHandled(),
             Scene.keydown(rootMenu, 'm'),
-            Scene.expectIgnored(),
+            Scene.expectHandled(),
             Scene.keydown(rootMenu, ' '),
             Scene.expectHandled(),
             Scene.keydown(rootMenu, '2'),
@@ -731,11 +758,11 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         },
       )
 
-      it.fails(
+      it(
         'does not trigger the onClick event when Space is pressed during text navigation',
         () => {
-          // DIVERGENCE (medium): same accumulating-typeahead divergence — the
-          // Space inside "Item T" activates the highlighted item in creaseui.
+          // Space inside "Item T" extends the query instead of activating
+          // the highlighted item.
           Scene.scene(
             {
               update,
@@ -751,9 +778,9 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
             Scene.keydown(rootMenu, 't'),
             Scene.expectHandled(),
             Scene.keydown(rootMenu, 'e'),
-            Scene.expectIgnored(),
+            Scene.expectHandled(),
             Scene.keydown(rootMenu, 'm'),
-            Scene.expectIgnored(),
+            Scene.expectHandled(),
             Scene.keydown(rootMenu, ' '),
             Scene.expectHandled(),
             Scene.expect(rootMenu).toExist(),
@@ -761,10 +788,8 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         },
       )
 
-      it.fails('navigate to options with diacritic characters', () => {
-        // DIVERGENCE (medium): Base UI's accumulated query "bą" still matches
-        // "Bą". creaseui typeaheads on the standalone 'ą' keystroke, which no
-        // label starts with, so the highlight stays on "Ba".
+      it('navigate to options with diacritic characters', () => {
+        // Base UI's accumulated query "bą" still matches "Bą".
         Scene.scene(
           {
             update,
@@ -777,7 +802,7 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
           Scene.expectHandled(),
           Scene.expect(menuItem('Ba')).toHaveAttr('data-active', 'true'),
           Scene.keydown(rootMenu, 'ą'),
-          Scene.expectIgnored(),
+          Scene.expectHandled(),
           Scene.expect(menuItem('Bą')).toHaveAttr('data-active', 'true'),
         )
       })
@@ -798,12 +823,10 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         )
       })
 
-      it.fails(
+      it(
         'does not open a submenu when pressing Space during a typeahead session',
         () => {
-          // DIVERGENCE (medium): Base UI absorbs Space while a typeahead query
-          // is in flight. creaseui has no typeahead session, so Space opens
-          // the highlighted submenu trigger immediately.
+          // Base UI absorbs Space while a typeahead query is in flight.
           Scene.scene(
             {
               update,
@@ -825,9 +848,9 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
             Scene.keydown(rootMenu, 'a'),
             Scene.expectHandled(),
             Scene.keydown(rootMenu, 'd'),
-            Scene.expectIgnored(),
+            Scene.expectHandled(),
             Scene.keydown(rootMenu, 'd'),
-            Scene.expectIgnored(),
+            Scene.expectHandled(),
             Scene.keydown(rootMenu, ' '),
             Scene.expectHandled(),
             Scene.expect(submenuPanel('Add to Playlist')).not.toExist(),
@@ -883,6 +906,10 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
           Scene.expectHandled(),
           Scene.keydown(rootMenu, 'ArrowDown'),
           Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
           Scene.expect(menuItem('Item 4')).toHaveAttr('data-active', 'true'),
           Scene.keydown(rootMenu, 'ArrowRight'),
           Scene.expectHandled(),
@@ -909,6 +936,10 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
           Scene.expectHandled(),
           Scene.keydown(rootMenu, 'ArrowDown'),
           Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
           Scene.keydown(rootMenu, 'ArrowLeft'),
           Scene.expectHandled(),
           Scene.expect(submenuPanel('Item 4')).toExist(),
@@ -921,6 +952,10 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
           { update, view },
           givenStandard,
           Scene.click(trigger),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
           Scene.expectHandled(),
           Scene.keydown(rootMenu, 'ArrowDown'),
           Scene.expectHandled(),
@@ -942,6 +977,10 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
           { update, view },
           givenStandard,
           Scene.click(trigger),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
           Scene.expectHandled(),
           Scene.keydown(rootMenu, 'ArrowDown'),
           Scene.expectHandled(),
@@ -972,6 +1011,10 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
           Scene.expectHandled(),
           Scene.keydown(rootMenu, 'ArrowDown'),
           Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
           Scene.keydown(rootMenu, 'ArrowRight'),
           Scene.expectHandled(),
           Scene.keydown(rootMenu, 'ArrowDown'),
@@ -989,6 +1032,10 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
           { update, view },
           givenStandard,
           Scene.click(trigger),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
           Scene.expectHandled(),
           Scene.keydown(rootMenu, 'ArrowDown'),
           Scene.expectHandled(),
@@ -1080,16 +1127,19 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         )
       })
 
-      it.fails(
+      it(
         'does not close the parent menu when the Escape key is pressed by default',
         () => {
-          // DIVERGENCE (high): Base UI closes only the submenu on Escape
-          // (closeParentOnEsc=false by default). creaseui closes the entire
-          // tree on Escape from inside a submenu.
+          // Base UI closes only the submenu on Escape
+          // (closeParentOnEsc=false by default).
           Scene.scene(
             { update, view },
             givenStandard,
             Scene.click(trigger),
+            Scene.expectHandled(),
+            Scene.keydown(rootMenu, 'ArrowDown'),
+            Scene.expectHandled(),
+            Scene.keydown(rootMenu, 'ArrowDown'),
             Scene.expectHandled(),
             Scene.keydown(rootMenu, 'ArrowDown'),
             Scene.expectHandled(),
@@ -1108,11 +1158,16 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
 
       it('closes the whole tree on Escape from inside a submenu', () => {
         // Base UI: 'closes the parent menu when the Escape key is pressed if
-        // `closeParentOnEsc=true`' — creaseui behaves that way unconditionally.
+        // `closeParentOnEsc=true`' — reaching the same end state takes two
+        // Escapes on the default: one pops the submenu, the next pops the root.
         Scene.scene(
           { update, view },
           givenStandard,
           Scene.click(trigger),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
           Scene.expectHandled(),
           Scene.keydown(rootMenu, 'ArrowDown'),
           Scene.expectHandled(),
@@ -1123,21 +1178,25 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
           Scene.keydown(rootMenu, 'Escape'),
           Scene.expectHandled(),
           Scene.expect(submenuPanel('Item 4')).not.toExist(),
+          Scene.expect(rootMenu).toExist(),
+          Scene.keydown(rootMenu, 'Escape'),
+          Scene.expectHandled(),
           Scene.expect(rootMenu).not.toExist(),
         )
       })
 
-      it.fails(
+      it(
         'opens a third-level submenu when its trigger is activated',
         () => {
-          // DIVERGENCE (high): Base UI supports arbitrary nesting. creaseui
-          // renders exactly one submenu level — a nested submenu trigger gets
-          // aria-haspopup but no panel, and ArrowRight inside an open submenu
-          // falls through to typeahead (no match, no message).
+          // Base UI supports arbitrary nesting.
           Scene.scene(
             { update, view },
             givenStandard,
             Scene.click(trigger),
+            Scene.expectHandled(),
+            Scene.keydown(rootMenu, 'ArrowDown'),
+            Scene.expectHandled(),
+            Scene.keydown(rootMenu, 'ArrowDown'),
             Scene.expectHandled(),
             Scene.keydown(rootMenu, 'ArrowDown'),
             Scene.expectHandled(),
@@ -1154,7 +1213,7 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
               'menu',
             ),
             Scene.keydown(rootMenu, 'ArrowRight'),
-            Scene.expectIgnored(),
+            Scene.expectHandled(),
             Scene.expect(submenuPanel('Item 4.3')).toExist(),
           )
         },
@@ -1208,14 +1267,17 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
       })
 
       it('keeps the checked state when closed and reopened', () => {
-        // creaseui closes the menu on activation (see the it.fails below), so
-        // the parent-held state is observable on the next open.
+        // Checkable items keep the menu open (closeOnClick=false) — the
+        // parent-held state is then observable on the next open.
         Scene.scene(
           { update, view: checkboxView },
           givenCheckbox,
           Scene.click(trigger),
           Scene.expectHandled(),
           Scene.click(checkboxItem('Notifications')),
+          Scene.expectHandled(),
+          Scene.expect(rootMenu).toExist(),
+          Scene.click(trigger),
           Scene.expectHandled(),
           Scene.expect(rootMenu).not.toExist(),
           Scene.click(trigger),
@@ -1232,8 +1294,8 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
       })
 
       it('toggles the checked state when Space is pressed', () => {
-        // Same caveat: creaseui closes on activation, so the new state is
-        // asserted after reopening.
+        // Checkables stay open on activation, so the new state is observable
+        // immediately.
         Scene.scene(
           { update, view: checkboxView },
           givenCheckbox,
@@ -1241,11 +1303,11 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
           Scene.expectHandled(),
           Scene.keydown(rootMenu, 'ArrowDown'),
           Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
           Scene.keydown(rootMenu, ' '),
           Scene.expectHandled(),
           Scene.expectOutMessage(selected('Notifications', 1)),
-          Scene.click(trigger),
-          Scene.expectHandled(),
           Scene.expect(checkboxItem('Notifications')).toHaveAttr(
             'aria-checked',
             'true',
@@ -1283,13 +1345,11 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         )
       })
 
-      it.fails(
+      it(
         'does not close the menu when a checkbox item is activated by default',
         () => {
-          // DIVERGENCE (high): Base UI keeps the menu open on checkbox-item
-          // activation (closeOnClick defaults to false for checkable items).
-          // creaseui emits Selected and closes for every item kind; Enter and
-          // Space behave identically.
+          // Base UI keeps the menu open on checkbox-item activation
+          // (closeOnClick defaults to false for checkable items).
           Scene.scene(
             { update, view: checkboxView },
             givenCheckbox,
@@ -1306,9 +1366,9 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         },
       )
 
-      it.fails('emits data-checked and data-unchecked state attributes', () => {
-        // DIVERGENCE (low): Base UI exposes checkable state through
-        // data-checked/data-unchecked; creaseui emits aria-checked only.
+      it('emits data-checked and data-unchecked state attributes', () => {
+        // Base UI exposes checkable state through
+        // data-checked/data-unchecked.
         Scene.scene(
           { update, view: checkboxView },
           givenCheckbox,
@@ -1370,6 +1430,11 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
           Scene.expectHandled(),
           Scene.click(radioItem('Small')),
           Scene.expectHandled(),
+          // Checkable items keep the menu open (closeOnClick=false).
+          Scene.expect(rootMenu).toExist(),
+          Scene.click(trigger),
+          Scene.expectHandled(),
+          Scene.expect(rootMenu).not.toExist(),
           Scene.click(trigger),
           Scene.expectHandled(),
           Scene.expect(radioItem('Small')).toHaveAttr('aria-checked', 'true'),
@@ -1395,10 +1460,10 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         )
       })
 
-      it.fails(
+      it(
         'does not close the menu when a radio item is activated by default',
         () => {
-          // DIVERGENCE (high): same closeOnClick divergence as checkbox items.
+          // Same closeOnClick default as checkbox items.
           Scene.scene(
             { update, view: radioView },
             givenRadio,
@@ -1424,11 +1489,10 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         () => item => ({ label: item, group: 'Group 1' }),
       )
 
-      it.fails('hides the group label from the accessibility tree', () => {
-        // DIVERGENCE (low): Base UI renders Menu.GroupLabel with
-        // aria-hidden="true" by default and associates it via aria-labelledby
-        // on role=group. creaseui's group label is a plain visible div with
-        // no aria-hidden and no role=group container.
+      it('hides the group label from the accessibility tree', () => {
+        // Base UI renders Menu.GroupLabel with aria-hidden="true" by default.
+        // (Associating it via aria-labelledby on role=group stays a gap —
+        // creaseui has no group container element; it.todo below.)
         Scene.scene(
           { update, view: groupedView },
           Scene.given(initialModel(Menu, ['Item 1', 'Item 2'])),
@@ -1456,10 +1520,8 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         )
       })
 
-      it.fails('should not render an internal backdrop when `modal` is `false`', () => {
-        // DIVERGENCE (low): `init` accepts `isModal` but drops it — the
-        // backdrop is rendered whenever the menu is open, and it is the only
-        // outside-click mechanism, so a non-modal menu cannot be expressed.
+      it('should not render an internal backdrop when `modal` is `false`', () => {
+        // init's isModal flag gates the internal backdrop.
         Scene.scene(
           { update, view },
           Scene.given(initialModel(Menu, STANDARD_ITEMS, {}, false)),
