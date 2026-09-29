@@ -1,4 +1,4 @@
-﻿import type { Html, HtmlBuilder } from 'foldkit/html';
+﻿import type { Attribute, Html, HtmlBuilder } from 'foldkit/html';
 
 import { Popover as PopoverPrimitive } from '@foldkit/ui';
 
@@ -46,6 +46,7 @@ export type PopoverProps<Msg> = Readonly<{
   toParentMessage: (message: Message) => Msg;
   trigger: Html | string;
   triggerClass?: string;
+  triggerAttributes?: ReadonlyArray<Attribute<Msg>>;
   content: Html | string;
   align?: PopoverAlign;
   side?: PopoverSide;
@@ -78,6 +79,7 @@ export const popover = <Msg>(
             hp.button(
               [
                 ...button,
+                ...(props.triggerAttributes ?? []),
                 hp.DataAttribute('slot', 'popover-trigger'),
                 hp.AriaHasPopup('dialog'),
                 ...(props.triggerClass === undefined
