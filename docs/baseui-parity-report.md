@@ -72,8 +72,8 @@ docs pages against `shadcn/ui` v4 (`/docs/components/base/*`).
    switch emits a `value` attribute and misses `data-unchecked` on
    control+thumb; toast no `timeout=0` no-dismiss, no per-toast dismissal
    messages on dismissAll, live region misses `aria-atomic`/`aria-relevant`,
-   no Escape close, wrong stacking order; form doesn't set `novalidate`;
-   scroll-area keeps non-overflowing viewport in tab order; field misses
+   no Escape close, wrong stacking order; scroll-area keeps
+   non-overflowing viewport in tab order; field misses
    `data-invalid` omission for valid fields; toggle-group reverses DOM in
    RTL+vertical and misses `aria-disabled="false"`/`data-pressed`.
 7. **Structural / form integration.** Hidden-input `id` conventions differ
@@ -96,7 +96,6 @@ docs pages against `shadcn/ui` v4 (`/docs/components/base/*`).
 | drawer | `aria-describedby` |
 | dropdown-menu | submenu click/third-level; disabled-item nav+typeahead; multi-char/diacritic typeahead; Escape scope; `data-checked`; group label a11y; modal backdrop |
 | field | `data-disabled` on all parts; invalid-while-disabled; fieldset `aria-labelledby`; nested disable |
-| form | `novalidate` not set |
 | hover-card | reopen-after-Escape; externally-opened hover-out; `data-popup-open` |
 | input-otp | `data-complete` root+slots; `data-filled`/`data-focused`; disabled guards |
 | menubar | open-on-focus/arrow; submenu click; closeOnClick semantics; `data-has-submenu-open` |
