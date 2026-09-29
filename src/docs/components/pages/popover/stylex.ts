@@ -55,6 +55,7 @@ const popoverFor = <Msg>(
         onMessageJson(
           JSON.stringify({ _tag: 'GotPopoverMessage', id, message }),
         ),
+      backdrop: true,
       ...extra,
     },
     h,

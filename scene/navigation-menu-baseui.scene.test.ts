@@ -622,14 +622,13 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
         },
       )
 
-      // DIVERGENCE: Base UI marks an open trigger data-popup-open (+data-pressed);
-      // creaseui's popover marks it data-open instead.
-      it.fails('marks the open trigger data-popup-open', () => {
+      it('marks the open trigger data-popup-open', () => {
         Scene.scene(
           { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
           Scene.given(initialModel()),
           Scene.click(productsTrigger),
           Scene.expectHandled(),
+          resolveOpenMounts,
           Scene.expect(productsTrigger).toHaveAttr('data-popup-open', ''),
         )
       })

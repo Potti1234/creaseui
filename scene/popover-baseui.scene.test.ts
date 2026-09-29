@@ -137,6 +137,10 @@ const backdrop = Scene.selector('[data-slot="popover-backdrop"]')
 
 const resolvePanelMounts = Scene.Mount.resolveAll(
   [PopoverPrimitive.AnchorPopover, PopoverPrimitive.Message.CompletedAnchorPopover()],
+)
+
+const resolvePanelAndBackdropMounts = Scene.Mount.resolveAll(
+  [PopoverPrimitive.AnchorPopover, PopoverPrimitive.Message.CompletedAnchorPopover()],
   [
     PopoverPrimitive.PortalPopoverBackdrop,
     PopoverPrimitive.Message.CompletedPortalPopoverBackdrop(),
@@ -151,6 +155,10 @@ const resolveFocusButton = Scene.Command.resolveAllExact([
 // expectEnded steps are single-use: the closure drains its matchers on the
 // first run, so build a fresh pair for every scene.
 const endedPanelMounts = () => [
+  Scene.Mount.expectEnded(PopoverPrimitive.AnchorPopover),
+]
+
+const endedPanelAndBackdropMounts = () => [
   Scene.Mount.expectEnded(PopoverPrimitive.AnchorPopover),
   Scene.Mount.expectEnded(PopoverPrimitive.PortalPopoverBackdrop),
 ]
@@ -180,6 +188,7 @@ type PopoverModuleProps = Readonly<{
   side?: 'top' | 'right' | 'bottom' | 'left'
   direction?: 'ltr' | 'rtl'
   focusSelector?: string
+  backdrop?: boolean
 }>
 
 /* `anchor` builds the anchor config this renderer passes to the AnchorPopover
@@ -195,6 +204,7 @@ type ViewOptions = Readonly<{
   side?: 'top' | 'right' | 'bottom' | 'left'
   align?: 'start' | 'center' | 'end'
   focusSelector?: string
+  backdrop?: boolean
 }>
 
 const makeView =
@@ -225,6 +235,9 @@ const makeView =
           ...(options.focusSelector === undefined
             ? {}
             : { focusSelector: options.focusSelector }),
+          ...(options.backdrop === undefined
+            ? {}
+            : { backdrop: options.backdrop }),
         },
         h,
       )
@@ -275,26 +288,26 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
 
         it('rewires dismiss interactions after closing and reopening', () => {
           Scene.scene(
-            { update, view: makeView(Module) },
+            { update, view: makeView(Module, { backdrop: true }) },
             Scene.given(initialModel()),
             Scene.click(trigger),
             Scene.expectHandled(),
-            resolvePanelMounts,
+            resolvePanelAndBackdropMounts,
             Scene.keydown(panel, 'Escape'),
             Scene.expectHandled(),
             Scene.expectOutMessage(PopoverPrimitive.OutMessage.Closed()),
             Scene.expect(panel).toBeAbsent(),
-            ...endedPanelMounts(),
+            ...endedPanelAndBackdropMounts(),
             resolveFocusButton,
             Scene.click(trigger),
             Scene.expectHandled(),
             Scene.expect(panel).toExist(),
-            resolvePanelMounts,
+            resolvePanelAndBackdropMounts,
             Scene.click(backdrop),
             Scene.expectHandled(),
             Scene.expectOutMessage(PopoverPrimitive.OutMessage.Closed()),
             Scene.expect(panel).toBeAbsent(),
-            ...endedPanelMounts(),
+            ...endedPanelAndBackdropMounts(),
             resolveFocusButton,
           )
         })
@@ -439,18 +452,18 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
       describe('outside press event with backdrops', () => {
         it('uses intentional outside press with user backdrop (mouse): closes on click, not on mousedown', () => {
           Scene.scene(
-            { update, view: makeView(Module) },
+            { update, view: makeView(Module, { backdrop: true }) },
             Scene.given(initialModel()),
             Scene.click(trigger),
             Scene.expectHandled(),
-            resolvePanelMounts,
+            resolvePanelAndBackdropMounts,
             Scene.expect(backdrop).not.toHaveHandler('pointerdown'),
             Scene.expect(panel).toExist(),
             Scene.click(backdrop),
             Scene.expectHandled(),
             Scene.expectOutMessage(PopoverPrimitive.OutMessage.Closed()),
             Scene.expect(panel).toBeAbsent(),
-            ...endedPanelMounts(),
+            ...endedPanelAndBackdropMounts(),
             resolveFocusButton,
           )
         })
@@ -462,7 +475,7 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
             Scene.click(trigger),
             Scene.expectHandled(),
             Scene.expect(panel).toExist(),
-            resolvePanelMounts,
+            resolvePanelAndBackdropMounts,
             resolveModalOpenCommands,
             Scene.expect(backdrop).not.toHaveHandler('pointerdown'),
             Scene.expect(panel).toExist(),
@@ -470,7 +483,7 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
             Scene.expectHandled(),
             Scene.expectOutMessage(PopoverPrimitive.OutMessage.Closed()),
             Scene.expect(panel).toBeAbsent(),
-            ...endedPanelMounts(),
+            ...endedPanelAndBackdropMounts(),
             resolveModalCloseCommands,
           )
         })
@@ -521,7 +534,7 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
             Scene.expectHandled(),
             Scene.expect(backdrop).toExist(),
             Scene.expect(panel).toExist(),
-            resolvePanelMounts,
+            resolvePanelAndBackdropMounts,
             Scene.Command.expectExact(
               PopoverPrimitive.LockScroll,
               PopoverPrimitive.InertOthers,
@@ -530,10 +543,10 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
           )
         })
 
-        // DIVERGENCE: Base UI only renders an internal backdrop when
-        // `modal=true`; creaseui renders the backdrop whenever the popup is
-        // open (modal=false included — it carries the outside-press close).
-        it.fails('should not render an internal backdrop when `false`', () => {
+        it('should not render an internal backdrop when `false`', () => {
+          // Non-modal popovers render no backdrop unless the `backdrop` prop
+          // opts in — matching Base UI, where only `modal` renders the
+          // internal backdrop.
           Scene.scene(
             { update, view: makeView(Module) },
             Scene.given(initialModel({ isModal: false })),
@@ -556,7 +569,7 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
               PopoverPrimitive.InertOthers,
             ),
             resolveModalOpenCommands,
-            resolvePanelMounts,
+            resolvePanelAndBackdropMounts,
             Scene.keydown(panel, 'Escape'),
             Scene.expectHandled(),
             Scene.Command.expectExact(
@@ -565,7 +578,7 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
               PopoverPrimitive.RestoreInert,
             ),
             resolveModalCloseCommands,
-            ...endedPanelMounts(),
+            ...endedPanelAndBackdropMounts(),
           )
         })
       })
@@ -629,9 +642,7 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
           )
         })
 
-        // DIVERGENCE: Base UI gives the popup `role="dialog"`; creaseui's
-        // panel renders no role at all.
-        it.fails('has the dialog role on the popup', () => {
+        it('has the dialog role on the popup', () => {
           Scene.scene(
             { update, view: makeView(Module) },
             Scene.given(initialModel({ open: true })),
@@ -717,10 +728,7 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
       })
 
       describe('style hooks', () => {
-        // DIVERGENCE: Base UI marks the press-opened trigger with
-        // data-popup-open and data-pressed; creaseui marks the open trigger
-        // with data-open only, regardless of the opening pointer type.
-        it.fails(
+        it(
           'should have the data-popup-open and data-pressed attributes when open by clicking',
           () => {
             Scene.scene(
@@ -808,11 +816,7 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
         )
       })
 
-      // DIVERGENCE: Base UI styles the open popup with data-open (and the
-      // closed popup with data-closed); creaseui's settled panel carries no
-      // data-open — transition hooks (data-enter/data-leave/data-closed) only
-      // exist mid-animation on an animated model.
-      it.fails('has the data-open attribute on the popup while open', () => {
+      it('has the data-open attribute on the popup while open', () => {
         Scene.scene(
           { update, view: makeView(Module) },
           Scene.given(initialModel({ open: true })),

@@ -95,6 +95,7 @@ export type Message = typeof Message.Type`,
       ${isStyleX ? '' : "triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium',"}
       side: '${fixture.side}',
       align: '${fixture.align}',
+      backdrop: true,
       content: h.div([h.Class(${isStyleX ? "className(styles.content)" : "'grid gap-2'"})], [
         h.h4([h.Class(${isStyleX ? "className(styles.heading)" : "'font-medium'"})], ['Dimensions']),
         h.p([h.Class(${isStyleX ? "className(styles.copy)" : "'text-sm text-muted-foreground'"})], ['Set the dimensions for the layer.']),
@@ -168,6 +169,7 @@ export type Message = typeof Message.Type`,
       trigger: 'Open Popover',
       ${isStyleX ? '' : "triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium',"}
       align: 'start',
+      backdrop: true,
       content: h.div([h.Class(${isStyleX ? 'className(styles.content)' : "'grid gap-2'"})], [
         h.h4([h.Class(${isStyleX ? 'className(styles.heading)' : "'font-medium'"})], ['Dimensions']),
         h.p([h.Class(${isStyleX ? 'className(styles.copy)' : "'text-sm text-muted-foreground'"})], ['Set the dimensions for the layer.']),
@@ -194,7 +196,8 @@ const multiSource = (
       trigger: '${escape(instance.trigger)}',
       ${isStyleX ? '' : "triggerClass: 'rounded-md border px-3 py-1.5 text-sm',"}
       side: '${instance.side}',
-      align: '${instance.align}',${instance.rtl === true ? `
+      align: '${instance.align}',
+      backdrop: true,${instance.rtl === true ? `
       direction: 'rtl',
       ${isStyleX ? 'layoutStyle: styles.panel,' : "class: 'w-40',"}
       content: ${headerEmit(instance.text, true)},` : `
@@ -346,6 +349,7 @@ export type Message = typeof Message.Type`,
       ${isStyleX ? '' : "triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium',"}
       align: 'start',
       ${isStyleX ? '' : "class: 'w-64',"}
+      backdrop: true,
       content: h.div([h.Class(${isStyleX ? 'className(styles.content)' : "'grid gap-4'"})], [
         h.div([h.Class(${isStyleX ? 'className(styles.content)' : "'grid gap-2'"})], [
           h.h4([h.Class(${isStyleX ? 'className(styles.heading)' : "'font-medium'"})], ['Dimensions']),

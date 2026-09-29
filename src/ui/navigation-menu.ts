@@ -133,6 +133,7 @@ export const navigationMenuDisclosure = <Msg>(
       class: 'w-auto min-w-64 p-2',
       align: 'start',
       focusSelector: 'a',
+      backdrop: true,
     },
     h,
   );
