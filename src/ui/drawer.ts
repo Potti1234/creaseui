@@ -1,5 +1,6 @@
 ﻿import { Option } from 'effect';
 import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html';
+import * as Mount from 'foldkit/mount';
 
 import { Dialog as DialogPrimitive } from '@foldkit/ui';
 
@@ -123,6 +124,7 @@ export const drawer = <Msg>(
         model: props.model.dialog,
         view: DialogPrimitive.view,
         viewInputs: {
+          hasDescription: props.description !== undefined,
           toView: ({
             dialog: dialogAttributes,
             backdrop,
@@ -153,6 +155,12 @@ export const drawer = <Msg>(
                         ...panel,
                         hd.DataAttribute('slot', 'drawer-content'),
                         hd.DataAttribute('vaul-drawer-direction', direction),
+                        hd.OnMount(
+                          Mount.mapMessage(
+                            DrawerBehavior.MeasureDrawerPopup({ direction }),
+                            props.toParentMessage,
+                          ),
+                        ),
                         hd.Style({
                           transform: dragTransform(
                             direction,
