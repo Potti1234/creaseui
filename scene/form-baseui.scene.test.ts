@@ -674,11 +674,10 @@ const verifyRenderer = (
     )
 
     describe('prop: noValidate', () => {
-      // DIVERGENCE: Base UI hardcodes `noValidate` on the <form> (its
-      // validation is JS-driven, so native validation is always off).
-      // creaseui emits the attribute only when isNoValidate is passed, so
-      // a default creaseui form still runs native constraint validation.
-      it.fails('should disable native validation if set to true (default)', () => {
+      // Base UI hardcodes `noValidate` on the <form> (its validation is
+      // JS-driven, so native validation is always off). creaseui matches
+      // by defaulting isNoValidate to true.
+      it('should disable native validation if set to true (default)', () => {
         Scene.scene(
           {
             update,

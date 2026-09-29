@@ -66,9 +66,7 @@ export const renderForm = <Msg>(
       ...(props.autocomplete === undefined
         ? []
         : [h.Attribute('autocomplete', props.autocomplete)]),
-      ...(props.isNoValidate === undefined
-        ? []
-        : [h.Novalidate(props.isNoValidate)]),
+      h.Novalidate(props.isNoValidate ?? true),
       ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
       ...(props.onSubmit === undefined ? [] : [h.OnSubmit(props.onSubmit)]),
       ...visual,
