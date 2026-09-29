@@ -27,7 +27,7 @@ const ITEM_CLASS = 'border-b last:border-b-0';
 const TRIGGER_CLASS =
   'group flex min-h-10 flex-1 items-start justify-between gap-4 rounded-md py-2.5 text-left text-sm font-medium outline-none hover:underline focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50';
 const ICON_CLASS =
-  'pointer-events-none size-4 shrink-0 translate-y-0.5 text-muted-foreground transition-transform duration-200 ease-in-out group-data-[open]:rotate-180';
+  'pointer-events-none size-4 shrink-0 translate-y-0.5 text-muted-foreground transition-transform duration-200 ease-in-out group-data-[panel-open]:rotate-180';
 const PANEL_CLASS = 'overflow-hidden text-sm';
 const CONTENT_CLASS = 'pt-0 pb-2.5';
 
@@ -38,9 +38,6 @@ export type ViewInputs = Readonly<{
   triggerClass?: string;
   contentClass?: string;
 }>;
-
-const itemDomId = (accordionId: string, value: string): string =>
-  `${accordionId}-item-${encodeURIComponent(value)}`;
 
 const render = <Msg>(
   model: AccordionBehavior.Model,
@@ -53,12 +50,13 @@ const render = <Msg>(
       h.DataAttribute('slot', 'accordion'),
       ...(viewInputs.class === undefined ? [] : [h.Class(cn(viewInputs.class))]),
     ],
-    viewInputs.items.map((item) => {
+    viewInputs.items.map((item, index) => {
       const isOpen = model.value.includes(item.value);
+      const domId = AccordionBehavior.itemDomId(model.id, item.value);
 
       return DisclosurePrimitive.view(
         {
-          id: itemDomId(model.id, item.value),
+          id: domId,
           isOpen,
           onToggle: (nextIsOpen) =>
             toMessage(
@@ -74,15 +72,35 @@ const render = <Msg>(
             h.div(
               [
                 h.DataAttribute('slot', 'accordion-item'),
+                ...AccordionBehavior.itemStateAttributes({
+                  h,
+                  item,
+                  index,
+                  isOpen,
+                }),
                 h.Class(cn(ITEM_CLASS, viewInputs.itemClass)),
               ],
               [
                 h.h3(
-                  [h.Class('flex')],
+                  [
+                    h.Class('flex'),
+                    ...AccordionBehavior.itemStateAttributes({
+                      h,
+                      item,
+                      index,
+                      isOpen,
+                    }),
+                  ],
                   [
                     h.button(
                       [
-                        ...button,
+                        ...AccordionBehavior.triggerAttributes(button, {
+                          h,
+                          item,
+                          index,
+                          isOpen,
+                          toMessage,
+                        }),
                         h.DataAttribute('slot', 'accordion-trigger'),
                         h.Class(cn(TRIGGER_CLASS, viewInputs.triggerClass)),
                       ],
@@ -96,7 +114,13 @@ const render = <Msg>(
                 animatePanel(
                   h.div(
                     [
-                      ...panel,
+                      ...AccordionBehavior.panelAttributes(panel, {
+                        h,
+                        item,
+                        index,
+                        isOpen,
+                        labelledBy: DisclosurePrimitive.buttonId(domId),
+                      }),
                       h.DataAttribute('slot', 'accordion-content'),
                       h.Class(PANEL_CLASS),
                     ],
