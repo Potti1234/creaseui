@@ -82,7 +82,16 @@ export const renderButton = <Msg>(
       toView: ({ button: primitiveAttributes }) =>
         h.button(
           [
-            ...primitiveAttributes,
+            // A natively disabled <button> carries only `disabled` +
+            // `data-disabled` (Base UI semantics); the primitive's
+            // aria-disabled/tabindex exist for non-native elements.
+            ...(isDisabled
+              ? primitiveAttributes.filter(
+                  (attribute) =>
+                    attribute._tag !== 'AriaDisabled' &&
+                    attribute._tag !== 'Tabindex',
+                )
+              : primitiveAttributes),
             h.DataAttribute('slot', props.slot ?? 'button'),
             h.DataAttribute('state', props.isLoading === true ? 'loading' : 'idle'),
             ...(props.dataSize === undefined
@@ -110,6 +119,10 @@ export const renderButtonLink = <Msg>(
   h.a(
     [
       h.Href(props.href),
+      // Button semantics on the anchor, matching Base UI's
+      // nativeButton={false} render={<a>} output.
+      h.Role('button'),
+      h.Tabindex(0),
       h.DataAttribute('slot', props.slot ?? 'button'),
       ...(props.dataSize === undefined
         ? []

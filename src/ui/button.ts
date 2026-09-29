@@ -11,8 +11,9 @@ import {
 
 /* Ported from shadcn/ui button.tsx. The cva config is copied verbatim except:
    - `disabled:` variants became `data-[disabled]:` + `aria-disabled:` because
-     the foldkit Button primitive signals disabled state via aria-disabled and
-     a data-disabled attribute rather than the native disabled attribute. */
+     disabled state is signaled via a data-disabled attribute (and the native
+     disabled attribute on real buttons); aria-disabled covers the
+     non-native elements that reuse these variants (e.g. pagination spans). */
 export const buttonVariants = cva(
   "group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px data-[disabled]:pointer-events-none data-[disabled]:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
