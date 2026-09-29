@@ -100,7 +100,7 @@ docs pages against `shadcn/ui` v4 (`/docs/components/base/*`).
 | hover-card | reopen-after-Escape; externally-opened hover-out; `data-popup-open` |
 | input-otp | `data-complete` root+slots; `data-filled`/`data-focused`; disabled guards |
 | menubar | open-on-focus/arrow; submenu click; closeOnClick semantics; `data-has-submenu-open` |
-| navigation-menu | close-previous on trigger switch; `data-popup-open` |
+| navigation-menu | — |
 | popover | `role=dialog`; `data-popup-open`/`data-pressed`/`data-open`; modal backdrop |
 | progress | formatted `aria-valuetext`; indeterminate text; complete-at-max |
 | radio-group | arrow-select; RTL flip; group `aria-disabled` |
