@@ -28,8 +28,8 @@ import * as TailwindAccordion from '@/ui/accordion'
  *  - "keeps the closing panel visible until its exit transition completes"
  *    and the React.Activity animation replay test (real DOM timing)
  *  - non-native trigger cases (`nativeButton={false}` / `render={<span/>}`:
- *    element substitution) — a disabled creaseui trigger stays tabbable
- *    (aria-disabled + tabIndex=0), see prop: disabled
+ *    element substitution) — creaseui triggers are always native buttons,
+ *    so the disabled trigger leaves the tab order like Base UI's native one
  *  - "allows onMouseUp to call preventBaseUIHandler" and the whole
  *    BaseUIChangeEventDetails group (eventDetails.cancel() veto; foldkit
  *    components dispatch plain messages — no cancellable event payload)
@@ -115,10 +115,7 @@ const verifyRenderer = (name: string, Accordion: AccordionModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI marks the panel role="region" and
-      // aria-labelledby=<trigger id>. creaseui's Disclosure panel carries only
-      // id + data-open — no region role and no back-reference to the trigger.
-      it.fails('gives the panel role="region" labelled by the trigger', () => {
+      it('gives the panel role="region" labelled by the trigger', () => {
         Scene.scene(
           { update: Accordion.update, view: view() },
           Scene.given(Accordion.init(initConfig(['first']))),
@@ -130,21 +127,18 @@ const verifyRenderer = (name: string, Accordion: AccordionModule) => {
         )
       })
 
-      // DIVERGENCE: creaseui keeps the panel mounted while closed (inert +
-      // aria-hidden so the height animation has something to transition), so
-      // the panel id always exists — matching Base UI's keepMounted shape,
-      // where the trigger keeps aria-controls. creaseui only emits
-      // aria-controls while open.
-      it.fails('keeps aria-controls on the trigger while the panel is closed', () => {
+      // creaseui keeps the panel mounted while closed (inert + aria-hidden so
+      // the height animation has something to transition), so the panel id
+      // always exists — matching Base UI's keepMounted shape. Base UI still
+      // drops aria-controls whenever the item is closed
+      // (`open ? panelId : undefined`), and creaseui emits it the same way.
+      it('drops aria-controls on the trigger while the mounted panel is closed', () => {
         Scene.scene(
           { update: Accordion.update, view: view() },
           Scene.given(Accordion.init(initConfig())),
           Scene.expect(trigger1).toHaveAttr('aria-expanded', 'false'),
           Scene.expect(panel1).toExist(),
-          Scene.expect(trigger1).toHaveAttr(
-            'aria-controls',
-            'policies-item-first-panel',
-          ),
+          Scene.expect(trigger1).not.toHaveAttr('aria-controls'),
         )
       })
 
@@ -179,7 +173,7 @@ const verifyRenderer = (name: string, Accordion: AccordionModule) => {
           // The closed panel stays mounted but inert — hidden from AT.
           Scene.expect(trigger1).toHaveAttr('aria-expanded', 'false'),
           Scene.expect(trigger1).not.toHaveAttr('aria-controls'),
-          Scene.expect(trigger1).not.toHaveAttr('data-open'),
+          Scene.expect(trigger1).not.toHaveAttr('data-panel-open'),
           Scene.expect(panel1).not.toHaveAttr('data-open'),
           Scene.expect(inertWrapper1).toExist(),
           Scene.expect(Scene.within(inertWrapper1, panel1)).toExist(),
@@ -197,7 +191,7 @@ const verifyRenderer = (name: string, Accordion: AccordionModule) => {
             'aria-controls',
             'policies-item-first-panel',
           ),
-          Scene.expect(trigger1).toHaveAttr('data-open', ''),
+          Scene.expect(trigger1).toHaveAttr('data-panel-open', ''),
           Scene.expect(panel1).toHaveAttr('data-open', ''),
           Scene.expect(inertWrapper1).toBeAbsent(),
           Scene.click(trigger1),
@@ -250,7 +244,7 @@ const verifyRenderer = (name: string, Accordion: AccordionModule) => {
             value: ['first'],
           }),
           Scene.expect(trigger1).toHaveAttr('aria-expanded', 'true'),
-          Scene.expect(trigger1).toHaveAttr('data-open', ''),
+          Scene.expect(trigger1).toHaveAttr('data-panel-open', ''),
           Scene.expect(panel1).toHaveAttr('data-open', ''),
           Scene.Subscription.emit<Message | ExternalMessage>({
             _tag: 'SetValue',
@@ -280,9 +274,11 @@ const verifyRenderer = (name: string, Accordion: AccordionModule) => {
         Scene.scene(
           { update: Accordion.update, view: disabledView() },
           Scene.given(Accordion.init(initConfig())),
-          // aria-disabled reads as disabled to AT, so the trigger is not
-          // clickable — assert handler absence instead of attempting clicks.
-          Scene.expect(trigger1).toHaveAttr('aria-disabled', 'true'),
+          // The native disabled attribute drops the trigger from the tab
+          // order and makes it unclickable — assert handler absence instead
+          // of attempting clicks.
+          Scene.expect(trigger1).toHaveAttr('disabled', ''),
+          Scene.expect(trigger1).not.toHaveAttr('aria-disabled'),
           Scene.expect(trigger1).toBeDisabled(),
           Scene.expect(trigger1).toHaveAttr('data-disabled', ''),
           // Handlers live under their DOM event key in the vnode.
@@ -296,10 +292,7 @@ const verifyRenderer = (name: string, Accordion: AccordionModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI stamps data-disabled on the item, header,
-      // trigger and panel of a disabled item. creaseui marks only the
-      // trigger.
-      it.fails('marks every part of a disabled item data-disabled', () => {
+      it('marks every part of a disabled item data-disabled', () => {
         Scene.scene(
           { update: Accordion.update, view: disabledView() },
           Scene.given(Accordion.init(initConfig(['first']))),
@@ -313,12 +306,7 @@ const verifyRenderer = (name: string, Accordion: AccordionModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI renders the trigger with the native disabled
-      // attribute, which drops it from the tab order (accordion triggers do
-      // not stay focusable like checkboxes do). creaseui emits aria-disabled
-      // + tabIndex=0 and simply unwires the handlers, so the trigger remains
-      // focusable.
-      it.fails('renders the native disabled attribute and leaves the tab order', () => {
+      it('renders the native disabled attribute and leaves the tab order', () => {
         Scene.scene(
           { update: Accordion.update, view: disabledView() },
           Scene.given(Accordion.init(initConfig())),
@@ -343,7 +331,7 @@ const verifyRenderer = (name: string, Accordion: AccordionModule) => {
           Scene.keydown(trigger1, 'Enter'),
           Scene.expectHandled(),
           Scene.expect(trigger1).toHaveAttr('aria-expanded', 'true'),
-          Scene.expect(trigger1).toHaveAttr('data-open', ''),
+          Scene.expect(trigger1).toHaveAttr('data-panel-open', ''),
           Scene.expect(panel1).toHaveAttr('data-open', ''),
           Scene.keydown(trigger1, 'Enter'),
           Scene.expectHandled(),
@@ -352,28 +340,11 @@ const verifyRenderer = (name: string, Accordion: AccordionModule) => {
         )
       })
 
-      it('key: Space toggles the Accordion open state', () => {
-        // End state matches Base UI's [Space] press; creaseui activates on
-        // keydown rather than keyup (timing divergence tested below).
-        Scene.scene(
-          { update: Accordion.update, view: view() },
-          Scene.given(Accordion.init(initConfig())),
-          Scene.expect(trigger1).toHaveAttr('aria-expanded', 'false'),
-          Scene.keydown(trigger1, ' '),
-          Scene.expectHandled(),
-          Scene.expect(trigger1).toHaveAttr('aria-expanded', 'true'),
-          Scene.expect(panel1).toHaveAttr('data-open', ''),
-          Scene.keydown(trigger1, ' '),
-          Scene.expectHandled(),
-          Scene.expect(trigger1).toHaveAttr('aria-expanded', 'false'),
-          Scene.expect(panel1).not.toHaveAttr('data-open'),
-        )
-      })
-
-      // DIVERGENCE: Base UI activates Space on keyup — a Space keydown alone
-      // must not toggle. foldkit's Disclosure consumes the keydown
-      // (preventDefault) and toggles immediately.
-      it.fails('waits for Space keyup before toggling', () => {
+      // Base UI activates Space on keyup: the keydown is consumed (the
+      // default is suppressed so the native keyup→click cannot also fire)
+      // but must not toggle on its own. The toggle lands on keyup — see the
+      // it.todo below; the scene DSL emits keydown only.
+      it('waits for Space keyup before toggling', () => {
         Scene.scene(
           { update: Accordion.update, view: view() },
           Scene.given(Accordion.init(initConfig())),
@@ -404,8 +375,8 @@ const verifyRenderer = (name: string, Accordion: AccordionModule) => {
         Scene.scene(
           { update: Accordion.update, view: view() },
           Scene.given(Accordion.init(initConfig([], 'multiple'))),
-          Scene.expect(trigger1).not.toHaveAttr('data-open'),
-          Scene.expect(trigger2).not.toHaveAttr('data-open'),
+          Scene.expect(trigger1).not.toHaveAttr('data-panel-open'),
+          Scene.expect(trigger2).not.toHaveAttr('data-panel-open'),
           Scene.expect(panel1).not.toHaveAttr('data-open'),
           Scene.expect(panel2).not.toHaveAttr('data-open'),
           Scene.click(trigger1),
@@ -414,14 +385,14 @@ const verifyRenderer = (name: string, Accordion: AccordionModule) => {
           Scene.expectHandled(),
           Scene.expect(panel1).toHaveAttr('data-open', ''),
           Scene.expect(panel2).toHaveAttr('data-open', ''),
-          Scene.expect(trigger1).toHaveAttr('data-open', ''),
-          Scene.expect(trigger2).toHaveAttr('data-open', ''),
+          Scene.expect(trigger1).toHaveAttr('data-panel-open', ''),
+          Scene.expect(trigger2).toHaveAttr('data-panel-open', ''),
           Scene.click(trigger1),
           Scene.expectHandled(),
           Scene.expect(panel1).not.toHaveAttr('data-open'),
           Scene.expect(panel2).toHaveAttr('data-open', ''),
-          Scene.expect(trigger1).not.toHaveAttr('data-open'),
-          Scene.expect(trigger2).toHaveAttr('data-open', ''),
+          Scene.expect(trigger1).not.toHaveAttr('data-panel-open'),
+          Scene.expect(trigger2).toHaveAttr('data-panel-open', ''),
         )
       })
 
@@ -432,13 +403,13 @@ const verifyRenderer = (name: string, Accordion: AccordionModule) => {
           Scene.click(trigger1),
           Scene.expectHandled(),
           Scene.expect(panel1).toHaveAttr('data-open', ''),
-          Scene.expect(trigger1).toHaveAttr('data-open', ''),
+          Scene.expect(trigger1).toHaveAttr('data-panel-open', ''),
           Scene.click(trigger2),
           Scene.expectHandled(),
           Scene.expect(panel2).toHaveAttr('data-open', ''),
-          Scene.expect(trigger2).toHaveAttr('data-open', ''),
+          Scene.expect(trigger2).toHaveAttr('data-panel-open', ''),
           Scene.expect(panel1).not.toHaveAttr('data-open'),
-          Scene.expect(trigger1).not.toHaveAttr('data-open'),
+          Scene.expect(trigger1).not.toHaveAttr('data-panel-open'),
         )
       })
     })
@@ -505,10 +476,7 @@ const verifyRenderer = (name: string, Accordion: AccordionModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI marks the open trigger data-panel-open and keeps
-      // data-open for the panel only. creaseui's Disclosure stamps data-open
-      // on both the trigger and the panel.
-      it.fails('marks the open trigger data-panel-open instead of data-open', () => {
+      it('marks the open trigger data-panel-open instead of data-open', () => {
         Scene.scene(
           { update: Accordion.update, view: view() },
           Scene.given(Accordion.init(initConfig(['first']))),
@@ -517,9 +485,7 @@ const verifyRenderer = (name: string, Accordion: AccordionModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI stamps data-index on every trigger for positional
-      // styling. creaseui emits no data-index.
-      it.fails('renders data-index on every trigger including the first', () => {
+      it('renders data-index on every trigger including the first', () => {
         Scene.scene(
           { update: Accordion.update, view: view() },
           Scene.given(Accordion.init(initConfig())),

@@ -121,9 +121,6 @@ export type ViewInputs = Readonly<{
   contentLayoutStyle?: ComponentLayoutStyle
 }>
 
-const itemDomId = (accordionId: string, value: string): string =>
-  `${accordionId}-item-${encodeURIComponent(value)}`
-
 const render = <Msg>(
   model: AccordionBehavior.Model,
   viewInputs: ViewInputs,
@@ -146,10 +143,11 @@ const render = <Msg>(
     ],
     viewInputs.items.map((item, index) => {
       const isOpen = model.value.includes(item.value)
+      const domId = AccordionBehavior.itemDomId(model.id, item.value)
 
       return DisclosurePrimitive.view(
         {
-          id: itemDomId(model.id, item.value),
+          id: domId,
           isOpen,
           onToggle: (nextIsOpen) =>
             toMessage(
@@ -165,6 +163,12 @@ const render = <Msg>(
             h.div(
               [
                 h.DataAttribute('slot', 'accordion-item'),
+                ...AccordionBehavior.itemStateAttributes({
+                  h,
+                  item,
+                  index,
+                  isOpen,
+                }),
                 h.Class(
                   cn(
                     viewInputs.bordered === true
@@ -179,11 +183,25 @@ const render = <Msg>(
               ],
               [
                 h.h3(
-                  [h.Class(className(styles.triggerRow))],
+                  [
+                    h.Class(className(styles.triggerRow)),
+                    ...AccordionBehavior.itemStateAttributes({
+                      h,
+                      item,
+                      index,
+                      isOpen,
+                    }),
+                  ],
                   [
                     h.button(
                       [
-                        ...button,
+                        ...AccordionBehavior.triggerAttributes(button, {
+                          h,
+                          item,
+                          index,
+                          isOpen,
+                          toMessage,
+                        }),
                         h.DataAttribute('slot', 'accordion-trigger'),
                         h.Class(cn(styles.trigger, viewInputs.triggerLayoutStyle)),
                       ],
@@ -200,7 +218,13 @@ const render = <Msg>(
                 animatePanel(
                   h.div(
                     [
-                      ...panel,
+                      ...AccordionBehavior.panelAttributes(panel, {
+                        h,
+                        item,
+                        index,
+                        isOpen,
+                        labelledBy: DisclosurePrimitive.buttonId(domId),
+                      }),
                       h.DataAttribute('slot', 'accordion-content'),
                       h.Class(className(styles.panel)),
                     ],
