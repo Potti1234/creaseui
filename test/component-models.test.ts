@@ -69,7 +69,7 @@ describe('stateful component models', () => {
     const op1__ = Menu.open(DropdownMenu.init({ id: 'account' })); const opened = op1__.model;;
     const op2__ = Menu.update(
       opened,
-      DropdownMenu.Message.ActivatedItem({ index: 1 }),
+      DropdownMenu.Message.ActivatedItem({ path: [1] }),
     ); const active = op2__.model;
     const op3__ = Menu.selectItem(active, 'billing', 1); const closed = op3__.model; const selection = op3__.outMessage;;
     assert.equal(closed.isOpen, false);
@@ -101,16 +101,16 @@ describe('stateful component models', () => {
 
     assert.deepEqual(
       DropdownMenuBehavior.keyMessage(model, items, itemToBehavior, 'ArrowDown'),
-      { _tag: 'ActivatedItem', index: 2 },
+      { _tag: 'ActivatedItem', path: [0] },
     );
     assert.deepEqual(
       DropdownMenuBehavior.keyMessage(model, items, itemToBehavior, 's'),
-      { _tag: 'ActivatedItem', index: 2 },
+      { _tag: 'Typeahead', query: 's', anchorIndex: -1, matchedPath: [2] },
     );
     const submenuModel = {
       ...model,
-      activeIndex: 3,
-      openSubmenuIndex: Option.some(3),
+      activePath: [3],
+      openSubmenuPath: [3],
     };
     assert.deepEqual(
       DropdownMenuBehavior.keyMessage(
@@ -119,11 +119,11 @@ describe('stateful component models', () => {
         itemToBehavior,
         'ArrowDown',
       ),
-      { _tag: 'ActivatedSubmenuItem', index: 0 },
+      { _tag: 'ActivatedItem', path: [3, 0] },
     );
     assert.deepEqual(
       DropdownMenuBehavior.keyMessage(submenuModel, items, itemToBehavior, 'Escape'),
-      { _tag: 'Closed' },
+      { _tag: 'ClosedSubmenu' },
     );
     assert.deepEqual(
       DropdownMenuBehavior.keyMessage(

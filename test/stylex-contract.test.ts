@@ -40,7 +40,7 @@ describe('StyleX component authoring contract', () => {
     const accordion = readFileSync('src/stylex/accordion.ts', 'utf8')
     const viewInputs = accordion.slice(
       accordion.indexOf('export type ViewInputs'),
-      accordion.indexOf('const itemDomId'),
+      accordion.indexOf('const render'),
     )
 
     assert.match(accordion, /from '@\/lib\/accordion-state'/u)
