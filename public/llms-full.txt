@@ -648,9 +648,9 @@ Examples: Payment Method, Input, Textarea, Select, Slider, Fieldset, Checkbox, R
 
 - `export { ControlFieldParts } from '@/lib/field'` (re-export)
 - `export { FieldError } from '@/lib/field'` (re-export)
-- `FieldSetProps = Slot & Readonly<{ isDisabled?: boolean }>` (type)
+- `FieldSetProps = Slot & Readonly<{ id?: string; isDisabled?: boolean }>` (type)
 - `fieldSet<Msg>(props: FieldSetProps, h: HtmlBuilder<Msg>): Html` (function)
-- `FieldLegendProps = Slot & Readonly<{ variant?: 'legend' | 'label' }>` (type)
+- `FieldLegendProps = Slot & Readonly<{ variant?: 'legend' | 'label'; id?: string }>` (type)
 - `fieldLegend<Msg>(props: FieldLegendProps, h: HtmlBuilder<Msg>): Html` (function)
 - `FieldGroupProps = Slot & Readonly<{ variant?: 'default' | 'outline' }>` (type)
 - `fieldGroup<Msg>(props: FieldGroupProps, h: HtmlBuilder<Msg>): Html` (function)

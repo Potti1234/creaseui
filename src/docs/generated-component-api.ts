@@ -1639,7 +1639,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "FieldSetProps",
       "kind": "type",
-      "signature": "FieldSetProps = Slot & Readonly<{ isDisabled?: boolean }>"
+      "signature": "FieldSetProps = Slot & Readonly<{ id?: string; isDisabled?: boolean }>"
     },
     {
       "name": "fieldSet",
@@ -1649,7 +1649,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "FieldLegendProps",
       "kind": "type",
-      "signature": "FieldLegendProps = Slot & Readonly<{ variant?: 'legend' | 'label' }>"
+      "signature": "FieldLegendProps = Slot & Readonly<{ variant?: 'legend' | 'label'; id?: string }>"
     },
     {
       "name": "fieldLegend",

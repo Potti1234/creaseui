@@ -513,9 +513,9 @@ Source: [`src/ui/field.ts`](../src/ui/field.ts)
 | --- | --- | --- |
 | `ControlFieldParts` | re-export | `export { ControlFieldParts } from '@/lib/field'` |
 | `FieldError` | re-export | `export { FieldError } from '@/lib/field'` |
-| `FieldSetProps` | type | `FieldSetProps = Slot & Readonly<{ isDisabled?: boolean }>` |
+| `FieldSetProps` | type | `FieldSetProps = Slot & Readonly<{ id?: string; isDisabled?: boolean }>` |
 | `fieldSet` | function | `fieldSet<Msg>(props: FieldSetProps, h: HtmlBuilder<Msg>): Html` |
-| `FieldLegendProps` | type | `FieldLegendProps = Slot & Readonly<{ variant?: 'legend' \| 'label' }>` |
+| `FieldLegendProps` | type | `FieldLegendProps = Slot & Readonly<{ variant?: 'legend' \| 'label'; id?: string }>` |
 | `fieldLegend` | function | `fieldLegend<Msg>(props: FieldLegendProps, h: HtmlBuilder<Msg>): Html` |
 | `FieldGroupProps` | type | `FieldGroupProps = Slot & Readonly<{ variant?: 'default' \| 'outline' }>` |
 | `fieldGroup` | function | `fieldGroup<Msg>(props: FieldGroupProps, h: HtmlBuilder<Msg>): Html` |
