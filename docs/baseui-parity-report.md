@@ -71,8 +71,7 @@ docs pages against `shadcn/ui` v4 (`/docs/components/base/*`).
    switch emits a `value` attribute and misses `data-unchecked` on
    control+thumb; toast no `timeout=0` no-dismiss, no per-toast dismissal
    messages on dismissAll, live region misses `aria-atomic`/`aria-relevant`,
-   no Escape close, wrong stacking order; scroll-area keeps
-   non-overflowing viewport in tab order; field misses
+   no Escape close, wrong stacking order; field misses
    `data-invalid` omission for valid fields; toggle-group reverses DOM in
    RTL+vertical and misses `aria-disabled="false"`/`data-pressed`.
 7. **Structural / form integration.** Hidden-input `id` conventions differ
@@ -102,7 +101,6 @@ docs pages against `shadcn/ui` v4 (`/docs/components/base/*`).
 | popover | `role=dialog`; `data-popup-open`/`data-pressed`/`data-open`; modal backdrop |
 | progress | formatted `aria-valuetext`; indeterminate text; complete-at-max |
 | radio-group | arrow-select; RTL flip; group `aria-disabled` |
-| scroll-area | non-overflow viewport tabIndex |
 | select | `role=combobox` trigger; focus-selected-on-open; edge wrap; closed-trigger typeahead; native disabled; `aria-readonly`; hidden-input id; `data-placeholder` |
 | slider | range-thumb `aria-valuenow`/`aria-valuetext`/`aria-orientation`; Shift/PageUp largeStep; tiny-step precision; value clamping; `data-index` |
 | switch | stray `value` attr; `data-unchecked` on control+thumb |
