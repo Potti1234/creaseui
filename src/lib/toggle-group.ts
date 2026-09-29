@@ -56,7 +56,8 @@ const renderToggleGroup = <Value extends string, Msg>(
   toItem: (item: ToggleGroupItemState<Value>, h: HtmlBuilder<Msg>) => Html,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const orderedItems = props.direction === 'rtl' ? [...props.items].reverse() : props.items
+  const rtlReversed = props.direction === 'rtl' && props.orientation !== 'vertical'
+  const orderedItems = rtlReversed ? [...props.items].reverse() : props.items
   const firstEnabled = orderedItems.find((item) => item.isDisabled !== true)?.value
   const focusedValue = orderedItems.find(
     (item) => item.isDisabled !== true && props.selectedValues.includes(item.value),
@@ -87,7 +88,7 @@ const renderToggleGroup = <Value extends string, Msg>(
             h.AriaLabel(props.ariaLabel),
             ...(props.direction === undefined
               ? []
-              : [h.Dir(props.direction === 'rtl' ? 'ltr' : props.direction)]),
+              : [h.Dir(rtlReversed ? 'ltr' : props.direction)]),
             ...visual.group,
           ],
           tabs.flatMap((tab) => {
