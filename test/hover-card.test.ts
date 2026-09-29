@@ -26,8 +26,9 @@ test('keyboard focus owns the card across pointer leave and Escape dismisses it'
   assert.equal(commands.length, 0)
 
   const op12__ = HoverCard.update(left, HoverCard.Message.PressedEscapeOnHoverCard()); const dismissed = op12__.model;
-  const op13__ = HoverCard.update(dismissed, HoverCard.Message.EnteredHoverCard()); const stillDismissed = op13__.model;
-  assert.equal(stillDismissed.isOpen, false)
+  assert.equal(dismissed.isOpen, false)
+  const op13__ = HoverCard.update(dismissed, HoverCard.Message.EnteredHoverCard()); const reentered = op13__.model;
+  assert.equal(reentered.isOpen, true)
 })
 
 test('touch pointer presses provide a toggle fallback while mouse presses do not', () => {
