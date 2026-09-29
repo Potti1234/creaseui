@@ -240,13 +240,7 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI keeps a popup open when it was opened externally
-      // (open prop set without trigger hover) and the pointer then enters and
-      // leaves it — the card only closes on leave if a trigger interaction
-      // armed it. creaseui's LeftHoverCard schedules WaitBeforeClosing
-      // whenever isOpen && !isFocused, so an externally opened card closes on
-      // hover-out. (medium)
-      it.fails('does not close after hovering out of a popup opened externally', () => {
+      it('does not close after hovering out of a popup opened externally', () => {
         Scene.scene(
           { update, view },
           Scene.given(init({ isOpen: true })),
@@ -288,9 +282,7 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
           'model.isOpen is the single controlled source of truth',
       )
 
-      // DIVERGENCE: same as the externally-opened case — Base UI keeps a
-      // defaultOpen popup open across hover-out; creaseui schedules a close.
-      it.fails(
+      it(
         'does not close after hovering out of a popup opened without trigger hover',
         () => {
           Scene.scene(
@@ -364,12 +356,7 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI re-opens on re-hover after Escape. creaseui sets
-      // isDismissed on Escape, which suppresses hover-open until the pointer
-      // disengages (leave + blur) — a plain re-enter while dismissed stays
-      // closed. (See the tooltip primitive's dismiss-until-disengage model;
-      // high severity UX difference vs Base UI.)
-      it.fails('reopens on hover after Escape closes it', () => {
+      it('reopens on hover after Escape closes it', () => {
         Scene.scene(
           { update, view },
           Scene.given(init()),
@@ -384,6 +371,7 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
           Scene.expectHandled(),
           Scene.Command.expectNone(),
           Scene.expect(panel).toExist(),
+          anchorResolved(),
         )
       })
     })
@@ -525,8 +513,8 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
       it('keeps the parent preview card open when hovering nested trigger', () => {
         Scene.scene(
           { update: nestedUpdate, view: nestedView(HoverCard) },
-          // Child dismissed so the hover emits EnteredHoverCard without
-          // scheduling a show wait — keeps the scene free of pending timers.
+          // Child dismissed: the hover reopens it immediately (no show wait),
+          // keeping the scene free of pending timers.
           Scene.given(nestedInit({ isDismissed: true })),
           Scene.Mount.resolve(anchorMount, {
             _tag: 'Parent',
@@ -535,6 +523,11 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
           Scene.hover(childCard),
           Scene.expectHandled(),
           Scene.expect(parentPanel).toExist(),
+          // The dismissed child reopens on hover — resolve its anchor mount.
+          Scene.Mount.resolve(anchorMount, {
+            _tag: 'Child',
+            message: HoverCardBehavior.Message.CompletedHoverCardAnchor(),
+          }),
         )
       })
 
@@ -625,9 +618,7 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI marks the trigger with `data-popup-open` while
-      // open; creaseui exposes open state only through aria-expanded.
-      it.fails('marks the trigger data-popup-open while open', () => {
+      it('marks the trigger data-popup-open while open', () => {
         Scene.scene(
           { update, view },
           Scene.given(init({ isOpen: true })),

@@ -86,6 +86,7 @@ export const hoverCard = <Msg>(
           ...(props.ariaLabel === undefined
             ? []
             : [h.AriaLabel(props.ariaLabel)]),
+          ...(props.model.isOpen ? [h.DataAttribute('popup-open', '')] : []),
           h.DataAttribute('slot', 'hover-card-trigger'),
           h.Class(cn(props.triggerClass)),
         ],
