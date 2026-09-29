@@ -758,10 +758,7 @@ const verifyRenderer = (
     })
 
     describe('<Dialog.Backdrop />', () => {
-      // DIVERGENCE: Base UI renders its backdrop part with role="presentation".
-      // creaseui's backdrop is a bare div with no role (the primitive carries
-      // the a11y contract on <dialog> itself).
-      it.fails('has role="presentation"', () => {
+      it('has role="presentation"', () => {
         Scene.scene(
           { update, view },
           Scene.given(initialModel()),
