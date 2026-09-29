@@ -208,6 +208,7 @@ export const sheet = <Msg>(
                 hd.div(
                   [
                     ...backdrop,
+                    hd.Role('presentation'),
                     hd.DataAttribute('slot', 'sheet-overlay'),
                     hd.Class(OVERLAY_CLASS),
                   ],
