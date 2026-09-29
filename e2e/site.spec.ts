@@ -1663,7 +1663,7 @@ test("select persists a typed OutMessage selection", async ({ page }) => {
   await page.goto("/docs/components/select");
 
   const hero = page.locator('[aria-label="Basic preview"]');
-  const trigger = hero.getByRole("button", { name: "Example select" });
+  const trigger = hero.getByRole("combobox", { name: "Example select" });
   await trigger.click();
   const listbox = page.getByRole("listbox");
   await expect(listbox).toBeVisible();
@@ -1695,22 +1695,22 @@ test("select persists a typed OutMessage selection", async ({ page }) => {
   await expect(page.locator("#rtl")).toBeVisible();
 
   const groups = page.locator("#groups");
-  await groups.getByRole("button", { name: "Example select" }).click();
+  await groups.getByRole("combobox", { name: "Example select" }).click();
   await expect(page.getByRole("option", { name: "Carrot" })).toBeVisible();
   await page.getByRole("option", { name: "Carrot" }).click();
   await expect(
-    groups.getByRole("button", { name: "Example select" }),
+    groups.getByRole("combobox", { name: "Example select" }),
   ).toContainText("Carrot");
 
   const scrollable = page.locator("#scrollable");
-  await scrollable.getByRole("button", { name: "Example select" }).click();
+  await scrollable.getByRole("combobox", { name: "Example select" }).click();
   await expect(
     page.getByRole("option", { name: "Argentina Time" }),
   ).toBeAttached();
   await page.keyboard.press("Escape");
 
   await expect(
-    page.locator("#disabled").getByRole("button", { name: "Example select" }),
+    page.locator("#disabled").getByRole("combobox", { name: "Example select" }),
   ).toBeDisabled();
 
   const invalid = page.locator("#invalid");
@@ -1721,15 +1721,15 @@ test("select persists a typed OutMessage selection", async ({ page }) => {
   await expect(invalid).toContainText("Please select a fruit.");
 
   const rtl = page.locator("#rtl");
-  await rtl.getByRole("button", { name: "Example select" }).click();
+  await rtl.getByRole("combobox", { name: "Example select" }).click();
   await page.getByRole("option", { name: "جزر" }).click();
   await expect(
-    rtl.getByRole("button", { name: "Example select" }),
+    rtl.getByRole("combobox", { name: "Example select" }),
   ).toContainText("جزر");
 
   await page.getByRole("button", { name: "StyleX", exact: true }).click();
   const sxHero = page.locator('[aria-label="Basic preview"]');
-  const sxTrigger = sxHero.getByRole("button", { name: "Example select" });
+  const sxTrigger = sxHero.getByRole("combobox", { name: "Example select" });
   await sxTrigger.click();
   await page.getByRole("option", { name: "Pineapple" }).click();
   await expect(sxTrigger).toContainText("Pineapple");
@@ -5229,10 +5229,10 @@ test("field sections match upstream variants in both renderers", async ({ page }
   ).toHaveValue("great");
 
   const select = page.locator("#select");
-  await select.getByRole("button", { name: "Department" }).click();
+  await select.getByRole("combobox", { name: "Department" }).click();
   await page.getByRole("option", { name: "Engineering" }).click();
   await expect(
-    select.getByRole("button", { name: "Department" }),
+    select.getByRole("combobox", { name: "Department" }),
   ).toContainText("Engineering");
 
   const slider = page.locator("#slider");

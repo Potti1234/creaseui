@@ -145,23 +145,82 @@ const renderSelect = <Item, Value extends string, Msg>(
     onNone: () => undefined,
     onSome: labelForValue,
   });
+  const itemToSearchText = (value: Value): string => {
+    const item = itemForValue(value);
+    return item === undefined
+      ? labelForValue(value)
+      : (props.itemToConfig?.(item).searchText ?? labelForValue(value));
+  };
+  const isItemDisabled = (value: Value): boolean => {
+    if (props.isDisabled ?? false) {
+      return true;
+    }
+    const item = itemForValue(value);
+    return item === undefined
+      ? false
+      : (props.itemToConfig?.(item).isDisabled ?? false);
+  };
+  const maybeSelectedItemIndex = Option.flatMap(
+    props.maybeSelectedValue,
+    (selected) => {
+      const index = values.findIndex((value) => value === selected);
+      return index === -1 ? Option.none() : Option.some(index);
+    },
+  );
+
+  // Base UI commits the typeahead match on a closed, focused trigger — a
+  // fresh search starts after the current selection and wraps once.
+  const handleTriggerTypeaheadKeyDown = (key: string): Option.Option<Msg> => {
+    if (
+      props.model.isOpen ||
+      (props.isReadOnly ?? false) ||
+      key.length !== 1 ||
+      key === ' '
+    ) {
+      return Option.none();
+    }
+    const startIndex = Option.match(maybeSelectedItemIndex, {
+      onNone: () => 0,
+      onSome: (index) => index + 1,
+    });
+    const length = values.length;
+    for (let step = 0; step < length; step += 1) {
+      const index = (startIndex + step) % length;
+      const value = values[index];
+      if (
+        value !== undefined &&
+        !isItemDisabled(value) &&
+        itemToSearchText(value).toLowerCase().startsWith(key.toLowerCase())
+      ) {
+        return Option.some(
+          props.toParentMessage(
+            ListboxPrimitive.Message.SelectedItem({ item: value }),
+          ),
+        );
+      }
+    }
+    return Option.none();
+  };
+
+  // Pointer/click opens arrive as Opened(none); seed the active item from the
+  // selection so the popup highlights it like Base UI.
+  const toParentMessage = (message: Message): Msg =>
+    props.toParentMessage(
+      message._tag === 'Opened' &&
+        Option.isNone(message.maybeActiveItemIndex) &&
+        Option.isSome(maybeSelectedItemIndex)
+        ? ListboxPrimitive.Message.Opened({
+            maybeActiveItemIndex: maybeSelectedItemIndex,
+          })
+        : message,
+    );
 
   const viewInputs: ListboxPrimitive.ViewInputs<Value, Value> = {
     maybeSelectedValue: props.maybeSelectedValue,
     items: values,
     itemToValue: (value) => value,
-    itemToSearchText: (value) => {
-      const item = itemForValue(value);
-      return item === undefined
-        ? labelForValue(value)
-        : (props.itemToConfig?.(item).searchText ?? labelForValue(value));
-    },
-    isItemDisabled: (value) => {
-      const item = itemForValue(value);
-      return item === undefined
-        ? false
-        : (props.itemToConfig?.(item).isDisabled ?? false);
-    },
+    itemToSearchText,
+    isItemDisabled,
     itemToConfig: (value) => {
       const item = itemForValue(value);
       const config =
@@ -187,7 +246,12 @@ const renderSelect = <Item, Value extends string, Msg>(
       [hs.Class(className(styles.contents))],
       [
         hs.span(
-          [hs.DataAttribute('slot', 'select-value')],
+          [
+            hs.DataAttribute('slot', 'select-value'),
+            ...(selectedLabel === undefined
+              ? [hs.DataAttribute('placeholder', '')]
+              : []),
+          ],
           [selectedLabel ?? props.placeholder ?? ''],
         ),
         Icon.chevronDown({ class: className(overlayStyles.icon) }, h),
@@ -197,14 +261,17 @@ const renderSelect = <Item, Value extends string, Msg>(
     isDisabled: props.isDisabled ?? false,
     isReadOnly: props.isReadOnly ?? false,
     isInvalid: props.isInvalid ?? false,
-    ...(props.name === undefined ? {} : { name: props.name }),
-    ...(props.form === undefined ? {} : { form: props.form }),
     buttonAttributes: childAttributes([
       hs.DataAttribute('slot', 'select-trigger'),
       hs.DataAttribute('size', props.size ?? 'default'),
+      hs.Role('combobox'),
       ...(selectedLabel === undefined
         ? [hs.DataAttribute('placeholder', '')]
         : []),
+      ...(props.isDisabled ?? false
+        ? [hs.Attribute('disabled', '')]
+        : [hs.OnKeyDownPreventDefault(handleTriggerTypeaheadKeyDown)]),
+      ...(props.isReadOnly ?? false ? [hs.AriaReadonly(true)] : []),
     ]),
     ...buildAnchor(props, values),
     itemsClassName: className(CONTENT_CLASS),
@@ -250,16 +317,38 @@ const renderSelect = <Item, Value extends string, Msg>(
     ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
   };
 
-  // TypeScript cannot reduce Foldkit's conditional SubmodelConfig while
-  // Value is still generic; every field remains independently typed above.
-  // eslint-disable-next-line no-restricted-syntax -- reason: Foldkit's generic conditional SubmodelConfig cannot be reduced here.
-  return h.submodel<typeof listbox.view>({
-    slotId: props.model.id,
-    model: props.model,
-    view: listbox.view,
-    viewInputs,
-    toParentMessage: props.toParentMessage,
-  } as unknown as Parameters<typeof h.submodel<typeof listbox.view>>[0]);
+  // Base UI always renders the hidden form input and gives it
+  // `<id>-hidden-input` only when no name is provided; foldkit's built-in
+  // inputs (name only, no id) are bypassed so creaseui owns the contract.
+  const hiddenInput = hs.input([
+    hs.Type('hidden'),
+    ...(props.name === undefined
+      ? [hs.Id(`${props.model.id}-hidden-input`)]
+      : [hs.Name(props.name)]),
+    ...Option.match(props.maybeSelectedValue, {
+      onNone: () => [],
+      onSome: (value) => [hs.Value(value)],
+    }),
+    ...(props.form === undefined ? [] : [hs.Attribute('form', props.form)]),
+    ...(props.isDisabled ?? false ? [hs.Attribute('disabled', '')] : []),
+  ]);
+
+  return h.div(
+    [],
+    [
+      // TypeScript cannot reduce Foldkit's conditional SubmodelConfig while
+      // Value is still generic; every field remains independently typed above.
+      // eslint-disable-next-line no-restricted-syntax -- reason: Foldkit's generic conditional SubmodelConfig cannot be reduced here.
+      h.submodel<typeof listbox.view>({
+        slotId: props.model.id,
+        model: props.model,
+        view: listbox.view,
+        viewInputs,
+        toParentMessage,
+      } as unknown as Parameters<typeof h.submodel<typeof listbox.view>>[0]),
+      hiddenInput,
+    ],
+  );
 };
 
 export type SelectBundle<Value extends string> = Readonly<{

@@ -237,10 +237,9 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
         )
 
     describe('ARIA attributes', () => {
-      // DIVERGENCE: Base UI renders the trigger with role="combobox"; foldkit's
-      // Listbox trigger is a plain button (implicit role=button) carrying
-      // aria-haspopup="listbox".
-      it.fails('sets role="combobox" on the trigger', () => {
+      // creaseui marks the trigger role="combobox" to match Base UI (foldkit's
+      // Listbox trigger is a plain button by default).
+      it('sets role="combobox" on the trigger', () => {
         Scene.scene(
           { update, view: view() },
           Scene.given(initModel(Select, 'fruit')),
@@ -305,7 +304,9 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
         Scene.scene(
           { update, view: view({ ariaLabel: 'Pick a fruit' }) },
           Scene.given(initModel(Select, 'fruit')),
-          Scene.expect(Scene.role('button', { name: 'Pick a fruit' })).toExist(),
+          Scene.expect(
+            Scene.role('combobox', { name: 'Pick a fruit' }),
+          ).toExist(),
           Scene.expect(trigger).toHaveAttr('aria-label', 'Pick a fruit'),
         )
       })
@@ -334,7 +335,7 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
               ]),
           },
           Scene.given(initModel(Select, 'fruit')),
-          Scene.expect(Scene.role('button', { name: 'Fruit' })).toExist(),
+          Scene.expect(Scene.role('combobox', { name: 'Fruit' })).toExist(),
           Scene.expect(Scene.label('Fruit')).toHaveId('fruit-button'),
         )
       })
@@ -597,10 +598,9 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI highlights the selected option when the popup is
-      // reopened by pointer; foldkit only seeds the active item from the
-      // selection on keyboard opens — pointer opens leave nothing active.
-      it.fails('should focus the selected item upon opening the popup', () => {
+      // creaseui seeds the active item from the selection on click opens by
+      // rewriting Opened(none) before it reaches the Listbox update.
+      it('should focus the selected item upon opening the popup', () => {
         Scene.scene(
           { update, view: view() },
           Scene.given(initModel(Select, 'fruit')),
@@ -878,10 +878,9 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI commits the matching item when a printable key is
-      // pressed on a focused, closed trigger. foldkit's trigger keydown only
-      // handles open/navigation keys — printable keys are ignored.
-      it.fails('commits typeahead on a closed trigger when items are provided', () => {
+      // creaseui chains a typeahead handler after foldkit's closed-trigger
+      // keydown (which ignores printable keys) and commits the match.
+      it('commits typeahead on a closed trigger when items are provided', () => {
         Scene.scene(
           { update, view: view({ items: ['apple', 'banana'], name: 'fruit' }) },
           Scene.given(initModel(Select, 'fruit')),
@@ -890,7 +889,7 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
         )
       })
 
-      it.fails(
+      it(
         'skips disabled items and commits the next match via typeahead on a closed trigger',
         () => {
           Scene.scene(
@@ -950,7 +949,7 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
         )
       })
 
-      it.fails('sets the disabled attribute on the trigger', () => {
+      it('sets the disabled attribute on the trigger', () => {
         Scene.scene(
           { update, view: view({ isDisabled: true }) },
           Scene.given(initModel(Select, 'fruit')),
@@ -958,11 +957,9 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI propagates `disabled` from the root onto items
-      // (data-disabled + unclickable). foldkit's root isDisabled only neuters
-      // the trigger; options rendered by a programmatically-opened disabled
-      // select are unaffected.
-      it.fails('inherits the disabled state from the root on items', () => {
+      // creaseui propagates root isDisabled into isItemDisabled so items get
+      // aria-disabled/data-disabled and no click handler like Base UI.
+      it('inherits the disabled state from the root on items', () => {
         Scene.scene(
           { update, view: view({ isDisabled: true }) },
           Scene.given(openModel(Select, 'fruit')),
@@ -1046,10 +1043,9 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI mirrors readOnly onto the trigger as
-      // aria-readonly="true"; foldkit marks the trigger data-readonly only
-      // (aria-readonly lands on the listbox).
-      it.fails('marks the trigger aria-readonly', () => {
+      // creaseui mirrors readOnly onto the trigger as aria-readonly="true"
+      // (foldkit only marks the trigger data-readonly).
+      it('marks the trigger aria-readonly', () => {
         Scene.scene(
           { update, view: view({ isReadOnly: true }) },
           Scene.given(initModel(Select, 'fruit')),
@@ -1075,11 +1071,9 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI gives the hidden input `<id>-hidden-input`; the
-      // foldkit hidden input carries no id.
-      it.fails('sets a hidden input id when name is not provided', () => {
+      it('sets a hidden input id when name is not provided', () => {
         Scene.scene(
-          { update, view: view({ name: 'fruit' }) },
+          { update, view: view() },
           Scene.given(initModel(Select, 'test-id')),
           Scene.expect(hiddenInput).toHaveAttr('id', 'test-id-hidden-input'),
         )
@@ -1113,11 +1107,14 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
         )
       })
 
-      it('omits the hidden input entirely when no name is provided', () => {
+      // Base UI renders the hidden input unconditionally (id only when
+      // unnamed); creaseui does the same.
+      it('still renders the hidden input when no name is provided', () => {
         Scene.scene(
           { update, view: view() },
           Scene.given(initModel(Select, 'fruit')),
-          Scene.expect(hiddenInput).toBeAbsent(),
+          Scene.expect(hiddenInput).toExist(),
+          Scene.expect(hiddenInput).not.toHaveAttr('name'),
         )
       })
 
@@ -1286,9 +1283,9 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI also marks the Select.Value element with
-      // data-placeholder while empty; creaseui only marks the trigger.
-      it.fails('marks the value element data-placeholder while empty', () => {
+      // creaseui marks both the trigger and the select-value element with
+      // data-placeholder while empty, like Base UI.
+      it('marks the value element data-placeholder while empty', () => {
         Scene.scene(
           { update, view: view({ placeholder: 'Select a fruit' }) },
           Scene.given(initModel(Select, 'fruit')),
