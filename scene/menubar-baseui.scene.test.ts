@@ -75,15 +75,43 @@ const initialModel = (): Model => ({
 const openMessage: Behavior.MenuMessage = { _tag: 'Opened' }
 const closeMessage: Behavior.MenuMessage = { _tag: 'Closed' }
 
-// Mirrors the docs-page wiring: a menubar move opens the newly active menu and
-// closes the rest; a menu message updates only its own menu (selections close
-// the whole tree implicitly through the Closed-equivalent updates below).
+const openTarget = (model: Model, menubar: MenubarBehavior.Model, target: MenuId): Model => ({
+  ...model,
+  menubar,
+  file: Behavior.update(model.file, target === 'file' ? openMessage : closeMessage).model,
+  edit: Behavior.update(model.edit, target === 'edit' ? openMessage : closeMessage).model,
+  view: Behavior.update(model.view, target === 'view' ? openMessage : closeMessage).model,
+})
+
+// Mirrors the docs-page wiring: a MovedToMenubar outMessage opens the newly
+// active menu and closes the rest; a menu message updates only its own menu
+// (selections close the whole tree implicitly through the Closed-equivalent
+// updates below), except EscapedBoundary, which the menubar turns into a
+// top-level move to the next or previous menu.
 const update = (
   model: Model,
   message: Message,
 ): { model: Model; commands?: ReadonlyArray<Command.AnyCommand> } => {
   switch (message._tag) {
     case 'GotMenuMessage': {
+      if (message.message._tag === 'EscapedBoundary') {
+        const source = MENU_IDS.indexOf(message.target)
+        const step = message.message.direction === 'forward' ? 1 : -1
+        const target = MENU_IDS[(source + step + MENU_IDS.length) % MENU_IDS.length]
+        if (target === undefined) return { model }
+        const move = MenubarBehavior.update(
+          model.menubar,
+          MenubarBehavior.Message.MovedMenubarFocus({
+            index: MENU_IDS.indexOf(target),
+            triggerId: `${model[target].id}-trigger`,
+            menuOpen: true,
+          }),
+        )
+        return {
+          model: openTarget(model, move.model, target),
+          commands: Command.mapMessages(move.commands ?? [], gotMenubar),
+        }
+      }
       const op = Behavior.update(model[message.target], message.message)
       const selected = Option.isSome(op.selection) ? op.selection.value.item : undefined
       return {
@@ -107,16 +135,15 @@ const update = (
     }
     case 'GotMenubarMessage': {
       const op = MenubarBehavior.update(model.menubar, message.message)
-      const index = op.outMessage === undefined ? op.model.activeIndex : op.outMessage.index
-      const target = MENU_IDS[index] ?? 'file'
+      if (op.outMessage === undefined) {
+        return {
+          model: { ...model, menubar: op.model },
+          commands: Command.mapMessages(op.commands ?? [], gotMenubar),
+        }
+      }
+      const target = MENU_IDS[op.outMessage.index] ?? 'file'
       return {
-        model: {
-          ...model,
-          menubar: op.model,
-          file: Behavior.update(model.file, target === 'file' ? openMessage : closeMessage).model,
-          edit: Behavior.update(model.edit, target === 'edit' ? openMessage : closeMessage).model,
-          view: Behavior.update(model.view, target === 'view' ? openMessage : closeMessage).model,
-        },
+        model: openTarget(model, op.model, target),
         commands: Command.mapMessages(op.commands ?? [], gotMenubar),
       }
     }
@@ -392,12 +419,7 @@ const verifyRenderer = (name: string, Menubar: MenubarModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI keeps the menu closed while focus rests on a
-      // trigger. The creaseui model does respond to FocusedMenubarTrigger and
-      // the canonical wiring then opens the menu — latent, because in a real
-      // DOM `focus` doesn't bubble to the non-focusable wrapper that owns the
-      // handler, so the message is never actually produced.
-      it.fails('does not open a menu when a menubar item is focused', () => {
+      it('does not open a menu when a menubar item is focused', () => {
         Scene.scene(
           { update, view: fixtureView() },
           Scene.given(initialModel()),
@@ -464,9 +486,7 @@ const verifyRenderer = (name: string, Menubar: MenubarModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI only moves focus when arrowing a closed menubar;
-      // the canonical creaseui wiring also opens the newly active menu.
-      it.fails('does not open a menu when arrow-navigating a closed menubar', () => {
+      it('does not open a menu when arrow-navigating a closed menubar', () => {
         Scene.scene(
           { update, view: fixtureView() },
           Scene.given(initialModel()),
@@ -575,11 +595,7 @@ const verifyRenderer = (name: string, Menubar: MenubarModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI closes open submenus and moves to the next
-      // menubar item on ArrowRight. creaseui suppresses top-level moves while
-      // any submenu is open and the menu's keydown ignores ArrowRight, so the
-      // key is a dead end.
-      it.fails('closes open submenus when navigating to the next menubar item with ArrowRight', () => {
+      it('closes open submenus when navigating to the next menubar item with ArrowRight', () => {
         Scene.scene(
           { update, view: fixtureView() },
           Scene.given(initialModel()),
@@ -593,8 +609,11 @@ const verifyRenderer = (name: string, Menubar: MenubarModule) => {
           Scene.expectHandled(),
           Scene.expect(shareMenu).toExist(),
           Scene.keydown(fileMenu, 'ArrowRight'),
-          Scene.expectIgnored(),
+          Scene.expectHandled(),
+          resolveFocus,
           Scene.expect(editMenu).toExist(),
+          Scene.expect(shareMenu).toBeAbsent(),
+          Scene.expect(fileMenu).toBeAbsent(),
         )
       })
 

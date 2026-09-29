@@ -42,6 +42,7 @@ export const Message = defineMessageUnion({
   ActivatedItem: { path: S.Array(S.Number) },
   OpenedSubmenu: { path: S.Array(S.Number) },
   ClosedSubmenu: {},
+  EscapedBoundary: { direction: S.Literals(['forward', 'backward']) },
   SelectedItem: {
   item: S.String,
   path: S.Array(S.Number),

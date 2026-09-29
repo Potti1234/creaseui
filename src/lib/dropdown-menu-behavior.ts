@@ -35,6 +35,10 @@ export type MenuMessage =
   | Readonly<{ _tag: 'OpenedSubmenu'; path: ReadonlyArray<number> }>
   | Readonly<{ _tag: 'ClosedSubmenu' }>
   | Readonly<{
+      _tag: 'EscapedBoundary';
+      direction: 'forward' | 'backward';
+    }>
+  | Readonly<{
       _tag: 'SelectedItem';
       item: string;
       path: ReadonlyArray<number>;
@@ -158,6 +162,10 @@ export const update = (
             activePath: model.openSubmenuPath,
             openSubmenuPath: model.openSubmenuPath.slice(0, -1),
           });
+    case 'EscapedBoundary':
+      // The menu itself changes nothing — the message signals the owner (a
+      // menubar) that a horizontal arrow ran past the menu's edge.
+      return noSelection(model);
     case 'SelectedItem':
       return {
         model: message.closeOnClick ? closeModel(model) : resetTypeahead(model),
@@ -236,7 +244,10 @@ export const keyMessage = <Item extends string>(
     return scopePath.length === 0
       ? { _tag: 'Closed' }
       : { _tag: 'ClosedSubmenu' };
-  if (key === backKey) return { _tag: 'ClosedSubmenu' };
+  if (key === backKey)
+    return scopePath.length === 0
+      ? { _tag: 'EscapedBoundary', direction: 'backward' }
+      : { _tag: 'ClosedSubmenu' };
   if (count === 0) return undefined;
   if (key === 'Home') return { _tag: 'ActivatedItem', path: [...scopePath, 0] };
   if (key === 'End')
@@ -280,7 +291,7 @@ export const keyMessage = <Item extends string>(
       activeBehavior.submenu !== undefined &&
       !activeBehavior.isDisabled
       ? { _tag: 'OpenedSubmenu', path: model.activePath }
-      : undefined;
+      : { _tag: 'EscapedBoundary', direction: 'forward' };
   }
 
   // Enter always activates the highlighted item; Space does too, unless a

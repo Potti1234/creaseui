@@ -105,6 +105,7 @@ const renderMenubar = <Item extends string, Msg>(props: MenubarProps<Item, Msg>,
         return key !== forward || active === undefined || menu.itemToConfig(active).submenu === undefined
       },
       hoverFocus: props.menus.some((menu) => menu.model.isOpen),
+      hasOpenMenu: props.menus.some((menu) => menu.model.isOpen),
       toView: menus => menuView(props, props.model.activeIndex, index => menus[index]?.attributes ?? [], h),
     },
     toParentMessage: props.toParentMessage,

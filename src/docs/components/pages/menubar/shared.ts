@@ -521,6 +521,27 @@ const applySelection = (model: Model, value: string): Model => {
 export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'GotMenuMessage': {
+      if (message.message._tag === 'EscapedBoundary') {
+        const sourceIndex = targets.indexOf(message.target)
+        const step = message.message.direction === 'forward' ? 1 : -1
+        const target = targets[(sourceIndex + step + targets.length) % targets.length]
+        if (target === undefined) return { model: model }
+        const menubarOp__ = Menubar.update(
+          model.menubar,
+          Menubar.Message.MovedMenubarFocus({ index: targets.indexOf(target), triggerId: \`\${model[target].id}-trigger\`, menuOpen: true }),
+        )
+        const next = targets.reduce(
+          (acc, t) => ({
+            ...acc,
+            [t]: (t === target ? DropdownMenu.open(acc[t]) : DropdownMenu.close(acc[t])).model,
+          }),
+          { ...model, menubar: menubarOp__.model },
+        )
+        return {
+          model: next,
+          commands: Command.mapMessages(menubarOp__.commands ?? [], next2 => Message.GotMenubarMessage({ message: next2 })),
+        }
+      }
       const menuOp__ = ActionMenu.update(model[message.target], message.message)
       const menu = menuOp__.model
       const commands = menuOp__.commands ?? []
@@ -546,8 +567,13 @@ export const update = (model: Model, message: Message): Update.Return<Model, Mes
       const menubar = menubarOp__.model
       const commands = menubarOp__.commands ?? []
       const maybeMove = Option.fromNullishOr(menubarOp__.outMessage)
-      const index = Option.match(maybeMove, { onNone: () => menubar.activeIndex, onSome: move => move.index })
-      const target = targets[index]
+      if (Option.isNone(maybeMove)) {
+        return {
+          model: { ...model, menubar },
+          commands: Command.mapMessages(commands, next2 => Message.GotMenubarMessage({ message: next2 })),
+        }
+      }
+      const target = targets[maybeMove.value.index]
       if (target === undefined) return { model: model }
       const next = targets.reduce(
         (acc, t) => ({

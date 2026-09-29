@@ -13,8 +13,12 @@ export type Model = typeof Model.Type
 
 
 export const Message = defineMessageUnion({
-  'MovedMenubarFocus': { index: S.Number, triggerId: S.String },
-  'FocusedMenubarTrigger': { index: S.Number },
+  // `menuOpen` records whether a menu was open when the gesture arrived —
+  // Base UI only opens the moved-to menu while another is already open
+  // (`hasSubmenuOpen`). Omitted it defaults to each gesture's legacy
+  // emission: Moved always reported, Focused never did.
+  'MovedMenubarFocus': { index: S.Number, triggerId: S.String, menuOpen: S.optional(S.Boolean) },
+  'FocusedMenubarTrigger': { index: S.Number, menuOpen: S.optional(S.Boolean) },
   'CompletedFocusMenubarTrigger': {},
 });
 export type Message = typeof Message.Type
@@ -43,9 +47,20 @@ type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
     case 'MovedMenubarFocus':
-      return { model: { ...model, activeIndex: Math.max(0, message.index) }, commands: [FocusTrigger({ triggerId: message.triggerId })], outMessage: MovedTo['MovedToMenubar']({ index: Math.max(0, message.index) }) }
+      return {
+        model: { ...model, activeIndex: Math.max(0, message.index) },
+        commands: [FocusTrigger({ triggerId: message.triggerId })],
+        ...(message.menuOpen === false
+          ? {}
+          : { outMessage: MovedTo['MovedToMenubar']({ index: Math.max(0, message.index) }) }),
+      }
     case 'FocusedMenubarTrigger':
-      return { model: { ...model, activeIndex: Math.max(0, message.index) } }
+      return {
+        model: { ...model, activeIndex: Math.max(0, message.index) },
+        ...(message.menuOpen === true
+          ? { outMessage: MovedTo['MovedToMenubar']({ index: Math.max(0, message.index) }) }
+          : {}),
+      }
     case 'CompletedFocusMenubarTrigger':
       return { model: model }
   }
@@ -62,6 +77,9 @@ export type ViewInputs = Readonly<{
   direction?: 'ltr' | 'rtl'
   shouldMoveTopLevel?: (index: number, key: string) => boolean
   hoverFocus?: boolean
+  /** Whether any menu is currently open (Base UI's `hasSubmenuOpen`).
+   * Moves emit their OutMessage only when it is true. */
+  hasOpenMenu?: boolean
   toView: (menus: ReadonlyArray<MenuFocusInfo>) => Html
 }>
 
@@ -85,14 +103,16 @@ const view: SubmodelView<Model, Message, ViewInputs> = defineView((model, inputs
     const triggerId = target === undefined ? undefined : inputs.triggerIds[target]
     return target === undefined || triggerId === undefined
       ? Option.none<Message>()
-      : Option.some(Message['MovedMenubarFocus']({ index: target, triggerId }))
+      : Option.some(Message['MovedMenubarFocus']({ index: target, triggerId, menuOpen: inputs.hasOpenMenu ?? true }))
   }
   return inputs.toView(inputs.triggerIds.map((_id, index) => ({
     index,
     isActive: index === activeIndex,
     attributes: childAttributes([
-      h.OnFocus(Message['FocusedMenubarTrigger']({ index })),
-      ...(inputs.hoverFocus === true ? [h.OnMouseEnter(Message['FocusedMenubarTrigger']({ index }))] : []),
+      h.OnFocus(Message['FocusedMenubarTrigger']({ index, menuOpen: inputs.hasOpenMenu ?? false })),
+      ...(inputs.hoverFocus === true
+        ? [h.OnMouseEnter(Message['FocusedMenubarTrigger']({ index, menuOpen: inputs.hasOpenMenu ?? true }))]
+        : []),
       h.OnKeyDownPreventDefault((key) => move(index, key)),
     ]),
   })))
