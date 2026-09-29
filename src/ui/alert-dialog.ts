@@ -74,6 +74,7 @@ export const alertDialog = <Msg>(
     model: props.model,
     view: DialogPrimitive.view,
     viewInputs: {
+      hasDescription: true,
       toView: ({
         dialog: dialogAttributes,
         panel,
@@ -128,6 +129,8 @@ export const alertDialog = <Msg>(
                   [
                     ...panel,
                     hd.Role('alertdialog'),
+                    hd.AriaLabelledBy(DialogPrimitive.titleId(props.model)),
+                    hd.AriaDescribedBy(DialogPrimitive.descriptionId(props.model)),
                     hd.DataAttribute('slot', 'alert-dialog-content'),
                     hd.DataAttribute('size', size),
                     hd.Class(cn(CONTENT_CLASS, props.class)),
