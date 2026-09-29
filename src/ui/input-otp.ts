@@ -12,6 +12,10 @@ export type InputOtpProps<Msg> = Readonly<{
   isDisabled?: boolean;
   isInvalid?: boolean;
   isRequired?: boolean;
+  /** Focused state of the single input, stamped as data-focused. */
+  isFocused?: boolean;
+  /** Focus/blur on the input; pair with isFocused to track data-focused. */
+  onFocusChange?: (isFocused: boolean) => Msg;
   class?: string;
   groupClass?: string;
   /** Pattern accepted by the control. Defaults to ASCII digits. */
@@ -38,10 +42,21 @@ export const inputOtp = <Msg>(
   const length = props.length ?? 6;
   const pattern = props.pattern ?? /[0-9]/;
   const value = normalize(props.value, length, pattern);
+  const isComplete = value.length === length;
+  const isDisabled = props.isDisabled ?? false;
+  const stateAttributes = [
+    ...(value === '' ? [] : [h.DataAttribute('filled', '')]),
+    ...(isComplete ? [h.DataAttribute('complete', '')] : []),
+    ...(isDisabled ? [h.DataAttribute('disabled', '')] : []),
+    ...(props.isRequired === true ? [h.DataAttribute('required', '')] : []),
+    ...(props.isInvalid === true ? [h.DataAttribute('invalid', '')] : []),
+    ...(props.isFocused === true ? [h.DataAttribute('focused', '')] : []),
+  ];
 
   return h.div(
     [
       h.DataAttribute('slot', 'input-otp'),
+      ...stateAttributes,
       h.Class(cn('relative inline-flex items-center', props.class)),
     ],
     [
@@ -56,12 +71,25 @@ export const inputOtp = <Msg>(
         h.Spellcheck(false),
         h.AriaLabel(props.ariaLabel ?? 'One-time password'),
         h.AriaInvalid(props.isInvalid ?? false),
-        h.Disabled(props.isDisabled ?? false),
+        h.Disabled(isDisabled),
+        ...(isDisabled ? [h.DataAttribute('disabled', '')] : []),
         ...(props.isRequired === true
           ? [h.Required(true), h.AriaRequired(true)]
           : []),
+        ...(props.isInvalid === true ? [h.DataAttribute('invalid', '')] : []),
         ...(props.name === undefined ? [] : [h.Name(props.name)]),
-        h.OnInput((next) => props.onInput(normalize(next, length, pattern))),
+        ...(props.onFocusChange === undefined
+          ? []
+          : [
+              h.OnFocus(props.onFocusChange(true)),
+              h.OnBlur(props.onFocusChange(false)),
+            ]),
+        // A disabled control cannot produce input events; leave OnInput
+        // unwired so no message can dispatch, like the foldkit Input
+        // primitive's non-interactive branch.
+        ...(isDisabled
+          ? []
+          : [h.OnInput((next) => props.onInput(normalize(next, length, pattern)))]),
         // The fake caret always renders at value.length; pin the real caret
         // there too so arrow keys / mid-string clicks can't desync them.
         h.Attribute(
@@ -85,6 +113,20 @@ export const inputOtp = <Msg>(
             [
               h.DataAttribute('slot', 'input-otp-slot'),
               h.DataAttribute('active', String(isActive)),
+              ...(character === undefined
+                ? []
+                : [h.DataAttribute('filled', '')]),
+              ...(isComplete ? [h.DataAttribute('complete', '')] : []),
+              ...(isDisabled ? [h.DataAttribute('disabled', '')] : []),
+              ...(props.isRequired === true
+                ? [h.DataAttribute('required', '')]
+                : []),
+              ...(props.isInvalid === true
+                ? [h.DataAttribute('invalid', '')]
+                : []),
+              ...(props.isFocused === true
+                ? [h.DataAttribute('focused', '')]
+                : []),
               h.Class(
                 cn(
                   'relative flex size-9 items-center justify-center border-y border-r border-input text-sm shadow-xs transition-all first:rounded-l-md first:border-l last:rounded-r-md',

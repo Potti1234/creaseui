@@ -41,22 +41,26 @@ import * as TailwindInputOtp from '@/ui/input-otp'
 
 type Model = Readonly<{
   value: string
+  isFocused: boolean
 }>
 
 type Message = Readonly<
   | { _tag: 'ChangedOtp'; value: string }
   | { _tag: 'SetValue'; value: string }
+  | { _tag: 'FocusedOtp'; isFocused: boolean }
 >
 
 const ChangedOtp = (value: string): Message => ({ _tag: 'ChangedOtp', value })
 
-const initialModel = (value = ''): Model => ({ value })
+const initialModel = (value = ''): Model => ({ value, isFocused: false })
 
-const update = (_model: Model, message: Message): { model: Model } => {
+const update = (model: Model, message: Message): { model: Model } => {
   switch (message._tag) {
     case 'ChangedOtp':
     case 'SetValue':
-      return { model: { value: message.value } }
+      return { model: { ...model, value: message.value } }
+    case 'FocusedOtp':
+      return { model: { ...model, isFocused: message.isFocused } }
   }
 }
 
@@ -72,6 +76,8 @@ type InputOtpModule = Readonly<{
       isDisabled?: boolean
       isInvalid?: boolean
       isRequired?: boolean
+      isFocused?: boolean
+      onFocusChange?: (isFocused: boolean) => Msg
       pattern?: RegExp
       inputMode?:
         | 'numeric'
@@ -571,12 +577,11 @@ const verifyRenderer = (name: string, InputOtp: InputOtpModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI drops the change entirely while disabled.
-      // creaseui keeps OnInput wired on the disabled input, so a synthetic
-      // input event still dispatches — in a real browser `disabled` already
-      // prevents input events, so the gap is only observable at vnode level
-      // (severity: low).
-      it.fails('prevents value changes while disabled', () => {
+      // Base UI drops the change entirely while disabled. creaseui leaves
+      // OnInput unwired on the disabled input, so a synthetic input event has
+      // no handler to dispatch through — Scene.type can't run (it throws on
+      // handlerless targets), so assert the vnode-level guarantee directly.
+      it('prevents value changes while disabled', () => {
         Scene.scene(
           {
             update,
@@ -592,16 +597,12 @@ const verifyRenderer = (name: string, InputOtp: InputOtpModule) => {
               ),
           },
           Scene.given(initialModel()),
-          Scene.type(otpInput, '1'),
-          Scene.expectIgnored(),
+          Scene.expect(otpInput).not.toHaveHandler('input'),
           Scene.expect(otpInput).toHaveValue(''),
         )
       })
 
-      // DIVERGENCE: Base UI marks the group `data-disabled` for styling hooks.
-      // creaseui emits no data-disabled hook (Tailwind styles via
-      // peer-disabled:* classes on the input instead).
-      it.fails('marks the group data-disabled while disabled', () => {
+      it('marks the group data-disabled while disabled', () => {
         Scene.scene(
           {
             update,
@@ -794,9 +795,7 @@ const verifyRenderer = (name: string, InputOtp: InputOtpModule) => {
     })
 
     describe('state attributes', () => {
-      // DIVERGENCE: Base UI sets data-complete on the root and every slot
-      // input once all slots are filled. creaseui emits no data-complete hook.
-      it.fails('sets data-complete on the root when all slots are filled', () => {
+      it('sets data-complete on the root when all slots are filled', () => {
         Scene.scene(
           {
             update,
@@ -811,9 +810,9 @@ const verifyRenderer = (name: string, InputOtp: InputOtpModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI mirrors data-complete onto each slot input.
-      // creaseui slots only carry data-active.
-      it.fails('marks each slot data-complete when all slots are filled', () => {
+      // Base UI mirrors data-complete onto each slot input; creaseui marks
+      // the decorative slot divs the same way (alongside data-active).
+      it('marks each slot data-complete when all slots are filled', () => {
         Scene.scene(
           {
             update,
@@ -828,23 +827,37 @@ const verifyRenderer = (name: string, InputOtp: InputOtpModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI tracks data-filled/data-focused on the root.
-      // creaseui wires no focus/blur handlers and emits neither hook.
-      it.fails('tracks data-filled and data-focused on the root', () => {
+      it('tracks data-filled and data-focused on the root', () => {
         Scene.scene(
           {
             update,
             view: (model, h) =>
               InputOtp.inputOtp(
-                { id: 'otp', value: model.value, onInput: ChangedOtp },
+                {
+                  id: 'otp',
+                  value: model.value,
+                  onInput: ChangedOtp,
+                  isFocused: model.isFocused,
+                  onFocusChange: isFocused => ({
+                    _tag: 'FocusedOtp',
+                    isFocused,
+                  }),
+                },
                 h,
               ),
           },
           Scene.given(initialModel()),
+          Scene.expect(otpRoot).not.toHaveAttr('data-filled'),
           Scene.expect(otpRoot).not.toHaveAttr('data-focused'),
+          Scene.focus(otpInput),
+          Scene.expectHandled(),
+          Scene.expect(otpRoot).toHaveAttr('data-focused', ''),
           Scene.type(otpInput, '1'),
           Scene.expectHandled(),
           Scene.expect(otpRoot).toHaveAttr('data-filled', ''),
+          Scene.blur(otpInput),
+          Scene.expectHandled(),
+          Scene.expect(otpRoot).not.toHaveAttr('data-focused'),
         )
       })
 
