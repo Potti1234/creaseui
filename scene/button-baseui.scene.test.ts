@@ -17,7 +17,7 @@ import * as TailwindButton from '@/ui/button'
  *  - All `nativeButton={false}` + `render=` cases (custom element/link
  *    semantics, custom-element disabled, custom-element
  *    focusableWhenDisabled): creaseui has no render-prop API; the only
- *    non-button variant is `buttonLink`, a plain anchor.
+ *    non-button variant is `buttonLink`, an anchor with button semantics.
  *  - 'keyboard activation clicks carry modifier key state': foldkit
  *    dispatches plain messages, not DOM event objects, so modifier payloads
  *    do not exist.
@@ -95,29 +95,27 @@ const verifyRenderer = (name: string, Button: ButtonModule) => {
           'keydown only — verify in e2e)',
       )
 
-      // DIVERGENCE: Base UI keeps role="button" + tabindex="0" on custom
-      // elements such as render={<a href>}, so the link is still
-      // getByRole('button'). creaseui's buttonLink renders a plain anchor
-      // with the implicit link role and no button semantics.
-      it.fails(
-        'custom link element is exposed as a button (role=button on <a>)',
-        () => {
-          Scene.scene(
-            {
-              update,
-              view: (_model, h) =>
-                Button.buttonLink({ children: ['Go'], href: '#target' }, h),
-            },
-            Scene.given({ clicks: 0 }),
-            Scene.expect(Scene.role('link', { name: 'Go' })).toExist(),
-            Scene.expect(Scene.role('link', { name: 'Go' })).toHaveAttr(
-              'data-slot',
-              'button',
-            ),
-            Scene.expect(Scene.role('button', { name: 'Go' })).toExist(),
-          )
-        },
-      )
+      // Base UI keeps role="button" + tabindex="0" on custom elements such
+      // as render={<a href>}, so the anchor is exposed as a button (the
+      // explicit role overrides the implicit link role). creaseui's
+      // buttonLink applies the same semantics to its anchor.
+      it('custom link element is exposed as a button (role=button on <a>)', () => {
+        const anchor = Scene.selector('a')
+        Scene.scene(
+          {
+            update,
+            view: (_model, h) =>
+              Button.buttonLink({ children: ['Go'], href: '#target' }, h),
+          },
+          Scene.given({ clicks: 0 }),
+          Scene.expect(anchor).toHaveAttr('href', '#target'),
+          Scene.expect(anchor).toHaveAttr('data-slot', 'button'),
+          Scene.expect(anchor).toHaveAttr('role', 'button'),
+          Scene.expect(anchor).toHaveAttr('tabIndex', '0'),
+          Scene.expect(Scene.role('button', { name: 'Go' })).toExist(),
+          Scene.expect(Scene.role('link', { name: 'Go' })).not.toExist(),
+        )
+      })
 
       it.todo(
         'custom link element: Space activates the link without scrolling the ' +
@@ -150,28 +148,25 @@ const verifyRenderer = (name: string, Button: ButtonModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI emits only `disabled` + `data-disabled` on a
-      // native button — no aria-disabled and no tabindex (the element leaves
-      // the tab order). creaseui also emits aria-disabled="true" and keeps
-      // the foldkit primitive's unconditional tabindex="0".
-      it.fails(
-        'does not add aria-disabled or tabindex to a natively disabled button',
-        () => {
-          Scene.scene(
-            {
-              update,
-              view: (_model, h) =>
-                Button.button(
-                  { children: ['Save'], onClick: Clicked, isDisabled: true },
-                  h,
-                ),
-            },
-            Scene.given({ clicks: 0 }),
-            Scene.expect(saveButton).not.toHaveAttr('aria-disabled'),
-            Scene.expect(saveButton).not.toHaveAttr('tabIndex'),
-          )
-        },
-      )
+      // Base UI emits only `disabled` + `data-disabled` on a native button —
+      // no aria-disabled and no tabindex (the element leaves the tab order).
+      // creaseui drops the foldkit primitive's aria-disabled/tabindex on a
+      // natively disabled button to match.
+      it('does not add aria-disabled or tabindex to a natively disabled button', () => {
+        Scene.scene(
+          {
+            update,
+            view: (_model, h) =>
+              Button.button(
+                { children: ['Save'], onClick: Clicked, isDisabled: true },
+                h,
+              ),
+          },
+          Scene.given({ clicks: 0 }),
+          Scene.expect(saveButton).not.toHaveAttr('aria-disabled'),
+          Scene.expect(saveButton).not.toHaveAttr('tabIndex'),
+        )
+      })
 
       it.todo(
         'is removed from the tab order when disabled ' +
