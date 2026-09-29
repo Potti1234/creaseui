@@ -63,9 +63,13 @@ all with a `.not.` variant.
 - `Scene.click` THROWS if the target (or an ancestor button) is disabled —
   including `aria-disabled` — and throws when no click handler exists on the
   target or its ancestors. To assert "does not respond", check
-  `.not.toHaveHandler('OnClick')` (and related handler tags) instead of
+  `.not.toHaveHandler('click')` (and related event keys) instead of
   clicking. If a parent container DOES carry a click handler, the click
   lands there — check `expectHandled`/`expectIgnored` accordingly.
+- `toHaveHandler(name)` takes the DOM event key — `'click'`, `'keydown'`,
+  `'keyup'`, `'focus'`, `'input'` — NOT the foldkit attribute tag
+  (`OnClick`, `OnKeyUpPreventDefault`). A tag name is vacuous: it never
+  exists, so `.not.toHaveHandler('OnClick')` always passes.
 - `Scene.keydown` emits `keydown` only. There is NO `keyup` step — foldkit
   activates buttons/checkboxes on `keyup`. Space-activation cases become
   `it.todo('… verify in e2e')`.
@@ -75,6 +79,12 @@ all with a `.not.` variant.
 - `Scene.expectOutMessage(msg)` asserts a component emitted its OutMessage.
 - No real focus movement, hover timing, animations, portals, scroll, or
   pointer capture exists — behaviors depending on them are e2e/N-A.
+- Component icons render `svg aria-hidden="true"` inside triggers — scope
+  `[aria-hidden]` assertions to a concrete element (e.g. `div[aria-hidden]`)
+  or you'll match an icon.
+- `Scene.selector` supports only simple selectors — a compound like
+  `div[aria-hidden]` or `[data-slot="x"]` works; combinators are limited
+  (descendant selectors match via `within`/`inside` instead).
 
 ## What to port vs skip
 

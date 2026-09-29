@@ -253,8 +253,8 @@ const verifyRenderer = (name: string, Checkbox: CheckboxModule) => {
               ),
           },
           Scene.given(initialModel()),
-          Scene.expect(checkboxControl).not.toHaveHandler('OnKeyDown'),
-          Scene.expect(checkboxControl).not.toHaveHandler('OnKeyDownPreventDefault'),
+          Scene.expect(checkboxControl).not.toHaveHandler('keydown'),
+          Scene.expect(checkboxControl).not.toHaveHandler('keydown'),
           Scene.expect(checkboxControl).toHaveAttr('aria-checked', 'false'),
         )
       })
@@ -306,8 +306,8 @@ const verifyRenderer = (name: string, Checkbox: CheckboxModule) => {
           Scene.expect(checkboxControl).toHaveAttr('tabIndex', '0'),
           Scene.expect(checkboxControl).toHaveAttr('data-disabled', ''),
           // No click/key handlers are emitted, so the control cannot toggle.
-          Scene.expect(checkboxControl).not.toHaveHandler('OnClick'),
-          Scene.expect(checkboxControl).not.toHaveHandler('OnKeyUpPreventDefault'),
+          Scene.expect(checkboxControl).not.toHaveHandler('click'),
+          Scene.expect(checkboxControl).not.toHaveHandler('keyup'),
           Scene.expect(checkboxControl).toHaveAttr('aria-checked', 'false'),
         )
       })
@@ -334,9 +334,9 @@ const verifyRenderer = (name: string, Checkbox: CheckboxModule) => {
           Scene.expect(checkboxControl).toHaveAttr('aria-readonly', 'true'),
           Scene.expect(checkboxControl).toHaveAttr('data-readonly', ''),
           // Neither control nor label carry interaction handlers.
-          Scene.expect(checkboxControl).not.toHaveHandler('OnClick'),
-          Scene.expect(checkboxControl).not.toHaveHandler('OnKeyUpPreventDefault'),
-          Scene.expect(Scene.selector('#terms-label')).not.toHaveHandler('OnClick'),
+          Scene.expect(checkboxControl).not.toHaveHandler('click'),
+          Scene.expect(checkboxControl).not.toHaveHandler('keyup'),
+          Scene.expect(Scene.selector('#terms-label')).not.toHaveHandler('click'),
           Scene.expect(checkboxControl).toHaveAttr('aria-checked', 'false'),
         )
       })
