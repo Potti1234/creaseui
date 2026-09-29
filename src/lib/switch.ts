@@ -57,10 +57,22 @@ export const renderSwitch = <Msg>(
                 ),
                 h.Type('button'),
                 h.DataAttribute('slot', 'switch'),
+                ...(props.isChecked ? [] : [h.DataAttribute('unchecked', '')]),
                 ...((props.isInvalid ?? false) ? [h.AriaInvalid(true)] : []),
                 ...visual.control,
               ],
-              [h.span([h.DataAttribute('slot', 'switch-thumb'), ...visual.thumb], [])],
+              [
+                h.span(
+                  [
+                    h.DataAttribute('slot', 'switch-thumb'),
+                    h.DataAttribute(props.isChecked ? 'checked' : 'unchecked', ''),
+                    ...((props.isDisabled ?? false) ? [h.DataAttribute('disabled', '')] : []),
+                    ...((props.isReadOnly ?? false) ? [h.DataAttribute('readonly', '')] : []),
+                    ...visual.thumb,
+                  ],
+                  [],
+                ),
+              ],
             ),
             ...(props.label === undefined
               ? []
@@ -72,7 +84,18 @@ export const renderSwitch = <Msg>(
                       : [h.p([...description, ...visual.description], [props.description])]),
                   ]),
                 ]),
-            ...(props.name === undefined ? [] : [h.input([...hiddenInput])]),
+            ...(props.name === undefined
+              ? []
+              : [
+                  h.input(
+                    hiddenInput.filter(
+                      (attribute) =>
+                        attribute._tag !== 'Value' ||
+                        props.isChecked ||
+                        props.value !== undefined,
+                    ),
+                  ),
+                ]),
           ],
         ),
     },
