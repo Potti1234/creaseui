@@ -186,13 +186,13 @@ const verifyRenderer = (name: string, Toggle: ToggleModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI renders the native `disabled` attribute on the
-      // button (unfocusable). creaseui's Button primitive always emits
-      // `aria-disabled` + `data-disabled` instead and keeps `tabIndex=0`, so
-      // a disabled toggle stays focusable.
-      it.fails(
+      // The foldkit Button primitive emits `aria-disabled` + `data-disabled` +
+      // `tabIndex=0`; creaseui layers the native `disabled` attribute on top
+      // (same pattern as src/lib/button.ts), matching Base UI's native-button
+      // disabled rendering. `aria-disabled` remains as harmless redundancy.
+      it(
         'uses the native disabled attribute (Base UI expects `disabled`; ' +
-          'creaseui emits `aria-disabled` and stays focusable)',
+          'creaseui also emits `aria-disabled` from the Button primitive)',
         () => {
           Scene.scene(
             {
@@ -209,7 +209,7 @@ const verifyRenderer = (name: string, Toggle: ToggleModule) => {
                 ),
             },
             Scene.given(initialModel()),
-            Scene.expect(toggleButton).toHaveAttr('disabled', ''),
+            Scene.expect(toggleButton).toHaveAttr('disabled'),
           )
         },
       )
