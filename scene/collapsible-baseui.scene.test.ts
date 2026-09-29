@@ -166,13 +166,7 @@ const verifyRenderer = (name: string, Collapsible: CollapsibleModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI renders a native `disabled` attribute on the
-      // button trigger (and no aria-disabled). creaseui emits
-      // `aria-disabled="true"` + `data-disabled` and keeps the button
-      // technically enabled. Severity: medium — assistive tech still sees the
-      // control as disabled, but `:disabled` styling and native form/tab
-      // behavior do not apply.
-      it.fails('renders the disabled attribute when disabled', () => {
+      it('renders the disabled attribute when disabled', () => {
         Scene.scene(
           { update, view: collapsibleView(Collapsible, { isDisabled: true }) },
           Scene.given(initialModel()),
@@ -181,11 +175,7 @@ const verifyRenderer = (name: string, Collapsible: CollapsibleModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI's disabled native button leaves the tab order
-      // (and a non-native trigger gets tabindex="-1"). creaseui keeps
-      // `tabIndex="0"` on the disabled trigger, so it stays keyboard
-      // focusable. Severity: medium.
-      it.fails('removes a disabled trigger from the tab order', () => {
+      it('removes a disabled trigger from the tab order', () => {
         Scene.scene(
           { update, view: collapsibleView(Collapsible, { isDisabled: true }) },
           Scene.given(initialModel()),
@@ -258,7 +248,7 @@ const verifyRenderer = (name: string, Collapsible: CollapsibleModule) => {
           Scene.expectHandled(),
           Scene.expect(trigger).toHaveAttr('aria-expanded', 'true'),
           Scene.expect(trigger).toHaveAttr('aria-controls', 'details-panel'),
-          Scene.expect(trigger).toHaveAttr('data-open', ''),
+          Scene.expect(trigger).toHaveAttr('data-panel-open', ''),
           Scene.expect(panel).toHaveAttr('data-open', ''),
           Scene.expect(inertWrapper).toBeAbsent(),
           Scene.click(Scene.text('Toggle')),
@@ -370,23 +360,20 @@ const verifyRenderer = (name: string, Collapsible: CollapsibleModule) => {
     })
 
     describe('style hooks', () => {
-      it('marks the open trigger and panel data-open', () => {
+      it('marks the open trigger data-panel-open and the panel data-open', () => {
         Scene.scene(
           { update, view: collapsibleView(Collapsible) },
           Scene.given(initialModel()),
-          Scene.expect(trigger).not.toHaveAttr('data-open'),
+          Scene.expect(trigger).not.toHaveAttr('data-panel-open'),
           Scene.expect(panel).not.toHaveAttr('data-open'),
           Scene.click(trigger),
           Scene.expectHandled(),
-          Scene.expect(trigger).toHaveAttr('data-open', ''),
+          Scene.expect(trigger).toHaveAttr('data-panel-open', ''),
           Scene.expect(panel).toHaveAttr('data-open', ''),
         )
       })
 
-      // DIVERGENCE: Base UI marks the open trigger `data-panel-open`.
-      // creaseui reuses the generic `data-open` hook on both trigger and
-      // panel. Severity: low — styling-hook name only.
-      it.fails('marks the open trigger data-panel-open', () => {
+      it('marks the open trigger data-panel-open', () => {
         Scene.scene(
           { update, view: collapsibleView(Collapsible) },
           Scene.given(initialModel(true)),
@@ -394,11 +381,7 @@ const verifyRenderer = (name: string, Collapsible: CollapsibleModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI's keepMounted closed panel carries `data-closed`
-      // and the `hidden` attribute. creaseui emits neither — it hides the
-      // mounted panel with inert + aria-hidden + a collapsed grid row.
-      // Severity: low.
-      it.fails('marks the closed panel data-closed and hidden', () => {
+      it('marks the closed panel data-closed and hidden', () => {
         Scene.scene(
           { update, view: collapsibleView(Collapsible) },
           Scene.given(initialModel()),
