@@ -20,6 +20,28 @@ docs pages against `shadcn/ui` v4 (`/docs/components/base/*`).
 
 ## Divergence themes (most frequent first)
 
+> **Status update (follow-up fix PR):** all divergences fixable inside
+> creaseui's layers are now resolved — expected-fails went from ~155
+> `it.fails` (304 counting both renderers) to **8 unique assertions**
+> (16 counting both renderers). The 8 leftovers all require changes in the
+> `@foldkit/ui` primitives themselves and stay `it.fails` documenting the
+> Base UI expectation:
+>
+> | Component | Remaining divergence | Blocking foldkit gap |
+> |---|---|---|
+> | combobox | highlight doesn't return to input past last option (loopFocus) | foldkit's internal item nav can't be suppressed via OutMessage |
+> | combobox | Home/End must move the text caret, not item nav | foldkit input keymap routes Home/End to item navigation |
+> | combobox | popup stays mounted when zero options match | `isItemsPanelVisible = isOpen && NonEmpty` inside the primitive |
+> | combobox | hidden input must be `disabled` so it doesn't submit | no `inputAttributes` hook on the combobox primitive |
+> | select | `aria-orientation` should be omitted on vertical listbox | foldkit always renders `AriaOrientation`; no attr-removal seam |
+> | select | focus must not wrap at list edges | foldkit `keyToIndex` wraps keyboard nav internally |
+> | select | unhighlighted item's virtual click must be ignored | foldkit item `OnClick` commits unconditionally; no `event.detail` check |
+> | context-menu | backdrop must block the native contextmenu event | foldkit `OnContextMenu` can't emit `preventDefault` |
+>
+> Everything else below was fixed in the foldkit style — messages/OutMessage
+> flows, pure updates, immutable models — in `src/lib` behavior modules with
+> `src/ui`/`src/stylex` kept in parity, without touching `node_modules`.
+
 1. **`data-*` state hooks missing.** The single largest gap. Base UI stamps
    `data-popup-open` (open trigger), `data-pressed`, `data-checked` /
    `data-unchecked`, `data-complete`, `data-index`, `data-disabled`,
