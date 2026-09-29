@@ -634,7 +634,6 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
           Scene.given(initialModel()),
           Scene.click(productsTrigger),
           Scene.expectHandled(),
-          resolveOpenMounts,
           Scene.expect(productsTrigger).toHaveAttr('data-popup-open', ''),
           resolveOpenMounts,
         )

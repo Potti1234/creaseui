@@ -805,7 +805,7 @@ Source: [`src/ui/popover.ts`](../src/ui/popover.ts)
 | `RequestedClose` | value | `RequestedClose: value` |
 | `PopoverSide` | type | `PopoverSide = 'top' \| 'right' \| 'bottom' \| 'left'` |
 | `PopoverAlign` | type | `PopoverAlign = 'start' \| 'center' \| 'end'` |
-| `PopoverProps` | type | `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; content: Html \| string; align?: PopoverAlign; side?: PopoverSide; class?: string; direction?: 'ltr' \| 'rtl'; focusSelector?…` |
+| `PopoverProps` | type | `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; triggerAttributes?: ReadonlyArray<Attribute<Msg>>; content: Html \| string; align?: PopoverAlign; side?: PopoverSide; class?…` |
 | `popover` | function | `popover<Msg>(props: PopoverProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Progress
@@ -861,8 +861,14 @@ Source: [`src/ui/scroll-area.ts`](../src/ui/scroll-area.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `ScrollAreaProps` | type | `ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html \| string>; orientation?: 'vertical' \| 'horizontal' \| 'both'; direction?: 'ltr' \| 'rtl'; ariaLabel?: string; tabIndex?: number; }>` |
-| `scrollArea` | function | `scrollArea<Msg>(props: ScrollAreaProps, h: HtmlBuilder<Msg>): Html` |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = ScrollAreaBehavior.Model` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = ScrollAreaBehavior.Message` |
+| `init` | value | `init: value` |
+| `update` | value | `update: value` |
+| `ScrollAreaProps` | type | `ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html \| string>; orientation?: 'vertical' \| 'horizontal' \| 'both'; direction?: 'ltr' \| 'rtl'; ariaLabel?: string; tabIndex?: number; model?: Model; }>` |
+| `scrollArea` | function | `scrollArea<Msg>(props: ScrollAreaProps & Readonly<{ toParentMessage?: (message: Message) => Msg; }>, h: HtmlBuilder<Msg>): Html` |
 
 ## Select
 

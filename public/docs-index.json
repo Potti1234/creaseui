@@ -3594,7 +3594,7 @@
         {
           "name": "PopoverProps",
           "kind": "type",
-          "signature": "PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; content: Html | string; align?: PopoverAlign; side?: PopoverSide; class?: string; direction?: 'ltr' | 'rtl'; focusSelector?…"
+          "signature": "PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; triggerAttributes?: ReadonlyArray<Attribute<Msg>>; content: Html | string; align?: PopoverAlign; side?: PopoverSide; class?…"
         },
         {
           "name": "popover",
@@ -3822,14 +3822,44 @@
       ],
       "api": [
         {
+          "name": "Model",
+          "kind": "value",
+          "signature": "Model: value"
+        },
+        {
+          "name": "Model",
+          "kind": "type",
+          "signature": "Model = ScrollAreaBehavior.Model"
+        },
+        {
+          "name": "Message",
+          "kind": "value",
+          "signature": "Message: value"
+        },
+        {
+          "name": "Message",
+          "kind": "type",
+          "signature": "Message = ScrollAreaBehavior.Message"
+        },
+        {
+          "name": "init",
+          "kind": "value",
+          "signature": "init: value"
+        },
+        {
+          "name": "update",
+          "kind": "value",
+          "signature": "update: value"
+        },
+        {
           "name": "ScrollAreaProps",
           "kind": "type",
-          "signature": "ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; orientation?: 'vertical' | 'horizontal' | 'both'; direction?: 'ltr' | 'rtl'; ariaLabel?: string; tabIndex?: number; }>"
+          "signature": "ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; orientation?: 'vertical' | 'horizontal' | 'both'; direction?: 'ltr' | 'rtl'; ariaLabel?: string; tabIndex?: number; model?: Model; }>"
         },
         {
           "name": "scrollArea",
           "kind": "function",
-          "signature": "scrollArea<Msg>(props: ScrollAreaProps, h: HtmlBuilder<Msg>): Html"
+          "signature": "scrollArea<Msg>(props: ScrollAreaProps & Readonly<{ toParentMessage?: (message: Message) => Msg; }>, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },
