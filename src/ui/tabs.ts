@@ -3,6 +3,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import { Tabs as TabsPrimitive } from '@foldkit/ui';
 
+import * as TabsBehavior from '@/lib/tabs';
 import { cn } from '@/lib/utils';
 
 /* Ported from shadcn/ui tabs.tsx on top of the foldkit Tabs submodel.
@@ -40,7 +41,7 @@ export const tabsListVariants = cva(
 export type TabsListVariants = VariantProps<typeof tabsListVariants>;
 
 const TRIGGER_CLASS =
-  "relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 group-data-[variant=default]/tabs-list:data-[selected]:shadow-sm group-data-[variant=line]/tabs-list:data-[selected]:shadow-none dark:text-muted-foreground dark:hover:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-[selected]:bg-transparent dark:group-data-[variant=line]/tabs-list:data-[selected]:border-transparent dark:group-data-[variant=line]/tabs-list:data-[selected]:bg-transparent data-[selected]:bg-background data-[selected]:text-foreground dark:data-[selected]:border-input dark:data-[selected]:bg-input/30 dark:data-[selected]:text-foreground after:absolute after:bg-foreground after:opacity-0 after:transition-opacity group-data-[orientation=horizontal]/tabs:after:inset-x-0 group-data-[orientation=horizontal]/tabs:after:bottom-[-5px] group-data-[orientation=horizontal]/tabs:after:h-0.5 group-data-[orientation=vertical]/tabs:after:inset-y-0 group-data-[orientation=vertical]/tabs:after:-right-1 group-data-[orientation=vertical]/tabs:after:w-0.5 group-data-[variant=line]/tabs-list:data-[selected]:after:opacity-100";
+  "relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 group-data-[variant=default]/tabs-list:data-[selected]:shadow-sm group-data-[variant=line]/tabs-list:data-[selected]:shadow-none dark:text-muted-foreground dark:hover:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-[selected]:bg-transparent dark:group-data-[variant=line]/tabs-list:data-[selected]:border-transparent dark:group-data-[variant=line]/tabs-list:data-[selected]:bg-transparent data-[selected]:bg-background data-[selected]:text-foreground dark:data-[selected]:border-input dark:data-[selected]:bg-input/30 dark:data-[selected]:text-foreground after:absolute after:bg-foreground after:opacity-0 after:transition-opacity group-data-[orientation=horizontal]/tabs:after:inset-x-0 group-data-[orientation=horizontal]/tabs:after:bottom-[-5px] group-data-[orientation=horizontal]/tabs:after:h-0.5 group-data-[orientation=vertical]/tabs:after:inset-y-0 group-data-[orientation=vertical]/tabs:after:-right-1 group-data-[orientation=vertical]/tabs:after:w-0.5 group-data-[variant=line]/tabs-list:data-[selected]:after:opacity-100";
 
 const CONTENT_CLASS = 'flex-1 outline-none';
 
@@ -89,10 +90,28 @@ const renderTabs = <Value extends string, Msg>(
       selectedValue: props.selectedValue,
       ariaLabel: props.ariaLabel ?? 'Tabs',
       orientation: orientation === 'horizontal' ? 'Horizontal' : 'Vertical',
-      isTabDisabled: (value) =>
-        props.tabs.find((tab) => tab.value === value)?.isDisabled ?? false,
       toView: ({ tablist, tabs: renderedTabs, activeIndex }) => {
         const ht = h;
+        const selectedExists = orderedTabs.some(
+          (tab) => tab.value === props.selectedValue,
+        );
+        const isDisabledAt = (index: number): boolean =>
+          orderedTabs[index]?.isDisabled === true;
+        const focusedIndex = TabsBehavior.focusedTabIndex({
+          maybeFocusedIndex: props.model.maybeFocusedIndex,
+          activeIndex,
+          tabCount: orderedTabs.length,
+          selectedExists,
+          isDisabledAt,
+        });
+        const keyDown = TabsBehavior.tabKeyDown({
+          tabs: orderedTabs.map((tab) => tab.value),
+          focusedIndex,
+          activeIndex,
+          activationMode: props.model.activationMode,
+          orientation: orientation === 'horizontal' ? 'Horizontal' : 'Vertical',
+          isDisabledAt,
+        });
 
         return ht.div(
           [
@@ -104,7 +123,7 @@ const renderTabs = <Value extends string, Msg>(
           [
             ht.div(
               [
-                ...tablist,
+                ...TabsBehavior.tablistAttributes(tablist, orientation),
                 ht.DataAttribute('slot', 'tabs-list'),
                 ht.DataAttribute('variant', variant),
                 ...(props.direction === 'rtl' && orientation === 'horizontal'
@@ -120,7 +139,15 @@ const renderTabs = <Value extends string, Msg>(
                   : [
                       ht.button(
                         [
-                          ...tab.tab,
+                          ...TabsBehavior.triggerAttributes(ht, {
+                            attributes: tab.tab,
+                            index: tab.index,
+                            isFocusedStop: tab.index === focusedIndex,
+                            isDisabled: config.isDisabled === true,
+                            isActive: tab.isActive,
+                            keyDown,
+                            toParentMessage: props.toParentMessage,
+                          }),
                           ht.DataAttribute('slot', 'tabs-trigger'),
                           ...(props.direction === undefined
                             ? []
@@ -141,6 +168,7 @@ const renderTabs = <Value extends string, Msg>(
                     ht.div(
                       [
                         ...tab.panel,
+                        ht.DataAttribute('index', String(tab.index)),
                         ht.DataAttribute('slot', 'tabs-content'),
                         ht.Class(cn(CONTENT_CLASS, props.contentClass)),
                       ],

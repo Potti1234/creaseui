@@ -195,10 +195,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
         'can be named via `aria-labelledby` — creaseui exposes ariaLabel only',
       )
 
-      // DIVERGENCE: Base UI omits aria-orientation on a horizontal tablist
-      // (horizontal is the implicit default) and only emits it when
-      // orientation="vertical". foldkit always emits it.
-      it.fails(
+      it(
         'does not add aria-orientation by default',
         () => {
           Scene.scene(
@@ -331,10 +328,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI emits data-index on every panel; foldkit's
-      // panel attributes carry only id/role/aria-labelledby/tabIndex/
-      // data-selected — there is no data-index hook.
-      it.fails('sets the panel index data attribute', () => {
+      it('sets the panel index data attribute', () => {
         Scene.scene(
           { update, view: defaultView() },
           Scene.given(givenModel()),
@@ -376,10 +370,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI does not call onValueChange when the active tab
-      // is clicked again. foldkit dispatches SelectedTab unconditionally,
-      // so the OutMessage re-commits.
-      it.fails(
+      it(
         'should not call onValueChange when already active',
         () => {
           Scene.scene(
@@ -388,6 +379,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
             Scene.click(tab('Tab one')),
             Scene.expectHandled(),
             Scene.expectNoOutMessage(),
+            resolveFocus,
           )
         },
       )
@@ -472,29 +464,35 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
         )
       })
 
-      it('skips a disabled tab in a single keypress', () => {
-        // Matches Base UI's native-`disabled` case: disabled tabs are
-        // skipped by roving keyboard navigation.
+      it('moves focus over a disabled tab in a single keypress without activating it', () => {
+        // Matches Base UI's `disabled` prop (focusableWhenDisabled): the
+        // arrow lands on the disabled tab without activating it, and the
+        // next arrow activates the following enabled tab.
         Scene.scene(
           { update, view: defaultView() },
           Scene.given(givenModel({ disabled: ['two'] })),
           Scene.keydown(tab('Tab one'), 'ArrowRight'),
           Scene.expectHandled(),
+          Scene.expect(tab('Tab two')).toHaveAttr('tabIndex', '0'),
+          Scene.expect(tab('Tab two')).toHaveAttr('aria-selected', 'false'),
+          resolveFocus,
+          Scene.keydown(tab('Tab two'), 'ArrowRight'),
+          Scene.expectHandled(),
           Scene.expect(tab('Tab three')).toHaveAttr('aria-selected', 'true'),
           resolveFocus,
           Scene.keydown(tab('Tab three'), 'ArrowLeft'),
+          Scene.expectHandled(),
+          Scene.expect(tab('Tab two')).toHaveAttr('tabIndex', '0'),
+          Scene.expect(tab('Tab two')).toHaveAttr('aria-selected', 'false'),
+          resolveFocus,
+          Scene.keydown(tab('Tab two'), 'ArrowLeft'),
           Scene.expectHandled(),
           Scene.expect(tab('Tab one')).toHaveAttr('aria-selected', 'true'),
           resolveFocus,
         )
       })
 
-      // DIVERGENCE: Base UI moves focus *to* a disabled tab (it stays
-      // focusable) without activating it. foldkit gives the disabled tab the
-      // native `disabled` attribute and skips it in roving navigation — the
-      // arrow lands on the next enabled tab and, in automatic mode,
-      // activates it.
-      it.fails(
+      it(
         'moves focus to a disabled tab without activating it',
         () => {
           Scene.scene(
@@ -504,11 +502,12 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
             Scene.expectHandled(),
             Scene.expect(tab('Tab two')).toHaveAttr('tabIndex', '0'),
             Scene.expect(tab('Tab two')).toHaveAttr('aria-selected', 'false'),
+            resolveFocus,
           )
         },
       )
 
-      it.fails(
+      it(
         'moves focus to a disabled first tab on Home without activating it',
         () => {
           Scene.scene(
@@ -520,11 +519,12 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
             Scene.expectHandled(),
             Scene.expect(tab('Tab one')).toHaveAttr('tabIndex', '0'),
             Scene.expect(tab('Tab one')).toHaveAttr('aria-selected', 'false'),
+            resolveFocus,
           )
         },
       )
 
-      it.fails(
+      it(
         'moves focus to a disabled last tab on End without activating it',
         () => {
           Scene.scene(
@@ -537,16 +537,14 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
               'aria-selected',
               'false',
             ),
+            resolveFocus,
           )
         },
       )
 
-      // DIVERGENCE: Base UI ignores arrow keys while a modifier is held.
-      // foldkit's keydown handler only inspects the key, so modifier+arrow
-      // still navigates.
       ;(['shiftKey', 'ctrlKey', 'altKey', 'metaKey'] as const).forEach(
         (modifier) => {
-          it.fails(
+          it(
             `does not move focus when modifier key: ${modifier} is pressed`,
             () => {
               Scene.scene(
@@ -555,7 +553,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
                 Scene.keydown(tab('Tab one'), 'ArrowRight', {
                   [modifier]: true,
                 }),
-                Scene.expectHandled(),
+                Scene.expectIgnored(),
                 Scene.expect(tab('Tab one')).toHaveAttr(
                   'aria-selected',
                   'true',
@@ -817,12 +815,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI keeps tabindex="-1" on a disabled tab that is
-      // programmatically selected and leaves the tab stop on the previously
-      // highlighted tab. foldkit's roving cursor follows the selected tab
-      // whenever no manual focus exists, so the disabled selected tab gets
-      // tabindex="0".
-      it.fails(
+      it(
         'does not set tabIndex=0 on disabled tabs when they are programmatically selected',
         () => {
           Scene.scene(
