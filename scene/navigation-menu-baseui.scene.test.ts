@@ -1,9 +1,10 @@
+import { Option } from 'effect'
 import * as Scene from 'foldkit/scene'
-import { Command } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { Popover as PopoverPrimitive } from '@foldkit/ui'
 import { describe, it } from 'vitest'
 
+import * as NavigationMenuLib from '@/lib/navigation-menu'
 import * as StyleXNavigationMenu from '@/stylex/navigation-menu'
 import * as TailwindNavigationMenu from '@/ui/navigation-menu'
 
@@ -13,8 +14,11 @@ import * as TailwindNavigationMenu from '@/ui/navigation-menu'
  * base-ui HEAD).
  *
  * creaseui's navigation-menu is a much thinner component than Base UI's:
- * it is a `<nav>` landmark of links plus a Popover-backed disclosure, not a
- * composite widget. It has no shared `value`/`onValueChange` state, no
+ * it is a `<nav>` landmark of links plus Popover-backed disclosures, not a
+ * composite widget. The disclosures are independent Popover child models
+ * coordinated by the parent's `NavigationMenuLib.foldDisclosure` fold, which
+ * gives them Base UI's single open value: opening one closes the rest. There
+ * is no `onValueChange` surface, no
  * orientation, no roving tabindex, no Portal/Positioner/Popup/Viewport/Arrow/
  * Backdrop/Icon parts, and no nested menus — cases exercising those are
  * recorded below as `it.todo`, and the following groups are skipped outright:
@@ -46,45 +50,44 @@ type Message = Readonly<
   | { _tag: 'SetProductsOpen'; isOpen: boolean }
 >
 
-const foldPopover = (
-  model: Model,
-  field: 'products' | 'resources',
-  tag: 'GotProductsMessage' | 'GotResourcesMessage',
-  op: ReturnType<typeof PopoverPrimitive.update>,
-) => ({
-  model: { ...model, [field]: op.model },
-  commands: Command.mapMessages(op.commands ?? [], message => ({
-    _tag: tag,
-    message,
-  })),
-  outMessage: op.outMessage,
+const productsLens: NavigationMenuLib.DisclosureLens<Model, Message> = {
+  read: model => Option.some(model.products),
+  write: (model, products) => ({ ...model, products }),
+  toParentMessage: message => ({ _tag: 'GotProductsMessage', message }),
+}
+const resourcesLens: NavigationMenuLib.DisclosureLens<Model, Message> = {
+  read: model => Option.some(model.resources),
+  write: (model, resources) => ({ ...model, resources }),
+  toParentMessage: message => ({ _tag: 'GotResourcesMessage', message }),
+}
+
+const foldProducts = NavigationMenuLib.foldDisclosure({
+  disclosure: productsLens,
+  siblings: [resourcesLens],
+})
+const foldResources = NavigationMenuLib.foldDisclosure({
+  disclosure: resourcesLens,
+  siblings: [productsLens],
+})
+const foldProductsOpen = NavigationMenuLib.foldDisclosureStep({
+  disclosure: productsLens,
+  siblings: [resourcesLens],
+  update: PopoverPrimitive.open,
+})
+const foldProductsClose = NavigationMenuLib.foldDisclosureStep({
+  disclosure: productsLens,
+  siblings: [resourcesLens],
+  update: PopoverPrimitive.close,
 })
 
 const update = (model: Model, message: Message) => {
   switch (message._tag) {
     case 'GotProductsMessage':
-      return foldPopover(
-        model,
-        'products',
-        'GotProductsMessage',
-        PopoverPrimitive.update(model.products, message.message),
-      )
+      return foldProducts(model, message.message)
     case 'GotResourcesMessage':
-      return foldPopover(
-        model,
-        'resources',
-        'GotResourcesMessage',
-        PopoverPrimitive.update(model.resources, message.message),
-      )
+      return foldResources(model, message.message)
     case 'SetProductsOpen':
-      return foldPopover(
-        model,
-        'products',
-        'GotProductsMessage',
-        message.isOpen
-          ? PopoverPrimitive.open(model.products)
-          : PopoverPrimitive.close(model.products),
-      )
+      return message.isOpen ? foldProductsOpen(model) : foldProductsClose(model)
   }
 }
 
@@ -585,10 +588,7 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI holds a single `value` — opening another trigger
-      // collapses the previous item (aria-expanded flips to false). creaseui's
-      // disclosures are independent Popovers, so both stay open.
-      it.fails(
+      it(
         'closes the previously open item when a different trigger opens (mouse)',
         () => {
           Scene.scene(
@@ -600,11 +600,14 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
             Scene.click(resourcesTrigger),
             Scene.expectHandled(),
             Scene.expect(productsTrigger).toHaveAttr('aria-expanded', 'false'),
+            Scene.expect(resourcesTrigger).toHaveAttr('aria-expanded', 'true'),
+            Scene.expect(productsPanel).toBeAbsent(),
+            Scene.expect(resourcesPanel).toExist(),
           )
         },
       )
 
-      it.fails(
+      it(
         'closes the previously open item when a different trigger opens (touch)',
         () => {
           Scene.scene(
@@ -618,26 +621,25 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
             Scene.click(resourcesTrigger),
             Scene.expectHandled(),
             Scene.expect(productsTrigger).toHaveAttr('aria-expanded', 'false'),
+            Scene.expect(resourcesTrigger).toHaveAttr('aria-expanded', 'true'),
+            Scene.expect(productsPanel).toBeAbsent(),
+            Scene.expect(resourcesPanel).toExist(),
           )
         },
       )
 
-      // DIVERGENCE: Base UI marks an open trigger data-popup-open (+data-pressed);
-      // creaseui's popover marks it data-open instead.
-      it.fails('marks the open trigger data-popup-open', () => {
+      it('marks the open trigger data-popup-open', () => {
         Scene.scene(
           { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
           Scene.given(initialModel()),
           Scene.click(productsTrigger),
           Scene.expectHandled(),
           Scene.expect(productsTrigger).toHaveAttr('data-popup-open', ''),
+          resolveOpenMounts,
         )
       })
 
-      // DIVERGENCE: Base UI keeps a single open value and only notifies a
-      // switch; creaseui emits an Opened OutMessage per disclosure — the
-      // first stays open, so no Closed precedes the second Opened.
-      it.fails(
+      it(
         'reports only the newly opened item when switching triggers',
         () => {
           Scene.scene(

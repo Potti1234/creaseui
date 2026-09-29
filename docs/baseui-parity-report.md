@@ -62,8 +62,7 @@ docs pages against `shadcn/ui` v4 (`/docs/components/base/*`).
    restricts to the contextmenu gesture); hover-card doesn't reopen after
    Escape, closes incorrectly after externally-opened popup; tooltip
    doesn't close when becoming disabled or on post-delay click, no
-   pointer-events handling; navigation-menu doesn't close the previous
-   item when a different trigger opens on mouse/touch.
+   pointer-events handling.
 6. **Component-specific gaps.** Avatar mounts `<img>` immediately (Base UI
    keeps it unmounted until `load`, hides from AT on error/re-src);
    combobox clears selection when input emptied, keeps popup open on empty
@@ -99,7 +98,7 @@ docs pages against `shadcn/ui` v4 (`/docs/components/base/*`).
 | hover-card | reopen-after-Escape; externally-opened hover-out; `data-popup-open` |
 | input-otp | `data-complete` root+slots; `data-filled`/`data-focused`; disabled guards |
 | menubar | open-on-focus/arrow; submenu click; closeOnClick semantics; `data-has-submenu-open` |
-| navigation-menu | close-previous on trigger switch; `data-popup-open` |
+| navigation-menu | — |
 | popover | `role=dialog`; `data-popup-open`/`data-pressed`/`data-open`; modal backdrop |
 | progress | formatted `aria-valuetext`; indeterminate text; complete-at-max |
 | radio-group | arrow-select; RTL flip; group `aria-disabled` |

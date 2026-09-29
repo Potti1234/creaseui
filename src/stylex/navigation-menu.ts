@@ -88,6 +88,7 @@ export const navigationMenuDisclosure = <Msg>(props: NavigationMenuDisclosurePro
     Icon.chevronDown<Msg>({ class: className(styles.disclosureIcon, props.model.isOpen && styles.disclosureIconOpen) }, h),
   ]),
   content: h.div([h.Class(className(styles.content))], [props.content]),
+  triggerAttributes: props.model.isOpen ? [h.DataAttribute('popup-open', '')] : [],
   align: 'start',
   focusSelector: 'a',
 }, h)
