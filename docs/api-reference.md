@@ -91,9 +91,9 @@ Source: [`src/ui/avatar.ts`](../src/ui/avatar.ts)
 | `update` | function | `update(_model: Model, message: Message): Model` |
 | `AvatarProps` | type | `AvatarProps = Readonly<{ size?: 'default' \| 'sm' \| 'lg'; class?: string; children: ReadonlyArray<Html \| string>; }>` |
 | `avatar` | function | `avatar<Msg>(props: AvatarProps, h: HtmlBuilder<Msg>): Html` |
-| `AvatarImageProps` | type | `AvatarImageProps = Readonly<{ src: string; alt: string; class?: string; model?: Model; }>` |
+| `AvatarImageProps` | type | `AvatarImageProps = Readonly<{ src: string; alt: string; class?: string; model?: Model; /** Base UI parity: keep the img mounted while the source resolves, reporting data-loading/data-error/aria-hidden. */ keepMounted?: boolean; }>` |
 | `avatarImage` | function | `avatarImage<Msg>(props: AvatarImageProps & Readonly<{ toParentMessage?: (message: Message) => Msg }>, h: HtmlBuilder<Msg>): Html` |
-| `AvatarFallbackProps` | type | `AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html \| string>; model?: Model; }>` |
+| `AvatarFallbackProps` | type | `AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html \| string>; model?: Model; /** Source the sibling image is resolving; a stale 'loaded' status re-hides the fallback. */ src?: string; }>` |
 | `avatarFallback` | function | `avatarFallback<Msg>(props: AvatarFallbackProps, h: HtmlBuilder<Msg>): Html` |
 | `AvatarBadgeProps` | type | `AvatarBadgeProps = Readonly<{ class?: string; children?: ReadonlyArray<Html \| string>; }>` |
 | `avatarBadge` | function | `avatarBadge<Msg>(props: AvatarBadgeProps, h: HtmlBuilder<Msg>): Html` |

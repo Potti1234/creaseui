@@ -6,20 +6,28 @@ import type { ComponentLayoutStyle } from './contracts'
 import { foundationTokens } from './foundations-tokens.stylex'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
-export const Model=S.Struct({status:S.Literals(['loading','loaded','error'])})
+export const Model=S.Struct({status:S.Literals(['loading','loaded','error']),resolvedSrc:S.optional(S.String)})
 export type Model=typeof Model.Type
 export const Message = defineMessageUnion({
-  Loaded: {},
-  Failed: {},
+  Loaded: { src: S.String },
+  Failed: { src: S.String },
 });export type Message=typeof Message.Type
-export const init=():Model=>({status:'loading'});export const update=(_model:Model,message:Message):Model=>({status:message._tag==='Loaded'?'loaded':'error'})
+export const init=():Model=>({status:'loading'});export const update=(_model:Model,message:Message):Model=>({status:message._tag==='Loaded'?'loaded':'error',resolvedSrc:message.src})
+const effectiveStatus=(model:Model|undefined,src:string|undefined,fallback:'loading'|'loaded'):'loading'|'loaded'|'error'=>{if(model===undefined)return fallback;if(model.resolvedSrc!==undefined&&src!==undefined&&model.resolvedSrc!==src)return'loading';return model.status}
 const styles=stylex.create({root:{overflow:'hidden', display:'flex', flexShrink:0, position:'relative', userSelect:'none', height:'2rem', width:'2rem',},round:{borderRadius:'50%'},sm:{height:'1.5rem',width:'1.5rem'},lg:{height:'2.5rem',width:'2.5rem'},image:{objectFit:'cover', position:'relative', zIndex:10, height:'100%', width:'100%',},loading:{opacity:0},fallback:{inset:0, alignItems:'center', backgroundColor:foundationTokens.muted, color:tokens.mutedForeground, display:'flex', fontSize:'0.875rem', justifyContent:'center', position:'absolute', height:'100%', width:'100%',},ringed:{boxShadow:`0 0 0 2px ${tokens.background}`},overlap:{marginInlineStart:'-0.5rem'},badge:{borderRadius:'50%', alignItems:'center', backgroundColor:tokens.primary, boxShadow:`0 0 0 2px ${tokens.background}`, color:tokens.primaryForeground, display:'inline-flex', justifyContent:'center', position:'absolute', userSelect:'none', zIndex:10, bottom:0, right:0,},badgeSm:{height:'0.5rem',width:'0.5rem'},badgeDefault:{height:'0.625rem',width:'0.625rem'},badgeLg:{height:'0.75rem',width:'0.75rem'},group:{display:'flex'},groupCount:{borderRadius:'50%', alignItems:'center', backgroundColor:foundationTokens.muted, boxShadow:`0 0 0 2px ${tokens.background}`, color:tokens.mutedForeground, display:'flex', flexShrink:0, fontSize:'0.875rem', justifyContent:'center', position:'relative', height:'2rem', width:'2rem',},groupCountSm:{fontSize:'0.75rem',height:'1.5rem',width:'1.5rem'},groupCountLg:{height:'2.5rem',width:'2.5rem'},grayscale:{filter:'grayscale(100%)'},badgeSuccess:{backgroundColor:tokens.alertSuccess}})
 export type AvatarProps=Readonly<{size?:'default'|'sm'|'lg';ring?:boolean;overlap?:boolean;grayscale?:boolean;layoutStyle?:ComponentLayoutStyle;children:ReadonlyArray<Html|string>}>
-export const avatar=<Msg>(p:AvatarProps,h:HtmlBuilder<Msg>):Html=>h.div([h.DataAttribute('slot','avatar'),h.DataAttribute('size',p.size??'default'),h.Class(className(styles.root,styles.round,p.size==='sm'&&styles.sm,p.size==='lg'&&styles.lg,p.ring===true&&styles.ringed,p.overlap===true&&styles.overlap,p.grayscale===true&&styles.grayscale,p.layoutStyle))],[...p.children])
-export type AvatarImageProps=Readonly<{src:string;alt:string;grayscale?:boolean;layoutStyle?:ComponentLayoutStyle;model?:Model}>
-export const avatarImage=<Msg>(p:AvatarImageProps&Readonly<{toParentMessage?:(message:Message)=>Msg}>,h:HtmlBuilder<Msg>):Html=>p.model?.status==='error'?h.empty:h.img([h.DataAttribute('slot','avatar-image'),h.Src(p.src),h.Alt(p.alt),...(p.toParentMessage===undefined?[]:[h.OnLoad(p.toParentMessage(Message.Loaded())),h.OnError(p.toParentMessage(Message.Failed()))]),...(p.model?.status==='loaded'?[]:[h.DataAttribute('loading','')]),h.Class(className(styles.image,styles.round,p.model?.status!=='loaded'&&styles.loading,p.grayscale===true&&styles.grayscale,p.layoutStyle))])
-export type AvatarFallbackProps=Readonly<{layoutStyle?:ComponentLayoutStyle;children:ReadonlyArray<Html|string>;model?:Model}>
-export const avatarFallback=<Msg>(p:AvatarFallbackProps,h:HtmlBuilder<Msg>):Html=>p.model?.status==='loaded'?h.empty:h.div([h.DataAttribute('slot','avatar-fallback'),h.Class(className(styles.fallback,styles.round,p.layoutStyle))],[...p.children])
+export const avatar=<Msg>(p:AvatarProps,h:HtmlBuilder<Msg>):Html=>h.span([h.DataAttribute('slot','avatar'),h.DataAttribute('size',p.size??'default'),h.Class(className(styles.root,styles.round,p.size==='sm'&&styles.sm,p.size==='lg'&&styles.lg,p.ring===true&&styles.ringed,p.overlap===true&&styles.overlap,p.grayscale===true&&styles.grayscale,p.layoutStyle))],[...p.children])
+export type AvatarImageProps=Readonly<{src:string;alt:string;grayscale?:boolean;layoutStyle?:ComponentLayoutStyle;model?:Model;keepMounted?:boolean}>
+export const avatarImage=<Msg>(p:AvatarImageProps&Readonly<{toParentMessage?:(message:Message)=>Msg}>,h:HtmlBuilder<Msg>):Html=>{
+const status=effectiveStatus(p.model,p.src,'loaded')
+const wiring=p.toParentMessage===undefined?[]:[h.OnLoad(p.toParentMessage(Message.Loaded({src:p.src}))),h.OnError(p.toParentMessage(Message.Failed({src:p.src})))]
+if(p.keepMounted===true)return h.img([h.DataAttribute('slot','avatar-image'),h.Src(p.src),h.Alt(p.alt),...wiring,...(status==='loading'?[h.DataAttribute('loading','')]:[]),...(status==='error'?[h.DataAttribute('error','')]:[]),...(status==='loaded'?[]:[h.AriaHidden(true)]),h.Class(className(styles.image,styles.round,status!=='loaded'&&styles.loading,p.grayscale===true&&styles.grayscale,p.layoutStyle))])
+if(status==='loaded')return h.img([h.DataAttribute('slot','avatar-image'),h.Src(p.src),h.Alt(p.alt),...wiring,h.Class(className(styles.image,styles.round,p.grayscale===true&&styles.grayscale,p.layoutStyle))])
+if(p.toParentMessage===undefined)return h.empty
+return h.img([h.DataAttribute('slot','avatar-image-probe'),h.Src(p.src),h.Alt(''),h.AriaHidden(true),h.Hidden(true),...wiring])
+}
+export type AvatarFallbackProps=Readonly<{layoutStyle?:ComponentLayoutStyle;children:ReadonlyArray<Html|string>;model?:Model;src?:string}>
+export const avatarFallback=<Msg>(p:AvatarFallbackProps,h:HtmlBuilder<Msg>):Html=>effectiveStatus(p.model,p.src,'loading')==='loaded'?h.empty:h.span([h.DataAttribute('slot','avatar-fallback'),h.Class(className(styles.fallback,styles.round,p.layoutStyle))],[...p.children])
 
 export type AvatarBadgeProps=Readonly<{size?:'default'|'sm'|'lg';tone?:'primary'|'success';layoutStyle?:ComponentLayoutStyle;children?:ReadonlyArray<Html|string>}>
 export const avatarBadge=<Msg>(p:AvatarBadgeProps,h:HtmlBuilder<Msg>):Html=>h.span([h.DataAttribute('slot','avatar-badge'),h.Class(className(styles.badge,p.tone==='success'&&styles.badgeSuccess,p.size==='sm'?styles.badgeSm:p.size==='lg'?styles.badgeLg:styles.badgeDefault,p.layoutStyle))],[...(p.children??[])])

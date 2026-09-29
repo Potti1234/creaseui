@@ -394,7 +394,7 @@
         {
           "name": "AvatarImageProps",
           "kind": "type",
-          "signature": "AvatarImageProps = Readonly<{ src: string; alt: string; class?: string; model?: Model; }>"
+          "signature": "AvatarImageProps = Readonly<{ src: string; alt: string; class?: string; model?: Model; /** Base UI parity: keep the img mounted while the source resolves, reporting data-loading/data-error/aria-hidden. */ keepMounted?: boolean; }>"
         },
         {
           "name": "avatarImage",
@@ -404,7 +404,7 @@
         {
           "name": "AvatarFallbackProps",
           "kind": "type",
-          "signature": "AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; model?: Model; }>"
+          "signature": "AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; model?: Model; /** Source the sibling image is resolving; a stale 'loaded' status re-hides the fallback. */ src?: string; }>"
         },
         {
           "name": "avatarFallback",
