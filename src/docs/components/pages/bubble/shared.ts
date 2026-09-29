@@ -552,6 +552,7 @@ const reactionsSource = (
                 Message['GotPopoverMessage']({ message }),
               trigger: Icon.icon('${reactions.icon}', ${iconClass}, h),
               ${triggerProps}
+              backdrop: true,
               content: h.div([h.Class(${contentClass})], [
                 h.p([h.Class(${titleClass})], ['${esc(reactions.title)}']),
                 h.p([h.Class(${descClass})], ['${esc(reactions.description)}']),

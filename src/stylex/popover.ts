@@ -68,6 +68,10 @@ export type PopoverProps<Msg> = Readonly<{
   layoutStyle?: ComponentLayoutStyle;
   direction?: 'ltr' | 'rtl';
   focusSelector?: string;
+  /* Renders the backdrop element while open (the outside-press click
+     catcher). Always rendered for modal models; non-modal models opt in
+     here, matching Base UI's user-rendered <Popover.Backdrop> part. */
+  backdrop?: boolean;
 }>;
 
 export const popover = <Msg>(
@@ -87,6 +91,8 @@ export const popover = <Msg>(
         : { focusSelector: props.focusSelector }),
       toView: ({ button, panel, backdrop, isVisible }) => {
         const hp = h;
+        const isOpen = props.model.isOpen;
+        const showBackdrop = props.model.isModal || props.backdrop === true;
 
         return hp.div(
           [hp.DataAttribute('slot', 'popover')],
@@ -97,17 +103,31 @@ export const popover = <Msg>(
                 ...(props.triggerAttributes ?? []),
                 hp.DataAttribute('slot', 'popover-trigger'),
                 hp.AriaHasPopup('dialog'),
+                ...(isOpen
+                  ? [
+                      hp.DataAttribute('popup-open', ''),
+                      hp.DataAttribute('pressed', ''),
+                    ]
+                  : []),
                 hp.Class(cn(props.variant === 'sidebar' && styles.sidebarTrigger, props.triggerLayoutStyle)),
               ],
               [props.trigger],
             ),
             ...(isVisible
               ? [
-                  hp.div([...backdrop, hp.DataAttribute('slot', 'popover-backdrop'), hp.Class(className(BACKDROP_CLASS))], []),
+                  ...(showBackdrop
+                    ? [
+                        hp.div([...backdrop, hp.DataAttribute('slot', 'popover-backdrop'), hp.Class(className(BACKDROP_CLASS))], []),
+                      ]
+                    : []),
                   hp.div(
                     [
                       ...panel,
                       hp.DataAttribute('slot', 'popover-content'),
+                      hp.Role('dialog'),
+                      ...(isOpen
+                        ? [hp.DataAttribute('open', '')]
+                        : [hp.DataAttribute('closed', '')]),
                       ...(props.direction === undefined ? [] : [hp.Dir(props.direction)]),
                       hp.Class(cn(overlayStyles.panel, CONTENT_CLASS, props.layoutStyle)),
                     ],

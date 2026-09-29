@@ -91,4 +91,5 @@ export const navigationMenuDisclosure = <Msg>(props: NavigationMenuDisclosurePro
   triggerAttributes: props.model.isOpen ? [h.DataAttribute('popup-open', '')] : [],
   align: 'start',
   focusSelector: 'a',
+  backdrop: true,
 }, h)

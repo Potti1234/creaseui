@@ -565,6 +565,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
                 ? "trigger: h.span([h.Class(stylex.props(styles.iconButton).className ?? '')], [Icon.icon('info', {}, h)]),"
                 : "trigger: Icon.icon('info', {}, h),\n              triggerClass: 'flex size-6 items-center justify-center rounded-[calc(var(--radius)-5px)] text-muted-foreground hover:bg-accent/50',"}
               align: 'start',
+              backdrop: true,
               content: h.div([h.Class(${isStyleX ? "stylex.props(styles.popoverContent).className ?? ''" : "'flex flex-col gap-1 text-sm'"})], [
                 h.p([h.Class(${isStyleX ? "stylex.props(styles.popoverTitle).className ?? ''" : "'font-medium'"})], ['Your connection is not secure.']),
                 h.p([], ['You should not enter any sensitive information on this site.']),

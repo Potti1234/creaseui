@@ -476,6 +476,7 @@ const documentation = (
                   content: subItems(labels, model, h),
                   side: "right",
                   align: "start",
+                  backdrop: true,
                 },
                 h,
               );
@@ -951,6 +952,7 @@ export const view = (
                               h,
                             ),
                             align: "end",
+                            backdrop: true,
                           },
                           h,
                         ),

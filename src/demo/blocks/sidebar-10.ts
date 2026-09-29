@@ -972,6 +972,7 @@ const navActions = (model: Popover.Model, h: HtmlBuilder<Message>): Html => {
           }),
           content: actionPopoverContent(h),
           align: 'end',
+          backdrop: true,
           class: 'w-56 overflow-hidden rounded-lg p-0',
         },
         h,
