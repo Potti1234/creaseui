@@ -88,11 +88,10 @@ const verifyRenderer = (name: string, Progress: ProgressModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI always derives aria-valuetext from the formatted
-      // value ('30%' here, 'indeterminate progress' when indeterminate) unless
-      // getAriaValueText overrides it. creaseui emits aria-valuetext only when
-      // the caller passes valueText; there is no default formatting.
-      it.fails('emits a formatted aria-valuetext by default for a determinate value', () => {
+      // Parity: creaseui derives the default aria-valuetext from the
+      // percent-formatted value ('indeterminate progress' when indeterminate);
+      // the valueText prop plays Base UI's getAriaValueText override role.
+      it('emits a formatted aria-valuetext by default for a determinate value', () => {
         const expected = (0.3).toLocaleString(undefined, { style: 'percent' })
         Scene.scene(
           { update, view: view({}) },
@@ -101,7 +100,7 @@ const verifyRenderer = (name: string, Progress: ProgressModule) => {
         )
       })
 
-      it.fails('emits "indeterminate progress" as aria-valuetext when indeterminate', () => {
+      it('emits "indeterminate progress" as aria-valuetext when indeterminate', () => {
         Scene.scene(
           { update, view: view({}) },
           Scene.given(initialModel(null)),
@@ -155,8 +154,8 @@ const verifyRenderer = (name: string, Progress: ProgressModule) => {
 
     describe('data attributes', () => {
       // Base UI mirrors data-indeterminate / data-progressing / data-complete
-      // onto every composed part. creaseui carries a single data-state hook on
-      // the progressbar itself: 'indeterminate' | 'determinate'.
+      // onto every composed part. creaseui emits them on the progressbar only,
+      // alongside its own data-state hook: 'indeterminate' | 'determinate'.
       it('keeps data-state synchronized through the status cycle', () => {
         Scene.scene(
           {
@@ -205,11 +204,10 @@ const verifyRenderer = (name: string, Progress: ProgressModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI switches all parts to data-complete once the value
-      // reaches max (and data-progressing before that). creaseui's ProgressState
-      // has only 'determinate' | 'indeterminate' — the bar stays
-      // data-state="determinate" at 100 and no data-progressing exists either.
-      it.fails('reports complete when the value reaches or exceeds max', () => {
+      // Parity: the progressbar carries one Base UI status hook
+      // (data-indeterminate | data-progressing | data-complete) alongside
+      // creaseui's data-state. The indicator stays unmarked (see below).
+      it('reports complete when the value reaches or exceeds max', () => {
         Scene.scene(
           { update, view: view({ max: 40 }) },
           Scene.given(initialModel(45)),
