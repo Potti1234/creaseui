@@ -1,5 +1,11 @@
-import type { Option } from 'effect'
-import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
+import { Option } from 'effect'
+import type {
+  Attribute,
+  ChildAttribute,
+  Html,
+  HtmlBuilder,
+  KeyboardModifiers,
+} from 'foldkit/html'
 import { RadioGroup as RadioGroupPrimitive } from '@foldkit/ui'
 
 export type RadioGroupOption = Readonly<{
@@ -77,12 +83,81 @@ export const renderRadioGroup = <Msg>(
       hasOptionDescription: (_value, index) => props.options[index]?.description !== undefined,
       ...(props.name === undefined ? {} : { name: props.name }),
       ...(props.orientation === undefined ? {} : { orientation: props.orientation }),
-      toView: ({ group, options, hiddenInput }) =>
-        h.div(
+      toView: ({ group, options, hiddenInput }) => {
+        // Base UI composite keynav: all four arrows move regardless of the
+        // rendered orientation, horizontal arrows flip under rtl, disabled
+        // options are skipped and navigation wraps. An arrow press held with
+        // Meta/Ctrl/Alt, or one that resolves back to the already-focused
+        // option, falls through unhandled (no preventDefault).
+        const focusedIndex =
+          options.find((option) => option.isActive)?.index ?? 0
+        const isRtl = props.direction === 'rtl'
+        const horizontalForwardKey = isRtl ? 'ArrowLeft' : 'ArrowRight'
+        const horizontalBackwardKey = isRtl ? 'ArrowRight' : 'ArrowLeft'
+        const isDisabledIndex = (index: number): boolean =>
+          options[index]?.isDisabled !== false
+        const wrapIndex = (index: number): number =>
+          ((index % options.length) + options.length) % options.length
+        const findEnabledIndex = (
+          startIndex: number,
+          direction: 1 | -1,
+        ): number => {
+          for (let step = 0; step < options.length; step++) {
+            const index = wrapIndex(startIndex + step * direction)
+            if (!isDisabledIndex(index)) return index
+          }
+          return focusedIndex
+        }
+        const firstEnabledIndex = findEnabledIndex(0, 1)
+        const lastEnabledIndex = findEnabledIndex(options.length - 1, -1)
+        const resolveNavIndex = (key: string): number | undefined => {
+          if (key === 'ArrowDown' || key === horizontalForwardKey)
+            return findEnabledIndex(focusedIndex + 1, 1)
+          if (key === 'ArrowUp' || key === horizontalBackwardKey)
+            return findEnabledIndex(focusedIndex - 1, -1)
+          if (key === 'Home' || key === 'PageUp') return firstEnabledIndex
+          if (key === 'End' || key === 'PageDown') return lastEnabledIndex
+          return undefined
+        }
+        const isReadOnly = props.isReadOnly ?? false
+        const selectedOptionAt = (index: number): Option.Option<Msg> =>
+          Option.fromNullishOr(options[index]?.value).pipe(
+            Option.map((value) =>
+              props.toParentMessage(
+                RadioGroupPrimitive.Message.SelectedOption({ index, value }),
+              ),
+            ),
+          )
+        const handleKeyDown =
+          (currentIndex: number) =>
+          (key: string, modifiers: KeyboardModifiers): Option.Option<Msg> => {
+            if (modifiers.metaKey || modifiers.ctrlKey || modifiers.altKey)
+              return Option.none()
+            const navIndex = resolveNavIndex(key)
+            if (navIndex !== undefined) {
+              if (navIndex === focusedIndex) return Option.none()
+              return isReadOnly
+                ? Option.some(
+                    props.toParentMessage(
+                      RadioGroupPrimitive.Message.FocusedOption({
+                        index: navIndex,
+                      }),
+                    ),
+                  )
+                : selectedOptionAt(navIndex)
+            }
+            return key === ' ' && !isReadOnly
+              ? selectedOptionAt(currentIndex)
+              : Option.none()
+          }
+        return h.div(
           [
             ...group,
             h.DataAttribute('slot', 'radio-group'),
             ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
+            ...(props.isDisabled === true
+              ? [h.AriaDisabled(true), h.DataAttribute('disabled', '')]
+              : []),
             ...visual.group,
           ],
           [
@@ -94,9 +169,18 @@ export const renderRadioGroup = <Msg>(
                   [
                     ...option.option.filter(
                       (attribute) =>
-                        content.description !== undefined ||
-                        childAttributeTag(attribute) !== 'AriaDescribedBy',
+                        childAttributeTag(attribute) !==
+                          'OnKeyDownPreventDefault' &&
+                        (content.description !== undefined ||
+                          childAttributeTag(attribute) !== 'AriaDescribedBy'),
                     ),
+                    ...(option.isDisabled
+                      ? []
+                      : [
+                          h.OnKeyDownPreventDefault(
+                            handleKeyDown(option.index),
+                          ),
+                        ]),
                     h.Type('button'),
                     h.DataAttribute('slot', 'radio-group-item'),
                     ...(content.isInvalid === true ? [h.AriaInvalid(true)] : []),
@@ -126,7 +210,8 @@ export const renderRadioGroup = <Msg>(
             }),
             ...(props.name === undefined ? [] : [h.input([...hiddenInput])]),
           ],
-        ),
+        )
+      },
     },
     toParentMessage: props.toParentMessage,
   })
