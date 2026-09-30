@@ -1178,6 +1178,58 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "donutChart<Msg>(props: DonutChartProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "chat-reasoning": [
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "init",
+      "kind": "function",
+      "signature": "init(config: { id: string; isExpanded?: boolean; }): Model"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "value",
+      "signature": "OutMessage: value"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "type",
+      "signature": "OutMessage = typeof OutMessage.Type"
+    },
+    {
+      "name": "update",
+      "kind": "function",
+      "signature": "update(model: Model, message: Message): UpdateReturn"
+    },
+    {
+      "name": "ChatReasoningProps",
+      "kind": "type",
+      "signature": "ChatReasoningProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Reasoning content rendered inside the expanded panel. */ children: ReadonlyArray<Html | string>; /** Header label. @default 'Thinking' */ label?: string; /** Du…"
+    },
+    {
+      "name": "chatReasoning",
+      "kind": "function",
+      "signature": "chatReasoning<Msg>(props: ChatReasoningProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "checkbox-list": [
     {
       "name": "CheckboxListDensity",
@@ -3396,6 +3448,73 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "listItem<Msg>(props: ListItemProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "log-stream": [
+    {
+      "name": "LogStreamLevel",
+      "kind": "value",
+      "signature": "LogStreamLevel: value"
+    },
+    {
+      "name": "LogStreamLevel",
+      "kind": "type",
+      "signature": "LogStreamLevel = typeof LogStreamLevel.Type"
+    },
+    {
+      "name": "LogEntry",
+      "kind": "type",
+      "signature": "LogEntry = Readonly<{ /** Stable unique key, e.g. `\"req-1042\"`. */ id: string; /** Pre-formatted timestamp, e.g. `\"14:02:11.482\"`. Deterministic. */ timestamp: string; level: LogStreamLevel; message: string; /** Emitting service/component, e.g. `\"api-gateway\"…"
+    },
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "init",
+      "kind": "function",
+      "signature": "init(config: { id: string; /** Initially pinned to the tail. @default false (astryx uncontrolled) */ isFollowing?: boolean; }): Model"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "value",
+      "signature": "OutMessage: value"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "type",
+      "signature": "OutMessage = typeof OutMessage.Type"
+    },
+    {
+      "name": "update",
+      "kind": "function",
+      "signature": "update(model: Model, message: Message): UpdateReturn"
+    },
+    {
+      "name": "LogStreamProps",
+      "kind": "type",
+      "signature": "LogStreamProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Log rows, oldest first (live tails append at the end). */ entries: ReadonlyArray<LogEntry>; /** Visual treatment; 'terminal' is always dark. @default 'default' */ v…"
+    },
+    {
+      "name": "logStream",
+      "kind": "function",
+      "signature": "logStream<Msg>(props: LogStreamProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "markdown": [
     {
       "name": "init",
@@ -4319,6 +4438,173 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "popover",
       "kind": "function",
       "signature": "popover<Msg>(props: PopoverProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "power-search": [
+    {
+      "name": "EnumItem",
+      "kind": "type",
+      "signature": "EnumItem = Readonly<{ value: string; label: string }>"
+    },
+    {
+      "name": "PowerSearchEntity",
+      "kind": "type",
+      "signature": "PowerSearchEntity = Readonly<{ id: string; label: string; photo?: string; }>"
+    },
+    {
+      "name": "SearchableItem",
+      "kind": "type",
+      "signature": "SearchableItem = Readonly<{ id: string; label: string; photo?: string; auxiliaryData?: unknown; }>"
+    },
+    {
+      "name": "SearchSource",
+      "kind": "type",
+      "signature": "SearchSource = Readonly<{ search: (query: string) => ReadonlyArray<SearchableItem>; bootstrap?: () => ReadonlyArray<SearchableItem>; }>"
+    },
+    {
+      "name": "DateTimeRangePart",
+      "kind": "type",
+      "signature": "DateTimeRangePart = | Readonly<{ type: 'NOW' }> | Readonly<{ type: 'ABSOLUTE'; unixSeconds: number }> | Readonly<{ type: 'RELATIVE'; backValue: number; unit: | 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year'; }>"
+    },
+    {
+      "name": "DateTimeRange",
+      "kind": "type",
+      "signature": "DateTimeRange = Readonly<{ start: DateTimeRangePart; end: DateTimeRangePart; }>"
+    },
+    {
+      "name": "OperatorValue",
+      "kind": "type",
+      "signature": "OperatorValue = | Readonly<{ type: 'empty' }> | Readonly<{ type: 'string'; searchSource?: SearchSource }> | Readonly<{ type: 'string_list'; searchSource?: SearchSource }> | Readonly<{ type: 'integer' }> | Readonly<{ type: 'float' }> | Readonly<{ type: 'time' …"
+    },
+    {
+      "name": "RelativeDateFilterPreset",
+      "kind": "type",
+      "signature": "RelativeDateFilterPreset = Readonly<{ key: string; label: string; range: DateTimeRange; }>"
+    },
+    {
+      "name": "PowerSearchOperator",
+      "kind": "type",
+      "signature": "PowerSearchOperator = Readonly<{ key: string; value: OperatorValue }> & (Readonly<{ label: string }> | Readonly<{ i18nKey: string }>)"
+    },
+    {
+      "name": "PowerSearchField",
+      "kind": "type",
+      "signature": "PowerSearchField = Readonly<{ key: string; label: string; operators: ReadonlyArray<PowerSearchOperator>; icon?: string; defaultOperator?: string; group?: string; description?: string; typeaheadAliases?: ReadonlyArray<string>; typeaheadMinQueryLength?: number;…"
+    },
+    {
+      "name": "FilterValue",
+      "kind": "type",
+      "signature": "FilterValue = | Readonly<{ type: 'empty' }> | Readonly<{ type: 'string'; value: string }> | Readonly<{ type: 'string_list'; value: ReadonlyArray<string> }> | Readonly<{ type: 'integer'; value: number }> | Readonly<{ type: 'float'; value: number }> | Readonly<…"
+    },
+    {
+      "name": "PowerSearchFilter",
+      "kind": "type",
+      "signature": "PowerSearchFilter = Readonly<{ field: string; operator: string; value: FilterValue; isReadOnly?: boolean; }>"
+    },
+    {
+      "name": "PartialFilter",
+      "kind": "type",
+      "signature": "PartialFilter = Readonly<{ field: string; operator?: string; value?: FilterValue; }>"
+    },
+    {
+      "name": "PowerSearchConfig",
+      "kind": "type",
+      "signature": "PowerSearchConfig = Readonly<{ name: string; fields: ReadonlyArray<PowerSearchField>; contentSearchFieldKey?: string; }>"
+    },
+    {
+      "name": "PowerSearchChangeType",
+      "kind": "type",
+      "signature": "PowerSearchChangeType = 'add' | 'edit' | 'remove'"
+    },
+    {
+      "name": "resolveOperatorLabel",
+      "kind": "function",
+      "signature": "resolveOperatorLabel(operator: PowerSearchOperator): string"
+    },
+    {
+      "name": "InternalPowerSearchConfig",
+      "kind": "type",
+      "signature": "InternalPowerSearchConfig = Readonly<{ name: string; fields: ReadonlyArray<PowerSearchField>; contentSearchFieldKey?: string; fieldsByKey: ReadonlyMap<string, PowerSearchField>; /** The portion of the fields array that precedes contentSearchFieldKey (astryx e…"
+    },
+    {
+      "name": "createInternalConfig",
+      "kind": "function",
+      "signature": "createInternalConfig(config: PowerSearchConfig): InternalPowerSearchConfig"
+    },
+    {
+      "name": "resolveDateTimeRangePart",
+      "kind": "function",
+      "signature": "resolveDateTimeRangePart(part: DateTimeRangePart, nowSeconds: number = Date.now() / 1000): number"
+    },
+    {
+      "name": "formatFilterValue",
+      "kind": "function",
+      "signature": "formatFilterValue(config: InternalPowerSearchConfig, operatorValue: OperatorValue, filterValue: FilterValue | undefined, maxLength: number): string"
+    },
+    {
+      "name": "PowerSearchSuggestion",
+      "kind": "type",
+      "signature": "PowerSearchSuggestion = | Readonly<{ kind: 'group'; label: string }> | Readonly<{ kind: 'field'; field: PowerSearchField }> | Readonly<{ kind: 'operator'; field: PowerSearchField; operator: PowerSearchOperator; label: string; }> | Readonly<{ kind: 'value'; fi…"
+    },
+    {
+      "name": "FieldDefinition",
+      "kind": "type",
+      "signature": "FieldDefinition = Readonly<{ key: string; type: FieldDefinitionType; label?: string; enumValues?: ReadonlyArray<EnumItem>; }>"
+    },
+    {
+      "name": "createPowerSearchConfig",
+      "kind": "function",
+      "signature": "createPowerSearchConfig(definitions: ReadonlyArray<FieldDefinition>, configName?: string): { config: PowerSearchConfig; applyFilters: <Row extends Record<string, unknown>>( filters: ReadonlyArray<PowerSearchFilter>, data: ReadonlyArray<Row>, ) => Row[]; }"
+    },
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "init",
+      "kind": "function",
+      "signature": "init(config: { id: string }): Model"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "value",
+      "signature": "OutMessage: value"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "type",
+      "signature": "OutMessage = typeof OutMessage.Type"
+    },
+    {
+      "name": "update",
+      "kind": "function",
+      "signature": "update(model: Model, message: Message, config: InternalPowerSearchConfig, filters: ReadonlyArray<PowerSearchFilter>, resultCount: number | null = null): UpdateReturn"
+    },
+    {
+      "name": "PowerSearchProps",
+      "kind": "type",
+      "signature": "PowerSearchProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Controlled filter list (astryx `filters` prop + `onChange`). */ filters: ReadonlyArray<PowerSearchFilter>; config: InternalPowerSearchConfig; placeholder?: string…"
+    },
+    {
+      "name": "powerSearch",
+      "kind": "function",
+      "signature": "powerSearch<Msg>(props: PowerSearchProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "progress": [
@@ -5740,6 +6026,145 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "timeInput<Msg>(props: TimeInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "timer": [
+    {
+      "name": "TimerFormat",
+      "kind": "type",
+      "signature": "TimerFormat = 'elapsed' | 'clock'"
+    },
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "init",
+      "kind": "function",
+      "signature": "init(config: { id: string; startTimeMs?: number; format?: TimerFormat; /** Clock override for deterministic previews/tests. Defaults to Date.now(). */ nowMs?: number; }): Model"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "update",
+      "kind": "function",
+      "signature": "update(model: Model, message: Message): UpdateReturn"
+    },
+    {
+      "name": "subscriptions",
+      "kind": "value",
+      "signature": "subscriptions: value"
+    },
+    {
+      "name": "TimerProps",
+      "kind": "type",
+      "signature": "TimerProps<Msg> = Readonly<{ model: Model; /** Semantic text type. @default 'supporting' */ type?: AstryxTextType; /** Font size override; keeps the type's line height. */ size?: AstryxTextSize; /** Text color. @default 'secondary' */ color?: AstryxTextColor;…"
+    },
+    {
+      "name": "timer",
+      "kind": "function",
+      "signature": "timer<Msg>(props: TimerProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "timestamp": [
+    {
+      "name": "InstantFormat",
+      "kind": "re-export",
+      "signature": "export { InstantFormat } from '@/lib/timestamp-format'"
+    },
+    {
+      "name": "TimestampFormat",
+      "kind": "re-export",
+      "signature": "export { TimestampFormat } from '@/lib/timestamp-format'"
+    },
+    {
+      "name": "TimestampTooltipEntry",
+      "kind": "re-export",
+      "signature": "export { TimestampTooltipEntry } from '@/lib/timestamp-format'"
+    },
+    {
+      "name": "TimestampTooltipFormat",
+      "kind": "re-export",
+      "signature": "export { TimestampTooltipFormat } from '@/lib/timestamp-format'"
+    },
+    {
+      "name": "formatInstant",
+      "kind": "re-export",
+      "signature": "export { formatInstant } from '@/lib/timestamp-format'"
+    },
+    {
+      "name": "formatRelativeTime",
+      "kind": "re-export",
+      "signature": "export { formatRelativeTime } from '@/lib/timestamp-format'"
+    },
+    {
+      "name": "formatTooltipLines",
+      "kind": "re-export",
+      "signature": "export { formatTooltipLines } from '@/lib/timestamp-format'"
+    },
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "parseValueMs",
+      "kind": "function",
+      "signature": "parseValueMs(value: string | number): number"
+    },
+    {
+      "name": "init",
+      "kind": "function",
+      "signature": "init(config: { id: string; value: string | number; format?: TimestampFormat; autoThreshold?: number; isLive?: boolean; nowMs?: number; }): Model"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "update",
+      "kind": "function",
+      "signature": "update(model: Model, message: Message): UpdateReturn"
+    },
+    {
+      "name": "subscriptions",
+      "kind": "value",
+      "signature": "subscriptions: value"
+    },
+    {
+      "name": "TimestampProps",
+      "kind": "type",
+      "signature": "TimestampProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Semantic text type. @default 'supporting' */ type?: AstryxTextType; size?: AstryxTextSize; /** Text color. @default 'secondary' */ color?: AstryxTextColor; weight?:…"
+    },
+    {
+      "name": "timestamp",
+      "kind": "function",
+      "signature": "timestamp<Msg>(props: TimestampProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "toast": [
     {
       "name": "*",
@@ -6266,6 +6691,73 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "tour",
       "kind": "function",
       "signature": "tour<Msg>(props: TourProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "transfer-list": [
+    {
+      "name": "TransferListOption",
+      "kind": "type",
+      "signature": "TransferListOption = Readonly<{ /** Stable value written to the controlled value array. */ value: string; /** Visible option name and the basis of action labels. */ label: string; /** Optional searchable metadata. Not rendered in the default row. */ descripti…"
+    },
+    {
+      "name": "ReorderSession",
+      "kind": "type",
+      "signature": "ReorderSession = typeof ReorderSession.Type"
+    },
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "init",
+      "kind": "function",
+      "signature": "init(config: { id: string; value?: ReadonlyArray<string> }): Model"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "value",
+      "signature": "OutMessage: value"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "type",
+      "signature": "OutMessage = typeof OutMessage.Type"
+    },
+    {
+      "name": "update",
+      "kind": "function",
+      "signature": "update(model: Model, message: Message, options: ReadonlyArray<TransferListOption> = [], isReorderable = true): UpdateReturn"
+    },
+    {
+      "name": "TransferListProps",
+      "kind": "type",
+      "signature": "TransferListProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Accessible name for the complete control. */ label: string; /** Visually hides the label while retaining its accessible name. */ isLabelHidden?: boolean; /** Sup…"
+    },
+    {
+      "name": "REORDER_INSTRUCTIONS",
+      "kind": "value",
+      "signature": "REORDER_INSTRUCTIONS: value"
+    },
+    {
+      "name": "transferList",
+      "kind": "function",
+      "signature": "transferList<Msg>(props: TransferListProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "tree-list": [

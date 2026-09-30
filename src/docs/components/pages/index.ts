@@ -20,6 +20,7 @@ import { cardPage } from '@/docs/components/pages/card';
 import { carouselPage } from '@/docs/components/pages/carousel';
 import { chartPage } from '@/docs/components/pages/chart';
 import { centerPage } from '@/docs/components/pages/center';
+import { chatReasoningPage } from '@/docs/components/pages/chat-reasoning';
 import { checkboxPage } from '@/docs/components/pages/checkbox';
 import { checkboxListPage } from '@/docs/components/pages/checkbox-list';
 import { circularProgressPage } from '@/docs/components/pages/circular-progress';
@@ -59,6 +60,7 @@ import { lightboxPage } from '@/docs/components/pages/lightbox';
 import { linkPage } from '@/docs/components/pages/link';
 import { listPage } from '@/docs/components/pages/list';
 import { listInputPage } from '@/docs/components/pages/list-input';
+import { logStreamPage } from '@/docs/components/pages/log-stream';
 import { markdownPage } from '@/docs/components/pages/markdown';
 import { markerPage } from '@/docs/components/pages/marker';
 import { messagePage } from '@/docs/components/pages/message';
@@ -74,6 +76,7 @@ import { numberInputPage } from '@/docs/components/pages/number-input';
 import { overflowListPage } from '@/docs/components/pages/overflow-list';
 import { paginationPage } from '@/docs/components/pages/pagination';
 import { popoverPage } from '@/docs/components/pages/popover';
+import { powerSearchPage } from '@/docs/components/pages/power-search';
 import { progressPage } from '@/docs/components/pages/progress';
 import { radioGroupPage } from '@/docs/components/pages/radio-group';
 import { resizablePage } from '@/docs/components/pages/resizable';
@@ -101,6 +104,8 @@ import { textPage } from '@/docs/components/pages/text';
 import { textareaPage } from '@/docs/components/pages/textarea';
 import { thumbnailPage } from '@/docs/components/pages/thumbnail';
 import { timeInputPage } from '@/docs/components/pages/time-input';
+import { timerPage } from '@/docs/components/pages/timer';
+import { timestampPage } from '@/docs/components/pages/timestamp';
 import { toastPage } from '@/docs/components/pages/toast';
 import { togglePage } from '@/docs/components/pages/toggle';
 import { toggleGroupPage } from '@/docs/components/pages/toggle-group';
@@ -110,6 +115,7 @@ import { toolbarPage } from '@/docs/components/pages/toolbar';
 import { tooltipPage } from '@/docs/components/pages/tooltip';
 import { topNavPage } from '@/docs/components/pages/top-nav';
 import { tourPage } from '@/docs/components/pages/tour';
+import { transferListPage } from '@/docs/components/pages/transfer-list';
 import { treeListPage } from '@/docs/components/pages/tree-list';
 import { typographyPage } from '@/docs/components/pages/typography';
 import { visuallyHiddenPage } from '@/docs/components/pages/visually-hidden';
@@ -138,6 +144,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       carouselPage,
       chartPage,
       centerPage,
+      chatReasoningPage,
       checkboxPage,
       checkboxListPage,
       circularProgressPage,
@@ -177,6 +184,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       linkPage,
       listPage,
       listInputPage,
+      logStreamPage,
       markdownPage,
       markerPage,
       messagePage,
@@ -192,6 +200,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       overflowListPage,
       paginationPage,
       popoverPage,
+      powerSearchPage,
       progressPage,
       radioGroupPage,
       resizablePage,
@@ -219,6 +228,8 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       textareaPage,
       thumbnailPage,
       timeInputPage,
+      timerPage,
+      timestampPage,
       togglePage,
       toastPage,
       toggleGroupPage,
@@ -228,6 +239,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       tooltipPage,
       topNavPage,
       tourPage,
+      transferListPage,
       treeListPage,
       typographyPage,
       visuallyHiddenPage,

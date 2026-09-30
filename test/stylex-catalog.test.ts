@@ -14,8 +14,11 @@ const infrastructureNames = new Set([
   'complex-tokens.stylex',
   'contracts',
   'foundations-tokens.stylex',
+  'astryx-text',
   'index',
   'interaction-tokens.stylex.const',
+  'log-stream-terminal-ink.stylex',
+  'log-stream-terminal.stylex',
   'overlay-boundary',
   'overlay-tokens.stylex',
   'style',
@@ -422,7 +425,7 @@ describe('complete StyleX catalog', () => {
       .sort()
 
     assert.deepEqual(stylexNames, componentNames)
-    assert.equal(componentNames.length, 114)
+    assert.equal(componentNames.length, 120)
   })
 
   it('does not fall back to Tailwind, CVA, or raw authored class strings', () => {

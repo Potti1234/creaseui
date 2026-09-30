@@ -36,6 +36,7 @@
 - Carousel: /docs/components/carousel — install with `npx shadcn@latest add Potti1234/creaseui/carousel`
 - Center: /docs/components/center — install with `npx shadcn@latest add Potti1234/creaseui/center`
 - Chart: /docs/components/chart — install with `npx shadcn@latest add Potti1234/creaseui/chart`
+- Chat Reasoning: /docs/components/chat-reasoning — install with `npx shadcn@latest add Potti1234/creaseui/chat-reasoning`
 - Checkbox List: /docs/components/checkbox-list — install with `npx shadcn@latest add Potti1234/creaseui/checkbox-list`
 - Checkbox: /docs/components/checkbox — install with `npx shadcn@latest add Potti1234/creaseui/checkbox`
 - Circular Progress: /docs/components/circular-progress — install with `npx shadcn@latest add Potti1234/creaseui/circular-progress`
@@ -75,6 +76,7 @@
 - Link: /docs/components/link — install with `npx shadcn@latest add Potti1234/creaseui/link`
 - List Input: /docs/components/list-input — install with `npx shadcn@latest add Potti1234/creaseui/list-input`
 - List: /docs/components/list — install with `npx shadcn@latest add Potti1234/creaseui/list`
+- Log Stream: /docs/components/log-stream — install with `npx shadcn@latest add Potti1234/creaseui/log-stream`
 - Markdown: /docs/components/markdown — install with `npx shadcn@latest add Potti1234/creaseui/markdown`
 - Marker: /docs/components/marker — install with `npx shadcn@latest add Potti1234/creaseui/marker`
 - Menubar: /docs/components/menubar — install with `npx shadcn@latest add Potti1234/creaseui/menubar`
@@ -90,6 +92,7 @@
 - Overflow List: /docs/components/overflow-list — install with `npx shadcn@latest add Potti1234/creaseui/overflow-list`
 - Pagination: /docs/components/pagination — install with `npx shadcn@latest add Potti1234/creaseui/pagination`
 - Popover: /docs/components/popover — install with `npx shadcn@latest add Potti1234/creaseui/popover`
+- Power Search: /docs/components/power-search — install with `npx shadcn@latest add Potti1234/creaseui/power-search`
 - Progress: /docs/components/progress — install with `npx shadcn@latest add Potti1234/creaseui/progress`
 - Radio Group: /docs/components/radio-group — install with `npx shadcn@latest add Potti1234/creaseui/radio-group`
 - Resizable: /docs/components/resizable — install with `npx shadcn@latest add Potti1234/creaseui/resizable`
@@ -117,6 +120,8 @@
 - Textarea: /docs/components/textarea — install with `npx shadcn@latest add Potti1234/creaseui/textarea`
 - Thumbnail: /docs/components/thumbnail — install with `npx shadcn@latest add Potti1234/creaseui/thumbnail`
 - Time Input: /docs/components/time-input — install with `npx shadcn@latest add Potti1234/creaseui/time-input`
+- Timer: /docs/components/timer — install with `npx shadcn@latest add Potti1234/creaseui/timer`
+- Timestamp: /docs/components/timestamp — install with `npx shadcn@latest add Potti1234/creaseui/timestamp`
 - Toast: /docs/components/toast — install with `npx shadcn@latest add Potti1234/creaseui/toast`
 - Toggle Group: /docs/components/toggle-group — install with `npx shadcn@latest add Potti1234/creaseui/toggle-group`
 - Toggle: /docs/components/toggle — install with `npx shadcn@latest add Potti1234/creaseui/toggle`
@@ -126,6 +131,7 @@
 - Tooltip: /docs/components/tooltip — install with `npx shadcn@latest add Potti1234/creaseui/tooltip`
 - Top Nav: /docs/components/top-nav — install with `npx shadcn@latest add Potti1234/creaseui/top-nav`
 - Tour: /docs/components/tour — install with `npx shadcn@latest add Potti1234/creaseui/tour`
+- Transfer List: /docs/components/transfer-list — install with `npx shadcn@latest add Potti1234/creaseui/transfer-list`
 - Tree List: /docs/components/tree-list — install with `npx shadcn@latest add Potti1234/creaseui/tree-list`
 - Typography: /docs/components/typography — install with `npx shadcn@latest add Potti1234/creaseui/typography`
 - Visually Hidden: /docs/components/visually-hidden — install with `npx shadcn@latest add Potti1234/creaseui/visually-hidden`

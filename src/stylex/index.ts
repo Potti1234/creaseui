@@ -25,6 +25,7 @@ export * as Card from './card.js'
 export * as Carousel from './carousel.js'
 export * as Center from './center.js'
 export * as Chart from './chart.js'
+export * as ChatReasoning from './chat-reasoning.js'
 export * as CheckboxList from './checkbox-list.js'
 export * as Checkbox from './checkbox.js'
 export * as CircularProgress from './circular-progress.js'
@@ -64,6 +65,7 @@ export * as Lightbox from './lightbox.js'
 export * as Link from './link.js'
 export * as ListInput from './list-input.js'
 export * as List from './list.js'
+export * as LogStream from './log-stream.js'
 export * as Markdown from './markdown.js'
 export * as Marker from './marker.js'
 export * as Menubar from './menubar.js'
@@ -79,6 +81,7 @@ export * as NumberInput from './number-input.js'
 export * as OverflowList from './overflow-list.js'
 export * as Pagination from './pagination.js'
 export * as Popover from './popover.js'
+export * as PowerSearch from './power-search.js'
 export * as Progress from './progress.js'
 export * as RadioGroup from './radio-group.js'
 export * as Resizable from './resizable.js'
@@ -106,6 +109,8 @@ export * as Text from './text.js'
 export * as Textarea from './textarea.js'
 export * as Thumbnail from './thumbnail.js'
 export * as TimeInput from './time-input.js'
+export * as Timer from './timer.js'
+export * as Timestamp from './timestamp.js'
 export * as Toast from './toast.js'
 export * as ToggleGroup from './toggle-group.js'
 export * as Toggle from './toggle.js'
@@ -115,6 +120,7 @@ export * as Toolbar from './toolbar.js'
 export * as Tooltip from './tooltip.js'
 export * as TopNav from './top-nav.js'
 export * as Tour from './tour.js'
+export * as TransferList from './transfer-list.js'
 export * as TreeList from './tree-list.js'
 export * as Typography from './typography.js'
 export * as VisuallyHidden from './visually-hidden.js'
@@ -142,6 +148,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'carousel',
   'center',
   'chart',
+  'chat-reasoning',
   'checkbox-list',
   'checkbox',
   'circular-progress',
@@ -181,6 +188,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'link',
   'list-input',
   'list',
+  'log-stream',
   'markdown',
   'marker',
   'menubar',
@@ -196,6 +204,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'overflow-list',
   'pagination',
   'popover',
+  'power-search',
   'progress',
   'radio-group',
   'resizable',
@@ -223,6 +232,8 @@ export const STYLEX_COMPONENT_NAMES = [
   'textarea',
   'thumbnail',
   'time-input',
+  'timer',
+  'timestamp',
   'toast',
   'toggle-group',
   'toggle',
@@ -232,6 +243,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'tooltip',
   'top-nav',
   'tour',
+  'transfer-list',
   'tree-list',
   'typography',
   'visually-hidden',

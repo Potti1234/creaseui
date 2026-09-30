@@ -23,7 +23,7 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 114,
+    "registryItems": 120,
     "creaseOnlyRecipes": [
       "app-shell",
       "avatar-group",
@@ -31,6 +31,7 @@
       "blockquote",
       "bottom-sheet",
       "center",
+      "chat-reasoning",
       "checkbox-list",
       "circular-progress",
       "clickable-card",
@@ -51,6 +52,7 @@
       "link",
       "list",
       "list-input",
+      "log-stream",
       "markdown",
       "metadata-list",
       "mobile-nav",
@@ -58,6 +60,7 @@
       "multi-selector",
       "number-input",
       "overflow-list",
+      "power-search",
       "section",
       "segmented-control",
       "selectable-card",
@@ -69,11 +72,14 @@
       "text",
       "thumbnail",
       "time-input",
+      "timer",
+      "timestamp",
       "token",
       "tokenizer",
       "toolbar",
       "top-nav",
       "tour",
+      "transfer-list",
       "tree-list",
       "typography",
       "visually-hidden"
@@ -457,6 +463,24 @@
         "src/ui/chart.ts",
         "src/ui/registry.json#chart",
         "/docs/components/chart"
+      ]
+    },
+    {
+      "component": "chat-reasoning",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/chat-reasoning.ts",
+        "src/ui/registry.json#chat-reasoning",
+        "/docs/components/chat-reasoning"
       ]
     },
     {
@@ -1165,6 +1189,24 @@
       ]
     },
     {
+      "component": "log-stream",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/log-stream.ts",
+        "src/ui/registry.json#log-stream",
+        "/docs/components/log-stream"
+      ]
+    },
+    {
       "component": "markdown",
       "upstream": false,
       "classification": "full",
@@ -1432,6 +1474,24 @@
         "src/ui/popover.ts",
         "src/ui/registry.json#popover",
         "/docs/components/popover"
+      ]
+    },
+    {
+      "component": "power-search",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/power-search.ts",
+        "src/ui/registry.json#power-search",
+        "/docs/components/power-search"
       ]
     },
     {
@@ -1923,6 +1983,42 @@
       ]
     },
     {
+      "component": "timer",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/timer.ts",
+        "src/ui/registry.json#timer",
+        "/docs/components/timer"
+      ]
+    },
+    {
+      "component": "timestamp",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/timestamp.ts",
+        "src/ui/registry.json#timestamp",
+        "/docs/components/timestamp"
+      ]
+    },
+    {
       "component": "toast",
       "upstream": true,
       "classification": "full",
@@ -2082,6 +2178,24 @@
         "src/ui/tour.ts",
         "src/ui/registry.json#tour",
         "/docs/components/tour"
+      ]
+    },
+    {
+      "component": "transfer-list",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/transfer-list.ts",
+        "src/ui/registry.json#transfer-list",
+        "/docs/components/transfer-list"
       ]
     },
     {
