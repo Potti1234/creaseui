@@ -53,8 +53,8 @@ export * as Item from './item.js'
 export * as Kbd from './kbd.js'
 export * as Label from './label.js'
 export * as Link from './link.js'
-export * as List from './list.js'
 export * as ListInput from './list-input.js'
+export * as List from './list.js'
 export * as Markdown from './markdown.js'
 export * as Marker from './marker.js'
 export * as Menubar from './menubar.js'
@@ -147,8 +147,8 @@ export const STYLEX_COMPONENT_NAMES = [
   'kbd',
   'label',
   'link',
-  'list',
   'list-input',
+  'list',
   'markdown',
   'marker',
   'menubar',
