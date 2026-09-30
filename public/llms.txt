@@ -36,7 +36,10 @@
 - Command: /docs/components/command — install with `npx shadcn@latest add Potti1234/creaseui/command`
 - Context Menu: /docs/components/context-menu — install with `npx shadcn@latest add Potti1234/creaseui/context-menu`
 - Data Table: /docs/components/data-table — install with `npx shadcn@latest add Potti1234/creaseui/data-table`
+- Date Input: /docs/components/date-input — install with `npx shadcn@latest add Potti1234/creaseui/date-input`
 - Date Picker: /docs/components/date-picker — install with `npx shadcn@latest add Potti1234/creaseui/date-picker`
+- Date Range Input: /docs/components/date-range-input — install with `npx shadcn@latest add Potti1234/creaseui/date-range-input`
+- Date Time Input: /docs/components/date-time-input — install with `npx shadcn@latest add Potti1234/creaseui/date-time-input`
 - Dialog: /docs/components/dialog — install with `npx shadcn@latest add Potti1234/creaseui/dialog`
 - Direction: /docs/components/direction — install with `npx shadcn@latest add Potti1234/creaseui/direction`
 - Drawer: /docs/components/drawer — install with `npx shadcn@latest add Potti1234/creaseui/drawer`
@@ -55,6 +58,7 @@
 - Menubar: /docs/components/menubar — install with `npx shadcn@latest add Potti1234/creaseui/menubar`
 - Message Scroller: /docs/components/message-scroller — install with `npx shadcn@latest add Potti1234/creaseui/message-scroller`
 - Message: /docs/components/message — install with `npx shadcn@latest add Potti1234/creaseui/message`
+- Multi Selector: /docs/components/multi-selector — install with `npx shadcn@latest add Potti1234/creaseui/multi-selector`
 - Native Select: /docs/components/native-select — install with `npx shadcn@latest add Potti1234/creaseui/native-select`
 - Navigation Menu: /docs/components/navigation-menu — install with `npx shadcn@latest add Potti1234/creaseui/navigation-menu`
 - Pagination: /docs/components/pagination — install with `npx shadcn@latest add Potti1234/creaseui/pagination`
@@ -79,5 +83,6 @@
 - Toast: /docs/components/toast — install with `npx shadcn@latest add Potti1234/creaseui/toast`
 - Toggle Group: /docs/components/toggle-group — install with `npx shadcn@latest add Potti1234/creaseui/toggle-group`
 - Toggle: /docs/components/toggle — install with `npx shadcn@latest add Potti1234/creaseui/toggle`
+- Tokenizer: /docs/components/tokenizer — install with `npx shadcn@latest add Potti1234/creaseui/tokenizer`
 - Tooltip: /docs/components/tooltip — install with `npx shadcn@latest add Potti1234/creaseui/tooltip`
 - Typography: /docs/components/typography — install with `npx shadcn@latest add Potti1234/creaseui/typography`

@@ -23,11 +23,16 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 66,
+    "registryItems": 71,
     "creaseOnlyRecipes": [
       "data-table",
+      "date-input",
       "date-picker",
+      "date-range-input",
+      "date-time-input",
+      "multi-selector",
       "status-dot",
+      "tokenizer",
       "typography"
     ]
   },
@@ -412,6 +417,24 @@
       ]
     },
     {
+      "component": "date-input",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/date-input.ts",
+        "src/ui/registry.json#date-input",
+        "/docs/components/date-input"
+      ]
+    },
+    {
       "component": "date-picker",
       "upstream": false,
       "classification": "recipe",
@@ -427,6 +450,42 @@
         "src/ui/date-picker.ts",
         "src/ui/registry.json#date-picker",
         "/docs/components/date-picker"
+      ]
+    },
+    {
+      "component": "date-range-input",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/date-range-input.ts",
+        "src/ui/registry.json#date-range-input",
+        "/docs/components/date-range-input"
+      ]
+    },
+    {
+      "component": "date-time-input",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/date-time-input.ts",
+        "src/ui/registry.json#date-time-input",
+        "/docs/components/date-time-input"
       ]
     },
     {
@@ -754,6 +813,24 @@
         "src/ui/message-scroller.ts",
         "src/ui/registry.json#message-scroller",
         "/docs/components/message-scroller"
+      ]
+    },
+    {
+      "component": "multi-selector",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/multi-selector.ts",
+        "src/ui/registry.json#multi-selector",
+        "/docs/components/multi-selector"
       ]
     },
     {
@@ -1188,6 +1265,24 @@
         "src/ui/toggle-group.ts",
         "src/ui/registry.json#toggle-group",
         "/docs/components/toggle-group"
+      ]
+    },
+    {
+      "component": "tokenizer",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/tokenizer.ts",
+        "src/ui/registry.json#tokenizer",
+        "/docs/components/tokenizer"
       ]
     },
     {

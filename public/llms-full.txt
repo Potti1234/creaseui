@@ -34,7 +34,10 @@
 - Command: /docs/components/command — install with `npx shadcn@latest add Potti1234/creaseui/command`
 - Context Menu: /docs/components/context-menu — install with `npx shadcn@latest add Potti1234/creaseui/context-menu`
 - Data Table: /docs/components/data-table — install with `npx shadcn@latest add Potti1234/creaseui/data-table`
+- Date Input: /docs/components/date-input — install with `npx shadcn@latest add Potti1234/creaseui/date-input`
 - Date Picker: /docs/components/date-picker — install with `npx shadcn@latest add Potti1234/creaseui/date-picker`
+- Date Range Input: /docs/components/date-range-input — install with `npx shadcn@latest add Potti1234/creaseui/date-range-input`
+- Date Time Input: /docs/components/date-time-input — install with `npx shadcn@latest add Potti1234/creaseui/date-time-input`
 - Dialog: /docs/components/dialog — install with `npx shadcn@latest add Potti1234/creaseui/dialog`
 - Direction: /docs/components/direction — install with `npx shadcn@latest add Potti1234/creaseui/direction`
 - Drawer: /docs/components/drawer — install with `npx shadcn@latest add Potti1234/creaseui/drawer`
@@ -53,6 +56,7 @@
 - Menubar: /docs/components/menubar — install with `npx shadcn@latest add Potti1234/creaseui/menubar`
 - Message Scroller: /docs/components/message-scroller — install with `npx shadcn@latest add Potti1234/creaseui/message-scroller`
 - Message: /docs/components/message — install with `npx shadcn@latest add Potti1234/creaseui/message`
+- Multi Selector: /docs/components/multi-selector — install with `npx shadcn@latest add Potti1234/creaseui/multi-selector`
 - Native Select: /docs/components/native-select — install with `npx shadcn@latest add Potti1234/creaseui/native-select`
 - Navigation Menu: /docs/components/navigation-menu — install with `npx shadcn@latest add Potti1234/creaseui/navigation-menu`
 - Pagination: /docs/components/pagination — install with `npx shadcn@latest add Potti1234/creaseui/pagination`
@@ -77,6 +81,7 @@
 - Toast: /docs/components/toast — install with `npx shadcn@latest add Potti1234/creaseui/toast`
 - Toggle Group: /docs/components/toggle-group — install with `npx shadcn@latest add Potti1234/creaseui/toggle-group`
 - Toggle: /docs/components/toggle — install with `npx shadcn@latest add Potti1234/creaseui/toggle`
+- Tokenizer: /docs/components/tokenizer — install with `npx shadcn@latest add Potti1234/creaseui/tokenizer`
 - Tooltip: /docs/components/tooltip — install with `npx shadcn@latest add Potti1234/creaseui/tooltip`
 - Typography: /docs/components/typography — install with `npx shadcn@latest add Potti1234/creaseui/typography`
 
@@ -494,6 +499,29 @@ Examples: Sortable payments, Filter and paginate, Server-owned query, RTL
 - `DataTableProps<Row, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; rows: ReadonlyArray<Row>; columns: ReadonlyArray<DataTableColumn<Row>>; rowKey: (row: Row) => string; filterText?: (row: Row) => string; filterPlaceholder?: string…` (type)
 - `dataTable<Row, Msg>(props: DataTableProps<Row, Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
+### Date Input
+
+A shadcn-styled Date Input component for Foldkit.
+
+Source: `src/ui/date-input.ts`
+
+Examples: Date Input, Clearable, Min/Max Constraints, Formats, Description, Validation
+
+- `export { init } from ` (re-export)
+- `export { inputId } from ` (re-export)
+- `export { Message } from ` (re-export)
+- `export { Model } from ` (re-export)
+- `export { OutMessage } from ` (re-export)
+- `export { reflect } from ` (re-export)
+- `export { reflectConstraints } from ` (re-export)
+- `export { update } from ` (re-export)
+- `export { dateFromISO } from '@/lib/date-parse'` (re-export)
+- `export { dateToISO } from '@/lib/date-parse'` (re-export)
+- `export { SharedDateFormat } from ` (re-export)
+- `DateInputStatus = Readonly<{ type: 'error' | 'warning' | 'success' message?: string }>` (type)
+- `DateInputProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label?: string isLabelHidden?: boolean description?: string placeholder?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a f…` (type)
+- `dateInput<Msg>(props: DateInputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
 ### Date Picker
 
 A shadcn-styled Date Picker component for Foldkit.
@@ -523,6 +551,57 @@ Examples: Pick a date, Basic, Range Picker, Date of Birth, Input, Time Picker, N
 - `updateForRtl(model: Model, message: Message): ReturnType<typeof update>` (function)
 - `DatePickerProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; placeholder?: string; formatDate?: (date: FoldkitCalendar.CalendarDate) => string; name?: string; isDis…` (type)
 - `datePicker<Msg>(props: DatePickerProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Date Range Input
+
+A shadcn-styled Date Range Input component for Foldkit.
+
+Source: `src/ui/date-range-input.ts`
+
+Examples: Date Range Input, With Presets, Validation
+
+- `export { formatRangeDisplay } from ` (re-export)
+- `export { init } from ` (re-export)
+- `export { isPresetSelectable } from ` (re-export)
+- `export { Message } from ` (re-export)
+- `export { Model } from ` (re-export)
+- `export { OutMessage } from ` (re-export)
+- `export { reflect } from ` (re-export)
+- `export { reflectConstraints } from ` (re-export)
+- `export { update } from ` (re-export)
+- `export { Range } from ` (re-export)
+- `export { dateFromISO } from '@/lib/date-parse'` (re-export)
+- `export { dateToISO } from '@/lib/date-parse'` (re-export)
+- `DateRangePreset = Readonly<{ label: string getRange: () => Range }>` (type)
+- `DateRangeInputStatus = Readonly<{ type: 'error' | 'warning' | 'success' message?: string }>` (type)
+- `DateRangeInputProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a focus ring tooltip…` (type)
+- `dateRangeInput<Msg>(props: DateRangeInputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Date Time Input
+
+A shadcn-styled Date Time Input component for Foldkit.
+
+Source: `src/ui/date-time-input.ts`
+
+Examples: Date Time Input, DateTimeInput — Validation
+
+- `export { type DateTime } from ` (re-export)
+- `export { Message } from ` (re-export)
+- `export { Model } from ` (re-export)
+- `export { OutMessage } from ` (re-export)
+- `export { init } from ` (re-export)
+- `export { reflect } from ` (re-export)
+- `export { reflectConstraints } from ` (re-export)
+- `export { update } from ` (re-export)
+- `export { dateFromISO } from '@/lib/date-parse'` (re-export)
+- `export { dateToISO } from '@/lib/date-parse'` (re-export)
+- `export { formatDisplayTime12h } from '@/lib/time-parse'` (re-export)
+- `export { formatDisplayTime24h } from '@/lib/time-parse'` (re-export)
+- `export { formatISOTime } from '@/lib/time-parse'` (re-export)
+- `export { SharedDateFormat } from ` (re-export)
+- `DateTimeInputStatus = Readonly<{ type: 'error' | 'warning' | 'success' message?: string }>` (type)
+- `DateTimeInputProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a focus ring tooltip;…` (type)
+- `dateTimeInput<Msg>(props: DateTimeInputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Dialog
 
@@ -896,6 +975,28 @@ Examples: Basic, Avatar, Group, Header and Footer, Actions, Attachment
 - `messageFooter<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 - `messageMetadata<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 - `messageActions<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
+
+### Multi Selector
+
+A shadcn-styled Multi Selector component for Foldkit.
+
+Source: `src/ui/multi-selector.ts`
+
+Examples: Multi Selector, Searchable, Sectioned, Column Visibility, Form Composition, Ghost Toolbar, Bottom Sheet
+
+- `export { Message } from ` (re-export)
+- `export { Model } from ` (re-export)
+- `export { OutMessage } from ` (re-export)
+- `export { SELECT_ALL_VALUE } from ` (re-export)
+- `export { init } from ` (re-export)
+- `export { reflect } from ` (re-export)
+- `export { reflectOptions } from ` (re-export)
+- `export { update } from ` (re-export)
+- `MultiSelectorOption = Readonly<{ value: string label: string }>` (type)
+- `MultiSelectorSection = Readonly<{ title: string options: ReadonlyArray<MultiSelectorOption> }>` (type)
+- `MultiSelectorStatus = Readonly<{ type: 'error' | 'warning' | 'success' message?: string }>` (type)
+- `MultiSelectorProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a tooltip on the disa…` (type)
+- `multiSelector<Msg>(props: MultiSelectorProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Native Select
 
@@ -1342,6 +1443,27 @@ Examples: Basic, Outline, With Text, Size, Disabled, RTL
 - `ToggleVariants = VariantProps<typeof toggleVariants>` (type)
 - `ToggleProps<Msg> = Readonly<{ isPressed: boolean; onToggle: Msg; variant?: ToggleVariants['variant']; size?: ToggleVariants['size']; children: ReadonlyArray<Html | string>; isDisabled?: boolean; id?: string; ariaLabel?: string; describedBy?: string; direction…` (type)
 - `toggle<Msg>(props: ToggleProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Tokenizer
+
+A shadcn-styled Tokenizer component for Foldkit.
+
+Source: `src/ui/tokenizer.ts`
+
+Examples: Tokenizer, Clear, Creatable, End Content, Icon, Max Entries, Overflow, States
+
+- `export { CREATE_ID_PREFIX } from ` (re-export)
+- `export { Message } from ` (re-export)
+- `export { Model } from ` (re-export)
+- `export { OutMessage } from ` (re-export)
+- `export { type Token } from ` (re-export)
+- `export { init } from ` (re-export)
+- `export { reflect } from ` (re-export)
+- `export { reflectItems } from ` (re-export)
+- `export { update } from ` (re-export)
+- `TokenizerStatus = Readonly<{ type: 'error' | 'warning' | 'success' message?: string }>` (type)
+- `TokenizerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean isReadOnly?: boolean status?: TokenizerStatus st…` (type)
+- `tokenizer<Msg>(props: TokenizerProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Tooltip
 

@@ -372,6 +372,27 @@ Source: [`src/ui/data-table.ts`](../src/ui/data-table.ts)
 | `DataTableProps` | type | `DataTableProps<Row, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; rows: ReadonlyArray<Row>; columns: ReadonlyArray<DataTableColumn<Row>>; rowKey: (row: Row) => string; filterText?: (row: Row) => string; filterPlaceholder?: string…` |
 | `dataTable` | function | `dataTable<Row, Msg>(props: DataTableProps<Row, Msg>, h: HtmlBuilder<Msg>): Html` |
 
+## Date Input
+
+Source: [`src/ui/date-input.ts`](../src/ui/date-input.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `init` | re-export | `export { init } from ` |
+| `inputId` | re-export | `export { inputId } from ` |
+| `Message` | re-export | `export { Message } from ` |
+| `Model` | re-export | `export { Model } from ` |
+| `OutMessage` | re-export | `export { OutMessage } from ` |
+| `reflect` | re-export | `export { reflect } from ` |
+| `reflectConstraints` | re-export | `export { reflectConstraints } from ` |
+| `update` | re-export | `export { update } from ` |
+| `dateFromISO` | re-export | `export { dateFromISO } from '@/lib/date-parse'` |
+| `dateToISO` | re-export | `export { dateToISO } from '@/lib/date-parse'` |
+| `SharedDateFormat` | re-export | `export { SharedDateFormat } from ` |
+| `DateInputStatus` | type | `DateInputStatus = Readonly<{ type: 'error' \| 'warning' \| 'success' message?: string }>` |
+| `DateInputProps` | type | `DateInputProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label?: string isLabelHidden?: boolean description?: string placeholder?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a f…` |
+| `dateInput` | function | `dateInput<Msg>(props: DateInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Date Picker
 
 Source: [`src/ui/date-picker.ts`](../src/ui/date-picker.ts)
@@ -399,6 +420,53 @@ Source: [`src/ui/date-picker.ts`](../src/ui/date-picker.ts)
 | `updateForRtl` | function | `updateForRtl(model: Model, message: Message): ReturnType<typeof update>` |
 | `DatePickerProps` | type | `DatePickerProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; placeholder?: string; formatDate?: (date: FoldkitCalendar.CalendarDate) => string; name?: string; isDis…` |
 | `datePicker` | function | `datePicker<Msg>(props: DatePickerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Date Range Input
+
+Source: [`src/ui/date-range-input.ts`](../src/ui/date-range-input.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `formatRangeDisplay` | re-export | `export { formatRangeDisplay } from ` |
+| `init` | re-export | `export { init } from ` |
+| `isPresetSelectable` | re-export | `export { isPresetSelectable } from ` |
+| `Message` | re-export | `export { Message } from ` |
+| `Model` | re-export | `export { Model } from ` |
+| `OutMessage` | re-export | `export { OutMessage } from ` |
+| `reflect` | re-export | `export { reflect } from ` |
+| `reflectConstraints` | re-export | `export { reflectConstraints } from ` |
+| `update` | re-export | `export { update } from ` |
+| `Range` | re-export | `export { Range } from ` |
+| `dateFromISO` | re-export | `export { dateFromISO } from '@/lib/date-parse'` |
+| `dateToISO` | re-export | `export { dateToISO } from '@/lib/date-parse'` |
+| `DateRangePreset` | type | `DateRangePreset = Readonly<{ label: string getRange: () => Range }>` |
+| `DateRangeInputStatus` | type | `DateRangeInputStatus = Readonly<{ type: 'error' \| 'warning' \| 'success' message?: string }>` |
+| `DateRangeInputProps` | type | `DateRangeInputProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a focus ring tooltip…` |
+| `dateRangeInput` | function | `dateRangeInput<Msg>(props: DateRangeInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Date Time Input
+
+Source: [`src/ui/date-time-input.ts`](../src/ui/date-time-input.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `DateTime` | re-export | `export { type DateTime } from ` |
+| `Message` | re-export | `export { Message } from ` |
+| `Model` | re-export | `export { Model } from ` |
+| `OutMessage` | re-export | `export { OutMessage } from ` |
+| `init` | re-export | `export { init } from ` |
+| `reflect` | re-export | `export { reflect } from ` |
+| `reflectConstraints` | re-export | `export { reflectConstraints } from ` |
+| `update` | re-export | `export { update } from ` |
+| `dateFromISO` | re-export | `export { dateFromISO } from '@/lib/date-parse'` |
+| `dateToISO` | re-export | `export { dateToISO } from '@/lib/date-parse'` |
+| `formatDisplayTime12h` | re-export | `export { formatDisplayTime12h } from '@/lib/time-parse'` |
+| `formatDisplayTime24h` | re-export | `export { formatDisplayTime24h } from '@/lib/time-parse'` |
+| `formatISOTime` | re-export | `export { formatISOTime } from '@/lib/time-parse'` |
+| `SharedDateFormat` | re-export | `export { SharedDateFormat } from ` |
+| `DateTimeInputStatus` | type | `DateTimeInputStatus = Readonly<{ type: 'error' \| 'warning' \| 'success' message?: string }>` |
+| `DateTimeInputProps` | type | `DateTimeInputProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a focus ring tooltip;…` |
+| `dateTimeInput` | function | `dateTimeInput<Msg>(props: DateTimeInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Dialog
 
@@ -736,6 +804,26 @@ Source: [`src/ui/message.ts`](../src/ui/message.ts)
 | `messageFooter` | function | `messageFooter<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `messageMetadata` | function | `messageMetadata<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `messageActions` | function | `messageActions<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
+
+## Multi Selector
+
+Source: [`src/ui/multi-selector.ts`](../src/ui/multi-selector.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Message` | re-export | `export { Message } from ` |
+| `Model` | re-export | `export { Model } from ` |
+| `OutMessage` | re-export | `export { OutMessage } from ` |
+| `SELECT_ALL_VALUE` | re-export | `export { SELECT_ALL_VALUE } from ` |
+| `init` | re-export | `export { init } from ` |
+| `reflect` | re-export | `export { reflect } from ` |
+| `reflectOptions` | re-export | `export { reflectOptions } from ` |
+| `update` | re-export | `export { update } from ` |
+| `MultiSelectorOption` | type | `MultiSelectorOption = Readonly<{ value: string label: string }>` |
+| `MultiSelectorSection` | type | `MultiSelectorSection = Readonly<{ title: string options: ReadonlyArray<MultiSelectorOption> }>` |
+| `MultiSelectorStatus` | type | `MultiSelectorStatus = Readonly<{ type: 'error' \| 'warning' \| 'success' message?: string }>` |
+| `MultiSelectorProps` | type | `MultiSelectorProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a tooltip on the disa…` |
+| `multiSelector` | function | `multiSelector<Msg>(props: MultiSelectorProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Native Select
 
@@ -1134,6 +1222,25 @@ Source: [`src/ui/toggle.ts`](../src/ui/toggle.ts)
 | `ToggleVariants` | type | `ToggleVariants = VariantProps<typeof toggleVariants>` |
 | `ToggleProps` | type | `ToggleProps<Msg> = Readonly<{ isPressed: boolean; onToggle: Msg; variant?: ToggleVariants['variant']; size?: ToggleVariants['size']; children: ReadonlyArray<Html \| string>; isDisabled?: boolean; id?: string; ariaLabel?: string; describedBy?: string; direction…` |
 | `toggle` | function | `toggle<Msg>(props: ToggleProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Tokenizer
+
+Source: [`src/ui/tokenizer.ts`](../src/ui/tokenizer.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `CREATE_ID_PREFIX` | re-export | `export { CREATE_ID_PREFIX } from ` |
+| `Message` | re-export | `export { Message } from ` |
+| `Model` | re-export | `export { Model } from ` |
+| `OutMessage` | re-export | `export { OutMessage } from ` |
+| `Token` | re-export | `export { type Token } from ` |
+| `init` | re-export | `export { init } from ` |
+| `reflect` | re-export | `export { reflect } from ` |
+| `reflectItems` | re-export | `export { reflectItems } from ` |
+| `update` | re-export | `export { update } from ` |
+| `TokenizerStatus` | type | `TokenizerStatus = Readonly<{ type: 'error' \| 'warning' \| 'success' message?: string }>` |
+| `TokenizerProps` | type | `TokenizerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean isReadOnly?: boolean status?: TokenizerStatus st…` |
+| `tokenizer` | function | `tokenizer<Msg>(props: TokenizerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Tooltip
 

@@ -393,6 +393,25 @@
       ]
     },
     {
+      "name": "date-input",
+      "type": "registry:ui",
+      "title": "Date Input",
+      "description": "A shadcn-styled Date Input component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/calendar",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "date-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/date-input.ts"
+        }
+      ]
+    },
+    {
       "name": "date-picker",
       "type": "registry:ui",
       "title": "Date Picker",
@@ -409,6 +428,44 @@
           "path": "date-picker.ts",
           "type": "registry:ui",
           "target": "@ui/date-picker.ts"
+        }
+      ]
+    },
+    {
+      "name": "date-range-input",
+      "type": "registry:ui",
+      "title": "Date Range Input",
+      "description": "A shadcn-styled Date Range Input component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/calendar",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "date-range-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/date-range-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "date-time-input",
+      "type": "registry:ui",
+      "title": "Date Time Input",
+      "description": "A shadcn-styled Date Time Input component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/calendar",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "date-time-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/date-time-input.ts"
         }
       ]
     },
@@ -734,6 +791,24 @@
           "path": "message.ts",
           "type": "registry:ui",
           "target": "@ui/message.ts"
+        }
+      ]
+    },
+    {
+      "name": "multi-selector",
+      "type": "registry:ui",
+      "title": "Multi Selector",
+      "description": "A shadcn-styled Multi Selector component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "multi-selector.ts",
+          "type": "registry:ui",
+          "target": "@ui/multi-selector.ts"
         }
       ]
     },
@@ -1168,6 +1243,24 @@
           "path": "toggle.ts",
           "type": "registry:ui",
           "target": "@ui/toggle.ts"
+        }
+      ]
+    },
+    {
+      "name": "tokenizer",
+      "type": "registry:ui",
+      "title": "Tokenizer",
+      "description": "A shadcn-styled Tokenizer component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "tokenizer.ts",
+          "type": "registry:ui",
+          "target": "@ui/tokenizer.ts"
         }
       ]
     },
