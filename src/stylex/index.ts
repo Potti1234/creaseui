@@ -7,6 +7,7 @@
 export * as Accordion from './accordion.js'
 export * as AlertDialog from './alert-dialog.js'
 export * as Alert from './alert.js'
+export * as AppShell from './app-shell.js'
 export * as AspectRatio from './aspect-ratio.js'
 export * as Attachment from './attachment.js'
 export * as Avatar from './avatar.js'
@@ -18,6 +19,7 @@ export * as Button from './button.js'
 export * as Calendar from './calendar.js'
 export * as Card from './card.js'
 export * as Carousel from './carousel.js'
+export * as Center from './center.js'
 export * as Chart from './chart.js'
 export * as Checkbox from './checkbox.js'
 export * as Collapsible from './collapsible.js'
@@ -33,6 +35,7 @@ export * as DropdownMenu from './dropdown-menu.js'
 export * as Empty from './empty.js'
 export * as Field from './field.js'
 export * as Form from './form.js'
+export * as Grid from './grid.js'
 export * as HoverCard from './hover-card.js'
 export * as InputGroup from './input-group.js'
 export * as InputOtp from './input-otp.js'
@@ -52,6 +55,7 @@ export * as Progress from './progress.js'
 export * as RadioGroup from './radio-group.js'
 export * as Resizable from './resizable.js'
 export * as ScrollArea from './scroll-area.js'
+export * as Section from './section.js'
 export * as Select from './select.js'
 export * as Separator from './separator.js'
 export * as Sheet from './sheet.js'
@@ -60,6 +64,7 @@ export * as Skeleton from './skeleton.js'
 export * as Slider from './slider.js'
 export * as Sonner from './sonner.js'
 export * as Spinner from './spinner.js'
+export * as Stack from './stack.js'
 export * as StatusDot from './status-dot.js'
 export * as Switch from './switch.js'
 export * as Table from './table.js'
@@ -70,12 +75,14 @@ export * as ToggleGroup from './toggle-group.js'
 export * as Toggle from './toggle.js'
 export * as Tooltip from './tooltip.js'
 export * as Typography from './typography.js'
+export * as VisuallyHidden from './visually-hidden.js'
 
 /** Canonical registry order. Additions and removals are checked in CI. */
 export const STYLEX_COMPONENT_NAMES = [
   'accordion',
   'alert-dialog',
   'alert',
+  'app-shell',
   'aspect-ratio',
   'attachment',
   'avatar',
@@ -87,6 +94,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'calendar',
   'card',
   'carousel',
+  'center',
   'chart',
   'checkbox',
   'collapsible',
@@ -102,6 +110,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'empty',
   'field',
   'form',
+  'grid',
   'hover-card',
   'input-group',
   'input-otp',
@@ -121,6 +130,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'radio-group',
   'resizable',
   'scroll-area',
+  'section',
   'select',
   'separator',
   'sheet',
@@ -129,6 +139,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'slider',
   'sonner',
   'spinner',
+  'stack',
   'status-dot',
   'switch',
   'table',
@@ -139,6 +150,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'toggle',
   'tooltip',
   'typography',
+  'visually-hidden',
 ] as const
 
 export type StyleXComponentName = (typeof STYLEX_COMPONENT_NAMES)[number]

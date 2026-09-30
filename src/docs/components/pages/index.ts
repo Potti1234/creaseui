@@ -2,6 +2,7 @@ import type { AuthoredPage } from '@/docs/components/pages/authored-page';
 import { accordionPage } from '@/docs/components/pages/accordion';
 import { alertPage } from '@/docs/components/pages/alert';
 import { alertDialogPage } from '@/docs/components/pages/alert-dialog';
+import { appShellPage } from '@/docs/components/pages/app-shell';
 import { aspectRatioPage } from '@/docs/components/pages/aspect-ratio';
 import { attachmentPage } from '@/docs/components/pages/attachment';
 import { avatarPage } from '@/docs/components/pages/avatar';
@@ -14,6 +15,7 @@ import { calendarPage } from '@/docs/components/pages/calendar';
 import { cardPage } from '@/docs/components/pages/card';
 import { carouselPage } from '@/docs/components/pages/carousel';
 import { chartPage } from '@/docs/components/pages/chart';
+import { centerPage } from '@/docs/components/pages/center';
 import { checkboxPage } from '@/docs/components/pages/checkbox';
 import { collapsiblePage } from '@/docs/components/pages/collapsible';
 import { comboboxPage } from '@/docs/components/pages/combobox';
@@ -28,6 +30,7 @@ import { dropdownMenuPage } from '@/docs/components/pages/dropdown-menu';
 import { emptyPage } from '@/docs/components/pages/empty';
 import { fieldPage } from '@/docs/components/pages/field';
 import { formPage } from '@/docs/components/pages/form';
+import { gridPage } from '@/docs/components/pages/grid';
 import { hoverCardPage } from '@/docs/components/pages/hover-card';
 import { itemPage } from '@/docs/components/pages/item';
 import { inputPage } from '@/docs/components/pages/input';
@@ -47,6 +50,7 @@ import { progressPage } from '@/docs/components/pages/progress';
 import { radioGroupPage } from '@/docs/components/pages/radio-group';
 import { resizablePage } from '@/docs/components/pages/resizable';
 import { scrollAreaPage } from '@/docs/components/pages/scroll-area';
+import { sectionPage } from '@/docs/components/pages/section';
 import { separatorPage } from '@/docs/components/pages/separator';
 import { selectPage } from '@/docs/components/pages/select';
 import { sheetPage } from '@/docs/components/pages/sheet';
@@ -55,6 +59,7 @@ import { skeletonPage } from '@/docs/components/pages/skeleton';
 import { sliderPage } from '@/docs/components/pages/slider';
 import { spinnerPage } from '@/docs/components/pages/spinner';
 import { sonnerPage } from '@/docs/components/pages/sonner';
+import { stackPage } from '@/docs/components/pages/stack';
 import { statusDotPage } from '@/docs/components/pages/status-dot';
 import { switchPage } from '@/docs/components/pages/switch';
 import { tabsPage } from '@/docs/components/pages/tabs';
@@ -65,6 +70,7 @@ import { toastPage } from '@/docs/components/pages/toast';
 import { toggleGroupPage } from '@/docs/components/pages/toggle-group';
 import { tooltipPage } from '@/docs/components/pages/tooltip';
 import { typographyPage } from '@/docs/components/pages/typography';
+import { visuallyHiddenPage } from '@/docs/components/pages/visually-hidden';
 
 export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
   ...Object.fromEntries(
@@ -72,6 +78,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       accordionPage,
       alertPage,
       alertDialogPage,
+      appShellPage,
       aspectRatioPage,
       attachmentPage,
       avatarPage,
@@ -84,6 +91,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       cardPage,
       carouselPage,
       chartPage,
+      centerPage,
       checkboxPage,
       collapsiblePage,
       comboboxPage,
@@ -98,6 +106,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       emptyPage,
       fieldPage,
       formPage,
+      gridPage,
       hoverCardPage,
       itemPage,
       inputPage,
@@ -117,6 +126,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       radioGroupPage,
       resizablePage,
       scrollAreaPage,
+      sectionPage,
       separatorPage,
       selectPage,
       sheetPage,
@@ -125,6 +135,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       sliderPage,
       spinnerPage,
       sonnerPage,
+      stackPage,
       statusDotPage,
       switchPage,
       tabsPage,
@@ -135,6 +146,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       toggleGroupPage,
       tooltipPage,
       typographyPage,
+      visuallyHiddenPage,
     ].map((page) => [page.slug, page]),
   ),
 };

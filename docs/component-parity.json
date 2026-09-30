@@ -23,12 +23,18 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 66,
+    "registryItems": 72,
     "creaseOnlyRecipes": [
+      "app-shell",
+      "center",
       "data-table",
       "date-picker",
+      "grid",
+      "section",
+      "stack",
       "status-dot",
-      "typography"
+      "typography",
+      "visually-hidden"
     ]
   },
   "components": [
@@ -84,6 +90,24 @@
         "src/ui/alert-dialog.ts",
         "src/ui/registry.json#alert-dialog",
         "/docs/components/alert-dialog"
+      ]
+    },
+    {
+      "component": "app-shell",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/app-shell.ts",
+        "src/ui/registry.json#app-shell",
+        "/docs/components/app-shell"
       ]
     },
     {
@@ -283,6 +307,24 @@
         "src/ui/carousel.ts",
         "src/ui/registry.json#carousel",
         "/docs/components/carousel"
+      ]
+    },
+    {
+      "component": "center",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/center.ts",
+        "src/ui/registry.json#center",
+        "/docs/components/center"
       ]
     },
     {
@@ -555,6 +597,24 @@
         "src/ui/form.ts",
         "src/ui/registry.json#form",
         "/docs/components/form"
+      ]
+    },
+    {
+      "component": "grid",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/grid.ts",
+        "src/ui/registry.json#grid",
+        "/docs/components/grid"
       ]
     },
     {
@@ -901,6 +961,24 @@
       ]
     },
     {
+      "component": "section",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/section.ts",
+        "src/ui/registry.json#section",
+        "/docs/components/section"
+      ]
+    },
+    {
       "component": "select",
       "upstream": true,
       "classification": "full",
@@ -1044,6 +1122,24 @@
         "src/ui/spinner.ts",
         "src/ui/registry.json#spinner",
         "/docs/components/spinner"
+      ]
+    },
+    {
+      "component": "stack",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/stack.ts",
+        "src/ui/registry.json#stack",
+        "/docs/components/stack"
       ]
     },
     {
@@ -1224,6 +1320,24 @@
         "src/ui/typography.ts",
         "src/ui/registry.json#typography",
         "/docs/components/typography"
+      ]
+    },
+    {
+      "component": "visually-hidden",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/visually-hidden.ts",
+        "src/ui/registry.json#visually-hidden",
+        "/docs/components/visually-hidden"
       ]
     }
   ]

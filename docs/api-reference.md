@@ -50,6 +50,18 @@ Source: [`src/ui/alert.ts`](../src/ui/alert.ts)
 | `alertTitle` | function | `alertTitle<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
 | `alertDescription` | function | `alertDescription<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
 
+## App Shell
+
+Source: [`src/ui/app-shell.ts`](../src/ui/app-shell.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `AppShellVariant` | type | `AppShellVariant = 'elevated' \| 'wash' \| 'surface' \| 'section'` |
+| `AppShellHeight` | type | `AppShellHeight = 'fill' \| 'auto'` |
+| `AppShellSpacing` | type | `AppShellSpacing = 0 \| 0.5 \| 1 \| 1.5 \| 2 \| 3 \| 4 \| 5 \| 6 \| 8 \| 10` |
+| `AppShellProps` | type | `AppShellProps = Readonly<{ /** * Navigation background style controlling how nav areas contrast with * content. * - `wash`: nav uses wash background, no dividers * - `surface`: nav uses surface background, no dividers * - `section`: dividers between nav and c…` |
+| `appShell` | function | `appShell<Msg>(props: AppShellProps, h: HtmlBuilder<Msg>): Html` |
+
 ## Aspect Ratio
 
 Source: [`src/ui/aspect-ratio.ts`](../src/ui/aspect-ratio.ts)
@@ -227,6 +239,18 @@ Source: [`src/ui/carousel.ts`](../src/ui/carousel.ts)
 | `*` | re-export | `export * from '@/lib/carousel'` |
 | `CarouselProps` | type | `CarouselProps<Msg> = Readonly<{ model: CarouselBehavior.Model; toParentMessage: (message: CarouselBehavior.Message) => Msg; items: ReadonlyArray<Html \| string>; ariaLabel?: string; orientation?: 'horizontal' \| 'vertical'; loop?: boolean; /** Additional Embla …` |
 | `carousel` | function | `carousel<Msg>(props: CarouselProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Center
+
+Source: [`src/ui/center.ts`](../src/ui/center.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `CenterAxis` | type | `CenterAxis = 'both' \| 'horizontal' \| 'vertical'` |
+| `CenterSpacing` | type | `CenterSpacing = 0 \| 0.5 \| 1 \| 1.5 \| 2 \| 3 \| 4 \| 5 \| 6 \| 8 \| 10` |
+| `CenterSizeValue` | type | `CenterSizeValue = number \| string` |
+| `CenterProps` | type | `CenterProps = Readonly<{ /** * Center mode. * - `both`: center on the flex main and cross axes (default) * - `horizontal`: center on the flex main/inline axis * - `vertical`: center on the flex cross/block axis */ axis?: CenterAxis; /** Renders inline-flex (u…` |
+| `center` | function | `center<Msg>(props: CenterProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Chart
 
@@ -557,6 +581,22 @@ Source: [`src/ui/form.ts`](../src/ui/form.ts)
 | `FormMessageProps` | type | `FormMessageProps = Readonly<{ id?: string; class?: string; message?: string; errors?: ReadonlyArray<Field.FieldError>; }>` |
 | `formMessage` | function | `formMessage<Msg>(props: FormMessageProps = {}, h: HtmlBuilder<Msg>): Html` |
 
+## Grid
+
+Source: [`src/ui/grid.ts`](../src/ui/grid.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `GridAlignment` | type | `GridAlignment = 'start' \| 'center' \| 'end' \| 'stretch'` |
+| `GridSpacing` | type | `GridSpacing = 0 \| 0.5 \| 1 \| 1.5 \| 2 \| 3 \| 4 \| 5 \| 6 \| 8 \| 10` |
+| `GridSizeValue` | type | `GridSizeValue = number \| string` |
+| `GridElement` | type | `GridElement = \| 'article' \| 'aside' \| 'div' \| 'fieldset' \| 'footer' \| 'form' \| 'header' \| 'li' \| 'main' \| 'nav' \| 'ol' \| 'section' \| 'ul'` |
+| `GridColumns` | type | `GridColumns = \| number \| Readonly<{ minWidth: number; max?: number; repeat?: 'fill' \| 'fit'; }>` |
+| `GridProps` | type | `GridProps = Readonly<{ /** Column configuration — a fixed count or a responsive min-width rule. */ columns?: GridColumns; /** Height of each implicit row track in pixels (grid-auto-rows). */ rowHeight?: number; /** Spacing between all grid items (astryx spaci…` |
+| `grid` | function | `grid<Msg>(props: GridProps, h: HtmlBuilder<Msg>): Html` |
+| `GridSpanProps` | type | `GridSpanProps = Readonly<{ /** Columns to span — a number (`grid-column: span N`) or 'full' (1 / -1). */ columns?: number \| 'full'; /** Rows to span (`grid-row: span N`). */ rows?: number; /** The element to render. */ as?: GridElement; children?: ReadonlyArr…` |
+| `gridSpan` | function | `gridSpan<Msg>(props: GridSpanProps, h: HtmlBuilder<Msg>): Html` |
+
 ## Hover Card
 
 Source: [`src/ui/hover-card.ts`](../src/ui/hover-card.ts)
@@ -864,6 +904,19 @@ Source: [`src/ui/scroll-area.ts`](../src/ui/scroll-area.ts)
 | `ScrollAreaProps` | type | `ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html \| string>; orientation?: 'vertical' \| 'horizontal' \| 'both'; direction?: 'ltr' \| 'rtl'; ariaLabel?: string; tabIndex?: number; }>` |
 | `scrollArea` | function | `scrollArea<Msg>(props: ScrollAreaProps, h: HtmlBuilder<Msg>): Html` |
 
+## Section
+
+Source: [`src/ui/section.ts`](../src/ui/section.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `SectionVariant` | type | `SectionVariant = 'section' \| 'transparent' \| 'muted'` |
+| `SectionDivider` | type | `SectionDivider = 'top' \| 'bottom' \| 'start' \| 'end'` |
+| `SectionSpacing` | type | `SectionSpacing = 0 \| 0.5 \| 1 \| 1.5 \| 2 \| 3 \| 4 \| 5 \| 6 \| 8 \| 10` |
+| `SectionSizeValue` | type | `SectionSizeValue = number \| string` |
+| `SectionProps` | type | `SectionProps = Readonly<{ /** * Visual variant. * - `section`: surface (card) background (default) * - `transparent`: no background * - `muted`: muted background, draws attention to a region */ variant?: SectionVariant; /** Divider borders to apply on the giv…` |
+| `section` | function | `section<Msg>(props: SectionProps, h: HtmlBuilder<Msg>): Html` |
+
 ## Select
 
 Source: [`src/ui/select.ts`](../src/ui/select.ts)
@@ -1025,6 +1078,29 @@ Source: [`src/ui/spinner.ts`](../src/ui/spinner.ts)
 | `SpinnerProps` | type | `SpinnerProps = SpinnerAccessibility & Readonly<{ size?: 'sm' \| 'md' \| 'lg' \| 'xl'; tone?: 'current' \| 'muted' \| 'primary'; /** Emits data-icon="inline-start\|inline-end" for parent icon positioning. */ dataIcon?: 'inline-start' \| 'inline-end'; class?: string; …` |
 | `spinner` | function | `spinner<Msg>(props: SpinnerProps, h: HtmlBuilder<Msg>): Html` |
 
+## Stack
+
+Source: [`src/ui/stack.ts`](../src/ui/stack.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `StackDirection` | type | `StackDirection = 'horizontal' \| 'vertical'` |
+| `StackMainAlignment` | type | `StackMainAlignment = \| 'start' \| 'center' \| 'end' \| 'between' \| 'around' \| 'evenly'` |
+| `StackCrossAlignment` | type | `StackCrossAlignment = 'start' \| 'center' \| 'end' \| 'stretch'` |
+| `StackAlignment` | type | `StackAlignment = StackMainAlignment \| StackCrossAlignment` |
+| `StackWrap` | type | `StackWrap = 'nowrap' \| 'wrap' \| 'wrap-reverse'` |
+| `StackSpacing` | type | `StackSpacing = 0 \| 0.5 \| 1 \| 1.5 \| 2 \| 3 \| 4 \| 5 \| 6 \| 8 \| 10` |
+| `StackItemSize` | type | `StackItemSize = 'static' \| 'fill'` |
+| `StackItemCrossAlignSelf` | type | `StackItemCrossAlignSelf = 'start' \| 'center' \| 'end' \| 'stretch'` |
+| `StackSizeValue` | type | `StackSizeValue = number \| string` |
+| `StackElement` | type | `StackElement = \| 'article' \| 'aside' \| 'div' \| 'fieldset' \| 'footer' \| 'form' \| 'header' \| 'li' \| 'main' \| 'nav' \| 'ol' \| 'section' \| 'span' \| 'ul'` |
+| `StackProps` | type | `StackProps = Readonly<{ /** * Direction of the stack layout. * - `horizontal`: items flow left-to-right (hStack) * - `vertical`: items flow top-to-bottom (vStack, the default) */ direction?: StackDirection; /** * Horizontal alignment of items. * - `horizontal…` |
+| `stack` | function | `stack<Msg>(props: StackProps, h: HtmlBuilder<Msg>): Html` |
+| `hStack` | function | `hStack<Msg>(props: Omit<StackProps, 'direction'>, h: HtmlBuilder<Msg>): Html` |
+| `vStack` | function | `vStack<Msg>(props: Omit<StackProps, 'direction'>, h: HtmlBuilder<Msg>): Html` |
+| `StackItemProps` | type | `StackItemProps = Readonly<{ /** Overrides the parent stack's cross-axis alignment for this item. */ crossAlignSelf?: StackItemCrossAlignSelf; /** * Size behavior within the stack. * - `static`: intrinsic size, never grows or shrinks (default) * - `fill`: grow…` |
+| `stackItem` | function | `stackItem<Msg>(props: StackItemProps, h: HtmlBuilder<Msg>): Html` |
+
 ## Status Dot
 
 Source: [`src/ui/status-dot.ts`](../src/ui/status-dot.ts)
@@ -1173,3 +1249,13 @@ Source: [`src/ui/typography.ts`](../src/ui/typography.ts)
 | `typographyLarge` | function | `typographyLarge<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` |
 | `typographySmall` | function | `typographySmall<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` |
 | `typographyMuted` | function | `typographyMuted<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` |
+
+## Visually Hidden
+
+Source: [`src/ui/visually-hidden.ts`](../src/ui/visually-hidden.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `VisuallyHiddenElement` | type | `VisuallyHiddenElement = \| 'article' \| 'aside' \| 'code' \| 'div' \| 'em' \| 'footer' \| 'h1' \| 'h2' \| 'h3' \| 'h4' \| 'h5' \| 'h6' \| 'header' \| 'label' \| 'li' \| 'main' \| 'nav' \| 'p' \| 'section' \| 'small' \| 'span' \| 'strong' \| 'ul' \| 'ol'` |
+| `VisuallyHiddenProps` | type | `VisuallyHiddenProps = Readonly<{ /** * HTML tag to render as. Defaults to `'span'` (inline) for the common * icon-label case; pass a block element such as `'div'` when wrapping block * content or hosting an `aria-live` region. This is a structural choice, * n…` |
+| `visuallyHidden` | function | `visuallyHidden<Msg>(props: VisuallyHiddenProps, h: HtmlBuilder<Msg>): Html` |

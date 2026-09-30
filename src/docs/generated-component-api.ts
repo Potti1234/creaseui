@@ -142,6 +142,33 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "alertDescription<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "app-shell": [
+    {
+      "name": "AppShellVariant",
+      "kind": "type",
+      "signature": "AppShellVariant = 'elevated' | 'wash' | 'surface' | 'section'"
+    },
+    {
+      "name": "AppShellHeight",
+      "kind": "type",
+      "signature": "AppShellHeight = 'fill' | 'auto'"
+    },
+    {
+      "name": "AppShellSpacing",
+      "kind": "type",
+      "signature": "AppShellSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10"
+    },
+    {
+      "name": "AppShellProps",
+      "kind": "type",
+      "signature": "AppShellProps = Readonly<{ /** * Navigation background style controlling how nav areas contrast with * content. * - `wash`: nav uses wash background, no dividers * - `surface`: nav uses surface background, no dividers * - `section`: dividers between nav and c…"
+    },
+    {
+      "name": "appShell",
+      "kind": "function",
+      "signature": "appShell<Msg>(props: AppShellProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "aspect-ratio": [
     {
       "name": "AspectRatioProps",
@@ -667,6 +694,33 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "carousel",
       "kind": "function",
       "signature": "carousel<Msg>(props: CarouselProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "center": [
+    {
+      "name": "CenterAxis",
+      "kind": "type",
+      "signature": "CenterAxis = 'both' | 'horizontal' | 'vertical'"
+    },
+    {
+      "name": "CenterSpacing",
+      "kind": "type",
+      "signature": "CenterSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10"
+    },
+    {
+      "name": "CenterSizeValue",
+      "kind": "type",
+      "signature": "CenterSizeValue = number | string"
+    },
+    {
+      "name": "CenterProps",
+      "kind": "type",
+      "signature": "CenterProps = Readonly<{ /** * Center mode. * - `both`: center on the flex main and cross axes (default) * - `horizontal`: center on the flex main/inline axis * - `vertical`: center on the flex cross/block axis */ axis?: CenterAxis; /** Renders inline-flex (u…"
+    },
+    {
+      "name": "center",
+      "kind": "function",
+      "signature": "center<Msg>(props: CenterProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "chart": [
@@ -1819,6 +1873,53 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "formMessage<Msg>(props: FormMessageProps = {}, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "grid": [
+    {
+      "name": "GridAlignment",
+      "kind": "type",
+      "signature": "GridAlignment = 'start' | 'center' | 'end' | 'stretch'"
+    },
+    {
+      "name": "GridSpacing",
+      "kind": "type",
+      "signature": "GridSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10"
+    },
+    {
+      "name": "GridSizeValue",
+      "kind": "type",
+      "signature": "GridSizeValue = number | string"
+    },
+    {
+      "name": "GridElement",
+      "kind": "type",
+      "signature": "GridElement = | 'article' | 'aside' | 'div' | 'fieldset' | 'footer' | 'form' | 'header' | 'li' | 'main' | 'nav' | 'ol' | 'section' | 'ul'"
+    },
+    {
+      "name": "GridColumns",
+      "kind": "type",
+      "signature": "GridColumns = | number | Readonly<{ minWidth: number; max?: number; repeat?: 'fill' | 'fit'; }>"
+    },
+    {
+      "name": "GridProps",
+      "kind": "type",
+      "signature": "GridProps = Readonly<{ /** Column configuration — a fixed count or a responsive min-width rule. */ columns?: GridColumns; /** Height of each implicit row track in pixels (grid-auto-rows). */ rowHeight?: number; /** Spacing between all grid items (astryx spaci…"
+    },
+    {
+      "name": "grid",
+      "kind": "function",
+      "signature": "grid<Msg>(props: GridProps, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "GridSpanProps",
+      "kind": "type",
+      "signature": "GridSpanProps = Readonly<{ /** Columns to span — a number (`grid-column: span N`) or 'full' (1 / -1). */ columns?: number | 'full'; /** Rows to span (`grid-row: span N`). */ rows?: number; /** The element to render. */ as?: GridElement; children?: ReadonlyArr…"
+    },
+    {
+      "name": "gridSpan",
+      "kind": "function",
+      "signature": "gridSpan<Msg>(props: GridSpanProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "hover-card": [
     {
       "name": "Model",
@@ -2727,6 +2828,38 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "scrollArea<Msg>(props: ScrollAreaProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "section": [
+    {
+      "name": "SectionVariant",
+      "kind": "type",
+      "signature": "SectionVariant = 'section' | 'transparent' | 'muted'"
+    },
+    {
+      "name": "SectionDivider",
+      "kind": "type",
+      "signature": "SectionDivider = 'top' | 'bottom' | 'start' | 'end'"
+    },
+    {
+      "name": "SectionSpacing",
+      "kind": "type",
+      "signature": "SectionSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10"
+    },
+    {
+      "name": "SectionSizeValue",
+      "kind": "type",
+      "signature": "SectionSizeValue = number | string"
+    },
+    {
+      "name": "SectionProps",
+      "kind": "type",
+      "signature": "SectionProps = Readonly<{ /** * Visual variant. * - `section`: surface (card) background (default) * - `transparent`: no background * - `muted`: muted background, draws attention to a region */ variant?: SectionVariant; /** Divider borders to apply on the giv…"
+    },
+    {
+      "name": "section",
+      "kind": "function",
+      "signature": "section<Msg>(props: SectionProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "select": [
     {
       "name": "Model",
@@ -3268,6 +3401,88 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "spinner<Msg>(props: SpinnerProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "stack": [
+    {
+      "name": "StackDirection",
+      "kind": "type",
+      "signature": "StackDirection = 'horizontal' | 'vertical'"
+    },
+    {
+      "name": "StackMainAlignment",
+      "kind": "type",
+      "signature": "StackMainAlignment = | 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly'"
+    },
+    {
+      "name": "StackCrossAlignment",
+      "kind": "type",
+      "signature": "StackCrossAlignment = 'start' | 'center' | 'end' | 'stretch'"
+    },
+    {
+      "name": "StackAlignment",
+      "kind": "type",
+      "signature": "StackAlignment = StackMainAlignment | StackCrossAlignment"
+    },
+    {
+      "name": "StackWrap",
+      "kind": "type",
+      "signature": "StackWrap = 'nowrap' | 'wrap' | 'wrap-reverse'"
+    },
+    {
+      "name": "StackSpacing",
+      "kind": "type",
+      "signature": "StackSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10"
+    },
+    {
+      "name": "StackItemSize",
+      "kind": "type",
+      "signature": "StackItemSize = 'static' | 'fill'"
+    },
+    {
+      "name": "StackItemCrossAlignSelf",
+      "kind": "type",
+      "signature": "StackItemCrossAlignSelf = 'start' | 'center' | 'end' | 'stretch'"
+    },
+    {
+      "name": "StackSizeValue",
+      "kind": "type",
+      "signature": "StackSizeValue = number | string"
+    },
+    {
+      "name": "StackElement",
+      "kind": "type",
+      "signature": "StackElement = | 'article' | 'aside' | 'div' | 'fieldset' | 'footer' | 'form' | 'header' | 'li' | 'main' | 'nav' | 'ol' | 'section' | 'span' | 'ul'"
+    },
+    {
+      "name": "StackProps",
+      "kind": "type",
+      "signature": "StackProps = Readonly<{ /** * Direction of the stack layout. * - `horizontal`: items flow left-to-right (hStack) * - `vertical`: items flow top-to-bottom (vStack, the default) */ direction?: StackDirection; /** * Horizontal alignment of items. * - `horizontal…"
+    },
+    {
+      "name": "stack",
+      "kind": "function",
+      "signature": "stack<Msg>(props: StackProps, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "hStack",
+      "kind": "function",
+      "signature": "hStack<Msg>(props: Omit<StackProps, 'direction'>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "vStack",
+      "kind": "function",
+      "signature": "vStack<Msg>(props: Omit<StackProps, 'direction'>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "StackItemProps",
+      "kind": "type",
+      "signature": "StackItemProps = Readonly<{ /** Overrides the parent stack's cross-axis alignment for this item. */ crossAlignSelf?: StackItemCrossAlignSelf; /** * Size behavior within the stack. * - `static`: intrinsic size, never grows or shrinks (default) * - `fill`: grow…"
+    },
+    {
+      "name": "stackItem",
+      "kind": "function",
+      "signature": "stackItem<Msg>(props: StackItemProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "status-dot": [
     {
       "name": "statusDotVariants",
@@ -3681,6 +3896,23 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "typographyMuted",
       "kind": "function",
       "signature": "typographyMuted<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "visually-hidden": [
+    {
+      "name": "VisuallyHiddenElement",
+      "kind": "type",
+      "signature": "VisuallyHiddenElement = | 'article' | 'aside' | 'code' | 'div' | 'em' | 'footer' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'header' | 'label' | 'li' | 'main' | 'nav' | 'p' | 'section' | 'small' | 'span' | 'strong' | 'ul' | 'ol'"
+    },
+    {
+      "name": "VisuallyHiddenProps",
+      "kind": "type",
+      "signature": "VisuallyHiddenProps = Readonly<{ /** * HTML tag to render as. Defaults to `'span'` (inline) for the common * icon-label case; pass a block element such as `'div'` when wrapping block * content or hosting an `aria-live` region. This is a structural choice, * n…"
+    },
+    {
+      "name": "visuallyHidden",
+      "kind": "function",
+      "signature": "visuallyHidden<Msg>(props: VisuallyHiddenProps, h: HtmlBuilder<Msg>): Html"
     }
   ]
 };

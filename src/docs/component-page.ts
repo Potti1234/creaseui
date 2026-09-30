@@ -13,6 +13,7 @@ export const COMPONENTS = [
   'Accordion',
   'Alert',
   'Alert Dialog',
+  'App Shell',
   'Aspect Ratio',
   'Attachment',
   'Avatar',
@@ -26,6 +27,7 @@ export const COMPONENTS = [
   'Card',
   'Chart',
   'Checkbox',
+  'Center',
   'Collapsible',
   'Combobox',
   'Command',
@@ -39,6 +41,7 @@ export const COMPONENTS = [
   'Empty',
   'Field',
   'Form',
+  'Grid',
   'Hover Card',
   'Input',
   'Input Group',
@@ -58,6 +61,7 @@ export const COMPONENTS = [
   'Radio Group',
   'Resizable',
   'Scroll Area',
+  'Section',
   'Select',
   'Separator',
   'Sheet',
@@ -66,6 +70,7 @@ export const COMPONENTS = [
   'Slider',
   'Sonner',
   'Spinner',
+  'Stack',
   'Status Dot',
   'Switch',
   'Table',
@@ -76,6 +81,7 @@ export const COMPONENTS = [
   'Toggle Group',
   'Tooltip',
   'Typography',
+  'Visually Hidden',
 ] as const;
 
 export const toSlug = (name: string): string =>

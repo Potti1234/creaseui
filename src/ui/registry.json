@@ -58,6 +58,23 @@
       ]
     },
     {
+      "name": "app-shell",
+      "type": "registry:ui",
+      "title": "App Shell",
+      "description": "A shadcn-styled App Shell component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "app-shell.ts",
+          "type": "registry:ui",
+          "target": "@ui/app-shell.ts"
+        }
+      ]
+    },
+    {
       "name": "aspect-ratio",
       "type": "registry:ui",
       "title": "Aspect Ratio",
@@ -264,6 +281,23 @@
           "path": "carousel.ts",
           "type": "registry:ui",
           "target": "@ui/carousel.ts"
+        }
+      ]
+    },
+    {
+      "name": "center",
+      "type": "registry:ui",
+      "title": "Center",
+      "description": "A shadcn-styled Center component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "center.ts",
+          "type": "registry:ui",
+          "target": "@ui/center.ts"
         }
       ]
     },
@@ -535,6 +569,23 @@
           "path": "form.ts",
           "type": "registry:ui",
           "target": "@ui/form.ts"
+        }
+      ]
+    },
+    {
+      "name": "grid",
+      "type": "registry:ui",
+      "title": "Grid",
+      "description": "A shadcn-styled Grid component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "grid.ts",
+          "type": "registry:ui",
+          "target": "@ui/grid.ts"
         }
       ]
     },
@@ -881,6 +932,23 @@
       ]
     },
     {
+      "name": "section",
+      "type": "registry:ui",
+      "title": "Section",
+      "description": "A shadcn-styled Section component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "section.ts",
+          "type": "registry:ui",
+          "target": "@ui/section.ts"
+        }
+      ]
+    },
+    {
       "name": "select",
       "type": "registry:ui",
       "title": "Select",
@@ -1022,6 +1090,23 @@
           "path": "spinner.ts",
           "type": "registry:ui",
           "target": "@ui/spinner.ts"
+        }
+      ]
+    },
+    {
+      "name": "stack",
+      "type": "registry:ui",
+      "title": "Stack",
+      "description": "A shadcn-styled Stack component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "stack.ts",
+          "type": "registry:ui",
+          "target": "@ui/stack.ts"
         }
       ]
     },
@@ -1202,6 +1287,23 @@
           "path": "typography.ts",
           "type": "registry:ui",
           "target": "@ui/typography.ts"
+        }
+      ]
+    },
+    {
+      "name": "visually-hidden",
+      "type": "registry:ui",
+      "title": "Visually Hidden",
+      "description": "A shadcn-styled Visually Hidden component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "visually-hidden.ts",
+          "type": "registry:ui",
+          "target": "@ui/visually-hidden.ts"
         }
       ]
     }
