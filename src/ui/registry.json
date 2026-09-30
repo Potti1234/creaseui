@@ -354,6 +354,24 @@
       ]
     },
     {
+      "name": "checkbox-list",
+      "type": "registry:ui",
+      "title": "Checkbox List",
+      "description": "A shadcn-styled Checkbox List component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "checkbox-list.ts",
+          "type": "registry:ui",
+          "target": "@ui/checkbox-list.ts"
+        }
+      ]
+    },
+    {
       "name": "checkbox",
       "type": "registry:ui",
       "title": "Checkbox",
@@ -642,6 +660,24 @@
       ]
     },
     {
+      "name": "file-input",
+      "type": "registry:ui",
+      "title": "File Input",
+      "description": "A shadcn-styled File Input component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "file-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/file-input.ts"
+        }
+      ]
+    },
+    {
       "name": "form",
       "type": "registry:ui",
       "title": "Form",
@@ -864,6 +900,25 @@
       ]
     },
     {
+      "name": "list-input",
+      "type": "registry:ui",
+      "title": "List Input",
+      "description": "A shadcn-styled List Input component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/button",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "list-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/list-input.ts"
+        }
+      ]
+    },
+    {
       "name": "list",
       "type": "registry:ui",
       "title": "List",
@@ -1011,6 +1066,24 @@
           "path": "navigation-menu.ts",
           "type": "registry:ui",
           "target": "@ui/navigation-menu.ts"
+        }
+      ]
+    },
+    {
+      "name": "number-input",
+      "type": "registry:ui",
+      "title": "Number Input",
+      "description": "A shadcn-styled Number Input component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "number-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/number-input.ts"
         }
       ]
     },
@@ -1442,6 +1515,24 @@
           "path": "thumbnail.ts",
           "type": "registry:ui",
           "target": "@ui/thumbnail.ts"
+        }
+      ]
+    },
+    {
+      "name": "time-input",
+      "type": "registry:ui",
+      "title": "Time Input",
+      "description": "A shadcn-styled Time Input component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "time-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/time-input.ts"
         }
       ]
     },

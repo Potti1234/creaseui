@@ -318,6 +318,22 @@ Source: [`src/ui/chart.ts`](../src/ui/chart.ts)
 | `DonutChartProps` | type | `DonutChartProps = Readonly<{ value: number; max: number; label?: string; sublabel?: string; class?: string; }>` |
 | `donutChart` | function | `donutChart<Msg>(props: DonutChartProps, h: HtmlBuilder<Msg>): Html` |
 
+## Checkbox List
+
+Source: [`src/ui/checkbox-list.ts`](../src/ui/checkbox-list.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `CheckboxListDensity` | re-export | `export { CheckboxListDensity } from ` |
+| `CheckboxListEntry` | re-export | `export { CheckboxListEntry } from ` |
+| `CheckboxListItem` | re-export | `export { CheckboxListItem } from ` |
+| `CheckboxListProps` | re-export | `export { CheckboxListProps } from ` |
+| `checkboxListDivider` | re-export | `export { checkboxListDivider } from '@/lib/checkbox-list'` |
+| `InputStatus` | re-export | `export { InputStatus } from '@/lib/input-status'` |
+| `checkboxListItem` | function | `checkboxListItem<Msg>(item: CheckboxListItem<Msg>, h: HtmlBuilder<Msg>, options?: Readonly<{ id?: string density?: CheckboxListDensity isDisabled?: boolean isReadOnly?: boolean }>): Html` |
+| `CheckboxListUiProps` | type | `CheckboxListUiProps<Msg> = CheckboxListProps<Msg> & Readonly<{ class?: string }>` |
+| `checkboxList` | function | `checkboxList<Msg>(props: CheckboxListUiProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Checkbox
 
 Source: [`src/ui/checkbox.ts`](../src/ui/checkbox.ts)
@@ -628,6 +644,25 @@ Source: [`src/ui/field.ts`](../src/ui/field.ts)
 | `FieldErrorProps` | type | `FieldErrorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html \| string>; errors?: ReadonlyArray<FieldError>; }>` |
 | `fieldError` | function | `fieldError<Msg>(props: FieldErrorProps = {}, h: HtmlBuilder<Msg>): Html` |
 
+## File Input
+
+Source: [`src/ui/file-input.ts`](../src/ui/file-input.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `formatFileSize` | re-export | `export { formatFileSize } from '@/lib/file-input'` |
+| `init` | re-export | `export { init } from '@/lib/file-input'` |
+| `Model` | re-export | `export { Model } from '@/lib/file-input'` |
+| `Message` | re-export | `export { Message } from '@/lib/file-input'` |
+| `OutMessage` | re-export | `export { OutMessage } from '@/lib/file-input'` |
+| `update` | re-export | `export { update } from '@/lib/file-input'` |
+| `validateFiles` | re-export | `export { validateFiles } from '@/lib/file-input'` |
+| `FileInputMode` | re-export | `export { FileInputMode } from '@/lib/file-input'` |
+| `InputStatus` | re-export | `export { InputStatus } from '@/lib/input-status'` |
+| `FileInputProps` | type | `FileInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html \| string /** The accepted files owned by the parent. */ value?: ReadonlyArray<F…` |
+| `FileInputViewInputs` | type | `FileInputViewInputs = Omit< FileInputProps<never>, 'model' \| 'toParentMessage' >` |
+| `fileInput` | function | `fileInput<Msg>(props: FileInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Form
 
 Source: [`src/ui/form.ts`](../src/ui/form.ts)
@@ -816,6 +851,27 @@ Source: [`src/ui/link.ts`](../src/ui/link.ts)
 | `LinkProps` | type | `LinkProps<Msg> = Readonly<{ children: ReadonlyArray<Html \| string>; href?: string; label?: string; hasUnderline?: boolean; isDisabled?: boolean; isExternalLink?: boolean; newTabLabel?: string; target?: string; rel?: string; download?: string; onClick?: Msg; t…` |
 | `link` | function | `link<Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
+## List Input
+
+Source: [`src/ui/list-input.ts`](../src/ui/list-input.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `init` | re-export | `export { init } from '@/lib/list-input'` |
+| `Model` | re-export | `export { Model } from '@/lib/list-input'` |
+| `Message` | re-export | `export { Message } from '@/lib/list-input'` |
+| `moveItem` | re-export | `export { moveItem } from '@/lib/list-input'` |
+| `OutMessage` | re-export | `export { OutMessage } from '@/lib/list-input'` |
+| `resolveColumnTrack` | re-export | `export { resolveColumnTrack } from '@/lib/list-input'` |
+| `update` | re-export | `export { update } from '@/lib/list-input'` |
+| `ListInputChange` | re-export | `export { ListInputChange } from '@/lib/list-input'` |
+| `ListInputColumn` | re-export | `export { ListInputColumn } from '@/lib/list-input'` |
+| `ListInputRenderContext` | re-export | `export { ListInputRenderContext } from '@/lib/list-input'` |
+| `ListInputValueContext` | re-export | `export { ListInputValueContext } from '@/lib/list-input'` |
+| `InputStatus` | re-export | `export { InputStatus } from '@/lib/input-status'` |
+| `ListInputProps` | type | `ListInputProps<T, Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html \| string /** Controlled records owned by the parent. */ value: ReadonlyArray…` |
+| `listInput` | function | `listInput<T, Msg>(props: ListInputProps<T, Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## List
 
 Source: [`src/ui/list.ts`](../src/ui/list.ts)
@@ -954,6 +1010,23 @@ Source: [`src/ui/navigation-menu.ts`](../src/ui/navigation-menu.ts)
 | `navigationMenuLink` | function | `navigationMenuLink<Msg>(props: Slot & Readonly<{ href: string; isActive?: boolean }>, h: HtmlBuilder<Msg>): Html` |
 | `NavigationMenuDisclosureProps` | type | `NavigationMenuDisclosureProps<Msg> = Readonly<{ model: Popover.Model; toParentMessage: (message: Popover.Message) => Msg; label: string; content: Html \| string; class?: string; ariaLabel?: string; pointerIntent?: 'press' \| 'hover-and-press'; }>` |
 | `navigationMenuDisclosure` | function | `navigationMenuDisclosure<Msg>(props: NavigationMenuDisclosureProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Number Input
+
+Source: [`src/ui/number-input.ts`](../src/ui/number-input.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `init` | re-export | `export { init } from '@/lib/number-input'` |
+| `Model` | re-export | `export { Model } from '@/lib/number-input'` |
+| `Message` | re-export | `export { Message } from '@/lib/number-input'` |
+| `OutMessage` | re-export | `export { OutMessage } from '@/lib/number-input'` |
+| `update` | re-export | `export { update } from '@/lib/number-input'` |
+| `NumberInputSize` | re-export | `export { NumberInputSize } from '@/lib/number-input'` |
+| `InputStatus` | re-export | `export { InputStatus } from '@/lib/input-status'` |
+| `NumberInputProps` | type | `NumberInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html \| string /** The committed value owned by the parent (`null`/`undefined` = em…` |
+| `NumberInputViewInputs` | type | `NumberInputViewInputs = Omit< NumberInputProps<never>, 'model' \| 'toParentMessage' >` |
+| `numberInput` | function | `numberInput<Msg>(props: NumberInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Pagination
 
@@ -1363,6 +1436,23 @@ Source: [`src/ui/thumbnail.ts`](../src/ui/thumbnail.ts)
 | `ThumbnailShowRemoveOn` | type | `ThumbnailShowRemoveOn = 'always' \| 'hover'` |
 | `ThumbnailProps` | type | `ThumbnailProps<Msg> = Readonly<{ /** Image source. When omitted, the thumbnail shows its placeholder state. */ src?: string; /** Alt text for the image. */ alt?: string; /** Human-readable name shown in tooltips and used in accessible labels. */ label?: strin…` |
 | `thumbnail` | function | `thumbnail<Msg>(props: ThumbnailProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Time Input
+
+Source: [`src/ui/time-input.ts`](../src/ui/time-input.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `init` | re-export | `export { init } from '@/lib/time-input'` |
+| `Model` | re-export | `export { Model } from '@/lib/time-input'` |
+| `Message` | re-export | `export { Message } from '@/lib/time-input'` |
+| `OutMessage` | re-export | `export { OutMessage } from '@/lib/time-input'` |
+| `update` | re-export | `export { update } from '@/lib/time-input'` |
+| `TimeValue` | re-export | `export { TimeValue } from '@/lib/time-input'` |
+| `InputStatus` | re-export | `export { InputStatus } from '@/lib/input-status'` |
+| `TimeInputProps` | type | `TimeInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html \| string /** The committed value owned by the parent, as "HH:MM" / "HH:MM:SS". …` |
+| `TimeInputViewInputs` | type | `TimeInputViewInputs = Omit< TimeInputProps<never>, 'model' \| 'toParentMessage' >` |
+| `timeInput` | function | `timeInput<Msg>(props: TimeInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Toast
 

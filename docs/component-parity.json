@@ -23,29 +23,34 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 86,
+    "registryItems": 91,
     "creaseOnlyRecipes": [
       "app-shell",
       "avatar-group",
       "blockquote",
       "center",
+      "checkbox-list",
       "circular-progress",
       "code",
       "code-block",
       "data-table",
       "date-picker",
+      "file-input",
       "grid",
       "heading",
       "indicator",
       "link",
       "list",
+      "list-input",
       "markdown",
+      "number-input",
       "section",
       "stack",
       "stat",
       "status-dot",
       "text",
       "thumbnail",
+      "time-input",
       "token",
       "typography",
       "visually-hidden"
@@ -414,6 +419,24 @@
       ]
     },
     {
+      "component": "checkbox-list",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/checkbox-list.ts",
+        "src/ui/registry.json#checkbox-list",
+        "/docs/components/checkbox-list"
+      ]
+    },
+    {
       "component": "circular-progress",
       "upstream": false,
       "classification": "full",
@@ -686,6 +709,24 @@
       ]
     },
     {
+      "component": "file-input",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/file-input.ts",
+        "src/ui/registry.json#file-input",
+        "/docs/components/file-input"
+      ]
+    },
+    {
       "component": "form",
       "upstream": true,
       "classification": "full",
@@ -921,6 +962,24 @@
       ]
     },
     {
+      "component": "list-input",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/list-input.ts",
+        "src/ui/registry.json#list-input",
+        "/docs/components/list-input"
+      ]
+    },
+    {
       "component": "markdown",
       "upstream": false,
       "classification": "full",
@@ -1044,6 +1103,24 @@
         "src/ui/navigation-menu.ts",
         "src/ui/registry.json#navigation-menu",
         "/docs/components/navigation-menu"
+      ]
+    },
+    {
+      "component": "number-input",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/number-input.ts",
+        "src/ui/registry.json#number-input",
+        "/docs/components/number-input"
       ]
     },
     {
@@ -1478,6 +1555,24 @@
         "src/ui/thumbnail.ts",
         "src/ui/registry.json#thumbnail",
         "/docs/components/thumbnail"
+      ]
+    },
+    {
+      "component": "time-input",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/time-input.ts",
+        "src/ui/registry.json#time-input",
+        "/docs/components/time-input"
       ]
     },
     {

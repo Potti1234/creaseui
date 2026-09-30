@@ -34,6 +34,7 @@
 - Carousel: /docs/components/carousel — install with `npx shadcn@latest add Potti1234/creaseui/carousel`
 - Center: /docs/components/center — install with `npx shadcn@latest add Potti1234/creaseui/center`
 - Chart: /docs/components/chart — install with `npx shadcn@latest add Potti1234/creaseui/chart`
+- Checkbox List: /docs/components/checkbox-list — install with `npx shadcn@latest add Potti1234/creaseui/checkbox-list`
 - Checkbox: /docs/components/checkbox — install with `npx shadcn@latest add Potti1234/creaseui/checkbox`
 - Circular Progress: /docs/components/circular-progress — install with `npx shadcn@latest add Potti1234/creaseui/circular-progress`
 - Code Block: /docs/components/code-block — install with `npx shadcn@latest add Potti1234/creaseui/code-block`
@@ -50,6 +51,7 @@
 - Dropdown Menu: /docs/components/dropdown-menu — install with `npx shadcn@latest add Potti1234/creaseui/dropdown-menu`
 - Empty: /docs/components/empty — install with `npx shadcn@latest add Potti1234/creaseui/empty`
 - Field: /docs/components/field — install with `npx shadcn@latest add Potti1234/creaseui/field`
+- File Input: /docs/components/file-input — install with `npx shadcn@latest add Potti1234/creaseui/file-input`
 - Form: /docs/components/form — install with `npx shadcn@latest add Potti1234/creaseui/form`
 - Grid: /docs/components/grid — install with `npx shadcn@latest add Potti1234/creaseui/grid`
 - Heading: /docs/components/heading — install with `npx shadcn@latest add Potti1234/creaseui/heading`
@@ -62,6 +64,7 @@
 - Kbd: /docs/components/kbd — install with `npx shadcn@latest add Potti1234/creaseui/kbd`
 - Label: /docs/components/label — install with `npx shadcn@latest add Potti1234/creaseui/label`
 - Link: /docs/components/link — install with `npx shadcn@latest add Potti1234/creaseui/link`
+- List Input: /docs/components/list-input — install with `npx shadcn@latest add Potti1234/creaseui/list-input`
 - List: /docs/components/list — install with `npx shadcn@latest add Potti1234/creaseui/list`
 - Markdown: /docs/components/markdown — install with `npx shadcn@latest add Potti1234/creaseui/markdown`
 - Marker: /docs/components/marker — install with `npx shadcn@latest add Potti1234/creaseui/marker`
@@ -70,6 +73,7 @@
 - Message: /docs/components/message — install with `npx shadcn@latest add Potti1234/creaseui/message`
 - Native Select: /docs/components/native-select — install with `npx shadcn@latest add Potti1234/creaseui/native-select`
 - Navigation Menu: /docs/components/navigation-menu — install with `npx shadcn@latest add Potti1234/creaseui/navigation-menu`
+- Number Input: /docs/components/number-input — install with `npx shadcn@latest add Potti1234/creaseui/number-input`
 - Pagination: /docs/components/pagination — install with `npx shadcn@latest add Potti1234/creaseui/pagination`
 - Popover: /docs/components/popover — install with `npx shadcn@latest add Potti1234/creaseui/popover`
 - Progress: /docs/components/progress — install with `npx shadcn@latest add Potti1234/creaseui/progress`
@@ -94,6 +98,7 @@
 - Text: /docs/components/text — install with `npx shadcn@latest add Potti1234/creaseui/text`
 - Textarea: /docs/components/textarea — install with `npx shadcn@latest add Potti1234/creaseui/textarea`
 - Thumbnail: /docs/components/thumbnail — install with `npx shadcn@latest add Potti1234/creaseui/thumbnail`
+- Time Input: /docs/components/time-input — install with `npx shadcn@latest add Potti1234/creaseui/time-input`
 - Toast: /docs/components/toast — install with `npx shadcn@latest add Potti1234/creaseui/toast`
 - Toggle Group: /docs/components/toggle-group — install with `npx shadcn@latest add Potti1234/creaseui/toggle-group`
 - Toggle: /docs/components/toggle — install with `npx shadcn@latest add Potti1234/creaseui/toggle`

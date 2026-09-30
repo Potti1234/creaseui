@@ -954,6 +954,53 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "donutChart<Msg>(props: DonutChartProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "checkbox-list": [
+    {
+      "name": "CheckboxListDensity",
+      "kind": "re-export",
+      "signature": "export { CheckboxListDensity } from "
+    },
+    {
+      "name": "CheckboxListEntry",
+      "kind": "re-export",
+      "signature": "export { CheckboxListEntry } from "
+    },
+    {
+      "name": "CheckboxListItem",
+      "kind": "re-export",
+      "signature": "export { CheckboxListItem } from "
+    },
+    {
+      "name": "CheckboxListProps",
+      "kind": "re-export",
+      "signature": "export { CheckboxListProps } from "
+    },
+    {
+      "name": "checkboxListDivider",
+      "kind": "re-export",
+      "signature": "export { checkboxListDivider } from '@/lib/checkbox-list'"
+    },
+    {
+      "name": "InputStatus",
+      "kind": "re-export",
+      "signature": "export { InputStatus } from '@/lib/input-status'"
+    },
+    {
+      "name": "checkboxListItem",
+      "kind": "function",
+      "signature": "checkboxListItem<Msg>(item: CheckboxListItem<Msg>, h: HtmlBuilder<Msg>, options?: Readonly<{ id?: string density?: CheckboxListDensity isDisabled?: boolean isReadOnly?: boolean }>): Html"
+    },
+    {
+      "name": "CheckboxListUiProps",
+      "kind": "type",
+      "signature": "CheckboxListUiProps<Msg> = CheckboxListProps<Msg> & Readonly<{ class?: string }>"
+    },
+    {
+      "name": "checkboxList",
+      "kind": "function",
+      "signature": "checkboxList<Msg>(props: CheckboxListUiProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "checkbox": [
     {
       "name": "CheckboxProps",
@@ -1976,6 +2023,68 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "fieldError<Msg>(props: FieldErrorProps = {}, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "file-input": [
+    {
+      "name": "formatFileSize",
+      "kind": "re-export",
+      "signature": "export { formatFileSize } from '@/lib/file-input'"
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/lib/file-input'"
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/lib/file-input'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/file-input'"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from '@/lib/file-input'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/lib/file-input'"
+    },
+    {
+      "name": "validateFiles",
+      "kind": "re-export",
+      "signature": "export { validateFiles } from '@/lib/file-input'"
+    },
+    {
+      "name": "FileInputMode",
+      "kind": "re-export",
+      "signature": "export { FileInputMode } from '@/lib/file-input'"
+    },
+    {
+      "name": "InputStatus",
+      "kind": "re-export",
+      "signature": "export { InputStatus } from '@/lib/input-status'"
+    },
+    {
+      "name": "FileInputProps",
+      "kind": "type",
+      "signature": "FileInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html | string /** The accepted files owned by the parent. */ value?: ReadonlyArray<F…"
+    },
+    {
+      "name": "FileInputViewInputs",
+      "kind": "type",
+      "signature": "FileInputViewInputs = Omit< FileInputProps<never>, 'model' | 'toParentMessage' >"
+    },
+    {
+      "name": "fileInput",
+      "kind": "function",
+      "signature": "fileInput<Msg>(props: FileInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "form": [
     {
       "name": "FormError",
@@ -2520,6 +2629,78 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "link<Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "list-input": [
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/lib/list-input'"
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/lib/list-input'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/list-input'"
+    },
+    {
+      "name": "moveItem",
+      "kind": "re-export",
+      "signature": "export { moveItem } from '@/lib/list-input'"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from '@/lib/list-input'"
+    },
+    {
+      "name": "resolveColumnTrack",
+      "kind": "re-export",
+      "signature": "export { resolveColumnTrack } from '@/lib/list-input'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/lib/list-input'"
+    },
+    {
+      "name": "ListInputChange",
+      "kind": "re-export",
+      "signature": "export { ListInputChange } from '@/lib/list-input'"
+    },
+    {
+      "name": "ListInputColumn",
+      "kind": "re-export",
+      "signature": "export { ListInputColumn } from '@/lib/list-input'"
+    },
+    {
+      "name": "ListInputRenderContext",
+      "kind": "re-export",
+      "signature": "export { ListInputRenderContext } from '@/lib/list-input'"
+    },
+    {
+      "name": "ListInputValueContext",
+      "kind": "re-export",
+      "signature": "export { ListInputValueContext } from '@/lib/list-input'"
+    },
+    {
+      "name": "InputStatus",
+      "kind": "re-export",
+      "signature": "export { InputStatus } from '@/lib/input-status'"
+    },
+    {
+      "name": "ListInputProps",
+      "kind": "type",
+      "signature": "ListInputProps<T, Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html | string /** Controlled records owned by the parent. */ value: ReadonlyArray…"
+    },
+    {
+      "name": "listInput",
+      "kind": "function",
+      "signature": "listInput<T, Msg>(props: ListInputProps<T, Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "list": [
     {
       "name": "ListDensity",
@@ -2949,6 +3130,58 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "navigationMenuDisclosure",
       "kind": "function",
       "signature": "navigationMenuDisclosure<Msg>(props: NavigationMenuDisclosureProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "number-input": [
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/lib/number-input'"
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/lib/number-input'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/number-input'"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from '@/lib/number-input'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/lib/number-input'"
+    },
+    {
+      "name": "NumberInputSize",
+      "kind": "re-export",
+      "signature": "export { NumberInputSize } from '@/lib/number-input'"
+    },
+    {
+      "name": "InputStatus",
+      "kind": "re-export",
+      "signature": "export { InputStatus } from '@/lib/input-status'"
+    },
+    {
+      "name": "NumberInputProps",
+      "kind": "type",
+      "signature": "NumberInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html | string /** The committed value owned by the parent (`null`/`undefined` = em…"
+    },
+    {
+      "name": "NumberInputViewInputs",
+      "kind": "type",
+      "signature": "NumberInputViewInputs = Omit< NumberInputProps<never>, 'model' | 'toParentMessage' >"
+    },
+    {
+      "name": "numberInput",
+      "kind": "function",
+      "signature": "numberInput<Msg>(props: NumberInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "pagination": [
@@ -4202,6 +4435,58 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "thumbnail",
       "kind": "function",
       "signature": "thumbnail<Msg>(props: ThumbnailProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "time-input": [
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/lib/time-input'"
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/lib/time-input'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/time-input'"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from '@/lib/time-input'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/lib/time-input'"
+    },
+    {
+      "name": "TimeValue",
+      "kind": "re-export",
+      "signature": "export { TimeValue } from '@/lib/time-input'"
+    },
+    {
+      "name": "InputStatus",
+      "kind": "re-export",
+      "signature": "export { InputStatus } from '@/lib/input-status'"
+    },
+    {
+      "name": "TimeInputProps",
+      "kind": "type",
+      "signature": "TimeInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html | string /** The committed value owned by the parent, as \"HH:MM\" / \"HH:MM:SS\". …"
+    },
+    {
+      "name": "TimeInputViewInputs",
+      "kind": "type",
+      "signature": "TimeInputViewInputs = Omit< TimeInputProps<never>, 'model' | 'toParentMessage' >"
+    },
+    {
+      "name": "timeInput",
+      "kind": "function",
+      "signature": "timeInput<Msg>(props: TimeInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "toast": [
