@@ -23,20 +23,28 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 78,
+    "registryItems": 86,
     "creaseOnlyRecipes": [
       "app-shell",
       "avatar-group",
+      "blockquote",
       "center",
       "circular-progress",
+      "code",
+      "code-block",
       "data-table",
       "date-picker",
       "grid",
+      "heading",
       "indicator",
+      "link",
+      "list",
+      "markdown",
       "section",
       "stack",
       "stat",
       "status-dot",
+      "text",
       "thumbnail",
       "token",
       "typography",
@@ -204,6 +212,24 @@
         "src/ui/badge.ts",
         "src/ui/registry.json#badge",
         "/docs/components/badge"
+      ]
+    },
+    {
+      "component": "blockquote",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/blockquote.ts",
+        "src/ui/registry.json#blockquote",
+        "/docs/components/blockquote"
       ]
     },
     {
@@ -403,6 +429,42 @@
         "src/ui/circular-progress.ts",
         "src/ui/registry.json#circular-progress",
         "/docs/components/circular-progress"
+      ]
+    },
+    {
+      "component": "code",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/code.ts",
+        "src/ui/registry.json#code",
+        "/docs/components/code"
+      ]
+    },
+    {
+      "component": "code-block",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/code-block.ts",
+        "src/ui/registry.json#code-block",
+        "/docs/components/code-block"
       ]
     },
     {
@@ -660,6 +722,24 @@
       ]
     },
     {
+      "component": "heading",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/heading.ts",
+        "src/ui/registry.json#heading",
+        "/docs/components/heading"
+      ]
+    },
+    {
       "component": "hover-card",
       "upstream": true,
       "classification": "full",
@@ -802,6 +882,60 @@
         "src/ui/label.ts",
         "src/ui/registry.json#label",
         "/docs/components/label"
+      ]
+    },
+    {
+      "component": "link",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/link.ts",
+        "src/ui/registry.json#link",
+        "/docs/components/link"
+      ]
+    },
+    {
+      "component": "list",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/list.ts",
+        "src/ui/registry.json#list",
+        "/docs/components/list"
+      ]
+    },
+    {
+      "component": "markdown",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/markdown.ts",
+        "src/ui/registry.json#markdown",
+        "/docs/components/markdown"
       ]
     },
     {
@@ -1290,6 +1424,24 @@
         "src/ui/tabs.ts",
         "src/ui/registry.json#tabs",
         "/docs/components/tabs"
+      ]
+    },
+    {
+      "component": "text",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/text.ts",
+        "src/ui/registry.json#text",
+        "/docs/components/text"
       ]
     },
     {

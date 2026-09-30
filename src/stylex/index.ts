@@ -13,6 +13,7 @@ export * as Attachment from './attachment.js'
 export * as AvatarGroup from './avatar-group.js'
 export * as Avatar from './avatar.js'
 export * as Badge from './badge.js'
+export * as Blockquote from './blockquote.js'
 export * as Breadcrumb from './breadcrumb.js'
 export * as Bubble from './bubble.js'
 export * as ButtonGroup from './button-group.js'
@@ -24,6 +25,8 @@ export * as Center from './center.js'
 export * as Chart from './chart.js'
 export * as Checkbox from './checkbox.js'
 export * as CircularProgress from './circular-progress.js'
+export * as CodeBlock from './code-block.js'
+export * as Code from './code.js'
 export * as Collapsible from './collapsible.js'
 export * as Combobox from './combobox.js'
 export * as Command from './command.js'
@@ -38,6 +41,7 @@ export * as Empty from './empty.js'
 export * as Field from './field.js'
 export * as Form from './form.js'
 export * as Grid from './grid.js'
+export * as Heading from './heading.js'
 export * as HoverCard from './hover-card.js'
 export * as Indicator from './indicator.js'
 export * as InputGroup from './input-group.js'
@@ -46,6 +50,9 @@ export * as Input from './input.js'
 export * as Item from './item.js'
 export * as Kbd from './kbd.js'
 export * as Label from './label.js'
+export * as Link from './link.js'
+export * as List from './list.js'
+export * as Markdown from './markdown.js'
 export * as Marker from './marker.js'
 export * as Menubar from './menubar.js'
 export * as MessageScroller from './message-scroller.js'
@@ -73,6 +80,7 @@ export * as StatusDot from './status-dot.js'
 export * as Switch from './switch.js'
 export * as Table from './table.js'
 export * as Tabs from './tabs.js'
+export * as Text from './text.js'
 export * as Textarea from './textarea.js'
 export * as Thumbnail from './thumbnail.js'
 export * as Toast from './toast.js'
@@ -94,6 +102,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'avatar-group',
   'avatar',
   'badge',
+  'blockquote',
   'breadcrumb',
   'bubble',
   'button-group',
@@ -105,6 +114,8 @@ export const STYLEX_COMPONENT_NAMES = [
   'chart',
   'checkbox',
   'circular-progress',
+  'code-block',
+  'code',
   'collapsible',
   'combobox',
   'command',
@@ -119,6 +130,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'field',
   'form',
   'grid',
+  'heading',
   'hover-card',
   'indicator',
   'input-group',
@@ -127,6 +139,9 @@ export const STYLEX_COMPONENT_NAMES = [
   'item',
   'kbd',
   'label',
+  'link',
+  'list',
+  'markdown',
   'marker',
   'menubar',
   'message-scroller',
@@ -154,6 +169,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'switch',
   'table',
   'tabs',
+  'text',
   'textarea',
   'thumbnail',
   'toast',

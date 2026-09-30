@@ -22,6 +22,7 @@
 - Avatar Group: /docs/components/avatar-group — install with `npx shadcn@latest add Potti1234/creaseui/avatar-group`
 - Avatar: /docs/components/avatar — install with `npx shadcn@latest add Potti1234/creaseui/avatar`
 - Badge: /docs/components/badge — install with `npx shadcn@latest add Potti1234/creaseui/badge`
+- Blockquote: /docs/components/blockquote — install with `npx shadcn@latest add Potti1234/creaseui/blockquote`
 - Breadcrumb: /docs/components/breadcrumb — install with `npx shadcn@latest add Potti1234/creaseui/breadcrumb`
 - Bubble: /docs/components/bubble — install with `npx shadcn@latest add Potti1234/creaseui/bubble`
 - Button Group: /docs/components/button-group — install with `npx shadcn@latest add Potti1234/creaseui/button-group`
@@ -33,6 +34,8 @@
 - Chart: /docs/components/chart — install with `npx shadcn@latest add Potti1234/creaseui/chart`
 - Checkbox: /docs/components/checkbox — install with `npx shadcn@latest add Potti1234/creaseui/checkbox`
 - Circular Progress: /docs/components/circular-progress — install with `npx shadcn@latest add Potti1234/creaseui/circular-progress`
+- Code Block: /docs/components/code-block — install with `npx shadcn@latest add Potti1234/creaseui/code-block`
+- Code: /docs/components/code — install with `npx shadcn@latest add Potti1234/creaseui/code`
 - Collapsible: /docs/components/collapsible — install with `npx shadcn@latest add Potti1234/creaseui/collapsible`
 - Combobox: /docs/components/combobox — install with `npx shadcn@latest add Potti1234/creaseui/combobox`
 - Command: /docs/components/command — install with `npx shadcn@latest add Potti1234/creaseui/command`
@@ -47,6 +50,7 @@
 - Field: /docs/components/field — install with `npx shadcn@latest add Potti1234/creaseui/field`
 - Form: /docs/components/form — install with `npx shadcn@latest add Potti1234/creaseui/form`
 - Grid: /docs/components/grid — install with `npx shadcn@latest add Potti1234/creaseui/grid`
+- Heading: /docs/components/heading — install with `npx shadcn@latest add Potti1234/creaseui/heading`
 - Hover Card: /docs/components/hover-card — install with `npx shadcn@latest add Potti1234/creaseui/hover-card`
 - Indicator: /docs/components/indicator — install with `npx shadcn@latest add Potti1234/creaseui/indicator`
 - Input Group: /docs/components/input-group — install with `npx shadcn@latest add Potti1234/creaseui/input-group`
@@ -55,6 +59,9 @@
 - Item: /docs/components/item — install with `npx shadcn@latest add Potti1234/creaseui/item`
 - Kbd: /docs/components/kbd — install with `npx shadcn@latest add Potti1234/creaseui/kbd`
 - Label: /docs/components/label — install with `npx shadcn@latest add Potti1234/creaseui/label`
+- Link: /docs/components/link — install with `npx shadcn@latest add Potti1234/creaseui/link`
+- List: /docs/components/list — install with `npx shadcn@latest add Potti1234/creaseui/list`
+- Markdown: /docs/components/markdown — install with `npx shadcn@latest add Potti1234/creaseui/markdown`
 - Marker: /docs/components/marker — install with `npx shadcn@latest add Potti1234/creaseui/marker`
 - Menubar: /docs/components/menubar — install with `npx shadcn@latest add Potti1234/creaseui/menubar`
 - Message Scroller: /docs/components/message-scroller — install with `npx shadcn@latest add Potti1234/creaseui/message-scroller`
@@ -82,6 +89,7 @@
 - Switch: /docs/components/switch — install with `npx shadcn@latest add Potti1234/creaseui/switch`
 - Table: /docs/components/table — install with `npx shadcn@latest add Potti1234/creaseui/table`
 - Tabs: /docs/components/tabs — install with `npx shadcn@latest add Potti1234/creaseui/tabs`
+- Text: /docs/components/text — install with `npx shadcn@latest add Potti1234/creaseui/text`
 - Textarea: /docs/components/textarea — install with `npx shadcn@latest add Potti1234/creaseui/textarea`
 - Thumbnail: /docs/components/thumbnail — install with `npx shadcn@latest add Potti1234/creaseui/thumbnail`
 - Toast: /docs/components/toast — install with `npx shadcn@latest add Potti1234/creaseui/toast`
@@ -251,6 +259,17 @@ Examples: Basic, Variants, With Icon, With Spinner, Link, Custom Colors, RTL
 - `BadgeVariants = VariantProps<typeof badgeVariants>` (type)
 - `BadgeProps = Readonly<{ children: ReadonlyArray<Html | string>; variant?: BadgeVariants['variant']; class?: string; /** Renders the badge as an anchor pointing at this URL. */ href?: string; }>` (type)
 - `badge<Msg>(props: BadgeProps, h: HtmlBuilder<Msg>): Html` (function)
+
+### Blockquote
+
+A shadcn-styled Blockquote component for Foldkit.
+
+Source: `src/ui/blockquote.ts`
+
+Examples: Blockquote — Showcase, Blockquote — With Attribution, Blockquote — Testimonials
+
+- `BlockquoteProps = Readonly<{ children: ReadonlyArray<Html | string>; cite?: string; class?: string; }>` (type)
+- `blockquote<Msg>(props: BlockquoteProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Breadcrumb
 
@@ -460,6 +479,42 @@ Examples: Circular Progress, Circular Progress — Value Label, Circular Progres
 - `CircularProgressSize = 'sm' | 'md' | 'lg'` (type)
 - `CircularProgressProps = Readonly<{ /** Current value. Ignored when isIndeterminate is true. */ value?: number; /** Maximum value. */ max?: number; /** Accessible label for the progress indicator. Required for a11y. */ label: string; /** When true (default), t…` (type)
 - `circularProgress<Msg>(props: CircularProgressProps, h: HtmlBuilder<Msg>): Html` (function)
+
+### Code Block
+
+A shadcn-styled Code Block component for Foldkit.
+
+Source: `src/ui/code-block.ts`
+
+Examples: CodeBlock, useUser.ts, Code — Snippet, Code — Highlighted, Code — Config, package.json, Code — Scrollable, many-lines.ts, Code — Terminal
+
+- `export { init } from ` (re-export)
+- `export { Model } from ` (re-export)
+- `export { Message } from ` (re-export)
+- `export { update } from ` (re-export)
+- `export { SyntaxToken } from ` (re-export)
+- `export { TokenLine } from ` (re-export)
+- `export { codeLines } from ` (re-export)
+- `export { tokenize } from ` (re-export)
+- `export { flatTokensToLines } from ` (re-export)
+- `CodeBlockSize = 'sm' | 'md'` (type)
+- `CodeBlockContainer = 'card' | 'section'` (type)
+- `CustomTokenizer = ( code: string, language: string, ) => ReadonlyArray<{ type: string; start: number; end: number }>` (type)
+- `CodeBlockProps<Msg> = Readonly<{ /** The CodeBlock submodel state (see `init`/`update` in `@/lib/code-block`). */ model: Model; toParentMessage: (message: Message) => Msg; code: string; language?: string; title?: string; hasLanguageLabel?: boolean; hasLineNum…` (type)
+- `codeBlock<Msg>(props: CodeBlockProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Code
+
+A shadcn-styled Code component for Foldkit.
+
+Source: `src/ui/code.ts`
+
+Examples: Code, Code — Inline, Code — Text Sizes, Code — Content Types
+
+- `CodeColor = 'primary' | 'secondary' | 'inherit'` (type)
+- `CodeSize = 'inherit'` (type)
+- `CodeProps = Readonly<{ children: ReadonlyArray<Html | string>; color?: CodeColor; size?: CodeSize; class?: string; }>` (type)
+- `code<Msg>(props: CodeProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Collapsible
 
@@ -785,6 +840,21 @@ Examples: Grid, Grid — Column Spanning, Grid — Responsive Auto-Fit, Grid —
 - `GridSpanProps = Readonly<{ /** Columns to span — a number (`grid-column: span N`) or 'full' (1 / -1). */ columns?: number | 'full'; /** Rows to span (`grid-row: span N`). */ rows?: number; /** The element to render. */ as?: GridElement; children?: ReadonlyArr…` (type)
 - `gridSpan<Msg>(props: GridSpanProps, h: HtmlBuilder<Msg>): Html` (function)
 
+### Heading
+
+A shadcn-styled Heading component for Foldkit.
+
+Source: `src/ui/heading.ts`
+
+Examples: Heading, Heading — Truncation, Heading — Page Hierarchy, Heading — Card Grid
+
+- `HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6` (type)
+- `HeadingType = 'display-1' | 'display-2' | 'display-3'` (type)
+- `headingVariants: value` (value)
+- `HeadingVariants = VariantProps<typeof headingVariants>` (type)
+- `HeadingProps = Readonly<{ children: ReadonlyArray<Html | string>; level: HeadingLevel; type?: HeadingType; weight?: TextWeight; accessibilityLevel?: HeadingLevel; color?: TextColor; display?: TextDisplay; maxLines?: number; wordBreak?: TextWordBreak; textWrap…` (type)
+- `heading<Msg>(props: HeadingProps, h: HtmlBuilder<Msg>): Html` (function)
+
 ### Hover Card
 
 A shadcn-styled Hover Card component for Foldkit.
@@ -926,6 +996,64 @@ Examples: Basic, Label in Field, RTL
 
 - `LabelProps = Readonly<{ for?: string; isRequired?: boolean; isDisabled?: boolean; class?: string; children: ReadonlyArray<Html | string>; }>` (type)
 - `label<Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html` (function)
+
+### Link
+
+A shadcn-styled Link component for Foldkit.
+
+Source: `src/ui/link.ts`
+
+Examples: Link, Link — Inline Text, Link — External Links, Link — With Tooltips
+
+- `linkVariants: value` (value)
+- `LinkVariants = VariantProps<typeof linkVariants>` (type)
+- `LinkProps<Msg> = Readonly<{ children: ReadonlyArray<Html | string>; href?: string; label?: string; hasUnderline?: boolean; isDisabled?: boolean; isExternalLink?: boolean; newTabLabel?: string; target?: string; rel?: string; download?: string; onClick?: Msg; t…` (type)
+- `link<Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### List
+
+A shadcn-styled List component for Foldkit.
+
+Source: `src/ui/list.ts`
+
+Examples: List, List — Basic, List — Bulleted Features, List — Message List, List — Ordered Steps
+
+- `ListDensity = 'compact' | 'balanced' | 'spacious'` (type)
+- `ListMarkerStyle = 'none' | 'disc' | 'decimal' | 'circle'` (type)
+- `ListEdgeCompensation = 'inline'` (type)
+- `ListProps = Readonly<{ children: ReadonlyArray<Html>; density?: ListDensity; hasDividers?: boolean; edgeCompensation?: ListEdgeCompensation; /** Header content rendered above the list, associated via aria-labelledby. */ header?: Html | string; /** List marker…` (type)
+- `list<Msg>(props: ListProps, h: HtmlBuilder<Msg>): Html` (function)
+- `ListItemProps<Msg> = Readonly<{ /** Primary label. A plain string truncates to one line. */ label: Html | string; /** Secondary description under the label; strings truncate to one line. */ description?: Html | string; /** Content rendered before the item (ic…` (type)
+- `listItem<Msg>(props: ListItemProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Markdown
+
+A shadcn-styled Markdown component for Foldkit.
+
+Source: `src/ui/markdown.ts`
+
+Examples: Markdown, Markdown — Rich Content, Markdown — Data Table, Markdown — Compact AI Response, Markdown — Cited Content
+
+- `export { init } from '@/lib/markdown'` (re-export)
+- `export { Message } from '@/lib/markdown'` (re-export)
+- `export { Model } from '@/lib/markdown'` (re-export)
+- `export { update } from '@/lib/markdown'` (re-export)
+- `export { parseMarkdownBlocks } from '@/lib/markdown'` (re-export)
+- `export { parseMarkdownInline } from '@/lib/markdown'` (re-export)
+- `export { sanitizeMarkdownUrl } from '@/lib/markdown'` (re-export)
+- `export { MarkdownBlock } from '@/lib/markdown'` (re-export)
+- `export { MarkdownInline } from '@/lib/markdown'` (re-export)
+- `export { MarkdownListItem } from '@/lib/markdown'` (re-export)
+- `export { MarkdownSource } from '@/lib/markdown'` (re-export)
+- `export { MarkdownTableAlign } from '@/lib/markdown'` (re-export)
+- `export { MarkdownTableCell } from '@/lib/markdown'` (re-export)
+- `export { MarkdownTableRow } from '@/lib/markdown'` (re-export)
+- `MarkdownDisplay = 'block' | 'inline'` (type)
+- `MarkdownDensity = 'default' | 'compact'` (type)
+- `MarkdownCitationStyle = 'label' | 'number'` (type)
+- `MarkdownContentAlign = 'start' | 'center'` (type)
+- `MarkdownProps<Msg> = Readonly<{ /** Markdown submodel state (owns the per-fence CodeBlock models). */ model: Model; toParentMessage: (message: Message) => Msg; /** Markdown source string. */ children: string; display?: MarkdownDisplay; density?: MarkdownDensi…` (type)
+- `markdown<Msg>(props: MarkdownProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Marker
 
@@ -1448,6 +1576,28 @@ Examples: Basic, Line, Vertical, Disabled, Icons, RTL, Manual with disabled tab
 - `create<Value extends string = string>(): TabsBundle<Value>` (function)
 - `update: value` (value)
 - `tabs: value` (value)
+
+### Text
+
+A shadcn-styled Text component for Foldkit.
+
+Source: `src/ui/text.ts`
+
+Examples: Text, Text — Colors, Text — Heading Levels, Text — Inline, Text — Types, Text — Weight, Text — Truncation, Text — Word Break, Text — Wrap
+
+- `TextType = | 'body' | 'large' | 'label' | 'supporting' | 'code' | 'display-1' | 'display-2' | 'display-3' | 'inherit'` (type)
+- `TextSize = | '4xs' | '3xs' | '2xs' | 'xsm' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl'` (type)
+- `TextColor = | 'primary' | 'secondary' | 'disabled' | 'placeholder' | 'accent' | 'inherit'` (type)
+- `TextWeight = 'normal' | 'medium' | 'semibold' | 'bold'` (type)
+- `TextDisplay = 'inline' | 'block'` (type)
+- `TextJustify = 'start' | 'center' | 'end'` (type)
+- `TextWordBreak = 'break-word' | 'break-all'` (type)
+- `TextWrap = 'wrap' | 'nowrap' | 'balance' | 'pretty'` (type)
+- `TextElement = 'span' | 'p' | 'div' | 'label' | 'h1' | 'h2' | 'h3'` (type)
+- `textVariants: value` (value)
+- `TextVariants = VariantProps<typeof textVariants>` (type)
+- `TextProps = Readonly<{ children: ReadonlyArray<Html | string>; type?: TextType; size?: TextSize; color?: TextColor; weight?: TextWeight; display?: TextDisplay; maxLines?: number; wordBreak?: TextWordBreak; textWrap?: TextWrap; justify?: TextJustify; hasCapsiz…` (type)
+- `text<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Textarea
 
