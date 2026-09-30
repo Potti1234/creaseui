@@ -231,6 +231,7 @@ export const moreMenuExamples = (
 ): ReadonlyArray<DocsExample> =>
   moreMenuFixtures.map((fixture, index) => ({
     title: fixture.title,
+    keepIdsCanonical: index === 0,
     description: fixture.description,
     code: source(index, renderer),
   }));

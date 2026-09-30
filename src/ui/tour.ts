@@ -237,17 +237,30 @@ export const tour = <Msg>(
     ],
   );
 
+  /* The dismiss surface is a dedicated scrim sibling — not the shared
+     tour-root — so clicks on the callout's Next/Back/Close controls do not
+     bubble up into a 'backdrop' dismissal (same split as bottom-sheet's
+     scrim/panel). The dim itself is painted by the highlight's box-shadow. */
+  const scrim = hasBackdrop
+    ? [
+        h.div(
+          [
+            h.DataAttribute('slot', 'tour-scrim'),
+            h.AriaHidden(true),
+            h.Class('absolute inset-0'),
+            h.OnClick(send(Message.RequestedDismiss({ source: 'backdrop' }))),
+          ],
+          [],
+        ),
+      ]
+    : [];
+
   return h.div(
     [
       h.DataAttribute('slot', 'tour-root'),
       h.Class(LAYER_CLASS),
-      ...(hasBackdrop
-        ? [
-            h.Class('pointer-events-auto'),
-            h.OnClick(send(Message.RequestedDismiss({ source: 'backdrop' }))),
-          ]
-        : [h.Class('pointer-events-none')]),
+      h.Class(hasBackdrop ? 'pointer-events-auto' : 'pointer-events-none'),
     ],
-    [highlight, callout],
+    [...scrim, highlight, callout],
   );
 };

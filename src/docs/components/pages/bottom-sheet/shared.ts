@@ -654,6 +654,7 @@ export const bottomSheetExamples = (
   renderer: 'tailwind' | 'stylex',
 ): ReadonlyArray<DocsExample> => bottomSheetFixtures.map((fixture, index) => ({
   title: fixture.title,
+  keepIdsCanonical: index === 0,
   ...(fixture.description === undefined ? {} : { description: fixture.description }),
   code: source(fixture, index, renderer),
 }));

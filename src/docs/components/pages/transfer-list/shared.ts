@@ -402,4 +402,7 @@ export const transferListExamples = (
     title: fixture.title,
     description: fixture.description,
     code: transferListSource(fixture, renderer),
+    /* The transfer-list root is an @container: inside the centered preview
+       it shrink-to-fits to ~one word. Stretch keeps it full width. */
+    previewClass: 'justify-stretch',
   }));

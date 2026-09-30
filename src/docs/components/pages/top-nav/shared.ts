@@ -1049,6 +1049,7 @@ export const topNavExamples = (
 ): ReadonlyArray<DocsExample> =>
   topNavFixtures.map((fixture, index) => ({
     title: fixture.title,
+    keepIdsCanonical: index === 0,
     ...(fixture.description === undefined
       ? {}
       : { description: fixture.description }),

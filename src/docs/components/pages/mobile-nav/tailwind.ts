@@ -133,8 +133,8 @@ export const mobileNavTailwindPreviewProgram = definePreviewProgram<
       _docsPage: 'mobile-nav',
       nav:
         fixture.side === 'end'
-          ? MobileNav.init({ id: 'docs-mobile-nav', side: 'end' })
-          : MobileNav.init({ id: 'docs-mobile-nav' }),
+          ? MobileNav.init({ id: `docs-mobile-nav-${String(index)}`, side: 'end' })
+          : MobileNav.init({ id: `docs-mobile-nav-${String(index)}` }),
     };
   },
   update: (model, message): Update.Return<PreviewModel, PreviewMessage> => {

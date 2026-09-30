@@ -8,6 +8,13 @@ export type DocsExample = Readonly<{
   previewClass?: string;
   /** Rendered only as the page hero — no named example section. */
   heroOnly?: boolean;
+  /** When this example also renders as the page hero, keep its DOM ids
+     canonical instead of -hero-suffixed. Required when the example's
+     model already carries per-instance-unique ids that Foldkit Commands
+     resolve against the DOM (sheets, drawers, dialogs, popovers,
+     lightboxes, calendars, comboboxes) — rewriting them to -hero makes
+     the hero's own Commands hit the named twin or nothing. */
+  keepIdsCanonical?: boolean;
   /** DOM anchor id override; defaults to the title slug. Needed when two
      sections share a title. */
   sectionId?: string;

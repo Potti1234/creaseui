@@ -28,10 +28,10 @@ export type {
 export { Message } from "@/lib/clickable-card";
 
 /* Press/hover tint is painted by the overlay div, a child of the card:
-   state arrives through when.ancestor on the component-scoped marker. */
-const activeTint = stylex.when.ancestor(":active", clickableCardScope);
-const hoverTint = stylex.when.ancestor(":hover", clickableCardScope);
-
+   state arrives through when.ancestor on the component-scoped marker.
+   The when.ancestor calls must stay inline inside stylex.create — the
+   babel plugin does not compile them when hoisted to top-level consts
+   and they throw at module evaluation. */
 const styles = stylex.create({
   surface: {
     borderRadius: tokens.cardRadius,
@@ -52,9 +52,9 @@ const styles = stylex.create({
     inset: 0,
     backgroundColor: tokens.foreground,
     opacity: {
-      [activeTint]: "0.1",
       default: "0",
-      [hoverTint]: "0.05",
+      [stylex.when.ancestor(":hover", clickableCardScope)]: "0.05",
+      [stylex.when.ancestor(":active", clickableCardScope)]: "0.1",
     },
     pointerEvents: "none",
     position: "absolute",

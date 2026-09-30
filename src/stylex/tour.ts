@@ -121,6 +121,13 @@ const styles = stylex.create({
   layerInteractive: {
     pointerEvents: 'auto',
   },
+  scrim: {
+    position: 'absolute',
+    height: '100%',
+    left: 0,
+    top: 0,
+    width: '100%',
+  },
   layerPassive: {
     pointerEvents: 'none',
   },
@@ -336,6 +343,24 @@ export const tour = <Msg>(
     ],
   );
 
+  /* The dismiss surface is a dedicated scrim sibling — not the shared
+     tour-root — so clicks on the callout's Next/Back/Close controls do not
+     bubble up into a 'backdrop' dismissal. The dim itself is painted by
+     the highlight's box-shadow. */
+  const scrim = hasBackdrop
+    ? [
+        h.div(
+          [
+            h.DataAttribute('slot', 'tour-scrim'),
+            h.AriaHidden(true),
+            h.Class(className(styles.scrim)),
+            h.OnClick(send(Message.RequestedDismiss({ source: 'backdrop' }))),
+          ],
+          [],
+        ),
+      ]
+    : [];
+
   return h.div(
     [
       h.DataAttribute('slot', 'tour-root'),
@@ -345,10 +370,7 @@ export const tour = <Msg>(
           hasBackdrop ? styles.layerInteractive : styles.layerPassive,
         ),
       ),
-      ...(hasBackdrop
-        ? [h.OnClick(send(Message.RequestedDismiss({ source: 'backdrop' })))]
-        : []),
     ],
-    [highlight, callout],
+    [...scrim, highlight, callout],
   );
 };

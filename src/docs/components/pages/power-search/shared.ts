@@ -735,8 +735,9 @@ export const init = (): Update.Return<Model, Message> => ({
 export const powerSearchExamples = (
   renderer: 'tailwind' | 'stylex',
 ): ReadonlyArray<DocsExample> =>
-  powerSearchFixtures.map((fixture) => ({
+  powerSearchFixtures.map((fixture, index) => ({
     title: fixture.title,
+    keepIdsCanonical: index === 0,
     description: fixture.description,
     code: powerSearchSource(fixture, renderer),
   }));

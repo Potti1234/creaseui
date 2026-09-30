@@ -914,9 +914,14 @@ const renderMegaMenu = <Msg>(
               h.Class(className(styles.megaContainer)),
               h.Role('group'),
               h.AriaLabel(menuData.label),
-              h.Style(
-                anchorPositionStyle(navAnchorId, 'bottom', { gap: '0px' }),
-              ),
+              h.Style({
+                /* Full-width mega menu: the panel anchors to the <nav> but
+                   sits inside the trigger's relative inline-flex wrapper —
+                   anchor-size breaks its width out of that containing
+                   block. */
+                ...anchorPositionStyle(navAnchorId, 'bottom', { gap: '0px' }),
+                width: 'anchor-size(width)',
+              }),
               h.OnMouseEnter(emitMenu(NavMenu.Message.EnteredNavMenuPanel())),
               h.OnMouseLeave(emitMenu(NavMenu.Message.LeftNavMenuPanel())),
               h.OnKeyDownPreventDefault(k =>

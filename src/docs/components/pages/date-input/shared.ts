@@ -356,8 +356,9 @@ const dateInputSource = (fixture: DateInputFixture, renderer: 'tailwind' | 'styl
 export const dateInputExamples = (
   renderer: 'tailwind' | 'stylex',
 ): ReadonlyArray<DocsExample> =>
-  dateInputFixtures.map(fixture => ({
+  dateInputFixtures.map((fixture, index) => ({
     title: fixture.title,
+    keepIdsCanonical: index === 0,
     ...(fixture.description === undefined
       ? {}
       : { description: fixture.description }),

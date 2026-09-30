@@ -272,8 +272,9 @@ export const update = (
 
 export const mobileNavExamples = (
   renderer: 'tailwind' | 'stylex',
-): ReadonlyArray<DocsExample> => mobileNavFixtures.map(fixture => ({
+): ReadonlyArray<DocsExample> => mobileNavFixtures.map((fixture, index) => ({
   title: fixture.title,
+  keepIdsCanonical: index === 0,
   ...(fixture.description === undefined ? {} : { description: fixture.description }),
   code: source(fixture, renderer),
 }));

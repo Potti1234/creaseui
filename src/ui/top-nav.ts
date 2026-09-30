@@ -544,11 +544,16 @@ const renderMegaMenu = <Msg>(
               h.Class(MEGA_CONTAINER_CLASS),
               h.Role('group'),
               h.AriaLabel(menuData.label),
-              h.Style(
-                anchorPositionStyle(navAnchorId, 'bottom', {
+              h.Style({
+                /* The panel anchors to the whole <nav> (astryx: full-width
+                   mega menu), but it lives inside the trigger's relative
+                   inline-flex wrapper — anchor-size breaks its width out of
+                   that ~trigger-width containing block. */
+                ...anchorPositionStyle(navAnchorId, 'bottom', {
                   gap: '0px',
                 }),
-              ),
+                width: 'anchor-size(width)',
+              }),
               h.OnMouseEnter(
                 emitMenu(NavMenu.Message.EnteredNavMenuPanel()),
               ),

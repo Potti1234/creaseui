@@ -76,7 +76,7 @@ const fixtureFor = (index: number): BottomSheetFixture =>
 
 const init = (index: number): PreviewModel => {
   const fixture = fixtureFor(index);
-  const id = 'docs-bottom-sheet';
+  const id = `docs-bottom-sheet-${String(index)}`;
   return {
     _docsPage: 'bottom-sheet',
     sheet:
@@ -90,7 +90,7 @@ const init = (index: number): PreviewModel => {
     switcher:
       fixture.kind === 'switcher'
         ? BottomSheet.initSwitcher({
-            id: 'docs-switcher',
+            id: `docs-switcher-${String(index)}`,
             sheets: [
               { id: 'overview', label: 'Set up notifications', height: 'hug' },
               { id: 'frequency', label: 'Notification frequency', height: 'hug' },
@@ -99,17 +99,17 @@ const init = (index: number): PreviewModel => {
           })
         : fixture.kind === 'reviewflow'
           ? BottomSheet.initSwitcher({
-              id: 'docs-switcher',
+              id: `docs-switcher-${String(index)}`,
               sheets: [
                 { id: 'review', label: 'Review notification settings', height: 'hug', purpose: 'form' },
                 { id: 'confirm', label: 'Confirm settings', height: 'hug' },
               ],
             })
-          : BottomSheet.initSwitcher({ id: 'docs-switcher', sheets: [] }),
+          : BottomSheet.initSwitcher({ id: `docs-switcher-${String(index)}`, sheets: [] }),
     inStock: false,
     onSale: false,
     freeShipping: false,
-    frequency: RadioGroup.init({ id: 'docs-frequency-group' }),
+    frequency: RadioGroup.init({ id: `docs-frequency-group-${String(index)}` }),
     frequencyValue: 'weekly',
     emailChannel: true,
     pushChannel: true,
