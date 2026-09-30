@@ -4,7 +4,7 @@
     "src/ui/registry.json",
     "src/ui/*.ts"
   ],
-  "componentCount": 91,
+  "componentCount": 98,
   "components": [
     {
       "slug": "accordion",
@@ -598,6 +598,99 @@
           "name": "badge",
           "kind": "function",
           "signature": "badge<Msg>(props: BadgeProps, h: HtmlBuilder<Msg>): Html"
+        }
+      ]
+    },
+    {
+      "slug": "banner",
+      "title": "Banner",
+      "description": "A shadcn-styled Banner component for Foldkit.",
+      "docs": "/docs/components/banner",
+      "source": "src/ui/banner.ts",
+      "install": "npx shadcn@latest add Potti1234/creaseui/banner",
+      "dependencies": [
+        "Potti1234/creaseui/button",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "Banner — Statuses",
+        "A new software update is available.",
+        "Your changes have been saved.",
+        "Your trial expires in 3 days.",
+        "Payment failed.",
+        "Banner — Statuses (detailed)",
+        "A new software update is available",
+        "Changes saved",
+        "Storage almost full",
+        "Build failed",
+        "Banner — Dismiss",
+        "Deployment complete",
+        "Scheduled maintenance tonight",
+        "New feature available",
+        "Banner — Action",
+        "Your trial expires in 3 days",
+        "API key expires soon",
+        "Payment failed",
+        "Banner — Collapsible",
+        "Configuration changes detected",
+        "Banner — Floating",
+        "You have unsaved changes",
+        "Banner — Full Width",
+        "Scheduled downtime",
+        "Welcome to the new dashboard"
+      ],
+      "api": [
+        {
+          "name": "Model",
+          "kind": "re-export",
+          "signature": "export { Model } from '@/lib/banner'"
+        },
+        {
+          "name": "Message",
+          "kind": "re-export",
+          "signature": "export { Message } from '@/lib/banner'"
+        },
+        {
+          "name": "OutMessage",
+          "kind": "re-export",
+          "signature": "export { OutMessage } from '@/lib/banner'"
+        },
+        {
+          "name": "init",
+          "kind": "re-export",
+          "signature": "export { init } from '@/lib/banner'"
+        },
+        {
+          "name": "update",
+          "kind": "re-export",
+          "signature": "export { update } from '@/lib/banner'"
+        },
+        {
+          "name": "BannerContainer",
+          "kind": "re-export",
+          "signature": "export { BannerContainer } from '@/lib/banner'"
+        },
+        {
+          "name": "BannerElevation",
+          "kind": "re-export",
+          "signature": "export { BannerElevation } from '@/lib/banner'"
+        },
+        {
+          "name": "BannerStatus",
+          "kind": "re-export",
+          "signature": "export { BannerStatus } from '@/lib/banner'"
+        },
+        {
+          "name": "BannerProps",
+          "kind": "type",
+          "signature": "BannerProps<Msg> = Readonly<{ model: BannerBehavior.Model; toParentMessage: (message: BannerBehavior.Message) => Msg; /** Status type controlling the icon, tint, and ARIA role. */ status: BannerBehavior.BannerStatus; /** Stable id — anchors the disclosure's a…"
+        },
+        {
+          "name": "banner",
+          "kind": "function",
+          "signature": "banner<Msg>(props: BannerProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },
@@ -1531,6 +1624,55 @@
           "name": "circularProgress",
           "kind": "function",
           "signature": "circularProgress<Msg>(props: CircularProgressProps, h: HtmlBuilder<Msg>): Html"
+        }
+      ]
+    },
+    {
+      "slug": "clickable-card",
+      "title": "Clickable Card",
+      "description": "A shadcn-styled Clickable Card component for Foldkit.",
+      "docs": "/docs/components/clickable-card",
+      "source": "src/ui/clickable-card.ts",
+      "install": "npx shadcn@latest add Potti1234/creaseui/clickable-card",
+      "dependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "ClickableCard",
+        "ClickableCard — Elevated",
+        "ClickableCardWithNestedButton"
+      ],
+      "api": [
+        {
+          "name": "CardElevation",
+          "kind": "re-export",
+          "signature": "export { CardElevation } from '@/lib/card-surface'"
+        },
+        {
+          "name": "CardPadding",
+          "kind": "re-export",
+          "signature": "export { CardPadding } from '@/lib/card-surface'"
+        },
+        {
+          "name": "CardVariant",
+          "kind": "re-export",
+          "signature": "export { CardVariant } from '@/lib/card-surface'"
+        },
+        {
+          "name": "Message",
+          "kind": "re-export",
+          "signature": "export { Message } from '@/lib/clickable-card'"
+        },
+        {
+          "name": "ClickableCardProps",
+          "kind": "type",
+          "signature": "ClickableCardProps<Msg> = Readonly<{ /** Accessibility label for the card. Applied to the hidden control that owns keyboard focus so the card surface itself stays a plain <div>. */ label: string; /** Message emitted when the card surface is clicked (not when …"
+        },
+        {
+          "name": "clickableCard",
+          "kind": "function",
+          "signature": "clickableCard<Msg>(props: ClickableCardProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },
@@ -2687,6 +2829,45 @@
           "name": "emptyContent",
           "kind": "value",
           "signature": "emptyContent: value"
+        }
+      ]
+    },
+    {
+      "slug": "field-status",
+      "title": "Field Status",
+      "description": "A shadcn-styled Field Status component for Foldkit.",
+      "docs": "/docs/components/field-status",
+      "source": "src/ui/field-status.ts",
+      "install": "npx shadcn@latest add Potti1234/creaseui/field-status",
+      "dependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "FieldStatus — Basic",
+        "FieldStatus"
+      ],
+      "api": [
+        {
+          "name": "FieldStatusType",
+          "kind": "type",
+          "signature": "FieldStatusType = 'warning' | 'error' | 'success'"
+        },
+        {
+          "name": "FieldStatusVariant",
+          "kind": "type",
+          "signature": "FieldStatusVariant = 'attached' | 'detached'"
+        },
+        {
+          "name": "FieldStatusProps",
+          "kind": "type",
+          "signature": "FieldStatusProps = Readonly<{ type: FieldStatusType; message: string; /** @default 'attached' */ variant?: FieldStatusVariant; /** Stable id — inputs reference it via aria-describedby. */ id?: string; class?: string; }>"
+        },
+        {
+          "name": "fieldStatus",
+          "kind": "function",
+          "signature": "fieldStatus<Msg>(props: FieldStatusProps, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },
@@ -4294,6 +4475,162 @@
       ]
     },
     {
+      "slug": "metadata-list",
+      "title": "Metadata List",
+      "description": "A shadcn-styled Metadata List component for Foldkit.",
+      "docs": "/docs/components/metadata-list",
+      "source": "src/ui/metadata-list.ts",
+      "install": "npx shadcn@latest add Potti1234/creaseui/metadata-list",
+      "dependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "MetadataList",
+        "MetadataList — Basic",
+        "MetadataList — Collapsible",
+        "MetadataList — Horizontal",
+        "MetadataList — Multi-Column"
+      ],
+      "api": [
+        {
+          "name": "Model",
+          "kind": "re-export",
+          "signature": "export { Model } from '@/lib/metadata-list'"
+        },
+        {
+          "name": "Message",
+          "kind": "re-export",
+          "signature": "export { Message } from '@/lib/metadata-list'"
+        },
+        {
+          "name": "init",
+          "kind": "re-export",
+          "signature": "export { init } from '@/lib/metadata-list'"
+        },
+        {
+          "name": "update",
+          "kind": "re-export",
+          "signature": "export { update } from '@/lib/metadata-list'"
+        },
+        {
+          "name": "resolveLayout",
+          "kind": "re-export",
+          "signature": "export { resolveLayout } from '@/lib/metadata-list'"
+        },
+        {
+          "name": "MetadataListColumns",
+          "kind": "re-export",
+          "signature": "export { MetadataListColumns } from '@/lib/metadata-list'"
+        },
+        {
+          "name": "MetadataListLabelConfig",
+          "kind": "re-export",
+          "signature": "export { MetadataListLabelConfig } from '@/lib/metadata-list'"
+        },
+        {
+          "name": "MetadataListOrientation",
+          "kind": "re-export",
+          "signature": "export { MetadataListOrientation } from '@/lib/metadata-list'"
+        },
+        {
+          "name": "MetadataListProps",
+          "kind": "type",
+          "signature": "MetadataListProps<Msg> = Readonly<{ model: Behavior.Model; toParentMessage: (message: Behavior.Message) => Msg; /** Stable id — anchors the show-more toggle's aria-controls. */ id: string; /** @default 'single' */ columns?: Behavior.MetadataListColumns; label…"
+        },
+        {
+          "name": "metadataList",
+          "kind": "function",
+          "signature": "metadataList<Msg>(props: MetadataListProps<Msg>, h: HtmlBuilder<Msg>): Html"
+        },
+        {
+          "name": "MetadataListItemProps",
+          "kind": "type",
+          "signature": "MetadataListItemProps = Readonly<{ label: Html | string; icon?: Html; /** Render the label above the value inside a wrapper (top labels and horizontal layouts). The parent MetadataList resolves this. */ stacked?: boolean; children?: ReadonlyArray<Html | strin…"
+        },
+        {
+          "name": "metadataListItem",
+          "kind": "function",
+          "signature": "metadataListItem<Msg>(props: MetadataListItemProps, h: HtmlBuilder<Msg>): Html"
+        }
+      ]
+    },
+    {
+      "slug": "more-menu",
+      "title": "More Menu",
+      "description": "A shadcn-styled More Menu component for Foldkit.",
+      "docs": "/docs/components/more-menu",
+      "source": "src/ui/more-menu.ts",
+      "install": "npx shadcn@latest add Potti1234/creaseui/more-menu",
+      "dependencies": [
+        "Potti1234/creaseui/button",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/dropdown-menu",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "MoreMenu",
+        "MoreMenu — Default",
+        "MoreMenu — With Dividers",
+        "MoreMenu — With Sections",
+        "Actions",
+        "Danger zone"
+      ],
+      "api": [
+        {
+          "name": "Model",
+          "kind": "re-export",
+          "signature": "export { Model } from '@/ui/dropdown-menu'"
+        },
+        {
+          "name": "Message",
+          "kind": "re-export",
+          "signature": "export { Message } from '@/ui/dropdown-menu'"
+        },
+        {
+          "name": "OutMessage",
+          "kind": "re-export",
+          "signature": "export { OutMessage } from '@/ui/dropdown-menu'"
+        },
+        {
+          "name": "init",
+          "kind": "re-export",
+          "signature": "export { init } from '@/ui/dropdown-menu'"
+        },
+        {
+          "name": "update",
+          "kind": "re-export",
+          "signature": "export { update } from '@/ui/dropdown-menu'"
+        },
+        {
+          "name": "flattenOptions",
+          "kind": "re-export",
+          "signature": "export { flattenOptions } from '@/lib/more-menu'"
+        },
+        {
+          "name": "MoreMenuAction",
+          "kind": "re-export",
+          "signature": "export { MoreMenuAction } from '@/lib/more-menu'"
+        },
+        {
+          "name": "MoreMenuOption",
+          "kind": "re-export",
+          "signature": "export { MoreMenuOption } from '@/lib/more-menu'"
+        },
+        {
+          "name": "MoreMenuProps",
+          "kind": "type",
+          "signature": "MoreMenuProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<MoreMenuOption>; /** Trigger aria-label — the button is always icon-only. @default 'More options' */ label?: string; /** @default 'ghost' */ variant…"
+        },
+        {
+          "name": "moreMenu",
+          "kind": "function",
+          "signature": "moreMenu<Msg>(props: MoreMenuProps<Msg>, h: HtmlBuilder<Msg>): Html"
+        }
+      ]
+    },
+    {
       "slug": "native-select",
       "title": "Native Select",
       "description": "A shadcn-styled Native Select component for Foldkit.",
@@ -4481,6 +4818,98 @@
           "name": "numberInput",
           "kind": "function",
           "signature": "numberInput<Msg>(props: NumberInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
+        }
+      ]
+    },
+    {
+      "slug": "overflow-list",
+      "title": "Overflow List",
+      "description": "A shadcn-styled Overflow List component for Foldkit.",
+      "docs": "/docs/components/overflow-list",
+      "source": "src/ui/overflow-list.ts",
+      "install": "npx shadcn@latest add Potti1234/creaseui/overflow-list",
+      "dependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "OverflowList",
+        "OverflowList — Capped Toolbar",
+        "OverflowList — Collapse From Start",
+        "OverflowList — Multi-row Tags",
+        "OverflowList — Badge Tags",
+        "OverflowList — Dropdown Actions"
+      ],
+      "api": [
+        {
+          "name": "Model",
+          "kind": "re-export",
+          "signature": "export { Model } from '@/lib/overflow-list'"
+        },
+        {
+          "name": "Message",
+          "kind": "re-export",
+          "signature": "export { Message } from '@/lib/overflow-list'"
+        },
+        {
+          "name": "OutMessage",
+          "kind": "re-export",
+          "signature": "export { OutMessage } from '@/lib/overflow-list'"
+        },
+        {
+          "name": "init",
+          "kind": "re-export",
+          "signature": "export { init } from '@/lib/overflow-list'"
+        },
+        {
+          "name": "update",
+          "kind": "re-export",
+          "signature": "export { update } from '@/lib/overflow-list'"
+        },
+        {
+          "name": "computeOverflow",
+          "kind": "re-export",
+          "signature": "export { computeOverflow } from '@/lib/overflow-list'"
+        },
+        {
+          "name": "spacingToPx",
+          "kind": "re-export",
+          "signature": "export { spacingToPx } from '@/lib/overflow-list'"
+        },
+        {
+          "name": "collapsedIndices",
+          "kind": "re-export",
+          "signature": "export { collapsedIndices } from '@/lib/overflow-list'"
+        },
+        {
+          "name": "CollapseFrom",
+          "kind": "re-export",
+          "signature": "export { CollapseFrom } from '@/lib/overflow-list'"
+        },
+        {
+          "name": "OverflowBehavior",
+          "kind": "re-export",
+          "signature": "export { OverflowBehavior } from '@/lib/overflow-list'"
+        },
+        {
+          "name": "OverflowListItem",
+          "kind": "re-export",
+          "signature": "export { OverflowListItem } from '@/lib/overflow-list'"
+        },
+        {
+          "name": "SpacingStep",
+          "kind": "re-export",
+          "signature": "export { SpacingStep } from '@/lib/overflow-list'"
+        },
+        {
+          "name": "OverflowListProps",
+          "kind": "type",
+          "signature": "OverflowListProps<Msg> = Readonly<{ model: Behavior.Model; toParentMessage: (message: Behavior.Message) => Msg; /** @default 2 — spacing-step gap between items. */ gap?: Behavior.SpacingStep; /** @default 0 — floor: always show at least this many items. */ mi…"
+        },
+        {
+          "name": "overflowList",
+          "kind": "function",
+          "signature": "overflowList<Msg>(props: OverflowListProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },
@@ -5039,6 +5468,55 @@
           "name": "select",
           "kind": "value",
           "signature": "select: value"
+        }
+      ]
+    },
+    {
+      "slug": "selectable-card",
+      "title": "Selectable Card",
+      "description": "A shadcn-styled Selectable Card component for Foldkit.",
+      "docs": "/docs/components/selectable-card",
+      "source": "src/ui/selectable-card.ts",
+      "install": "npx shadcn@latest add Potti1234/creaseui/selectable-card",
+      "dependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "SelectableCard",
+        "SelectableCard — Elevated",
+        "SelectableCardMulti"
+      ],
+      "api": [
+        {
+          "name": "CardElevation",
+          "kind": "re-export",
+          "signature": "export { CardElevation } from '@/lib/card-surface'"
+        },
+        {
+          "name": "CardPadding",
+          "kind": "re-export",
+          "signature": "export { CardPadding } from '@/lib/card-surface'"
+        },
+        {
+          "name": "CardVariant",
+          "kind": "re-export",
+          "signature": "export { CardVariant } from '@/lib/card-surface'"
+        },
+        {
+          "name": "Message",
+          "kind": "re-export",
+          "signature": "export { Message } from '@/lib/clickable-card'"
+        },
+        {
+          "name": "SelectableCardProps",
+          "kind": "type",
+          "signature": "SelectableCardProps<Msg> = Readonly<{ /** Accessibility label for the card, applied to the hidden checkbox. */ label: string; /** Controlled selection state — the parent owns it. */ isSelected: boolean; /** Message emitted when the card requests a toggle. */ …"
+        },
+        {
+          "name": "selectableCard",
+          "kind": "function",
+          "signature": "selectableCard<Msg>(props: SelectableCardProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },

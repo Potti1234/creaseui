@@ -10,6 +10,7 @@ const componentNames = readdirSync('src/ui')
   .sort()
 
 const infrastructureNames = new Set([
+  'card.markers.stylex',
   'complex-tokens.stylex',
   'contracts',
   'foundations-tokens.stylex',
@@ -421,7 +422,7 @@ describe('complete StyleX catalog', () => {
       .sort()
 
     assert.deepEqual(stylexNames, componentNames)
-    assert.equal(componentNames.length, 91)
+    assert.equal(componentNames.length, 98)
   })
 
   it('does not fall back to Tailwind, CVA, or raw authored class strings', () => {

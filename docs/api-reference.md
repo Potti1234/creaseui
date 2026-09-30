@@ -142,6 +142,23 @@ Source: [`src/ui/badge.ts`](../src/ui/badge.ts)
 | `BadgeProps` | type | `BadgeProps = Readonly<{ children: ReadonlyArray<Html \| string>; variant?: BadgeVariants['variant']; class?: string; /** Renders the badge as an anchor pointing at this URL. */ href?: string; }>` |
 | `badge` | function | `badge<Msg>(props: BadgeProps, h: HtmlBuilder<Msg>): Html` |
 
+## Banner
+
+Source: [`src/ui/banner.ts`](../src/ui/banner.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Model` | re-export | `export { Model } from '@/lib/banner'` |
+| `Message` | re-export | `export { Message } from '@/lib/banner'` |
+| `OutMessage` | re-export | `export { OutMessage } from '@/lib/banner'` |
+| `init` | re-export | `export { init } from '@/lib/banner'` |
+| `update` | re-export | `export { update } from '@/lib/banner'` |
+| `BannerContainer` | re-export | `export { BannerContainer } from '@/lib/banner'` |
+| `BannerElevation` | re-export | `export { BannerElevation } from '@/lib/banner'` |
+| `BannerStatus` | re-export | `export { BannerStatus } from '@/lib/banner'` |
+| `BannerProps` | type | `BannerProps<Msg> = Readonly<{ model: BannerBehavior.Model; toParentMessage: (message: BannerBehavior.Message) => Msg; /** Status type controlling the icon, tint, and ARIA role. */ status: BannerBehavior.BannerStatus; /** Stable id — anchors the disclosure's a…` |
+| `banner` | function | `banner<Msg>(props: BannerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Blockquote
 
 Source: [`src/ui/blockquote.ts`](../src/ui/blockquote.ts)
@@ -353,6 +370,19 @@ Source: [`src/ui/circular-progress.ts`](../src/ui/circular-progress.ts)
 | `CircularProgressSize` | type | `CircularProgressSize = 'sm' \| 'md' \| 'lg'` |
 | `CircularProgressProps` | type | `CircularProgressProps = Readonly<{ /** Current value. Ignored when isIndeterminate is true. */ value?: number; /** Maximum value. */ max?: number; /** Accessible label for the progress indicator. Required for a11y. */ label: string; /** When true (default), t…` |
 | `circularProgress` | function | `circularProgress<Msg>(props: CircularProgressProps, h: HtmlBuilder<Msg>): Html` |
+
+## Clickable Card
+
+Source: [`src/ui/clickable-card.ts`](../src/ui/clickable-card.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `CardElevation` | re-export | `export { CardElevation } from '@/lib/card-surface'` |
+| `CardPadding` | re-export | `export { CardPadding } from '@/lib/card-surface'` |
+| `CardVariant` | re-export | `export { CardVariant } from '@/lib/card-surface'` |
+| `Message` | re-export | `export { Message } from '@/lib/clickable-card'` |
+| `ClickableCardProps` | type | `ClickableCardProps<Msg> = Readonly<{ /** Accessibility label for the card. Applied to the hidden control that owns keyboard focus so the card surface itself stays a plain <div>. */ label: string; /** Message emitted when the card surface is clicked (not when …` |
+| `clickableCard` | function | `clickableCard<Msg>(props: ClickableCardProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Code Block
 
@@ -613,6 +643,17 @@ Source: [`src/ui/empty.ts`](../src/ui/empty.ts)
 | `emptyTitle` | function | `emptyTitle<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` |
 | `emptyDescription` | value | `emptyDescription: value` |
 | `emptyContent` | value | `emptyContent: value` |
+
+## Field Status
+
+Source: [`src/ui/field-status.ts`](../src/ui/field-status.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `FieldStatusType` | type | `FieldStatusType = 'warning' \| 'error' \| 'success'` |
+| `FieldStatusVariant` | type | `FieldStatusVariant = 'attached' \| 'detached'` |
+| `FieldStatusProps` | type | `FieldStatusProps = Readonly<{ type: FieldStatusType; message: string; /** @default 'attached' */ variant?: FieldStatusVariant; /** Stable id — inputs reference it via aria-describedby. */ id?: string; class?: string; }>` |
+| `fieldStatus` | function | `fieldStatus<Msg>(props: FieldStatusProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Field
 
@@ -982,6 +1023,42 @@ Source: [`src/ui/message.ts`](../src/ui/message.ts)
 | `messageMetadata` | function | `messageMetadata<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `messageActions` | function | `messageActions<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 
+## Metadata List
+
+Source: [`src/ui/metadata-list.ts`](../src/ui/metadata-list.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Model` | re-export | `export { Model } from '@/lib/metadata-list'` |
+| `Message` | re-export | `export { Message } from '@/lib/metadata-list'` |
+| `init` | re-export | `export { init } from '@/lib/metadata-list'` |
+| `update` | re-export | `export { update } from '@/lib/metadata-list'` |
+| `resolveLayout` | re-export | `export { resolveLayout } from '@/lib/metadata-list'` |
+| `MetadataListColumns` | re-export | `export { MetadataListColumns } from '@/lib/metadata-list'` |
+| `MetadataListLabelConfig` | re-export | `export { MetadataListLabelConfig } from '@/lib/metadata-list'` |
+| `MetadataListOrientation` | re-export | `export { MetadataListOrientation } from '@/lib/metadata-list'` |
+| `MetadataListProps` | type | `MetadataListProps<Msg> = Readonly<{ model: Behavior.Model; toParentMessage: (message: Behavior.Message) => Msg; /** Stable id — anchors the show-more toggle's aria-controls. */ id: string; /** @default 'single' */ columns?: Behavior.MetadataListColumns; label…` |
+| `metadataList` | function | `metadataList<Msg>(props: MetadataListProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `MetadataListItemProps` | type | `MetadataListItemProps = Readonly<{ label: Html \| string; icon?: Html; /** Render the label above the value inside a wrapper (top labels and horizontal layouts). The parent MetadataList resolves this. */ stacked?: boolean; children?: ReadonlyArray<Html \| strin…` |
+| `metadataListItem` | function | `metadataListItem<Msg>(props: MetadataListItemProps, h: HtmlBuilder<Msg>): Html` |
+
+## More Menu
+
+Source: [`src/ui/more-menu.ts`](../src/ui/more-menu.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Model` | re-export | `export { Model } from '@/ui/dropdown-menu'` |
+| `Message` | re-export | `export { Message } from '@/ui/dropdown-menu'` |
+| `OutMessage` | re-export | `export { OutMessage } from '@/ui/dropdown-menu'` |
+| `init` | re-export | `export { init } from '@/ui/dropdown-menu'` |
+| `update` | re-export | `export { update } from '@/ui/dropdown-menu'` |
+| `flattenOptions` | re-export | `export { flattenOptions } from '@/lib/more-menu'` |
+| `MoreMenuAction` | re-export | `export { MoreMenuAction } from '@/lib/more-menu'` |
+| `MoreMenuOption` | re-export | `export { MoreMenuOption } from '@/lib/more-menu'` |
+| `MoreMenuProps` | type | `MoreMenuProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<MoreMenuOption>; /** Trigger aria-label — the button is always icon-only. @default 'More options' */ label?: string; /** @default 'ghost' */ variant…` |
+| `moreMenu` | function | `moreMenu<Msg>(props: MoreMenuProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Native Select
 
 Source: [`src/ui/native-select.ts`](../src/ui/native-select.ts)
@@ -1027,6 +1104,27 @@ Source: [`src/ui/number-input.ts`](../src/ui/number-input.ts)
 | `NumberInputProps` | type | `NumberInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html \| string /** The committed value owned by the parent (`null`/`undefined` = em…` |
 | `NumberInputViewInputs` | type | `NumberInputViewInputs = Omit< NumberInputProps<never>, 'model' \| 'toParentMessage' >` |
 | `numberInput` | function | `numberInput<Msg>(props: NumberInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Overflow List
+
+Source: [`src/ui/overflow-list.ts`](../src/ui/overflow-list.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Model` | re-export | `export { Model } from '@/lib/overflow-list'` |
+| `Message` | re-export | `export { Message } from '@/lib/overflow-list'` |
+| `OutMessage` | re-export | `export { OutMessage } from '@/lib/overflow-list'` |
+| `init` | re-export | `export { init } from '@/lib/overflow-list'` |
+| `update` | re-export | `export { update } from '@/lib/overflow-list'` |
+| `computeOverflow` | re-export | `export { computeOverflow } from '@/lib/overflow-list'` |
+| `spacingToPx` | re-export | `export { spacingToPx } from '@/lib/overflow-list'` |
+| `collapsedIndices` | re-export | `export { collapsedIndices } from '@/lib/overflow-list'` |
+| `CollapseFrom` | re-export | `export { CollapseFrom } from '@/lib/overflow-list'` |
+| `OverflowBehavior` | re-export | `export { OverflowBehavior } from '@/lib/overflow-list'` |
+| `OverflowListItem` | re-export | `export { OverflowListItem } from '@/lib/overflow-list'` |
+| `SpacingStep` | re-export | `export { SpacingStep } from '@/lib/overflow-list'` |
+| `OverflowListProps` | type | `OverflowListProps<Msg> = Readonly<{ model: Behavior.Model; toParentMessage: (message: Behavior.Message) => Msg; /** @default 2 — spacing-step gap between items. */ gap?: Behavior.SpacingStep; /** @default 0 — floor: always show at least this many items. */ mi…` |
+| `overflowList` | function | `overflowList<Msg>(props: OverflowListProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Pagination
 
@@ -1159,6 +1257,19 @@ Source: [`src/ui/select.ts`](../src/ui/select.ts)
 | `create` | function | `create<Value extends string = string>(): SelectBundle<Value>` |
 | `update` | value | `update: value` |
 | `select` | value | `select: value` |
+
+## Selectable Card
+
+Source: [`src/ui/selectable-card.ts`](../src/ui/selectable-card.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `CardElevation` | re-export | `export { CardElevation } from '@/lib/card-surface'` |
+| `CardPadding` | re-export | `export { CardPadding } from '@/lib/card-surface'` |
+| `CardVariant` | re-export | `export { CardVariant } from '@/lib/card-surface'` |
+| `Message` | re-export | `export { Message } from '@/lib/clickable-card'` |
+| `SelectableCardProps` | type | `SelectableCardProps<Msg> = Readonly<{ /** Accessibility label for the card, applied to the hidden checkbox. */ label: string; /** Controlled selection state — the parent owns it. */ isSelected: boolean; /** Message emitted when the card requests a toggle. */ …` |
+| `selectableCard` | function | `selectableCard<Msg>(props: SelectableCardProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Separator
 

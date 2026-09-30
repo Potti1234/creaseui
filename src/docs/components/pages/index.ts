@@ -8,6 +8,7 @@ import { attachmentPage } from '@/docs/components/pages/attachment';
 import { avatarPage } from '@/docs/components/pages/avatar';
 import { avatarGroupPage } from '@/docs/components/pages/avatar-group';
 import { badgePage } from '@/docs/components/pages/badge';
+import { bannerPage } from '@/docs/components/pages/banner';
 import { blockquotePage } from '@/docs/components/pages/blockquote';
 import { breadcrumbPage } from '@/docs/components/pages/breadcrumb';
 import { bubblePage } from '@/docs/components/pages/bubble';
@@ -21,6 +22,7 @@ import { centerPage } from '@/docs/components/pages/center';
 import { checkboxPage } from '@/docs/components/pages/checkbox';
 import { checkboxListPage } from '@/docs/components/pages/checkbox-list';
 import { circularProgressPage } from '@/docs/components/pages/circular-progress';
+import { clickableCardPage } from '@/docs/components/pages/clickable-card';
 import { codePage } from '@/docs/components/pages/code';
 import { codeBlockPage } from '@/docs/components/pages/code-block';
 import { collapsiblePage } from '@/docs/components/pages/collapsible';
@@ -35,6 +37,7 @@ import { drawerPage } from '@/docs/components/pages/drawer';
 import { dropdownMenuPage } from '@/docs/components/pages/dropdown-menu';
 import { emptyPage } from '@/docs/components/pages/empty';
 import { fieldPage } from '@/docs/components/pages/field';
+import { fieldStatusPage } from '@/docs/components/pages/field-status';
 import { fileInputPage } from '@/docs/components/pages/file-input';
 import { formPage } from '@/docs/components/pages/form';
 import { gridPage } from '@/docs/components/pages/grid';
@@ -55,9 +58,12 @@ import { markerPage } from '@/docs/components/pages/marker';
 import { messagePage } from '@/docs/components/pages/message';
 import { messageScrollerPage } from '@/docs/components/pages/message-scroller';
 import { menubarPage } from '@/docs/components/pages/menubar';
+import { metadataListPage } from '@/docs/components/pages/metadata-list';
+import { moreMenuPage } from '@/docs/components/pages/more-menu';
 import { nativeSelectPage } from '@/docs/components/pages/native-select';
 import { navigationMenuPage } from '@/docs/components/pages/navigation-menu';
 import { numberInputPage } from '@/docs/components/pages/number-input';
+import { overflowListPage } from '@/docs/components/pages/overflow-list';
 import { paginationPage } from '@/docs/components/pages/pagination';
 import { popoverPage } from '@/docs/components/pages/popover';
 import { progressPage } from '@/docs/components/pages/progress';
@@ -65,6 +71,7 @@ import { radioGroupPage } from '@/docs/components/pages/radio-group';
 import { resizablePage } from '@/docs/components/pages/resizable';
 import { scrollAreaPage } from '@/docs/components/pages/scroll-area';
 import { sectionPage } from '@/docs/components/pages/section';
+import { selectableCardPage } from '@/docs/components/pages/selectable-card';
 import { separatorPage } from '@/docs/components/pages/separator';
 import { selectPage } from '@/docs/components/pages/select';
 import { sheetPage } from '@/docs/components/pages/sheet';
@@ -103,6 +110,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       avatarPage,
       avatarGroupPage,
       badgePage,
+      bannerPage,
       blockquotePage,
       breadcrumbPage,
       bubblePage,
@@ -116,6 +124,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       checkboxPage,
       checkboxListPage,
       circularProgressPage,
+      clickableCardPage,
       codePage,
       codeBlockPage,
       collapsiblePage,
@@ -130,6 +139,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       dropdownMenuPage,
       emptyPage,
       fieldPage,
+      fieldStatusPage,
       fileInputPage,
       formPage,
       gridPage,
@@ -150,9 +160,12 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       messagePage,
       messageScrollerPage,
       menubarPage,
+      metadataListPage,
+      moreMenuPage,
       nativeSelectPage,
       navigationMenuPage,
       numberInputPage,
+      overflowListPage,
       paginationPage,
       popoverPage,
       progressPage,
@@ -160,6 +173,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       resizablePage,
       scrollAreaPage,
       sectionPage,
+      selectableCardPage,
       separatorPage,
       selectPage,
       sheetPage,

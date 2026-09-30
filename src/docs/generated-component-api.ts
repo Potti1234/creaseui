@@ -404,6 +404,58 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "badge<Msg>(props: BadgeProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "banner": [
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/lib/banner'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/banner'"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from '@/lib/banner'"
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/lib/banner'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/lib/banner'"
+    },
+    {
+      "name": "BannerContainer",
+      "kind": "re-export",
+      "signature": "export { BannerContainer } from '@/lib/banner'"
+    },
+    {
+      "name": "BannerElevation",
+      "kind": "re-export",
+      "signature": "export { BannerElevation } from '@/lib/banner'"
+    },
+    {
+      "name": "BannerStatus",
+      "kind": "re-export",
+      "signature": "export { BannerStatus } from '@/lib/banner'"
+    },
+    {
+      "name": "BannerProps",
+      "kind": "type",
+      "signature": "BannerProps<Msg> = Readonly<{ model: BannerBehavior.Model; toParentMessage: (message: BannerBehavior.Message) => Msg; /** Status type controlling the icon, tint, and ARIA role. */ status: BannerBehavior.BannerStatus; /** Stable id — anchors the disclosure's a…"
+    },
+    {
+      "name": "banner",
+      "kind": "function",
+      "signature": "banner<Msg>(props: BannerProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "blockquote": [
     {
       "name": "BlockquoteProps",
@@ -1033,6 +1085,38 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "circularProgress",
       "kind": "function",
       "signature": "circularProgress<Msg>(props: CircularProgressProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "clickable-card": [
+    {
+      "name": "CardElevation",
+      "kind": "re-export",
+      "signature": "export { CardElevation } from '@/lib/card-surface'"
+    },
+    {
+      "name": "CardPadding",
+      "kind": "re-export",
+      "signature": "export { CardPadding } from '@/lib/card-surface'"
+    },
+    {
+      "name": "CardVariant",
+      "kind": "re-export",
+      "signature": "export { CardVariant } from '@/lib/card-surface'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/clickable-card'"
+    },
+    {
+      "name": "ClickableCardProps",
+      "kind": "type",
+      "signature": "ClickableCardProps<Msg> = Readonly<{ /** Accessibility label for the card. Applied to the hidden control that owns keyboard focus so the card surface itself stays a plain <div>. */ label: string; /** Message emitted when the card surface is clicked (not when …"
+    },
+    {
+      "name": "clickableCard",
+      "kind": "function",
+      "signature": "clickableCard<Msg>(props: ClickableCardProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "code-block": [
@@ -1904,6 +1988,28 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "emptyContent",
       "kind": "value",
       "signature": "emptyContent: value"
+    }
+  ],
+  "field-status": [
+    {
+      "name": "FieldStatusType",
+      "kind": "type",
+      "signature": "FieldStatusType = 'warning' | 'error' | 'success'"
+    },
+    {
+      "name": "FieldStatusVariant",
+      "kind": "type",
+      "signature": "FieldStatusVariant = 'attached' | 'detached'"
+    },
+    {
+      "name": "FieldStatusProps",
+      "kind": "type",
+      "signature": "FieldStatusProps = Readonly<{ type: FieldStatusType; message: string; /** @default 'attached' */ variant?: FieldStatusVariant; /** Stable id — inputs reference it via aria-describedby. */ id?: string; class?: string; }>"
+    },
+    {
+      "name": "fieldStatus",
+      "kind": "function",
+      "signature": "fieldStatus<Msg>(props: FieldStatusProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "field": [
@@ -3053,6 +3159,120 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "messageActions<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "metadata-list": [
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/lib/metadata-list'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/metadata-list'"
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/lib/metadata-list'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/lib/metadata-list'"
+    },
+    {
+      "name": "resolveLayout",
+      "kind": "re-export",
+      "signature": "export { resolveLayout } from '@/lib/metadata-list'"
+    },
+    {
+      "name": "MetadataListColumns",
+      "kind": "re-export",
+      "signature": "export { MetadataListColumns } from '@/lib/metadata-list'"
+    },
+    {
+      "name": "MetadataListLabelConfig",
+      "kind": "re-export",
+      "signature": "export { MetadataListLabelConfig } from '@/lib/metadata-list'"
+    },
+    {
+      "name": "MetadataListOrientation",
+      "kind": "re-export",
+      "signature": "export { MetadataListOrientation } from '@/lib/metadata-list'"
+    },
+    {
+      "name": "MetadataListProps",
+      "kind": "type",
+      "signature": "MetadataListProps<Msg> = Readonly<{ model: Behavior.Model; toParentMessage: (message: Behavior.Message) => Msg; /** Stable id — anchors the show-more toggle's aria-controls. */ id: string; /** @default 'single' */ columns?: Behavior.MetadataListColumns; label…"
+    },
+    {
+      "name": "metadataList",
+      "kind": "function",
+      "signature": "metadataList<Msg>(props: MetadataListProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "MetadataListItemProps",
+      "kind": "type",
+      "signature": "MetadataListItemProps = Readonly<{ label: Html | string; icon?: Html; /** Render the label above the value inside a wrapper (top labels and horizontal layouts). The parent MetadataList resolves this. */ stacked?: boolean; children?: ReadonlyArray<Html | strin…"
+    },
+    {
+      "name": "metadataListItem",
+      "kind": "function",
+      "signature": "metadataListItem<Msg>(props: MetadataListItemProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "more-menu": [
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/ui/dropdown-menu'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/ui/dropdown-menu'"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from '@/ui/dropdown-menu'"
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/ui/dropdown-menu'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/ui/dropdown-menu'"
+    },
+    {
+      "name": "flattenOptions",
+      "kind": "re-export",
+      "signature": "export { flattenOptions } from '@/lib/more-menu'"
+    },
+    {
+      "name": "MoreMenuAction",
+      "kind": "re-export",
+      "signature": "export { MoreMenuAction } from '@/lib/more-menu'"
+    },
+    {
+      "name": "MoreMenuOption",
+      "kind": "re-export",
+      "signature": "export { MoreMenuOption } from '@/lib/more-menu'"
+    },
+    {
+      "name": "MoreMenuProps",
+      "kind": "type",
+      "signature": "MoreMenuProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<MoreMenuOption>; /** Trigger aria-label — the button is always icon-only. @default 'More options' */ label?: string; /** @default 'ghost' */ variant…"
+    },
+    {
+      "name": "moreMenu",
+      "kind": "function",
+      "signature": "moreMenu<Msg>(props: MoreMenuProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "native-select": [
     {
       "name": "NativeSelectOption",
@@ -3182,6 +3402,78 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "numberInput",
       "kind": "function",
       "signature": "numberInput<Msg>(props: NumberInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "overflow-list": [
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "computeOverflow",
+      "kind": "re-export",
+      "signature": "export { computeOverflow } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "spacingToPx",
+      "kind": "re-export",
+      "signature": "export { spacingToPx } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "collapsedIndices",
+      "kind": "re-export",
+      "signature": "export { collapsedIndices } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "CollapseFrom",
+      "kind": "re-export",
+      "signature": "export { CollapseFrom } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "OverflowBehavior",
+      "kind": "re-export",
+      "signature": "export { OverflowBehavior } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "OverflowListItem",
+      "kind": "re-export",
+      "signature": "export { OverflowListItem } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "SpacingStep",
+      "kind": "re-export",
+      "signature": "export { SpacingStep } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "OverflowListProps",
+      "kind": "type",
+      "signature": "OverflowListProps<Msg> = Readonly<{ model: Behavior.Model; toParentMessage: (message: Behavior.Message) => Msg; /** @default 2 — spacing-step gap between items. */ gap?: Behavior.SpacingStep; /** @default 0 — floor: always show at least this many items. */ mi…"
+    },
+    {
+      "name": "overflowList",
+      "kind": "function",
+      "signature": "overflowList<Msg>(props: OverflowListProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "pagination": [
@@ -3578,6 +3870,38 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "select",
       "kind": "value",
       "signature": "select: value"
+    }
+  ],
+  "selectable-card": [
+    {
+      "name": "CardElevation",
+      "kind": "re-export",
+      "signature": "export { CardElevation } from '@/lib/card-surface'"
+    },
+    {
+      "name": "CardPadding",
+      "kind": "re-export",
+      "signature": "export { CardPadding } from '@/lib/card-surface'"
+    },
+    {
+      "name": "CardVariant",
+      "kind": "re-export",
+      "signature": "export { CardVariant } from '@/lib/card-surface'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/clickable-card'"
+    },
+    {
+      "name": "SelectableCardProps",
+      "kind": "type",
+      "signature": "SelectableCardProps<Msg> = Readonly<{ /** Accessibility label for the card, applied to the hidden checkbox. */ label: string; /** Controlled selection state — the parent owns it. */ isSelected: boolean; /** Message emitted when the card requests a toggle. */ …"
+    },
+    {
+      "name": "selectableCard",
+      "kind": "function",
+      "signature": "selectableCard<Msg>(props: SelectableCardProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "separator": [
