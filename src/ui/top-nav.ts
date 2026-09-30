@@ -2,14 +2,14 @@
 // TopNavItem, TopNavMenu, TopNavMegaMenu, TopNavMegaMenuItem,
 // TopNavMegaMenuFeaturedCard) — slot layout, item styles, hover/click menu
 // behavior. Mobile-bar/drawer render modes are out of scope (AppShell-level).
-import { Option } from 'effect';
-import type { Attribute, Html, HtmlBuilder } from 'foldkit/html';
-import { defineView } from 'foldkit/submodel';
+import { Option } from "effect";
+import type { Attribute, Html, HtmlBuilder } from "foldkit/html";
+import { defineView } from "foldkit/submodel";
 
-import * as Icon from '@/lib/icon';
-import * as NavMenu from '@/lib/nav-menu';
-import * as TopNavLib from '@/lib/top-nav';
-import { cn } from '@/lib/utils';
+import * as Icon from "@/lib/icon";
+import * as NavMenu from "@/lib/nav-menu";
+import * as TopNavLib from "@/lib/top-nav";
+import { cn } from "@/lib/utils";
 
 export {
   dropdownMenuKey,
@@ -19,19 +19,16 @@ export {
   menuFor,
   Model,
   update,
-} from '@/lib/top-nav';
-export type {
-  InitConfig,
-  TopNavMenuKind,
-} from '@/lib/top-nav';
-export { Message, OutMessage } from '@/lib/top-nav';
+} from "@/lib/top-nav";
+export type { InitConfig, TopNavMenuKind } from "@/lib/top-nav";
+export { Message, OutMessage } from "@/lib/top-nav";
 
 // ---------------------------------------------------------------------------
 // View data types
 // ---------------------------------------------------------------------------
 
 export type TopNavItemData = Readonly<{
-  kind?: 'item';
+  kind?: "item";
   label: string;
   href?: string;
   icon?: string;
@@ -50,7 +47,7 @@ export type TopNavMenuItemData = Readonly<{
 }>;
 
 export type TopNavMenuData = Readonly<{
-  kind: 'menu';
+  kind: "menu";
   label: string;
   items: ReadonlyArray<TopNavMenuItemData>;
 }>;
@@ -74,7 +71,7 @@ export type TopNavMegaMenuFeaturedCardData = Readonly<{
 }>;
 
 export type TopNavMegaMenuData = Readonly<{
-  kind: 'megaMenu';
+  kind: "megaMenu";
   label: string;
   items: ReadonlyArray<TopNavMegaMenuItemData>;
   featured?: TopNavMegaMenuFeaturedCardData;
@@ -82,10 +79,7 @@ export type TopNavMegaMenuData = Readonly<{
 
 /** A startContent/centerContent entry: a link item, a dropdown menu, or a
     mega menu trigger. */
-export type TopNavEntry =
-  | TopNavItemData
-  | TopNavMenuData
-  | TopNavMegaMenuData;
+export type TopNavEntry = TopNavItemData | TopNavMenuData | TopNavMegaMenuData;
 
 export type TopNavHeadingMenuItemData = Readonly<{
   label: string;
@@ -123,107 +117,108 @@ export type ViewInputs = Readonly<{
 // ---------------------------------------------------------------------------
 
 const NAV_CLASS =
-  'relative box-border flex w-full items-center p-2 text-foreground outline-none';
+  "relative box-border flex w-full items-center p-2 text-foreground outline-none";
 const NAV_GRID_CLASS =
-  'relative box-border grid w-full grid-cols-[1fr_auto_1fr] items-center p-2 text-foreground outline-none';
+  "relative box-border grid w-full grid-cols-[1fr_auto_1fr] items-center p-2 text-foreground outline-none";
 
-const LEFT_SECTION_CLASS = 'flex min-w-0 flex-1 items-center gap-4';
-const HEADING_SLOT_CLASS = 'flex shrink-0 items-center';
-const START_CONTENT_CLASS = 'flex items-center gap-1';
-const CENTER_CONTENT_CLASS = 'flex items-center justify-center gap-1';
-const RIGHT_SECTION_CLASS = 'flex items-center justify-end gap-1';
-const END_CONTENT_CLASS = 'ms-auto flex shrink-0 items-center gap-1';
+const LEFT_SECTION_CLASS = "flex min-w-0 flex-1 items-center gap-4";
+const HEADING_SLOT_CLASS = "flex shrink-0 items-center";
+const START_CONTENT_CLASS = "flex items-center gap-1";
+const CENTER_CONTENT_CLASS = "flex items-center justify-center gap-1";
+const RIGHT_SECTION_CLASS = "flex items-center justify-end gap-1";
+const END_CONTENT_CLASS = "ms-auto flex shrink-0 items-center gap-1";
 
 const ITEM_CLASS =
-  'inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm leading-5 font-medium text-muted-foreground no-underline transition-colors duration-150 select-none';
+  "inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm leading-5 font-medium text-muted-foreground no-underline transition-colors duration-150 select-none";
 const ITEM_HOVER =
-  'cursor-pointer hover:bg-accent focus-visible:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none';
-const ITEM_SELECTED = 'bg-accent font-semibold text-foreground';
-const ITEM_DISABLED = 'pointer-events-none cursor-default text-muted-foreground/50';
-const ITEM_ICON_ONLY = 'px-2';
+  "cursor-pointer hover:bg-accent focus-visible:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none";
+const ITEM_SELECTED = "bg-accent font-semibold text-foreground";
+const ITEM_DISABLED =
+  "pointer-events-none cursor-default text-muted-foreground/50";
+const ITEM_ICON_ONLY = "px-2";
 
 const TRIGGER_CLASS = cn(
   ITEM_CLASS,
   ITEM_HOVER,
-  'appearance-none border-none bg-transparent font-[inherit]',
+  "appearance-none border-none bg-transparent font-[inherit]",
 );
-const TRIGGER_OPEN_CLASS = 'bg-accent text-foreground';
+const TRIGGER_OPEN_CLASS = "bg-accent text-foreground";
 
 const CHEVRON_CLASS =
-  'inline-flex size-[1em] items-center transition-transform duration-150';
+  "inline-flex size-[1em] items-center transition-transform duration-150";
 
 const MENU_PANEL_CLASS =
-  'z-50 box-border flex max-h-[min(70vh,480px)] min-w-70 flex-col gap-1 overflow-y-auto rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-md outline-none';
+  "z-50 box-border flex max-h-[min(70vh,480px)] min-w-70 flex-col gap-1 overflow-y-auto rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-md outline-none";
 
 const MENU_ITEM_CLASS =
-  'flex w-full cursor-pointer items-center gap-3 rounded-md border-none bg-transparent p-3 text-left font-[inherit] text-inherit no-underline outline-none transition-colors duration-150 hover:bg-accent focus-visible:bg-accent';
+  "flex w-full cursor-pointer items-center gap-3 rounded-md border-none bg-transparent p-3 text-left font-[inherit] text-inherit no-underline outline-none transition-colors duration-150 hover:bg-accent focus-visible:bg-accent";
 const MENU_ITEM_ICON_CLASS =
-  'flex size-10 shrink-0 items-center justify-center rounded-md bg-accent text-muted-foreground';
-const MENU_ITEM_TITLE_CLASS =
-  'text-sm leading-5 font-semibold text-foreground';
-const MENU_ITEM_DESC_CLASS = 'text-xs leading-4 text-muted-foreground';
+  "flex size-10 shrink-0 items-center justify-center rounded-md bg-accent text-muted-foreground";
+const MENU_ITEM_TITLE_CLASS = "text-sm leading-5 font-semibold text-foreground";
+const MENU_ITEM_DESC_CLASS = "text-xs leading-4 text-muted-foreground";
 
 const MEGA_CONTAINER_CLASS =
-  'z-50 box-border flex max-h-[min(70vh,480px)] flex-col overflow-hidden rounded-lg border-t border-border bg-popover text-popover-foreground shadow-md outline-none';
+  "z-50 box-border flex max-h-[min(70vh,480px)] flex-col overflow-hidden rounded-lg border-t border-border bg-popover text-popover-foreground shadow-md outline-none";
 const MEGA_CONTENT_CLASS =
-  'box-border flex max-w-[min(960px,calc(100dvw-2rem))] flex-wrap gap-6 overflow-y-auto overscroll-contain px-3 py-3';
+  "box-border flex max-w-[min(960px,calc(100dvw-2rem))] flex-wrap gap-6 overflow-y-auto overscroll-contain px-3 py-3";
 const MEGA_ITEMS_CLASS =
-  'grid min-w-0 shrink grow-2 basis-[300px] grid-cols-2 gap-2';
+  "grid min-w-0 shrink grow-2 basis-[300px] grid-cols-2 gap-2";
 const MEGA_FEATURED_CLASS =
-  'flex shrink grow basis-[200px] flex-col overflow-hidden rounded-lg bg-muted';
+  "flex shrink grow basis-[200px] flex-col overflow-hidden rounded-lg bg-muted";
 
-const FEATURED_IMAGE_CLASS = 'block h-[140px] w-full object-cover';
-const FEATURED_BODY_CLASS = 'flex flex-col gap-2 p-4';
-const FEATURED_TITLE_CLASS = 'text-sm leading-5 font-semibold text-foreground';
-const FEATURED_DESC_CLASS = 'text-xs leading-4 text-muted-foreground';
-const FEATURED_LINK_CLASS = 'text-xs leading-4 font-semibold text-primary no-underline';
+const FEATURED_IMAGE_CLASS = "block h-[140px] w-full object-cover";
+const FEATURED_BODY_CLASS = "flex flex-col gap-2 p-4";
+const FEATURED_TITLE_CLASS = "text-sm leading-5 font-semibold text-foreground";
+const FEATURED_DESC_CLASS = "text-xs leading-4 text-muted-foreground";
+const FEATURED_LINK_CLASS =
+  "text-xs leading-4 font-semibold text-primary no-underline";
 
 const HEADING_ROOT_CLASS =
-  'box-border flex min-h-8 items-center gap-2 px-2 py-0 text-foreground no-underline select-none';
+  "box-border flex min-h-8 items-center gap-2 px-2 py-0 text-foreground no-underline select-none";
 const HEADING_INTERACTIVE_CLASS =
-  'cursor-pointer rounded-md border-none bg-transparent font-[inherit] text-start transition-colors duration-150 hover:bg-accent';
-const HEADING_TEXT_CLASS = 'flex min-w-0 flex-col';
+  "cursor-pointer rounded-md border-none bg-transparent font-[inherit] text-start transition-colors duration-150 hover:bg-accent";
+const HEADING_TEXT_CLASS = "flex min-w-0 flex-col";
 const HEADING_TITLE_CLASS =
-  'truncate text-[17px] leading-6 font-semibold text-foreground no-underline';
-const HEADING_SUB_CLASS = 'truncate text-xs leading-4 text-muted-foreground';
-const HEADING_ROW_CLASS = 'flex items-center gap-1';
-const HEADING_LOGO_CLASS = 'flex shrink-0 items-center justify-center';
+  "truncate text-[17px] leading-6 font-semibold text-foreground no-underline";
+const HEADING_SUB_CLASS = "truncate text-xs leading-4 text-muted-foreground";
+const HEADING_ROW_CLASS = "flex items-center gap-1";
+const HEADING_LOGO_CLASS = "flex shrink-0 items-center justify-center";
 const HEADING_CHEVRON_CLASS =
-  'flex size-7 shrink-0 items-center justify-center text-muted-foreground';
+  "flex size-7 shrink-0 items-center justify-center text-muted-foreground";
 const HEADING_POPOVER_HEADING_CLASS =
-  'mx-1 mt-1 mb-2 flex min-h-8 w-auto cursor-pointer items-center gap-2 rounded-md border-none bg-transparent px-2 font-[inherit] text-start text-inherit outline-none transition-colors duration-150 hover:bg-accent';
+  "mx-1 mt-1 mb-2 flex min-h-8 w-auto cursor-pointer items-center gap-2 rounded-md border-none bg-transparent px-2 font-[inherit] text-start text-inherit outline-none transition-colors duration-150 hover:bg-accent";
 const HEADING_MENU_PANEL_CLASS =
-  'z-50 box-border flex max-h-[min(70vh,480px)] min-w-56 flex-col gap-0.5 overflow-y-auto rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-md outline-none';
+  "z-50 box-border flex max-h-[min(70vh,480px)] min-w-56 flex-col gap-0.5 overflow-y-auto rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-md outline-none";
 const HEADING_MENU_ITEM_CLASS =
-  'flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none transition-colors duration-150 hover:bg-accent focus-visible:bg-accent';
+  "flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none transition-colors duration-150 hover:bg-accent focus-visible:bg-accent";
 
 // ---------------------------------------------------------------------------
 // Anchor positioning (same CSS anchor contract as side-nav flyouts)
 // ---------------------------------------------------------------------------
 
-type AnchorSide = 'top' | 'bottom' | 'start' | 'end';
+type AnchorSide = "top" | "bottom" | "start" | "end";
 
 const anchorPositionStyle = (
   anchorId: string,
   side: AnchorSide,
   options: Readonly<{ coverTrigger?: boolean; gap?: string }> = {},
 ): Record<string, string> => {
-  const gap = options.gap ?? '0.25rem';
+  const gap = options.gap ?? "0.25rem";
   const cover = options.coverTrigger === true;
-  const horizontal = side === 'start' || side === 'end';
+  const horizontal = side === "start" || side === "end";
   const sideInset =
-    side === 'end'
-      ? { left: cover ? 'anchor(left)' : `calc(anchor(right) + ${gap})` }
-      : side === 'start'
-        ? { right: cover ? 'anchor(right)' : `calc(anchor(left) + ${gap})` }
-        : side === 'bottom'
-          ? { top: cover ? 'anchor(top)' : `calc(anchor(bottom) + ${gap})` }
-          : { bottom: cover ? 'anchor(bottom)' : `calc(anchor(top) + ${gap})` };
+    side === "end"
+      ? { left: cover ? "anchor(left)" : `calc(anchor(right) + ${gap})` }
+      : side === "start"
+        ? { right: cover ? "anchor(right)" : `calc(anchor(left) + ${gap})` }
+        : side === "bottom"
+          ? { top: cover ? "anchor(top)" : `calc(anchor(bottom) + ${gap})` }
+          : { bottom: cover ? "anchor(bottom)" : `calc(anchor(top) + ${gap})` };
   const alignInset = horizontal
-    ? { top: cover ? 'anchor(top)' : `calc(anchor(top) - ${gap})` }
-    : { left: cover ? 'anchor(left)' : 'anchor(left)' };
+    ? { top: cover ? "anchor(top)" : `calc(anchor(top) - ${gap})` }
+    : { left: cover ? "anchor(left)" : "anchor(left)" };
   return {
-    position: 'absolute',
+    position: "absolute",
     positionAnchor: anchorId,
     ...sideInset,
     ...alignInset,
@@ -248,9 +243,9 @@ const triggerAttrs = <Msg>(
   return [
     h.Id(NavMenu.triggerDomId(domBase)),
     h.Style({
-      'anchor-name': `--${domBase}-anchor`,
+      "anchor-name": `--${domBase}-anchor`,
     } as Record<string, string>),
-    h.AriaHasPopup('menu'),
+    h.AriaHasPopup("menu"),
     h.AriaExpanded(NavMenu.isOpen(menu)),
     h.AriaControls(NavMenu.panelDomId(domBase)),
     h.OnMouseEnter(emitMenu(NavMenu.Message.EnteredNavMenuTrigger())),
@@ -264,23 +259,18 @@ const triggerAttrs = <Msg>(
           )
         : Option.none(),
     ),
-    h.OnKeyDownPreventDefault(key =>
-      key === 'Enter' || key === ' '
-        ? Option.some(
-            emitMenu(NavMenu.Message.ActivatedNavMenuTrigger()),
-          )
+    h.OnKeyDownPreventDefault((key) =>
+      key === "Enter" || key === " "
+        ? Option.some(emitMenu(NavMenu.Message.ActivatedNavMenuTrigger()))
         : Option.none(),
     ),
   ];
 };
 
-const chevronIcon = <Msg>(
-  open: boolean,
-  h: HtmlBuilder<Msg>,
-): Html =>
+const chevronIcon = <Msg>(open: boolean, h: HtmlBuilder<Msg>): Html =>
   h.span(
-    [h.Class(cn(CHEVRON_CLASS, open && 'rotate-180'))],
-    [Icon.icon('chevron-down', { class: 'size-[1em]' }, h)],
+    [h.Class(cn(CHEVRON_CLASS, open && "rotate-180"))],
+    [Icon.icon("chevron-down", { class: "size-[1em]" }, h)],
   );
 
 // ---------------------------------------------------------------------------
@@ -303,7 +293,7 @@ export const topNavItem = <Msg>(
   const children: ReadonlyArray<Html | string> = [
     ...(item.icon === undefined
       ? []
-      : [Icon.icon(item.icon, { class: 'size-4 shrink-0' }, h)]),
+      : [Icon.icon(item.icon, { class: "size-4 shrink-0" }, h)]),
     ...(item.isIconOnly === true ? [] : [item.label]),
   ];
   if (disabled || item.href === undefined) {
@@ -312,7 +302,7 @@ export const topNavItem = <Msg>(
     if (!disabled && item.onSelect === true) {
       return h.button(
         [
-          h.Type('button'),
+          h.Type("button"),
           h.Class(classes),
           h.OnClick(
             emit(TopNavLib.Message.PressedTopNavItem({ id: item.label })),
@@ -325,10 +315,8 @@ export const topNavItem = <Msg>(
     return h.a(
       [
         h.Class(classes),
-        ...(disabled
-          ? [h.AriaDisabled(true), h.Tabindex(-1)]
-          : []),
-        ...(item.isSelected === true ? [h.AriaCurrent('page')] : []),
+        ...(disabled ? [h.AriaDisabled(true), h.Tabindex(-1)] : []),
+        ...(item.isSelected === true ? [h.AriaCurrent("page")] : []),
         ...(item.isIconOnly === true ? [h.AriaLabel(item.label)] : []),
       ],
       children,
@@ -338,7 +326,7 @@ export const topNavItem = <Msg>(
     [
       h.Class(classes),
       h.Href(item.href),
-      ...(item.isSelected === true ? [h.AriaCurrent('page')] : []),
+      ...(item.isSelected === true ? [h.AriaCurrent("page")] : []),
       ...(item.isIconOnly === true ? [h.AriaLabel(item.label)] : []),
       ...(item.onSelect === true
         ? [
@@ -369,21 +357,20 @@ const renderMenuItem = <Msg>(
     }),
   );
   const inner: Html[] = [
-    h.span([h.Class(MENU_ITEM_ICON_CLASS)], [
-      item.icon ?? h.span([], []),
-    ]),
-    h.span([h.Class('flex min-w-0 flex-col gap-1')], [
-      h.span([h.Class(MENU_ITEM_TITLE_CLASS)], [item.title]),
-      ...(item.description === undefined
-        ? []
-        : [
-            h.span([h.Class(MENU_ITEM_DESC_CLASS)], [item.description]),
-          ]),
-    ]),
+    h.span([h.Class(MENU_ITEM_ICON_CLASS)], [item.icon ?? h.span([], [])]),
+    h.span(
+      [h.Class("flex min-w-0 flex-col gap-1")],
+      [
+        h.span([h.Class(MENU_ITEM_TITLE_CLASS)], [item.title]),
+        ...(item.description === undefined
+          ? []
+          : [h.span([h.Class(MENU_ITEM_DESC_CLASS)], [item.description])]),
+      ],
+    ),
   ];
   const attrs = [
     h.Class(MENU_ITEM_CLASS),
-    h.Role('menuitem'),
+    h.Role("menuitem"),
     h.Tabindex(-1),
     h.OnClick(activate),
   ];
@@ -399,51 +386,50 @@ const renderDropdown = <Msg>(
   emit: (message: TopNavLib.Message) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const menu = TopNavLib.menuFor(model, key, 'dropdown');
+  const menu = TopNavLib.menuFor(model, key, "dropdown");
   const domBase = menuDomBase(model, key);
   const anchorId = `--${domBase}-anchor`;
   const emitMenu = (message: NavMenu.Message): Msg =>
     emit(TopNavLib.Message.GotTopNavMenuMessage({ key, message }));
   const open = NavMenu.isOpen(menu);
-  return h.span([h.Class('relative inline-flex')], [
-    h.button(
-      [
-        h.Type('button'),
-        h.Class(cn(TRIGGER_CLASS, open && TRIGGER_OPEN_CLASS)),
-        ...triggerAttrs(model, key, menu, emitMenu, h),
-      ],
-      [menuData.label, chevronIcon(open, h)],
-    ),
-    ...(open
-      ? [
-          h.div(
-            [
-              h.Id(NavMenu.panelDomId(domBase)),
-              h.Class(MENU_PANEL_CLASS),
-              h.Role('menu'),
-              h.AriaLabel(menuData.label),
-              h.Style(
-                anchorPositionStyle(anchorId, 'bottom', { gap: '0.25rem' }),
-              ),
-              h.OnMouseEnter(
-                emitMenu(NavMenu.Message.EnteredNavMenuPanel()),
-              ),
-              h.OnMouseLeave(emitMenu(NavMenu.Message.LeftNavMenuPanel())),
-              h.OnKeyDownPreventDefault(key =>
-                key === 'Escape'
-                  ? Option.some(
-                      emitMenu(NavMenu.Message.PressedEscapeNavMenu()),
-                    )
-                  : Option.none(),
-              ),
-            ],
-            menuData.items.map(item =>
-              renderMenuItem(key, item, emit, h),
+  return h.span(
+    [h.Class("relative inline-flex")],
+    [
+      h.button(
+        [
+          h.Type("button"),
+          h.Class(cn(TRIGGER_CLASS, open && TRIGGER_OPEN_CLASS)),
+          ...triggerAttrs(model, key, menu, emitMenu, h),
+        ],
+        [menuData.label, chevronIcon(open, h)],
+      ),
+      ...(open
+        ? [
+            h.div(
+              [
+                h.Id(NavMenu.panelDomId(domBase)),
+                h.Class(MENU_PANEL_CLASS),
+                h.Role("menu"),
+                h.AriaLabel(menuData.label),
+                h.Style(
+                  anchorPositionStyle(anchorId, "bottom", { gap: "0.25rem" }),
+                ),
+                h.OnMouseEnter(emitMenu(NavMenu.Message.EnteredNavMenuPanel())),
+                h.OnMouseLeave(emitMenu(NavMenu.Message.LeftNavMenuPanel())),
+                h.OnKeyDownPreventDefault((key) =>
+                  key === "Escape"
+                    ? Option.some(
+                        emitMenu(NavMenu.Message.PressedEscapeNavMenu()),
+                      )
+                    : Option.none(),
+                ),
+              ],
+              menuData.items.map((item) => renderMenuItem(key, item, emit, h)),
             ),
-          ),
-        ]
-      : []),
-  ]);
+          ]
+        : []),
+    ],
+  );
 };
 
 // ---------------------------------------------------------------------------
@@ -459,17 +445,18 @@ export const topNavMegaMenuItem = <Msg>(
     ...(item.icon === undefined
       ? []
       : [h.span([h.Class(MENU_ITEM_ICON_CLASS)], [item.icon])]),
-    h.span([h.Class('flex min-w-0 flex-col gap-1')], [
-      h.span([h.Class(MENU_ITEM_TITLE_CLASS)], [item.title]),
-      ...(item.description === undefined
-        ? []
-        : [
-            h.span([h.Class(MENU_ITEM_DESC_CLASS)], [item.description]),
-          ]),
-    ]),
+    h.span(
+      [h.Class("flex min-w-0 flex-col gap-1")],
+      [
+        h.span([h.Class(MENU_ITEM_TITLE_CLASS)], [item.title]),
+        ...(item.description === undefined
+          ? []
+          : [h.span([h.Class(MENU_ITEM_DESC_CLASS)], [item.description])]),
+      ],
+    ),
   ];
   const attrs = [
-    h.Class(cn(MENU_ITEM_CLASS, 'items-start')),
+    h.Class(cn(MENU_ITEM_CLASS, "items-start")),
     ...(onActivate === undefined ? [] : [h.OnClick(onActivate)]),
   ];
   return item.href === undefined
@@ -484,35 +471,41 @@ export const topNavMegaMenuFeaturedCard = <Msg>(
   card: TopNavMegaMenuFeaturedCardData,
   h: HtmlBuilder<Msg>,
 ): Html =>
-  h.div([h.Class('flex flex-col')], [
-    ...(card.image === undefined
-      ? []
-      : [
-          h.img([
-            h.Class(FEATURED_IMAGE_CLASS),
-            h.Src(card.image),
-            h.Alt(card.imageAlt ?? ''),
-            ...(card.imageAlt === undefined
-              ? [h.Role('presentation'), h.AriaHidden(true)]
-              : []),
-          ]),
-        ]),
-    h.div([h.Class(FEATURED_BODY_CLASS)], [
-      h.span([h.Class(FEATURED_TITLE_CLASS)], [card.title]),
-      ...(card.description === undefined
-        ? []
-        : [h.span([h.Class(FEATURED_DESC_CLASS)], [card.description])]),
-      ...(card.linkLabel === undefined || card.linkHref === undefined
+  h.div(
+    [h.Class("flex flex-col")],
+    [
+      ...(card.image === undefined
         ? []
         : [
-            h.a(
-              [h.Class(FEATURED_LINK_CLASS), h.Href(card.linkHref)],
-              [`${card.linkLabel} →`],
-            ),
+            h.img([
+              h.Class(FEATURED_IMAGE_CLASS),
+              h.Src(card.image),
+              h.Alt(card.imageAlt ?? ""),
+              ...(card.imageAlt === undefined
+                ? [h.Role("presentation"), h.AriaHidden(true)]
+                : []),
+            ]),
           ]),
-      ...(card.children === undefined ? [] : [card.children]),
-    ]),
-  ]);
+      h.div(
+        [h.Class(FEATURED_BODY_CLASS)],
+        [
+          h.span([h.Class(FEATURED_TITLE_CLASS)], [card.title]),
+          ...(card.description === undefined
+            ? []
+            : [h.span([h.Class(FEATURED_DESC_CLASS)], [card.description])]),
+          ...(card.linkLabel === undefined || card.linkHref === undefined
+            ? []
+            : [
+                h.a(
+                  [h.Class(FEATURED_LINK_CLASS), h.Href(card.linkHref)],
+                  [`${card.linkLabel} →`],
+                ),
+              ]),
+          ...(card.children === undefined ? [] : [card.children]),
+        ],
+      ),
+    ],
+  );
 
 const renderMegaMenu = <Msg>(
   model: TopNavLib.Model,
@@ -522,79 +515,87 @@ const renderMegaMenu = <Msg>(
   emit: (message: TopNavLib.Message) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const menu = TopNavLib.menuFor(model, key, 'mega');
+  const menu = TopNavLib.menuFor(model, key, "mega");
   const domBase = menuDomBase(model, key);
   const emitMenu = (message: NavMenu.Message): Msg =>
     emit(TopNavLib.Message.GotTopNavMenuMessage({ key, message }));
   const open = NavMenu.isOpen(menu);
-  return h.span([h.Class('relative inline-flex')], [
-    h.button(
-      [
-        h.Type('button'),
-        h.Class(cn(TRIGGER_CLASS, open && TRIGGER_OPEN_CLASS)),
-        ...triggerAttrs(model, key, menu, emitMenu, h),
-      ],
-      [menuData.label, chevronIcon(open, h)],
-    ),
-    ...(open
-      ? [
-          h.div(
-            [
-              h.Id(NavMenu.panelDomId(domBase)),
-              h.Class(MEGA_CONTAINER_CLASS),
-              h.Role('group'),
-              h.AriaLabel(menuData.label),
-              h.Style({
-                /* The panel anchors to the whole <nav> (astryx: full-width
-                   mega menu), but it lives inside the trigger's relative
-                   inline-flex wrapper — anchor-size breaks its width out of
-                   that ~trigger-width containing block. */
-                ...anchorPositionStyle(navAnchorId, 'bottom', {
-                  gap: '0px',
+  return h.span(
+    [h.Class("relative inline-flex")],
+    [
+      h.button(
+        [
+          h.Type("button"),
+          h.Class(cn(TRIGGER_CLASS, open && TRIGGER_OPEN_CLASS)),
+          ...triggerAttrs(model, key, menu, emitMenu, h),
+        ],
+        [menuData.label, chevronIcon(open, h)],
+      ),
+      ...(open
+        ? [
+            h.div(
+              [
+                h.Id(NavMenu.panelDomId(domBase)),
+                h.Class(MEGA_CONTAINER_CLASS),
+                h.Role("group"),
+                h.AriaLabel(menuData.label),
+                h.Style({
+                  /* The panel anchors to the whole <nav> (astryx: full-width
+                   mega menu). It must be position:fixed — an absolutely
+                   positioned element cannot anchor to an element in its own
+                   containing-block chain (anchor()/anchor-size() resolve to
+                   0, collapsing the panel to trigger width). */
+                  ...anchorPositionStyle(navAnchorId, "bottom", {
+                    gap: "0px",
+                  }),
+                  position: "fixed",
+                  width: "anchor-size(width)",
                 }),
-                width: 'anchor-size(width)',
-              }),
-              h.OnMouseEnter(
-                emitMenu(NavMenu.Message.EnteredNavMenuPanel()),
-              ),
-              h.OnMouseLeave(emitMenu(NavMenu.Message.LeftNavMenuPanel())),
-              h.OnKeyDownPreventDefault(key =>
-                key === 'Escape'
-                  ? Option.some(
-                      emitMenu(NavMenu.Message.PressedEscapeNavMenu()),
-                    )
-                  : Option.none(),
-              ),
-            ],
-            [
-              h.div([h.Class(MEGA_CONTENT_CLASS)], [
-                h.div([h.Class(MEGA_ITEMS_CLASS)],
-                  menuData.items.map(item =>
-                    topNavMegaMenuItem(
-                      item,
-                      emit(
-                        TopNavLib.Message.PressedTopNavMenuItem({
-                          menuKey: key,
-                          itemTitle: item.title,
-                        }),
-                      ),
-                      h,
-                    ),
-                  ),
+                h.OnMouseEnter(emitMenu(NavMenu.Message.EnteredNavMenuPanel())),
+                h.OnMouseLeave(emitMenu(NavMenu.Message.LeftNavMenuPanel())),
+                h.OnKeyDownPreventDefault((key) =>
+                  key === "Escape"
+                    ? Option.some(
+                        emitMenu(NavMenu.Message.PressedEscapeNavMenu()),
+                      )
+                    : Option.none(),
                 ),
-                ...(menuData.featured === undefined
-                  ? []
-                  : [
-                      h.div([h.Class(MEGA_FEATURED_CLASS)], [
-                        topNavMegaMenuFeaturedCard(menuData.featured, h),
-                      ]),
-                    ]),
-              ]),
-            ],
-          ),
-        ]
-      : []),
-  ]);
+              ],
+              [
+                h.div(
+                  [h.Class(MEGA_CONTENT_CLASS)],
+                  [
+                    h.div(
+                      [h.Class(MEGA_ITEMS_CLASS)],
+                      menuData.items.map((item) =>
+                        topNavMegaMenuItem(
+                          item,
+                          emit(
+                            TopNavLib.Message.PressedTopNavMenuItem({
+                              menuKey: key,
+                              itemTitle: item.title,
+                            }),
+                          ),
+                          h,
+                        ),
+                      ),
+                    ),
+                    ...(menuData.featured === undefined
+                      ? []
+                      : [
+                          h.div(
+                            [h.Class(MEGA_FEATURED_CLASS)],
+                            [topNavMegaMenuFeaturedCard(menuData.featured, h)],
+                          ),
+                        ]),
+                  ],
+                ),
+              ],
+            ),
+          ]
+        : []),
+    ],
+  );
 };
 
 // ---------------------------------------------------------------------------
@@ -608,43 +609,46 @@ const renderHeadingText = <Msg>(
   inlineChevron: Html | undefined,
   h: HtmlBuilder<Msg>,
 ): Html =>
-  h.span([h.Class(HEADING_TEXT_CLASS)], [
-    ...(heading.superheading === undefined
-      ? []
-      : [
-          hasAnyHref && heading.superheadingHref !== undefined && hasMenu
+  h.span(
+    [h.Class(HEADING_TEXT_CLASS)],
+    [
+      ...(heading.superheading === undefined
+        ? []
+        : [
+            hasAnyHref && heading.superheadingHref !== undefined && hasMenu
+              ? h.a(
+                  [
+                    h.Class(HEADING_SUB_CLASS),
+                    h.Href(heading.superheadingHref),
+                  ],
+                  [heading.superheading],
+                )
+              : h.span([h.Class(HEADING_SUB_CLASS)], [heading.superheading]),
+          ]),
+      h.span(
+        [h.Class(HEADING_ROW_CLASS)],
+        [
+          hasAnyHref && heading.headingHref !== undefined && hasMenu
             ? h.a(
-                [
-                  h.Class(HEADING_SUB_CLASS),
-                  h.Href(heading.superheadingHref),
-                ],
-                [heading.superheading],
+                [h.Class(HEADING_TITLE_CLASS), h.Href(heading.headingHref)],
+                [heading.heading ?? ""],
               )
-            : h.span([h.Class(HEADING_SUB_CLASS)], [heading.superheading]),
-        ]),
-    h.span([h.Class(HEADING_ROW_CLASS)], [
-      hasAnyHref && heading.headingHref !== undefined && hasMenu
-        ? h.a(
-            [h.Class(HEADING_TITLE_CLASS), h.Href(heading.headingHref)],
-            [heading.heading ?? ''],
-          )
-        : h.span([h.Class(HEADING_TITLE_CLASS)], [heading.heading ?? '']),
-      ...(inlineChevron === undefined ? [] : [inlineChevron]),
-    ]),
-    ...(heading.subheading === undefined
-      ? []
-      : [
-          hasAnyHref && heading.subheadingHref !== undefined && hasMenu
-            ? h.a(
-                [
-                  h.Class(HEADING_SUB_CLASS),
-                  h.Href(heading.subheadingHref),
-                ],
-                [heading.subheading],
-              )
-            : h.span([h.Class(HEADING_SUB_CLASS)], [heading.subheading]),
-        ]),
-  ]);
+            : h.span([h.Class(HEADING_TITLE_CLASS)], [heading.heading ?? ""]),
+          ...(inlineChevron === undefined ? [] : [inlineChevron]),
+        ],
+      ),
+      ...(heading.subheading === undefined
+        ? []
+        : [
+            hasAnyHref && heading.subheadingHref !== undefined && hasMenu
+              ? h.a(
+                  [h.Class(HEADING_SUB_CLASS), h.Href(heading.subheadingHref)],
+                  [heading.subheading],
+                )
+              : h.span([h.Class(HEADING_SUB_CLASS)], [heading.subheading]),
+          ]),
+    ],
+  );
 
 const renderHeading = <Msg>(
   model: TopNavLib.Model,
@@ -654,7 +658,7 @@ const renderHeading = <Msg>(
 ): Html => {
   const key = TopNavLib.HEADING_MENU_KEY;
   const hasMenu = heading.menu !== undefined && heading.menu.length > 0;
-  const menu = TopNavLib.menuFor(model, key, 'heading');
+  const menu = TopNavLib.menuFor(model, key, "heading");
   const domBase = menuDomBase(model, key);
   const anchorId = `--${domBase}-anchor`;
   const emitMenu = (message: NavMenu.Message): Msg =>
@@ -677,25 +681,25 @@ const renderHeading = <Msg>(
           [
             h.Class(HEADING_LOGO_CLASS),
             h.Href(heading.headingHref),
-            h.AriaLabel(heading.logoLabel ?? heading.heading ?? 'Home'),
+            h.AriaLabel(heading.logoLabel ?? heading.heading ?? "Home"),
           ],
           [logo],
         );
 
   const chevronGlyph = h.span(
     [h.Class(HEADING_CHEVRON_CLASS)],
-    [Icon.icon('chevron-down', { class: 'size-[1em]' }, h)],
+    [Icon.icon("chevron-down", { class: "size-[1em]" }, h)],
   );
 
   // Mixed mode only: the separate chevron control is THE menu trigger
   // (the whole heading is not interactive when links exist).
   const chevronTrigger = h.button(
     [
-      h.Type('button'),
+      h.Type("button"),
       h.Class(cn(HEADING_CHEVRON_CLASS, HEADING_INTERACTIVE_CLASS)),
       h.Id(NavMenu.triggerDomId(domBase)),
-      h.AriaLabel('Open menu'),
-      h.AriaHasPopup('menu'),
+      h.AriaLabel("Open menu"),
+      h.AriaHasPopup("menu"),
       h.AriaExpanded(open),
       h.AriaControls(NavMenu.panelDomId(domBase)),
       h.OnPointerDown((_type, button, _sx, _sy, timeStamp) =>
@@ -707,15 +711,13 @@ const renderHeading = <Msg>(
             )
           : Option.none(),
       ),
-      h.OnKeyDownPreventDefault(k =>
-        k === 'Enter' || k === ' '
-          ? Option.some(
-              emitMenu(NavMenu.Message.ActivatedNavMenuTrigger()),
-            )
+      h.OnKeyDownPreventDefault((k) =>
+        k === "Enter" || k === " "
+          ? Option.some(emitMenu(NavMenu.Message.ActivatedNavMenuTrigger()))
           : Option.none(),
       ),
     ],
-    [Icon.icon('chevron-down', { class: 'size-[1em]' }, h)],
+    [Icon.icon("chevron-down", { class: "size-[1em]" }, h)],
   );
 
   const menuPanel = (
@@ -728,17 +730,15 @@ const renderHeading = <Msg>(
               h.Id(NavMenu.panelDomId(domBase)),
               h.Class(HEADING_MENU_PANEL_CLASS),
               h.Style(
-                anchorPositionStyle(anchorId, 'bottom', {
+                anchorPositionStyle(anchorId, "bottom", {
                   coverTrigger: true,
-                  gap: '0px',
+                  gap: "0px",
                 }),
               ),
-              h.OnMouseEnter(
-                emitMenu(NavMenu.Message.EnteredNavMenuPanel()),
-              ),
+              h.OnMouseEnter(emitMenu(NavMenu.Message.EnteredNavMenuPanel())),
               h.OnMouseLeave(emitMenu(NavMenu.Message.LeftNavMenuPanel())),
-              h.OnKeyDownPreventDefault(k =>
-                k === 'Escape'
+              h.OnKeyDownPreventDefault((k) =>
+                k === "Escape"
                   ? Option.some(
                       emitMenu(NavMenu.Message.PressedEscapeNavMenu()),
                     )
@@ -749,7 +749,7 @@ const renderHeading = <Msg>(
               // Flipped heading copy — the astryx close affordance.
               h.button(
                 [
-                  h.Type('button'),
+                  h.Type("button"),
                   h.Class(HEADING_POPOVER_HEADING_CLASS),
                   h.OnClick(emitMenu(NavMenu.Message.ClosedNavMenu())),
                 ],
@@ -760,22 +760,16 @@ const renderHeading = <Msg>(
                     false,
                     false,
                     h.span(
-                      [h.Class(cn(HEADING_CHEVRON_CLASS, 'rotate-180'))],
-                      [
-                        Icon.icon(
-                          'chevron-down',
-                          { class: 'size-[1em]' },
-                          h,
-                        ),
-                      ],
+                      [h.Class(cn(HEADING_CHEVRON_CLASS, "rotate-180"))],
+                      [Icon.icon("chevron-down", { class: "size-[1em]" }, h)],
                     ),
                     h,
                   ),
                 ],
               ),
               h.div(
-                [h.Role('menu'), h.AriaLabel(heading.heading ?? 'Menu')],
-                items.map(item => {
+                [h.Role("menu"), h.AriaLabel(heading.heading ?? "Menu")],
+                items.map((item) => {
                   const activate = emit(
                     TopNavLib.Message.PressedTopNavMenuItem({
                       menuKey: key,
@@ -784,11 +778,11 @@ const renderHeading = <Msg>(
                   );
                   const attrs = [
                     h.Class(HEADING_MENU_ITEM_CLASS),
-                    h.Role('menuitem'),
+                    h.Role("menuitem"),
                     h.OnClick(activate),
                   ];
                   return item.href === undefined
-                    ? h.button([h.Type('button'), ...attrs], [item.label])
+                    ? h.button([h.Type("button"), ...attrs], [item.label])
                     : h.a([...attrs, h.Href(item.href)], [item.label]);
                 }),
               ),
@@ -800,14 +794,15 @@ const renderHeading = <Msg>(
   // 1. Logo only (no heading text, no menu)
   if (heading.heading === undefined && !hasMenu) {
     return heading.headingHref === undefined
-      ? h.div([h.Class(HEADING_ROOT_CLASS)], [
-          ...(logoSpan === undefined ? [] : [logoSpan]),
-        ])
+      ? h.div(
+          [h.Class(HEADING_ROOT_CLASS)],
+          [...(logoSpan === undefined ? [] : [logoSpan])],
+        )
       : h.a(
           [
             h.Class(cn(HEADING_ROOT_CLASS, HEADING_INTERACTIVE_CLASS)),
             h.Href(heading.headingHref),
-            h.AriaLabel(heading.logoLabel ?? 'Home'),
+            h.AriaLabel(heading.logoLabel ?? "Home"),
           ],
           [...(logoSpan === undefined ? [] : [logoSpan])],
         );
@@ -837,100 +832,93 @@ const renderHeading = <Msg>(
 
   // 3. Whole heading is the menu trigger (menu, no hrefs)
   if (hasMenu && !hasAnyHref) {
-    return h.span([h.Class('relative inline-flex')], [
-      h.div(
-        [
-          h.Class(cn(HEADING_ROOT_CLASS, HEADING_INTERACTIVE_CLASS)),
-          h.Role('button'),
-          h.Tabindex(0),
-          h.Id(NavMenu.triggerDomId(domBase)),
-          h.Style({
-            'anchor-name': anchorId,
-          } as Record<string, string>),
-          h.AriaHasPopup('menu'),
-          h.AriaExpanded(open),
-          h.AriaControls(NavMenu.panelDomId(domBase)),
-          h.OnMouseEnter(
-            emitMenu(NavMenu.Message.EnteredNavMenuTrigger()),
-          ),
-          h.OnMouseLeave(emitMenu(NavMenu.Message.LeftNavMenuTrigger())),
-          h.OnPointerDown((_type, button, _sx, _sy, timeStamp) =>
-            button === 0
-              ? Option.some(
-                  emitMenu(
-                    NavMenu.Message.PressedNavMenuTrigger({
-                      atMs: timeStamp,
-                    }),
-                  ),
-                )
-              : Option.none(),
-          ),
-          h.OnKeyDownPreventDefault(k =>
-            k === 'Enter' || k === ' '
-              ? Option.some(
-                  emitMenu(NavMenu.Message.ActivatedNavMenuTrigger()),
-                )
-              : Option.none(),
-          ),
-        ],
-        [
-          ...(logoSpan === undefined ? [] : [logoSpan]),
-          renderHeadingText(
-            heading,
-            false,
-            true,
-            chevronGlyph,
-            h,
-          ),
-          ...(heading.headerEndContent === undefined
-            ? []
-            : [heading.headerEndContent]),
-        ],
-      ),
-      ...menuPanel(heading.menu ?? []),
-    ]);
+    return h.span(
+      [h.Class("relative inline-flex")],
+      [
+        h.div(
+          [
+            h.Class(cn(HEADING_ROOT_CLASS, HEADING_INTERACTIVE_CLASS)),
+            h.Role("button"),
+            h.Tabindex(0),
+            h.Id(NavMenu.triggerDomId(domBase)),
+            h.Style({
+              "anchor-name": anchorId,
+            } as Record<string, string>),
+            h.AriaHasPopup("menu"),
+            h.AriaExpanded(open),
+            h.AriaControls(NavMenu.panelDomId(domBase)),
+            h.OnMouseEnter(emitMenu(NavMenu.Message.EnteredNavMenuTrigger())),
+            h.OnMouseLeave(emitMenu(NavMenu.Message.LeftNavMenuTrigger())),
+            h.OnPointerDown((_type, button, _sx, _sy, timeStamp) =>
+              button === 0
+                ? Option.some(
+                    emitMenu(
+                      NavMenu.Message.PressedNavMenuTrigger({
+                        atMs: timeStamp,
+                      }),
+                    ),
+                  )
+                : Option.none(),
+            ),
+            h.OnKeyDownPreventDefault((k) =>
+              k === "Enter" || k === " "
+                ? Option.some(
+                    emitMenu(NavMenu.Message.ActivatedNavMenuTrigger()),
+                  )
+                : Option.none(),
+            ),
+          ],
+          [
+            ...(logoSpan === undefined ? [] : [logoSpan]),
+            renderHeadingText(heading, false, true, chevronGlyph, h),
+            ...(heading.headerEndContent === undefined
+              ? []
+              : [heading.headerEndContent]),
+          ],
+        ),
+        ...menuPanel(heading.menu ?? []),
+      ],
+    );
   }
 
   // 4. Mixed: links + separate chevron trigger (menu + hrefs)
   if (hasMenu) {
-    return h.span([h.Class('relative inline-flex')], [
-      h.div(
-        [
-          h.Class(HEADING_ROOT_CLASS),
-          h.Style({
-            'anchor-name': anchorId,
-          } as Record<string, string>),
-          h.OnMouseEnter(
-            emitMenu(NavMenu.Message.EnteredNavMenuTrigger()),
-          ),
-          h.OnMouseLeave(emitMenu(NavMenu.Message.LeftNavMenuTrigger())),
-        ],
-        [
-          ...(logoLink === undefined ? [] : [logoLink]),
-          renderHeadingText(
-            heading,
-            hasAnyHref,
-            true,
-            chevronTrigger,
-            h,
-          ),
-          ...(heading.headerEndContent === undefined
-            ? []
-            : [heading.headerEndContent]),
-        ],
-      ),
-      ...menuPanel(heading.menu ?? []),
-    ]);
+    return h.span(
+      [h.Class("relative inline-flex")],
+      [
+        h.div(
+          [
+            h.Class(HEADING_ROOT_CLASS),
+            h.Style({
+              "anchor-name": anchorId,
+            } as Record<string, string>),
+            h.OnMouseEnter(emitMenu(NavMenu.Message.EnteredNavMenuTrigger())),
+            h.OnMouseLeave(emitMenu(NavMenu.Message.LeftNavMenuTrigger())),
+          ],
+          [
+            ...(logoLink === undefined ? [] : [logoLink]),
+            renderHeadingText(heading, hasAnyHref, true, chevronTrigger, h),
+            ...(heading.headerEndContent === undefined
+              ? []
+              : [heading.headerEndContent]),
+          ],
+        ),
+        ...menuPanel(heading.menu ?? []),
+      ],
+    );
   }
 
   // 5. Static heading with independent links (hrefs, no menu)
-  return h.div([h.Class(HEADING_ROOT_CLASS)], [
-    ...(logoLink === undefined ? [] : [logoLink]),
-    renderHeadingText(heading, hasAnyHref, false, undefined, h),
-    ...(heading.headerEndContent === undefined
-      ? []
-      : [heading.headerEndContent]),
-  ]);
+  return h.div(
+    [h.Class(HEADING_ROOT_CLASS)],
+    [
+      ...(logoLink === undefined ? [] : [logoLink]),
+      renderHeadingText(heading, hasAnyHref, false, undefined, h),
+      ...(heading.headerEndContent === undefined
+        ? []
+        : [heading.headerEndContent]),
+    ],
+  );
 };
 
 // ---------------------------------------------------------------------------
@@ -945,8 +933,8 @@ const renderEntry = <Msg>(
   emit: (message: TopNavLib.Message) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const kind = entry.kind ?? 'item';
-  if (kind === 'menu') {
+  const kind = entry.kind ?? "item";
+  if (kind === "menu") {
     return renderDropdown(
       model,
       TopNavLib.dropdownMenuKey(index),
@@ -955,7 +943,7 @@ const renderEntry = <Msg>(
       h,
     );
   }
-  if (kind === 'megaMenu') {
+  if (kind === "megaMenu") {
     return renderMegaMenu(
       model,
       TopNavLib.dropdownMenuKey(index),
@@ -982,9 +970,7 @@ const render = <Msg>(
     ...(viewInputs.startItems ?? []).map((entry, index) =>
       renderEntry(model, entry, index, navAnchorId, emit, h),
     ),
-    ...(viewInputs.startContent === undefined
-      ? []
-      : [viewInputs.startContent]),
+    ...(viewInputs.startContent === undefined ? [] : [viewInputs.startContent]),
   ];
   const centerChildren: Html[] = [
     ...(viewInputs.centerItems ?? []).map((entry, index) =>
@@ -997,25 +983,27 @@ const render = <Msg>(
 
   return h.nav(
     [
-      h.Class(
-        cn(hasCenter ? NAV_GRID_CLASS : NAV_CLASS, viewInputs.class),
-      ),
-      h.AriaLabel(viewInputs.label ?? 'Top navigation'),
-      h.Style({ 'anchor-name': navAnchorId } as Record<string, string>),
+      h.Class(cn(hasCenter ? NAV_GRID_CLASS : NAV_CLASS, viewInputs.class)),
+      h.AriaLabel(viewInputs.label ?? "Top navigation"),
+      h.Style({ "anchor-name": navAnchorId } as Record<string, string>),
     ],
     [
-      h.div([h.Class(LEFT_SECTION_CLASS)], [
-        ...(viewInputs.heading === undefined
-          ? []
-          : [
-              h.div([h.Class(HEADING_SLOT_CLASS)], [
-                renderHeading(model, viewInputs.heading, emit, h),
+      h.div(
+        [h.Class(LEFT_SECTION_CLASS)],
+        [
+          ...(viewInputs.heading === undefined
+            ? []
+            : [
+                h.div(
+                  [h.Class(HEADING_SLOT_CLASS)],
+                  [renderHeading(model, viewInputs.heading, emit, h)],
+                ),
               ]),
-            ]),
-        ...(startChildren.length === 0
-          ? []
-          : [h.div([h.Class(START_CONTENT_CLASS)], startChildren)]),
-      ]),
+          ...(startChildren.length === 0
+            ? []
+            : [h.div([h.Class(START_CONTENT_CLASS)], startChildren)]),
+        ],
+      ),
       ...(hasCenter
         ? [h.div([h.Class(CENTER_CONTENT_CLASS)], centerChildren)]
         : []),
@@ -1030,19 +1018,15 @@ const render = <Msg>(
           ]
         : viewInputs.endContent === undefined
           ? []
-          : [
-              h.div([h.Class(END_CONTENT_CLASS)], [viewInputs.endContent]),
-            ]),
+          : [h.div([h.Class(END_CONTENT_CLASS)], [viewInputs.endContent])]),
     ],
   );
 };
 
 /** Canonical stateful view. Embed with `h.submodel`. */
-export const view = defineView<
-  TopNavLib.Model,
-  TopNavLib.Message,
-  ViewInputs
->((model, viewInputs, h) => render(model, viewInputs, message => message, h));
+export const view = defineView<TopNavLib.Model, TopNavLib.Message, ViewInputs>(
+  (model, viewInputs, h) => render(model, viewInputs, (message) => message, h),
+);
 
 export type TopNavProps<Msg> = ViewInputs &
   Readonly<{

@@ -1,14 +1,14 @@
-import { Option } from 'effect'
+import { Option } from "effect";
 
-import type { Html, HtmlBuilder } from 'foldkit/html'
-import * as FoldkitCalendar from 'foldkit/calendar'
+import type { Html, HtmlBuilder } from "foldkit/html";
+import * as FoldkitCalendar from "foldkit/calendar";
 
 import {
   Calendar as CalendarPrimitive,
   Popover as PopoverPrimitive,
-} from '@foldkit/ui'
+} from "@foldkit/ui";
 
-import * as Icon from '@/lib/icon'
+import * as Icon from "@/lib/icon";
 import {
   formatRangeDisplay,
   init,
@@ -20,9 +20,9 @@ import {
   reflect,
   reflectConstraints,
   update,
-} from '@/lib/date-range-input'
-import { cn } from '@/lib/utils'
-import { calendarView } from '@/ui/calendar'
+} from "@/lib/date-range-input";
+import { cn } from "@/lib/utils";
+import { calendarView } from "@/ui/calendar";
 
 /* Ported from Meta Astryx DateRangeInput (packages/core/src/DateRangeInput/)
    — examples and visual spec adapted to Crease UI tokens.
@@ -48,137 +48,137 @@ export {
   reflect,
   reflectConstraints,
   update,
-}
+};
 
-export type { Range }
+export type { Range };
 
-export { dateFromISO, dateToISO } from '@/lib/date-parse'
+export { dateFromISO, dateToISO } from "@/lib/date-parse";
 
 export type DateRangePreset = Readonly<{
-  label: string
-  getRange: () => Range
-}>
+  label: string;
+  getRange: () => Range;
+}>;
 
-const FIELD_CLASS = 'grid gap-2'
+const FIELD_CLASS = "grid gap-2";
 
 const LABEL_CLASS =
-  'flex items-center gap-2 text-sm leading-none font-medium select-none'
+  "flex items-center gap-2 text-sm leading-none font-medium select-none";
 
-const OPTIONAL_CLASS = 'font-normal text-muted-foreground'
+const OPTIONAL_CLASS = "font-normal text-muted-foreground";
 
-const DESCRIPTION_CLASS = 'text-muted-foreground text-sm'
+const DESCRIPTION_CLASS = "text-muted-foreground text-sm";
 
 const WRAPPER_CLASS =
-  'relative flex items-center gap-2 rounded-md border border-input bg-transparent dark:bg-input/30 py-1 px-2 shadow-xs transition-[color,box-shadow] outline-none hover:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--input)_30%,transparent)] focus-within:border-ring focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--ring)_50%,transparent)] aria-disabled:cursor-not-allowed aria-disabled:opacity-50 data-[invalid=true]:border-destructive dark:data-[invalid=true]:focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--destructive)_40%,transparent)] data-[invalid=true]:focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--destructive)_20%,transparent)]'
+  "relative flex items-center gap-2 rounded-md border border-input bg-transparent dark:bg-input/30 py-1 px-2 shadow-xs transition-[color,box-shadow] outline-none hover:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--input)_30%,transparent)] focus-within:border-ring focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--ring)_50%,transparent)] aria-disabled:cursor-not-allowed aria-disabled:opacity-50 data-[invalid=true]:border-destructive dark:data-[invalid=true]:focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--destructive)_40%,transparent)] data-[invalid=true]:focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--destructive)_20%,transparent)]";
 
 const WRAPPER_STATUS_CLASS: Readonly<
-  Record<'error' | 'warning' | 'success', string>
+  Record<"error" | "warning" | "success", string>
 > = {
-  error: 'border-destructive',
-  warning: 'border-chart-4',
-  success: 'border-chart-2',
-}
+  error: "border-destructive",
+  warning: "border-chart-4",
+  success: "border-chart-2",
+};
 
-const WRAPPER_SIZE_CLASS: Readonly<Record<'sm' | 'md' | 'lg', string>> = {
-  sm: 'h-7 min-w-45',
-  md: 'h-8 min-w-45',
-  lg: 'h-9 min-w-45',
-}
+const WRAPPER_SIZE_CLASS: Readonly<Record<"sm" | "md" | "lg", string>> = {
+  sm: "h-7 min-w-45",
+  md: "h-8 min-w-45",
+  lg: "h-9 min-w-45",
+};
 
 const ICON_BUTTON_CLASS =
-  'inline-flex size-6 shrink-0 items-center justify-center rounded-sm text-muted-foreground outline-hidden transition-colors hover:bg-accent hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50 [&>svg]:size-4'
+  "inline-flex size-6 shrink-0 items-center justify-center rounded-sm text-muted-foreground outline-hidden transition-colors hover:bg-accent hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50 [&>svg]:size-4";
 
 const TRIGGER_CLASS =
-  'block min-w-0 flex-1 cursor-pointer overflow-hidden bg-transparent text-start text-sm text-nowrap text-ellipsis outline-hidden disabled:cursor-default'
+  "block min-w-0 flex-1 cursor-pointer overflow-hidden bg-transparent text-start text-sm text-nowrap text-ellipsis outline-hidden disabled:cursor-default";
 
-const TRIGGER_PLACEHOLDER_CLASS = 'text-muted-foreground'
+const TRIGGER_PLACEHOLDER_CLASS = "text-muted-foreground";
 
 const CLEAR_BUTTON_CLASS =
-  'inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground outline-hidden transition-colors hover:bg-accent hover:text-foreground [&>svg]:size-3.5'
+  "inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground outline-hidden transition-colors hover:bg-accent hover:text-foreground [&>svg]:size-3.5";
 
 const SPINNER_CLASS =
-  'inline-flex shrink-0 animate-spin items-center justify-center text-muted-foreground [&>svg]:size-4'
+  "inline-flex shrink-0 animate-spin items-center justify-center text-muted-foreground [&>svg]:size-4";
 
 const STATUS_ICON_CLASS: Readonly<
-  Record<'error' | 'warning' | 'success', string>
+  Record<"error" | "warning" | "success", string>
 > = {
-  error: 'inline-flex shrink-0 items-center text-destructive [&>svg]:size-4',
-  warning: 'inline-flex shrink-0 items-center text-chart-4 [&>svg]:size-4',
-  success: 'inline-flex shrink-0 items-center text-chart-2 [&>svg]:size-4',
-}
+  error: "inline-flex shrink-0 items-center text-destructive [&>svg]:size-4",
+  warning: "inline-flex shrink-0 items-center text-chart-4 [&>svg]:size-4",
+  success: "inline-flex shrink-0 items-center text-chart-2 [&>svg]:size-4",
+};
 
 const STATUS_MESSAGE_CLASS: Readonly<
-  Record<'error' | 'warning' | 'success', string>
+  Record<"error" | "warning" | "success", string>
 > = {
-  error: 'text-sm text-destructive',
-  warning: 'text-sm text-chart-4',
-  success: 'text-sm text-chart-2',
-}
+  error: "text-sm text-destructive",
+  warning: "text-sm text-chart-4",
+  success: "text-sm text-chart-2",
+};
 
 const PANEL_CLASS =
-  'z-50 w-auto rounded-md border bg-popover p-0 text-popover-foreground shadow-md outline-hidden transition duration-200 ease-out data-[closed]:opacity-0 data-[closed]:scale-95'
+  "z-50 w-auto rounded-md border bg-popover p-0 text-popover-foreground shadow-md outline-hidden transition duration-200 ease-out data-[closed]:opacity-0 data-[closed]:scale-95";
 
-const POPOVER_LAYOUT_CLASS = 'flex'
+const POPOVER_LAYOUT_CLASS = "flex";
 
 const PRESET_SIDEBAR_CLASS =
-  'flex min-w-35 flex-col gap-1 border-e border-input p-3'
+  "flex min-w-35 flex-col gap-1 border-e border-input p-3";
 
 const PRESET_BUTTON_CLASS =
-  'block w-full cursor-pointer rounded-md bg-transparent px-2 py-1 text-start text-sm text-foreground outline-hidden transition-colors hover:bg-accent disabled:cursor-default disabled:text-muted-foreground disabled:opacity-50 aria-[current=true]:bg-accent aria-[current=true]:text-accent-foreground'
+  "block w-full cursor-pointer rounded-md bg-transparent px-2 py-1 text-start text-sm text-foreground outline-hidden transition-colors hover:bg-accent disabled:cursor-default disabled:text-muted-foreground disabled:opacity-50 aria-[current=true]:bg-accent aria-[current=true]:text-accent-foreground";
 
-const BACKDROP_CLASS = 'fixed inset-0 z-40'
+const BACKDROP_CLASS = "fixed inset-0 z-40";
 
 export type DateRangeInputStatus = Readonly<{
-  type: 'error' | 'warning' | 'success'
-  message?: string
-}>
+  type: "error" | "warning" | "success";
+  message?: string;
+}>;
 
 export type DateRangeInputProps<Msg> = Readonly<{
-  model: Model
-  toParentMessage: (message: Message) => Msg
-  label: string
-  isLabelHidden?: boolean
-  description?: string
-  isOptional?: boolean
-  isRequired?: boolean
-  isDisabled?: boolean
+  model: Model;
+  toParentMessage: (message: Message) => Msg;
+  label: string;
+  isLabelHidden?: boolean;
+  description?: string;
+  isOptional?: boolean;
+  isRequired?: boolean;
+  isDisabled?: boolean;
   /** Astryx shows it as a focus ring tooltip; accepted but not rendered. */
-  disabledMessage?: string
-  isReadOnly?: boolean
-  status?: DateRangeInputStatus
-  statusVariant?: 'attached' | 'detached' | 'tooltip'
+  disabledMessage?: string;
+  isReadOnly?: boolean;
+  status?: DateRangeInputStatus;
+  statusVariant?: "attached" | "detached" | "tooltip";
   /** Astryx shows it as a label tooltip; accepted but not rendered. */
-  labelTooltip?: string
-  width?: number
-  size?: 'sm' | 'md' | 'lg'
-  presets?: ReadonlyArray<DateRangePreset>
-  hasClear?: boolean
-  isBusy?: boolean
-  placeholder?: string
+  labelTooltip?: string;
+  width?: number;
+  size?: "sm" | "md" | "lg";
+  presets?: ReadonlyArray<DateRangePreset>;
+  hasClear?: boolean;
+  isBusy?: boolean;
+  placeholder?: string;
   /** PORT NOTE: foldkit's calendar renders a single month; 2 is accepted for
    *  prop compatibility and clamps to one month. */
-  numberOfMonths?: 1 | 2
+  numberOfMonths?: 1 | 2;
   /** 0 = Sunday … 6 = Saturday; maps onto the calendar locale's
    *  firstDayOfWeek. Requires re-init or a matching calendarLocale. */
-  weekStartsOn?: number
-  class?: string
-  direction?: 'ltr' | 'rtl'
-}>
+  weekStartsOn?: number;
+  class?: string;
+  direction?: "ltr" | "rtl";
+}>;
 
 const statusIcon = <Msg>(
-  type: 'error' | 'warning' | 'success',
+  type: "error" | "warning" | "success",
   h: HtmlBuilder<Msg>,
 ): Html =>
   h.span(
     [h.Class(STATUS_ICON_CLASS[type]), h.AriaHidden(true)],
     [
-      type === 'error'
-        ? Icon.icon('octagon-x', { class: 'size-4' }, h)
-        : type === 'warning'
-          ? Icon.icon('triangle-alert', { class: 'size-4' }, h)
-          : Icon.icon('circle-check', { class: 'size-4' }, h),
+      type === "error"
+        ? Icon.icon("octagon-x", { class: "size-4" }, h)
+        : type === "warning"
+          ? Icon.icon("triangle-alert", { class: "size-4" }, h)
+          : Icon.icon("circle-check", { class: "size-4" }, h),
     ],
-  )
+  );
 
 export const dateRangeInput = <Msg>(
   props: DateRangeInputProps<Msg>,
@@ -195,37 +195,37 @@ export const dateRangeInput = <Msg>(
     isDisabled = false,
     isReadOnly = false,
     status,
-    statusVariant = 'attached',
+    statusVariant = "attached",
     width,
-    size = 'md',
+    size = "md",
     presets,
     hasClear = true,
     isBusy = false,
-    placeholder = 'Select date range',
+    placeholder = "Select date range",
     class: className,
     direction,
-  } = props
+  } = props;
 
-  const isEffectivelyDisabled = isDisabled || isBusy
-  const isInvalid = status?.type === 'error'
+  const isEffectivelyDisabled = isDisabled || isBusy;
+  const isInvalid = status?.type === "error";
 
-  const today = model.calendar.today
-  const displayValue = formatRangeDisplay(model.value, today, model.locale)
+  const today = model.calendar.today;
+  const displayValue = formatRangeDisplay(model.value, today, model.locale);
   const triggerLabel = Option.isSome(model.value)
     ? `${label}: ${displayValue}`
-    : `${label}: ${placeholder}`
+    : `${label}: ${placeholder}`;
 
-  const descriptionId = `${model.id}-description`
-  const statusMessageId = `${model.id}-status-message`
-  const labelId = `${model.id}-label`
+  const descriptionId = `${model.id}-description`;
+  const statusMessageId = `${model.id}-status-message`;
+  const labelId = `${model.id}-label`;
   const describedBy = [
     description === undefined ? undefined : descriptionId,
-    statusVariant !== 'tooltip' && status?.message !== undefined
+    statusVariant !== "tooltip" && status?.message !== undefined
       ? statusMessageId
       : undefined,
   ]
     .filter((id): id is string => id !== undefined)
-    .join(' ')
+    .join(" ");
 
   const displayRange = Option.match(model.pendingStart, {
     onNone: () =>
@@ -234,35 +234,35 @@ export const dateRangeInput = <Msg>(
         end: range.end,
       })),
     onSome: (start) => Option.some({ start, end: start }),
-  })
+  });
 
   const popoverView = h.submodel({
     slotId: model.popover.id,
     model: model.popover,
     view: PopoverPrimitive.view,
     viewInputs: {
-      anchor: { placement: 'bottom-start', gap: 4 },
+      anchor: { placement: "bottom-start", gap: 4 },
       isDisabled: isEffectivelyDisabled,
       ariaLabelledBy: labelId,
       toView: ({ button, panel, backdrop, isVisible }) =>
         h.div(
           [
-            h.DataAttribute('slot', 'date-range-input'),
-            h.DataAttribute('invalid', isInvalid ? 'true' : 'false'),
+            h.DataAttribute("slot", "date-range-input"),
+            h.DataAttribute("invalid", isInvalid ? "true" : "false"),
             ...(direction === undefined ? [] : [h.Dir(direction)]),
             h.Class(
               cn(
-                'relative',
-                isEffectivelyDisabled && 'cursor-not-allowed opacity-50',
+                "relative",
+                isEffectivelyDisabled && "cursor-not-allowed opacity-50",
               ),
             ),
           ],
           [
             h.div(
               [
-                h.DataAttribute('slot', 'date-range-input-wrapper'),
+                h.DataAttribute("slot", "date-range-input-wrapper"),
                 h.AriaDisabled(isEffectivelyDisabled),
-                h.DataAttribute('invalid', isInvalid ? 'true' : 'false'),
+                h.DataAttribute("invalid", isInvalid ? "true" : "false"),
                 h.Class(
                   cn(
                     WRAPPER_CLASS,
@@ -276,22 +276,20 @@ export const dateRangeInput = <Msg>(
               [
                 h.button(
                   [
-                    h.Type('button'),
-                    h.AriaLabel(
-                      isVisible ? 'Close calendar' : 'Open calendar',
-                    ),
+                    h.Type("button"),
+                    h.AriaLabel(isVisible ? "Close calendar" : "Open calendar"),
                     h.Tabindex(-1),
                     h.OnClick(toParentMessage(Message.ClickedIcon())),
                     ...(isEffectivelyDisabled ? [h.Disabled(true)] : []),
                     h.Class(ICON_BUTTON_CLASS),
                   ],
-                  [Icon.calendarIcon({ class: 'size-4' }, h)],
+                  [Icon.calendarIcon({ class: "size-4" }, h)],
                 ),
                 h.button(
                   [
                     ...button,
                     h.AriaLabel(triggerLabel),
-                    ...(describedBy === ''
+                    ...(describedBy === ""
                       ? []
                       : [h.AriaDescribedBy(describedBy)]),
                     ...(isRequired ? [h.AriaRequired(true)] : []),
@@ -300,11 +298,11 @@ export const dateRangeInput = <Msg>(
                     h.Class(
                       cn(
                         TRIGGER_CLASS,
-                        displayValue === '' && TRIGGER_PLACEHOLDER_CLASS,
+                        displayValue === "" && TRIGGER_PLACEHOLDER_CLASS,
                       ),
                     ),
                   ],
-                  [displayValue === '' ? placeholder : displayValue],
+                  [displayValue === "" ? placeholder : displayValue],
                 ),
                 ...(hasClear &&
                 Option.isSome(model.value) &&
@@ -312,144 +310,136 @@ export const dateRangeInput = <Msg>(
                   ? [
                       h.button(
                         [
-                          h.Type('button'),
+                          h.Type("button"),
                           h.AriaLabel(`Clear ${label}`),
                           h.Tabindex(-1),
                           h.OnClick(toParentMessage(Message.ClearedValue())),
                           h.Class(CLEAR_BUTTON_CLASS),
                         ],
-                        [Icon.x({ class: 'size-3.5' }, h)],
+                        [Icon.x({ class: "size-3.5" }, h)],
                       ),
                     ]
                   : []),
                 ...(isBusy
                   ? [
                       h.span(
-                        [
-                          h.Class(SPINNER_CLASS),
-                          h.AriaHidden(true),
-                        ],
-                        [
-                          Icon.loaderCircle({ class: 'size-4' }, h),
-                        ],
+                        [h.Class(SPINNER_CLASS), h.AriaHidden(true)],
+                        [Icon.loaderCircle({ class: "size-4" }, h)],
                       ),
                     ]
                   : []),
                 ...(status === undefined ? [] : [statusIcon(status.type, h)]),
-                ...(isVisible
-                  ? [
-                      h.div(
-                        [...backdrop, h.Class(BACKDROP_CLASS)],
-                        [],
-                      ),
-                      h.div(
-                        [...panel, h.Class(PANEL_CLASS)],
-                        [
-                          h.div(
-                            [
-                              h.DataAttribute('slot', 'popover-layout'),
-                              h.Class(POPOVER_LAYOUT_CLASS),
-                            ],
-                            [
-                              ...(presets === undefined || presets.length === 0
-                                ? []
-                                : [
-                                    h.div(
-                                      [
-                                        h.Role('group'),
-                                        h.AriaLabel('Preset date ranges'),
-                                        h.Class(PRESET_SIDEBAR_CLASS),
-                                      ],
-                                      presets.map((preset) => {
-                                        const range = preset.getRange()
-                                        const isActive = Option.match(
-                                          model.value,
-                                          {
-                                            onNone: () => false,
-                                            onSome: (current) =>
-                                              FoldkitCalendar.isEqual(
-                                                current.start,
-                                                range.start,
-                                              ) &&
-                                              FoldkitCalendar.isEqual(
-                                                current.end,
-                                                range.end,
-                                              ),
-                                          },
-                                        )
-                                        const isPresetDisabled =
-                                          !isPresetSelectable(model, range)
-                                        return h.button(
-                                          [
-                                            h.Type('button'),
-                                            ...(isActive
-                                              ? [h.AriaCurrent('true')]
-                                              : []),
-                                            ...(isPresetDisabled
-                                              ? [h.Disabled(true)]
-                                              : []),
-                                            h.OnClick(
-                                              toParentMessage(
-                                                Message.ClickedPreset({
-                                                  range,
-                                                }),
-                                              ),
-                                            ),
-                                            h.Class(PRESET_BUTTON_CLASS),
-                                          ],
-                                          [preset.label],
-                                        )
-                                      }),
-                                    ),
-                                  ]),
-                              h.submodel({
-                                slotId: model.calendar.id,
-                                model: model.calendar,
-                                view: CalendarPrimitive.view,
-                                viewInputs: {
-                                  maybeSelectedDate: Option.none(),
-                                  toView: (calendarAttrs) =>
-                                    calendarView(
-                                      calendarAttrs,
-                                      {
-                                        ...(Option.isSome(displayRange)
-                                          ? { range: displayRange.value }
-                                          : {}),
-                                        ...(direction === undefined
-                                          ? {}
-                                          : { direction }),
-                                      },
-                                      h,
-                                    ),
-                                },
-                                toParentMessage: (calendarMessage) =>
-                                  toParentMessage(
-                                    Message.GotCalendarMessage({
-                                      message: calendarMessage,
-                                    }),
-                                  ),
-                              }),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ]
-                  : []),
               ],
             ),
+            /* Backdrop+panel portal to #foldkit-portal-root; keep them
+               siblings of the wrapper so wrapper diffs never reference
+               portaled nodes (insertBefore crash on clear-button insert). */
+            ...(isVisible
+              ? [
+                  h.div([...backdrop, h.Class(BACKDROP_CLASS)], []),
+                  h.div(
+                    [...panel, h.Class(PANEL_CLASS)],
+                    [
+                      h.div(
+                        [
+                          h.DataAttribute("slot", "popover-layout"),
+                          h.Class(POPOVER_LAYOUT_CLASS),
+                        ],
+                        [
+                          ...(presets === undefined || presets.length === 0
+                            ? []
+                            : [
+                                h.div(
+                                  [
+                                    h.Role("group"),
+                                    h.AriaLabel("Preset date ranges"),
+                                    h.Class(PRESET_SIDEBAR_CLASS),
+                                  ],
+                                  presets.map((preset) => {
+                                    const range = preset.getRange();
+                                    const isActive = Option.match(model.value, {
+                                      onNone: () => false,
+                                      onSome: (current) =>
+                                        FoldkitCalendar.isEqual(
+                                          current.start,
+                                          range.start,
+                                        ) &&
+                                        FoldkitCalendar.isEqual(
+                                          current.end,
+                                          range.end,
+                                        ),
+                                    });
+                                    const isPresetDisabled =
+                                      !isPresetSelectable(model, range);
+                                    return h.button(
+                                      [
+                                        h.Type("button"),
+                                        ...(isActive
+                                          ? [h.AriaCurrent("true")]
+                                          : []),
+                                        ...(isPresetDisabled
+                                          ? [h.Disabled(true)]
+                                          : []),
+                                        h.OnClick(
+                                          toParentMessage(
+                                            Message.ClickedPreset({
+                                              range,
+                                            }),
+                                          ),
+                                        ),
+                                        h.Class(PRESET_BUTTON_CLASS),
+                                      ],
+                                      [preset.label],
+                                    );
+                                  }),
+                                ),
+                              ]),
+                          h.submodel({
+                            slotId: model.calendar.id,
+                            model: model.calendar,
+                            view: CalendarPrimitive.view,
+                            viewInputs: {
+                              maybeSelectedDate: Option.none(),
+                              toView: (calendarAttrs) =>
+                                calendarView(
+                                  calendarAttrs,
+                                  {
+                                    ...(Option.isSome(displayRange)
+                                      ? { range: displayRange.value }
+                                      : {}),
+                                    ...(direction === undefined
+                                      ? {}
+                                      : { direction }),
+                                  },
+                                  h,
+                                ),
+                            },
+                            toParentMessage: (calendarMessage) =>
+                              toParentMessage(
+                                Message.GotCalendarMessage({
+                                  message: calendarMessage,
+                                }),
+                              ),
+                          }),
+                        ],
+                      ),
+                    ],
+                  ),
+                ]
+              : []),
           ],
         ),
     },
     toParentMessage: (popoverMessage) =>
       toParentMessage(Message.GotPopoverMessage({ message: popoverMessage })),
-  })
+  });
 
   return h.div(
     [
-      h.DataAttribute('slot', 'field'),
-      h.Role('group'),
-      h.DataAttribute('invalid', isInvalid ? 'true' : 'false'),
-      ...(describedBy === '' ? [] : []),
+      h.DataAttribute("slot", "field"),
+      h.Role("group"),
+      h.DataAttribute("invalid", isInvalid ? "true" : "false"),
+      ...(describedBy === "" ? [] : []),
       ...(width === undefined ? [] : [h.Style({ width: `${width}px` })]),
       h.Class(cn(FIELD_CLASS, className)),
     ],
@@ -458,25 +448,19 @@ export const dateRangeInput = <Msg>(
         ? []
         : [
             h.span(
-              [
-                h.Id(labelId),
-                h.Class(LABEL_CLASS),
-              ],
+              [h.Id(labelId), h.Class(LABEL_CLASS)],
               [
                 label,
                 ...(isRequired
                   ? [
                       h.span(
-                        [
-                          h.Class('text-destructive'),
-                          h.AriaHidden(true),
-                        ],
-                        ['*'],
+                        [h.Class("text-destructive"), h.AriaHidden(true)],
+                        ["*"],
                       ),
                     ]
                   : []),
                 ...(isOptional
-                  ? [h.span([h.Class(OPTIONAL_CLASS)], ['(optional)'])]
+                  ? [h.span([h.Class(OPTIONAL_CLASS)], ["(optional)"])]
                   : []),
               ],
             ),
@@ -490,18 +474,18 @@ export const dateRangeInput = <Msg>(
               [description],
             ),
           ]),
-      ...(statusVariant === 'tooltip' || status?.message === undefined
+      ...(statusVariant === "tooltip" || status?.message === undefined
         ? []
         : [
             h.div(
               [
                 h.Id(statusMessageId),
-                h.Role('status'),
+                h.Role("status"),
                 h.Class(STATUS_MESSAGE_CLASS[status.type]),
               ],
               [status.message],
             ),
           ]),
     ],
-  )
-}
+  );
+};
