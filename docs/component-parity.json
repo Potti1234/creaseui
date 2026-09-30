@@ -23,11 +23,17 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 66,
+    "registryItems": 72,
     "creaseOnlyRecipes": [
+      "chat-reasoning",
       "data-table",
       "date-picker",
+      "log-stream",
+      "power-search",
       "status-dot",
+      "timer",
+      "timestamp",
+      "transfer-list",
       "typography"
     ]
   },
@@ -301,6 +307,24 @@
         "src/ui/chart.ts",
         "src/ui/registry.json#chart",
         "/docs/components/chart"
+      ]
+    },
+    {
+      "component": "chat-reasoning",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/chat-reasoning.ts",
+        "src/ui/registry.json#chat-reasoning",
+        "/docs/components/chat-reasoning"
       ]
     },
     {
@@ -685,6 +709,24 @@
       ]
     },
     {
+      "component": "log-stream",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/log-stream.ts",
+        "src/ui/registry.json#log-stream",
+        "/docs/components/log-stream"
+      ]
+    },
+    {
       "component": "marker",
       "upstream": true,
       "classification": "full",
@@ -826,6 +868,24 @@
         "src/ui/popover.ts",
         "src/ui/registry.json#popover",
         "/docs/components/popover"
+      ]
+    },
+    {
+      "component": "power-search",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/power-search.ts",
+        "src/ui/registry.json#power-search",
+        "/docs/components/power-search"
       ]
     },
     {
@@ -1137,6 +1197,42 @@
       ]
     },
     {
+      "component": "timer",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/timer.ts",
+        "src/ui/registry.json#timer",
+        "/docs/components/timer"
+      ]
+    },
+    {
+      "component": "timestamp",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/timestamp.ts",
+        "src/ui/registry.json#timestamp",
+        "/docs/components/timestamp"
+      ]
+    },
+    {
       "component": "toast",
       "upstream": true,
       "classification": "full",
@@ -1206,6 +1302,24 @@
         "src/ui/tooltip.ts",
         "src/ui/registry.json#tooltip",
         "/docs/components/tooltip"
+      ]
+    },
+    {
+      "component": "transfer-list",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/transfer-list.ts",
+        "src/ui/registry.json#transfer-list",
+        "/docs/components/transfer-list"
       ]
     },
     {

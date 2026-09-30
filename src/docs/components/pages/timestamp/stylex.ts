@@ -1,0 +1,102 @@
+import * as stylex from '@stylexjs/stylex';
+import type { Html, HtmlBuilder } from 'foldkit/html';
+
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import {
+  timestampFixtures,
+  type TimestampFixture,
+  type TimestampStampSpec,
+} from '@/docs/components/pages/timestamp/shared';
+import { className } from '@/stylex/style';
+import * as Timestamp from '@/stylex/timestamp';
+
+const styles = stylex.create({
+  page: { display: 'flex', flexDirection: 'column', gap: '1rem' },
+  section: { display: 'flex', flexDirection: 'column', gap: '0.25rem' },
+  row: { alignItems: 'center', display: 'flex', gap: '1rem' },
+  column: { display: 'flex', flexDirection: 'column', gap: '0.5rem' },
+  supporting: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.75rem',
+    lineHeight: '1.25rem',
+  },
+});
+
+interface PreviewShape {
+  readonly stamps: ReadonlyArray<Timestamp.Model>;
+}
+
+const stampView = <Msg>(
+  stamp: TimestampStampSpec,
+  model: Timestamp.Model,
+  index: number,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  Timestamp.timestamp(
+    {
+      model,
+      toParentMessage: (message) =>
+        onMessageJson(
+          JSON.stringify({
+            _tag: 'GotTimestampMessage',
+            index,
+            message,
+          }),
+        ),
+      ...(stamp.type === undefined ? {} : { type: stamp.type }),
+      ...(stamp.color === undefined ? {} : { color: stamp.color }),
+      ...(stamp.isTimezoneShown === true ? { isTimezoneShown: true } : {}),
+      ...(stamp.tooltipEntries === undefined
+        ? {}
+        : { tooltipEntries: stamp.tooltipEntries }),
+    },
+    h,
+  );
+
+const timestampView = <Msg>(
+  fixture: TimestampFixture,
+  model: PreviewShape,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  let stampIndex = 0;
+  const sections = fixture.sections.map((section) => {
+    const stamps = section.stamps.map((stamp) => {
+      const stampModel = model.stamps[stampIndex];
+      const index = stampIndex;
+      stampIndex += 1;
+      return stampModel === undefined
+        ? h.empty
+        : stampView(stamp, stampModel, index, onMessageJson, h);
+    });
+    const group = h.div(
+      [
+        h.Class(
+          className(
+            section.direction === 'horizontal' ? styles.row : styles.column,
+          ),
+        ),
+      ],
+      stamps,
+    );
+    return section.label === undefined
+      ? group
+      : h.div([h.Class(className(styles.section))], [
+          h.span([h.Class(className(styles.supporting))], [section.label]),
+          group,
+        ]);
+  });
+  return h.div([h.Class(className(styles.page))], sections);
+};
+
+export const timestampStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+  index: number,
+  model: unknown,
+  onMessageJson: (messageJson: string) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const preview = model as PreviewShape;
+  const fixture = timestampFixtures[index] ?? timestampFixtures[0];
+  return timestampView(fixture, preview, onMessageJson, h);
+};

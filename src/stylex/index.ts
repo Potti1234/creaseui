@@ -19,6 +19,7 @@ export * as Calendar from './calendar.js'
 export * as Card from './card.js'
 export * as Carousel from './carousel.js'
 export * as Chart from './chart.js'
+export * as ChatReasoning from './chat-reasoning.js'
 export * as Checkbox from './checkbox.js'
 export * as Collapsible from './collapsible.js'
 export * as Combobox from './combobox.js'
@@ -40,6 +41,7 @@ export * as Input from './input.js'
 export * as Item from './item.js'
 export * as Kbd from './kbd.js'
 export * as Label from './label.js'
+export * as LogStream from './log-stream.js'
 export * as Marker from './marker.js'
 export * as Menubar from './menubar.js'
 export * as MessageScroller from './message-scroller.js'
@@ -48,6 +50,7 @@ export * as NativeSelect from './native-select.js'
 export * as NavigationMenu from './navigation-menu.js'
 export * as Pagination from './pagination.js'
 export * as Popover from './popover.js'
+export * as PowerSearch from './power-search.js'
 export * as Progress from './progress.js'
 export * as RadioGroup from './radio-group.js'
 export * as Resizable from './resizable.js'
@@ -65,10 +68,13 @@ export * as Switch from './switch.js'
 export * as Table from './table.js'
 export * as Tabs from './tabs.js'
 export * as Textarea from './textarea.js'
+export * as Timer from './timer.js'
+export * as Timestamp from './timestamp.js'
 export * as Toast from './toast.js'
 export * as ToggleGroup from './toggle-group.js'
 export * as Toggle from './toggle.js'
 export * as Tooltip from './tooltip.js'
+export * as TransferList from './transfer-list.js'
 export * as Typography from './typography.js'
 
 /** Canonical registry order. Additions and removals are checked in CI. */
@@ -88,6 +94,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'card',
   'carousel',
   'chart',
+  'chat-reasoning',
   'checkbox',
   'collapsible',
   'combobox',
@@ -109,6 +116,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'item',
   'kbd',
   'label',
+  'log-stream',
   'marker',
   'menubar',
   'message-scroller',
@@ -117,6 +125,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'navigation-menu',
   'pagination',
   'popover',
+  'power-search',
   'progress',
   'radio-group',
   'resizable',
@@ -134,10 +143,13 @@ export const STYLEX_COMPONENT_NAMES = [
   'table',
   'tabs',
   'textarea',
+  'timer',
+  'timestamp',
   'toast',
   'toggle-group',
   'toggle',
   'tooltip',
+  'transfer-list',
   'typography',
 ] as const
 

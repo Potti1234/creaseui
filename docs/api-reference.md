@@ -268,6 +268,23 @@ Source: [`src/ui/chart.ts`](../src/ui/chart.ts)
 | `DonutChartProps` | type | `DonutChartProps = Readonly<{ value: number; max: number; label?: string; sublabel?: string; class?: string; }>` |
 | `donutChart` | function | `donutChart<Msg>(props: DonutChartProps, h: HtmlBuilder<Msg>): Html` |
 
+## Chat Reasoning
+
+Source: [`src/ui/chat-reasoning.ts`](../src/ui/chat-reasoning.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `init` | function | `init(config: { id: string; isExpanded?: boolean; }): Model` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `OutMessage` | value | `OutMessage: value` |
+| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `update` | function | `update(model: Model, message: Message): UpdateReturn` |
+| `ChatReasoningProps` | type | `ChatReasoningProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Reasoning content rendered inside the expanded panel. */ children: ReadonlyArray<Html \| string>; /** Header label. @default 'Thinking' */ label?: string; /** Du…` |
+| `chatReasoning` | function | `chatReasoning<Msg>(props: ChatReasoningProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Checkbox
 
 Source: [`src/ui/checkbox.ts`](../src/ui/checkbox.ts)
@@ -668,6 +685,26 @@ Source: [`src/ui/label.ts`](../src/ui/label.ts)
 | `LabelProps` | type | `LabelProps = Readonly<{ for?: string; isRequired?: boolean; isDisabled?: boolean; class?: string; children: ReadonlyArray<Html \| string>; }>` |
 | `label` | function | `label<Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html` |
 
+## Log Stream
+
+Source: [`src/ui/log-stream.ts`](../src/ui/log-stream.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `LogStreamLevel` | value | `LogStreamLevel: value` |
+| `LogStreamLevel` | type | `LogStreamLevel = typeof LogStreamLevel.Type` |
+| `LogEntry` | type | `LogEntry = Readonly<{ /** Stable unique key, e.g. `"req-1042"`. */ id: string; /** Pre-formatted timestamp, e.g. `"14:02:11.482"`. Deterministic. */ timestamp: string; level: LogStreamLevel; message: string; /** Emitting service/component, e.g. `"api-gateway"…` |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `init` | function | `init(config: { id: string; /** Initially pinned to the tail. @default false (astryx uncontrolled) */ isFollowing?: boolean; }): Model` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `OutMessage` | value | `OutMessage: value` |
+| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `update` | function | `update(model: Model, message: Message): UpdateReturn` |
+| `LogStreamProps` | type | `LogStreamProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Log rows, oldest first (live tails append at the end). */ entries: ReadonlyArray<LogEntry>; /** Visual treatment; 'terminal' is always dark. @default 'default' */ v…` |
+| `logStream` | function | `logStream<Msg>(props: LogStreamProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Marker
 
 Source: [`src/ui/marker.ts`](../src/ui/marker.ts)
@@ -807,6 +844,46 @@ Source: [`src/ui/popover.ts`](../src/ui/popover.ts)
 | `PopoverAlign` | type | `PopoverAlign = 'start' \| 'center' \| 'end'` |
 | `PopoverProps` | type | `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; content: Html \| string; align?: PopoverAlign; side?: PopoverSide; class?: string; direction?: 'ltr' \| 'rtl'; focusSelector?…` |
 | `popover` | function | `popover<Msg>(props: PopoverProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Power Search
+
+Source: [`src/ui/power-search.ts`](../src/ui/power-search.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `EnumItem` | type | `EnumItem = Readonly<{ value: string; label: string }>` |
+| `PowerSearchEntity` | type | `PowerSearchEntity = Readonly<{ id: string; label: string; photo?: string; }>` |
+| `SearchableItem` | type | `SearchableItem = Readonly<{ id: string; label: string; photo?: string; auxiliaryData?: unknown; }>` |
+| `SearchSource` | type | `SearchSource = Readonly<{ search: (query: string) => ReadonlyArray<SearchableItem>; bootstrap?: () => ReadonlyArray<SearchableItem>; }>` |
+| `DateTimeRangePart` | type | `DateTimeRangePart = \| Readonly<{ type: 'NOW' }> \| Readonly<{ type: 'ABSOLUTE'; unixSeconds: number }> \| Readonly<{ type: 'RELATIVE'; backValue: number; unit: \| 'second' \| 'minute' \| 'hour' \| 'day' \| 'week' \| 'month' \| 'year'; }>` |
+| `DateTimeRange` | type | `DateTimeRange = Readonly<{ start: DateTimeRangePart; end: DateTimeRangePart; }>` |
+| `OperatorValue` | type | `OperatorValue = \| Readonly<{ type: 'empty' }> \| Readonly<{ type: 'string'; searchSource?: SearchSource }> \| Readonly<{ type: 'string_list'; searchSource?: SearchSource }> \| Readonly<{ type: 'integer' }> \| Readonly<{ type: 'float' }> \| Readonly<{ type: 'time' …` |
+| `RelativeDateFilterPreset` | type | `RelativeDateFilterPreset = Readonly<{ key: string; label: string; range: DateTimeRange; }>` |
+| `PowerSearchOperator` | type | `PowerSearchOperator = Readonly<{ key: string; value: OperatorValue }> & (Readonly<{ label: string }> \| Readonly<{ i18nKey: string }>)` |
+| `PowerSearchField` | type | `PowerSearchField = Readonly<{ key: string; label: string; operators: ReadonlyArray<PowerSearchOperator>; icon?: string; defaultOperator?: string; group?: string; description?: string; typeaheadAliases?: ReadonlyArray<string>; typeaheadMinQueryLength?: number;…` |
+| `FilterValue` | type | `FilterValue = \| Readonly<{ type: 'empty' }> \| Readonly<{ type: 'string'; value: string }> \| Readonly<{ type: 'string_list'; value: ReadonlyArray<string> }> \| Readonly<{ type: 'integer'; value: number }> \| Readonly<{ type: 'float'; value: number }> \| Readonly<…` |
+| `PowerSearchFilter` | type | `PowerSearchFilter = Readonly<{ field: string; operator: string; value: FilterValue; isReadOnly?: boolean; }>` |
+| `PartialFilter` | type | `PartialFilter = Readonly<{ field: string; operator?: string; value?: FilterValue; }>` |
+| `PowerSearchConfig` | type | `PowerSearchConfig = Readonly<{ name: string; fields: ReadonlyArray<PowerSearchField>; contentSearchFieldKey?: string; }>` |
+| `PowerSearchChangeType` | type | `PowerSearchChangeType = 'add' \| 'edit' \| 'remove'` |
+| `resolveOperatorLabel` | function | `resolveOperatorLabel(operator: PowerSearchOperator): string` |
+| `InternalPowerSearchConfig` | type | `InternalPowerSearchConfig = Readonly<{ name: string; fields: ReadonlyArray<PowerSearchField>; contentSearchFieldKey?: string; fieldsByKey: ReadonlyMap<string, PowerSearchField>; /** The portion of the fields array that precedes contentSearchFieldKey (astryx e…` |
+| `createInternalConfig` | function | `createInternalConfig(config: PowerSearchConfig): InternalPowerSearchConfig` |
+| `resolveDateTimeRangePart` | function | `resolveDateTimeRangePart(part: DateTimeRangePart, nowSeconds: number = Date.now() / 1000): number` |
+| `formatFilterValue` | function | `formatFilterValue(config: InternalPowerSearchConfig, operatorValue: OperatorValue, filterValue: FilterValue \| undefined, maxLength: number): string` |
+| `PowerSearchSuggestion` | type | `PowerSearchSuggestion = \| Readonly<{ kind: 'group'; label: string }> \| Readonly<{ kind: 'field'; field: PowerSearchField }> \| Readonly<{ kind: 'operator'; field: PowerSearchField; operator: PowerSearchOperator; label: string; }> \| Readonly<{ kind: 'value'; fi…` |
+| `FieldDefinition` | type | `FieldDefinition = Readonly<{ key: string; type: FieldDefinitionType; label?: string; enumValues?: ReadonlyArray<EnumItem>; }>` |
+| `createPowerSearchConfig` | function | `createPowerSearchConfig(definitions: ReadonlyArray<FieldDefinition>, configName?: string): { config: PowerSearchConfig; applyFilters: <Row extends Record<string, unknown>>( filters: ReadonlyArray<PowerSearchFilter>, data: ReadonlyArray<Row>, ) => Row[]; }` |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `init` | function | `init(config: { id: string }): Model` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `OutMessage` | value | `OutMessage: value` |
+| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `update` | function | `update(model: Model, message: Message, config: InternalPowerSearchConfig, filters: ReadonlyArray<PowerSearchFilter>, resultCount: number \| null = null): UpdateReturn` |
+| `PowerSearchProps` | type | `PowerSearchProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Controlled filter list (astryx `filters` prop + `onChange`). */ filters: ReadonlyArray<PowerSearchFilter>; config: InternalPowerSearchConfig; placeholder?: string…` |
+| `powerSearch` | function | `powerSearch<Msg>(props: PowerSearchProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Progress
 
@@ -1096,6 +1173,47 @@ Source: [`src/ui/textarea.ts`](../src/ui/textarea.ts)
 | `TextareaProps` | type | `TextareaProps<Msg> = TextareaBehaviorProps<Msg> & Readonly<{ class?: string; }>` |
 | `textarea` | function | `textarea<Msg>(props: TextareaProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
+## Timer
+
+Source: [`src/ui/timer.ts`](../src/ui/timer.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `TimerFormat` | type | `TimerFormat = 'elapsed' \| 'clock'` |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `init` | function | `init(config: { id: string; startTimeMs?: number; format?: TimerFormat; /** Clock override for deterministic previews/tests. Defaults to Date.now(). */ nowMs?: number; }): Model` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `update` | function | `update(model: Model, message: Message): UpdateReturn` |
+| `subscriptions` | value | `subscriptions: value` |
+| `TimerProps` | type | `TimerProps<Msg> = Readonly<{ model: Model; /** Semantic text type. @default 'supporting' */ type?: AstryxTextType; /** Font size override; keeps the type's line height. */ size?: AstryxTextSize; /** Text color. @default 'secondary' */ color?: AstryxTextColor;…` |
+| `timer` | function | `timer<Msg>(props: TimerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Timestamp
+
+Source: [`src/ui/timestamp.ts`](../src/ui/timestamp.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `InstantFormat` | re-export | `export { InstantFormat } from '@/lib/timestamp-format'` |
+| `TimestampFormat` | re-export | `export { TimestampFormat } from '@/lib/timestamp-format'` |
+| `TimestampTooltipEntry` | re-export | `export { TimestampTooltipEntry } from '@/lib/timestamp-format'` |
+| `TimestampTooltipFormat` | re-export | `export { TimestampTooltipFormat } from '@/lib/timestamp-format'` |
+| `formatInstant` | re-export | `export { formatInstant } from '@/lib/timestamp-format'` |
+| `formatRelativeTime` | re-export | `export { formatRelativeTime } from '@/lib/timestamp-format'` |
+| `formatTooltipLines` | re-export | `export { formatTooltipLines } from '@/lib/timestamp-format'` |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `parseValueMs` | function | `parseValueMs(value: string \| number): number` |
+| `init` | function | `init(config: { id: string; value: string \| number; format?: TimestampFormat; autoThreshold?: number; isLive?: boolean; nowMs?: number; }): Model` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `update` | function | `update(model: Model, message: Message): UpdateReturn` |
+| `subscriptions` | value | `subscriptions: value` |
+| `TimestampProps` | type | `TimestampProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Semantic text type. @default 'supporting' */ type?: AstryxTextType; size?: AstryxTextSize; /** Text color. @default 'secondary' */ color?: AstryxTextColor; weight?:…` |
+| `timestamp` | function | `timestamp<Msg>(props: TimestampProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Toast
 
 Source: [`src/ui/toast.ts`](../src/ui/toast.ts)
@@ -1155,6 +1273,26 @@ Source: [`src/ui/tooltip.ts`](../src/ui/tooltip.ts)
 | `TooltipAlign` | type | `TooltipAlign = 'start' \| 'center' \| 'end'` |
 | `TooltipProps` | type | `TooltipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; content: Html \| string; align?: TooltipAlign; side?: TooltipSide; isDisabled?: boolean; ariaLabel?: string; triggerClass?: string; class?: string;…` |
 | `tooltip` | function | `tooltip<Msg>(props: TooltipProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Transfer List
+
+Source: [`src/ui/transfer-list.ts`](../src/ui/transfer-list.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `TransferListOption` | type | `TransferListOption = Readonly<{ /** Stable value written to the controlled value array. */ value: string; /** Visible option name and the basis of action labels. */ label: string; /** Optional searchable metadata. Not rendered in the default row. */ descripti…` |
+| `ReorderSession` | type | `ReorderSession = typeof ReorderSession.Type` |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `init` | function | `init(config: { id: string; value?: ReadonlyArray<string> }): Model` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `OutMessage` | value | `OutMessage: value` |
+| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `update` | function | `update(model: Model, message: Message, options: ReadonlyArray<TransferListOption> = [], isReorderable = true): UpdateReturn` |
+| `TransferListProps` | type | `TransferListProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Accessible name for the complete control. */ label: string; /** Visually hides the label while retaining its accessible name. */ isLabelHidden?: boolean; /** Sup…` |
+| `REORDER_INSTRUCTIONS` | value | `REORDER_INSTRUCTIONS: value` |
+| `transferList` | function | `transferList<Msg>(props: TransferListProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Typography
 
