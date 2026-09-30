@@ -2923,6 +2923,103 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "sheet<Msg>(props: SheetProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "side-nav": [
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/side-nav'"
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/lib/side-nav'"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from '@/lib/side-nav'"
+    },
+    {
+      "name": "HEADING_MENU_KEY",
+      "kind": "re-export",
+      "signature": "export { HEADING_MENU_KEY } from '@/lib/side-nav'"
+    },
+    {
+      "name": "flyoutKey",
+      "kind": "re-export",
+      "signature": "export { flyoutKey } from '@/lib/side-nav'"
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/lib/side-nav'"
+    },
+    {
+      "name": "isItemCollapsed",
+      "kind": "re-export",
+      "signature": "export { isItemCollapsed } from '@/lib/side-nav'"
+    },
+    {
+      "name": "menuFor",
+      "kind": "re-export",
+      "signature": "export { menuFor } from '@/lib/side-nav'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/lib/side-nav'"
+    },
+    {
+      "name": "visibleWidth",
+      "kind": "re-export",
+      "signature": "export { visibleWidth } from '@/lib/side-nav'"
+    },
+    {
+      "name": "InitConfig",
+      "kind": "re-export",
+      "signature": "export { InitConfig } from '@/lib/side-nav'"
+    },
+    {
+      "name": "SideNavItemData",
+      "kind": "type",
+      "signature": "SideNavItemData = Readonly<{ id: string; label: string; icon?: string; /** Icon shown instead of `icon` while the item is selected (astryx selectedIcon). */ selectedIcon?: string; isSelected?: boolean; isDisabled?: boolean; href?: string; /** Invoked for item…"
+    },
+    {
+      "name": "SideNavMenuItemData",
+      "kind": "type",
+      "signature": "SideNavMenuItemData = Readonly<{ label: string; href?: string; onSelect?: boolean; icon?: string; isDisabled?: boolean; }>"
+    },
+    {
+      "name": "SideNavHeadingData",
+      "kind": "type",
+      "signature": "SideNavHeadingData = Readonly<{ heading: string; icon?: Html; headingHref?: string; superheading?: string; superheadingHref?: string; subheading?: string; subheadingHref?: string; headerEndContent?: Html; menu?: ReadonlyArray<SideNavMenuItemData>; }>"
+    },
+    {
+      "name": "SideNavSectionData",
+      "kind": "type",
+      "signature": "SideNavSectionData = Readonly<{ title?: string; subtitle?: string; isHeaderHidden?: boolean; endContent?: Html; items: ReadonlyArray<SideNavItemData>; }>"
+    },
+    {
+      "name": "ViewInputs",
+      "kind": "type",
+      "signature": "ViewInputs = Readonly<{ /** Bare top-level items (astryx SideNav children outside a Section). */ items?: ReadonlyArray<SideNavItemData>; sections?: ReadonlyArray<SideNavSectionData>; heading?: SideNavHeadingData; topContent?: Html; footer?: Html; /** Small ic…"
+    },
+    {
+      "name": "view",
+      "kind": "value",
+      "signature": "view: value"
+    },
+    {
+      "name": "SideNavProps",
+      "kind": "type",
+      "signature": "SideNavProps<Msg> = ViewInputs & Readonly<{ model: SideNavLib.Model; toParentMessage: (message: SideNavLib.Message) => Msg; }>"
+    },
+    {
+      "name": "sideNav",
+      "kind": "function",
+      "signature": "sideNav<Msg>(props: SideNavProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "sidebar": [
     {
       "name": "*",
@@ -3624,6 +3721,245 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "tooltip",
       "kind": "function",
       "signature": "tooltip<Msg>(props: TooltipProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "top-nav": [
+    {
+      "name": "dropdownMenuKey",
+      "kind": "re-export",
+      "signature": "export { dropdownMenuKey } from '@/lib/top-nav'"
+    },
+    {
+      "name": "HEADING_MENU_KEY",
+      "kind": "re-export",
+      "signature": "export { HEADING_MENU_KEY } from '@/lib/top-nav'"
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/lib/top-nav'"
+    },
+    {
+      "name": "isMenuOpen",
+      "kind": "re-export",
+      "signature": "export { isMenuOpen } from '@/lib/top-nav'"
+    },
+    {
+      "name": "menuFor",
+      "kind": "re-export",
+      "signature": "export { menuFor } from '@/lib/top-nav'"
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/lib/top-nav'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/lib/top-nav'"
+    },
+    {
+      "name": "InitConfig",
+      "kind": "re-export",
+      "signature": "export { InitConfig } from '@/lib/top-nav'"
+    },
+    {
+      "name": "TopNavMenuKind",
+      "kind": "re-export",
+      "signature": "export { TopNavMenuKind } from '@/lib/top-nav'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/top-nav'"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from '@/lib/top-nav'"
+    },
+    {
+      "name": "TopNavItemData",
+      "kind": "type",
+      "signature": "TopNavItemData = Readonly<{ kind?: 'item'; label: string; href?: string; icon?: string; isSelected?: boolean; isDisabled?: boolean; isIconOnly?: boolean; onSelect?: boolean; }>"
+    },
+    {
+      "name": "TopNavMenuItemData",
+      "kind": "type",
+      "signature": "TopNavMenuItemData = Readonly<{ title: string; description?: string; icon?: Html; href?: string; onSelect?: boolean; }>"
+    },
+    {
+      "name": "TopNavMenuData",
+      "kind": "type",
+      "signature": "TopNavMenuData = Readonly<{ kind: 'menu'; label: string; items: ReadonlyArray<TopNavMenuItemData>; }>"
+    },
+    {
+      "name": "TopNavMegaMenuItemData",
+      "kind": "type",
+      "signature": "TopNavMegaMenuItemData = Readonly<{ title: string; description?: string; icon?: Html; href?: string; onSelect?: boolean; }>"
+    },
+    {
+      "name": "TopNavMegaMenuFeaturedCardData",
+      "kind": "type",
+      "signature": "TopNavMegaMenuFeaturedCardData = Readonly<{ title: string; description?: string; image?: string; imageAlt?: string; linkLabel?: string; linkHref?: string; children?: Html; }>"
+    },
+    {
+      "name": "TopNavMegaMenuData",
+      "kind": "type",
+      "signature": "TopNavMegaMenuData = Readonly<{ kind: 'megaMenu'; label: string; items: ReadonlyArray<TopNavMegaMenuItemData>; featured?: TopNavMegaMenuFeaturedCardData; }>"
+    },
+    {
+      "name": "TopNavEntry",
+      "kind": "type",
+      "signature": "TopNavEntry = | TopNavItemData | TopNavMenuData | TopNavMegaMenuData"
+    },
+    {
+      "name": "TopNavHeadingMenuItemData",
+      "kind": "type",
+      "signature": "TopNavHeadingMenuItemData = Readonly<{ label: string; href?: string; onSelect?: boolean; }>"
+    },
+    {
+      "name": "TopNavHeadingData",
+      "kind": "type",
+      "signature": "TopNavHeadingData = Readonly<{ heading?: string; logo?: Html; logoLabel?: string; headingHref?: string; superheading?: string; superheadingHref?: string; subheading?: string; subheadingHref?: string; headerEndContent?: Html; menu?: ReadonlyArray<TopNavHeading…"
+    },
+    {
+      "name": "ViewInputs",
+      "kind": "type",
+      "signature": "ViewInputs = Readonly<{ label?: string; heading?: TopNavHeadingData; startItems?: ReadonlyArray<TopNavEntry>; centerItems?: ReadonlyArray<TopNavEntry>; /** Escape hatch for arbitrary start slot content. */ startContent?: Html; centerContent?: Html; endContent…"
+    },
+    {
+      "name": "topNavItem",
+      "kind": "function",
+      "signature": "topNavItem<Msg>(item: TopNavItemData, emit: (message: TopNavLib.Message) => Msg, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "topNavMegaMenuItem",
+      "kind": "function",
+      "signature": "topNavMegaMenuItem<Msg>(item: TopNavMegaMenuItemData, onActivate: Msg | undefined, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "topNavMegaMenuFeaturedCard",
+      "kind": "function",
+      "signature": "topNavMegaMenuFeaturedCard<Msg>(card: TopNavMegaMenuFeaturedCardData, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "view",
+      "kind": "value",
+      "signature": "view: value"
+    },
+    {
+      "name": "TopNavProps",
+      "kind": "type",
+      "signature": "TopNavProps<Msg> = ViewInputs & Readonly<{ model: TopNavLib.Model; toParentMessage: (message: TopNavLib.Message) => Msg; }>"
+    },
+    {
+      "name": "topNav",
+      "kind": "function",
+      "signature": "topNav<Msg>(props: TopNavProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "tree-list": [
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/tree-list'"
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/lib/tree-list'"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from '@/lib/tree-list'"
+    },
+    {
+      "name": "findInitialTabbableId",
+      "kind": "re-export",
+      "signature": "export { findInitialTabbableId } from '@/lib/tree-list'"
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/lib/tree-list'"
+    },
+    {
+      "name": "isItemExpanded",
+      "kind": "re-export",
+      "signature": "export { isItemExpanded } from '@/lib/tree-list'"
+    },
+    {
+      "name": "resolveKey",
+      "kind": "re-export",
+      "signature": "export { resolveKey } from '@/lib/tree-list'"
+    },
+    {
+      "name": "tabbableId",
+      "kind": "re-export",
+      "signature": "export { tabbableId } from '@/lib/tree-list'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/lib/tree-list'"
+    },
+    {
+      "name": "visibleItems",
+      "kind": "re-export",
+      "signature": "export { visibleItems } from '@/lib/tree-list'"
+    },
+    {
+      "name": "InitConfig",
+      "kind": "re-export",
+      "signature": "export { InitConfig } from '@/lib/tree-list'"
+    },
+    {
+      "name": "TreeListDensity",
+      "kind": "re-export",
+      "signature": "export { TreeListDensity } from '@/lib/tree-list'"
+    },
+    {
+      "name": "TreeListItemData",
+      "kind": "re-export",
+      "signature": "export { TreeListItemData } from '@/lib/tree-list'"
+    },
+    {
+      "name": "UpdateReturn",
+      "kind": "re-export",
+      "signature": "export { UpdateReturn } from '@/lib/tree-list'"
+    },
+    {
+      "name": "TreeListVariant",
+      "kind": "re-export",
+      "signature": "export { TreeListVariant } from '@/lib/tree-list'"
+    },
+    {
+      "name": "VisibleItem",
+      "kind": "re-export",
+      "signature": "export { VisibleItem } from '@/lib/tree-list'"
+    },
+    {
+      "name": "ViewInputs",
+      "kind": "type",
+      "signature": "ViewInputs = Readonly<{ items: ReadonlyArray<TreeListBehavior.TreeListItemData>; density?: TreeListBehavior.TreeListDensity; variant?: TreeListBehavior.TreeListVariant; header?: Html; ariaLabel?: string; direction?: 'ltr' | 'rtl'; class?: string; }>"
+    },
+    {
+      "name": "view",
+      "kind": "value",
+      "signature": "view: value"
+    },
+    {
+      "name": "TreeListProps",
+      "kind": "type",
+      "signature": "TreeListProps<Msg> = ViewInputs & Readonly<{ model: TreeListBehavior.Model; toParentMessage: (message: TreeListBehavior.Message) => Msg; }>"
+    },
+    {
+      "name": "treeList",
+      "kind": "function",
+      "signature": "treeList<Msg>(props: TreeListProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "typography": [

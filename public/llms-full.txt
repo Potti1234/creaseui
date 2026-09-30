@@ -64,6 +64,7 @@
 - Select: /docs/components/select — install with `npx shadcn@latest add Potti1234/creaseui/select`
 - Separator: /docs/components/separator — install with `npx shadcn@latest add Potti1234/creaseui/separator`
 - Sheet: /docs/components/sheet — install with `npx shadcn@latest add Potti1234/creaseui/sheet`
+- Side Nav: /docs/components/side-nav — install with `npx shadcn@latest add Potti1234/creaseui/side-nav`
 - Sidebar: /docs/components/sidebar — install with `npx shadcn@latest add Potti1234/creaseui/sidebar`
 - Skeleton: /docs/components/skeleton — install with `npx shadcn@latest add Potti1234/creaseui/skeleton`
 - Slider: /docs/components/slider — install with `npx shadcn@latest add Potti1234/creaseui/slider`
@@ -78,6 +79,8 @@
 - Toggle Group: /docs/components/toggle-group — install with `npx shadcn@latest add Potti1234/creaseui/toggle-group`
 - Toggle: /docs/components/toggle — install with `npx shadcn@latest add Potti1234/creaseui/toggle`
 - Tooltip: /docs/components/tooltip — install with `npx shadcn@latest add Potti1234/creaseui/tooltip`
+- Top Nav: /docs/components/top-nav — install with `npx shadcn@latest add Potti1234/creaseui/top-nav`
+- Tree List: /docs/components/tree-list — install with `npx shadcn@latest add Potti1234/creaseui/tree-list`
 - Typography: /docs/components/typography — install with `npx shadcn@latest add Potti1234/creaseui/typography`
 
 ## API inventory
@@ -1105,6 +1108,34 @@ Examples: Basic, Side, No Close Button, RTL
 - `SheetProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; content?: (slots: SheetSlots) => ReadonlyArray<Html>; footer?: (slots: SheetSlots) => ReadonlyArray<Html>; layout?: (parts: SheetParts<…` (type)
 - `sheet<Msg>(props: SheetProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
+### Side Nav
+
+A shadcn-styled Side Nav component for Foldkit.
+
+Source: `src/ui/side-nav.ts`
+
+Examples: Side Nav, Main, Documents, SideNav — End Content, Navigation, SideNav — Header with Menu, SideNav — Nested Items, SideNavCollapseButton — Basic, SideNavCollapseButton, SideNavHeading — Basic, SideNavHeading, SideNavItem — Basic, SideNavItem, SideNavSection — Basic, Overview, Account, SideNavSection
+
+- `export { Message } from '@/lib/side-nav'` (re-export)
+- `export { Model } from '@/lib/side-nav'` (re-export)
+- `export { OutMessage } from '@/lib/side-nav'` (re-export)
+- `export { HEADING_MENU_KEY } from '@/lib/side-nav'` (re-export)
+- `export { flyoutKey } from '@/lib/side-nav'` (re-export)
+- `export { init } from '@/lib/side-nav'` (re-export)
+- `export { isItemCollapsed } from '@/lib/side-nav'` (re-export)
+- `export { menuFor } from '@/lib/side-nav'` (re-export)
+- `export { update } from '@/lib/side-nav'` (re-export)
+- `export { visibleWidth } from '@/lib/side-nav'` (re-export)
+- `export { InitConfig } from '@/lib/side-nav'` (re-export)
+- `SideNavItemData = Readonly<{ id: string; label: string; icon?: string; /** Icon shown instead of `icon` while the item is selected (astryx selectedIcon). */ selectedIcon?: string; isSelected?: boolean; isDisabled?: boolean; href?: string; /** Invoked for item…` (type)
+- `SideNavMenuItemData = Readonly<{ label: string; href?: string; onSelect?: boolean; icon?: string; isDisabled?: boolean; }>` (type)
+- `SideNavHeadingData = Readonly<{ heading: string; icon?: Html; headingHref?: string; superheading?: string; superheadingHref?: string; subheading?: string; subheadingHref?: string; headerEndContent?: Html; menu?: ReadonlyArray<SideNavMenuItemData>; }>` (type)
+- `SideNavSectionData = Readonly<{ title?: string; subtitle?: string; isHeaderHidden?: boolean; endContent?: Html; items: ReadonlyArray<SideNavItemData>; }>` (type)
+- `ViewInputs = Readonly<{ /** Bare top-level items (astryx SideNav children outside a Section). */ items?: ReadonlyArray<SideNavItemData>; sections?: ReadonlyArray<SideNavSectionData>; heading?: SideNavHeadingData; topContent?: Html; footer?: Html; /** Small ic…` (type)
+- `view: value` (value)
+- `SideNavProps<Msg> = ViewInputs & Readonly<{ model: SideNavLib.Model; toParentMessage: (message: SideNavLib.Message) => Msg; }>` (type)
+- `sideNav<Msg>(props: SideNavProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
 ### Sidebar
 
 A shadcn-styled Sidebar component for Foldkit.
@@ -1365,6 +1396,71 @@ Examples: Basic, Side, With Keyboard Shortcut, Disabled Button, RTL
 - `TooltipAlign = 'start' | 'center' | 'end'` (type)
 - `TooltipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; content: Html | string; align?: TooltipAlign; side?: TooltipSide; isDisabled?: boolean; ariaLabel?: string; triggerClass?: string; class?: string;…` (type)
 - `tooltip<Msg>(props: TooltipProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Top Nav
+
+A shadcn-styled Top Nav component for Foldkit.
+
+Source: `src/ui/top-nav.ts`
+
+Examples: Top Nav, TopNav — Centered Navigation, TopNav — Enterprise Dashboard, TopNav — Hover Menu, Analytics, Security, Automation, Developer Tools, TopNav — Mega Menu, Global Network, What's new in v4.0, TopNav — Multiple Dropdowns, Documentation, API Reference, Community Forum, TopNav — With Logo, TopNavHeading — Basic, Top Nav Heading, TopNavItem — Basic, Top Nav Item, TopNavMegaMenu — Basic, Deploy, Top Nav Mega Menu, API, What's New, TopNavMegaMenuFeaturedCard — Basic, Top Nav Mega Menu Featured Card, Introducing v2.0, TopNavMegaMenuItem — Basic, Edge Functions, Storage, Top Nav Mega Menu Item, CDN, Build Tools, TopNavMenu — Basic, Settings, Top Nav Menu, Team Members
+
+- `export { dropdownMenuKey } from '@/lib/top-nav'` (re-export)
+- `export { HEADING_MENU_KEY } from '@/lib/top-nav'` (re-export)
+- `export { init } from '@/lib/top-nav'` (re-export)
+- `export { isMenuOpen } from '@/lib/top-nav'` (re-export)
+- `export { menuFor } from '@/lib/top-nav'` (re-export)
+- `export { Model } from '@/lib/top-nav'` (re-export)
+- `export { update } from '@/lib/top-nav'` (re-export)
+- `export { InitConfig } from '@/lib/top-nav'` (re-export)
+- `export { TopNavMenuKind } from '@/lib/top-nav'` (re-export)
+- `export { Message } from '@/lib/top-nav'` (re-export)
+- `export { OutMessage } from '@/lib/top-nav'` (re-export)
+- `TopNavItemData = Readonly<{ kind?: 'item'; label: string; href?: string; icon?: string; isSelected?: boolean; isDisabled?: boolean; isIconOnly?: boolean; onSelect?: boolean; }>` (type)
+- `TopNavMenuItemData = Readonly<{ title: string; description?: string; icon?: Html; href?: string; onSelect?: boolean; }>` (type)
+- `TopNavMenuData = Readonly<{ kind: 'menu'; label: string; items: ReadonlyArray<TopNavMenuItemData>; }>` (type)
+- `TopNavMegaMenuItemData = Readonly<{ title: string; description?: string; icon?: Html; href?: string; onSelect?: boolean; }>` (type)
+- `TopNavMegaMenuFeaturedCardData = Readonly<{ title: string; description?: string; image?: string; imageAlt?: string; linkLabel?: string; linkHref?: string; children?: Html; }>` (type)
+- `TopNavMegaMenuData = Readonly<{ kind: 'megaMenu'; label: string; items: ReadonlyArray<TopNavMegaMenuItemData>; featured?: TopNavMegaMenuFeaturedCardData; }>` (type)
+- `TopNavEntry = | TopNavItemData | TopNavMenuData | TopNavMegaMenuData` (type)
+- `TopNavHeadingMenuItemData = Readonly<{ label: string; href?: string; onSelect?: boolean; }>` (type)
+- `TopNavHeadingData = Readonly<{ heading?: string; logo?: Html; logoLabel?: string; headingHref?: string; superheading?: string; superheadingHref?: string; subheading?: string; subheadingHref?: string; headerEndContent?: Html; menu?: ReadonlyArray<TopNavHeading…` (type)
+- `ViewInputs = Readonly<{ label?: string; heading?: TopNavHeadingData; startItems?: ReadonlyArray<TopNavEntry>; centerItems?: ReadonlyArray<TopNavEntry>; /** Escape hatch for arbitrary start slot content. */ startContent?: Html; centerContent?: Html; endContent…` (type)
+- `topNavItem<Msg>(item: TopNavItemData, emit: (message: TopNavLib.Message) => Msg, h: HtmlBuilder<Msg>): Html` (function)
+- `topNavMegaMenuItem<Msg>(item: TopNavMegaMenuItemData, onActivate: Msg | undefined, h: HtmlBuilder<Msg>): Html` (function)
+- `topNavMegaMenuFeaturedCard<Msg>(card: TopNavMegaMenuFeaturedCardData, h: HtmlBuilder<Msg>): Html` (function)
+- `view: value` (value)
+- `TopNavProps<Msg> = ViewInputs & Readonly<{ model: TopNavLib.Model; toParentMessage: (message: TopNavLib.Message) => Msg; }>` (type)
+- `topNav<Msg>(props: TopNavProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Tree List
+
+A shadcn-styled Tree List component for Foldkit.
+
+Source: `src/ui/tree-list.ts`
+
+Examples: Tree List, TreeList — File Tree With Icons, TreeList — Interactive Settings, TreeList — Mailbox Tree, TreeList — Navigation Tree, Tree List — Variants
+
+- `export { Message } from '@/lib/tree-list'` (re-export)
+- `export { Model } from '@/lib/tree-list'` (re-export)
+- `export { OutMessage } from '@/lib/tree-list'` (re-export)
+- `export { findInitialTabbableId } from '@/lib/tree-list'` (re-export)
+- `export { init } from '@/lib/tree-list'` (re-export)
+- `export { isItemExpanded } from '@/lib/tree-list'` (re-export)
+- `export { resolveKey } from '@/lib/tree-list'` (re-export)
+- `export { tabbableId } from '@/lib/tree-list'` (re-export)
+- `export { update } from '@/lib/tree-list'` (re-export)
+- `export { visibleItems } from '@/lib/tree-list'` (re-export)
+- `export { InitConfig } from '@/lib/tree-list'` (re-export)
+- `export { TreeListDensity } from '@/lib/tree-list'` (re-export)
+- `export { TreeListItemData } from '@/lib/tree-list'` (re-export)
+- `export { UpdateReturn } from '@/lib/tree-list'` (re-export)
+- `export { TreeListVariant } from '@/lib/tree-list'` (re-export)
+- `export { VisibleItem } from '@/lib/tree-list'` (re-export)
+- `ViewInputs = Readonly<{ items: ReadonlyArray<TreeListBehavior.TreeListItemData>; density?: TreeListBehavior.TreeListDensity; variant?: TreeListBehavior.TreeListVariant; header?: Html; ariaLabel?: string; direction?: 'ltr' | 'rtl'; class?: string; }>` (type)
+- `view: value` (value)
+- `TreeListProps<Msg> = ViewInputs & Readonly<{ model: TreeListBehavior.Model; toParentMessage: (message: TreeListBehavior.Message) => Msg; }>` (type)
+- `treeList<Msg>(props: TreeListProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Typography
 

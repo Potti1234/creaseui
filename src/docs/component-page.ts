@@ -61,6 +61,7 @@ export const COMPONENTS = [
   'Select',
   'Separator',
   'Sheet',
+  'Side Nav',
   'Sidebar',
   'Skeleton',
   'Slider',
@@ -75,6 +76,8 @@ export const COMPONENTS = [
   'Toggle',
   'Toggle Group',
   'Tooltip',
+  'Top Nav',
+  'Tree List',
   'Typography',
 ] as const;
 

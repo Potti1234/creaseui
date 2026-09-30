@@ -65,6 +65,9 @@ import { sidebarStyleXPreview } from '@/docs/components/pages/sidebar/stylex';
 import { sonnerStyleXPreview } from '@/docs/components/pages/sonner/stylex';
 import { statusDotStyleXPreview } from '@/docs/components/pages/status-dot/stylex';
 import { toastStyleXPreview } from '@/docs/components/pages/toast/stylex';
+import { sideNavStyleXPreview } from '@/docs/components/pages/side-nav/stylex';
+import { topNavStyleXPreview } from '@/docs/components/pages/top-nav/stylex';
+import { treeListStyleXPreview } from '@/docs/components/pages/tree-list/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -132,3 +135,6 @@ installStyleXExamplePreviewProvider('sidebar', sidebarStyleXPreview);
 installStyleXExamplePreviewProvider('sonner', sonnerStyleXPreview);
 installStyleXExamplePreviewProvider('status-dot', statusDotStyleXPreview);
 installStyleXExamplePreviewProvider('toast', toastStyleXPreview);
+installStyleXExamplePreviewProvider('side-nav', sideNavStyleXPreview);
+installStyleXExamplePreviewProvider('top-nav', topNavStyleXPreview);
+installStyleXExamplePreviewProvider('tree-list', treeListStyleXPreview);

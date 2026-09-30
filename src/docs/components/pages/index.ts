@@ -50,6 +50,7 @@ import { scrollAreaPage } from '@/docs/components/pages/scroll-area';
 import { separatorPage } from '@/docs/components/pages/separator';
 import { selectPage } from '@/docs/components/pages/select';
 import { sheetPage } from '@/docs/components/pages/sheet';
+import { sideNavPage } from '@/docs/components/pages/side-nav';
 import { sidebarPage } from '@/docs/components/pages/sidebar';
 import { skeletonPage } from '@/docs/components/pages/skeleton';
 import { sliderPage } from '@/docs/components/pages/slider';
@@ -64,6 +65,8 @@ import { togglePage } from '@/docs/components/pages/toggle';
 import { toastPage } from '@/docs/components/pages/toast';
 import { toggleGroupPage } from '@/docs/components/pages/toggle-group';
 import { tooltipPage } from '@/docs/components/pages/tooltip';
+import { topNavPage } from '@/docs/components/pages/top-nav';
+import { treeListPage } from '@/docs/components/pages/tree-list';
 import { typographyPage } from '@/docs/components/pages/typography';
 
 export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
@@ -120,6 +123,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       separatorPage,
       selectPage,
       sheetPage,
+      sideNavPage,
       sidebarPage,
       skeletonPage,
       sliderPage,
@@ -134,6 +138,8 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       toastPage,
       toggleGroupPage,
       tooltipPage,
+      topNavPage,
+      treeListPage,
       typographyPage,
     ].map((page) => [page.slug, page]),
   ),

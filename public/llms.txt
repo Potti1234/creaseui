@@ -66,6 +66,7 @@
 - Select: /docs/components/select — install with `npx shadcn@latest add Potti1234/creaseui/select`
 - Separator: /docs/components/separator — install with `npx shadcn@latest add Potti1234/creaseui/separator`
 - Sheet: /docs/components/sheet — install with `npx shadcn@latest add Potti1234/creaseui/sheet`
+- Side Nav: /docs/components/side-nav — install with `npx shadcn@latest add Potti1234/creaseui/side-nav`
 - Sidebar: /docs/components/sidebar — install with `npx shadcn@latest add Potti1234/creaseui/sidebar`
 - Skeleton: /docs/components/skeleton — install with `npx shadcn@latest add Potti1234/creaseui/skeleton`
 - Slider: /docs/components/slider — install with `npx shadcn@latest add Potti1234/creaseui/slider`
@@ -80,4 +81,6 @@
 - Toggle Group: /docs/components/toggle-group — install with `npx shadcn@latest add Potti1234/creaseui/toggle-group`
 - Toggle: /docs/components/toggle — install with `npx shadcn@latest add Potti1234/creaseui/toggle`
 - Tooltip: /docs/components/tooltip — install with `npx shadcn@latest add Potti1234/creaseui/tooltip`
+- Top Nav: /docs/components/top-nav — install with `npx shadcn@latest add Potti1234/creaseui/top-nav`
+- Tree List: /docs/components/tree-list — install with `npx shadcn@latest add Potti1234/creaseui/tree-list`
 - Typography: /docs/components/typography — install with `npx shadcn@latest add Potti1234/creaseui/typography`

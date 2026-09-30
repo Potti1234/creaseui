@@ -23,11 +23,14 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 66,
+    "registryItems": 69,
     "creaseOnlyRecipes": [
       "data-table",
       "date-picker",
+      "side-nav",
       "status-dot",
+      "top-nav",
+      "tree-list",
       "typography"
     ]
   },
@@ -957,6 +960,24 @@
       ]
     },
     {
+      "component": "side-nav",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/side-nav.ts",
+        "src/ui/registry.json#side-nav",
+        "/docs/components/side-nav"
+      ]
+    },
+    {
       "component": "sidebar",
       "upstream": true,
       "classification": "full",
@@ -1206,6 +1227,42 @@
         "src/ui/tooltip.ts",
         "src/ui/registry.json#tooltip",
         "/docs/components/tooltip"
+      ]
+    },
+    {
+      "component": "top-nav",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/top-nav.ts",
+        "src/ui/registry.json#top-nav",
+        "/docs/components/top-nav"
+      ]
+    },
+    {
+      "component": "tree-list",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/tree-list.ts",
+        "src/ui/registry.json#tree-list",
+        "/docs/components/tree-list"
       ]
     },
     {
