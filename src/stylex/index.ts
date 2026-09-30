@@ -19,6 +19,7 @@ export * as Calendar from './calendar.js'
 export * as Card from './card.js'
 export * as Carousel from './carousel.js'
 export * as Chart from './chart.js'
+export * as CheckboxList from './checkbox-list.js'
 export * as Checkbox from './checkbox.js'
 export * as Collapsible from './collapsible.js'
 export * as Combobox from './combobox.js'
@@ -32,6 +33,7 @@ export * as Drawer from './drawer.js'
 export * as DropdownMenu from './dropdown-menu.js'
 export * as Empty from './empty.js'
 export * as Field from './field.js'
+export * as FileInput from './file-input.js'
 export * as Form from './form.js'
 export * as HoverCard from './hover-card.js'
 export * as InputGroup from './input-group.js'
@@ -40,12 +42,14 @@ export * as Input from './input.js'
 export * as Item from './item.js'
 export * as Kbd from './kbd.js'
 export * as Label from './label.js'
+export * as ListInput from './list-input.js'
 export * as Marker from './marker.js'
 export * as Menubar from './menubar.js'
 export * as MessageScroller from './message-scroller.js'
 export * as Message from './message.js'
 export * as NativeSelect from './native-select.js'
 export * as NavigationMenu from './navigation-menu.js'
+export * as NumberInput from './number-input.js'
 export * as Pagination from './pagination.js'
 export * as Popover from './popover.js'
 export * as Progress from './progress.js'
@@ -65,6 +69,7 @@ export * as Switch from './switch.js'
 export * as Table from './table.js'
 export * as Tabs from './tabs.js'
 export * as Textarea from './textarea.js'
+export * as TimeInput from './time-input.js'
 export * as Toast from './toast.js'
 export * as ToggleGroup from './toggle-group.js'
 export * as Toggle from './toggle.js'
@@ -88,6 +93,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'card',
   'carousel',
   'chart',
+  'checkbox-list',
   'checkbox',
   'collapsible',
   'combobox',
@@ -101,6 +107,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'dropdown-menu',
   'empty',
   'field',
+  'file-input',
   'form',
   'hover-card',
   'input-group',
@@ -109,12 +116,14 @@ export const STYLEX_COMPONENT_NAMES = [
   'item',
   'kbd',
   'label',
+  'list-input',
   'marker',
   'menubar',
   'message-scroller',
   'message',
   'native-select',
   'navigation-menu',
+  'number-input',
   'pagination',
   'popover',
   'progress',
@@ -134,6 +143,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'table',
   'tabs',
   'textarea',
+  'time-input',
   'toast',
   'toggle-group',
   'toggle',

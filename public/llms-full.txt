@@ -28,6 +28,7 @@
 - Card: /docs/components/card — install with `npx shadcn@latest add Potti1234/creaseui/card`
 - Carousel: /docs/components/carousel — install with `npx shadcn@latest add Potti1234/creaseui/carousel`
 - Chart: /docs/components/chart — install with `npx shadcn@latest add Potti1234/creaseui/chart`
+- Checkbox List: /docs/components/checkbox-list — install with `npx shadcn@latest add Potti1234/creaseui/checkbox-list`
 - Checkbox: /docs/components/checkbox — install with `npx shadcn@latest add Potti1234/creaseui/checkbox`
 - Collapsible: /docs/components/collapsible — install with `npx shadcn@latest add Potti1234/creaseui/collapsible`
 - Combobox: /docs/components/combobox — install with `npx shadcn@latest add Potti1234/creaseui/combobox`
@@ -41,6 +42,7 @@
 - Dropdown Menu: /docs/components/dropdown-menu — install with `npx shadcn@latest add Potti1234/creaseui/dropdown-menu`
 - Empty: /docs/components/empty — install with `npx shadcn@latest add Potti1234/creaseui/empty`
 - Field: /docs/components/field — install with `npx shadcn@latest add Potti1234/creaseui/field`
+- File Input: /docs/components/file-input — install with `npx shadcn@latest add Potti1234/creaseui/file-input`
 - Form: /docs/components/form — install with `npx shadcn@latest add Potti1234/creaseui/form`
 - Hover Card: /docs/components/hover-card — install with `npx shadcn@latest add Potti1234/creaseui/hover-card`
 - Input Group: /docs/components/input-group — install with `npx shadcn@latest add Potti1234/creaseui/input-group`
@@ -49,12 +51,14 @@
 - Item: /docs/components/item — install with `npx shadcn@latest add Potti1234/creaseui/item`
 - Kbd: /docs/components/kbd — install with `npx shadcn@latest add Potti1234/creaseui/kbd`
 - Label: /docs/components/label — install with `npx shadcn@latest add Potti1234/creaseui/label`
+- List Input: /docs/components/list-input — install with `npx shadcn@latest add Potti1234/creaseui/list-input`
 - Marker: /docs/components/marker — install with `npx shadcn@latest add Potti1234/creaseui/marker`
 - Menubar: /docs/components/menubar — install with `npx shadcn@latest add Potti1234/creaseui/menubar`
 - Message Scroller: /docs/components/message-scroller — install with `npx shadcn@latest add Potti1234/creaseui/message-scroller`
 - Message: /docs/components/message — install with `npx shadcn@latest add Potti1234/creaseui/message`
 - Native Select: /docs/components/native-select — install with `npx shadcn@latest add Potti1234/creaseui/native-select`
 - Navigation Menu: /docs/components/navigation-menu — install with `npx shadcn@latest add Potti1234/creaseui/navigation-menu`
+- Number Input: /docs/components/number-input — install with `npx shadcn@latest add Potti1234/creaseui/number-input`
 - Pagination: /docs/components/pagination — install with `npx shadcn@latest add Potti1234/creaseui/pagination`
 - Popover: /docs/components/popover — install with `npx shadcn@latest add Potti1234/creaseui/popover`
 - Progress: /docs/components/progress — install with `npx shadcn@latest add Potti1234/creaseui/progress`
@@ -74,6 +78,7 @@
 - Table: /docs/components/table — install with `npx shadcn@latest add Potti1234/creaseui/table`
 - Tabs: /docs/components/tabs — install with `npx shadcn@latest add Potti1234/creaseui/tabs`
 - Textarea: /docs/components/textarea — install with `npx shadcn@latest add Potti1234/creaseui/textarea`
+- Time Input: /docs/components/time-input — install with `npx shadcn@latest add Potti1234/creaseui/time-input`
 - Toast: /docs/components/toast — install with `npx shadcn@latest add Potti1234/creaseui/toast`
 - Toggle Group: /docs/components/toggle-group — install with `npx shadcn@latest add Potti1234/creaseui/toggle-group`
 - Toggle: /docs/components/toggle — install with `npx shadcn@latest add Potti1234/creaseui/toggle`
@@ -378,6 +383,24 @@ Examples: Demo, Your First Chart, Tooltip, RTL, Monthly revenue, Traffic trend, 
 - `DonutChartProps = Readonly<{ value: number; max: number; label?: string; sublabel?: string; class?: string; }>` (type)
 - `donutChart<Msg>(props: DonutChartProps, h: HtmlBuilder<Msg>): Html` (function)
 
+### Checkbox List
+
+A shadcn-styled Checkbox List component for Foldkit.
+
+Source: `src/ui/checkbox-list.ts`
+
+Examples: Checkbox List, CheckboxList — Select All With Indeterminate, CheckboxList — With End Content
+
+- `export { CheckboxListDensity } from ` (re-export)
+- `export { CheckboxListEntry } from ` (re-export)
+- `export { CheckboxListItem } from ` (re-export)
+- `export { CheckboxListProps } from ` (re-export)
+- `export { checkboxListDivider } from '@/lib/checkbox-list'` (re-export)
+- `export { InputStatus } from '@/lib/input-status'` (re-export)
+- `checkboxListItem<Msg>(item: CheckboxListItem<Msg>, h: HtmlBuilder<Msg>, options?: Readonly<{ id?: string density?: CheckboxListDensity isDisabled?: boolean isReadOnly?: boolean }>): Html` (function)
+- `CheckboxListUiProps<Msg> = CheckboxListProps<Msg> & Readonly<{ class?: string }>` (type)
+- `checkboxList<Msg>(props: CheckboxListUiProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
 ### Checkbox
 
 A shadcn-styled Checkbox component for Foldkit.
@@ -671,6 +694,27 @@ Examples: Payment Method, Input, Textarea, Select, Slider, Fieldset, Checkbox, R
 - `FieldErrorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html | string>; errors?: ReadonlyArray<FieldError>; }>` (type)
 - `fieldError<Msg>(props: FieldErrorProps = {}, h: HtmlBuilder<Msg>): Html` (function)
 
+### File Input
+
+A shadcn-styled File Input component for Foldkit.
+
+Source: `src/ui/file-input.ts`
+
+Examples: File Input, FileInput — Basic
+
+- `export { formatFileSize } from '@/lib/file-input'` (re-export)
+- `export { init } from '@/lib/file-input'` (re-export)
+- `export { Model } from '@/lib/file-input'` (re-export)
+- `export { Message } from '@/lib/file-input'` (re-export)
+- `export { OutMessage } from '@/lib/file-input'` (re-export)
+- `export { update } from '@/lib/file-input'` (re-export)
+- `export { validateFiles } from '@/lib/file-input'` (re-export)
+- `export { FileInputMode } from '@/lib/file-input'` (re-export)
+- `export { InputStatus } from '@/lib/input-status'` (re-export)
+- `FileInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html | string /** The accepted files owned by the parent. */ value?: ReadonlyArray<F…` (type)
+- `FileInputViewInputs = Omit< FileInputProps<never>, 'model' | 'toParentMessage' >` (type)
+- `fileInput<Msg>(props: FileInputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
 ### Form
 
 A shadcn-styled Form component for Foldkit.
@@ -820,6 +864,29 @@ Examples: Basic, Label in Field, RTL
 - `LabelProps = Readonly<{ for?: string; isRequired?: boolean; isDisabled?: boolean; class?: string; children: ReadonlyArray<Html | string>; }>` (type)
 - `label<Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html` (function)
 
+### List Input
+
+A shadcn-styled List Input component for Foldkit.
+
+Source: `src/ui/list-input.ts`
+
+Examples: List Input, Controlled guest list
+
+- `export { init } from '@/lib/list-input'` (re-export)
+- `export { Model } from '@/lib/list-input'` (re-export)
+- `export { Message } from '@/lib/list-input'` (re-export)
+- `export { moveItem } from '@/lib/list-input'` (re-export)
+- `export { OutMessage } from '@/lib/list-input'` (re-export)
+- `export { resolveColumnTrack } from '@/lib/list-input'` (re-export)
+- `export { update } from '@/lib/list-input'` (re-export)
+- `export { ListInputChange } from '@/lib/list-input'` (re-export)
+- `export { ListInputColumn } from '@/lib/list-input'` (re-export)
+- `export { ListInputRenderContext } from '@/lib/list-input'` (re-export)
+- `export { ListInputValueContext } from '@/lib/list-input'` (re-export)
+- `export { InputStatus } from '@/lib/input-status'` (re-export)
+- `ListInputProps<T, Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html | string /** Controlled records owned by the parent. */ value: ReadonlyArray…` (type)
+- `listInput<T, Msg>(props: ListInputProps<T, Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
 ### Marker
 
 A shadcn-styled Marker component for Foldkit.
@@ -929,6 +996,25 @@ Examples: Semantic links, Popover disclosure, Responsive fallback, RTL
 - `navigationMenuLink<Msg>(props: Slot & Readonly<{ href: string; isActive?: boolean }>, h: HtmlBuilder<Msg>): Html` (function)
 - `NavigationMenuDisclosureProps<Msg> = Readonly<{ model: Popover.Model; toParentMessage: (message: Popover.Message) => Msg; label: string; content: Html | string; class?: string; ariaLabel?: string; pointerIntent?: 'press' | 'hover-and-press'; }>` (type)
 - `navigationMenuDisclosure<Msg>(props: NavigationMenuDisclosureProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Number Input
+
+A shadcn-styled Number Input component for Foldkit.
+
+Source: `src/ui/number-input.ts`
+
+Examples: Number Input, NumberInput — Clearable, NumberInput — Range Constrained, NumberInput — Status Variants, NumberInput — With Units
+
+- `export { init } from '@/lib/number-input'` (re-export)
+- `export { Model } from '@/lib/number-input'` (re-export)
+- `export { Message } from '@/lib/number-input'` (re-export)
+- `export { OutMessage } from '@/lib/number-input'` (re-export)
+- `export { update } from '@/lib/number-input'` (re-export)
+- `export { NumberInputSize } from '@/lib/number-input'` (re-export)
+- `export { InputStatus } from '@/lib/input-status'` (re-export)
+- `NumberInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html | string /** The committed value owned by the parent (`null`/`undefined` = em…` (type)
+- `NumberInputViewInputs = Omit< NumberInputProps<never>, 'model' | 'toParentMessage' >` (type)
+- `numberInput<Msg>(props: NumberInputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Pagination
 
@@ -1297,6 +1383,25 @@ Examples: Basic, Field, Disabled, Invalid, Button, RTL, Form And Resize
 
 - `TextareaProps<Msg> = TextareaBehaviorProps<Msg> & Readonly<{ class?: string; }>` (type)
 - `textarea<Msg>(props: TextareaProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Time Input
+
+A shadcn-styled Time Input component for Foldkit.
+
+Source: `src/ui/time-input.ts`
+
+Examples: Time Input, TimeInput — Constrained, TimeInput — Formats, TimeInput — Increment, TimeInput — States
+
+- `export { init } from '@/lib/time-input'` (re-export)
+- `export { Model } from '@/lib/time-input'` (re-export)
+- `export { Message } from '@/lib/time-input'` (re-export)
+- `export { OutMessage } from '@/lib/time-input'` (re-export)
+- `export { update } from '@/lib/time-input'` (re-export)
+- `export { TimeValue } from '@/lib/time-input'` (re-export)
+- `export { InputStatus } from '@/lib/input-status'` (re-export)
+- `TimeInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html | string /** The committed value owned by the parent, as "HH:MM" / "HH:MM:SS". …` (type)
+- `TimeInputViewInputs = Omit< TimeInputProps<never>, 'model' | 'toParentMessage' >` (type)
+- `timeInput<Msg>(props: TimeInputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Toast
 

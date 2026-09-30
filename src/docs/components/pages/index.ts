@@ -15,6 +15,7 @@ import { cardPage } from '@/docs/components/pages/card';
 import { carouselPage } from '@/docs/components/pages/carousel';
 import { chartPage } from '@/docs/components/pages/chart';
 import { checkboxPage } from '@/docs/components/pages/checkbox';
+import { checkboxListPage } from '@/docs/components/pages/checkbox-list';
 import { collapsiblePage } from '@/docs/components/pages/collapsible';
 import { comboboxPage } from '@/docs/components/pages/combobox';
 import { commandPage } from '@/docs/components/pages/command';
@@ -27,6 +28,7 @@ import { drawerPage } from '@/docs/components/pages/drawer';
 import { dropdownMenuPage } from '@/docs/components/pages/dropdown-menu';
 import { emptyPage } from '@/docs/components/pages/empty';
 import { fieldPage } from '@/docs/components/pages/field';
+import { fileInputPage } from '@/docs/components/pages/file-input';
 import { formPage } from '@/docs/components/pages/form';
 import { hoverCardPage } from '@/docs/components/pages/hover-card';
 import { itemPage } from '@/docs/components/pages/item';
@@ -35,12 +37,14 @@ import { inputGroupPage } from '@/docs/components/pages/input-group';
 import { inputOtpPage } from '@/docs/components/pages/input-otp';
 import { kbdPage } from '@/docs/components/pages/kbd';
 import { labelPage } from '@/docs/components/pages/label';
+import { listInputPage } from '@/docs/components/pages/list-input';
 import { markerPage } from '@/docs/components/pages/marker';
 import { messagePage } from '@/docs/components/pages/message';
 import { messageScrollerPage } from '@/docs/components/pages/message-scroller';
 import { menubarPage } from '@/docs/components/pages/menubar';
 import { nativeSelectPage } from '@/docs/components/pages/native-select';
 import { navigationMenuPage } from '@/docs/components/pages/navigation-menu';
+import { numberInputPage } from '@/docs/components/pages/number-input';
 import { paginationPage } from '@/docs/components/pages/pagination';
 import { popoverPage } from '@/docs/components/pages/popover';
 import { progressPage } from '@/docs/components/pages/progress';
@@ -60,8 +64,9 @@ import { switchPage } from '@/docs/components/pages/switch';
 import { tabsPage } from '@/docs/components/pages/tabs';
 import { tablePage } from '@/docs/components/pages/table';
 import { textareaPage } from '@/docs/components/pages/textarea';
-import { togglePage } from '@/docs/components/pages/toggle';
+import { timeInputPage } from '@/docs/components/pages/time-input';
 import { toastPage } from '@/docs/components/pages/toast';
+import { togglePage } from '@/docs/components/pages/toggle';
 import { toggleGroupPage } from '@/docs/components/pages/toggle-group';
 import { tooltipPage } from '@/docs/components/pages/tooltip';
 import { typographyPage } from '@/docs/components/pages/typography';
@@ -85,6 +90,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       carouselPage,
       chartPage,
       checkboxPage,
+      checkboxListPage,
       collapsiblePage,
       comboboxPage,
       commandPage,
@@ -97,6 +103,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       dropdownMenuPage,
       emptyPage,
       fieldPage,
+      fileInputPage,
       formPage,
       hoverCardPage,
       itemPage,
@@ -105,12 +112,14 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       inputOtpPage,
       kbdPage,
       labelPage,
+      listInputPage,
       markerPage,
       messagePage,
       messageScrollerPage,
       menubarPage,
       nativeSelectPage,
       navigationMenuPage,
+      numberInputPage,
       paginationPage,
       popoverPage,
       progressPage,
@@ -130,6 +139,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       tabsPage,
       tablePage,
       textareaPage,
+      timeInputPage,
       togglePage,
       toastPage,
       toggleGroupPage,
