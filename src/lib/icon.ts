@@ -142,7 +142,6 @@ export const chevronLeft = named('chevron-left');
 export const chevronRight = named('chevron-right');
 export const chevronUp = named('chevron-up');
 export const chevronsUpDown = named('chevrons-up-down');
-export const clock = named('clock');
 export const circleCheck = named('circle-check');
 export const circleIcon = named('circle');
 export const clock = named('clock');
