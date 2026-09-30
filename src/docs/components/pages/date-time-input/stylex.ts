@@ -72,6 +72,9 @@ export const dateTimeInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           label: 'Meeting time',
           placeholder: 'Select a date',
           hasClear: true,
+          ...(fixture.timeOptionInterval === undefined
+            ? {}
+            : { timeOptionInterval: fixture.timeOptionInterval }),
         }),
       ]);
   }

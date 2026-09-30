@@ -583,11 +583,11 @@ Source: [`src/ui/date-input.ts`](../src/ui/date-input.ts)
 | `reflect` | re-export | `export { reflect } from ` |
 | `reflectConstraints` | re-export | `export { reflectConstraints } from ` |
 | `update` | re-export | `export { update } from ` |
-| `dateFromISO` | re-export | `export { dateFromISO } from '@/lib/date-parse'` |
-| `dateToISO` | re-export | `export { dateToISO } from '@/lib/date-parse'` |
+| `dateFromISO` | re-export | `export { dateFromISO } from "@/lib/date-parse"` |
+| `dateToISO` | re-export | `export { dateToISO } from "@/lib/date-parse"` |
 | `SharedDateFormat` | re-export | `export { SharedDateFormat } from ` |
-| `DateInputStatus` | type | `DateInputStatus = Readonly<{ type: 'error' \| 'warning' \| 'success' message?: string }>` |
-| `DateInputProps` | type | `DateInputProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label?: string isLabelHidden?: boolean description?: string placeholder?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a f…` |
+| `DateInputStatus` | type | `DateInputStatus = Readonly<{ type: "error" \| "warning" \| "success"; message?: string; }>` |
+| `DateInputProps` | type | `DateInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label?: string; isLabelHidden?: boolean; description?: string; placeholder?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; /** Astryx shows …` |
 | `dateInput` | function | `dateInput<Msg>(props: DateInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Date Picker
@@ -634,11 +634,11 @@ Source: [`src/ui/date-range-input.ts`](../src/ui/date-range-input.ts)
 | `reflectConstraints` | re-export | `export { reflectConstraints } from ` |
 | `update` | re-export | `export { update } from ` |
 | `Range` | re-export | `export { Range } from ` |
-| `dateFromISO` | re-export | `export { dateFromISO } from '@/lib/date-parse'` |
-| `dateToISO` | re-export | `export { dateToISO } from '@/lib/date-parse'` |
-| `DateRangePreset` | type | `DateRangePreset = Readonly<{ label: string getRange: () => Range }>` |
-| `DateRangeInputStatus` | type | `DateRangeInputStatus = Readonly<{ type: 'error' \| 'warning' \| 'success' message?: string }>` |
-| `DateRangeInputProps` | type | `DateRangeInputProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a focus ring tooltip…` |
+| `dateFromISO` | re-export | `export { dateFromISO } from "@/lib/date-parse"` |
+| `dateToISO` | re-export | `export { dateToISO } from "@/lib/date-parse"` |
+| `DateRangePreset` | type | `DateRangePreset = Readonly<{ label: string; getRange: () => Range; }>` |
+| `DateRangeInputStatus` | type | `DateRangeInputStatus = Readonly<{ type: "error" \| "warning" \| "success"; message?: string; }>` |
+| `DateRangeInputProps` | type | `DateRangeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; /** Astryx shows it as a focus ring…` |
 | `dateRangeInput` | function | `dateRangeInput<Msg>(props: DateRangeInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Date Time Input
@@ -655,14 +655,14 @@ Source: [`src/ui/date-time-input.ts`](../src/ui/date-time-input.ts)
 | `reflect` | re-export | `export { reflect } from ` |
 | `reflectConstraints` | re-export | `export { reflectConstraints } from ` |
 | `update` | re-export | `export { update } from ` |
-| `dateFromISO` | re-export | `export { dateFromISO } from '@/lib/date-parse'` |
-| `dateToISO` | re-export | `export { dateToISO } from '@/lib/date-parse'` |
-| `formatDisplayTime12h` | re-export | `export { formatDisplayTime12h } from '@/lib/time-parse'` |
-| `formatDisplayTime24h` | re-export | `export { formatDisplayTime24h } from '@/lib/time-parse'` |
-| `formatISOTime` | re-export | `export { formatISOTime } from '@/lib/time-parse'` |
+| `dateFromISO` | re-export | `export { dateFromISO } from "@/lib/date-parse"` |
+| `dateToISO` | re-export | `export { dateToISO } from "@/lib/date-parse"` |
+| `formatDisplayTime12h` | re-export | `export { formatDisplayTime12h } from "@/lib/time-parse"` |
+| `formatDisplayTime24h` | re-export | `export { formatDisplayTime24h } from "@/lib/time-parse"` |
+| `formatISOTime` | re-export | `export { formatISOTime } from "@/lib/time-parse"` |
 | `SharedDateFormat` | re-export | `export { SharedDateFormat } from ` |
-| `DateTimeInputStatus` | type | `DateTimeInputStatus = Readonly<{ type: 'error' \| 'warning' \| 'success' message?: string }>` |
-| `DateTimeInputProps` | type | `DateTimeInputProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a focus ring tooltip;…` |
+| `DateTimeInputStatus` | type | `DateTimeInputStatus = Readonly<{ type: "error" \| "warning" \| "success"; message?: string; }>` |
+| `DateTimeInputProps` | type | `DateTimeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; /** Astryx shows it as a focus ring …` |
 | `dateTimeInput` | function | `dateTimeInput<Msg>(props: DateTimeInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Dialog
@@ -2053,24 +2053,24 @@ Source: [`src/ui/top-nav.ts`](../src/ui/top-nav.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `dropdownMenuKey` | re-export | `export { dropdownMenuKey } from '@/lib/top-nav'` |
-| `HEADING_MENU_KEY` | re-export | `export { HEADING_MENU_KEY } from '@/lib/top-nav'` |
-| `init` | re-export | `export { init } from '@/lib/top-nav'` |
-| `isMenuOpen` | re-export | `export { isMenuOpen } from '@/lib/top-nav'` |
-| `menuFor` | re-export | `export { menuFor } from '@/lib/top-nav'` |
-| `Model` | re-export | `export { Model } from '@/lib/top-nav'` |
-| `update` | re-export | `export { update } from '@/lib/top-nav'` |
-| `InitConfig` | re-export | `export { InitConfig } from '@/lib/top-nav'` |
-| `TopNavMenuKind` | re-export | `export { TopNavMenuKind } from '@/lib/top-nav'` |
-| `Message` | re-export | `export { Message } from '@/lib/top-nav'` |
-| `OutMessage` | re-export | `export { OutMessage } from '@/lib/top-nav'` |
-| `TopNavItemData` | type | `TopNavItemData = Readonly<{ kind?: 'item'; label: string; href?: string; icon?: string; isSelected?: boolean; isDisabled?: boolean; isIconOnly?: boolean; onSelect?: boolean; }>` |
+| `dropdownMenuKey` | re-export | `export { dropdownMenuKey } from "@/lib/top-nav"` |
+| `HEADING_MENU_KEY` | re-export | `export { HEADING_MENU_KEY } from "@/lib/top-nav"` |
+| `init` | re-export | `export { init } from "@/lib/top-nav"` |
+| `isMenuOpen` | re-export | `export { isMenuOpen } from "@/lib/top-nav"` |
+| `menuFor` | re-export | `export { menuFor } from "@/lib/top-nav"` |
+| `Model` | re-export | `export { Model } from "@/lib/top-nav"` |
+| `update` | re-export | `export { update } from "@/lib/top-nav"` |
+| `InitConfig` | re-export | `export { InitConfig } from "@/lib/top-nav"` |
+| `TopNavMenuKind` | re-export | `export { TopNavMenuKind } from "@/lib/top-nav"` |
+| `Message` | re-export | `export { Message } from "@/lib/top-nav"` |
+| `OutMessage` | re-export | `export { OutMessage } from "@/lib/top-nav"` |
+| `TopNavItemData` | type | `TopNavItemData = Readonly<{ kind?: "item"; label: string; href?: string; icon?: string; isSelected?: boolean; isDisabled?: boolean; isIconOnly?: boolean; onSelect?: boolean; }>` |
 | `TopNavMenuItemData` | type | `TopNavMenuItemData = Readonly<{ title: string; description?: string; icon?: Html; href?: string; onSelect?: boolean; }>` |
-| `TopNavMenuData` | type | `TopNavMenuData = Readonly<{ kind: 'menu'; label: string; items: ReadonlyArray<TopNavMenuItemData>; }>` |
+| `TopNavMenuData` | type | `TopNavMenuData = Readonly<{ kind: "menu"; label: string; items: ReadonlyArray<TopNavMenuItemData>; }>` |
 | `TopNavMegaMenuItemData` | type | `TopNavMegaMenuItemData = Readonly<{ title: string; description?: string; icon?: Html; href?: string; onSelect?: boolean; }>` |
 | `TopNavMegaMenuFeaturedCardData` | type | `TopNavMegaMenuFeaturedCardData = Readonly<{ title: string; description?: string; image?: string; imageAlt?: string; linkLabel?: string; linkHref?: string; children?: Html; }>` |
-| `TopNavMegaMenuData` | type | `TopNavMegaMenuData = Readonly<{ kind: 'megaMenu'; label: string; items: ReadonlyArray<TopNavMegaMenuItemData>; featured?: TopNavMegaMenuFeaturedCardData; }>` |
-| `TopNavEntry` | type | `TopNavEntry = \| TopNavItemData \| TopNavMenuData \| TopNavMegaMenuData` |
+| `TopNavMegaMenuData` | type | `TopNavMegaMenuData = Readonly<{ kind: "megaMenu"; label: string; items: ReadonlyArray<TopNavMegaMenuItemData>; featured?: TopNavMegaMenuFeaturedCardData; }>` |
+| `TopNavEntry` | type | `TopNavEntry = TopNavItemData \| TopNavMenuData \| TopNavMegaMenuData` |
 | `TopNavHeadingMenuItemData` | type | `TopNavHeadingMenuItemData = Readonly<{ label: string; href?: string; onSelect?: boolean; }>` |
 | `TopNavHeadingData` | type | `TopNavHeadingData = Readonly<{ heading?: string; logo?: Html; logoLabel?: string; headingHref?: string; superheading?: string; superheadingHref?: string; subheading?: string; subheadingHref?: string; headerEndContent?: Html; menu?: ReadonlyArray<TopNavHeading…` |
 | `ViewInputs` | type | `ViewInputs = Readonly<{ label?: string; heading?: TopNavHeadingData; startItems?: ReadonlyArray<TopNavEntry>; centerItems?: ReadonlyArray<TopNavEntry>; /** Escape hatch for arbitrary start slot content. */ startContent?: Html; centerContent?: Html; endContent…` |
@@ -2100,8 +2100,8 @@ Source: [`src/ui/tour.ts`](../src/ui/tour.ts)
 | `activate` | value | `activate: value` |
 | `deactivate` | value | `deactivate: value` |
 | `HIGHLIGHT_PADDING` | value | `HIGHLIGHT_PADDING: value` |
-| `TourStepPlacement` | type | `TourStepPlacement = 'below' \| 'above' \| 'start' \| 'end'` |
-| `TourStepAlignment` | type | `TourStepAlignment = 'start' \| 'center' \| 'end'` |
+| `TourStepPlacement` | type | `TourStepPlacement = "below" \| "above" \| "start" \| "end"` |
+| `TourStepAlignment` | type | `TourStepAlignment = "start" \| "center" \| "end"` |
 | `TourStepSpec` | type | `TourStepSpec = Readonly<{ /** Stable step key — the callout is re-keyed per step to re-anchor. */ id: string; /** `id` of the element this step points at (astryx targetRef equivalent — must be interactive for aria, matching Popover's anchor contract). */ targ…` |
 | `TourProps` | type | `TourProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; steps: ReadonlyArray<TourStepSpec>; hasBackdrop?: boolean; isStepCountShown?: boolean; class?: string; }>` |
 | `tour` | function | `tour<Msg>(props: TourProps<Msg>, h: HtmlBuilder<Msg>): Html` |
@@ -2116,7 +2116,7 @@ Source: [`src/ui/transfer-list.ts`](../src/ui/transfer-list.ts)
 | `ReorderSession` | type | `ReorderSession = typeof ReorderSession.Type` |
 | `Model` | value | `Model: value` |
 | `Model` | type | `Model = typeof Model.Type` |
-| `init` | function | `init(config: { id: string; value?: ReadonlyArray<string> }): Model` |
+| `init` | function | `init(config: { id: string; value?: ReadonlyArray<string>; }): Model` |
 | `Message` | value | `Message: value` |
 | `Message` | type | `Message = typeof Message.Type` |
 | `OutMessage` | value | `OutMessage: value` |

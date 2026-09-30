@@ -1791,12 +1791,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "dateFromISO",
       "kind": "re-export",
-      "signature": "export { dateFromISO } from '@/lib/date-parse'"
+      "signature": "export { dateFromISO } from \"@/lib/date-parse\""
     },
     {
       "name": "dateToISO",
       "kind": "re-export",
-      "signature": "export { dateToISO } from '@/lib/date-parse'"
+      "signature": "export { dateToISO } from \"@/lib/date-parse\""
     },
     {
       "name": "SharedDateFormat",
@@ -1806,12 +1806,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "DateInputStatus",
       "kind": "type",
-      "signature": "DateInputStatus = Readonly<{ type: 'error' | 'warning' | 'success' message?: string }>"
+      "signature": "DateInputStatus = Readonly<{ type: \"error\" | \"warning\" | \"success\"; message?: string; }>"
     },
     {
       "name": "DateInputProps",
       "kind": "type",
-      "signature": "DateInputProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label?: string isLabelHidden?: boolean description?: string placeholder?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a f…"
+      "signature": "DateInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label?: string; isLabelHidden?: boolean; description?: string; placeholder?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; /** Astryx shows …"
     },
     {
       "name": "dateInput",
@@ -1980,27 +1980,27 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "dateFromISO",
       "kind": "re-export",
-      "signature": "export { dateFromISO } from '@/lib/date-parse'"
+      "signature": "export { dateFromISO } from \"@/lib/date-parse\""
     },
     {
       "name": "dateToISO",
       "kind": "re-export",
-      "signature": "export { dateToISO } from '@/lib/date-parse'"
+      "signature": "export { dateToISO } from \"@/lib/date-parse\""
     },
     {
       "name": "DateRangePreset",
       "kind": "type",
-      "signature": "DateRangePreset = Readonly<{ label: string getRange: () => Range }>"
+      "signature": "DateRangePreset = Readonly<{ label: string; getRange: () => Range; }>"
     },
     {
       "name": "DateRangeInputStatus",
       "kind": "type",
-      "signature": "DateRangeInputStatus = Readonly<{ type: 'error' | 'warning' | 'success' message?: string }>"
+      "signature": "DateRangeInputStatus = Readonly<{ type: \"error\" | \"warning\" | \"success\"; message?: string; }>"
     },
     {
       "name": "DateRangeInputProps",
       "kind": "type",
-      "signature": "DateRangeInputProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a focus ring tooltip…"
+      "signature": "DateRangeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; /** Astryx shows it as a focus ring…"
     },
     {
       "name": "dateRangeInput",
@@ -2052,27 +2052,27 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "dateFromISO",
       "kind": "re-export",
-      "signature": "export { dateFromISO } from '@/lib/date-parse'"
+      "signature": "export { dateFromISO } from \"@/lib/date-parse\""
     },
     {
       "name": "dateToISO",
       "kind": "re-export",
-      "signature": "export { dateToISO } from '@/lib/date-parse'"
+      "signature": "export { dateToISO } from \"@/lib/date-parse\""
     },
     {
       "name": "formatDisplayTime12h",
       "kind": "re-export",
-      "signature": "export { formatDisplayTime12h } from '@/lib/time-parse'"
+      "signature": "export { formatDisplayTime12h } from \"@/lib/time-parse\""
     },
     {
       "name": "formatDisplayTime24h",
       "kind": "re-export",
-      "signature": "export { formatDisplayTime24h } from '@/lib/time-parse'"
+      "signature": "export { formatDisplayTime24h } from \"@/lib/time-parse\""
     },
     {
       "name": "formatISOTime",
       "kind": "re-export",
-      "signature": "export { formatISOTime } from '@/lib/time-parse'"
+      "signature": "export { formatISOTime } from \"@/lib/time-parse\""
     },
     {
       "name": "SharedDateFormat",
@@ -2082,12 +2082,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "DateTimeInputStatus",
       "kind": "type",
-      "signature": "DateTimeInputStatus = Readonly<{ type: 'error' | 'warning' | 'success' message?: string }>"
+      "signature": "DateTimeInputStatus = Readonly<{ type: \"error\" | \"warning\" | \"success\"; message?: string; }>"
     },
     {
       "name": "DateTimeInputProps",
       "kind": "type",
-      "signature": "DateTimeInputProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a focus ring tooltip;…"
+      "signature": "DateTimeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; /** Astryx shows it as a focus ring …"
     },
     {
       "name": "dateTimeInput",
@@ -6468,62 +6468,62 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "dropdownMenuKey",
       "kind": "re-export",
-      "signature": "export { dropdownMenuKey } from '@/lib/top-nav'"
+      "signature": "export { dropdownMenuKey } from \"@/lib/top-nav\""
     },
     {
       "name": "HEADING_MENU_KEY",
       "kind": "re-export",
-      "signature": "export { HEADING_MENU_KEY } from '@/lib/top-nav'"
+      "signature": "export { HEADING_MENU_KEY } from \"@/lib/top-nav\""
     },
     {
       "name": "init",
       "kind": "re-export",
-      "signature": "export { init } from '@/lib/top-nav'"
+      "signature": "export { init } from \"@/lib/top-nav\""
     },
     {
       "name": "isMenuOpen",
       "kind": "re-export",
-      "signature": "export { isMenuOpen } from '@/lib/top-nav'"
+      "signature": "export { isMenuOpen } from \"@/lib/top-nav\""
     },
     {
       "name": "menuFor",
       "kind": "re-export",
-      "signature": "export { menuFor } from '@/lib/top-nav'"
+      "signature": "export { menuFor } from \"@/lib/top-nav\""
     },
     {
       "name": "Model",
       "kind": "re-export",
-      "signature": "export { Model } from '@/lib/top-nav'"
+      "signature": "export { Model } from \"@/lib/top-nav\""
     },
     {
       "name": "update",
       "kind": "re-export",
-      "signature": "export { update } from '@/lib/top-nav'"
+      "signature": "export { update } from \"@/lib/top-nav\""
     },
     {
       "name": "InitConfig",
       "kind": "re-export",
-      "signature": "export { InitConfig } from '@/lib/top-nav'"
+      "signature": "export { InitConfig } from \"@/lib/top-nav\""
     },
     {
       "name": "TopNavMenuKind",
       "kind": "re-export",
-      "signature": "export { TopNavMenuKind } from '@/lib/top-nav'"
+      "signature": "export { TopNavMenuKind } from \"@/lib/top-nav\""
     },
     {
       "name": "Message",
       "kind": "re-export",
-      "signature": "export { Message } from '@/lib/top-nav'"
+      "signature": "export { Message } from \"@/lib/top-nav\""
     },
     {
       "name": "OutMessage",
       "kind": "re-export",
-      "signature": "export { OutMessage } from '@/lib/top-nav'"
+      "signature": "export { OutMessage } from \"@/lib/top-nav\""
     },
     {
       "name": "TopNavItemData",
       "kind": "type",
-      "signature": "TopNavItemData = Readonly<{ kind?: 'item'; label: string; href?: string; icon?: string; isSelected?: boolean; isDisabled?: boolean; isIconOnly?: boolean; onSelect?: boolean; }>"
+      "signature": "TopNavItemData = Readonly<{ kind?: \"item\"; label: string; href?: string; icon?: string; isSelected?: boolean; isDisabled?: boolean; isIconOnly?: boolean; onSelect?: boolean; }>"
     },
     {
       "name": "TopNavMenuItemData",
@@ -6533,7 +6533,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "TopNavMenuData",
       "kind": "type",
-      "signature": "TopNavMenuData = Readonly<{ kind: 'menu'; label: string; items: ReadonlyArray<TopNavMenuItemData>; }>"
+      "signature": "TopNavMenuData = Readonly<{ kind: \"menu\"; label: string; items: ReadonlyArray<TopNavMenuItemData>; }>"
     },
     {
       "name": "TopNavMegaMenuItemData",
@@ -6548,12 +6548,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "TopNavMegaMenuData",
       "kind": "type",
-      "signature": "TopNavMegaMenuData = Readonly<{ kind: 'megaMenu'; label: string; items: ReadonlyArray<TopNavMegaMenuItemData>; featured?: TopNavMegaMenuFeaturedCardData; }>"
+      "signature": "TopNavMegaMenuData = Readonly<{ kind: \"megaMenu\"; label: string; items: ReadonlyArray<TopNavMegaMenuItemData>; featured?: TopNavMegaMenuFeaturedCardData; }>"
     },
     {
       "name": "TopNavEntry",
       "kind": "type",
-      "signature": "TopNavEntry = | TopNavItemData | TopNavMenuData | TopNavMegaMenuData"
+      "signature": "TopNavEntry = TopNavItemData | TopNavMenuData | TopNavMegaMenuData"
     },
     {
       "name": "TopNavHeadingMenuItemData",
@@ -6670,12 +6670,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "TourStepPlacement",
       "kind": "type",
-      "signature": "TourStepPlacement = 'below' | 'above' | 'start' | 'end'"
+      "signature": "TourStepPlacement = \"below\" | \"above\" | \"start\" | \"end\""
     },
     {
       "name": "TourStepAlignment",
       "kind": "type",
-      "signature": "TourStepAlignment = 'start' | 'center' | 'end'"
+      "signature": "TourStepAlignment = \"start\" | \"center\" | \"end\""
     },
     {
       "name": "TourStepSpec",
@@ -6717,7 +6717,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "init",
       "kind": "function",
-      "signature": "init(config: { id: string; value?: ReadonlyArray<string> }): Model"
+      "signature": "init(config: { id: string; value?: ReadonlyArray<string>; }): Model"
     },
     {
       "name": "Message",

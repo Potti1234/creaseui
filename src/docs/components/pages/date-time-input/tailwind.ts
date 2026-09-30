@@ -46,13 +46,18 @@ export const dateTimeInputTailwindPreviewProgram = definePreviewProgram<
     const values: ReadonlyArray<DateTimeInput.DateTime | undefined> =
       fixture.kind === 'validation'
         ? VALIDATION_FIELDS.map((field) => toDateTime(field.value))
-        : [undefined];
+        : [fixture.initialValue === undefined
+            ? undefined
+            : toDateTime(fixture.initialValue)];
     return {
       _docsPage: 'date-time-input',
       inputs: values.map((value, i) =>
         DateTimeInput.init({
           id: `docs-date-time-input-${String(index)}-${String(i)}`,
           today,
+          ...(fixture.timeOptionInterval === undefined
+            ? {}
+            : { hasTimeOptions: true }),
           ...(value === undefined ? {} : { value }),
         }),
       ),
@@ -115,6 +120,9 @@ export const dateTimeInputTailwindPreviewProgram = definePreviewProgram<
             label: 'Meeting time',
             placeholder: 'Select a date',
             hasClear: true,
+            ...(fixture.timeOptionInterval === undefined
+              ? {}
+              : { timeOptionInterval: fixture.timeOptionInterval }),
           }),
         ]);
     }

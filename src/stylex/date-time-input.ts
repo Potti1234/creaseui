@@ -680,6 +680,15 @@ export const dateTimeInput = <Msg>(
             h.div(
               [
                 h.DataAttribute("slot", "date-time-input-time-segment"),
+                /* The popover's anchor mount positions the panel against
+                   `${id}-button`; the time half has no dedicated button
+                   element (the input keeps the combobox role), so the
+                   segment wrapper carries the anchor id. Without it the
+                   mount can not find its anchor and the panel stays
+                   visibility:hidden. */
+                ...(model.hasTimeOptions
+                  ? [h.Id(`${model.timePopover.id}-button`)]
+                  : []),
                 h.DataAttribute("invalid", String(isTimeInvalid)),
                 ...(isEffectivelyDisabled ? [h.AriaDisabled(true)] : []),
                 h.Class(className(...wrapperStyleArgs(isTimeInvalid))),
@@ -725,8 +734,13 @@ export const dateTimeInput = <Msg>(
                   h.OnFocus(toParent(Message.FocusedTimeInput())),
                   h.OnBlur(toParent(Message.BlurredTimeInput())),
                   h.OnClick(toParent(Message.ClickedTimeInput())),
-                  h.OnKeyDown((key) =>
-                    toParent(Message.PressedTimeInputKey({ key })),
+                  h.OnKeyDown((key, modifiers) =>
+                    toParent(
+                      Message.PressedTimeInputKey({
+                        key,
+                        isAlt: modifiers.altKey,
+                      }),
+                    ),
                   ),
                   h.Class(
                     className(

@@ -8,6 +8,10 @@ export type DateTimeInputFixture = Readonly<{
   kind: 'single' | 'validation';
   /** Astrryx block id, kept for tracing against the source templates. */
   astryxExample: string;
+  /** Minutes between preset-time options; enables the time listbox. */
+  timeOptionInterval?: number;
+  /** ISO date+time the field starts committed to. */
+  initialValue?: Readonly<{ date: string; time: string }>;
 }>;
 
 export const dateTimeInputFixtures: ReadonlyArray<DateTimeInputFixture> = [
@@ -25,6 +29,21 @@ export const dateTimeInputFixtures: ReadonlyArray<DateTimeInputFixture> = [
     astryxExample: 'DateTimeInputWithValidation',
     description:
       'DateTimeInput in all three status states: error, warning, and success. Use to surface scheduling conflicts, caution the user about edge cases, or confirm a valid datetime.',
+  },
+  {
+    /* Derived from astryx's storybook `WithTimeOptions` story — the docs
+       blocks never enable the preset-time listbox, so without this fixture
+       the listbox path has no docs coverage. */
+    title: 'DateTimeInput — Time options',
+    kind: 'single',
+    astryxExample: 'DateTimeInputWithTimeOptions',
+    timeOptionInterval: 30,
+    /* astryx's story starts committed ('2026-03-15T09:00') — a date is
+       required for a time pick to land, mirroring commitTimeOption's
+       valueParts.date guard. */
+    initialValue: { date: '2026-03-15', time: '09:00' },
+    description:
+      'DateTimeInput with preset-time suggestions — the time half opens a listbox of half-hour options alongside typed entry.',
   },
 ];
 
@@ -92,13 +111,20 @@ const singleSource = (fixture: DateTimeInputFixture, renderer: 'tailwind' | 'sty
 })
 export type Model = typeof Model.Type
 
-const TODAY = Calendar.fromDateInZone(new Date(), 'UTC')`,
+const TODAY = Calendar.fromDateInZone(new Date(), 'UTC')${fixture.initialValue === undefined ? '' : `
+
+const INITIAL_DATE = DateTimeInput.dateFromISO('${fixture.initialValue.date}')`}`,
     messages: messages(false),
     init: `export const init = (): Update.Return<Model, Message> => ({
   model: {
     dateTimeInput: DateTimeInput.init({
       id: 'docs-date-time-input',
-      today: TODAY,
+      today: TODAY,${fixture.timeOptionInterval === undefined ? '' : `
+      hasTimeOptions: true,`}${fixture.initialValue === undefined ? '' : `
+      value: Option.match(INITIAL_DATE, {
+        onNone: () => undefined,
+        onSome: date => ({ date, time: '${fixture.initialValue!.time}' }),
+      }),`}
     }),
   },
 })`,
@@ -122,7 +148,8 @@ const TODAY = Calendar.fromDateInZone(new Date(), 'UTC')`,
         toParentMessage: message => GotDateTimeInputMessage({ message }),
         label: 'Meeting time',
         placeholder: 'Select a date',
-        hasClear: true,
+        hasClear: true,${fixture.timeOptionInterval === undefined ? '' : `
+        timeOptionInterval: ${String(fixture.timeOptionInterval)},`}
       }, h),
     ]),
   ]),

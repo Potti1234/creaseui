@@ -84,7 +84,7 @@ export const Message = defineMessageUnion({
   FocusedTimeInput: {},
   BlurredTimeInput: {},
   ClickedTimeInput: {},
-  PressedTimeInputKey: { key: S.String },
+  PressedTimeInputKey: { key: S.String, isAlt: S.Boolean },
   ClickedTimeOption: { time: S.String },
   ClickedIcon: {},
   ClearedInput: {},
@@ -611,13 +611,22 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       });
     }
     case "FocusedTimeInput":
-      return openTimePopover({ ...model, isTimeInputFocused: true });
+      /* astryx opens the listbox on click / Alt+ArrowDown only — never on
+         focus — so the FocusTimeInput refocus after an option pick can not
+         re-open it. */
+      return { model: { ...model, isTimeInputFocused: true } };
     case "BlurredTimeInput": {
       const committed = commitTimePendingInput({
         ...model,
         isTimeInputFocused: false,
       });
-      const closed = closeTimePopover(committed.model);
+      /* With hasTimeOptions the anchor deliberately moves focus into the
+         listbox, which blurs the input — closing here would make the popover
+         vanish the moment it opens. Option picks, Tab, Escape and the backdrop
+         still close it. */
+      const closed: UpdateReturn = model.hasTimeOptions
+        ? { model: committed.model }
+        : closeTimePopover(committed.model);
       return {
         model: closed.model,
         ...(committed.outMessage === undefined
@@ -641,6 +650,14 @@ export const update = (model: Model, message: Message): UpdateReturn => {
             ? {}
             : { commands: closed.commands }),
         };
+      }
+      if (
+        message.key === "ArrowDown" &&
+        message.isAlt &&
+        !model.timePopover.isOpen
+      ) {
+        // APG "open without moving" — same as astryx's Alt+ArrowDown binding.
+        return openTimePopover(model);
       }
       if (message.key === "ArrowUp" || message.key === "ArrowDown") {
         return stepTime(model, message.key === "ArrowUp" ? 1 : -1);
