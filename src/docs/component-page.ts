@@ -95,6 +95,7 @@ export const COMPONENTS = [
   'Selectable Card',
   'Separator',
   'Sheet',
+  'Side Nav',
   'Sidebar',
   'Skeleton',
   'Slider',
@@ -118,7 +119,9 @@ export const COMPONENTS = [
   'Tokenizer',
   'Toolbar',
   'Tooltip',
+  'Top Nav',
   'Tour',
+  'Tree List',
   'Typography',
   'Visually Hidden',
 ] as const;

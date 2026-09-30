@@ -1521,6 +1521,32 @@ Source: [`src/ui/sheet.ts`](../src/ui/sheet.ts)
 | `SheetProps` | type | `SheetProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; content?: (slots: SheetSlots) => ReadonlyArray<Html>; footer?: (slots: SheetSlots) => ReadonlyArray<Html>; layout?: (parts: SheetParts<…` |
 | `sheet` | function | `sheet<Msg>(props: SheetProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
+## Side Nav
+
+Source: [`src/ui/side-nav.ts`](../src/ui/side-nav.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Message` | re-export | `export { Message } from '@/lib/side-nav'` |
+| `Model` | re-export | `export { Model } from '@/lib/side-nav'` |
+| `OutMessage` | re-export | `export { OutMessage } from '@/lib/side-nav'` |
+| `HEADING_MENU_KEY` | re-export | `export { HEADING_MENU_KEY } from '@/lib/side-nav'` |
+| `flyoutKey` | re-export | `export { flyoutKey } from '@/lib/side-nav'` |
+| `init` | re-export | `export { init } from '@/lib/side-nav'` |
+| `isItemCollapsed` | re-export | `export { isItemCollapsed } from '@/lib/side-nav'` |
+| `menuFor` | re-export | `export { menuFor } from '@/lib/side-nav'` |
+| `update` | re-export | `export { update } from '@/lib/side-nav'` |
+| `visibleWidth` | re-export | `export { visibleWidth } from '@/lib/side-nav'` |
+| `InitConfig` | re-export | `export { InitConfig } from '@/lib/side-nav'` |
+| `SideNavItemData` | type | `SideNavItemData = Readonly<{ id: string; label: string; icon?: string; /** Icon shown instead of `icon` while the item is selected (astryx selectedIcon). */ selectedIcon?: string; isSelected?: boolean; isDisabled?: boolean; href?: string; /** Invoked for item…` |
+| `SideNavMenuItemData` | type | `SideNavMenuItemData = Readonly<{ label: string; href?: string; onSelect?: boolean; icon?: string; isDisabled?: boolean; }>` |
+| `SideNavHeadingData` | type | `SideNavHeadingData = Readonly<{ heading: string; icon?: Html; headingHref?: string; superheading?: string; superheadingHref?: string; subheading?: string; subheadingHref?: string; headerEndContent?: Html; menu?: ReadonlyArray<SideNavMenuItemData>; }>` |
+| `SideNavSectionData` | type | `SideNavSectionData = Readonly<{ title?: string; subtitle?: string; isHeaderHidden?: boolean; endContent?: Html; items: ReadonlyArray<SideNavItemData>; }>` |
+| `ViewInputs` | type | `ViewInputs = Readonly<{ /** Bare top-level items (astryx SideNav children outside a Section). */ items?: ReadonlyArray<SideNavItemData>; sections?: ReadonlyArray<SideNavSectionData>; heading?: SideNavHeadingData; topContent?: Html; footer?: Html; /** Small ic…` |
+| `view` | value | `view: value` |
+| `SideNavProps` | type | `SideNavProps<Msg> = ViewInputs & Readonly<{ model: SideNavLib.Model; toParentMessage: (message: SideNavLib.Message) => Msg; }>` |
+| `sideNav` | function | `sideNav<Msg>(props: SideNavProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Sidebar
 
 Source: [`src/ui/sidebar.ts`](../src/ui/sidebar.ts)
@@ -1903,6 +1929,40 @@ Source: [`src/ui/tooltip.ts`](../src/ui/tooltip.ts)
 | `TooltipProps` | type | `TooltipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; content: Html \| string; align?: TooltipAlign; side?: TooltipSide; isDisabled?: boolean; ariaLabel?: string; triggerClass?: string; class?: string;…` |
 | `tooltip` | function | `tooltip<Msg>(props: TooltipProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
+## Top Nav
+
+Source: [`src/ui/top-nav.ts`](../src/ui/top-nav.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `dropdownMenuKey` | re-export | `export { dropdownMenuKey } from '@/lib/top-nav'` |
+| `HEADING_MENU_KEY` | re-export | `export { HEADING_MENU_KEY } from '@/lib/top-nav'` |
+| `init` | re-export | `export { init } from '@/lib/top-nav'` |
+| `isMenuOpen` | re-export | `export { isMenuOpen } from '@/lib/top-nav'` |
+| `menuFor` | re-export | `export { menuFor } from '@/lib/top-nav'` |
+| `Model` | re-export | `export { Model } from '@/lib/top-nav'` |
+| `update` | re-export | `export { update } from '@/lib/top-nav'` |
+| `InitConfig` | re-export | `export { InitConfig } from '@/lib/top-nav'` |
+| `TopNavMenuKind` | re-export | `export { TopNavMenuKind } from '@/lib/top-nav'` |
+| `Message` | re-export | `export { Message } from '@/lib/top-nav'` |
+| `OutMessage` | re-export | `export { OutMessage } from '@/lib/top-nav'` |
+| `TopNavItemData` | type | `TopNavItemData = Readonly<{ kind?: 'item'; label: string; href?: string; icon?: string; isSelected?: boolean; isDisabled?: boolean; isIconOnly?: boolean; onSelect?: boolean; }>` |
+| `TopNavMenuItemData` | type | `TopNavMenuItemData = Readonly<{ title: string; description?: string; icon?: Html; href?: string; onSelect?: boolean; }>` |
+| `TopNavMenuData` | type | `TopNavMenuData = Readonly<{ kind: 'menu'; label: string; items: ReadonlyArray<TopNavMenuItemData>; }>` |
+| `TopNavMegaMenuItemData` | type | `TopNavMegaMenuItemData = Readonly<{ title: string; description?: string; icon?: Html; href?: string; onSelect?: boolean; }>` |
+| `TopNavMegaMenuFeaturedCardData` | type | `TopNavMegaMenuFeaturedCardData = Readonly<{ title: string; description?: string; image?: string; imageAlt?: string; linkLabel?: string; linkHref?: string; children?: Html; }>` |
+| `TopNavMegaMenuData` | type | `TopNavMegaMenuData = Readonly<{ kind: 'megaMenu'; label: string; items: ReadonlyArray<TopNavMegaMenuItemData>; featured?: TopNavMegaMenuFeaturedCardData; }>` |
+| `TopNavEntry` | type | `TopNavEntry = \| TopNavItemData \| TopNavMenuData \| TopNavMegaMenuData` |
+| `TopNavHeadingMenuItemData` | type | `TopNavHeadingMenuItemData = Readonly<{ label: string; href?: string; onSelect?: boolean; }>` |
+| `TopNavHeadingData` | type | `TopNavHeadingData = Readonly<{ heading?: string; logo?: Html; logoLabel?: string; headingHref?: string; superheading?: string; superheadingHref?: string; subheading?: string; subheadingHref?: string; headerEndContent?: Html; menu?: ReadonlyArray<TopNavHeading…` |
+| `ViewInputs` | type | `ViewInputs = Readonly<{ label?: string; heading?: TopNavHeadingData; startItems?: ReadonlyArray<TopNavEntry>; centerItems?: ReadonlyArray<TopNavEntry>; /** Escape hatch for arbitrary start slot content. */ startContent?: Html; centerContent?: Html; endContent…` |
+| `topNavItem` | function | `topNavItem<Msg>(item: TopNavItemData, emit: (message: TopNavLib.Message) => Msg, h: HtmlBuilder<Msg>): Html` |
+| `topNavMegaMenuItem` | function | `topNavMegaMenuItem<Msg>(item: TopNavMegaMenuItemData, onActivate: Msg \| undefined, h: HtmlBuilder<Msg>): Html` |
+| `topNavMegaMenuFeaturedCard` | function | `topNavMegaMenuFeaturedCard<Msg>(card: TopNavMegaMenuFeaturedCardData, h: HtmlBuilder<Msg>): Html` |
+| `view` | value | `view: value` |
+| `TopNavProps` | type | `TopNavProps<Msg> = ViewInputs & Readonly<{ model: TopNavLib.Model; toParentMessage: (message: TopNavLib.Message) => Msg; }>` |
+| `topNav` | function | `topNav<Msg>(props: TopNavProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Tour
 
 Source: [`src/ui/tour.ts`](../src/ui/tour.ts)
@@ -1927,6 +1987,33 @@ Source: [`src/ui/tour.ts`](../src/ui/tour.ts)
 | `TourStepSpec` | type | `TourStepSpec = Readonly<{ /** Stable step key — the callout is re-keyed per step to re-anchor. */ id: string; /** `id` of the element this step points at (astryx targetRef equivalent — must be interactive for aria, matching Popover's anchor contract). */ targ…` |
 | `TourProps` | type | `TourProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; steps: ReadonlyArray<TourStepSpec>; hasBackdrop?: boolean; isStepCountShown?: boolean; class?: string; }>` |
 | `tour` | function | `tour<Msg>(props: TourProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Tree List
+
+Source: [`src/ui/tree-list.ts`](../src/ui/tree-list.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Message` | re-export | `export { Message } from '@/lib/tree-list'` |
+| `Model` | re-export | `export { Model } from '@/lib/tree-list'` |
+| `OutMessage` | re-export | `export { OutMessage } from '@/lib/tree-list'` |
+| `findInitialTabbableId` | re-export | `export { findInitialTabbableId } from '@/lib/tree-list'` |
+| `init` | re-export | `export { init } from '@/lib/tree-list'` |
+| `isItemExpanded` | re-export | `export { isItemExpanded } from '@/lib/tree-list'` |
+| `resolveKey` | re-export | `export { resolveKey } from '@/lib/tree-list'` |
+| `tabbableId` | re-export | `export { tabbableId } from '@/lib/tree-list'` |
+| `update` | re-export | `export { update } from '@/lib/tree-list'` |
+| `visibleItems` | re-export | `export { visibleItems } from '@/lib/tree-list'` |
+| `InitConfig` | re-export | `export { InitConfig } from '@/lib/tree-list'` |
+| `TreeListDensity` | re-export | `export { TreeListDensity } from '@/lib/tree-list'` |
+| `TreeListItemData` | re-export | `export { TreeListItemData } from '@/lib/tree-list'` |
+| `UpdateReturn` | re-export | `export { UpdateReturn } from '@/lib/tree-list'` |
+| `TreeListVariant` | re-export | `export { TreeListVariant } from '@/lib/tree-list'` |
+| `VisibleItem` | re-export | `export { VisibleItem } from '@/lib/tree-list'` |
+| `ViewInputs` | type | `ViewInputs = Readonly<{ items: ReadonlyArray<TreeListBehavior.TreeListItemData>; density?: TreeListBehavior.TreeListDensity; variant?: TreeListBehavior.TreeListVariant; header?: Html; ariaLabel?: string; direction?: 'ltr' \| 'rtl'; class?: string; }>` |
+| `view` | value | `view: value` |
+| `TreeListProps` | type | `TreeListProps<Msg> = ViewInputs & Readonly<{ model: TreeListBehavior.Model; toParentMessage: (message: TreeListBehavior.Message) => Msg; }>` |
+| `treeList` | function | `treeList<Msg>(props: TreeListProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Typography
 

@@ -23,7 +23,7 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 111,
+    "registryItems": 114,
     "creaseOnlyRecipes": [
       "app-shell",
       "avatar-group",
@@ -61,6 +61,7 @@
       "section",
       "segmented-control",
       "selectable-card",
+      "side-nav",
       "stack",
       "stat",
       "status-dot",
@@ -71,7 +72,9 @@
       "token",
       "tokenizer",
       "toolbar",
+      "top-nav",
       "tour",
+      "tree-list",
       "typography",
       "visually-hidden"
     ]
@@ -1614,6 +1617,24 @@
       ]
     },
     {
+      "component": "side-nav",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/side-nav.ts",
+        "src/ui/registry.json#side-nav",
+        "/docs/components/side-nav"
+      ]
+    },
+    {
       "component": "sidebar",
       "upstream": true,
       "classification": "full",
@@ -2028,6 +2049,24 @@
       ]
     },
     {
+      "component": "top-nav",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/top-nav.ts",
+        "src/ui/registry.json#top-nav",
+        "/docs/components/top-nav"
+      ]
+    },
+    {
       "component": "tour",
       "upstream": false,
       "classification": "full",
@@ -2043,6 +2082,24 @@
         "src/ui/tour.ts",
         "src/ui/registry.json#tour",
         "/docs/components/tour"
+      ]
+    },
+    {
+      "component": "tree-list",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/tree-list.ts",
+        "src/ui/registry.json#tree-list",
+        "/docs/components/tree-list"
       ]
     },
     {

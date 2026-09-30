@@ -67,6 +67,7 @@ describe('multidimensional component parity', () => {
       'data-table',
       'date-input',
       'date-picker',
+<<<<<<< HEAD
       'date-range-input',
       'date-time-input',
       'field-status',
@@ -89,6 +90,7 @@ describe('multidimensional component parity', () => {
       'section',
       'segmented-control',
       'selectable-card',
+      'side-nav',
       'stack',
       'stat',
       'status-dot',
@@ -99,7 +101,9 @@ describe('multidimensional component parity', () => {
       'token',
       'tokenizer',
       'toolbar',
+      'top-nav',
       'tour',
+      'tree-list',
       'typography',
       'visually-hidden',
     ])

@@ -98,6 +98,7 @@ import { statStyleXPreview } from '@/docs/components/pages/stat/stylex';
 import { statusDotStyleXPreview } from '@/docs/components/pages/status-dot/stylex';
 import { thumbnailStyleXPreview } from '@/docs/components/pages/thumbnail/stylex';
 import { toastStyleXPreview } from '@/docs/components/pages/toast/stylex';
+<<<<<<< HEAD
 import { bannerStyleXPreview } from '@/docs/components/pages/banner/stylex';
 import { clickableCardStyleXPreview } from '@/docs/components/pages/clickable-card/stylex';
 import { fieldStatusStyleXPreview } from '@/docs/components/pages/field-status/stylex';
@@ -107,9 +108,12 @@ import { moreMenuStyleXPreview } from '@/docs/components/pages/more-menu/stylex'
 import { overflowListStyleXPreview } from '@/docs/components/pages/overflow-list/stylex';
 import { segmentedControlStyleXPreview } from '@/docs/components/pages/segmented-control/stylex';
 import { selectableCardStyleXPreview } from '@/docs/components/pages/selectable-card/stylex';
+import { sideNavStyleXPreview } from '@/docs/components/pages/side-nav/stylex';
 import { stepperStyleXPreview } from '@/docs/components/pages/stepper/stylex';
 import { tokenStyleXPreview } from '@/docs/components/pages/token/stylex';
 import { toolbarStyleXPreview } from '@/docs/components/pages/toolbar/stylex';
+import { topNavStyleXPreview } from '@/docs/components/pages/top-nav/stylex';
+import { treeListStyleXPreview } from '@/docs/components/pages/tree-list/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -200,6 +204,7 @@ installStyleXExamplePreviewProvider('stat', statStyleXPreview);
 installStyleXExamplePreviewProvider('status-dot', statusDotStyleXPreview);
 installStyleXExamplePreviewProvider('thumbnail', thumbnailStyleXPreview);
 installStyleXExamplePreviewProvider('toast', toastStyleXPreview);
+<<<<<<< HEAD
 installStyleXExamplePreviewProvider('banner', bannerStyleXPreview);
 installStyleXExamplePreviewProvider('bottom-sheet', bottomSheetStyleXPreview);
 installStyleXExamplePreviewProvider('checkbox-list', checkboxListStyleXPreview);
@@ -216,9 +221,12 @@ installStyleXExamplePreviewProvider('number-input', numberInputStyleXPreview);
 installStyleXExamplePreviewProvider('overflow-list', overflowListStyleXPreview);
 installStyleXExamplePreviewProvider('segmented-control', segmentedControlStyleXPreview);
 installStyleXExamplePreviewProvider('selectable-card', selectableCardStyleXPreview);
+installStyleXExamplePreviewProvider('side-nav', sideNavStyleXPreview);
 installStyleXExamplePreviewProvider('stepper', stepperStyleXPreview);
 installStyleXExamplePreviewProvider('time-input', timeInputStyleXPreview);
 installStyleXExamplePreviewProvider('token', tokenStyleXPreview);
 installStyleXExamplePreviewProvider('toolbar', toolbarStyleXPreview);
+installStyleXExamplePreviewProvider('top-nav', topNavStyleXPreview);
 installStyleXExamplePreviewProvider('tour', tourStyleXPreview);
+installStyleXExamplePreviewProvider('tree-list', treeListStyleXPreview);
 installStyleXExamplePreviewProvider('visually-hidden', visuallyHiddenStyleXPreview);

@@ -84,6 +84,7 @@ import { selectableCardPage } from '@/docs/components/pages/selectable-card';
 import { separatorPage } from '@/docs/components/pages/separator';
 import { selectPage } from '@/docs/components/pages/select';
 import { sheetPage } from '@/docs/components/pages/sheet';
+import { sideNavPage } from '@/docs/components/pages/side-nav';
 import { sidebarPage } from '@/docs/components/pages/sidebar';
 import { skeletonPage } from '@/docs/components/pages/skeleton';
 import { sliderPage } from '@/docs/components/pages/slider';
@@ -107,7 +108,9 @@ import { tokenPage } from '@/docs/components/pages/token';
 import { tokenizerPage } from '@/docs/components/pages/tokenizer';
 import { toolbarPage } from '@/docs/components/pages/toolbar';
 import { tooltipPage } from '@/docs/components/pages/tooltip';
+import { topNavPage } from '@/docs/components/pages/top-nav';
 import { tourPage } from '@/docs/components/pages/tour';
+import { treeListPage } from '@/docs/components/pages/tree-list';
 import { typographyPage } from '@/docs/components/pages/typography';
 import { visuallyHiddenPage } from '@/docs/components/pages/visually-hidden';
 
@@ -199,6 +202,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       separatorPage,
       selectPage,
       sheetPage,
+      sideNavPage,
       sidebarPage,
       skeletonPage,
       sliderPage,
@@ -222,7 +226,9 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       tokenizerPage,
       toolbarPage,
       tooltipPage,
+      topNavPage,
       tourPage,
+      treeListPage,
       typographyPage,
       visuallyHiddenPage,
     ].map((page) => [page.slug, page]),

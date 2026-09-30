@@ -89,6 +89,7 @@ export * as Select from './select.js'
 export * as SelectableCard from './selectable-card.js'
 export * as Separator from './separator.js'
 export * as Sheet from './sheet.js'
+export * as SideNav from './side-nav.js'
 export * as Sidebar from './sidebar.js'
 export * as Skeleton from './skeleton.js'
 export * as Slider from './slider.js'
@@ -112,7 +113,9 @@ export * as Token from './token.js'
 export * as Tokenizer from './tokenizer.js'
 export * as Toolbar from './toolbar.js'
 export * as Tooltip from './tooltip.js'
+export * as TopNav from './top-nav.js'
 export * as Tour from './tour.js'
+export * as TreeList from './tree-list.js'
 export * as Typography from './typography.js'
 export * as VisuallyHidden from './visually-hidden.js'
 
@@ -203,6 +206,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'selectable-card',
   'separator',
   'sheet',
+  'side-nav',
   'sidebar',
   'skeleton',
   'slider',
@@ -226,7 +230,9 @@ export const STYLEX_COMPONENT_NAMES = [
   'tokenizer',
   'toolbar',
   'tooltip',
+  'top-nav',
   'tour',
+  'tree-list',
   'typography',
   'visually-hidden',
 ] as const

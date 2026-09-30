@@ -1552,6 +1552,24 @@
       ]
     },
     {
+      "name": "side-nav",
+      "type": "registry:ui",
+      "title": "Side Nav",
+      "description": "A shadcn-styled Side Nav component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "side-nav.ts",
+          "type": "registry:ui",
+          "target": "@ui/side-nav.ts"
+        }
+      ]
+    },
+    {
       "name": "sidebar",
       "type": "registry:ui",
       "title": "Sidebar",
@@ -1969,6 +1987,24 @@
       ]
     },
     {
+      "name": "top-nav",
+      "type": "registry:ui",
+      "title": "Top Nav",
+      "description": "A shadcn-styled Top Nav component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "top-nav.ts",
+          "type": "registry:ui",
+          "target": "@ui/top-nav.ts"
+        }
+      ]
+    },
+    {
       "name": "tour",
       "type": "registry:ui",
       "title": "Tour",
@@ -1984,6 +2020,24 @@
           "path": "tour.ts",
           "type": "registry:ui",
           "target": "@ui/tour.ts"
+        }
+      ]
+    },
+    {
+      "name": "tree-list",
+      "type": "registry:ui",
+      "title": "Tree List",
+      "description": "A shadcn-styled Tree List component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "tree-list.ts",
+          "type": "registry:ui",
+          "target": "@ui/tree-list.ts"
         }
       ]
     },
