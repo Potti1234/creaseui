@@ -1931,6 +1931,73 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "hoverCard<Msg>(props: HoverCardProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "info-tip": [
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "value",
+      "signature": "OutMessage: value"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "type",
+      "signature": "OutMessage = typeof OutMessage.Type"
+    },
+    {
+      "name": "init",
+      "kind": "value",
+      "signature": "init: value"
+    },
+    {
+      "name": "update",
+      "kind": "value",
+      "signature": "update: value"
+    },
+    {
+      "name": "InfoTipSize",
+      "kind": "type",
+      "signature": "InfoTipSize = 'xsm' | 'sm' | 'md' | 'lg'"
+    },
+    {
+      "name": "InfoTipSide",
+      "kind": "type",
+      "signature": "InfoTipSide = 'top' | 'right' | 'bottom' | 'left'"
+    },
+    {
+      "name": "InfoTipAlign",
+      "kind": "type",
+      "signature": "InfoTipAlign = 'start' | 'center' | 'end'"
+    },
+    {
+      "name": "InfoTipProps",
+      "kind": "type",
+      "signature": "InfoTipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Content shown in the tooltip. Keep it short and non-interactive. */ content: Html | string; /** Accessible name for the trigger button. Defaults to 'More information'…"
+    },
+    {
+      "name": "infoTip",
+      "kind": "function",
+      "signature": "infoTip<Msg>(props: InfoTipProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "input-group": [
     {
       "name": "inputGroup",
@@ -2727,6 +2794,68 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "scrollArea<Msg>(props: ScrollAreaProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "segmented-control": [
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from "
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from "
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from "
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from "
+    },
+    {
+      "name": "SegmentedControlSize",
+      "kind": "type",
+      "signature": "SegmentedControlSize = 'sm' | 'md' | 'lg'"
+    },
+    {
+      "name": "SegmentedControlLayout",
+      "kind": "type",
+      "signature": "SegmentedControlLayout = 'hug' | 'fill'"
+    },
+    {
+      "name": "SegmentedControlItem",
+      "kind": "type",
+      "signature": "SegmentedControlItem<Value extends string = string> = Readonly<{ value: Value /** Visible label; also the accessible name when `isLabelHidden` is set. */ label: string /** Icon element displayed before the label. */ icon?: Html isLabelHidden?: boolean isDisab…"
+    },
+    {
+      "name": "SegmentedControlProps",
+      "kind": "type",
+      "signature": "SegmentedControlProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg /** The currently selected value (controlled). */ value: Value /** Accessible label for the radio group (used as aria-label, never rendered v…"
+    },
+    {
+      "name": "SegmentedControlBundle",
+      "kind": "type",
+      "signature": "SegmentedControlBundle<Value extends string> = Readonly<{ update: ReturnType<typeof createBehavior<Value>>['update'] segmentedControl: <Msg>( props: SegmentedControlProps<Value, Msg>, h: HtmlBuilder<Msg>, ) => Html }>"
+    },
+    {
+      "name": "create",
+      "kind": "function",
+      "signature": "create<Value extends string = string>(): SegmentedControlBundle<Value>"
+    },
+    {
+      "name": "update",
+      "kind": "value",
+      "signature": "update: value"
+    },
+    {
+      "name": "segmentedControl",
+      "kind": "value",
+      "signature": "segmentedControl: value"
+    }
+  ],
   "select": [
     {
       "name": "Model",
@@ -3290,6 +3419,73 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "statusDot<Msg>(props: StatusDotProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "stepper": [
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from "
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from "
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from "
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from "
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from "
+    },
+    {
+      "name": "StepperOrientation",
+      "kind": "type",
+      "signature": "StepperOrientation = 'horizontal' | 'vertical'"
+    },
+    {
+      "name": "StepperIndicatorPosition",
+      "kind": "type",
+      "signature": "StepperIndicatorPosition = 'separated' | 'on-track'"
+    },
+    {
+      "name": "StepperDensity",
+      "kind": "type",
+      "signature": "StepperDensity = 'compact' | 'balanced' | 'spacious'"
+    },
+    {
+      "name": "StepperCollapsedVariant",
+      "kind": "type",
+      "signature": "StepperCollapsedVariant = | 'withLabelAndControls' | 'withLabel' | 'hiddenLabel'"
+    },
+    {
+      "name": "StepperStepStatus",
+      "kind": "type",
+      "signature": "StepperStepStatus = StepperStatus"
+    },
+    {
+      "name": "StepperStep",
+      "kind": "type",
+      "signature": "StepperStep<Msg> = Readonly<{ label: string description?: string status?: StepperStepStatus isDisabled?: boolean isOptional?: boolean /** 'auto' (default): number while upcoming, check once completed, current ring while active. 'number': always a number badge…"
+    },
+    {
+      "name": "StepperProps",
+      "kind": "type",
+      "signature": "StepperProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg /** Zero-based active step (controlled by the parent). */ activeStep: number steps: ReadonlyArray<StepperStep<Msg>> orientation?: StepperOrientation /** 'separated': bar se…"
+    },
+    {
+      "name": "stepper",
+      "kind": "function",
+      "signature": "stepper<Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "switch": [
     {
       "name": "SwitchSize",
@@ -3552,6 +3748,53 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "toggle",
       "kind": "function",
       "signature": "toggle<Msg>(props: ToggleProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "toolbar": [
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from "
+    },
+    {
+      "name": "TOOLBAR_EDGE_COMP_ATTR",
+      "kind": "re-export",
+      "signature": "export { TOOLBAR_EDGE_COMP_ATTR } from "
+    },
+    {
+      "name": "ToolbarSize",
+      "kind": "type",
+      "signature": "ToolbarSize = 'sm' | 'md' | 'lg'"
+    },
+    {
+      "name": "ToolbarOrientation",
+      "kind": "type",
+      "signature": "ToolbarOrientation = 'horizontal' | 'vertical'"
+    },
+    {
+      "name": "ToolbarVariant",
+      "kind": "type",
+      "signature": "ToolbarVariant = 'transparent' | 'surface' | 'muted'"
+    },
+    {
+      "name": "ToolbarDivider",
+      "kind": "type",
+      "signature": "ToolbarDivider = 'top' | 'bottom' | 'start' | 'end'"
+    },
+    {
+      "name": "ToolbarGap",
+      "kind": "type",
+      "signature": "ToolbarGap = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10"
+    },
+    {
+      "name": "ToolbarProps",
+      "kind": "type",
+      "signature": "ToolbarProps<Msg> = Readonly<{ /** Accessible label for the toolbar (aria-label). */ label: string /** Content aligned to the start (left in LTR). */ startContent?: Html | ReadonlyArray<Html | string> /** Centered content. When present, switches the layout to…"
+    },
+    {
+      "name": "toolbar",
+      "kind": "function",
+      "signature": "toolbar<Msg>(props: ToolbarProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "tooltip": [

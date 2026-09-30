@@ -23,11 +23,15 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 66,
+    "registryItems": 70,
     "creaseOnlyRecipes": [
       "data-table",
       "date-picker",
+      "info-tip",
+      "segmented-control",
       "status-dot",
+      "stepper",
+      "toolbar",
       "typography"
     ]
   },
@@ -576,6 +580,24 @@
       ]
     },
     {
+      "component": "info-tip",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/info-tip.ts",
+        "src/ui/registry.json#info-tip",
+        "/docs/components/info-tip"
+      ]
+    },
+    {
       "component": "input",
       "upstream": true,
       "classification": "full",
@@ -901,6 +923,24 @@
       ]
     },
     {
+      "component": "segmented-control",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/segmented-control.ts",
+        "src/ui/registry.json#segmented-control",
+        "/docs/components/segmented-control"
+      ]
+    },
+    {
       "component": "select",
       "upstream": true,
       "classification": "full",
@@ -1065,6 +1105,24 @@
       ]
     },
     {
+      "component": "stepper",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/stepper.ts",
+        "src/ui/registry.json#stepper",
+        "/docs/components/stepper"
+      ]
+    },
+    {
       "component": "switch",
       "upstream": true,
       "classification": "full",
@@ -1188,6 +1246,24 @@
         "src/ui/toggle-group.ts",
         "src/ui/registry.json#toggle-group",
         "/docs/components/toggle-group"
+      ]
+    },
+    {
+      "component": "toolbar",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/toolbar.ts",
+        "src/ui/registry.json#toolbar",
+        "/docs/components/toolbar"
       ]
     },
     {

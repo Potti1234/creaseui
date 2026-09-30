@@ -556,6 +556,24 @@
       ]
     },
     {
+      "name": "info-tip",
+      "type": "registry:ui",
+      "title": "Info Tip",
+      "description": "A shadcn-styled Info Tip component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "info-tip.ts",
+          "type": "registry:ui",
+          "target": "@ui/info-tip.ts"
+        }
+      ]
+    },
+    {
       "name": "input-group",
       "type": "registry:ui",
       "title": "Input Group",
@@ -881,6 +899,23 @@
       ]
     },
     {
+      "name": "segmented-control",
+      "type": "registry:ui",
+      "title": "Segmented Control",
+      "description": "A shadcn-styled Segmented Control component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "segmented-control.ts",
+          "type": "registry:ui",
+          "target": "@ui/segmented-control.ts"
+        }
+      ]
+    },
+    {
       "name": "select",
       "type": "registry:ui",
       "title": "Select",
@@ -1046,6 +1081,25 @@
       ]
     },
     {
+      "name": "stepper",
+      "type": "registry:ui",
+      "title": "Stepper",
+      "description": "A shadcn-styled Stepper component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/button",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "stepper.ts",
+          "type": "registry:ui",
+          "target": "@ui/stepper.ts"
+        }
+      ]
+    },
+    {
       "name": "switch",
       "type": "registry:ui",
       "title": "Switch",
@@ -1168,6 +1222,23 @@
           "path": "toggle.ts",
           "type": "registry:ui",
           "target": "@ui/toggle.ts"
+        }
+      ]
+    },
+    {
+      "name": "toolbar",
+      "type": "registry:ui",
+      "title": "Toolbar",
+      "description": "A shadcn-styled Toolbar component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "toolbar.ts",
+          "type": "registry:ui",
+          "target": "@ui/toolbar.ts"
         }
       ]
     },

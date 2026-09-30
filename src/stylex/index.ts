@@ -34,6 +34,7 @@ export * as Empty from './empty.js'
 export * as Field from './field.js'
 export * as Form from './form.js'
 export * as HoverCard from './hover-card.js'
+export * as InfoTip from './info-tip.js'
 export * as InputGroup from './input-group.js'
 export * as InputOtp from './input-otp.js'
 export * as Input from './input.js'
@@ -52,6 +53,7 @@ export * as Progress from './progress.js'
 export * as RadioGroup from './radio-group.js'
 export * as Resizable from './resizable.js'
 export * as ScrollArea from './scroll-area.js'
+export * as SegmentedControl from './segmented-control.js'
 export * as Select from './select.js'
 export * as Separator from './separator.js'
 export * as Sheet from './sheet.js'
@@ -61,6 +63,7 @@ export * as Slider from './slider.js'
 export * as Sonner from './sonner.js'
 export * as Spinner from './spinner.js'
 export * as StatusDot from './status-dot.js'
+export * as Stepper from './stepper.js'
 export * as Switch from './switch.js'
 export * as Table from './table.js'
 export * as Tabs from './tabs.js'
@@ -68,6 +71,7 @@ export * as Textarea from './textarea.js'
 export * as Toast from './toast.js'
 export * as ToggleGroup from './toggle-group.js'
 export * as Toggle from './toggle.js'
+export * as Toolbar from './toolbar.js'
 export * as Tooltip from './tooltip.js'
 export * as Typography from './typography.js'
 
@@ -103,6 +107,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'field',
   'form',
   'hover-card',
+  'info-tip',
   'input-group',
   'input-otp',
   'input',
@@ -121,6 +126,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'radio-group',
   'resizable',
   'scroll-area',
+  'segmented-control',
   'select',
   'separator',
   'sheet',
@@ -130,6 +136,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'sonner',
   'spinner',
   'status-dot',
+  'stepper',
   'switch',
   'table',
   'tabs',
@@ -137,6 +144,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'toast',
   'toggle-group',
   'toggle',
+  'toolbar',
   'tooltip',
   'typography',
 ] as const

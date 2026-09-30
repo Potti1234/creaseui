@@ -29,6 +29,7 @@ import { emptyPage } from '@/docs/components/pages/empty';
 import { fieldPage } from '@/docs/components/pages/field';
 import { formPage } from '@/docs/components/pages/form';
 import { hoverCardPage } from '@/docs/components/pages/hover-card';
+import { infoTipPage } from '@/docs/components/pages/info-tip';
 import { itemPage } from '@/docs/components/pages/item';
 import { inputPage } from '@/docs/components/pages/input';
 import { inputGroupPage } from '@/docs/components/pages/input-group';
@@ -47,6 +48,7 @@ import { progressPage } from '@/docs/components/pages/progress';
 import { radioGroupPage } from '@/docs/components/pages/radio-group';
 import { resizablePage } from '@/docs/components/pages/resizable';
 import { scrollAreaPage } from '@/docs/components/pages/scroll-area';
+import { segmentedControlPage } from '@/docs/components/pages/segmented-control';
 import { separatorPage } from '@/docs/components/pages/separator';
 import { selectPage } from '@/docs/components/pages/select';
 import { sheetPage } from '@/docs/components/pages/sheet';
@@ -56,6 +58,7 @@ import { sliderPage } from '@/docs/components/pages/slider';
 import { spinnerPage } from '@/docs/components/pages/spinner';
 import { sonnerPage } from '@/docs/components/pages/sonner';
 import { statusDotPage } from '@/docs/components/pages/status-dot';
+import { stepperPage } from '@/docs/components/pages/stepper';
 import { switchPage } from '@/docs/components/pages/switch';
 import { tabsPage } from '@/docs/components/pages/tabs';
 import { tablePage } from '@/docs/components/pages/table';
@@ -63,6 +66,7 @@ import { textareaPage } from '@/docs/components/pages/textarea';
 import { togglePage } from '@/docs/components/pages/toggle';
 import { toastPage } from '@/docs/components/pages/toast';
 import { toggleGroupPage } from '@/docs/components/pages/toggle-group';
+import { toolbarPage } from '@/docs/components/pages/toolbar';
 import { tooltipPage } from '@/docs/components/pages/tooltip';
 import { typographyPage } from '@/docs/components/pages/typography';
 
@@ -100,6 +104,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       formPage,
       hoverCardPage,
       itemPage,
+      infoTipPage,
       inputPage,
       inputGroupPage,
       inputOtpPage,
@@ -117,6 +122,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       radioGroupPage,
       resizablePage,
       scrollAreaPage,
+      segmentedControlPage,
       separatorPage,
       selectPage,
       sheetPage,
@@ -126,6 +132,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       spinnerPage,
       sonnerPage,
       statusDotPage,
+      stepperPage,
       switchPage,
       tabsPage,
       tablePage,
@@ -133,6 +140,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       togglePage,
       toastPage,
       toggleGroupPage,
+      toolbarPage,
       tooltipPage,
       typographyPage,
     ].map((page) => [page.slug, page]),

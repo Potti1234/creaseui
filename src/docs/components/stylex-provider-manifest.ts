@@ -65,6 +65,10 @@ import { sidebarStyleXPreview } from '@/docs/components/pages/sidebar/stylex';
 import { sonnerStyleXPreview } from '@/docs/components/pages/sonner/stylex';
 import { statusDotStyleXPreview } from '@/docs/components/pages/status-dot/stylex';
 import { toastStyleXPreview } from '@/docs/components/pages/toast/stylex';
+import { infoTipStyleXPreview } from '@/docs/components/pages/info-tip/stylex';
+import { segmentedControlStyleXPreview } from '@/docs/components/pages/segmented-control/stylex';
+import { stepperStyleXPreview } from '@/docs/components/pages/stepper/stylex';
+import { toolbarStyleXPreview } from '@/docs/components/pages/toolbar/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview);
@@ -132,3 +136,7 @@ installStyleXExamplePreviewProvider('sidebar', sidebarStyleXPreview);
 installStyleXExamplePreviewProvider('sonner', sonnerStyleXPreview);
 installStyleXExamplePreviewProvider('status-dot', statusDotStyleXPreview);
 installStyleXExamplePreviewProvider('toast', toastStyleXPreview);
+installStyleXExamplePreviewProvider('info-tip', infoTipStyleXPreview);
+installStyleXExamplePreviewProvider('segmented-control', segmentedControlStyleXPreview);
+installStyleXExamplePreviewProvider('stepper', stepperStyleXPreview);
+installStyleXExamplePreviewProvider('toolbar', toolbarStyleXPreview);
