@@ -14,22 +14,22 @@ import * as Tour from '@/stylex/tour';
 
 const styles = stylex.create({
   main: {
+    padding: '2rem',
     alignItems: 'center',
     display: 'flex',
     justifyContent: 'center',
     minHeight: '100vh',
-    padding: '2rem',
   },
   card: {
+    padding: '1.5rem',
     borderColor: 'var(--border)',
     borderRadius: '0.5rem',
     borderStyle: 'solid',
     borderWidth: '1px',
+    gap: '1rem',
     display: 'flex',
     flexDirection: 'column',
-    gap: '1rem',
     maxWidth: '28rem',
-    padding: '1.5rem',
     width: '100%',
   },
   heading: { fontSize: '1.125rem', fontWeight: 600 },
@@ -38,7 +38,7 @@ const styles = stylex.create({
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
   },
-  actions: { display: 'flex', flexWrap: 'wrap', gap: '0.5rem' },
+  actions: { gap: '0.5rem', display: 'flex', flexWrap: 'wrap', },
 });
 
 type PreviewModel = Readonly<{

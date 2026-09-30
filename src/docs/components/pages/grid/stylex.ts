@@ -22,24 +22,24 @@ const styles = stylex.create({
   body: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },
   tallCard: { height: '5rem' },
   featuredCard: {
-    backgroundColor:
-      'light-dark(oklch(0.984 0.019 200.873), oklch(0.302 0.056 225.514))',
+    padding: '1rem',
     borderColor:
       'light-dark(oklch(0.917 0.08 205.041), oklch(0.45 0.085 224.283))',
     borderRadius: '0.75rem',
     borderStyle: 'solid',
     borderWidth: 1,
-    padding: '1rem',
+    backgroundColor:
+      'light-dark(oklch(0.984 0.019 200.873), oklch(0.302 0.056 225.514))',
   },
   shell: {
-    backgroundColor: 'var(--muted)',
     borderRadius: '0.75rem',
+    overflow: 'hidden',
+    backgroundColor: 'var(--muted)',
     height: '25rem',
     maxWidth: '31.25rem',
-    overflow: 'hidden',
     width: '100%',
   },
-  gridPanel: { height: '100%', overflow: 'auto', padding: '1rem' },
+  gridPanel: { padding: '1rem', overflow: 'auto', height: '100%', },
   filler: { height: '100%' },
   group: { height: '100%', width: '100%' },
 });

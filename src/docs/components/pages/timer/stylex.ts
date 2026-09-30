@@ -10,11 +10,11 @@ import { className } from '@/stylex/style';
 import * as Timer from '@/stylex/timer';
 
 const styles = stylex.create({
-  page: { display: 'flex', flexDirection: 'column', gap: '1rem' },
-  pageTight: { display: 'flex', flexDirection: 'column', gap: '0.75rem' },
-  row: { alignItems: 'center', display: 'flex', gap: '1.5rem' },
-  labelRow: { alignItems: 'center', display: 'flex', gap: '0.75rem' },
-  column: { display: 'flex', flexDirection: 'column', gap: '0.25rem' },
+  page: { gap: '1rem', display: 'flex', flexDirection: 'column', },
+  pageTight: { gap: '0.75rem', display: 'flex', flexDirection: 'column', },
+  row: { gap: '1.5rem', alignItems: 'center', display: 'flex', },
+  labelRow: { gap: '0.75rem', alignItems: 'center', display: 'flex', },
+  column: { gap: '0.25rem', display: 'flex', flexDirection: 'column', },
   supporting: {
     color: 'var(--muted-foreground)',
     fontSize: '0.75rem',

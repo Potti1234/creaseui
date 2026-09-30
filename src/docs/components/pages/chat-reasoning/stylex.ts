@@ -12,9 +12,9 @@ import { className } from '@/stylex/style';
 
 const styles = stylex.create({
   page: {
+    gap: '0.5rem',
     display: 'flex',
     flexDirection: 'column',
-    gap: '0.5rem',
     maxWidth: '36rem',
     width: '100%',
   },

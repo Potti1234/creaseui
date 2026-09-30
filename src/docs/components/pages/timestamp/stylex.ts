@@ -11,10 +11,10 @@ import { className } from '@/stylex/style';
 import * as Timestamp from '@/stylex/timestamp';
 
 const styles = stylex.create({
-  page: { display: 'flex', flexDirection: 'column', gap: '1rem' },
-  section: { display: 'flex', flexDirection: 'column', gap: '0.25rem' },
-  row: { alignItems: 'center', display: 'flex', gap: '1rem' },
-  column: { display: 'flex', flexDirection: 'column', gap: '0.5rem' },
+  page: { gap: '1rem', display: 'flex', flexDirection: 'column', },
+  section: { gap: '0.25rem', display: 'flex', flexDirection: 'column', },
+  row: { gap: '1rem', alignItems: 'center', display: 'flex', },
+  column: { gap: '0.5rem', display: 'flex', flexDirection: 'column', },
   supporting: {
     color: 'var(--muted-foreground)',
     fontSize: '0.75rem',

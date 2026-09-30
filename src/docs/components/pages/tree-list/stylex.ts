@@ -12,8 +12,8 @@ import { className } from '@/stylex/style';
 import * as TreeList from '@/stylex/tree-list';
 
 const styles = stylex.create({
-  wrap: { display: 'flex', alignItems: 'flex-start', gap: '1.5rem' },
-  column: { display: 'flex', flexDirection: 'column', gap: '0.5rem' },
+  wrap: { gap: '1.5rem', alignItems: 'flex-start', display: 'flex', },
+  column: { gap: '0.5rem', display: 'flex', flexDirection: 'column', },
   caption: {
     color: 'var(--muted-foreground)',
     fontSize: '0.75rem',

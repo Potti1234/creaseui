@@ -16,15 +16,15 @@ import { className } from '@/stylex/style';
 
 const styles = stylex.create({
   main: {
+    padding: '2rem',
     alignItems: 'center',
     display: 'flex',
     justifyContent: 'center',
     minHeight: '100vh',
-    padding: '2rem',
   },
-  headerRow: { alignItems: 'center', display: 'flex', gap: '0.75rem' },
+  headerRow: { gap: '0.75rem', alignItems: 'center', display: 'flex', },
   pageTitle: { fontSize: '1rem', fontWeight: 700 },
-  navContent: { display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.5rem' },
+  navContent: { padding: '0.5rem', gap: '0.5rem', display: 'flex', flexDirection: 'column', },
   navIcon: { height: '1rem', width: '1rem' },
   toggleIcon: { height: '1.25rem', width: '1.25rem' },
 });

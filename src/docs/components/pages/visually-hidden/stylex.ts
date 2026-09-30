@@ -32,9 +32,9 @@ const styles = stylex.create({
     width: '1rem',
   },
   mutedCard: {
-    backgroundColor: 'var(--muted)',
-    borderRadius: '0.75rem',
     padding: '1rem',
+    borderRadius: '0.75rem',
+    backgroundColor: 'var(--muted)',
   },
 });
 

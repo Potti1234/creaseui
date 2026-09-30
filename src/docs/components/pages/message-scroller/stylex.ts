@@ -19,7 +19,7 @@ const styles = stylex.create({
     maxWidth: '28rem',
     width: '100%',
   },
-  toolbar: { display: 'flex', flexWrap: 'wrap', gap: '0.5rem' },
+  toolbar: { gap: '0.5rem', display: 'flex', flexWrap: 'wrap', },
   frame: {
     borderColor: tokens.border,
     borderRadius: '0.375rem',

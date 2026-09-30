@@ -14,22 +14,22 @@ import { className } from '@/stylex/style';
 
 const styles = stylex.create({
   thumb: {
-    borderRadius: '0.375rem',
-    cursor: 'pointer',
-    overflow: 'hidden',
     padding: 0,
+    borderRadius: '0.375rem',
+    overflow: 'hidden',
+    cursor: 'pointer',
   },
   thumbGrid: {
-    display: 'grid',
     gap: '0.5rem',
+    display: 'grid',
     gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
     width: '8.5rem',
   },
   thumbImg: {
     aspectRatio: '1 / 1',
     display: 'block',
-    height: '100%',
     objectFit: 'cover',
+    height: '100%',
     width: '100%',
   },
 });
