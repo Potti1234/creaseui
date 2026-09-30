@@ -35,7 +35,10 @@ export * as Combobox from './combobox.js'
 export * as Command from './command.js'
 export * as ContextMenu from './context-menu.js'
 export * as DataTable from './data-table.js'
+export * as DateInput from './date-input.js'
 export * as DatePicker from './date-picker.js'
+export * as DateRangeInput from './date-range-input.js'
+export * as DateTimeInput from './date-time-input.js'
 export * as Dialog from './dialog.js'
 export * as Direction from './direction.js'
 export * as Drawer from './drawer.js'
@@ -65,6 +68,7 @@ export * as MessageScroller from './message-scroller.js'
 export * as Message from './message.js'
 export * as MetadataList from './metadata-list.js'
 export * as MoreMenu from './more-menu.js'
+export * as MultiSelector from './multi-selector.js'
 export * as NativeSelect from './native-select.js'
 export * as NavigationMenu from './navigation-menu.js'
 export * as NumberInput from './number-input.js'
@@ -99,6 +103,7 @@ export * as Toast from './toast.js'
 export * as ToggleGroup from './toggle-group.js'
 export * as Toggle from './toggle.js'
 export * as Token from './token.js'
+export * as Tokenizer from './tokenizer.js'
 export * as Tooltip from './tooltip.js'
 export * as Typography from './typography.js'
 export * as VisuallyHidden from './visually-hidden.js'
@@ -136,7 +141,10 @@ export const STYLEX_COMPONENT_NAMES = [
   'command',
   'context-menu',
   'data-table',
+  'date-input',
   'date-picker',
+  'date-range-input',
+  'date-time-input',
   'dialog',
   'direction',
   'drawer',
@@ -166,6 +174,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'message',
   'metadata-list',
   'more-menu',
+  'multi-selector',
   'native-select',
   'navigation-menu',
   'number-input',
@@ -200,6 +209,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'toggle-group',
   'toggle',
   'token',
+  'tokenizer',
   'tooltip',
   'typography',
   'visually-hidden',

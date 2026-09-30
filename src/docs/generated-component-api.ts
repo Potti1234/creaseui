@@ -1523,6 +1523,78 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "dataTable<Row, Msg>(props: DataTableProps<Row, Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "date-input": [
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from "
+    },
+    {
+      "name": "inputId",
+      "kind": "re-export",
+      "signature": "export { inputId } from "
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from "
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from "
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from "
+    },
+    {
+      "name": "reflect",
+      "kind": "re-export",
+      "signature": "export { reflect } from "
+    },
+    {
+      "name": "reflectConstraints",
+      "kind": "re-export",
+      "signature": "export { reflectConstraints } from "
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from "
+    },
+    {
+      "name": "dateFromISO",
+      "kind": "re-export",
+      "signature": "export { dateFromISO } from '@/lib/date-parse'"
+    },
+    {
+      "name": "dateToISO",
+      "kind": "re-export",
+      "signature": "export { dateToISO } from '@/lib/date-parse'"
+    },
+    {
+      "name": "SharedDateFormat",
+      "kind": "re-export",
+      "signature": "export { SharedDateFormat } from "
+    },
+    {
+      "name": "DateInputStatus",
+      "kind": "type",
+      "signature": "DateInputStatus = Readonly<{ type: 'error' | 'warning' | 'success' message?: string }>"
+    },
+    {
+      "name": "DateInputProps",
+      "kind": "type",
+      "signature": "DateInputProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label?: string isLabelHidden?: boolean description?: string placeholder?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a f…"
+    },
+    {
+      "name": "dateInput",
+      "kind": "function",
+      "signature": "dateInput<Msg>(props: DateInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "date-picker": [
     {
       "name": "Model",
@@ -1628,6 +1700,175 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "datePicker",
       "kind": "function",
       "signature": "datePicker<Msg>(props: DatePickerProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "date-range-input": [
+    {
+      "name": "formatRangeDisplay",
+      "kind": "re-export",
+      "signature": "export { formatRangeDisplay } from "
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from "
+    },
+    {
+      "name": "isPresetSelectable",
+      "kind": "re-export",
+      "signature": "export { isPresetSelectable } from "
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from "
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from "
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from "
+    },
+    {
+      "name": "reflect",
+      "kind": "re-export",
+      "signature": "export { reflect } from "
+    },
+    {
+      "name": "reflectConstraints",
+      "kind": "re-export",
+      "signature": "export { reflectConstraints } from "
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from "
+    },
+    {
+      "name": "Range",
+      "kind": "re-export",
+      "signature": "export { Range } from "
+    },
+    {
+      "name": "dateFromISO",
+      "kind": "re-export",
+      "signature": "export { dateFromISO } from '@/lib/date-parse'"
+    },
+    {
+      "name": "dateToISO",
+      "kind": "re-export",
+      "signature": "export { dateToISO } from '@/lib/date-parse'"
+    },
+    {
+      "name": "DateRangePreset",
+      "kind": "type",
+      "signature": "DateRangePreset = Readonly<{ label: string getRange: () => Range }>"
+    },
+    {
+      "name": "DateRangeInputStatus",
+      "kind": "type",
+      "signature": "DateRangeInputStatus = Readonly<{ type: 'error' | 'warning' | 'success' message?: string }>"
+    },
+    {
+      "name": "DateRangeInputProps",
+      "kind": "type",
+      "signature": "DateRangeInputProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a focus ring tooltip…"
+    },
+    {
+      "name": "dateRangeInput",
+      "kind": "function",
+      "signature": "dateRangeInput<Msg>(props: DateRangeInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "date-time-input": [
+    {
+      "name": "DateTime",
+      "kind": "re-export",
+      "signature": "export { type DateTime } from "
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from "
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from "
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from "
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from "
+    },
+    {
+      "name": "reflect",
+      "kind": "re-export",
+      "signature": "export { reflect } from "
+    },
+    {
+      "name": "reflectConstraints",
+      "kind": "re-export",
+      "signature": "export { reflectConstraints } from "
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from "
+    },
+    {
+      "name": "dateFromISO",
+      "kind": "re-export",
+      "signature": "export { dateFromISO } from '@/lib/date-parse'"
+    },
+    {
+      "name": "dateToISO",
+      "kind": "re-export",
+      "signature": "export { dateToISO } from '@/lib/date-parse'"
+    },
+    {
+      "name": "formatDisplayTime12h",
+      "kind": "re-export",
+      "signature": "export { formatDisplayTime12h } from '@/lib/time-parse'"
+    },
+    {
+      "name": "formatDisplayTime24h",
+      "kind": "re-export",
+      "signature": "export { formatDisplayTime24h } from '@/lib/time-parse'"
+    },
+    {
+      "name": "formatISOTime",
+      "kind": "re-export",
+      "signature": "export { formatISOTime } from '@/lib/time-parse'"
+    },
+    {
+      "name": "SharedDateFormat",
+      "kind": "re-export",
+      "signature": "export { SharedDateFormat } from "
+    },
+    {
+      "name": "DateTimeInputStatus",
+      "kind": "type",
+      "signature": "DateTimeInputStatus = Readonly<{ type: 'error' | 'warning' | 'success' message?: string }>"
+    },
+    {
+      "name": "DateTimeInputProps",
+      "kind": "type",
+      "signature": "DateTimeInputProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a focus ring tooltip;…"
+    },
+    {
+      "name": "dateTimeInput",
+      "kind": "function",
+      "signature": "dateTimeInput<Msg>(props: DateTimeInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "dialog": [
@@ -3271,6 +3512,73 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "moreMenu",
       "kind": "function",
       "signature": "moreMenu<Msg>(props: MoreMenuProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "multi-selector": [
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from "
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from "
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from "
+    },
+    {
+      "name": "SELECT_ALL_VALUE",
+      "kind": "re-export",
+      "signature": "export { SELECT_ALL_VALUE } from "
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from "
+    },
+    {
+      "name": "reflect",
+      "kind": "re-export",
+      "signature": "export { reflect } from "
+    },
+    {
+      "name": "reflectOptions",
+      "kind": "re-export",
+      "signature": "export { reflectOptions } from "
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from "
+    },
+    {
+      "name": "MultiSelectorOption",
+      "kind": "type",
+      "signature": "MultiSelectorOption = Readonly<{ value: string label: string }>"
+    },
+    {
+      "name": "MultiSelectorSection",
+      "kind": "type",
+      "signature": "MultiSelectorSection = Readonly<{ title: string options: ReadonlyArray<MultiSelectorOption> }>"
+    },
+    {
+      "name": "MultiSelectorStatus",
+      "kind": "type",
+      "signature": "MultiSelectorStatus = Readonly<{ type: 'error' | 'warning' | 'success' message?: string }>"
+    },
+    {
+      "name": "MultiSelectorProps",
+      "kind": "type",
+      "signature": "MultiSelectorProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a tooltip on the disa…"
+    },
+    {
+      "name": "multiSelector",
+      "kind": "function",
+      "signature": "multiSelector<Msg>(props: MultiSelectorProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "native-select": [
@@ -4929,6 +5237,68 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "token",
       "kind": "function",
       "signature": "token<Msg>(props: TokenProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "tokenizer": [
+    {
+      "name": "CREATE_ID_PREFIX",
+      "kind": "re-export",
+      "signature": "export { CREATE_ID_PREFIX } from "
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from "
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from "
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from "
+    },
+    {
+      "name": "Token",
+      "kind": "re-export",
+      "signature": "export { type Token } from "
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from "
+    },
+    {
+      "name": "reflect",
+      "kind": "re-export",
+      "signature": "export { reflect } from "
+    },
+    {
+      "name": "reflectItems",
+      "kind": "re-export",
+      "signature": "export { reflectItems } from "
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from "
+    },
+    {
+      "name": "TokenizerStatus",
+      "kind": "type",
+      "signature": "TokenizerStatus = Readonly<{ type: 'error' | 'warning' | 'success' message?: string }>"
+    },
+    {
+      "name": "TokenizerProps",
+      "kind": "type",
+      "signature": "TokenizerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean isReadOnly?: boolean status?: TokenizerStatus st…"
+    },
+    {
+      "name": "tokenizer",
+      "kind": "function",
+      "signature": "tokenizer<Msg>(props: TokenizerProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "tooltip": [

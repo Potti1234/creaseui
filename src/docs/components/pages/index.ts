@@ -29,7 +29,10 @@ import { collapsiblePage } from '@/docs/components/pages/collapsible';
 import { comboboxPage } from '@/docs/components/pages/combobox';
 import { commandPage } from '@/docs/components/pages/command';
 import { contextMenuPage } from '@/docs/components/pages/context-menu';
+import { dateInputPage } from '@/docs/components/pages/date-input';
 import { datePickerPage } from '@/docs/components/pages/date-picker';
+import { dateRangeInputPage } from '@/docs/components/pages/date-range-input';
+import { dateTimeInputPage } from '@/docs/components/pages/date-time-input';
 import { dataTablePage } from '@/docs/components/pages/data-table';
 import { directionPage } from '@/docs/components/pages/direction';
 import { dialogPage } from '@/docs/components/pages/dialog';
@@ -60,6 +63,7 @@ import { messageScrollerPage } from '@/docs/components/pages/message-scroller';
 import { menubarPage } from '@/docs/components/pages/menubar';
 import { metadataListPage } from '@/docs/components/pages/metadata-list';
 import { moreMenuPage } from '@/docs/components/pages/more-menu';
+import { multiSelectorPage } from '@/docs/components/pages/multi-selector';
 import { nativeSelectPage } from '@/docs/components/pages/native-select';
 import { navigationMenuPage } from '@/docs/components/pages/navigation-menu';
 import { numberInputPage } from '@/docs/components/pages/number-input';
@@ -93,6 +97,7 @@ import { timeInputPage } from '@/docs/components/pages/time-input';
 import { toastPage } from '@/docs/components/pages/toast';
 import { togglePage } from '@/docs/components/pages/toggle';
 import { toggleGroupPage } from '@/docs/components/pages/toggle-group';
+import { tokenizerPage } from '@/docs/components/pages/tokenizer';
 import { tokenPage } from '@/docs/components/pages/token';
 import { tooltipPage } from '@/docs/components/pages/tooltip';
 import { typographyPage } from '@/docs/components/pages/typography';
@@ -131,7 +136,10 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       comboboxPage,
       commandPage,
       contextMenuPage,
+      dateInputPage,
       datePickerPage,
+      dateRangeInputPage,
+      dateTimeInputPage,
       dataTablePage,
       directionPage,
       dialogPage,
@@ -162,6 +170,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       menubarPage,
       metadataListPage,
       moreMenuPage,
+      multiSelectorPage,
       nativeSelectPage,
       navigationMenuPage,
       numberInputPage,
@@ -196,6 +205,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       toastPage,
       toggleGroupPage,
       tokenPage,
+      tokenizerPage,
       tooltipPage,
       typographyPage,
       visuallyHiddenPage,
