@@ -98,7 +98,6 @@ import { statStyleXPreview } from '@/docs/components/pages/stat/stylex';
 import { statusDotStyleXPreview } from '@/docs/components/pages/status-dot/stylex';
 import { thumbnailStyleXPreview } from '@/docs/components/pages/thumbnail/stylex';
 import { toastStyleXPreview } from '@/docs/components/pages/toast/stylex';
-<<<<<<< HEAD
 import { bannerStyleXPreview } from '@/docs/components/pages/banner/stylex';
 import { clickableCardStyleXPreview } from '@/docs/components/pages/clickable-card/stylex';
 import { fieldStatusStyleXPreview } from '@/docs/components/pages/field-status/stylex';
@@ -204,7 +203,6 @@ installStyleXExamplePreviewProvider('stat', statStyleXPreview);
 installStyleXExamplePreviewProvider('status-dot', statusDotStyleXPreview);
 installStyleXExamplePreviewProvider('thumbnail', thumbnailStyleXPreview);
 installStyleXExamplePreviewProvider('toast', toastStyleXPreview);
-<<<<<<< HEAD
 installStyleXExamplePreviewProvider('banner', bannerStyleXPreview);
 installStyleXExamplePreviewProvider('bottom-sheet', bottomSheetStyleXPreview);
 installStyleXExamplePreviewProvider('checkbox-list', checkboxListStyleXPreview);

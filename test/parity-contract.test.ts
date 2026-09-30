@@ -67,7 +67,6 @@ describe('multidimensional component parity', () => {
       'data-table',
       'date-input',
       'date-picker',
-<<<<<<< HEAD
       'date-range-input',
       'date-time-input',
       'field-status',
