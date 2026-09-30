@@ -10,6 +10,7 @@ export type TourFixture = Readonly<{
   kind: TourKind;
   hasBackdrop: boolean;
   isStepCountShown: boolean;
+  heroOnly?: boolean;
   targets: ReadonlyArray<string>;
   steps: ReadonlyArray<Readonly<{
     id: string;
@@ -32,6 +33,12 @@ export const tourFixtures: ReadonlyArray<TourFixture> = [
     kind: 'showcase',
     hasBackdrop: true,
     isStepCountShown: true,
+    /* heroOnly: the tour looks targets up by DOM id, so a hero/named twin
+       would share 'target-create' etc. — the hero copy's rewritten -hero ids
+       would never be found and the named copy would anchor to the hero's
+       buttons. Rendering the showcase only as the hero keeps every target id
+       unique on the page. */
+    heroOnly: true,
     targets: ['target-create', 'target-invite', 'target-reports'],
     steps: [
       {
@@ -213,6 +220,7 @@ export const tourExamples = (
 ): ReadonlyArray<DocsExample> => tourFixtures.map(fixture => ({
   title: fixture.title,
   ...(fixture.description === undefined ? {} : { description: fixture.description }),
+  ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
   code: source(fixture, renderer),
 }));
 

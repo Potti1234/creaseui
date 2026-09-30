@@ -386,6 +386,7 @@ export const dateRangeInput = <Msg>(
     view: PopoverPrimitive.view,
     viewInputs: {
       anchor: themedAnchor({ placement: "bottom-start", gap: 4 }),
+      focusSelector: '[role="grid"]',
       isDisabled: isEffectivelyDisabled,
       ariaLabelledBy: labelId,
       toView: ({ button, panel, backdrop, isVisible }) =>

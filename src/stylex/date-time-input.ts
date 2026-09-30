@@ -668,6 +668,7 @@ export const dateTimeInput = <Msg>(
     view: PopoverPrimitive.view,
     viewInputs: {
       anchor: themedAnchor({ placement: "bottom-start", gap: 4 }),
+      focusSelector: '[role="listbox"]',
       isDisabled: isEffectivelyDisabled,
       ariaLabel: resolvedTimeLabel,
       toView: ({ panel, backdrop, isVisible }) =>

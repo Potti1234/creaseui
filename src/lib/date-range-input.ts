@@ -180,25 +180,43 @@ const applyPendingWindow = (
           ),
       ),
     onSome: (start) => {
-      const spanDays = Option.match(model.maxRangeSpan, {
-        onNone: () => 0,
-        onSome: (span) => span - 1,
+      /* astryx only clamps the window when maxRangeSpan is set: reachable days
+         sit within span-1 of the anchor in either direction. With no cap,
+         only the base min/max bounds apply — every other day stays pickable. */
+      const effectiveMin = Option.match(model.maxRangeSpan, {
+        onNone: () => model.baseMinDate,
+        onSome: (span) => {
+          const windowMin = Calendar.subtractDays(start, span - 1)
+          return Option.match(model.baseMinDate, {
+            onNone: () => Option.some(windowMin),
+            onSome: (base) =>
+              Option.some(
+                ordinal(windowMin) > ordinal(base) ? windowMin : base,
+              ),
+          })
+        },
       })
-      const windowMin = Calendar.subtractDays(start, spanDays)
-      const windowMax = Calendar.addDays(start, spanDays)
-      const effectiveMin = Option.match(model.baseMinDate, {
-        onNone: () => Option.some(windowMin),
-        onSome: (base) =>
-          Option.some(ordinal(windowMin) > ordinal(base) ? windowMin : base),
+      const effectiveMax = Option.match(model.maxRangeSpan, {
+        onNone: () => model.baseMaxDate,
+        onSome: (span) => {
+          const windowMax = Calendar.addDays(start, span - 1)
+          return Option.match(model.baseMaxDate, {
+            onNone: () => Option.some(windowMax),
+            onSome: (base) =>
+              Option.some(
+                ordinal(windowMax) < ordinal(base) ? windowMax : base,
+              ),
+          })
+        },
       })
-      const effectiveMax = Option.match(model.baseMaxDate, {
-        onNone: () => Option.some(windowMax),
-        onSome: (base) =>
-          Option.some(ordinal(windowMax) < ordinal(base) ? windowMax : base),
-      })
+      /* astryx disables days at distance 1..minRangeSpan-2 from the anchor on
+         BOTH sides (absolute distance); the anchor itself stays selectable. */
       const interior: Calendar.CalendarDate[] = []
-      for (let i = 1; i < model.minRangeSpan; i += 1) {
-        interior.push(Calendar.addDays(start, i))
+      for (let i = 1; i < model.minRangeSpan - 1; i += 1) {
+        interior.push(
+          Calendar.addDays(start, i),
+          Calendar.subtractDays(start, i),
+        )
       }
       return pipe(
         model.calendar,
