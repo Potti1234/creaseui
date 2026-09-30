@@ -63,6 +63,7 @@
 - Heading: /docs/components/heading — install with `npx shadcn@latest add Potti1234/creaseui/heading`
 - Hover Card: /docs/components/hover-card — install with `npx shadcn@latest add Potti1234/creaseui/hover-card`
 - Indicator: /docs/components/indicator — install with `npx shadcn@latest add Potti1234/creaseui/indicator`
+- Info Tip: /docs/components/info-tip — install with `npx shadcn@latest add Potti1234/creaseui/info-tip`
 - Input Group: /docs/components/input-group — install with `npx shadcn@latest add Potti1234/creaseui/input-group`
 - Input Otp: /docs/components/input-otp — install with `npx shadcn@latest add Potti1234/creaseui/input-otp`
 - Input: /docs/components/input — install with `npx shadcn@latest add Potti1234/creaseui/input`
@@ -91,6 +92,7 @@
 - Resizable: /docs/components/resizable — install with `npx shadcn@latest add Potti1234/creaseui/resizable`
 - Scroll Area: /docs/components/scroll-area — install with `npx shadcn@latest add Potti1234/creaseui/scroll-area`
 - Section: /docs/components/section — install with `npx shadcn@latest add Potti1234/creaseui/section`
+- Segmented Control: /docs/components/segmented-control — install with `npx shadcn@latest add Potti1234/creaseui/segmented-control`
 - Select: /docs/components/select — install with `npx shadcn@latest add Potti1234/creaseui/select`
 - Selectable Card: /docs/components/selectable-card — install with `npx shadcn@latest add Potti1234/creaseui/selectable-card`
 - Separator: /docs/components/separator — install with `npx shadcn@latest add Potti1234/creaseui/separator`
@@ -103,6 +105,7 @@
 - Stack: /docs/components/stack — install with `npx shadcn@latest add Potti1234/creaseui/stack`
 - Stat: /docs/components/stat — install with `npx shadcn@latest add Potti1234/creaseui/stat`
 - Status Dot: /docs/components/status-dot — install with `npx shadcn@latest add Potti1234/creaseui/status-dot`
+- Stepper: /docs/components/stepper — install with `npx shadcn@latest add Potti1234/creaseui/stepper`
 - Switch: /docs/components/switch — install with `npx shadcn@latest add Potti1234/creaseui/switch`
 - Table: /docs/components/table — install with `npx shadcn@latest add Potti1234/creaseui/table`
 - Tabs: /docs/components/tabs — install with `npx shadcn@latest add Potti1234/creaseui/tabs`
@@ -115,6 +118,7 @@
 - Toggle: /docs/components/toggle — install with `npx shadcn@latest add Potti1234/creaseui/toggle`
 - Token: /docs/components/token — install with `npx shadcn@latest add Potti1234/creaseui/token`
 - Tokenizer: /docs/components/tokenizer — install with `npx shadcn@latest add Potti1234/creaseui/tokenizer`
+- Toolbar: /docs/components/toolbar — install with `npx shadcn@latest add Potti1234/creaseui/toolbar`
 - Tooltip: /docs/components/tooltip — install with `npx shadcn@latest add Potti1234/creaseui/tooltip`
 - Typography: /docs/components/typography — install with `npx shadcn@latest add Potti1234/creaseui/typography`
 - Visually Hidden: /docs/components/visually-hidden — install with `npx shadcn@latest add Potti1234/creaseui/visually-hidden`

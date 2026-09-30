@@ -4,7 +4,7 @@
     "src/ui/registry.json",
     "src/ui/*.ts"
   ],
-  "componentCount": 103,
+  "componentCount": 107,
   "components": [
     {
       "slug": "accordion",
@@ -3802,6 +3802,92 @@
       ]
     },
     {
+      "slug": "info-tip",
+      "title": "Info Tip",
+      "description": "A shadcn-styled Info Tip component for Foldkit.",
+      "docs": "/docs/components/info-tip",
+      "source": "src/ui/info-tip.ts",
+      "install": "npx shadcn@latest add Potti1234/creaseui/info-tip",
+      "dependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "Basic",
+        "Sizes",
+        "Custom Label",
+        "Field Help"
+      ],
+      "api": [
+        {
+          "name": "Model",
+          "kind": "value",
+          "signature": "Model: value"
+        },
+        {
+          "name": "Model",
+          "kind": "type",
+          "signature": "Model = typeof Model.Type"
+        },
+        {
+          "name": "Message",
+          "kind": "value",
+          "signature": "Message: value"
+        },
+        {
+          "name": "Message",
+          "kind": "type",
+          "signature": "Message = typeof Message.Type"
+        },
+        {
+          "name": "OutMessage",
+          "kind": "value",
+          "signature": "OutMessage: value"
+        },
+        {
+          "name": "OutMessage",
+          "kind": "type",
+          "signature": "OutMessage = typeof OutMessage.Type"
+        },
+        {
+          "name": "init",
+          "kind": "value",
+          "signature": "init: value"
+        },
+        {
+          "name": "update",
+          "kind": "value",
+          "signature": "update: value"
+        },
+        {
+          "name": "InfoTipSize",
+          "kind": "type",
+          "signature": "InfoTipSize = 'xsm' | 'sm' | 'md' | 'lg'"
+        },
+        {
+          "name": "InfoTipSide",
+          "kind": "type",
+          "signature": "InfoTipSide = 'top' | 'right' | 'bottom' | 'left'"
+        },
+        {
+          "name": "InfoTipAlign",
+          "kind": "type",
+          "signature": "InfoTipAlign = 'start' | 'center' | 'end'"
+        },
+        {
+          "name": "InfoTipProps",
+          "kind": "type",
+          "signature": "InfoTipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Content shown in the tooltip. Keep it short and non-interactive. */ content: Html | string; /** Accessible name for the trigger button. Defaults to 'More information'…"
+        },
+        {
+          "name": "infoTip",
+          "kind": "function",
+          "signature": "infoTip<Msg>(props: InfoTipProps<Msg>, h: HtmlBuilder<Msg>): Html"
+        }
+      ]
+    },
+    {
       "slug": "input-group",
       "title": "Input Group",
       "description": "A shadcn-styled Input Group component for Foldkit.",
@@ -5767,6 +5853,87 @@
       ]
     },
     {
+      "slug": "segmented-control",
+      "title": "Segmented Control",
+      "description": "A shadcn-styled Segmented Control component for Foldkit.",
+      "docs": "/docs/components/segmented-control",
+      "source": "src/ui/segmented-control.ts",
+      "install": "npx shadcn@latest add Potti1234/creaseui/segmented-control",
+      "dependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "Segmented Control",
+        "With Icons",
+        "Icon Only",
+        "Fill Layout",
+        "Disabled Item"
+      ],
+      "api": [
+        {
+          "name": "Message",
+          "kind": "re-export",
+          "signature": "export { Message } from "
+        },
+        {
+          "name": "Model",
+          "kind": "re-export",
+          "signature": "export { Model } from "
+        },
+        {
+          "name": "init",
+          "kind": "re-export",
+          "signature": "export { init } from "
+        },
+        {
+          "name": "OutMessage",
+          "kind": "re-export",
+          "signature": "export { OutMessage } from "
+        },
+        {
+          "name": "SegmentedControlSize",
+          "kind": "type",
+          "signature": "SegmentedControlSize = 'sm' | 'md' | 'lg'"
+        },
+        {
+          "name": "SegmentedControlLayout",
+          "kind": "type",
+          "signature": "SegmentedControlLayout = 'hug' | 'fill'"
+        },
+        {
+          "name": "SegmentedControlItem",
+          "kind": "type",
+          "signature": "SegmentedControlItem<Value extends string = string> = Readonly<{ value: Value /** Visible label; also the accessible name when `isLabelHidden` is set. */ label: string /** Icon element displayed before the label. */ icon?: Html isLabelHidden?: boolean isDisab…"
+        },
+        {
+          "name": "SegmentedControlProps",
+          "kind": "type",
+          "signature": "SegmentedControlProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg /** The currently selected value (controlled). */ value: Value /** Accessible label for the radio group (used as aria-label, never rendered v…"
+        },
+        {
+          "name": "SegmentedControlBundle",
+          "kind": "type",
+          "signature": "SegmentedControlBundle<Value extends string> = Readonly<{ update: ReturnType<typeof createBehavior<Value>>['update'] segmentedControl: <Msg>( props: SegmentedControlProps<Value, Msg>, h: HtmlBuilder<Msg>, ) => Html }>"
+        },
+        {
+          "name": "create",
+          "kind": "function",
+          "signature": "create<Value extends string = string>(): SegmentedControlBundle<Value>"
+        },
+        {
+          "name": "update",
+          "kind": "value",
+          "signature": "update: value"
+        },
+        {
+          "name": "segmentedControl",
+          "kind": "value",
+          "signature": "segmentedControl: value"
+        }
+      ]
+    },
+    {
       "slug": "select",
       "title": "Select",
       "description": "A shadcn-styled Select component for Foldkit.",
@@ -6721,6 +6888,96 @@
       ]
     },
     {
+      "slug": "stepper",
+      "title": "Stepper",
+      "description": "A shadcn-styled Stepper component for Foldkit.",
+      "docs": "/docs/components/stepper",
+      "source": "src/ui/stepper.ts",
+      "install": "npx shadcn@latest add Potti1234/creaseui/stepper",
+      "dependencies": [
+        "Potti1234/creaseui/button",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "Stepper — Checkout Progress",
+        "Stepper — Indicator Modes",
+        "Stepper — On-Track Horizontal",
+        "Stepper — On-Track Vertical",
+        "Stepper — Validation Status",
+        "Stepper — Horizontal Narrow Collapsed",
+        "Stepper — Custom Content"
+      ],
+      "api": [
+        {
+          "name": "Message",
+          "kind": "re-export",
+          "signature": "export { Message } from "
+        },
+        {
+          "name": "Model",
+          "kind": "re-export",
+          "signature": "export { Model } from "
+        },
+        {
+          "name": "init",
+          "kind": "re-export",
+          "signature": "export { init } from "
+        },
+        {
+          "name": "update",
+          "kind": "re-export",
+          "signature": "export { update } from "
+        },
+        {
+          "name": "OutMessage",
+          "kind": "re-export",
+          "signature": "export { OutMessage } from "
+        },
+        {
+          "name": "StepperOrientation",
+          "kind": "type",
+          "signature": "StepperOrientation = 'horizontal' | 'vertical'"
+        },
+        {
+          "name": "StepperIndicatorPosition",
+          "kind": "type",
+          "signature": "StepperIndicatorPosition = 'separated' | 'on-track'"
+        },
+        {
+          "name": "StepperDensity",
+          "kind": "type",
+          "signature": "StepperDensity = 'compact' | 'balanced' | 'spacious'"
+        },
+        {
+          "name": "StepperCollapsedVariant",
+          "kind": "type",
+          "signature": "StepperCollapsedVariant = | 'withLabelAndControls' | 'withLabel' | 'hiddenLabel'"
+        },
+        {
+          "name": "StepperStepStatus",
+          "kind": "type",
+          "signature": "StepperStepStatus = StepperStatus"
+        },
+        {
+          "name": "StepperStep",
+          "kind": "type",
+          "signature": "StepperStep<Msg> = Readonly<{ label: string description?: string status?: StepperStepStatus isDisabled?: boolean isOptional?: boolean /** 'auto' (default): number while upcoming, check once completed, current ring while active. 'number': always a number badge…"
+        },
+        {
+          "name": "StepperProps",
+          "kind": "type",
+          "signature": "StepperProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg /** Zero-based active step (controlled by the parent). */ activeStep: number steps: ReadonlyArray<StepperStep<Msg>> orientation?: StepperOrientation /** 'separated': bar se…"
+        },
+        {
+          "name": "stepper",
+          "kind": "function",
+          "signature": "stepper<Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Html"
+        }
+      ]
+    },
+    {
       "slug": "switch",
       "title": "Switch",
       "description": "A shadcn-styled Switch component for Foldkit.",
@@ -7454,6 +7711,73 @@
           "name": "tokenizer",
           "kind": "function",
           "signature": "tokenizer<Msg>(props: TokenizerProps<Msg>, h: HtmlBuilder<Msg>): Html"
+        }
+      ]
+    },
+    {
+      "slug": "toolbar",
+      "title": "Toolbar",
+      "description": "A shadcn-styled Toolbar component for Foldkit.",
+      "docs": "/docs/components/toolbar",
+      "source": "src/ui/toolbar.ts",
+      "install": "npx shadcn@latest add Potti1234/creaseui/toolbar",
+      "dependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "Toolbar — Three Slot",
+        "Toolbar — Card Header",
+        "Toolbar — Sizes",
+        "Toolbar — Tab Navigation",
+        "Toolbar — Bulk Actions",
+        "Toolbar — Table Filter"
+      ],
+      "api": [
+        {
+          "name": "Message",
+          "kind": "re-export",
+          "signature": "export { Message } from "
+        },
+        {
+          "name": "TOOLBAR_EDGE_COMP_ATTR",
+          "kind": "re-export",
+          "signature": "export { TOOLBAR_EDGE_COMP_ATTR } from "
+        },
+        {
+          "name": "ToolbarSize",
+          "kind": "type",
+          "signature": "ToolbarSize = 'sm' | 'md' | 'lg'"
+        },
+        {
+          "name": "ToolbarOrientation",
+          "kind": "type",
+          "signature": "ToolbarOrientation = 'horizontal' | 'vertical'"
+        },
+        {
+          "name": "ToolbarVariant",
+          "kind": "type",
+          "signature": "ToolbarVariant = 'transparent' | 'surface' | 'muted'"
+        },
+        {
+          "name": "ToolbarDivider",
+          "kind": "type",
+          "signature": "ToolbarDivider = 'top' | 'bottom' | 'start' | 'end'"
+        },
+        {
+          "name": "ToolbarGap",
+          "kind": "type",
+          "signature": "ToolbarGap = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10"
+        },
+        {
+          "name": "ToolbarProps",
+          "kind": "type",
+          "signature": "ToolbarProps<Msg> = Readonly<{ /** Accessible label for the toolbar (aria-label). */ label: string /** Content aligned to the start (left in LTR). */ startContent?: Html | ReadonlyArray<Html | string> /** Centered content. When present, switches the layout to…"
+        },
+        {
+          "name": "toolbar",
+          "kind": "function",
+          "signature": "toolbar<Msg>(props: ToolbarProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },

@@ -23,7 +23,7 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 103,
+    "registryItems": 107,
     "creaseOnlyRecipes": [
       "app-shell",
       "avatar-group",
@@ -45,6 +45,7 @@
       "grid",
       "heading",
       "indicator",
+      "info-tip",
       "link",
       "list",
       "list-input",
@@ -55,15 +56,18 @@
       "number-input",
       "overflow-list",
       "section",
+      "segmented-control",
       "selectable-card",
       "stack",
       "stat",
       "status-dot",
+      "stepper",
       "text",
       "thumbnail",
       "time-input",
       "token",
       "tokenizer",
+      "toolbar",
       "typography",
       "visually-hidden"
     ]
@@ -937,6 +941,24 @@
       ]
     },
     {
+      "component": "info-tip",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/info-tip.ts",
+        "src/ui/registry.json#info-tip",
+        "/docs/components/info-tip"
+      ]
+    },
+    {
       "component": "input",
       "upstream": true,
       "classification": "full",
@@ -1442,6 +1464,24 @@
       ]
     },
     {
+      "component": "segmented-control",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/segmented-control.ts",
+        "src/ui/registry.json#segmented-control",
+        "/docs/components/segmented-control"
+      ]
+    },
+    {
       "component": "select",
       "upstream": true,
       "classification": "full",
@@ -1660,6 +1700,24 @@
       ]
     },
     {
+      "component": "stepper",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/stepper.ts",
+        "src/ui/registry.json#stepper",
+        "/docs/components/stepper"
+      ]
+    },
+    {
       "component": "switch",
       "upstream": true,
       "classification": "full",
@@ -1873,6 +1931,24 @@
         "src/ui/tokenizer.ts",
         "src/ui/registry.json#tokenizer",
         "/docs/components/tokenizer"
+      ]
+    },
+    {
+      "component": "toolbar",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/toolbar.ts",
+        "src/ui/registry.json#toolbar",
+        "/docs/components/toolbar"
       ]
     },
     {

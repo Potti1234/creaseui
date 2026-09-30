@@ -47,6 +47,7 @@ import { gridPage } from '@/docs/components/pages/grid';
 import { headingPage } from '@/docs/components/pages/heading';
 import { hoverCardPage } from '@/docs/components/pages/hover-card';
 import { indicatorPage } from '@/docs/components/pages/indicator';
+import { infoTipPage } from '@/docs/components/pages/info-tip';
 import { itemPage } from '@/docs/components/pages/item';
 import { inputPage } from '@/docs/components/pages/input';
 import { inputGroupPage } from '@/docs/components/pages/input-group';
@@ -75,6 +76,7 @@ import { radioGroupPage } from '@/docs/components/pages/radio-group';
 import { resizablePage } from '@/docs/components/pages/resizable';
 import { scrollAreaPage } from '@/docs/components/pages/scroll-area';
 import { sectionPage } from '@/docs/components/pages/section';
+import { segmentedControlPage } from '@/docs/components/pages/segmented-control';
 import { selectableCardPage } from '@/docs/components/pages/selectable-card';
 import { separatorPage } from '@/docs/components/pages/separator';
 import { selectPage } from '@/docs/components/pages/select';
@@ -87,6 +89,7 @@ import { sonnerPage } from '@/docs/components/pages/sonner';
 import { stackPage } from '@/docs/components/pages/stack';
 import { statPage } from '@/docs/components/pages/stat';
 import { statusDotPage } from '@/docs/components/pages/status-dot';
+import { stepperPage } from '@/docs/components/pages/stepper';
 import { switchPage } from '@/docs/components/pages/switch';
 import { tabsPage } from '@/docs/components/pages/tabs';
 import { tablePage } from '@/docs/components/pages/table';
@@ -97,8 +100,9 @@ import { timeInputPage } from '@/docs/components/pages/time-input';
 import { toastPage } from '@/docs/components/pages/toast';
 import { togglePage } from '@/docs/components/pages/toggle';
 import { toggleGroupPage } from '@/docs/components/pages/toggle-group';
-import { tokenizerPage } from '@/docs/components/pages/tokenizer';
 import { tokenPage } from '@/docs/components/pages/token';
+import { tokenizerPage } from '@/docs/components/pages/tokenizer';
+import { toolbarPage } from '@/docs/components/pages/toolbar';
 import { tooltipPage } from '@/docs/components/pages/tooltip';
 import { typographyPage } from '@/docs/components/pages/typography';
 import { visuallyHiddenPage } from '@/docs/components/pages/visually-hidden';
@@ -155,6 +159,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       hoverCardPage,
       indicatorPage,
       itemPage,
+      infoTipPage,
       inputPage,
       inputGroupPage,
       inputOtpPage,
@@ -182,6 +187,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       resizablePage,
       scrollAreaPage,
       sectionPage,
+      segmentedControlPage,
       selectableCardPage,
       separatorPage,
       selectPage,
@@ -194,6 +200,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       stackPage,
       statPage,
       statusDotPage,
+      stepperPage,
       switchPage,
       tabsPage,
       tablePage,
@@ -206,6 +213,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       toggleGroupPage,
       tokenPage,
       tokenizerPage,
+      toolbarPage,
       tooltipPage,
       typographyPage,
       visuallyHiddenPage,

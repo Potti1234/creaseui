@@ -61,6 +61,7 @@
 - Heading: /docs/components/heading — install with `npx shadcn@latest add Potti1234/creaseui/heading`
 - Hover Card: /docs/components/hover-card — install with `npx shadcn@latest add Potti1234/creaseui/hover-card`
 - Indicator: /docs/components/indicator — install with `npx shadcn@latest add Potti1234/creaseui/indicator`
+- Info Tip: /docs/components/info-tip — install with `npx shadcn@latest add Potti1234/creaseui/info-tip`
 - Input Group: /docs/components/input-group — install with `npx shadcn@latest add Potti1234/creaseui/input-group`
 - Input Otp: /docs/components/input-otp — install with `npx shadcn@latest add Potti1234/creaseui/input-otp`
 - Input: /docs/components/input — install with `npx shadcn@latest add Potti1234/creaseui/input`
@@ -89,6 +90,7 @@
 - Resizable: /docs/components/resizable — install with `npx shadcn@latest add Potti1234/creaseui/resizable`
 - Scroll Area: /docs/components/scroll-area — install with `npx shadcn@latest add Potti1234/creaseui/scroll-area`
 - Section: /docs/components/section — install with `npx shadcn@latest add Potti1234/creaseui/section`
+- Segmented Control: /docs/components/segmented-control — install with `npx shadcn@latest add Potti1234/creaseui/segmented-control`
 - Select: /docs/components/select — install with `npx shadcn@latest add Potti1234/creaseui/select`
 - Selectable Card: /docs/components/selectable-card — install with `npx shadcn@latest add Potti1234/creaseui/selectable-card`
 - Separator: /docs/components/separator — install with `npx shadcn@latest add Potti1234/creaseui/separator`
@@ -101,6 +103,7 @@
 - Stack: /docs/components/stack — install with `npx shadcn@latest add Potti1234/creaseui/stack`
 - Stat: /docs/components/stat — install with `npx shadcn@latest add Potti1234/creaseui/stat`
 - Status Dot: /docs/components/status-dot — install with `npx shadcn@latest add Potti1234/creaseui/status-dot`
+- Stepper: /docs/components/stepper — install with `npx shadcn@latest add Potti1234/creaseui/stepper`
 - Switch: /docs/components/switch — install with `npx shadcn@latest add Potti1234/creaseui/switch`
 - Table: /docs/components/table — install with `npx shadcn@latest add Potti1234/creaseui/table`
 - Tabs: /docs/components/tabs — install with `npx shadcn@latest add Potti1234/creaseui/tabs`
@@ -113,6 +116,7 @@
 - Toggle: /docs/components/toggle — install with `npx shadcn@latest add Potti1234/creaseui/toggle`
 - Token: /docs/components/token — install with `npx shadcn@latest add Potti1234/creaseui/token`
 - Tokenizer: /docs/components/tokenizer — install with `npx shadcn@latest add Potti1234/creaseui/tokenizer`
+- Toolbar: /docs/components/toolbar — install with `npx shadcn@latest add Potti1234/creaseui/toolbar`
 - Tooltip: /docs/components/tooltip — install with `npx shadcn@latest add Potti1234/creaseui/tooltip`
 - Typography: /docs/components/typography — install with `npx shadcn@latest add Potti1234/creaseui/typography`
 - Visually Hidden: /docs/components/visually-hidden — install with `npx shadcn@latest add Potti1234/creaseui/visually-hidden`
@@ -1080,6 +1084,28 @@ Examples: Indicator, Indicator — Radio, Indicator — Check, Indicator — Siz
 - `RadioIndicatorProps = Readonly<{ /** A radio has no partial state; anything other than unchecked reads as selected. */ state: IndicatorState; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered inside the circle (e.g. a busy spinner).…` (type)
 - `radioIndicator<Msg>(props: RadioIndicatorProps, h: HtmlBuilder<Msg>): Html` (function)
 
+### Info Tip
+
+A shadcn-styled Info Tip component for Foldkit.
+
+Source: `src/ui/info-tip.ts`
+
+Examples: Basic, Sizes, Custom Label, Field Help
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `OutMessage: value` (value)
+- `OutMessage = typeof OutMessage.Type` (type)
+- `init: value` (value)
+- `update: value` (value)
+- `InfoTipSize = 'xsm' | 'sm' | 'md' | 'lg'` (type)
+- `InfoTipSide = 'top' | 'right' | 'bottom' | 'left'` (type)
+- `InfoTipAlign = 'start' | 'center' | 'end'` (type)
+- `InfoTipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Content shown in the tooltip. Keep it short and non-interactive. */ content: Html | string; /** Accessible name for the trigger button. Defaults to 'More information'…` (type)
+- `infoTip<Msg>(props: InfoTipProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
 ### Input Group
 
 A shadcn-styled Input Group component for Foldkit.
@@ -1594,6 +1620,27 @@ Examples: Section — Variants, Section — Default with Wash, Section — With 
 - `SectionProps = Readonly<{ /** * Visual variant. * - `section`: surface (card) background (default) * - `transparent`: no background * - `muted`: muted background, draws attention to a region */ variant?: SectionVariant; /** Divider borders to apply on the giv…` (type)
 - `section<Msg>(props: SectionProps, h: HtmlBuilder<Msg>): Html` (function)
 
+### Segmented Control
+
+A shadcn-styled Segmented Control component for Foldkit.
+
+Source: `src/ui/segmented-control.ts`
+
+Examples: Segmented Control, With Icons, Icon Only, Fill Layout, Disabled Item
+
+- `export { Message } from ` (re-export)
+- `export { Model } from ` (re-export)
+- `export { init } from ` (re-export)
+- `export { OutMessage } from ` (re-export)
+- `SegmentedControlSize = 'sm' | 'md' | 'lg'` (type)
+- `SegmentedControlLayout = 'hug' | 'fill'` (type)
+- `SegmentedControlItem<Value extends string = string> = Readonly<{ value: Value /** Visible label; also the accessible name when `isLabelHidden` is set. */ label: string /** Icon element displayed before the label. */ icon?: Html isLabelHidden?: boolean isDisab…` (type)
+- `SegmentedControlProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg /** The currently selected value (controlled). */ value: Value /** Accessible label for the radio group (used as aria-label, never rendered v…` (type)
+- `SegmentedControlBundle<Value extends string> = Readonly<{ update: ReturnType<typeof createBehavior<Value>>['update'] segmentedControl: <Msg>( props: SegmentedControlProps<Value, Msg>, h: HtmlBuilder<Msg>, ) => Html }>` (type)
+- `create<Value extends string = string>(): SegmentedControlBundle<Value>` (function)
+- `update: value` (value)
+- `segmentedControl: value` (value)
+
 ### Select
 
 A shadcn-styled Select component for Foldkit.
@@ -1839,6 +1886,28 @@ Examples: Status Dot, StatusDot — Variants, StatusDot — Pulsing, StatusDot �
 - `StatusDotProps = Readonly<{ /** The semantic color variant. */ variant: NonNullable<StatusDotVariants['variant']>; /** Accessible label describing the status (the dot's aria-label). */ label: string; /** Pulses the dot to indicate activity; honors prefers-red…` (type)
 - `statusDot<Msg>(props: StatusDotProps, h: HtmlBuilder<Msg>): Html` (function)
 
+### Stepper
+
+A shadcn-styled Stepper component for Foldkit.
+
+Source: `src/ui/stepper.ts`
+
+Examples: Stepper — Checkout Progress, Stepper — Indicator Modes, Stepper — On-Track Horizontal, Stepper — On-Track Vertical, Stepper — Validation Status, Stepper — Horizontal Narrow Collapsed, Stepper — Custom Content
+
+- `export { Message } from ` (re-export)
+- `export { Model } from ` (re-export)
+- `export { init } from ` (re-export)
+- `export { update } from ` (re-export)
+- `export { OutMessage } from ` (re-export)
+- `StepperOrientation = 'horizontal' | 'vertical'` (type)
+- `StepperIndicatorPosition = 'separated' | 'on-track'` (type)
+- `StepperDensity = 'compact' | 'balanced' | 'spacious'` (type)
+- `StepperCollapsedVariant = | 'withLabelAndControls' | 'withLabel' | 'hiddenLabel'` (type)
+- `StepperStepStatus = StepperStatus` (type)
+- `StepperStep<Msg> = Readonly<{ label: string description?: string status?: StepperStepStatus isDisabled?: boolean isOptional?: boolean /** 'auto' (default): number while upcoming, check once completed, current ring while active. 'number': always a number badge…` (type)
+- `StepperProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg /** Zero-based active step (controlled by the parent). */ activeStep: number steps: ReadonlyArray<StepperStep<Msg>> orientation?: StepperOrientation /** 'separated': bar se…` (type)
+- `stepper<Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
 ### Switch
 
 A shadcn-styled Switch component for Foldkit.
@@ -2038,6 +2107,24 @@ Examples: Tokenizer, Clear, Creatable, End Content, Icon, Max Entries, Overflow,
 - `TokenizerStatus = Readonly<{ type: 'error' | 'warning' | 'success' message?: string }>` (type)
 - `TokenizerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean isReadOnly?: boolean status?: TokenizerStatus st…` (type)
 - `tokenizer<Msg>(props: TokenizerProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Toolbar
+
+A shadcn-styled Toolbar component for Foldkit.
+
+Source: `src/ui/toolbar.ts`
+
+Examples: Toolbar — Three Slot, Toolbar — Card Header, Toolbar — Sizes, Toolbar — Tab Navigation, Toolbar — Bulk Actions, Toolbar — Table Filter
+
+- `export { Message } from ` (re-export)
+- `export { TOOLBAR_EDGE_COMP_ATTR } from ` (re-export)
+- `ToolbarSize = 'sm' | 'md' | 'lg'` (type)
+- `ToolbarOrientation = 'horizontal' | 'vertical'` (type)
+- `ToolbarVariant = 'transparent' | 'surface' | 'muted'` (type)
+- `ToolbarDivider = 'top' | 'bottom' | 'start' | 'end'` (type)
+- `ToolbarGap = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10` (type)
+- `ToolbarProps<Msg> = Readonly<{ /** Accessible label for the toolbar (aria-label). */ label: string /** Content aligned to the start (left in LTR). */ startContent?: Html | ReadonlyArray<Html | string> /** Centered content. When present, switches the layout to…` (type)
+- `toolbar<Msg>(props: ToolbarProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Tooltip
 

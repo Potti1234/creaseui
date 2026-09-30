@@ -867,6 +867,26 @@ Source: [`src/ui/indicator.ts`](../src/ui/indicator.ts)
 | `RadioIndicatorProps` | type | `RadioIndicatorProps = Readonly<{ /** A radio has no partial state; anything other than unchecked reads as selected. */ state: IndicatorState; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered inside the circle (e.g. a busy spinner).…` |
 | `radioIndicator` | function | `radioIndicator<Msg>(props: RadioIndicatorProps, h: HtmlBuilder<Msg>): Html` |
 
+## Info Tip
+
+Source: [`src/ui/info-tip.ts`](../src/ui/info-tip.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `OutMessage` | value | `OutMessage: value` |
+| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `init` | value | `init: value` |
+| `update` | value | `update: value` |
+| `InfoTipSize` | type | `InfoTipSize = 'xsm' \| 'sm' \| 'md' \| 'lg'` |
+| `InfoTipSide` | type | `InfoTipSide = 'top' \| 'right' \| 'bottom' \| 'left'` |
+| `InfoTipAlign` | type | `InfoTipAlign = 'start' \| 'center' \| 'end'` |
+| `InfoTipProps` | type | `InfoTipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Content shown in the tooltip. Keep it short and non-interactive. */ content: Html \| string; /** Accessible name for the trigger button. Defaults to 'More information'…` |
+| `infoTip` | function | `infoTip<Msg>(props: InfoTipProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Input Group
 
 Source: [`src/ui/input-group.ts`](../src/ui/input-group.ts)
@@ -1325,6 +1345,25 @@ Source: [`src/ui/section.ts`](../src/ui/section.ts)
 | `SectionProps` | type | `SectionProps = Readonly<{ /** * Visual variant. * - `section`: surface (card) background (default) * - `transparent`: no background * - `muted`: muted background, draws attention to a region */ variant?: SectionVariant; /** Divider borders to apply on the giv…` |
 | `section` | function | `section<Msg>(props: SectionProps, h: HtmlBuilder<Msg>): Html` |
 
+## Segmented Control
+
+Source: [`src/ui/segmented-control.ts`](../src/ui/segmented-control.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Message` | re-export | `export { Message } from ` |
+| `Model` | re-export | `export { Model } from ` |
+| `init` | re-export | `export { init } from ` |
+| `OutMessage` | re-export | `export { OutMessage } from ` |
+| `SegmentedControlSize` | type | `SegmentedControlSize = 'sm' \| 'md' \| 'lg'` |
+| `SegmentedControlLayout` | type | `SegmentedControlLayout = 'hug' \| 'fill'` |
+| `SegmentedControlItem` | type | `SegmentedControlItem<Value extends string = string> = Readonly<{ value: Value /** Visible label; also the accessible name when `isLabelHidden` is set. */ label: string /** Icon element displayed before the label. */ icon?: Html isLabelHidden?: boolean isDisab…` |
+| `SegmentedControlProps` | type | `SegmentedControlProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg /** The currently selected value (controlled). */ value: Value /** Accessible label for the radio group (used as aria-label, never rendered v…` |
+| `SegmentedControlBundle` | type | `SegmentedControlBundle<Value extends string> = Readonly<{ update: ReturnType<typeof createBehavior<Value>>['update'] segmentedControl: <Msg>( props: SegmentedControlProps<Value, Msg>, h: HtmlBuilder<Msg>, ) => Html }>` |
+| `create` | function | `create<Value extends string = string>(): SegmentedControlBundle<Value>` |
+| `update` | value | `update: value` |
+| `segmentedControl` | value | `segmentedControl: value` |
+
 ## Select
 
 Source: [`src/ui/select.ts`](../src/ui/select.ts)
@@ -1546,6 +1585,26 @@ Source: [`src/ui/status-dot.ts`](../src/ui/status-dot.ts)
 | `StatusDotProps` | type | `StatusDotProps = Readonly<{ /** The semantic color variant. */ variant: NonNullable<StatusDotVariants['variant']>; /** Accessible label describing the status (the dot's aria-label). */ label: string; /** Pulses the dot to indicate activity; honors prefers-red…` |
 | `statusDot` | function | `statusDot<Msg>(props: StatusDotProps, h: HtmlBuilder<Msg>): Html` |
 
+## Stepper
+
+Source: [`src/ui/stepper.ts`](../src/ui/stepper.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Message` | re-export | `export { Message } from ` |
+| `Model` | re-export | `export { Model } from ` |
+| `init` | re-export | `export { init } from ` |
+| `update` | re-export | `export { update } from ` |
+| `OutMessage` | re-export | `export { OutMessage } from ` |
+| `StepperOrientation` | type | `StepperOrientation = 'horizontal' \| 'vertical'` |
+| `StepperIndicatorPosition` | type | `StepperIndicatorPosition = 'separated' \| 'on-track'` |
+| `StepperDensity` | type | `StepperDensity = 'compact' \| 'balanced' \| 'spacious'` |
+| `StepperCollapsedVariant` | type | `StepperCollapsedVariant = \| 'withLabelAndControls' \| 'withLabel' \| 'hiddenLabel'` |
+| `StepperStepStatus` | type | `StepperStepStatus = StepperStatus` |
+| `StepperStep` | type | `StepperStep<Msg> = Readonly<{ label: string description?: string status?: StepperStepStatus isDisabled?: boolean isOptional?: boolean /** 'auto' (default): number while upcoming, check once completed, current ring while active. 'number': always a number badge…` |
+| `StepperProps` | type | `StepperProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg /** Zero-based active step (controlled by the parent). */ activeStep: number steps: ReadonlyArray<StepperStep<Msg>> orientation?: StepperOrientation /** 'separated': bar se…` |
+| `stepper` | function | `stepper<Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Switch
 
 Source: [`src/ui/switch.ts`](../src/ui/switch.ts)
@@ -1721,6 +1780,22 @@ Source: [`src/ui/tokenizer.ts`](../src/ui/tokenizer.ts)
 | `TokenizerStatus` | type | `TokenizerStatus = Readonly<{ type: 'error' \| 'warning' \| 'success' message?: string }>` |
 | `TokenizerProps` | type | `TokenizerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean isReadOnly?: boolean status?: TokenizerStatus st…` |
 | `tokenizer` | function | `tokenizer<Msg>(props: TokenizerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Toolbar
+
+Source: [`src/ui/toolbar.ts`](../src/ui/toolbar.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Message` | re-export | `export { Message } from ` |
+| `TOOLBAR_EDGE_COMP_ATTR` | re-export | `export { TOOLBAR_EDGE_COMP_ATTR } from ` |
+| `ToolbarSize` | type | `ToolbarSize = 'sm' \| 'md' \| 'lg'` |
+| `ToolbarOrientation` | type | `ToolbarOrientation = 'horizontal' \| 'vertical'` |
+| `ToolbarVariant` | type | `ToolbarVariant = 'transparent' \| 'surface' \| 'muted'` |
+| `ToolbarDivider` | type | `ToolbarDivider = 'top' \| 'bottom' \| 'start' \| 'end'` |
+| `ToolbarGap` | type | `ToolbarGap = 0 \| 0.5 \| 1 \| 1.5 \| 2 \| 3 \| 4 \| 5 \| 6 \| 8 \| 10` |
+| `ToolbarProps` | type | `ToolbarProps<Msg> = Readonly<{ /** Accessible label for the toolbar (aria-label). */ label: string /** Content aligned to the start (left in LTR). */ startContent?: Html \| ReadonlyArray<Html \| string> /** Centered content. When present, switches the layout to…` |
+| `toolbar` | function | `toolbar<Msg>(props: ToolbarProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Tooltip
 

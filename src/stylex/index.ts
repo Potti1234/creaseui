@@ -52,6 +52,7 @@ export * as Grid from './grid.js'
 export * as Heading from './heading.js'
 export * as HoverCard from './hover-card.js'
 export * as Indicator from './indicator.js'
+export * as InfoTip from './info-tip.js'
 export * as InputGroup from './input-group.js'
 export * as InputOtp from './input-otp.js'
 export * as Input from './input.js'
@@ -80,6 +81,7 @@ export * as RadioGroup from './radio-group.js'
 export * as Resizable from './resizable.js'
 export * as ScrollArea from './scroll-area.js'
 export * as Section from './section.js'
+export * as SegmentedControl from './segmented-control.js'
 export * as Select from './select.js'
 export * as SelectableCard from './selectable-card.js'
 export * as Separator from './separator.js'
@@ -92,6 +94,7 @@ export * as Spinner from './spinner.js'
 export * as Stack from './stack.js'
 export * as Stat from './stat.js'
 export * as StatusDot from './status-dot.js'
+export * as Stepper from './stepper.js'
 export * as Switch from './switch.js'
 export * as Table from './table.js'
 export * as Tabs from './tabs.js'
@@ -104,6 +107,7 @@ export * as ToggleGroup from './toggle-group.js'
 export * as Toggle from './toggle.js'
 export * as Token from './token.js'
 export * as Tokenizer from './tokenizer.js'
+export * as Toolbar from './toolbar.js'
 export * as Tooltip from './tooltip.js'
 export * as Typography from './typography.js'
 export * as VisuallyHidden from './visually-hidden.js'
@@ -158,6 +162,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'heading',
   'hover-card',
   'indicator',
+  'info-tip',
   'input-group',
   'input-otp',
   'input',
@@ -186,6 +191,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'resizable',
   'scroll-area',
   'section',
+  'segmented-control',
   'select',
   'selectable-card',
   'separator',
@@ -198,6 +204,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'stack',
   'stat',
   'status-dot',
+  'stepper',
   'switch',
   'table',
   'tabs',
@@ -210,6 +217,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'toggle',
   'token',
   'tokenizer',
+  'toolbar',
   'tooltip',
   'typography',
   'visually-hidden',
