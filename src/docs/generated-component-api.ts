@@ -238,6 +238,58 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "attachmentTrigger<Msg>(props: Readonly<{ onClick: Msg; label: string; class?: string }>, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "avatar-group": [
+    {
+      "name": "AvatarGroupSize",
+      "kind": "type",
+      "signature": "AvatarGroupSize = 'sm' | 'md' | 'lg' | number"
+    },
+    {
+      "name": "AvatarShape",
+      "kind": "type",
+      "signature": "AvatarShape = 'circle' | 'rounded' | 'square'"
+    },
+    {
+      "name": "AvatarGroupProps",
+      "kind": "type",
+      "signature": "AvatarGroupProps = Readonly<{ /** Accessible name for the group; defaults to \"Avatar group\". */ ariaLabel?: string; /** Shared avatar size used to compute the 25% overlap. Defaults to 'md'. */ avatarSize?: AvatarGroupSize; children: ReadonlyArray<Html>; class…"
+    },
+    {
+      "name": "avatarGroup",
+      "kind": "function",
+      "signature": "avatarGroup<Msg>(props: AvatarGroupProps, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "AvatarGroupOverflowProps",
+      "kind": "type",
+      "signature": "AvatarGroupOverflowProps<Msg> = Readonly<{ /** Number of hidden avatars; rendered as \"+N\" when no children are given. */ count?: number; /** Shared avatar size (px or named); the overflow chip is size + 4px to span the ring. */ avatarSize?: AvatarGroupSize; /…"
+    },
+    {
+      "name": "avatarGroupOverflow",
+      "kind": "function",
+      "signature": "avatarGroupOverflow<Msg>(props: AvatarGroupOverflowProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "AvatarStatusDotVariant",
+      "kind": "type",
+      "signature": "AvatarStatusDotVariant = 'success' | 'neutral' | 'error'"
+    },
+    {
+      "name": "AvatarStatusDotSize",
+      "kind": "type",
+      "signature": "AvatarStatusDotSize = 'xsm' | 'sm' | 'md' | 'lg' | 'xl' | number"
+    },
+    {
+      "name": "AvatarStatusDotProps",
+      "kind": "type",
+      "signature": "AvatarStatusDotProps = Readonly<{ /** Semantic tone: success (online), neutral (offline), error (busy). */ variant: AvatarStatusDotVariant; /** Driving avatar's size — picks the dot diameter tier (10/20/32px). */ avatarSize?: AvatarStatusDotSize; /** Accessib…"
+    },
+    {
+      "name": "avatarStatusDot",
+      "kind": "function",
+      "signature": "avatarStatusDot<Msg>(props: AvatarStatusDotProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "avatar": [
     {
       "name": "Model",
@@ -900,6 +952,28 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "checkbox",
       "kind": "function",
       "signature": "checkbox<Msg>(props: CheckboxProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "circular-progress": [
+    {
+      "name": "CircularProgressVariant",
+      "kind": "type",
+      "signature": "CircularProgressVariant = 'accent' | 'success' | 'warning' | 'error' | 'neutral'"
+    },
+    {
+      "name": "CircularProgressSize",
+      "kind": "type",
+      "signature": "CircularProgressSize = 'sm' | 'md' | 'lg'"
+    },
+    {
+      "name": "CircularProgressProps",
+      "kind": "type",
+      "signature": "CircularProgressProps = Readonly<{ /** Current value. Ignored when isIndeterminate is true. */ value?: number; /** Maximum value. */ max?: number; /** Accessible label for the progress indicator. Required for a11y. */ label: string; /** When true (default), t…"
+    },
+    {
+      "name": "circularProgress",
+      "kind": "function",
+      "signature": "circularProgress<Msg>(props: CircularProgressProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "collapsible": [
@@ -2030,6 +2104,48 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "hoverCard",
       "kind": "function",
       "signature": "hoverCard<Msg>(props: HoverCardProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "indicator": [
+    {
+      "name": "IndicatorState",
+      "kind": "type",
+      "signature": "IndicatorState = 'unchecked' | 'checked' | 'indeterminate'"
+    },
+    {
+      "name": "IndicatorSize",
+      "kind": "type",
+      "signature": "IndicatorSize = 'sm' | 'md'"
+    },
+    {
+      "name": "CheckIndicatorProps",
+      "kind": "type",
+      "signature": "CheckIndicatorProps = Readonly<{ state: 'unchecked' | 'checked'; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered in the mark's slot (e.g. a busy spinner). */ children?: ReadonlyArray<Html>; class?: string; }>"
+    },
+    {
+      "name": "checkIndicator",
+      "kind": "function",
+      "signature": "checkIndicator<Msg>(props: CheckIndicatorProps, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "CheckboxIndicatorProps",
+      "kind": "type",
+      "signature": "CheckboxIndicatorProps = Readonly<{ state: IndicatorState; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered inside the box (e.g. a busy spinner). */ children?: ReadonlyArray<Html>; class?: string; }>"
+    },
+    {
+      "name": "checkboxIndicator",
+      "kind": "function",
+      "signature": "checkboxIndicator<Msg>(props: CheckboxIndicatorProps, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "RadioIndicatorProps",
+      "kind": "type",
+      "signature": "RadioIndicatorProps = Readonly<{ /** A radio has no partial state; anything other than unchecked reads as selected. */ state: IndicatorState; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered inside the circle (e.g. a busy spinner).…"
+    },
+    {
+      "name": "radioIndicator",
+      "kind": "function",
+      "signature": "radioIndicator<Msg>(props: RadioIndicatorProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "input-group": [
@@ -3483,6 +3599,38 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "stackItem<Msg>(props: StackItemProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "stat": [
+    {
+      "name": "StatDeltaDirection",
+      "kind": "type",
+      "signature": "StatDeltaDirection = 'up' | 'down' | 'flat'"
+    },
+    {
+      "name": "StatDeltaSentiment",
+      "kind": "type",
+      "signature": "StatDeltaSentiment = 'positive' | 'negative' | 'neutral'"
+    },
+    {
+      "name": "StatSize",
+      "kind": "type",
+      "signature": "StatSize = 'sm' | 'md' | 'lg'"
+    },
+    {
+      "name": "StatDelta",
+      "kind": "type",
+      "signature": "StatDelta = Readonly<{ /** Pre-formatted change text, e.g. \"+12.4%\" or \"-8 ms\". */ value: string; /** Trend direction. Picks the glyph and the default sentiment. */ direction: StatDeltaDirection; /** * Overrides the direction-to-color mapping for inverted met…"
+    },
+    {
+      "name": "StatProps",
+      "kind": "type",
+      "signature": "StatProps = Readonly<{ /** Metric name shown above the value, e.g. \"Total requests\". */ label: string; /** The headline metric, rendered large with tabular numerals. */ value: string; /** Change indicator rendered next to the value. */ delta?: StatDelta; /** …"
+    },
+    {
+      "name": "stat",
+      "kind": "function",
+      "signature": "stat<Msg>(props: StatProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "status-dot": [
     {
       "name": "statusDotVariants",
@@ -3673,6 +3821,23 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "textarea<Msg>(props: TextareaProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "thumbnail": [
+    {
+      "name": "ThumbnailShowRemoveOn",
+      "kind": "type",
+      "signature": "ThumbnailShowRemoveOn = 'always' | 'hover'"
+    },
+    {
+      "name": "ThumbnailProps",
+      "kind": "type",
+      "signature": "ThumbnailProps<Msg> = Readonly<{ /** Image source. When omitted, the thumbnail shows its placeholder state. */ src?: string; /** Alt text for the image. */ alt?: string; /** Human-readable name shown in tooltips and used in accessible labels. */ label?: strin…"
+    },
+    {
+      "name": "thumbnail",
+      "kind": "function",
+      "signature": "thumbnail<Msg>(props: ThumbnailProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "toast": [
     {
       "name": "*",
@@ -3767,6 +3932,28 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "toggle",
       "kind": "function",
       "signature": "toggle<Msg>(props: ToggleProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "token": [
+    {
+      "name": "TokenColor",
+      "kind": "type",
+      "signature": "TokenColor = | 'default' | 'gray' | 'red' | 'orange' | 'yellow' | 'green' | 'teal' | 'cyan' | 'blue' | 'purple' | 'pink'"
+    },
+    {
+      "name": "TokenSize",
+      "kind": "type",
+      "signature": "TokenSize = 'sm' | 'md' | 'lg'"
+    },
+    {
+      "name": "TokenProps",
+      "kind": "type",
+      "signature": "TokenProps<Msg> = Readonly<{ /** Text shown inside the token. */ label: string; /** Semantic colorway; 'default' is the neutral gray chip. */ color?: TokenColor; /** Chip height: sm 20px, md 24px, lg 28px. */ size?: TokenSize; /** Leading glyph, e.g. `h => Ic…"
+    },
+    {
+      "name": "token",
+      "kind": "function",
+      "signature": "token<Msg>(props: TokenProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "tooltip": [

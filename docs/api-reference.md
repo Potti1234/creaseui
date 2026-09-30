@@ -89,6 +89,23 @@ Source: [`src/ui/attachment.ts`](../src/ui/attachment.ts)
 | `attachmentDescription` | function | `attachmentDescription<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `attachmentTrigger` | function | `attachmentTrigger<Msg>(props: Readonly<{ onClick: Msg; label: string; class?: string }>, h: HtmlBuilder<Msg>): Html` |
 
+## Avatar Group
+
+Source: [`src/ui/avatar-group.ts`](../src/ui/avatar-group.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `AvatarGroupSize` | type | `AvatarGroupSize = 'sm' \| 'md' \| 'lg' \| number` |
+| `AvatarShape` | type | `AvatarShape = 'circle' \| 'rounded' \| 'square'` |
+| `AvatarGroupProps` | type | `AvatarGroupProps = Readonly<{ /** Accessible name for the group; defaults to "Avatar group". */ ariaLabel?: string; /** Shared avatar size used to compute the 25% overlap. Defaults to 'md'. */ avatarSize?: AvatarGroupSize; children: ReadonlyArray<Html>; class…` |
+| `avatarGroup` | function | `avatarGroup<Msg>(props: AvatarGroupProps, h: HtmlBuilder<Msg>): Html` |
+| `AvatarGroupOverflowProps` | type | `AvatarGroupOverflowProps<Msg> = Readonly<{ /** Number of hidden avatars; rendered as "+N" when no children are given. */ count?: number; /** Shared avatar size (px or named); the overflow chip is size + 4px to span the ring. */ avatarSize?: AvatarGroupSize; /…` |
+| `avatarGroupOverflow` | function | `avatarGroupOverflow<Msg>(props: AvatarGroupOverflowProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `AvatarStatusDotVariant` | type | `AvatarStatusDotVariant = 'success' \| 'neutral' \| 'error'` |
+| `AvatarStatusDotSize` | type | `AvatarStatusDotSize = 'xsm' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| number` |
+| `AvatarStatusDotProps` | type | `AvatarStatusDotProps = Readonly<{ /** Semantic tone: success (online), neutral (offline), error (busy). */ variant: AvatarStatusDotVariant; /** Driving avatar's size — picks the dot diameter tier (10/20/32px). */ avatarSize?: AvatarStatusDotSize; /** Accessib…` |
+| `avatarStatusDot` | function | `avatarStatusDot<Msg>(props: AvatarStatusDotProps, h: HtmlBuilder<Msg>): Html` |
+
 ## Avatar
 
 Source: [`src/ui/avatar.ts`](../src/ui/avatar.ts)
@@ -300,6 +317,17 @@ Source: [`src/ui/checkbox.ts`](../src/ui/checkbox.ts)
 | --- | --- | --- |
 | `CheckboxProps` | type | `CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> & Readonly<{ class?: string }>` |
 | `checkbox` | function | `checkbox<Msg>(props: CheckboxProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Circular Progress
+
+Source: [`src/ui/circular-progress.ts`](../src/ui/circular-progress.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `CircularProgressVariant` | type | `CircularProgressVariant = 'accent' \| 'success' \| 'warning' \| 'error' \| 'neutral'` |
+| `CircularProgressSize` | type | `CircularProgressSize = 'sm' \| 'md' \| 'lg'` |
+| `CircularProgressProps` | type | `CircularProgressProps = Readonly<{ /** Current value. Ignored when isIndeterminate is true. */ value?: number; /** Maximum value. */ max?: number; /** Accessible label for the progress indicator. Required for a11y. */ label: string; /** When true (default), t…` |
+| `circularProgress` | function | `circularProgress<Msg>(props: CircularProgressProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Collapsible
 
@@ -625,6 +653,21 @@ Source: [`src/ui/hover-card.ts`](../src/ui/hover-card.ts)
 | `HoverCardAlign` | type | `HoverCardAlign = 'start' \| 'center' \| 'end'` |
 | `HoverCardProps` | type | `HoverCardProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; content: Html \| string; align?: HoverCardAlign; side?: HoverCardSide; isDisabled?: boolean; ariaLabel?: string; triggerClass?: string; class?: s…` |
 | `hoverCard` | function | `hoverCard<Msg>(props: HoverCardProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Indicator
+
+Source: [`src/ui/indicator.ts`](../src/ui/indicator.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `IndicatorState` | type | `IndicatorState = 'unchecked' \| 'checked' \| 'indeterminate'` |
+| `IndicatorSize` | type | `IndicatorSize = 'sm' \| 'md'` |
+| `CheckIndicatorProps` | type | `CheckIndicatorProps = Readonly<{ state: 'unchecked' \| 'checked'; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered in the mark's slot (e.g. a busy spinner). */ children?: ReadonlyArray<Html>; class?: string; }>` |
+| `checkIndicator` | function | `checkIndicator<Msg>(props: CheckIndicatorProps, h: HtmlBuilder<Msg>): Html` |
+| `CheckboxIndicatorProps` | type | `CheckboxIndicatorProps = Readonly<{ state: IndicatorState; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered inside the box (e.g. a busy spinner). */ children?: ReadonlyArray<Html>; class?: string; }>` |
+| `checkboxIndicator` | function | `checkboxIndicator<Msg>(props: CheckboxIndicatorProps, h: HtmlBuilder<Msg>): Html` |
+| `RadioIndicatorProps` | type | `RadioIndicatorProps = Readonly<{ /** A radio has no partial state; anything other than unchecked reads as selected. */ state: IndicatorState; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered inside the circle (e.g. a busy spinner).…` |
+| `radioIndicator` | function | `radioIndicator<Msg>(props: RadioIndicatorProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Input Group
 
@@ -1101,6 +1144,19 @@ Source: [`src/ui/stack.ts`](../src/ui/stack.ts)
 | `StackItemProps` | type | `StackItemProps = Readonly<{ /** Overrides the parent stack's cross-axis alignment for this item. */ crossAlignSelf?: StackItemCrossAlignSelf; /** * Size behavior within the stack. * - `static`: intrinsic size, never grows or shrinks (default) * - `fill`: grow…` |
 | `stackItem` | function | `stackItem<Msg>(props: StackItemProps, h: HtmlBuilder<Msg>): Html` |
 
+## Stat
+
+Source: [`src/ui/stat.ts`](../src/ui/stat.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `StatDeltaDirection` | type | `StatDeltaDirection = 'up' \| 'down' \| 'flat'` |
+| `StatDeltaSentiment` | type | `StatDeltaSentiment = 'positive' \| 'negative' \| 'neutral'` |
+| `StatSize` | type | `StatSize = 'sm' \| 'md' \| 'lg'` |
+| `StatDelta` | type | `StatDelta = Readonly<{ /** Pre-formatted change text, e.g. "+12.4%" or "-8 ms". */ value: string; /** Trend direction. Picks the glyph and the default sentiment. */ direction: StatDeltaDirection; /** * Overrides the direction-to-color mapping for inverted met…` |
+| `StatProps` | type | `StatProps = Readonly<{ /** Metric name shown above the value, e.g. "Total requests". */ label: string; /** The headline metric, rendered large with tabular numerals. */ value: string; /** Change indicator rendered next to the value. */ delta?: StatDelta; /** …` |
+| `stat` | function | `stat<Msg>(props: StatProps, h: HtmlBuilder<Msg>): Html` |
+
 ## Status Dot
 
 Source: [`src/ui/status-dot.ts`](../src/ui/status-dot.ts)
@@ -1172,6 +1228,16 @@ Source: [`src/ui/textarea.ts`](../src/ui/textarea.ts)
 | `TextareaProps` | type | `TextareaProps<Msg> = TextareaBehaviorProps<Msg> & Readonly<{ class?: string; }>` |
 | `textarea` | function | `textarea<Msg>(props: TextareaProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
+## Thumbnail
+
+Source: [`src/ui/thumbnail.ts`](../src/ui/thumbnail.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `ThumbnailShowRemoveOn` | type | `ThumbnailShowRemoveOn = 'always' \| 'hover'` |
+| `ThumbnailProps` | type | `ThumbnailProps<Msg> = Readonly<{ /** Image source. When omitted, the thumbnail shows its placeholder state. */ src?: string; /** Alt text for the image. */ alt?: string; /** Human-readable name shown in tooltips and used in accessible labels. */ label?: strin…` |
+| `thumbnail` | function | `thumbnail<Msg>(props: ThumbnailProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Toast
 
 Source: [`src/ui/toast.ts`](../src/ui/toast.ts)
@@ -1210,6 +1276,17 @@ Source: [`src/ui/toggle.ts`](../src/ui/toggle.ts)
 | `ToggleVariants` | type | `ToggleVariants = VariantProps<typeof toggleVariants>` |
 | `ToggleProps` | type | `ToggleProps<Msg> = Readonly<{ isPressed: boolean; onToggle: Msg; variant?: ToggleVariants['variant']; size?: ToggleVariants['size']; children: ReadonlyArray<Html \| string>; isDisabled?: boolean; id?: string; ariaLabel?: string; describedBy?: string; direction…` |
 | `toggle` | function | `toggle<Msg>(props: ToggleProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Token
+
+Source: [`src/ui/token.ts`](../src/ui/token.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `TokenColor` | type | `TokenColor = \| 'default' \| 'gray' \| 'red' \| 'orange' \| 'yellow' \| 'green' \| 'teal' \| 'cyan' \| 'blue' \| 'purple' \| 'pink'` |
+| `TokenSize` | type | `TokenSize = 'sm' \| 'md' \| 'lg'` |
+| `TokenProps` | type | `TokenProps<Msg> = Readonly<{ /** Text shown inside the token. */ label: string; /** Semantic colorway; 'default' is the neutral gray chip. */ color?: TokenColor; /** Chip height: sm 20px, md 24px, lg 28px. */ size?: TokenSize; /** Leading glyph, e.g. `h => Ic…` |
+| `token` | function | `token<Msg>(props: TokenProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Tooltip
 

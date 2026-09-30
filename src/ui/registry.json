@@ -113,6 +113,23 @@
       ]
     },
     {
+      "name": "avatar-group",
+      "type": "registry:ui",
+      "title": "Avatar Group",
+      "description": "A shadcn-styled Avatar Group component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "avatar-group.ts",
+          "type": "registry:ui",
+          "target": "@ui/avatar-group.ts"
+        }
+      ]
+    },
+    {
       "name": "avatar",
       "type": "registry:ui",
       "title": "Avatar",
@@ -334,6 +351,23 @@
           "path": "checkbox.ts",
           "type": "registry:ui",
           "target": "@ui/checkbox.ts"
+        }
+      ]
+    },
+    {
+      "name": "circular-progress",
+      "type": "registry:ui",
+      "title": "Circular Progress",
+      "description": "A shadcn-styled Circular Progress component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "circular-progress.ts",
+          "type": "registry:ui",
+          "target": "@ui/circular-progress.ts"
         }
       ]
     },
@@ -603,6 +637,24 @@
           "path": "hover-card.ts",
           "type": "registry:ui",
           "target": "@ui/hover-card.ts"
+        }
+      ]
+    },
+    {
+      "name": "indicator",
+      "type": "registry:ui",
+      "title": "Indicator",
+      "description": "A shadcn-styled Indicator component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "indicator.ts",
+          "type": "registry:ui",
+          "target": "@ui/indicator.ts"
         }
       ]
     },
@@ -1111,6 +1163,23 @@
       ]
     },
     {
+      "name": "stat",
+      "type": "registry:ui",
+      "title": "Stat",
+      "description": "A shadcn-styled Stat component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "stat.ts",
+          "type": "registry:ui",
+          "target": "@ui/stat.ts"
+        }
+      ]
+    },
+    {
       "name": "status-dot",
       "type": "registry:ui",
       "title": "Status Dot",
@@ -1202,6 +1271,24 @@
       ]
     },
     {
+      "name": "thumbnail",
+      "type": "registry:ui",
+      "title": "Thumbnail",
+      "description": "A shadcn-styled Thumbnail component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "thumbnail.ts",
+          "type": "registry:ui",
+          "target": "@ui/thumbnail.ts"
+        }
+      ]
+    },
+    {
       "name": "toast",
       "type": "registry:ui",
       "title": "Toast",
@@ -1253,6 +1340,24 @@
           "path": "toggle.ts",
           "type": "registry:ui",
           "target": "@ui/toggle.ts"
+        }
+      ]
+    },
+    {
+      "name": "token",
+      "type": "registry:ui",
+      "title": "Token",
+      "description": "A shadcn-styled Token component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "token.ts",
+          "type": "registry:ui",
+          "target": "@ui/token.ts"
         }
       ]
     },

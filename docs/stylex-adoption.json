@@ -2,9 +2,9 @@
   "mode": "parallel-experiment",
   "interpretation": "Coverage measures available StyleX counterparts, not removal of Tailwind from the primary product.",
   "components": {
-    "source": 72,
-    "stylexCounterparts": 72,
-    "paired": 72,
+    "source": 78,
+    "stylexCounterparts": 78,
+    "paired": 78,
     "coveragePercent": 100
   },
   "createCards": {
@@ -24,7 +24,7 @@
     }
   },
   "guardrails": {
-    "boundaryFiles": 148,
+    "boundaryFiles": 154,
     "cssFallbacks": 0,
     "legacyUiImports": 0,
     "suppressions": 1,
