@@ -75,3 +75,10 @@ Checkbox/radio state PERSISTS across close+reopen (submodel keeps it) — toggle
 - **Hero id-rewrite vs `getElementById`-targeted components:** the hero's OnMount suffixes every id in its subtree to `-hero`; components that find targets by literal DOM id (tour `targetId`, anchor `buttonId`) then resolve to the NAMED twin's element (or nothing) — callout anchored off-screen + invisible scrim eating clicks is the signature. With `keepIdsCanonical` the hero works but the named twin resolves to the hero's element. Fix: `heroOnly: true` on the fixture so each target id exists once (see `tour/shared.ts`).
 - **A "dead" day-cell click may just be `aria-disabled`.** date-range legitimately disables unreachable days after the first pick (maxRangeSpan window / minRangeSpan interior days). Probe `#foldkit-portal-root [aria-disabled="true"]` count + attribute before assuming a dispatch bug. True dead clicks show missing-wrap pageerrors; disabled days are silent.
 - **`Duplicate DOM id` console warnings** = two preview instances emitting the same literal `h.Id` (hero+named twin, or fixtures with hardcoded shared ids).
+
+## Date-time-input typed-entry path (round-5 additions)
+
+- The time half of `date-time-input` drops the FIRST keystroke after focus even with multi-second settle (worse than the generic input race). Workarounds: type a sacrificial leading char, or type per-key with small gaps and verify `input.value` after each.
+- Mid-string cursor edits are worse: Home + digit wiped the entire pending value (reproduced twice). Avoid cursor-position edits; retype the whole string.
+- The listbox path (`hasTimeOptions`) and the typed path are gated by the SAME model flag — before probing the listbox, confirm `hasTimeOptions: true` in the vite-log model dump (`/tmp/vite-dev.log` relays browser console + model state), not just `role=combobox` in the DOM.
+- `anchorSetup could not find a trigger` console.error once per mount = the `-button` anchor id wasn't in the queried root at panel-mount (mount-order race — panel repositions fine at open). Cosmetic; re-check whether it reproduces on a settled build before reporting as a regression.
