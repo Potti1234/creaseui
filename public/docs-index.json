@@ -4,20 +4,18 @@
     "src/ui/registry.json",
     "src/ui/*.ts"
   ],
-  "componentCount": 65,
+  "componentCount": 66,
   "components": [
     {
       "slug": "accordion",
       "title": "Accordion",
-      "description": "A Foldkit-native Accordion Submodel with stable value-based state and accessible Disclosure behavior.",
+      "description": "A shadcn-styled Accordion component for Foldkit.",
       "docs": "/docs/components/accordion",
       "source": "src/ui/accordion.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/accordion",
       "dependencies": [
-        "Potti1234/creaseui/accordion-state",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/sidebar-state",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -114,7 +112,6 @@
       "source": "src/ui/alert-dialog.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/alert-dialog",
       "dependencies": [
-        "Potti1234/creaseui/alert-dialog-behavior",
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -160,7 +157,6 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/alert",
       "dependencies": [
         "class-variance-authority@^0.7.1",
-        "Potti1234/creaseui/alert-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
       ],
@@ -258,6 +254,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/attachment",
       "dependencies": [
         "class-variance-authority@^0.7.1",
+        "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
       ],
@@ -495,7 +492,6 @@
       "source": "src/ui/breadcrumb.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/breadcrumb",
       "dependencies": [
-        "Potti1234/creaseui/breadcrumb-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -717,7 +713,6 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/button",
       "dependencies": [
         "class-variance-authority@^0.7.1",
-        "Potti1234/creaseui/button-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
       ],
@@ -779,7 +774,6 @@
       "source": "src/ui/calendar.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/calendar",
       "dependencies": [
-        "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -976,7 +970,7 @@
       "source": "src/ui/carousel.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/carousel",
       "dependencies": [
-        "Potti1234/creaseui/carousel-lifecycle",
+        "embla-carousel@^8.6.0",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -1017,8 +1011,8 @@
       "source": "src/ui/chart.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/chart",
       "dependencies": [
-        "Potti1234/creaseui/echarts-adapter",
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/echarts-adapter",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -1213,7 +1207,6 @@
       "source": "src/ui/checkbox.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/checkbox",
       "dependencies": [
-        "Potti1234/creaseui/checkbox-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -1417,7 +1410,6 @@
       "source": "src/ui/command.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/command",
       "dependencies": [
-        "Potti1234/creaseui/command-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -1632,7 +1624,6 @@
       "source": "src/ui/data-table.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/data-table",
       "dependencies": [
-        "Potti1234/creaseui/data-table-mechanics",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/table",
@@ -1968,8 +1959,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/drawer",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/utils",
-        "Potti1234/creaseui/drawer-behavior"
+        "Potti1234/creaseui/utils"
       ],
       "examples": [
         "Activity goal",
@@ -2085,7 +2075,6 @@
       "source": "src/ui/dropdown-menu.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/dropdown-menu",
       "dependencies": [
-        "Potti1234/creaseui/dropdown-menu-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -2276,7 +2265,6 @@
       "dependencies": [
         "class-variance-authority@^0.7.1",
         "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/field-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -2422,7 +2410,6 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/field",
-        "Potti1234/creaseui/form-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -2517,8 +2504,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/hover-card",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/utils",
-        "Potti1234/creaseui/hover-card-behavior"
+        "Potti1234/creaseui/utils"
       ],
       "examples": [
         "Basic",
@@ -2787,7 +2773,6 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/input",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/input-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -3051,7 +3036,6 @@
       "source": "src/ui/menubar.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/menubar",
       "dependencies": [
-        "Potti1234/creaseui/menubar-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/dropdown-menu",
         "Potti1234/creaseui/utils"
@@ -3423,7 +3407,6 @@
       "source": "src/ui/pagination.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/pagination",
       "dependencies": [
-        "Potti1234/creaseui/pagination-behavior",
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -3612,8 +3595,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/progress",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/utils",
-        "Potti1234/creaseui/progress-normalization"
+        "Potti1234/creaseui/utils"
       ],
       "examples": [
         "Basic",
@@ -3645,7 +3627,6 @@
       "source": "src/ui/radio-group.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/radio-group",
       "dependencies": [
-        "Potti1234/creaseui/radio-group-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -4362,7 +4343,6 @@
       "source": "src/ui/slider.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/slider",
       "dependencies": [
-        "Potti1234/creaseui/slider-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
       ],
@@ -4481,7 +4461,6 @@
       "source": "src/ui/sonner.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/sonner",
       "dependencies": [
-        "Potti1234/creaseui/toast-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -4546,6 +4525,47 @@
       ]
     },
     {
+      "slug": "status-dot",
+      "title": "Status Dot",
+      "description": "A shadcn-styled Status Dot component for Foldkit.",
+      "docs": "/docs/components/status-dot",
+      "source": "src/ui/status-dot.ts",
+      "install": "npx shadcn@latest add Potti1234/creaseui/status-dot",
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "Status Dot",
+        "StatusDot — Variants",
+        "StatusDot — Pulsing",
+        "StatusDot — Status Indicators"
+      ],
+      "api": [
+        {
+          "name": "statusDotVariants",
+          "kind": "value",
+          "signature": "statusDotVariants: value"
+        },
+        {
+          "name": "StatusDotVariants",
+          "kind": "type",
+          "signature": "StatusDotVariants = VariantProps<typeof statusDotVariants>"
+        },
+        {
+          "name": "StatusDotProps",
+          "kind": "type",
+          "signature": "StatusDotProps = Readonly<{ /** The semantic color variant. */ variant: NonNullable<StatusDotVariants['variant']>; /** Accessible label describing the status (the dot's aria-label). */ label: string; /** Pulses the dot to indicate activity; honors prefers-red…"
+        },
+        {
+          "name": "statusDot",
+          "kind": "function",
+          "signature": "statusDot<Msg>(props: StatusDotProps, h: HtmlBuilder<Msg>): Html"
+        }
+      ]
+    },
+    {
       "slug": "switch",
       "title": "Switch",
       "description": "A shadcn-styled Switch component for Foldkit.",
@@ -4553,7 +4573,6 @@
       "source": "src/ui/switch.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/switch",
       "dependencies": [
-        "Potti1234/creaseui/switch-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
       ],
@@ -4774,9 +4793,7 @@
       "source": "src/ui/textarea.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/textarea",
       "dependencies": [
-        "Potti1234/creaseui/message-scroller-behavior",
         "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/textarea-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -4837,7 +4854,6 @@
       "source": "src/ui/toggle-group.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/toggle-group",
       "dependencies": [
-        "Potti1234/creaseui/toggle-group-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/toggle",
         "Potti1234/creaseui/utils"
@@ -4967,8 +4983,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/tooltip",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/utils",
-        "Potti1234/creaseui/tooltip-behavior"
+        "Potti1234/creaseui/utils"
       ],
       "examples": [
         "Basic",

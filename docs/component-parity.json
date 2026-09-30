@@ -23,10 +23,11 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 65,
+    "registryItems": 66,
     "creaseOnlyRecipes": [
       "data-table",
       "date-picker",
+      "status-dot",
       "typography"
     ]
   },
@@ -1043,6 +1044,24 @@
         "src/ui/spinner.ts",
         "src/ui/registry.json#spinner",
         "/docs/components/spinner"
+      ]
+    },
+    {
+      "component": "status-dot",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/status-dot.ts",
+        "src/ui/registry.json#status-dot",
+        "/docs/components/status-dot"
       ]
     },
     {

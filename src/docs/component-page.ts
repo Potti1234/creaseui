@@ -66,6 +66,7 @@ export const COMPONENTS = [
   'Slider',
   'Sonner',
   'Spinner',
+  'Status Dot',
   'Switch',
   'Table',
   'Tabs',

@@ -60,6 +60,7 @@ export * as Skeleton from './skeleton.js'
 export * as Slider from './slider.js'
 export * as Sonner from './sonner.js'
 export * as Spinner from './spinner.js'
+export * as StatusDot from './status-dot.js'
 export * as Switch from './switch.js'
 export * as Table from './table.js'
 export * as Tabs from './tabs.js'
@@ -128,6 +129,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'slider',
   'sonner',
   'spinner',
+  'status-dot',
   'switch',
   'table',
   'tabs',

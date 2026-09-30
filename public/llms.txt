@@ -71,6 +71,7 @@
 - Slider: /docs/components/slider — install with `npx shadcn@latest add Potti1234/creaseui/slider`
 - Sonner: /docs/components/sonner — install with `npx shadcn@latest add Potti1234/creaseui/sonner`
 - Spinner: /docs/components/spinner — install with `npx shadcn@latest add Potti1234/creaseui/spinner`
+- Status Dot: /docs/components/status-dot — install with `npx shadcn@latest add Potti1234/creaseui/status-dot`
 - Switch: /docs/components/switch — install with `npx shadcn@latest add Potti1234/creaseui/switch`
 - Table: /docs/components/table — install with `npx shadcn@latest add Potti1234/creaseui/table`
 - Tabs: /docs/components/tabs — install with `npx shadcn@latest add Potti1234/creaseui/tabs`

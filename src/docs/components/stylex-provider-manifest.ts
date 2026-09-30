@@ -63,6 +63,7 @@ import { formStyleXPreview } from '@/docs/components/pages/form/stylex';
 import { inputGroupStyleXPreview } from '@/docs/components/pages/input-group/stylex';
 import { sidebarStyleXPreview } from '@/docs/components/pages/sidebar/stylex';
 import { sonnerStyleXPreview } from '@/docs/components/pages/sonner/stylex';
+import { statusDotStyleXPreview } from '@/docs/components/pages/status-dot/stylex';
 import { toastStyleXPreview } from '@/docs/components/pages/toast/stylex';
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview);
@@ -129,4 +130,5 @@ installStyleXExamplePreviewProvider('form', formStyleXPreview);
 installStyleXExamplePreviewProvider('input-group', inputGroupStyleXPreview);
 installStyleXExamplePreviewProvider('sidebar', sidebarStyleXPreview);
 installStyleXExamplePreviewProvider('sonner', sonnerStyleXPreview);
+installStyleXExamplePreviewProvider('status-dot', statusDotStyleXPreview);
 installStyleXExamplePreviewProvider('toast', toastStyleXPreview);

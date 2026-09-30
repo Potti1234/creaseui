@@ -34,11 +34,35 @@ Crease UI token:
   `src/stylex/tokens.stylex.ts`.
 - Spacing/sizes: copy astryx's computed px values (a 32px control stays 32px).
 
-If a genuinely needed token is missing, define it *locally* in the component's
-stylex file (stylex.defineVars or plain values referencing the CSS vars). Do
-NOT edit `src/stylex/tokens.stylex.ts`, `contracts.ts`, `style.ts`,
-`foundations-tokens.stylex.ts`, or any file owned by another batch — report the
-need instead.
+**Hard lint contract for `src/stylex/*.ts`** (`@stylexjs/valid-styles`
+propLimits, errors not warnings):
+
+- Every color property (`color`, `backgroundColor`, `borderColor`, `fill`,
+  `stroke`, `*Color`) may only be `'transparent'`, `'currentColor'`, or a
+  `tokens.*` member from `tokens.stylex.ts` (their values are `var(--x)`
+  references, which is why they pass — `stylex.defineVars` locals with literal
+  colors still get resolved to the literal and FAIL).
+- `borderRadius`: `'0px'`, `'50%'`, or a shared token
+  (`foundationTokens.radius*`).
+- `animationDuration`/`animationTimingFunction`/`transitionDuration`/
+  `transitionTimingFunction`/`cursor`: ONLY `interactionTokens.*` members from
+  `interaction-tokens.stylex.const.ts` (`motionLoopFast/Medium/Slow`,
+  `motionFast/Moderate/Slow`, `motionNone`, `easingStandard`, …). Keyframes go
+  in `animationName` (see `skeleton.ts`/`spinner.ts` for the
+  prefers-reduced-motion pattern).
+- `@stylexjs/sort-keys` enforces property ordering — run
+  `npx eslint --fix <files>` on everything you write.
+
+If a genuinely needed semantic token does not exist in `tokens.stylex.ts` (a
+named CSS var, a `color-mix`, a fixed oklch like a status ink), use the closest
+existing token and leave a `/* PORT-NOTE: needs token '<name>' = <value> */`
+comment at the usage site plus a line in your final report — the integrator
+adds it to `tokens.stylex.ts` in one place. Do NOT edit `tokens.stylex.ts`,
+`contracts.ts`, `style.ts`, `foundations-tokens.stylex.ts`,
+`interaction-tokens.stylex.const.ts`, or any file owned by another batch —
+those files are merge hotspots. (You DO edit the two registration manifests —
+`pages/index.ts` and `stylex-provider-manifest.ts` — inserting your entries in
+alphabetical order so concurrent batches merge cleanly.)
 
 ## File inventory for component `<slug>` (kebab-case)
 
@@ -77,9 +101,53 @@ need instead.
    `src/docs/components/stylex-provider-manifest.ts` — import
    `<slug>StyleXPreview` and add
    `installStyleXExamplePreviewProvider('<slug>', <slug>StyleXPreview);`.
-7. Registry/examples of consumer-visible behavior tests: add a focused
-   `test/<slug>.test.ts` for any stateful logic (match the style of existing
-   tests).
+7. `src/docs/component-page.ts` — add the Title-Case display name to the
+   `COMPONENTS` array (sorted, e.g. `'Status Dot'` between `'Spinner'` and
+   `'Switch'`). `documentedSlugs` is derived from this list; every docs page
+   must have a route here and vice versa.
+8. `src/stylex/index.ts` — add `export * as <PascalName> from './<slug>.js'`
+   (alphabetical) AND `'<slug>'` in `STYLEX_COMPONENT_NAMES` (same order).
+   `test/stylex-catalog.test.ts` enforces the closed tuple, namespace exports,
+   and that `src/stylex/<slug>.ts` exists for every registry item.
+9. `test/stylex-catalog.test.ts` — two shared edits per new component:
+   - `intentionallyRemovedStylingExports`: if your `src/ui/<slug>.ts` exports a
+     cva `<name>Variants` value and `<Name>Variants` type, add
+     `['<slug>', new Set(['<Name>Variants', '<name>Variants'])]` (StyleX drops
+     cva; every other ui export must exist in the stylex file — the test
+     diffs the two modules' export names).
+   - `assert.equal(componentNames.length, N)` — bump N by your batch size
+     (base = 66; the integrator reconciles the final total at merge).
+10. `test/parity-contract.test.ts` — insert each new `'<slug>'` (sorted) into
+    the hardcoded `creaseOnlyRecipes` array.
+11. `src/lib/project-facts.ts` — bump `COMPONENT_COUNT` by your batch size
+    (base = 66; reconciled at merge).
+12. Add a focused `test/<slug>.test.ts` for any stateful logic (match the
+    style of existing tests).
+
+### `src/stylex/<slug>.ts` additional constraints (test-enforced)
+
+- No `class-variance-authority`, no `@/lib/utils`, no `h.Class('…')` string
+  literals — StyleX modules must not fall back to Tailwind/class strings.
+- Prop-parity test: public prop types present in BOTH ui and stylex must keep
+  the same prop names, except `class` (ui) which maps to `layoutStyle`
+  (stylex). Keep the two `*Props` types aligned otherwise.
+- Do not export public string-based class styling props.
+
+### Docs-page constraints (test-enforced)
+
+- Every page needs ≥ 2 `dedicatedExampleTitles` (the astryx example blocks —
+  you will almost always have ≥ 2; a single-example astryx component is NOT
+  acceptable alone, combine its real astryx demos or flag it in your report).
+- `staticComponentApplication` AUTO-emits `import * as <Name> from
+  '@/ui|stylex/<slug>'` — `componentImports` carries only EXTRA imports
+  (stylex/styles/etc). Never re-emit the component import: the docs-example
+  typecheck fails with `Duplicate identifier`.
+- `exactOptionalPropertyTypes` is on: `componentImports` must be a `string`
+  (use the `.filter(Boolean).join('\n')` pattern from `badge/shared.ts`), never
+  `undefined`.
+- If `previewMode: 'static'`, every `DocsExample` needs `staticPreview` set.
+- `rendererExamplesAreInParity` — tailwind and stylex examples are generated
+  from the same fixtures; keep them 1:1.
 
 ## Examples must be astryx's examples
 

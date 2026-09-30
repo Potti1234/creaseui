@@ -55,6 +55,7 @@ describe('multidimensional component parity', () => {
     assert.deepEqual(parity.summary.creaseOnlyRecipes, [
       'data-table',
       'date-picker',
+      'status-dot',
       'typography',
     ])
   })

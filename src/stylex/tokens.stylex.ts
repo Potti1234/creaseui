@@ -27,6 +27,10 @@ export const tokens = stylex.defineVars({
   badgeDestructiveHover:
     'color-mix(in oklab, var(--destructive) 20%, transparent)',
   badgeMutedHover: 'var(--stylex-muted-hover)',
+  /* Fixed inks for chromatic status plates (Astryx --color-on-* port): these
+     deliberately do not follow the theme's foreground flip. */
+  statusPlateInk: 'oklch(0.985 0 0)',
+  statusWarningInk: 'oklch(0.205 0 0)',
   badgePrimaryHover: 'color-mix(in oklab, var(--primary) 80%, transparent)',
   badgeSecondaryHover: 'color-mix(in oklab, var(--secondary) 80%, transparent)',
   buttonPrimaryHover: 'color-mix(in oklab, var(--primary) 80%, transparent)',

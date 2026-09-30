@@ -1025,6 +1025,17 @@ Source: [`src/ui/spinner.ts`](../src/ui/spinner.ts)
 | `SpinnerProps` | type | `SpinnerProps = SpinnerAccessibility & Readonly<{ size?: 'sm' \| 'md' \| 'lg' \| 'xl'; tone?: 'current' \| 'muted' \| 'primary'; /** Emits data-icon="inline-start\|inline-end" for parent icon positioning. */ dataIcon?: 'inline-start' \| 'inline-end'; class?: string; …` |
 | `spinner` | function | `spinner<Msg>(props: SpinnerProps, h: HtmlBuilder<Msg>): Html` |
 
+## Status Dot
+
+Source: [`src/ui/status-dot.ts`](../src/ui/status-dot.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `statusDotVariants` | value | `statusDotVariants: value` |
+| `StatusDotVariants` | type | `StatusDotVariants = VariantProps<typeof statusDotVariants>` |
+| `StatusDotProps` | type | `StatusDotProps = Readonly<{ /** The semantic color variant. */ variant: NonNullable<StatusDotVariants['variant']>; /** Accessible label describing the status (the dot's aria-label). */ label: string; /** Pulses the dot to indicate activity; honors prefers-red…` |
+| `statusDot` | function | `statusDot<Msg>(props: StatusDotProps, h: HtmlBuilder<Msg>): Html` |
+
 ## Switch
 
 Source: [`src/ui/switch.ts`](../src/ui/switch.ts)

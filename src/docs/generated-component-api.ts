@@ -3268,6 +3268,28 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "spinner<Msg>(props: SpinnerProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "status-dot": [
+    {
+      "name": "statusDotVariants",
+      "kind": "value",
+      "signature": "statusDotVariants: value"
+    },
+    {
+      "name": "StatusDotVariants",
+      "kind": "type",
+      "signature": "StatusDotVariants = VariantProps<typeof statusDotVariants>"
+    },
+    {
+      "name": "StatusDotProps",
+      "kind": "type",
+      "signature": "StatusDotProps = Readonly<{ /** The semantic color variant. */ variant: NonNullable<StatusDotVariants['variant']>; /** Accessible label describing the status (the dot's aria-label). */ label: string; /** Pulses the dot to indicate activity; honors prefers-red…"
+    },
+    {
+      "name": "statusDot",
+      "kind": "function",
+      "signature": "statusDot<Msg>(props: StatusDotProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "switch": [
     {
       "name": "SwitchSize",
