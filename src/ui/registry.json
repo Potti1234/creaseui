@@ -133,6 +133,25 @@
       ]
     },
     {
+      "name": "banner",
+      "type": "registry:ui",
+      "title": "Banner",
+      "description": "A shadcn-styled Banner component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/button",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "banner.ts",
+          "type": "registry:ui",
+          "target": "@ui/banner.ts"
+        }
+      ]
+    },
+    {
       "name": "breadcrumb",
       "type": "registry:ui",
       "title": "Breadcrumb",
@@ -300,6 +319,23 @@
           "path": "checkbox.ts",
           "type": "registry:ui",
           "target": "@ui/checkbox.ts"
+        }
+      ]
+    },
+    {
+      "name": "clickable-card",
+      "type": "registry:ui",
+      "title": "Clickable Card",
+      "description": "A shadcn-styled Clickable Card component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "clickable-card.ts",
+          "type": "registry:ui",
+          "target": "@ui/clickable-card.ts"
         }
       ]
     },
@@ -497,6 +533,24 @@
           "path": "empty.ts",
           "type": "registry:ui",
           "target": "@ui/empty.ts"
+        }
+      ]
+    },
+    {
+      "name": "field-status",
+      "type": "registry:ui",
+      "title": "Field Status",
+      "description": "A shadcn-styled Field Status component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "field-status.ts",
+          "type": "registry:ui",
+          "target": "@ui/field-status.ts"
         }
       ]
     },
@@ -738,6 +792,43 @@
       ]
     },
     {
+      "name": "metadata-list",
+      "type": "registry:ui",
+      "title": "Metadata List",
+      "description": "A shadcn-styled Metadata List component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "metadata-list.ts",
+          "type": "registry:ui",
+          "target": "@ui/metadata-list.ts"
+        }
+      ]
+    },
+    {
+      "name": "more-menu",
+      "type": "registry:ui",
+      "title": "More Menu",
+      "description": "A shadcn-styled More Menu component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/button",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/dropdown-menu",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "more-menu.ts",
+          "type": "registry:ui",
+          "target": "@ui/more-menu.ts"
+        }
+      ]
+    },
+    {
       "name": "native-select",
       "type": "registry:ui",
       "title": "Native Select",
@@ -771,6 +862,23 @@
           "path": "navigation-menu.ts",
           "type": "registry:ui",
           "target": "@ui/navigation-menu.ts"
+        }
+      ]
+    },
+    {
+      "name": "overflow-list",
+      "type": "registry:ui",
+      "title": "Overflow List",
+      "description": "A shadcn-styled Overflow List component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "overflow-list.ts",
+          "type": "registry:ui",
+          "target": "@ui/overflow-list.ts"
         }
       ]
     },
@@ -895,6 +1003,23 @@
           "path": "select.ts",
           "type": "registry:ui",
           "target": "@ui/select.ts"
+        }
+      ]
+    },
+    {
+      "name": "selectable-card",
+      "type": "registry:ui",
+      "title": "Selectable Card",
+      "description": "A shadcn-styled Selectable Card component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "selectable-card.ts",
+          "type": "registry:ui",
+          "target": "@ui/selectable-card.ts"
         }
       ]
     },

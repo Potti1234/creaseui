@@ -6,6 +6,7 @@ import { aspectRatioPage } from '@/docs/components/pages/aspect-ratio';
 import { attachmentPage } from '@/docs/components/pages/attachment';
 import { avatarPage } from '@/docs/components/pages/avatar';
 import { badgePage } from '@/docs/components/pages/badge';
+import { bannerPage } from '@/docs/components/pages/banner';
 import { breadcrumbPage } from '@/docs/components/pages/breadcrumb';
 import { bubblePage } from '@/docs/components/pages/bubble';
 import { buttonPage } from '@/docs/components/pages/button';
@@ -15,6 +16,7 @@ import { cardPage } from '@/docs/components/pages/card';
 import { carouselPage } from '@/docs/components/pages/carousel';
 import { chartPage } from '@/docs/components/pages/chart';
 import { checkboxPage } from '@/docs/components/pages/checkbox';
+import { clickableCardPage } from '@/docs/components/pages/clickable-card';
 import { collapsiblePage } from '@/docs/components/pages/collapsible';
 import { comboboxPage } from '@/docs/components/pages/combobox';
 import { commandPage } from '@/docs/components/pages/command';
@@ -27,6 +29,7 @@ import { drawerPage } from '@/docs/components/pages/drawer';
 import { dropdownMenuPage } from '@/docs/components/pages/dropdown-menu';
 import { emptyPage } from '@/docs/components/pages/empty';
 import { fieldPage } from '@/docs/components/pages/field';
+import { fieldStatusPage } from '@/docs/components/pages/field-status';
 import { formPage } from '@/docs/components/pages/form';
 import { hoverCardPage } from '@/docs/components/pages/hover-card';
 import { itemPage } from '@/docs/components/pages/item';
@@ -39,14 +42,18 @@ import { markerPage } from '@/docs/components/pages/marker';
 import { messagePage } from '@/docs/components/pages/message';
 import { messageScrollerPage } from '@/docs/components/pages/message-scroller';
 import { menubarPage } from '@/docs/components/pages/menubar';
+import { metadataListPage } from '@/docs/components/pages/metadata-list';
+import { moreMenuPage } from '@/docs/components/pages/more-menu';
 import { nativeSelectPage } from '@/docs/components/pages/native-select';
 import { navigationMenuPage } from '@/docs/components/pages/navigation-menu';
+import { overflowListPage } from '@/docs/components/pages/overflow-list';
 import { paginationPage } from '@/docs/components/pages/pagination';
 import { popoverPage } from '@/docs/components/pages/popover';
 import { progressPage } from '@/docs/components/pages/progress';
 import { radioGroupPage } from '@/docs/components/pages/radio-group';
 import { resizablePage } from '@/docs/components/pages/resizable';
 import { scrollAreaPage } from '@/docs/components/pages/scroll-area';
+import { selectableCardPage } from '@/docs/components/pages/selectable-card';
 import { separatorPage } from '@/docs/components/pages/separator';
 import { selectPage } from '@/docs/components/pages/select';
 import { sheetPage } from '@/docs/components/pages/sheet';
@@ -76,6 +83,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       attachmentPage,
       avatarPage,
       badgePage,
+      bannerPage,
       breadcrumbPage,
       bubblePage,
       buttonPage,
@@ -85,6 +93,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       carouselPage,
       chartPage,
       checkboxPage,
+      clickableCardPage,
       collapsiblePage,
       comboboxPage,
       commandPage,
@@ -97,6 +106,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       dropdownMenuPage,
       emptyPage,
       fieldPage,
+      fieldStatusPage,
       formPage,
       hoverCardPage,
       itemPage,
@@ -109,14 +119,18 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       messagePage,
       messageScrollerPage,
       menubarPage,
+      metadataListPage,
+      moreMenuPage,
       nativeSelectPage,
       navigationMenuPage,
+      overflowListPage,
       paginationPage,
       popoverPage,
       progressPage,
       radioGroupPage,
       resizablePage,
       scrollAreaPage,
+      selectableCardPage,
       separatorPage,
       selectPage,
       sheetPage,

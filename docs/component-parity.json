@@ -23,10 +23,17 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 66,
+    "registryItems": 73,
     "creaseOnlyRecipes": [
+      "banner",
+      "clickable-card",
       "data-table",
       "date-picker",
+      "field-status",
+      "metadata-list",
+      "more-menu",
+      "overflow-list",
+      "selectable-card",
       "status-dot",
       "typography"
     ]
@@ -156,6 +163,24 @@
         "src/ui/badge.ts",
         "src/ui/registry.json#badge",
         "/docs/components/badge"
+      ]
+    },
+    {
+      "component": "banner",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/banner.ts",
+        "src/ui/registry.json#banner",
+        "/docs/components/banner"
       ]
     },
     {
@@ -319,6 +344,24 @@
         "src/ui/checkbox.ts",
         "src/ui/registry.json#checkbox",
         "/docs/components/checkbox"
+      ]
+    },
+    {
+      "component": "clickable-card",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/clickable-card.ts",
+        "src/ui/registry.json#clickable-card",
+        "/docs/components/clickable-card"
       ]
     },
     {
@@ -540,6 +583,24 @@
       ]
     },
     {
+      "component": "field-status",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/field-status.ts",
+        "src/ui/registry.json#field-status",
+        "/docs/components/field-status"
+      ]
+    },
+    {
       "component": "form",
       "upstream": true,
       "classification": "full",
@@ -757,6 +818,42 @@
       ]
     },
     {
+      "component": "metadata-list",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/metadata-list.ts",
+        "src/ui/registry.json#metadata-list",
+        "/docs/components/metadata-list"
+      ]
+    },
+    {
+      "component": "more-menu",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/more-menu.ts",
+        "src/ui/registry.json#more-menu",
+        "/docs/components/more-menu"
+      ]
+    },
+    {
       "component": "native-select",
       "upstream": true,
       "classification": "full",
@@ -790,6 +887,24 @@
         "src/ui/navigation-menu.ts",
         "src/ui/registry.json#navigation-menu",
         "/docs/components/navigation-menu"
+      ]
+    },
+    {
+      "component": "overflow-list",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/overflow-list.ts",
+        "src/ui/registry.json#overflow-list",
+        "/docs/components/overflow-list"
       ]
     },
     {
@@ -917,6 +1032,24 @@
         "src/ui/registry.json#select",
         "/docs/components/select",
         "e2e/site.spec.ts#flagship-accessibility"
+      ]
+    },
+    {
+      "component": "selectable-card",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/selectable-card.ts",
+        "src/ui/registry.json#selectable-card",
+        "/docs/components/selectable-card"
       ]
     },
     {

@@ -11,6 +11,7 @@ export * as AspectRatio from './aspect-ratio.js'
 export * as Attachment from './attachment.js'
 export * as Avatar from './avatar.js'
 export * as Badge from './badge.js'
+export * as Banner from './banner.js'
 export * as Breadcrumb from './breadcrumb.js'
 export * as Bubble from './bubble.js'
 export * as ButtonGroup from './button-group.js'
@@ -20,6 +21,7 @@ export * as Card from './card.js'
 export * as Carousel from './carousel.js'
 export * as Chart from './chart.js'
 export * as Checkbox from './checkbox.js'
+export * as ClickableCard from './clickable-card.js'
 export * as Collapsible from './collapsible.js'
 export * as Combobox from './combobox.js'
 export * as Command from './command.js'
@@ -31,6 +33,7 @@ export * as Direction from './direction.js'
 export * as Drawer from './drawer.js'
 export * as DropdownMenu from './dropdown-menu.js'
 export * as Empty from './empty.js'
+export * as FieldStatus from './field-status.js'
 export * as Field from './field.js'
 export * as Form from './form.js'
 export * as HoverCard from './hover-card.js'
@@ -44,8 +47,11 @@ export * as Marker from './marker.js'
 export * as Menubar from './menubar.js'
 export * as MessageScroller from './message-scroller.js'
 export * as Message from './message.js'
+export * as MetadataList from './metadata-list.js'
+export * as MoreMenu from './more-menu.js'
 export * as NativeSelect from './native-select.js'
 export * as NavigationMenu from './navigation-menu.js'
+export * as OverflowList from './overflow-list.js'
 export * as Pagination from './pagination.js'
 export * as Popover from './popover.js'
 export * as Progress from './progress.js'
@@ -53,6 +59,7 @@ export * as RadioGroup from './radio-group.js'
 export * as Resizable from './resizable.js'
 export * as ScrollArea from './scroll-area.js'
 export * as Select from './select.js'
+export * as SelectableCard from './selectable-card.js'
 export * as Separator from './separator.js'
 export * as Sheet from './sheet.js'
 export * as Sidebar from './sidebar.js'
@@ -80,6 +87,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'attachment',
   'avatar',
   'badge',
+  'banner',
   'breadcrumb',
   'bubble',
   'button-group',
@@ -89,6 +97,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'carousel',
   'chart',
   'checkbox',
+  'clickable-card',
   'collapsible',
   'combobox',
   'command',
@@ -100,6 +109,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'drawer',
   'dropdown-menu',
   'empty',
+  'field-status',
   'field',
   'form',
   'hover-card',
@@ -113,8 +123,11 @@ export const STYLEX_COMPONENT_NAMES = [
   'menubar',
   'message-scroller',
   'message',
+  'metadata-list',
+  'more-menu',
   'native-select',
   'navigation-menu',
+  'overflow-list',
   'pagination',
   'popover',
   'progress',
@@ -122,6 +135,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'resizable',
   'scroll-area',
   'select',
+  'selectable-card',
   'separator',
   'sheet',
   'sidebar',
