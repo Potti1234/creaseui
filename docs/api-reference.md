@@ -113,6 +113,15 @@ Source: [`src/ui/badge.ts`](../src/ui/badge.ts)
 | `BadgeProps` | type | `BadgeProps = Readonly<{ children: ReadonlyArray<Html \| string>; variant?: BadgeVariants['variant']; class?: string; /** Renders the badge as an anchor pointing at this URL. */ href?: string; }>` |
 | `badge` | function | `badge<Msg>(props: BadgeProps, h: HtmlBuilder<Msg>): Html` |
 
+## Blockquote
+
+Source: [`src/ui/blockquote.ts`](../src/ui/blockquote.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `BlockquoteProps` | type | `BlockquoteProps = Readonly<{ children: ReadonlyArray<Html \| string>; cite?: string; class?: string; }>` |
+| `blockquote` | function | `blockquote<Msg>(props: BlockquoteProps, h: HtmlBuilder<Msg>): Html` |
+
 ## Breadcrumb
 
 Source: [`src/ui/breadcrumb.ts`](../src/ui/breadcrumb.ts)
@@ -276,6 +285,38 @@ Source: [`src/ui/checkbox.ts`](../src/ui/checkbox.ts)
 | --- | --- | --- |
 | `CheckboxProps` | type | `CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> & Readonly<{ class?: string }>` |
 | `checkbox` | function | `checkbox<Msg>(props: CheckboxProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Code Block
+
+Source: [`src/ui/code-block.ts`](../src/ui/code-block.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `init` | re-export | `export { init } from ` |
+| `Model` | re-export | `export { Model } from ` |
+| `Message` | re-export | `export { Message } from ` |
+| `update` | re-export | `export { update } from ` |
+| `SyntaxToken` | re-export | `export { SyntaxToken } from ` |
+| `TokenLine` | re-export | `export { TokenLine } from ` |
+| `codeLines` | re-export | `export { codeLines } from ` |
+| `tokenize` | re-export | `export { tokenize } from ` |
+| `flatTokensToLines` | re-export | `export { flatTokensToLines } from ` |
+| `CodeBlockSize` | type | `CodeBlockSize = 'sm' \| 'md'` |
+| `CodeBlockContainer` | type | `CodeBlockContainer = 'card' \| 'section'` |
+| `CustomTokenizer` | type | `CustomTokenizer = ( code: string, language: string, ) => ReadonlyArray<{ type: string; start: number; end: number }>` |
+| `CodeBlockProps` | type | `CodeBlockProps<Msg> = Readonly<{ /** The CodeBlock submodel state (see `init`/`update` in `@/lib/code-block`). */ model: Model; toParentMessage: (message: Message) => Msg; code: string; language?: string; title?: string; hasLanguageLabel?: boolean; hasLineNum…` |
+| `codeBlock` | function | `codeBlock<Msg>(props: CodeBlockProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Code
+
+Source: [`src/ui/code.ts`](../src/ui/code.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `CodeColor` | type | `CodeColor = 'primary' \| 'secondary' \| 'inherit'` |
+| `CodeSize` | type | `CodeSize = 'inherit'` |
+| `CodeProps` | type | `CodeProps = Readonly<{ children: ReadonlyArray<Html \| string>; color?: CodeColor; size?: CodeSize; class?: string; }>` |
+| `code` | function | `code<Msg>(props: CodeProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Collapsible
 
@@ -557,6 +598,19 @@ Source: [`src/ui/form.ts`](../src/ui/form.ts)
 | `FormMessageProps` | type | `FormMessageProps = Readonly<{ id?: string; class?: string; message?: string; errors?: ReadonlyArray<Field.FieldError>; }>` |
 | `formMessage` | function | `formMessage<Msg>(props: FormMessageProps = {}, h: HtmlBuilder<Msg>): Html` |
 
+## Heading
+
+Source: [`src/ui/heading.ts`](../src/ui/heading.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `HeadingLevel` | type | `HeadingLevel = 1 \| 2 \| 3 \| 4 \| 5 \| 6` |
+| `HeadingType` | type | `HeadingType = 'display-1' \| 'display-2' \| 'display-3'` |
+| `headingVariants` | value | `headingVariants: value` |
+| `HeadingVariants` | type | `HeadingVariants = VariantProps<typeof headingVariants>` |
+| `HeadingProps` | type | `HeadingProps = Readonly<{ children: ReadonlyArray<Html \| string>; level: HeadingLevel; type?: HeadingType; weight?: TextWeight; accessibilityLevel?: HeadingLevel; color?: TextColor; display?: TextDisplay; maxLines?: number; wordBreak?: TextWordBreak; textWrap…` |
+| `heading` | function | `heading<Msg>(props: HeadingProps, h: HtmlBuilder<Msg>): Html` |
+
 ## Hover Card
 
 Source: [`src/ui/hover-card.ts`](../src/ui/hover-card.ts)
@@ -667,6 +721,58 @@ Source: [`src/ui/label.ts`](../src/ui/label.ts)
 | --- | --- | --- |
 | `LabelProps` | type | `LabelProps = Readonly<{ for?: string; isRequired?: boolean; isDisabled?: boolean; class?: string; children: ReadonlyArray<Html \| string>; }>` |
 | `label` | function | `label<Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html` |
+
+## Link
+
+Source: [`src/ui/link.ts`](../src/ui/link.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `linkVariants` | value | `linkVariants: value` |
+| `LinkVariants` | type | `LinkVariants = VariantProps<typeof linkVariants>` |
+| `LinkProps` | type | `LinkProps<Msg> = Readonly<{ children: ReadonlyArray<Html \| string>; href?: string; label?: string; hasUnderline?: boolean; isDisabled?: boolean; isExternalLink?: boolean; newTabLabel?: string; target?: string; rel?: string; download?: string; onClick?: Msg; t…` |
+| `link` | function | `link<Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## List
+
+Source: [`src/ui/list.ts`](../src/ui/list.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `ListDensity` | type | `ListDensity = 'compact' \| 'balanced' \| 'spacious'` |
+| `ListMarkerStyle` | type | `ListMarkerStyle = 'none' \| 'disc' \| 'decimal' \| 'circle'` |
+| `ListEdgeCompensation` | type | `ListEdgeCompensation = 'inline'` |
+| `ListProps` | type | `ListProps = Readonly<{ children: ReadonlyArray<Html>; density?: ListDensity; hasDividers?: boolean; edgeCompensation?: ListEdgeCompensation; /** Header content rendered above the list, associated via aria-labelledby. */ header?: Html \| string; /** List marker…` |
+| `list` | function | `list<Msg>(props: ListProps, h: HtmlBuilder<Msg>): Html` |
+| `ListItemProps` | type | `ListItemProps<Msg> = Readonly<{ /** Primary label. A plain string truncates to one line. */ label: Html \| string; /** Secondary description under the label; strings truncate to one line. */ description?: Html \| string; /** Content rendered before the item (ic…` |
+| `listItem` | function | `listItem<Msg>(props: ListItemProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Markdown
+
+Source: [`src/ui/markdown.ts`](../src/ui/markdown.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `init` | re-export | `export { init } from '@/lib/markdown'` |
+| `Message` | re-export | `export { Message } from '@/lib/markdown'` |
+| `Model` | re-export | `export { Model } from '@/lib/markdown'` |
+| `update` | re-export | `export { update } from '@/lib/markdown'` |
+| `parseMarkdownBlocks` | re-export | `export { parseMarkdownBlocks } from '@/lib/markdown'` |
+| `parseMarkdownInline` | re-export | `export { parseMarkdownInline } from '@/lib/markdown'` |
+| `sanitizeMarkdownUrl` | re-export | `export { sanitizeMarkdownUrl } from '@/lib/markdown'` |
+| `MarkdownBlock` | re-export | `export { MarkdownBlock } from '@/lib/markdown'` |
+| `MarkdownInline` | re-export | `export { MarkdownInline } from '@/lib/markdown'` |
+| `MarkdownListItem` | re-export | `export { MarkdownListItem } from '@/lib/markdown'` |
+| `MarkdownSource` | re-export | `export { MarkdownSource } from '@/lib/markdown'` |
+| `MarkdownTableAlign` | re-export | `export { MarkdownTableAlign } from '@/lib/markdown'` |
+| `MarkdownTableCell` | re-export | `export { MarkdownTableCell } from '@/lib/markdown'` |
+| `MarkdownTableRow` | re-export | `export { MarkdownTableRow } from '@/lib/markdown'` |
+| `MarkdownDisplay` | type | `MarkdownDisplay = 'block' \| 'inline'` |
+| `MarkdownDensity` | type | `MarkdownDensity = 'default' \| 'compact'` |
+| `MarkdownCitationStyle` | type | `MarkdownCitationStyle = 'label' \| 'number'` |
+| `MarkdownContentAlign` | type | `MarkdownContentAlign = 'start' \| 'center'` |
+| `MarkdownProps` | type | `MarkdownProps<Msg> = Readonly<{ /** Markdown submodel state (owns the per-fence CodeBlock models). */ model: Model; toParentMessage: (message: Message) => Msg; /** Markdown source string. */ children: string; display?: MarkdownDisplay; density?: MarkdownDensi…` |
+| `markdown` | function | `markdown<Msg>(props: MarkdownProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Marker
 
@@ -1086,6 +1192,26 @@ Source: [`src/ui/tabs.ts`](../src/ui/tabs.ts)
 | `create` | function | `create<Value extends string = string>(): TabsBundle<Value>` |
 | `update` | value | `update: value` |
 | `tabs` | value | `tabs: value` |
+
+## Text
+
+Source: [`src/ui/text.ts`](../src/ui/text.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `TextType` | type | `TextType = \| 'body' \| 'large' \| 'label' \| 'supporting' \| 'code' \| 'display-1' \| 'display-2' \| 'display-3' \| 'inherit'` |
+| `TextSize` | type | `TextSize = \| '4xs' \| '3xs' \| '2xs' \| 'xsm' \| 'sm' \| 'base' \| 'lg' \| 'xl' \| '2xl' \| '3xl' \| '4xl'` |
+| `TextColor` | type | `TextColor = \| 'primary' \| 'secondary' \| 'disabled' \| 'placeholder' \| 'accent' \| 'inherit'` |
+| `TextWeight` | type | `TextWeight = 'normal' \| 'medium' \| 'semibold' \| 'bold'` |
+| `TextDisplay` | type | `TextDisplay = 'inline' \| 'block'` |
+| `TextJustify` | type | `TextJustify = 'start' \| 'center' \| 'end'` |
+| `TextWordBreak` | type | `TextWordBreak = 'break-word' \| 'break-all'` |
+| `TextWrap` | type | `TextWrap = 'wrap' \| 'nowrap' \| 'balance' \| 'pretty'` |
+| `TextElement` | type | `TextElement = 'span' \| 'p' \| 'div' \| 'label' \| 'h1' \| 'h2' \| 'h3'` |
+| `textVariants` | value | `textVariants: value` |
+| `TextVariants` | type | `TextVariants = VariantProps<typeof textVariants>` |
+| `TextProps` | type | `TextProps = Readonly<{ children: ReadonlyArray<Html \| string>; type?: TextType; size?: TextSize; color?: TextColor; weight?: TextWeight; display?: TextDisplay; maxLines?: number; wordBreak?: TextWordBreak; textWrap?: TextWrap; justify?: TextJustify; hasCapsiz…` |
+| `text` | function | `text<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Textarea
 

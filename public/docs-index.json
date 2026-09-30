@@ -4,7 +4,7 @@
     "src/ui/registry.json",
     "src/ui/*.ts"
   ],
-  "componentCount": 66,
+  "componentCount": 74,
   "components": [
     {
       "slug": "accordion",
@@ -481,6 +481,35 @@
           "name": "badge",
           "kind": "function",
           "signature": "badge<Msg>(props: BadgeProps, h: HtmlBuilder<Msg>): Html"
+        }
+      ]
+    },
+    {
+      "slug": "blockquote",
+      "title": "Blockquote",
+      "description": "A shadcn-styled Blockquote component for Foldkit.",
+      "docs": "/docs/components/blockquote",
+      "source": "src/ui/blockquote.ts",
+      "install": "npx shadcn@latest add Potti1234/creaseui/blockquote",
+      "dependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "Blockquote — Showcase",
+        "Blockquote — With Attribution",
+        "Blockquote — Testimonials"
+      ],
+      "api": [
+        {
+          "name": "BlockquoteProps",
+          "kind": "type",
+          "signature": "BlockquoteProps = Readonly<{ children: ReadonlyArray<Html | string>; cite?: string; class?: string; }>"
+        },
+        {
+          "name": "blockquote",
+          "kind": "function",
+          "signature": "blockquote<Msg>(props: BlockquoteProps, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },
@@ -1233,6 +1262,143 @@
           "name": "checkbox",
           "kind": "function",
           "signature": "checkbox<Msg>(props: CheckboxProps<Msg>, h: HtmlBuilder<Msg>): Html"
+        }
+      ]
+    },
+    {
+      "slug": "code-block",
+      "title": "Code Block",
+      "description": "A shadcn-styled Code Block component for Foldkit.",
+      "docs": "/docs/components/code-block",
+      "source": "src/ui/code-block.ts",
+      "install": "npx shadcn@latest add Potti1234/creaseui/code-block",
+      "dependencies": [
+        "Potti1234/creaseui/button",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "CodeBlock",
+        "useUser.ts",
+        "Code — Snippet",
+        "Code — Highlighted",
+        "Code — Config",
+        "package.json",
+        "Code — Scrollable",
+        "many-lines.ts",
+        "Code — Terminal"
+      ],
+      "api": [
+        {
+          "name": "init",
+          "kind": "re-export",
+          "signature": "export { init } from "
+        },
+        {
+          "name": "Model",
+          "kind": "re-export",
+          "signature": "export { Model } from "
+        },
+        {
+          "name": "Message",
+          "kind": "re-export",
+          "signature": "export { Message } from "
+        },
+        {
+          "name": "update",
+          "kind": "re-export",
+          "signature": "export { update } from "
+        },
+        {
+          "name": "SyntaxToken",
+          "kind": "re-export",
+          "signature": "export { SyntaxToken } from "
+        },
+        {
+          "name": "TokenLine",
+          "kind": "re-export",
+          "signature": "export { TokenLine } from "
+        },
+        {
+          "name": "codeLines",
+          "kind": "re-export",
+          "signature": "export { codeLines } from "
+        },
+        {
+          "name": "tokenize",
+          "kind": "re-export",
+          "signature": "export { tokenize } from "
+        },
+        {
+          "name": "flatTokensToLines",
+          "kind": "re-export",
+          "signature": "export { flatTokensToLines } from "
+        },
+        {
+          "name": "CodeBlockSize",
+          "kind": "type",
+          "signature": "CodeBlockSize = 'sm' | 'md'"
+        },
+        {
+          "name": "CodeBlockContainer",
+          "kind": "type",
+          "signature": "CodeBlockContainer = 'card' | 'section'"
+        },
+        {
+          "name": "CustomTokenizer",
+          "kind": "type",
+          "signature": "CustomTokenizer = ( code: string, language: string, ) => ReadonlyArray<{ type: string; start: number; end: number }>"
+        },
+        {
+          "name": "CodeBlockProps",
+          "kind": "type",
+          "signature": "CodeBlockProps<Msg> = Readonly<{ /** The CodeBlock submodel state (see `init`/`update` in `@/lib/code-block`). */ model: Model; toParentMessage: (message: Message) => Msg; code: string; language?: string; title?: string; hasLanguageLabel?: boolean; hasLineNum…"
+        },
+        {
+          "name": "codeBlock",
+          "kind": "function",
+          "signature": "codeBlock<Msg>(props: CodeBlockProps<Msg>, h: HtmlBuilder<Msg>): Html"
+        }
+      ]
+    },
+    {
+      "slug": "code",
+      "title": "Code",
+      "description": "A shadcn-styled Code component for Foldkit.",
+      "docs": "/docs/components/code",
+      "source": "src/ui/code.ts",
+      "install": "npx shadcn@latest add Potti1234/creaseui/code",
+      "dependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "Code",
+        "Code — Inline",
+        "Code — Text Sizes",
+        "Code — Content Types"
+      ],
+      "api": [
+        {
+          "name": "CodeColor",
+          "kind": "type",
+          "signature": "CodeColor = 'primary' | 'secondary' | 'inherit'"
+        },
+        {
+          "name": "CodeSize",
+          "kind": "type",
+          "signature": "CodeSize = 'inherit'"
+        },
+        {
+          "name": "CodeProps",
+          "kind": "type",
+          "signature": "CodeProps = Readonly<{ children: ReadonlyArray<Html | string>; color?: CodeColor; size?: CodeSize; class?: string; }>"
+        },
+        {
+          "name": "code",
+          "kind": "function",
+          "signature": "code<Msg>(props: CodeProps, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },
@@ -2496,6 +2662,58 @@
       ]
     },
     {
+      "slug": "heading",
+      "title": "Heading",
+      "description": "A shadcn-styled Heading component for Foldkit.",
+      "docs": "/docs/components/heading",
+      "source": "src/ui/heading.ts",
+      "install": "npx shadcn@latest add Potti1234/creaseui/heading",
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/text",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "Heading",
+        "Heading — Truncation",
+        "Heading — Page Hierarchy",
+        "Heading — Card Grid"
+      ],
+      "api": [
+        {
+          "name": "HeadingLevel",
+          "kind": "type",
+          "signature": "HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6"
+        },
+        {
+          "name": "HeadingType",
+          "kind": "type",
+          "signature": "HeadingType = 'display-1' | 'display-2' | 'display-3'"
+        },
+        {
+          "name": "headingVariants",
+          "kind": "value",
+          "signature": "headingVariants: value"
+        },
+        {
+          "name": "HeadingVariants",
+          "kind": "type",
+          "signature": "HeadingVariants = VariantProps<typeof headingVariants>"
+        },
+        {
+          "name": "HeadingProps",
+          "kind": "type",
+          "signature": "HeadingProps = Readonly<{ children: ReadonlyArray<Html | string>; level: HeadingLevel; type?: HeadingType; weight?: TextWeight; accessibilityLevel?: HeadingLevel; color?: TextColor; display?: TextDisplay; maxLines?: number; wordBreak?: TextWordBreak; textWrap…"
+        },
+        {
+          "name": "heading",
+          "kind": "function",
+          "signature": "heading<Msg>(props: HeadingProps, h: HtmlBuilder<Msg>): Html"
+        }
+      ]
+    },
+    {
       "slug": "hover-card",
       "title": "Hover Card",
       "description": "A shadcn-styled Hover Card component for Foldkit.",
@@ -2975,6 +3193,233 @@
           "name": "label",
           "kind": "function",
           "signature": "label<Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html"
+        }
+      ]
+    },
+    {
+      "slug": "link",
+      "title": "Link",
+      "description": "A shadcn-styled Link component for Foldkit.",
+      "docs": "/docs/components/link",
+      "source": "src/ui/link.ts",
+      "install": "npx shadcn@latest add Potti1234/creaseui/link",
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/text",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "Link",
+        "Link — Inline Text",
+        "Link — External Links",
+        "Link — With Tooltips"
+      ],
+      "api": [
+        {
+          "name": "linkVariants",
+          "kind": "value",
+          "signature": "linkVariants: value"
+        },
+        {
+          "name": "LinkVariants",
+          "kind": "type",
+          "signature": "LinkVariants = VariantProps<typeof linkVariants>"
+        },
+        {
+          "name": "LinkProps",
+          "kind": "type",
+          "signature": "LinkProps<Msg> = Readonly<{ children: ReadonlyArray<Html | string>; href?: string; label?: string; hasUnderline?: boolean; isDisabled?: boolean; isExternalLink?: boolean; newTabLabel?: string; target?: string; rel?: string; download?: string; onClick?: Msg; t…"
+        },
+        {
+          "name": "link",
+          "kind": "function",
+          "signature": "link<Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html"
+        }
+      ]
+    },
+    {
+      "slug": "list",
+      "title": "List",
+      "description": "A shadcn-styled List component for Foldkit.",
+      "docs": "/docs/components/list",
+      "source": "src/ui/list.ts",
+      "install": "npx shadcn@latest add Potti1234/creaseui/list",
+      "dependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "List",
+        "List — Basic",
+        "List — Bulleted Features",
+        "List — Message List",
+        "List — Ordered Steps"
+      ],
+      "api": [
+        {
+          "name": "ListDensity",
+          "kind": "type",
+          "signature": "ListDensity = 'compact' | 'balanced' | 'spacious'"
+        },
+        {
+          "name": "ListMarkerStyle",
+          "kind": "type",
+          "signature": "ListMarkerStyle = 'none' | 'disc' | 'decimal' | 'circle'"
+        },
+        {
+          "name": "ListEdgeCompensation",
+          "kind": "type",
+          "signature": "ListEdgeCompensation = 'inline'"
+        },
+        {
+          "name": "ListProps",
+          "kind": "type",
+          "signature": "ListProps = Readonly<{ children: ReadonlyArray<Html>; density?: ListDensity; hasDividers?: boolean; edgeCompensation?: ListEdgeCompensation; /** Header content rendered above the list, associated via aria-labelledby. */ header?: Html | string; /** List marker…"
+        },
+        {
+          "name": "list",
+          "kind": "function",
+          "signature": "list<Msg>(props: ListProps, h: HtmlBuilder<Msg>): Html"
+        },
+        {
+          "name": "ListItemProps",
+          "kind": "type",
+          "signature": "ListItemProps<Msg> = Readonly<{ /** Primary label. A plain string truncates to one line. */ label: Html | string; /** Secondary description under the label; strings truncate to one line. */ description?: Html | string; /** Content rendered before the item (ic…"
+        },
+        {
+          "name": "listItem",
+          "kind": "function",
+          "signature": "listItem<Msg>(props: ListItemProps<Msg>, h: HtmlBuilder<Msg>): Html"
+        }
+      ]
+    },
+    {
+      "slug": "markdown",
+      "title": "Markdown",
+      "description": "A shadcn-styled Markdown component for Foldkit.",
+      "docs": "/docs/components/markdown",
+      "source": "src/ui/markdown.ts",
+      "install": "npx shadcn@latest add Potti1234/creaseui/markdown",
+      "dependencies": [
+        "Potti1234/creaseui/blockquote",
+        "Potti1234/creaseui/code",
+        "Potti1234/creaseui/code-block",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/heading",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/list",
+        "Potti1234/creaseui/table",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "Markdown",
+        "Markdown — Rich Content",
+        "Markdown — Data Table",
+        "Markdown — Compact AI Response",
+        "Markdown — Cited Content"
+      ],
+      "api": [
+        {
+          "name": "init",
+          "kind": "re-export",
+          "signature": "export { init } from '@/lib/markdown'"
+        },
+        {
+          "name": "Message",
+          "kind": "re-export",
+          "signature": "export { Message } from '@/lib/markdown'"
+        },
+        {
+          "name": "Model",
+          "kind": "re-export",
+          "signature": "export { Model } from '@/lib/markdown'"
+        },
+        {
+          "name": "update",
+          "kind": "re-export",
+          "signature": "export { update } from '@/lib/markdown'"
+        },
+        {
+          "name": "parseMarkdownBlocks",
+          "kind": "re-export",
+          "signature": "export { parseMarkdownBlocks } from '@/lib/markdown'"
+        },
+        {
+          "name": "parseMarkdownInline",
+          "kind": "re-export",
+          "signature": "export { parseMarkdownInline } from '@/lib/markdown'"
+        },
+        {
+          "name": "sanitizeMarkdownUrl",
+          "kind": "re-export",
+          "signature": "export { sanitizeMarkdownUrl } from '@/lib/markdown'"
+        },
+        {
+          "name": "MarkdownBlock",
+          "kind": "re-export",
+          "signature": "export { MarkdownBlock } from '@/lib/markdown'"
+        },
+        {
+          "name": "MarkdownInline",
+          "kind": "re-export",
+          "signature": "export { MarkdownInline } from '@/lib/markdown'"
+        },
+        {
+          "name": "MarkdownListItem",
+          "kind": "re-export",
+          "signature": "export { MarkdownListItem } from '@/lib/markdown'"
+        },
+        {
+          "name": "MarkdownSource",
+          "kind": "re-export",
+          "signature": "export { MarkdownSource } from '@/lib/markdown'"
+        },
+        {
+          "name": "MarkdownTableAlign",
+          "kind": "re-export",
+          "signature": "export { MarkdownTableAlign } from '@/lib/markdown'"
+        },
+        {
+          "name": "MarkdownTableCell",
+          "kind": "re-export",
+          "signature": "export { MarkdownTableCell } from '@/lib/markdown'"
+        },
+        {
+          "name": "MarkdownTableRow",
+          "kind": "re-export",
+          "signature": "export { MarkdownTableRow } from '@/lib/markdown'"
+        },
+        {
+          "name": "MarkdownDisplay",
+          "kind": "type",
+          "signature": "MarkdownDisplay = 'block' | 'inline'"
+        },
+        {
+          "name": "MarkdownDensity",
+          "kind": "type",
+          "signature": "MarkdownDensity = 'default' | 'compact'"
+        },
+        {
+          "name": "MarkdownCitationStyle",
+          "kind": "type",
+          "signature": "MarkdownCitationStyle = 'label' | 'number'"
+        },
+        {
+          "name": "MarkdownContentAlign",
+          "kind": "type",
+          "signature": "MarkdownContentAlign = 'start' | 'center'"
+        },
+        {
+          "name": "MarkdownProps",
+          "kind": "type",
+          "signature": "MarkdownProps<Msg> = Readonly<{ /** Markdown submodel state (owns the per-fence CodeBlock models). */ model: Model; toParentMessage: (message: Message) => Msg; /** Markdown source string. */ children: string; display?: MarkdownDisplay; density?: MarkdownDensi…"
+        },
+        {
+          "name": "markdown",
+          "kind": "function",
+          "signature": "markdown<Msg>(props: MarkdownProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },
@@ -4782,6 +5227,97 @@
           "name": "tabs",
           "kind": "value",
           "signature": "tabs: value"
+        }
+      ]
+    },
+    {
+      "slug": "text",
+      "title": "Text",
+      "description": "A shadcn-styled Text component for Foldkit.",
+      "docs": "/docs/components/text",
+      "source": "src/ui/text.ts",
+      "install": "npx shadcn@latest add Potti1234/creaseui/text",
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "Text",
+        "Text — Colors",
+        "Text — Heading Levels",
+        "Text — Inline",
+        "Text — Types",
+        "Text — Weight",
+        "Text — Truncation",
+        "Text — Word Break",
+        "Text — Wrap"
+      ],
+      "api": [
+        {
+          "name": "TextType",
+          "kind": "type",
+          "signature": "TextType = | 'body' | 'large' | 'label' | 'supporting' | 'code' | 'display-1' | 'display-2' | 'display-3' | 'inherit'"
+        },
+        {
+          "name": "TextSize",
+          "kind": "type",
+          "signature": "TextSize = | '4xs' | '3xs' | '2xs' | 'xsm' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl'"
+        },
+        {
+          "name": "TextColor",
+          "kind": "type",
+          "signature": "TextColor = | 'primary' | 'secondary' | 'disabled' | 'placeholder' | 'accent' | 'inherit'"
+        },
+        {
+          "name": "TextWeight",
+          "kind": "type",
+          "signature": "TextWeight = 'normal' | 'medium' | 'semibold' | 'bold'"
+        },
+        {
+          "name": "TextDisplay",
+          "kind": "type",
+          "signature": "TextDisplay = 'inline' | 'block'"
+        },
+        {
+          "name": "TextJustify",
+          "kind": "type",
+          "signature": "TextJustify = 'start' | 'center' | 'end'"
+        },
+        {
+          "name": "TextWordBreak",
+          "kind": "type",
+          "signature": "TextWordBreak = 'break-word' | 'break-all'"
+        },
+        {
+          "name": "TextWrap",
+          "kind": "type",
+          "signature": "TextWrap = 'wrap' | 'nowrap' | 'balance' | 'pretty'"
+        },
+        {
+          "name": "TextElement",
+          "kind": "type",
+          "signature": "TextElement = 'span' | 'p' | 'div' | 'label' | 'h1' | 'h2' | 'h3'"
+        },
+        {
+          "name": "textVariants",
+          "kind": "value",
+          "signature": "textVariants: value"
+        },
+        {
+          "name": "TextVariants",
+          "kind": "type",
+          "signature": "TextVariants = VariantProps<typeof textVariants>"
+        },
+        {
+          "name": "TextProps",
+          "kind": "type",
+          "signature": "TextProps = Readonly<{ children: ReadonlyArray<Html | string>; type?: TextType; size?: TextSize; color?: TextColor; weight?: TextWeight; display?: TextDisplay; maxLines?: number; wordBreak?: TextWordBreak; textWrap?: TextWrap; justify?: TextJustify; hasCapsiz…"
+        },
+        {
+          "name": "text",
+          "kind": "function",
+          "signature": "text<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },

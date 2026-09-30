@@ -36,7 +36,10 @@ const pascalCase = (name: string): string =>
 const intentionallyRemovedStylingExports = new Map<string, ReadonlySet<string>>([
   ['badge', new Set(['BadgeVariants', 'badgeVariants'])],
   ['button', new Set(['ButtonVariants', 'buttonVariants'])],
+  ['heading', new Set(['HeadingVariants', 'headingVariants'])],
+  ['link', new Set(['LinkVariants', 'linkVariants'])],
   ['status-dot', new Set(['StatusDotVariants', 'statusDotVariants'])],
+  ['text', new Set(['TextVariants', 'textVariants'])],
 ])
 
 const parse = (path: string): ts.SourceFile =>
@@ -418,7 +421,7 @@ describe('complete StyleX catalog', () => {
       .sort()
 
     assert.deepEqual(stylexNames, componentNames)
-    assert.equal(componentNames.length, 66)
+    assert.equal(componentNames.length, 74)
   })
 
   it('does not fall back to Tailwind, CVA, or raw authored class strings', () => {

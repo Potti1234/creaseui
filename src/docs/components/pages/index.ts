@@ -6,6 +6,7 @@ import { aspectRatioPage } from '@/docs/components/pages/aspect-ratio';
 import { attachmentPage } from '@/docs/components/pages/attachment';
 import { avatarPage } from '@/docs/components/pages/avatar';
 import { badgePage } from '@/docs/components/pages/badge';
+import { blockquotePage } from '@/docs/components/pages/blockquote';
 import { breadcrumbPage } from '@/docs/components/pages/breadcrumb';
 import { bubblePage } from '@/docs/components/pages/bubble';
 import { buttonPage } from '@/docs/components/pages/button';
@@ -15,6 +16,8 @@ import { cardPage } from '@/docs/components/pages/card';
 import { carouselPage } from '@/docs/components/pages/carousel';
 import { chartPage } from '@/docs/components/pages/chart';
 import { checkboxPage } from '@/docs/components/pages/checkbox';
+import { codePage } from '@/docs/components/pages/code';
+import { codeBlockPage } from '@/docs/components/pages/code-block';
 import { collapsiblePage } from '@/docs/components/pages/collapsible';
 import { comboboxPage } from '@/docs/components/pages/combobox';
 import { commandPage } from '@/docs/components/pages/command';
@@ -28,6 +31,7 @@ import { dropdownMenuPage } from '@/docs/components/pages/dropdown-menu';
 import { emptyPage } from '@/docs/components/pages/empty';
 import { fieldPage } from '@/docs/components/pages/field';
 import { formPage } from '@/docs/components/pages/form';
+import { headingPage } from '@/docs/components/pages/heading';
 import { hoverCardPage } from '@/docs/components/pages/hover-card';
 import { itemPage } from '@/docs/components/pages/item';
 import { inputPage } from '@/docs/components/pages/input';
@@ -35,6 +39,9 @@ import { inputGroupPage } from '@/docs/components/pages/input-group';
 import { inputOtpPage } from '@/docs/components/pages/input-otp';
 import { kbdPage } from '@/docs/components/pages/kbd';
 import { labelPage } from '@/docs/components/pages/label';
+import { linkPage } from '@/docs/components/pages/link';
+import { listPage } from '@/docs/components/pages/list';
+import { markdownPage } from '@/docs/components/pages/markdown';
 import { markerPage } from '@/docs/components/pages/marker';
 import { messagePage } from '@/docs/components/pages/message';
 import { messageScrollerPage } from '@/docs/components/pages/message-scroller';
@@ -59,6 +66,7 @@ import { statusDotPage } from '@/docs/components/pages/status-dot';
 import { switchPage } from '@/docs/components/pages/switch';
 import { tabsPage } from '@/docs/components/pages/tabs';
 import { tablePage } from '@/docs/components/pages/table';
+import { textPage } from '@/docs/components/pages/text';
 import { textareaPage } from '@/docs/components/pages/textarea';
 import { togglePage } from '@/docs/components/pages/toggle';
 import { toastPage } from '@/docs/components/pages/toast';
@@ -76,6 +84,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       attachmentPage,
       avatarPage,
       badgePage,
+      blockquotePage,
       breadcrumbPage,
       bubblePage,
       buttonPage,
@@ -85,6 +94,8 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       carouselPage,
       chartPage,
       checkboxPage,
+      codePage,
+      codeBlockPage,
       collapsiblePage,
       comboboxPage,
       commandPage,
@@ -98,6 +109,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       emptyPage,
       fieldPage,
       formPage,
+      headingPage,
       hoverCardPage,
       itemPage,
       inputPage,
@@ -105,6 +117,9 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       inputOtpPage,
       kbdPage,
       labelPage,
+      linkPage,
+      listPage,
+      markdownPage,
       markerPage,
       messagePage,
       messageScrollerPage,
@@ -129,6 +144,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       switchPage,
       tabsPage,
       tablePage,
+      textPage,
       textareaPage,
       togglePage,
       toastPage,
