@@ -23,11 +23,15 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 66,
+    "registryItems": 70,
     "creaseOnlyRecipes": [
+      "bottom-sheet",
       "data-table",
       "date-picker",
+      "lightbox",
+      "mobile-nav",
       "status-dot",
+      "tour",
       "typography"
     ]
   },
@@ -156,6 +160,24 @@
         "src/ui/badge.ts",
         "src/ui/registry.json#badge",
         "/docs/components/badge"
+      ]
+    },
+    {
+      "component": "bottom-sheet",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/bottom-sheet.ts",
+        "src/ui/registry.json#bottom-sheet",
+        "/docs/components/bottom-sheet"
       ]
     },
     {
@@ -685,6 +707,24 @@
       ]
     },
     {
+      "component": "lightbox",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/lightbox.ts",
+        "src/ui/registry.json#lightbox",
+        "/docs/components/lightbox"
+      ]
+    },
+    {
       "component": "marker",
       "upstream": true,
       "classification": "full",
@@ -754,6 +794,24 @@
         "src/ui/message-scroller.ts",
         "src/ui/registry.json#message-scroller",
         "/docs/components/message-scroller"
+      ]
+    },
+    {
+      "component": "mobile-nav",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/mobile-nav.ts",
+        "src/ui/registry.json#mobile-nav",
+        "/docs/components/mobile-nav"
       ]
     },
     {
@@ -1206,6 +1264,24 @@
         "src/ui/tooltip.ts",
         "src/ui/registry.json#tooltip",
         "/docs/components/tooltip"
+      ]
+    },
+    {
+      "component": "tour",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/tour.ts",
+        "src/ui/registry.json#tour",
+        "/docs/components/tour"
       ]
     },
     {

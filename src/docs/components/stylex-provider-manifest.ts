@@ -29,6 +29,10 @@ import { collapsibleStyleXPreview } from '@/docs/components/pages/collapsible/st
 import { dialogStyleXPreview } from '@/docs/components/pages/dialog/stylex';
 import { alertDialogStyleXPreview } from '@/docs/components/pages/alert-dialog/stylex';
 import { drawerStyleXPreview } from '@/docs/components/pages/drawer/stylex';
+import { lightboxStyleXPreview } from '@/docs/components/pages/lightbox/stylex';
+import { bottomSheetStyleXPreview } from '@/docs/components/pages/bottom-sheet/stylex';
+import { mobileNavStyleXPreview } from '@/docs/components/pages/mobile-nav/stylex';
+import { tourStyleXPreview } from '@/docs/components/pages/tour/stylex';
 import { sheetStyleXPreview } from '@/docs/components/pages/sheet/stylex';
 import { popoverStyleXPreview } from '@/docs/components/pages/popover/stylex';
 import { hoverCardStyleXPreview } from '@/docs/components/pages/hover-card/stylex';
@@ -132,3 +136,7 @@ installStyleXExamplePreviewProvider('sidebar', sidebarStyleXPreview);
 installStyleXExamplePreviewProvider('sonner', sonnerStyleXPreview);
 installStyleXExamplePreviewProvider('status-dot', statusDotStyleXPreview);
 installStyleXExamplePreviewProvider('toast', toastStyleXPreview);
+installStyleXExamplePreviewProvider('lightbox', lightboxStyleXPreview);
+installStyleXExamplePreviewProvider('bottom-sheet', bottomSheetStyleXPreview);
+installStyleXExamplePreviewProvider('mobile-nav', mobileNavStyleXPreview);
+installStyleXExamplePreviewProvider('tour', tourStyleXPreview);

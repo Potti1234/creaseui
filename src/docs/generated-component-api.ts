@@ -325,6 +325,178 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "badge<Msg>(props: BadgeProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "bottom-sheet": [
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "value",
+      "signature": "OutMessage: value"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "type",
+      "signature": "OutMessage = typeof OutMessage.Type"
+    },
+    {
+      "name": "SwitcherModel",
+      "kind": "value",
+      "signature": "SwitcherModel: value"
+    },
+    {
+      "name": "SwitcherModel",
+      "kind": "type",
+      "signature": "SwitcherModel = typeof SwitcherModel.Type"
+    },
+    {
+      "name": "SwitcherMessage",
+      "kind": "value",
+      "signature": "SwitcherMessage: value"
+    },
+    {
+      "name": "SwitcherMessage",
+      "kind": "type",
+      "signature": "SwitcherMessage = typeof SwitcherMessage.Type"
+    },
+    {
+      "name": "SwitcherOutMessage",
+      "kind": "value",
+      "signature": "SwitcherOutMessage: value"
+    },
+    {
+      "name": "SwitcherOutMessage",
+      "kind": "type",
+      "signature": "SwitcherOutMessage = typeof SwitcherOutMessage.Type"
+    },
+    {
+      "name": "SheetState",
+      "kind": "value",
+      "signature": "SheetState: value"
+    },
+    {
+      "name": "SheetState",
+      "kind": "type",
+      "signature": "SheetState = typeof SheetState.Type"
+    },
+    {
+      "name": "BottomSheetSnapPoint",
+      "kind": "re-export",
+      "signature": "export { BottomSheetSnapPoint } from '@/lib/bottom-sheet'"
+    },
+    {
+      "name": "SheetHeight",
+      "kind": "re-export",
+      "signature": "export { SheetHeight } from '@/lib/bottom-sheet'"
+    },
+    {
+      "name": "SheetPurpose",
+      "kind": "re-export",
+      "signature": "export { SheetPurpose } from '@/lib/bottom-sheet'"
+    },
+    {
+      "name": "init",
+      "kind": "value",
+      "signature": "init: value"
+    },
+    {
+      "name": "update",
+      "kind": "value",
+      "signature": "update: value"
+    },
+    {
+      "name": "open",
+      "kind": "value",
+      "signature": "open: value"
+    },
+    {
+      "name": "close",
+      "kind": "value",
+      "signature": "close: value"
+    },
+    {
+      "name": "initSwitcher",
+      "kind": "value",
+      "signature": "initSwitcher: value"
+    },
+    {
+      "name": "updateSwitcher",
+      "kind": "value",
+      "signature": "updateSwitcher: value"
+    },
+    {
+      "name": "openSheet",
+      "kind": "value",
+      "signature": "openSheet: value"
+    },
+    {
+      "name": "closeSwitcher",
+      "kind": "value",
+      "signature": "closeSwitcher: value"
+    },
+    {
+      "name": "OVERSCROLL_PADDING",
+      "kind": "value",
+      "signature": "OVERSCROLL_PADDING: value"
+    },
+    {
+      "name": "HEIGHT_BUDGETS",
+      "kind": "value",
+      "signature": "HEIGHT_BUDGETS: value"
+    },
+    {
+      "name": "isSheetDragCandidate",
+      "kind": "function",
+      "signature": "isSheetDragCandidate(target: unknown): false | 'handle' | 'arm'"
+    },
+    {
+      "name": "SheetDragDispatch",
+      "kind": "type",
+      "signature": "SheetDragDispatch<Msg> = Readonly<{ started: (frame: { y: number; timeStamp: number; armOnly: boolean }) => Msg; dragged: (frame: { y: number; timeStamp: number; detents: number[] }) => Msg; ended: (frame: { y: number; timeStamp: number; detents: number[] }) …"
+    },
+    {
+      "name": "BottomSheetProps",
+      "kind": "type",
+      "signature": "BottomSheetProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; content: Html; class?: string; }>"
+    },
+    {
+      "name": "bottomSheet",
+      "kind": "function",
+      "signature": "bottomSheet<Msg>(props: BottomSheetProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "SwitcherSheetContent",
+      "kind": "type",
+      "signature": "SwitcherSheetContent = Readonly<{ id: string; content: Html; }>"
+    },
+    {
+      "name": "BottomSheetSwitcherProps",
+      "kind": "type",
+      "signature": "BottomSheetSwitcherProps<Msg> = Readonly<{ model: SwitcherModel; toParentMessage: (message: SwitcherMessage) => Msg; sheets: ReadonlyArray<SwitcherSheetContent>; class?: string; }>"
+    },
+    {
+      "name": "bottomSheetSwitcher",
+      "kind": "function",
+      "signature": "bottomSheetSwitcher<Msg>(props: BottomSheetSwitcherProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "breadcrumb": [
     {
       "name": "*",
@@ -2143,6 +2315,78 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "label<Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "lightbox": [
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "value",
+      "signature": "OutMessage: value"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "type",
+      "signature": "OutMessage = typeof OutMessage.Type"
+    },
+    {
+      "name": "init",
+      "kind": "value",
+      "signature": "init: value"
+    },
+    {
+      "name": "update",
+      "kind": "value",
+      "signature": "update: value"
+    },
+    {
+      "name": "open",
+      "kind": "value",
+      "signature": "open: value"
+    },
+    {
+      "name": "close",
+      "kind": "value",
+      "signature": "close: value"
+    },
+    {
+      "name": "KEYBOARD_PAN_STEP",
+      "kind": "value",
+      "signature": "KEYBOARD_PAN_STEP: value"
+    },
+    {
+      "name": "LightboxMedia",
+      "kind": "type",
+      "signature": "LightboxMedia = Readonly<{ src: string; alt: string; caption?: string; type?: 'image' | 'video'; }>"
+    },
+    {
+      "name": "LightboxProps",
+      "kind": "type",
+      "signature": "LightboxProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; media: LightboxMedia | ReadonlyArray<LightboxMedia>; hasZoom?: boolean; hasAutoPlay?: boolean; class?: string; }>"
+    },
+    {
+      "name": "lightbox",
+      "kind": "function",
+      "signature": "lightbox<Msg>(props: LightboxProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "marker": [
     {
       "name": "markerVariants",
@@ -2354,6 +2598,88 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "messageActions",
       "kind": "function",
       "signature": "messageActions<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "mobile-nav": [
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "value",
+      "signature": "OutMessage: value"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "type",
+      "signature": "OutMessage = typeof OutMessage.Type"
+    },
+    {
+      "name": "MobileNavSide",
+      "kind": "re-export",
+      "signature": "export { MobileNavSide } from '@/lib/mobile-nav'"
+    },
+    {
+      "name": "ResolvedSide",
+      "kind": "re-export",
+      "signature": "export { ResolvedSide } from '@/lib/mobile-nav'"
+    },
+    {
+      "name": "init",
+      "kind": "value",
+      "signature": "init: value"
+    },
+    {
+      "name": "update",
+      "kind": "value",
+      "signature": "update: value"
+    },
+    {
+      "name": "open",
+      "kind": "value",
+      "signature": "open: value"
+    },
+    {
+      "name": "close",
+      "kind": "value",
+      "signature": "close: value"
+    },
+    {
+      "name": "MobileNavProps",
+      "kind": "type",
+      "signature": "MobileNavProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; content: Html; title?: string; label?: string; width?: number; class?: string; }>"
+    },
+    {
+      "name": "mobileNav",
+      "kind": "function",
+      "signature": "mobileNav<Msg>(props: MobileNavProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "MobileNavToggleProps",
+      "kind": "type",
+      "signature": "MobileNavToggleProps<Msg> = Readonly<{ controls: string; isExpanded: boolean; message: Msg; label?: string; class?: string; }>"
+    },
+    {
+      "name": "mobileNavToggle",
+      "kind": "function",
+      "signature": "mobileNavToggle<Msg>(props: MobileNavToggleProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "native-select": [
@@ -3624,6 +3950,98 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "tooltip",
       "kind": "function",
       "signature": "tooltip<Msg>(props: TooltipProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "tour": [
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "value",
+      "signature": "OutMessage: value"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "type",
+      "signature": "OutMessage = typeof OutMessage.Type"
+    },
+    {
+      "name": "TourDismissSource",
+      "kind": "value",
+      "signature": "TourDismissSource: value"
+    },
+    {
+      "name": "TourDismissSource",
+      "kind": "type",
+      "signature": "TourDismissSource = TourBehavior.TourDismissSource"
+    },
+    {
+      "name": "init",
+      "kind": "value",
+      "signature": "init: value"
+    },
+    {
+      "name": "update",
+      "kind": "value",
+      "signature": "update: value"
+    },
+    {
+      "name": "activate",
+      "kind": "value",
+      "signature": "activate: value"
+    },
+    {
+      "name": "deactivate",
+      "kind": "value",
+      "signature": "deactivate: value"
+    },
+    {
+      "name": "HIGHLIGHT_PADDING",
+      "kind": "value",
+      "signature": "HIGHLIGHT_PADDING: value"
+    },
+    {
+      "name": "TourStepPlacement",
+      "kind": "type",
+      "signature": "TourStepPlacement = 'below' | 'above' | 'start' | 'end'"
+    },
+    {
+      "name": "TourStepAlignment",
+      "kind": "type",
+      "signature": "TourStepAlignment = 'start' | 'center' | 'end'"
+    },
+    {
+      "name": "TourStepSpec",
+      "kind": "type",
+      "signature": "TourStepSpec = Readonly<{ /** Stable step key — the callout is re-keyed per step to re-anchor. */ id: string; /** `id` of the element this step points at (astryx targetRef equivalent — must be interactive for aria, matching Popover's anchor contract). */ targ…"
+    },
+    {
+      "name": "TourProps",
+      "kind": "type",
+      "signature": "TourProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; steps: ReadonlyArray<TourStepSpec>; hasBackdrop?: boolean; isStepCountShown?: boolean; class?: string; }>"
+    },
+    {
+      "name": "tour",
+      "kind": "function",
+      "signature": "tour<Msg>(props: TourProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "typography": [

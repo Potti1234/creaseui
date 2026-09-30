@@ -17,6 +17,7 @@ export const COMPONENTS = [
   'Attachment',
   'Avatar',
   'Badge',
+  'Bottom Sheet',
   'Breadcrumb',
   'Button',
   'Button Group',
@@ -46,10 +47,12 @@ export const COMPONENTS = [
   'Item',
   'Kbd',
   'Label',
+  'Lightbox',
   'Marker',
   'Message',
   'Message Scroller',
   'Menubar',
+  'Mobile Nav',
   'Native Select',
   'Navigation Menu',
   'Pagination',
@@ -75,6 +78,7 @@ export const COMPONENTS = [
   'Toggle',
   'Toggle Group',
   'Tooltip',
+  'Tour',
   'Typography',
 ] as const;
 

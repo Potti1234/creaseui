@@ -6,6 +6,7 @@ import { aspectRatioPage } from '@/docs/components/pages/aspect-ratio';
 import { attachmentPage } from '@/docs/components/pages/attachment';
 import { avatarPage } from '@/docs/components/pages/avatar';
 import { badgePage } from '@/docs/components/pages/badge';
+import { bottomSheetPage } from '@/docs/components/pages/bottom-sheet';
 import { breadcrumbPage } from '@/docs/components/pages/breadcrumb';
 import { bubblePage } from '@/docs/components/pages/bubble';
 import { buttonPage } from '@/docs/components/pages/button';
@@ -35,10 +36,12 @@ import { inputGroupPage } from '@/docs/components/pages/input-group';
 import { inputOtpPage } from '@/docs/components/pages/input-otp';
 import { kbdPage } from '@/docs/components/pages/kbd';
 import { labelPage } from '@/docs/components/pages/label';
+import { lightboxPage } from '@/docs/components/pages/lightbox';
 import { markerPage } from '@/docs/components/pages/marker';
 import { messagePage } from '@/docs/components/pages/message';
 import { messageScrollerPage } from '@/docs/components/pages/message-scroller';
 import { menubarPage } from '@/docs/components/pages/menubar';
+import { mobileNavPage } from '@/docs/components/pages/mobile-nav';
 import { nativeSelectPage } from '@/docs/components/pages/native-select';
 import { navigationMenuPage } from '@/docs/components/pages/navigation-menu';
 import { paginationPage } from '@/docs/components/pages/pagination';
@@ -64,6 +67,7 @@ import { togglePage } from '@/docs/components/pages/toggle';
 import { toastPage } from '@/docs/components/pages/toast';
 import { toggleGroupPage } from '@/docs/components/pages/toggle-group';
 import { tooltipPage } from '@/docs/components/pages/tooltip';
+import { tourPage } from '@/docs/components/pages/tour';
 import { typographyPage } from '@/docs/components/pages/typography';
 
 export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
@@ -76,6 +80,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       attachmentPage,
       avatarPage,
       badgePage,
+      bottomSheetPage,
       breadcrumbPage,
       bubblePage,
       buttonPage,
@@ -105,10 +110,12 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       inputOtpPage,
       kbdPage,
       labelPage,
+      lightboxPage,
       markerPage,
       messagePage,
       messageScrollerPage,
       menubarPage,
+      mobileNavPage,
       nativeSelectPage,
       navigationMenuPage,
       paginationPage,
@@ -134,6 +141,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       toastPage,
       toggleGroupPage,
       tooltipPage,
+      tourPage,
       typographyPage,
     ].map((page) => [page.slug, page]),
   ),

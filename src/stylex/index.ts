@@ -11,6 +11,7 @@ export * as AspectRatio from './aspect-ratio.js'
 export * as Attachment from './attachment.js'
 export * as Avatar from './avatar.js'
 export * as Badge from './badge.js'
+export * as BottomSheet from './bottom-sheet.js'
 export * as Breadcrumb from './breadcrumb.js'
 export * as Bubble from './bubble.js'
 export * as ButtonGroup from './button-group.js'
@@ -40,10 +41,12 @@ export * as Input from './input.js'
 export * as Item from './item.js'
 export * as Kbd from './kbd.js'
 export * as Label from './label.js'
+export * as Lightbox from './lightbox.js'
 export * as Marker from './marker.js'
 export * as Menubar from './menubar.js'
 export * as MessageScroller from './message-scroller.js'
 export * as Message from './message.js'
+export * as MobileNav from './mobile-nav.js'
 export * as NativeSelect from './native-select.js'
 export * as NavigationMenu from './navigation-menu.js'
 export * as Pagination from './pagination.js'
@@ -69,6 +72,7 @@ export * as Toast from './toast.js'
 export * as ToggleGroup from './toggle-group.js'
 export * as Toggle from './toggle.js'
 export * as Tooltip from './tooltip.js'
+export * as Tour from './tour.js'
 export * as Typography from './typography.js'
 
 /** Canonical registry order. Additions and removals are checked in CI. */
@@ -80,6 +84,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'attachment',
   'avatar',
   'badge',
+  'bottom-sheet',
   'breadcrumb',
   'bubble',
   'button-group',
@@ -109,10 +114,12 @@ export const STYLEX_COMPONENT_NAMES = [
   'item',
   'kbd',
   'label',
+  'lightbox',
   'marker',
   'menubar',
   'message-scroller',
   'message',
+  'mobile-nav',
   'native-select',
   'navigation-menu',
   'pagination',
@@ -138,6 +145,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'toggle-group',
   'toggle',
   'tooltip',
+  'tour',
   'typography',
 ] as const
 

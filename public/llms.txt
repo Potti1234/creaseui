@@ -22,6 +22,7 @@
 - Attachment: /docs/components/attachment — install with `npx shadcn@latest add Potti1234/creaseui/attachment`
 - Avatar: /docs/components/avatar — install with `npx shadcn@latest add Potti1234/creaseui/avatar`
 - Badge: /docs/components/badge — install with `npx shadcn@latest add Potti1234/creaseui/badge`
+- Bottom Sheet: /docs/components/bottom-sheet — install with `npx shadcn@latest add Potti1234/creaseui/bottom-sheet`
 - Breadcrumb: /docs/components/breadcrumb — install with `npx shadcn@latest add Potti1234/creaseui/breadcrumb`
 - Bubble: /docs/components/bubble — install with `npx shadcn@latest add Potti1234/creaseui/bubble`
 - Button Group: /docs/components/button-group — install with `npx shadcn@latest add Potti1234/creaseui/button-group`
@@ -51,10 +52,12 @@
 - Item: /docs/components/item — install with `npx shadcn@latest add Potti1234/creaseui/item`
 - Kbd: /docs/components/kbd — install with `npx shadcn@latest add Potti1234/creaseui/kbd`
 - Label: /docs/components/label — install with `npx shadcn@latest add Potti1234/creaseui/label`
+- Lightbox: /docs/components/lightbox — install with `npx shadcn@latest add Potti1234/creaseui/lightbox`
 - Marker: /docs/components/marker — install with `npx shadcn@latest add Potti1234/creaseui/marker`
 - Menubar: /docs/components/menubar — install with `npx shadcn@latest add Potti1234/creaseui/menubar`
 - Message Scroller: /docs/components/message-scroller — install with `npx shadcn@latest add Potti1234/creaseui/message-scroller`
 - Message: /docs/components/message — install with `npx shadcn@latest add Potti1234/creaseui/message`
+- Mobile Nav: /docs/components/mobile-nav — install with `npx shadcn@latest add Potti1234/creaseui/mobile-nav`
 - Native Select: /docs/components/native-select — install with `npx shadcn@latest add Potti1234/creaseui/native-select`
 - Navigation Menu: /docs/components/navigation-menu — install with `npx shadcn@latest add Potti1234/creaseui/navigation-menu`
 - Pagination: /docs/components/pagination — install with `npx shadcn@latest add Potti1234/creaseui/pagination`
@@ -80,4 +83,5 @@
 - Toggle Group: /docs/components/toggle-group — install with `npx shadcn@latest add Potti1234/creaseui/toggle-group`
 - Toggle: /docs/components/toggle — install with `npx shadcn@latest add Potti1234/creaseui/toggle`
 - Tooltip: /docs/components/tooltip — install with `npx shadcn@latest add Potti1234/creaseui/tooltip`
+- Tour: /docs/components/tour — install with `npx shadcn@latest add Potti1234/creaseui/tour`
 - Typography: /docs/components/typography — install with `npx shadcn@latest add Potti1234/creaseui/typography`
