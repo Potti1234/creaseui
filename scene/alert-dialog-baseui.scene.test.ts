@@ -219,11 +219,7 @@ const verifyRenderer = (name: string, AlertDialog: AlertDialogModule) => {
           )
         })
 
-        // DIVERGENCE (med): Base UI asserts the popup's aria-describedby
-        // points at the description's id. creaseui renders the description
-        // with the right id but never sets `hasDescription` on the Dialog
-        // view, so no aria-describedby is emitted anywhere.
-        it.fails('points aria-describedby at the rendered description', () => {
+        it('points aria-describedby at the rendered description', () => {
           Scene.scene(
             { update, view },
             Scene.given(openModel()),
@@ -238,10 +234,7 @@ const verifyRenderer = (name: string, AlertDialog: AlertDialogModule) => {
           )
         })
 
-        // DIVERGENCE (med): Base UI puts aria-labelledby/aria-describedby on
-        // the role="alertdialog" element itself. creaseui puts labelling on
-        // the outer <dialog>, leaving the alertdialog-role panel unnamed.
-        it.fails('names the alertdialog-role element via aria-labelledby', () => {
+        it('names the alertdialog-role element via aria-labelledby', () => {
           Scene.scene(
             { update, view },
             Scene.given(openModel()),

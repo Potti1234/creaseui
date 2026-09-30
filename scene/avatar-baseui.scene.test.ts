@@ -13,12 +13,31 @@ import * as TailwindAvatar from '@/ui/avatar'
  * Base UI keeps `imageLoadingStatus` ('idle' | 'loading' | 'loaded' | 'error')
  * in an AvatarRoot context shared by Image and Fallback. creaseui has no
  * context: the app owns an `Avatar.Model` ('loading' | 'loaded' | 'error' —
- * there is no 'idle') and feeds it to `avatarImage`/`avatarFallback` as a prop,
- * with `toParentMessage` wiring the rendered <img>'s load/error events.
+ * there is no 'idle') and feeds it to `avatarImage`/`avatarFallback` as a
+ * prop, with `toParentMessage` wiring the <img> load/error events.
+ *
+ * creaseui mirrors Base UI's two resolution paths:
+ *  - default (`keepMounted: false`): the real <img> mounts only once the
+ *    status is 'loaded'. A hidden `[data-slot="avatar-image-probe"]` <img>
+ *    loads in its place — the analogue of Base UI's detached
+ *    `new window.Image()` preload — and reports load/error through
+ *    `toParentMessage`.
+ *  - `keepMounted: true`: the <img> stays mounted and reports its own
+ *    load/error; non-loaded states carry `data-loading`/`data-error` and
+ *    `aria-hidden` so only the fallback names the avatar.
+ *
+ * Base UI resets the status when the requested source changes. creaseui
+ * derives that reset: `Avatar.Model.resolvedSrc` records the source a
+ * Loaded/Failed Message resolved, and the views treat a `src` mismatch as
+ * 'loading' (unmounting the image likewise returns the app-owned Model to
+ * `Avatar.init()`, mirroring Base UI's unmount -> 'idle' cleanup).
  *
  * The scene DSL has no `load`/`error` event step, so the tests assert the
- * OnLoad/OnError handler wiring on the <img> and then feed the Message those
- * handlers would dispatch through `Scene.Subscription.emit`.
+ * OnLoad/OnError handler wiring and then feed the Message those handlers
+ * would dispatch through `Scene.Subscription.emit`. There is also no
+ * `complete`/`naturalWidth` to inspect, so synchronous "cached image"
+ * resolution is modeled by feeding the resolution Message the detached
+ * probe would have reported.
  *
  * Cases that have no creaseui analogue are recorded as comments here instead
  * of being dropped silently:
@@ -47,8 +66,11 @@ import * as TailwindAvatar from '@/ui/avatar'
  */
 
 type AvatarStatus = 'loading' | 'loaded' | 'error'
-type AvatarModel = Readonly<{ status: AvatarStatus }>
-type AvatarMessage = Readonly<{ _tag: 'Loaded' } | { _tag: 'Failed' }>
+type AvatarModel = Readonly<{ status: AvatarStatus; resolvedSrc?: string }>
+type AvatarMessage = Readonly<
+  | { _tag: 'Loaded'; src: string }
+  | { _tag: 'Failed'; src: string }
+>
 
 type Model = Readonly<{
   avatar: AvatarModel
@@ -66,26 +88,40 @@ type AvatarModule = Readonly<{
   init: () => AvatarModel
   update: (model: AvatarModel, message: AvatarMessage) => AvatarModel
   Message: Readonly<{
-    Loaded: () => AvatarMessage
-    Failed: () => AvatarMessage
+    Loaded: (fields: Readonly<{ src: string }>) => AvatarMessage
+    Failed: (fields: Readonly<{ src: string }>) => AvatarMessage
   }>
   avatar: <Msg>(
     props: Readonly<{ size?: 'default' | 'sm' | 'lg'; children: ReadonlyArray<Html | string> }>,
     h: HtmlBuilder<Msg>,
   ) => Html
   avatarImage: <Msg>(
-    props: Readonly<{ src: string; alt: string; model?: AvatarModel }> &
+    props: Readonly<{
+      src: string
+      alt: string
+      model?: AvatarModel
+      keepMounted?: boolean
+    }> &
       Readonly<{ toParentMessage?: (message: AvatarMessage) => Msg }>,
     h: HtmlBuilder<Msg>,
   ) => Html
   avatarFallback: <Msg>(
-    props: Readonly<{ children: ReadonlyArray<Html | string>; model?: AvatarModel }>,
+    props: Readonly<{
+      children: ReadonlyArray<Html | string>
+      model?: AvatarModel
+      src?: string
+    }>,
     h: HtmlBuilder<Msg>,
   ) => Html
 }>
 
 const initialModel = (status: AvatarStatus = 'loading'): Model => ({
-  avatar: { status },
+  avatar: {
+    status,
+    // A resolved Model records the source it resolved for — the same
+    // resolvedSrc the Loaded/Failed({ src }) Messages would have stored.
+    ...(status === 'loading' ? {} : { resolvedSrc: 'avatar.png' }),
+  },
   src: 'avatar.png',
   showImage: true,
 })
@@ -99,20 +135,24 @@ const makeUpdate =
           model: { ...model, avatar: Avatar.update(model.avatar, message.message) },
         }
       case 'HideImage':
-        return { model: { ...model, showImage: false } }
+        // Base UI's Avatar.Image unmount resets the root status to 'idle';
+        // the app-owned Model resets the same way when the image leaves.
+        return { model: { ...model, showImage: false, avatar: Avatar.init() } }
       case 'SwapSrc':
         return { model: { ...model, src: message.src } }
     }
   }
 
 const image = Scene.selector('[data-slot="avatar-image"]')
+const probe = Scene.selector('[data-slot="avatar-image-probe"]')
 const fallback = Scene.selector('[data-slot="avatar-fallback"]')
 const namedImage = Scene.role('img', { name: 'Jane Doe' })
 
-// Standard wiring: <img> carries load/error handlers via toParentMessage and
+// Standard wiring: load/error handlers reach the app via toParentMessage and
 // both parts read the shared Avatar.Model, exactly like the docs previews.
+// `keepMounted` selects Base UI's two rendering modes.
 const avatarView =
-  (Avatar: AvatarModule) =>
+  (Avatar: AvatarModule, options?: Readonly<{ keepMounted?: boolean }>) =>
   (model: Model, h: HtmlBuilder<Message>): Html =>
     Avatar.avatar(
       {
@@ -122,6 +162,7 @@ const avatarView =
               src: model.src,
               alt: 'Jane Doe',
               model: model.avatar,
+              ...(options?.keepMounted === true ? { keepMounted: true } : {}),
               toParentMessage: message => ({
                 _tag: 'GotAvatarMessage',
                 message,
@@ -129,7 +170,10 @@ const avatarView =
             },
             h,
           ),
-          Avatar.avatarFallback({ model: model.avatar, children: ['JD'] }, h),
+          Avatar.avatarFallback(
+            { model: model.avatar, src: model.src, children: ['JD'] },
+            h,
+          ),
         ],
       },
       h,
@@ -166,7 +210,10 @@ const avatarViewWithToggle =
                     ),
                   ]
                 : []),
-              Avatar.avatarFallback({ model: model.avatar, children: ['JD'] }, h),
+              Avatar.avatarFallback(
+                { model: model.avatar, src: model.src, children: ['JD'] },
+                h,
+              ),
             ],
           },
           h,
@@ -179,10 +226,7 @@ const verifyRenderer = (name: string, Avatar: AvatarModule) => {
 
   describe(`${name} Avatar (Base UI port)`, () => {
     describe('Avatar.Root', () => {
-      // DIVERGENCE (documented): Base UI's Avatar.Root renders a <span>;
-      // creaseui renders a <div data-slot="avatar">. Low severity — only
-      // matters for element-level CSS selectors.
-      it.fails('renders a <span> root', () => {
+      it('renders a <span> root', () => {
         Scene.scene(
           { update, view: avatarView(Avatar) },
           Scene.given(initialModel()),
@@ -194,32 +238,35 @@ const verifyRenderer = (name: string, Avatar: AvatarModule) => {
     describe('Avatar.Image', () => {
       describe('prop: onLoadingStatusChange', () => {
         it('fires when the image loads', () => {
-          // No load-event step exists in the DSL: assert the OnLoad wiring,
+          // No load-event step exists in the DSL: assert the OnLoad wiring on
+          // the hidden probe <img> (Base UI's detached preload analogue),
           // then feed the Message it would dispatch through update.
           Scene.scene(
             { update, view: avatarView(Avatar) },
             Scene.given(initialModel('loading')),
-            Scene.expect(image).toHaveHandler('load'),
+            Scene.expect(image).toBeAbsent(),
+            Scene.expect(probe).toHaveHandler('load'),
             Scene.Subscription.emit({
               _tag: 'GotAvatarMessage',
-              message: Avatar.Message.Loaded(),
+              message: Avatar.Message.Loaded({ src: 'avatar.png' }),
             }),
             Scene.expect(image).not.toHaveAttr('data-loading'),
+            Scene.expect(probe).toBeAbsent(),
             Scene.expect(namedImage).toExist(),
             Scene.expect(fallback).toBeAbsent(),
           )
         })
 
         it('fires when the image errors', () => {
-          // Base UI's default (non-keepMounted) also unmounts the <img> on
+          // Base UI's default (non-keepMounted) keeps the <img> unmounted on
           // error and shows the fallback — creaseui matches that path.
           Scene.scene(
             { update, view: avatarView(Avatar) },
             Scene.given(initialModel('loading')),
-            Scene.expect(image).toHaveHandler('error'),
+            Scene.expect(probe).toHaveHandler('error'),
             Scene.Subscription.emit({
               _tag: 'GotAvatarMessage',
-              message: Avatar.Message.Failed(),
+              message: Avatar.Message.Failed({ src: 'avatar.png' }),
             }),
             Scene.expect(image).toBeAbsent(),
             Scene.expect(fallback).toHaveText('JD'),
@@ -235,28 +282,26 @@ const verifyRenderer = (name: string, Avatar: AvatarModule) => {
 
       describe('prop: keepMounted', () => {
         it('mounts the image while loading without preloading it', () => {
-          // creaseui only has the keepMounted rendering model: the <img> is
-          // always in the tree while status !== 'error', flagged data-loading.
+          // keepMounted mounts the <img> in place and flags it data-loading;
+          // no probe is rendered (Base UI's `imageMock.images.length === 0`).
           Scene.scene(
-            { update, view: avatarView(Avatar) },
+            { update, view: avatarView(Avatar, { keepMounted: true }) },
             Scene.given(initialModel('loading')),
             Scene.expect(image).toExist(),
             Scene.expect(image).toHaveAttr('src', 'avatar.png'),
             Scene.expect(image).toHaveAttr('data-loading', ''),
+            Scene.expect(probe).toBeAbsent(),
             Scene.expect(fallback).toHaveText('JD'),
           )
         })
 
-        // DIVERGENCE: Base UI keepMounted keeps the <img> mounted with
-        // data-error after a failed load. creaseui unmounts it (h.empty on
-        // status 'error') and never emits data-error.
-        it.fails('keeps the image mounted when it fails to load', () => {
+        it('keeps the image mounted when it fails to load', () => {
           Scene.scene(
-            { update, view: avatarView(Avatar) },
+            { update, view: avatarView(Avatar, { keepMounted: true }) },
             Scene.given(initialModel('loading')),
             Scene.Subscription.emit({
               _tag: 'GotAvatarMessage',
-              message: Avatar.Message.Failed(),
+              message: Avatar.Message.Failed({ src: 'avatar.png' }),
             }),
             Scene.expect(image).toExist(),
             Scene.expect(image).toHaveAttr('data-error', ''),
@@ -268,22 +313,22 @@ const verifyRenderer = (name: string, Avatar: AvatarModule) => {
           // Base UI derives status from the element's own load event; the
           // creaseui analogue is the OnLoad -> toParentMessage wiring.
           Scene.scene(
-            { update, view: avatarView(Avatar) },
+            { update, view: avatarView(Avatar, { keepMounted: true }) },
             Scene.given(initialModel('loading')),
             Scene.expect(image).toHaveHandler('load'),
             Scene.expect(image).toHaveHandler('error'),
             Scene.Subscription.emit({
               _tag: 'GotAvatarMessage',
-              message: Avatar.Message.Loaded(),
+              message: Avatar.Message.Loaded({ src: 'avatar.png' }),
             }),
             Scene.expect(fallback).toBeAbsent(),
           )
         })
 
-        // DIVERGENCE: Base UI resets status to 'loading' when src changes.
-        // creaseui's status is app-owned model state — nothing observes the
-        // src prop, so a loaded avatar stays 'loaded' over a new image.
-        it.fails('resets the status when the src prop changes', () => {
+        it('resets the status when the src prop changes', () => {
+          // The reset is derived: the Model's resolvedSrc ('avatar.png') no
+          // longer matches the requested src, so the effective status is
+          // 'loading' — data-loading returns and the fallback reappears.
           Scene.scene(
             {
               update,
@@ -298,7 +343,7 @@ const verifyRenderer = (name: string, Avatar: AvatarModule) => {
                       ],
                       ['Swap src'],
                     ),
-                    avatarView(Avatar)(model, h),
+                    avatarView(Avatar, { keepMounted: true })(model, h),
                   ],
                 ),
             },
@@ -306,45 +351,34 @@ const verifyRenderer = (name: string, Avatar: AvatarModule) => {
             Scene.expect(fallback).toBeAbsent(),
             Scene.click(Scene.text('Swap src')),
             Scene.expectHandled(),
-            // Base UI expectation: status reset to loading — data-loading
-            // returns and the fallback reappears over the new image.
             Scene.expect(image).toHaveAttr('data-loading', ''),
             Scene.expect(image).toHaveAttr('src', 'avatar-2.png'),
             Scene.expect(fallback).toHaveText('JD'),
           )
         })
 
-        // DIVERGENCE: Base UI sets aria-hidden="true" on the <img> in every
-        // non-loaded state so only the fallback names the avatar. creaseui
-        // only hides it visually (data-loading -> opacity-0) and leaves it
-        // in the a11y tree.
-        it.fails('hides the image from assistive technology until it loads', () => {
+        it('hides the image from assistive technology until it loads', () => {
           Scene.scene(
-            { update, view: avatarView(Avatar) },
+            { update, view: avatarView(Avatar, { keepMounted: true }) },
             Scene.given(initialModel('loading')),
             Scene.expect(image).toHaveAttr('aria-hidden', 'true'),
           )
         })
 
-        // DIVERGENCE: same aria-hidden rule after error — and creaseui also
-        // unmounts the <img> entirely.
-        it.fails('keeps the image hidden from assistive technology after an error', () => {
+        it('keeps the image hidden from assistive technology after an error', () => {
           Scene.scene(
-            { update, view: avatarView(Avatar) },
+            { update, view: avatarView(Avatar, { keepMounted: true }) },
             Scene.given(initialModel('loading')),
             Scene.Subscription.emit({
               _tag: 'GotAvatarMessage',
-              message: Avatar.Message.Failed(),
+              message: Avatar.Message.Failed({ src: 'avatar.png' }),
             }),
             Scene.expect(image).toExist(),
             Scene.expect(image).toHaveAttr('aria-hidden', 'true'),
           )
         })
 
-        // DIVERGENCE: combines the two above — Base UI re-hides the <img>
-        // (aria-hidden + data-loading) when src changes; creaseui keeps it
-        // exposed under the stale 'loaded' status.
-        it.fails('hides the image from assistive technology again when the source changes', () => {
+        it('hides the image from assistive technology again when the source changes', () => {
           Scene.scene(
             {
               update,
@@ -359,7 +393,7 @@ const verifyRenderer = (name: string, Avatar: AvatarModule) => {
                       ],
                       ['Swap src'],
                     ),
-                    avatarView(Avatar)(model, h),
+                    avatarView(Avatar, { keepMounted: true })(model, h),
                   ],
                 ),
             },
@@ -370,18 +404,24 @@ const verifyRenderer = (name: string, Avatar: AvatarModule) => {
             Scene.expect(image).toHaveAttr('aria-hidden', 'true'),
           )
         })
+      })
 
-        // DIVERGENCE: Base UI resolves a cached image synchronously — the img
-        // is available and the fallback never paints. creaseui always starts
-        // 'loading', so the fallback renders until the load event arrives.
-        it.fails('shows the image immediately for a cached src', () => {
-          Scene.scene(
-            { update, view: avatarView(Avatar) },
-            Scene.given(initialModel('loading')),
-            Scene.expect(namedImage).toExist(),
-            Scene.expect(fallback).toBeAbsent(),
-          )
-        })
+      it('shows the image immediately for a cached src', () => {
+        // Base UI resolves a cached image synchronously — the img is
+        // available and the fallback never paints. The DSL has no `complete`
+        // to inspect, so the emit stands in for the probe reporting before
+        // the next render.
+        Scene.scene(
+          { update, view: avatarView(Avatar) },
+          Scene.given(initialModel('loading')),
+          Scene.expect(probe).toHaveHandler('load'),
+          Scene.Subscription.emit({
+            _tag: 'GotAvatarMessage',
+            message: Avatar.Message.Loaded({ src: 'avatar.png' }),
+          }),
+          Scene.expect(namedImage).toExist(),
+          Scene.expect(fallback).toBeAbsent(),
+        )
       })
 
       describe('native image props', () => {
@@ -398,7 +438,7 @@ const verifyRenderer = (name: string, Avatar: AvatarModule) => {
         it.todo(
           'passes native image props (crossOrigin, referrerPolicy, sizes, ' +
             'srcSet) to the rendered image — creaseui avatarImage exposes ' +
-            'only src/alt/class/model',
+            'only src/alt/class/model/keepMounted',
         )
 
         it.todo(
@@ -407,9 +447,8 @@ const verifyRenderer = (name: string, Avatar: AvatarModule) => {
         )
 
         it.todo(
-          'passes responsive image props to the loading probe — creaseui ' +
-            'has no detached preload probe; status comes only from ' +
-            'rendered-element load/error events',
+          'passes responsive image props (sizes, srcSet) to the loading ' +
+            'probe — creaseui avatarImage exposes only src/alt',
         )
 
         it.todo(
@@ -438,11 +477,10 @@ const verifyRenderer = (name: string, Avatar: AvatarModule) => {
         )
       })
 
-      // DIVERGENCE: in Base UI the status lives in root context, so
-      // unmounting Avatar.Image reverts it to 'idle' and the fallback
-      // reappears. creaseui's status is app-owned: unmounting the <img>
-      // leaves model.status 'loaded' and the fallback hidden.
-      it.fails('shows the fallback when a loaded image is unmounted', () => {
+      // Base UI's unmount cleanup resets the root status to 'idle'; the
+      // app-owned Model does the same — the fixture's HideImage resets it to
+      // Avatar.init().
+      it('shows the fallback when a loaded image is unmounted', () => {
         Scene.scene(
           { update, view: avatarViewWithToggle(Avatar) },
           Scene.given(initialModel('loaded')),
@@ -454,14 +492,15 @@ const verifyRenderer = (name: string, Avatar: AvatarModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI's default keeps the <img> unmounted until loaded.
-      // creaseui always mounts it (keepMounted-style) with data-loading.
-      it.fails('keeps fallback mounted and image unmounted while the image is loading', () => {
+      it('keeps fallback mounted and image unmounted while the image is loading', () => {
+        // Base UI's default keeps the <img> unmounted until loaded — only
+        // the hidden probe is in the tree.
         Scene.scene(
           { update, view: avatarView(Avatar) },
           Scene.given(initialModel('loading')),
           Scene.expect(fallback).toHaveText('JD'),
           Scene.expect(image).toBeAbsent(),
+          Scene.expect(probe).toExist(),
         )
       })
 

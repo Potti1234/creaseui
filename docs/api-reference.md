@@ -91,9 +91,9 @@ Source: [`src/ui/avatar.ts`](../src/ui/avatar.ts)
 | `update` | function | `update(_model: Model, message: Message): Model` |
 | `AvatarProps` | type | `AvatarProps = Readonly<{ size?: 'default' \| 'sm' \| 'lg'; class?: string; children: ReadonlyArray<Html \| string>; }>` |
 | `avatar` | function | `avatar<Msg>(props: AvatarProps, h: HtmlBuilder<Msg>): Html` |
-| `AvatarImageProps` | type | `AvatarImageProps = Readonly<{ src: string; alt: string; class?: string; model?: Model; }>` |
+| `AvatarImageProps` | type | `AvatarImageProps = Readonly<{ src: string; alt: string; class?: string; model?: Model; /** Base UI parity: keep the img mounted while the source resolves, reporting data-loading/data-error/aria-hidden. */ keepMounted?: boolean; }>` |
 | `avatarImage` | function | `avatarImage<Msg>(props: AvatarImageProps & Readonly<{ toParentMessage?: (message: Message) => Msg }>, h: HtmlBuilder<Msg>): Html` |
-| `AvatarFallbackProps` | type | `AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html \| string>; model?: Model; }>` |
+| `AvatarFallbackProps` | type | `AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html \| string>; model?: Model; /** Source the sibling image is resolving; a stale 'loaded' status re-hides the fallback. */ src?: string; }>` |
 | `avatarFallback` | function | `avatarFallback<Msg>(props: AvatarFallbackProps, h: HtmlBuilder<Msg>): Html` |
 | `AvatarBadgeProps` | type | `AvatarBadgeProps = Readonly<{ class?: string; children?: ReadonlyArray<Html \| string>; }>` |
 | `avatarBadge` | function | `avatarBadge<Msg>(props: AvatarBadgeProps, h: HtmlBuilder<Msg>): Html` |
@@ -513,9 +513,9 @@ Source: [`src/ui/field.ts`](../src/ui/field.ts)
 | --- | --- | --- |
 | `ControlFieldParts` | re-export | `export { ControlFieldParts } from '@/lib/field'` |
 | `FieldError` | re-export | `export { FieldError } from '@/lib/field'` |
-| `FieldSetProps` | type | `FieldSetProps = Slot & Readonly<{ isDisabled?: boolean }>` |
+| `FieldSetProps` | type | `FieldSetProps = Slot & Readonly<{ id?: string; isDisabled?: boolean }>` |
 | `fieldSet` | function | `fieldSet<Msg>(props: FieldSetProps, h: HtmlBuilder<Msg>): Html` |
-| `FieldLegendProps` | type | `FieldLegendProps = Slot & Readonly<{ variant?: 'legend' \| 'label' }>` |
+| `FieldLegendProps` | type | `FieldLegendProps = Slot & Readonly<{ variant?: 'legend' \| 'label'; id?: string }>` |
 | `fieldLegend` | function | `fieldLegend<Msg>(props: FieldLegendProps, h: HtmlBuilder<Msg>): Html` |
 | `FieldGroupProps` | type | `FieldGroupProps = Slot & Readonly<{ variant?: 'default' \| 'outline' }>` |
 | `fieldGroup` | function | `fieldGroup<Msg>(props: FieldGroupProps, h: HtmlBuilder<Msg>): Html` |
@@ -613,7 +613,7 @@ Source: [`src/ui/input-otp.ts`](../src/ui/input-otp.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `InputOtpProps` | type | `InputOtpProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; length?: number; name?: string; ariaLabel?: string; isDisabled?: boolean; isInvalid?: boolean; isRequired?: boolean; class?: string; groupClass?: string; /** Pattern a…` |
+| `InputOtpProps` | type | `InputOtpProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; length?: number; name?: string; ariaLabel?: string; isDisabled?: boolean; isInvalid?: boolean; isRequired?: boolean; /** Focused state of the single input, stamped as …` |
 | `inputOtp` | function | `inputOtp<Msg>(props: InputOtpProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `inputOtpSeparator` | function | `inputOtpSeparator<Msg>(h: HtmlBuilder<Msg>): Html` |
 
@@ -805,7 +805,7 @@ Source: [`src/ui/popover.ts`](../src/ui/popover.ts)
 | `RequestedClose` | value | `RequestedClose: value` |
 | `PopoverSide` | type | `PopoverSide = 'top' \| 'right' \| 'bottom' \| 'left'` |
 | `PopoverAlign` | type | `PopoverAlign = 'start' \| 'center' \| 'end'` |
-| `PopoverProps` | type | `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; content: Html \| string; align?: PopoverAlign; side?: PopoverSide; class?: string; direction?: 'ltr' \| 'rtl'; focusSelector?…` |
+| `PopoverProps` | type | `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; triggerAttributes?: ReadonlyArray<Attribute<Msg>>; content: Html \| string; align?: PopoverAlign; side?: PopoverSide; class?…` |
 | `popover` | function | `popover<Msg>(props: PopoverProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Progress
@@ -861,8 +861,14 @@ Source: [`src/ui/scroll-area.ts`](../src/ui/scroll-area.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `ScrollAreaProps` | type | `ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html \| string>; orientation?: 'vertical' \| 'horizontal' \| 'both'; direction?: 'ltr' \| 'rtl'; ariaLabel?: string; tabIndex?: number; }>` |
-| `scrollArea` | function | `scrollArea<Msg>(props: ScrollAreaProps, h: HtmlBuilder<Msg>): Html` |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = ScrollAreaBehavior.Model` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = ScrollAreaBehavior.Message` |
+| `init` | value | `init: value` |
+| `update` | value | `update: value` |
+| `ScrollAreaProps` | type | `ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html \| string>; orientation?: 'vertical' \| 'horizontal' \| 'both'; direction?: 'ltr' \| 'rtl'; ariaLabel?: string; tabIndex?: number; model?: Model; }>` |
+| `scrollArea` | function | `scrollArea<Msg>(props: ScrollAreaProps & Readonly<{ toParentMessage?: (message: Message) => Msg; }>, h: HtmlBuilder<Msg>): Html` |
 
 ## Select
 

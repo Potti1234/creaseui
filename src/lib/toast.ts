@@ -64,7 +64,7 @@ export const WaitBeforeDismissing = Command.define('WaitBeforeDismissingToast', 
 
 type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
 
-const schedule = (entry: Entry): ReadonlyArray<Command.Command<Message>> => entry.sticky || entry.isPaused
+const schedule = (entry: Entry): ReadonlyArray<Command.Command<Message>> => entry.sticky || entry.isPaused || entry.durationMs <= 0
   ? []
   : [WaitBeforeDismissing({ id: entry.id, durationMs: entry.durationMs, timerVersion: entry.timerVersion })]
 

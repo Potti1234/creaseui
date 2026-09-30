@@ -1,4 +1,5 @@
 import * as stylex from '@stylexjs/stylex'
+import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as Icon from '@/lib/icon'
@@ -69,13 +70,19 @@ export type SonnerProps<Msg> = Readonly<{
 }>
 
 const entryView = <Msg>(entry: Entry, props: SonnerProps<Msg>, h: HtmlBuilder<Msg>): Html => h.article([
-  h.Key(entry.id), h.Role(entry.variant === 'Error' ? 'alert' : 'status'),
+  h.Key(entry.id), h.Role('dialog'), h.AriaModal(false), h.Tabindex(0),
+  h.AriaLabelledBy(`${entry.id}-title`),
+  ...(entry.payload.description === undefined ? [] : [h.AriaDescribedBy(`${entry.id}-description`)]),
+  h.OnKeyDownPreventDefault(key =>
+    key === 'Escape'
+      ? Option.some(props.toParentMessage(ToastMessages.Dismissed({ id: entry.id })))
+      : Option.none()),
   h.DataAttribute('slot', 'sonner-toast'), h.DataAttribute('variant', entry.variant.toLowerCase()), h.DataAttribute('paused', String(entry.isPaused)),
   ...(props.pausePolicy === 'none' || entry.sticky ? [] : [h.OnMouseEnter(props.toParentMessage(ToastMessages.PausedToast({ id: entry.id }))), h.OnMouseLeave(props.toParentMessage(ToastMessages.ResumedToast({ id: entry.id })))]),
   h.Class(className(styles.toast, props.entryLayoutStyle)),
 ], [
   ...(variantIcon(entry.variant, h) === undefined ? [] : [variantIcon(entry.variant, h)!]),
-  h.div([h.Class(className(styles.body))], [h.div([h.Class(className(styles.title))], [entry.payload.title]), ...(entry.payload.description === undefined ? [] : [h.div([h.Class(className(styles.description))], [entry.payload.description])])]),
+  h.div([h.Role(entry.variant === 'Error' ? 'alert' : 'status'), h.Class(className(styles.body))], [h.div([h.Id(`${entry.id}-title`), h.Class(className(styles.title))], [entry.payload.title]), ...(entry.payload.description === undefined ? [] : [h.div([h.Id(`${entry.id}-description`), h.Class(className(styles.description))], [entry.payload.description])])]),
   ...(entry.payload.actionLabel === undefined ? [] : [h.button([h.Type('button'), h.OnClick(props.toParentMessage(ToastMessages.ActivatedToastAction({ id: entry.id }))), h.Class(className(styles.action))], [entry.payload.actionLabel])]),
   h.button([h.Type('button'), h.AriaLabel('Dismiss notification'), h.OnClick(props.toParentMessage(ToastMessages.Dismissed({ id: entry.id }))), h.Class(className(styles.dismiss))], [Icon.x<Msg>({}, h)]),
 ])
@@ -89,9 +96,11 @@ export const sonner = <Msg>(props: SonnerProps<Msg>, h: HtmlBuilder<Msg>): Html 
     (positions.length === 0 ? [fallback] : positions).map(position =>
       h.section([
         h.AriaLabel(props.ariaLabel ?? 'Notifications'), h.AriaLive('polite'),
+        h.AriaAtomic(false), h.AriaRelevant('additions text'), h.Tabindex(-1),
         h.DataAttribute('slot', 'sonner'), h.DataAttribute('position', position),
         h.Class(className(styles.viewport, ...positionStyle(position), props.layoutStyle)),
       ], props.model.entries
         .filter(entry => entryPosition(entry) === position)
+        .reverse()
         .map(entry => entryView(entry, props, h)))))
 }

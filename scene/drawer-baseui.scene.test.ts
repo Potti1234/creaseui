@@ -118,7 +118,21 @@ const resolveAcquireResources = Scene.Mount.resolve(
 // consumes its matcher list, so a shared instance silently no-ops in the
 // next scene. Build a fresh step for each test.
 const expectAcquireEnded = () =>
-  Scene.Mount.expectEnded(DialogPrimitive.AcquireResources)
+  Scene.Mount.expectEnded(
+    DialogPrimitive.AcquireResources,
+    measurePopupMount,
+  )
+
+// The content element carries a MeasureDrawerPopup OnMount that feeds the
+// popup's measured size into the model (Base UI derives the swipe-dismiss
+// threshold as half the popup size). Resolve it with the lifted message and
+// a representative 200px popup — same resolve-with-lifted-message pattern as
+// the tooltip anchor mount.
+const measurePopupMount = { name: DrawerBehavior.MeasureDrawerPopup.name }
+const resolveMeasurePopup = Scene.Mount.resolve(measurePopupMount, {
+  _tag: 'GotDrawerMessage' as const,
+  message: DrawerBehavior.Message.MeasuredDrawerPopupSize({ size: 200 }),
+})
 
 const emitDragged = (offset: number, timeStamp: number) =>
   Scene.Subscription.emit<Message>({
@@ -141,6 +155,7 @@ const openDrawer = (
   Scene.expectOutMessage(DrawerBehavior.OutMessage.Opened()),
   resolveShowDialog,
   resolveAcquireResources,
+  resolveMeasurePopup,
   Scene.expect(content).toExist(),
   ...rest,
 ]
@@ -236,6 +251,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('aria-labelledby')),
           resolveAcquireResources,
+          resolveMeasurePopup,
           Scene.expect(drawerDialog).toHaveAttr(
             'aria-labelledby',
             'aria-labelledby-dialog-title',
@@ -253,6 +269,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('aria-modal')),
           resolveAcquireResources,
+          resolveMeasurePopup,
           Scene.expect(drawerDialog).toHaveAttr('aria-modal', 'true'),
         )
       })
@@ -262,6 +279,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('aria-desc')),
           resolveAcquireResources,
+          resolveMeasurePopup,
           Scene.expect(drawerDescription).toExist(),
           Scene.expect(drawerDescription).toHaveAttr(
             'id',
@@ -270,16 +288,12 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI's popup emits aria-describedby whenever a
-      // description is rendered. The foldkit dialog supports the same link
-      // via the `hasDescription` view input, but creaseui's drawer view never
-      // sets it, so the attribute is missing even though the description
-      // element (and its id) exist.
-      it.fails('points aria-describedby at the drawer description', () => {
+      it('points aria-describedby at the drawer description', () => {
         Scene.scene(
           { update, view },
           Scene.given(openModel('aria-desc-fails')),
           resolveAcquireResources,
+          resolveMeasurePopup,
           Scene.expect(drawerDescription).toExist(),
           Scene.expect(drawerDialog).toHaveAttr(
             'aria-describedby',
@@ -305,6 +319,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
             },
             Scene.given(draggingModel(`dir-${direction}`, 120)),
             resolveAcquireResources,
+          resolveMeasurePopup,
             Scene.expect(content).toHaveAttr(
               'data-vaul-drawer-direction',
               direction,
@@ -319,6 +334,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(draggingModel('dir-default', 80)),
           resolveAcquireResources,
+          resolveMeasurePopup,
           Scene.expect(content).toHaveAttr(
             'data-vaul-drawer-direction',
             'bottom',
@@ -342,6 +358,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('close-button')),
           resolveAcquireResources,
+          resolveMeasurePopup,
           ...expectOpen(),
           Scene.click(cancelButton),
           Scene.expectHandled(),
@@ -357,6 +374,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('outside-press')),
           resolveAcquireResources,
+          resolveMeasurePopup,
           Scene.click(overlay),
           Scene.expectHandled(),
           Scene.expectOutMessage(DrawerBehavior.OutMessage.Closed()),
@@ -374,6 +392,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('escape')),
           resolveAcquireResources,
+          resolveMeasurePopup,
           Scene.expect(drawerDialog).toHaveHandler('cancel'),
         )
       })
@@ -398,6 +417,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('drag-start')),
           resolveAcquireResources,
+          resolveMeasurePopup,
           Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
           Scene.expectHandled(),
           Scene.expect(handle).toHaveAttr('data-drag-phase', 'Dragging'),
@@ -410,6 +430,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('drag-secondary')),
           resolveAcquireResources,
+          resolveMeasurePopup,
           Scene.pointerDown(handle, {
             button: 2,
             screenX: 200,
@@ -426,6 +447,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('drag-offset')),
           resolveAcquireResources,
+          resolveMeasurePopup,
           Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
           Scene.expectHandled(),
           emitDragged(80, 100),
@@ -443,6 +465,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('drag-clamp')),
           resolveAcquireResources,
+          resolveMeasurePopup,
           Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
           Scene.expectHandled(),
           emitDragged(-40, 100),
@@ -456,6 +479,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('drag-short')),
           resolveAcquireResources,
+          resolveMeasurePopup,
           Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
           Scene.expectHandled(),
           emitDragged(50, 400),
@@ -472,6 +496,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('drag-long')),
           resolveAcquireResources,
+          resolveMeasurePopup,
           Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
           Scene.expectHandled(),
           emitDragged(150, 1000),
@@ -489,6 +514,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('drag-flick')),
           resolveAcquireResources,
+          resolveMeasurePopup,
           Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
           Scene.expectHandled(),
           emitDragged(40, 50),
@@ -506,6 +532,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('drag-reverse')),
           resolveAcquireResources,
+          resolveMeasurePopup,
           Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
           Scene.expectHandled(),
           emitDragged(80, 400),
@@ -522,6 +549,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('drag-release')),
           resolveAcquireResources,
+          resolveMeasurePopup,
           Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
           Scene.expectHandled(),
           emitDragged(60, 300),
@@ -537,6 +565,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('drag-cancel')),
           resolveAcquireResources,
+          resolveMeasurePopup,
           Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
           Scene.expectHandled(),
           emitDragged(150, 400),
@@ -554,6 +583,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('drag-inplace')),
           resolveAcquireResources,
+          resolveMeasurePopup,
           Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
           Scene.expectHandled(),
           Scene.pointerUp(handle),
@@ -568,6 +598,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('drag-stationary')),
           resolveAcquireResources,
+          resolveMeasurePopup,
           Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
           Scene.expectHandled(),
           emitDragged(0, 100),
@@ -594,6 +625,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('swipe-content')),
           resolveAcquireResources,
+          resolveMeasurePopup,
           Scene.expect(content).not.toHaveHandler('pointerdown'),
           Scene.expect(drawerTitle).not.toHaveHandler('pointerdown'),
           Scene.expect(overlay).not.toHaveHandler('pointerdown'),
@@ -601,20 +633,21 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI's default swipe threshold is size-based (half the
-      // popup dimension — a 200px popup needs ~100px). creaseui uses a fixed
-      // 120px distance, so a 110px drag stays open.
-      it.fails('uses a size-based swipe threshold', () => {
+      it('uses a size-based swipe threshold', () => {
         Scene.scene(
           { update, view },
           Scene.given(openModel('size-threshold')),
           resolveAcquireResources,
+          resolveMeasurePopup,
           Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
           Scene.expectHandled(),
           emitDragged(110, 300),
           Scene.pointerUp(handle),
           Scene.expectHandled(),
           Scene.expectOutMessage(DrawerBehavior.OutMessage.Closed()),
+          resolveCloseDialog,
+          expectAcquireEnded(),
+          ...expectClosed(),
         )
       })
 

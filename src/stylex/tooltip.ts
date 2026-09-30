@@ -73,6 +73,7 @@ export type TooltipProps<Msg> = Readonly<{
   offset?: number;
   /** Only the theme-safe inline mode is supported by the StyleX boundary. */
   portal?: false;
+  disableHoverablePopup?: boolean;
 }>;
 
 export const tooltip = <Msg>(
@@ -99,6 +100,7 @@ export const tooltip = <Msg>(
                   h.span(
                     [
                       h.Id(triggerId), h.AriaDescribedBy(panelId), h.DataAttribute('slot', 'tooltip-trigger'),
+                      ...(props.model.isOpen ? [h.DataAttribute('popup-open', '')] : []),
                       h.Class(className(styles.disabledTrigger)),
                       h.OnMouseEnter(send(TooltipBehavior.Message.EnteredTooltipTrigger())),
                       h.OnMouseLeave(send(TooltipBehavior.Message.LeftTooltipTrigger())),
@@ -125,6 +127,7 @@ export const tooltip = <Msg>(
                       ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
                       h.OnMouseEnter(send(TooltipBehavior.Message.EnteredTooltipTrigger())), h.OnMouseLeave(send(TooltipBehavior.Message.LeftTooltipTrigger())), h.OnFocus(send(TooltipBehavior.Message.FocusedTooltipTrigger())), h.OnBlur(send(TooltipBehavior.Message.BlurredTooltipTrigger())), h.OnPointerDown(() => Option.some(send(TooltipBehavior.Message.PressedPointerOnTooltipTrigger()))), h.OnKeyDownPreventDefault(key => key === 'Escape' && props.model.isOpen ? Option.some(send(TooltipBehavior.Message.PressedEscapeOnTooltip())) : Option.none()),
                       h.DataAttribute('slot', 'tooltip-trigger'),
+                      ...(props.model.isOpen ? [h.DataAttribute('popup-open', '')] : []),
                       ...(props.triggerLayoutStyle === undefined
                         ? []
                         : [h.Class(cn(props.triggerLayoutStyle))]),
@@ -136,7 +139,7 @@ export const tooltip = <Msg>(
               ? [
                   h.div(
                     [
-                      h.Id(panelId), h.Role('tooltip'), h.Style({ position: 'absolute', margin: '0', visibility: 'hidden', pointerEvents: 'none' }),
+                      h.Id(panelId), h.Role('tooltip'), h.Style({ position: 'absolute', margin: '0', visibility: 'hidden', ...(props.disableHoverablePopup === true ? { pointerEvents: 'none' } : {}) }),
                       h.OnMount(Mount.mapMessage(TooltipPrimitive.AnchorTooltip({ buttonId: triggerId, anchor }), () => send(TooltipBehavior.Message.CompletedTooltipAnchor()))),
                       h.DataAttribute('open', ''), h.DataAttribute('slot', 'tooltip-content'),
                       h.Class(cn(overlayStyles.tooltip, CONTENT_CLASS, props.layoutStyle)),
@@ -148,7 +151,7 @@ export const tooltip = <Msg>(
                         : [
                             h.span(
                               [
-                                h.AriaHidden(true), h.DataAttribute('slot', 'tooltip-arrow'), h.Class(className(ARROW_CLASS)),
+                                h.AriaHidden(true), h.DataAttribute('slot', 'tooltip-arrow'), h.DataAttribute('side', side), h.DataAttribute('open', ''), h.Class(className(ARROW_CLASS)),
                               ],
                               [],
                             ),

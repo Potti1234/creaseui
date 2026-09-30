@@ -597,6 +597,7 @@ const popoverSource = (renderer: 'tailwind' | 'stylex'): string =>
           trigger: Icon.icon('chevron-down', { ariaLabel: 'Open Popover' }, h),
           ${renderer === 'stylex' ? '' : `triggerClass: 'inline-flex size-9 items-center justify-center rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground',`}
           align: 'end',
+          backdrop: true,
           content: h.div([h.Class(${renderer === 'stylex' ? 'className(styles.popoverBody)' : `'grid gap-3 text-sm'`})], [
             h.div([h.Class(${renderer === 'stylex' ? 'className(styles.popoverHead)' : `'grid gap-1'`})], [
               h.p([h.Class(${renderer === 'stylex' ? 'className(styles.popoverTitle)' : `'text-sm font-medium'`})], ['Start a new task with Copilot']),

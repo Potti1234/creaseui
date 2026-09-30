@@ -182,9 +182,9 @@ Examples: Demo, Basic, Badge, Badge with Icon, Avatar Group, Avatar Group Count,
 - `update(_model: Model, message: Message): Model` (function)
 - `AvatarProps = Readonly<{ size?: 'default' | 'sm' | 'lg'; class?: string; children: ReadonlyArray<Html | string>; }>` (type)
 - `avatar<Msg>(props: AvatarProps, h: HtmlBuilder<Msg>): Html` (function)
-- `AvatarImageProps = Readonly<{ src: string; alt: string; class?: string; model?: Model; }>` (type)
+- `AvatarImageProps = Readonly<{ src: string; alt: string; class?: string; model?: Model; /** Base UI parity: keep the img mounted while the source resolves, reporting data-loading/data-error/aria-hidden. */ keepMounted?: boolean; }>` (type)
 - `avatarImage<Msg>(props: AvatarImageProps & Readonly<{ toParentMessage?: (message: Message) => Msg }>, h: HtmlBuilder<Msg>): Html` (function)
-- `AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; model?: Model; }>` (type)
+- `AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; model?: Model; /** Source the sibling image is resolving; a stale 'loaded' status re-hides the fallback. */ src?: string; }>` (type)
 - `avatarFallback<Msg>(props: AvatarFallbackProps, h: HtmlBuilder<Msg>): Html` (function)
 - `AvatarBadgeProps = Readonly<{ class?: string; children?: ReadonlyArray<Html | string>; }>` (type)
 - `avatarBadge<Msg>(props: AvatarBadgeProps, h: HtmlBuilder<Msg>): Html` (function)
@@ -648,9 +648,9 @@ Examples: Payment Method, Input, Textarea, Select, Slider, Fieldset, Checkbox, R
 
 - `export { ControlFieldParts } from '@/lib/field'` (re-export)
 - `export { FieldError } from '@/lib/field'` (re-export)
-- `FieldSetProps = Slot & Readonly<{ isDisabled?: boolean }>` (type)
+- `FieldSetProps = Slot & Readonly<{ id?: string; isDisabled?: boolean }>` (type)
 - `fieldSet<Msg>(props: FieldSetProps, h: HtmlBuilder<Msg>): Html` (function)
-- `FieldLegendProps = Slot & Readonly<{ variant?: 'legend' | 'label' }>` (type)
+- `FieldLegendProps = Slot & Readonly<{ variant?: 'legend' | 'label'; id?: string }>` (type)
 - `fieldLegend<Msg>(props: FieldLegendProps, h: HtmlBuilder<Msg>): Html` (function)
 - `FieldGroupProps = Slot & Readonly<{ variant?: 'default' | 'outline' }>` (type)
 - `fieldGroup<Msg>(props: FieldGroupProps, h: HtmlBuilder<Msg>): Html` (function)
@@ -756,7 +756,7 @@ Source: `src/ui/input-otp.ts`
 
 Examples: Basic, Pattern, Separator, Disabled, Controlled, Invalid, Four Digits, Alphanumeric, Form, RTL
 
-- `InputOtpProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; length?: number; name?: string; ariaLabel?: string; isDisabled?: boolean; isInvalid?: boolean; isRequired?: boolean; class?: string; groupClass?: string; /** Pattern a…` (type)
+- `InputOtpProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; length?: number; name?: string; ariaLabel?: string; isDisabled?: boolean; isInvalid?: boolean; isRequired?: boolean; /** Focused state of the single input, stamped as …` (type)
 - `inputOtp<Msg>(props: InputOtpProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `inputOtpSeparator<Msg>(h: HtmlBuilder<Msg>): Html` (function)
 
@@ -972,7 +972,7 @@ Examples: Basic, Align, With Form, Interactive content, Right aligned, RTL
 - `RequestedClose: value` (value)
 - `PopoverSide = 'top' | 'right' | 'bottom' | 'left'` (type)
 - `PopoverAlign = 'start' | 'center' | 'end'` (type)
-- `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; content: Html | string; align?: PopoverAlign; side?: PopoverSide; class?: string; direction?: 'ltr' | 'rtl'; focusSelector?…` (type)
+- `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; triggerAttributes?: ReadonlyArray<Attribute<Msg>>; content: Html | string; align?: PopoverAlign; side?: PopoverSide; class?…` (type)
 - `popover<Msg>(props: PopoverProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Progress
@@ -1036,8 +1036,14 @@ Source: `src/ui/scroll-area.ts`
 
 Examples: Basic, Horizontal, RTL
 
-- `ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; orientation?: 'vertical' | 'horizontal' | 'both'; direction?: 'ltr' | 'rtl'; ariaLabel?: string; tabIndex?: number; }>` (type)
-- `scrollArea<Msg>(props: ScrollAreaProps, h: HtmlBuilder<Msg>): Html` (function)
+- `Model: value` (value)
+- `Model = ScrollAreaBehavior.Model` (type)
+- `Message: value` (value)
+- `Message = ScrollAreaBehavior.Message` (type)
+- `init: value` (value)
+- `update: value` (value)
+- `ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; orientation?: 'vertical' | 'horizontal' | 'both'; direction?: 'ltr' | 'rtl'; ariaLabel?: string; tabIndex?: number; model?: Model; }>` (type)
+- `scrollArea<Msg>(props: ScrollAreaProps & Readonly<{ toParentMessage?: (message: Message) => Msg; }>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Select
 

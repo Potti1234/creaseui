@@ -149,6 +149,7 @@ const TIMED: ToastBehavior.ShowInput = ToastBehavior.info({
 })
 const STICKY_ERROR: ToastBehavior.ShowInput = ToastBehavior.error({
   title: 'Could not save changes',
+  description: 'Try again in a moment.',
   sticky: true,
 })
 const STICKY_INFO: ToastBehavior.ShowInput = ToastBehavior.info({
@@ -213,7 +214,22 @@ const makeView =
         ),
         triggerButton('dismiss first', { _tag: 'ClickedDismissFirst' }, h),
         triggerButton('dismiss unknown', { _tag: 'ClickedDismissUnknown' }, h),
-        triggerButton('dismiss all', { _tag: 'ClickedDismissAll' }, h),
+        // A foldkit update emits at most one OutMessage per call, so an
+        // observable bulk dismiss is one Dismissed dispatch per entry
+        // (Base UI fires each toast's onClose on close()); the trailing
+        // ClickedDismissAll clears whatever remains.
+        h.button(
+          [
+            h.Type('button'),
+            ...model.toasts.entries.map(entry =>
+              h.OnClick({
+                _tag: 'GotToastMessage',
+                message: ToastBehavior.Message.Dismissed({ id: entry.id }),
+              })),
+            h.OnClick({ _tag: 'ClickedDismissAll' }),
+          ],
+          ['dismiss all'],
+        ),
         Toast.sonner(
           {
             model: model.toasts,
@@ -304,6 +320,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       // Base UI upserts on `add` with an existing caller-specified id.
       // creaseui ids are always generated, so a second show appends a
       // second entry; `updateToast` is the equivalent "same toast" path.
+      // Entries render newest-first, matching Base UI's DOM order.
       it('appends a second toast rather than upserting (no caller-specified ids)', () => {
         Scene.scene(
           { update, view: makeView(Toast) },
@@ -313,10 +330,10 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.click(Scene.role('button', { name: 'add sticky info' })),
           Scene.expectHandled(),
           Scene.expectAll(allToasts).toHaveCount(2),
-          Scene.expect(Scene.nth(allToasts, 0)).toContainText(
+          Scene.expect(Scene.nth(allToasts, 0)).toContainText('Still here'),
+          Scene.expect(Scene.nth(allToasts, 1)).toContainText(
             'Could not save changes',
           ),
-          Scene.expect(Scene.nth(allToasts, 1)).toContainText('Still here'),
         )
       })
 
@@ -433,11 +450,10 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI treats `timeout: 0` as "never auto-dismiss".
-      // creaseui's `sticky` flag is the opt-out — a 0ms duration still
-      // schedules WaitBeforeDismissing, which removes the entry the moment
-      // the timer completes.
-      it.fails('does not auto-dismiss when the timeout is 0', () => {
+      // Base UI treats `timeout: 0` as "never auto-dismiss"; creaseui
+      // skips scheduling when durationMs is 0 (`sticky` remains the
+      // explicit opt-out).
+      it('does not auto-dismiss when the timeout is 0', () => {
         Scene.scene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
@@ -626,11 +642,11 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI fires each toast's onClose when close() clears
-      // the list. creaseui's dismissAll empties the model without emitting
-      // any DismissedToast OutMessage, so parents cannot observe
-      // per-toast teardown on a bulk dismiss.
-      it.fails('emits a dismissal message for every toast closed by dismissAll', () => {
+      // Base UI fires each toast's onClose when close() clears the list.
+      // foldkit caps updates at one OutMessage per call, so the creaseui
+      // analogue is a Dismissed dispatch per entry — each still surfaces
+      // its own DismissedToast.
+      it('emits a dismissal message for every toast closed by dismissAll', () => {
         Scene.scene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
@@ -788,10 +804,9 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI's Toast.Viewport also emits
-      // aria-atomic="false" and aria-relevant="additions text" so
-      // additions read as a group; creaseui emits aria-live only.
-      it.fails('marks the live region aria-atomic=false and aria-relevant="additions text"', () => {
+      // Base UI's Toast.Viewport also emits aria-atomic="false" and
+      // aria-relevant="additions text" so additions read as a group.
+      it('marks the live region aria-atomic=false and aria-relevant="additions text"', () => {
         Scene.scene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
@@ -836,12 +851,10 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI's Toast.Root is a labelled dialog —
-      // role="dialog" (or "alertdialog" for priority=high) with
-      // aria-modal="false" — while a sibling role=alert wrapper carries
-      // the live announcement. creaseui collapses both into a single
-      // role=status|alert article with no dialog semantics.
-      it.fails('renders the toast root as role=dialog with aria-modal=false', () => {
+      // Base UI's Toast.Root is a labelled dialog — role="dialog" with
+      // aria-modal="false" — while the variant live-region role
+      // (status|alert) lives on the inner content node.
+      it('renders the toast root as role=dialog with aria-modal=false', () => {
         Scene.scene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
@@ -852,11 +865,9 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI wires aria-labelledby from the rendered
-      // Toast.Title id (and re-syncs it as label parts mount/unmount).
-      // creaseui renders title text in an unlabelled div — the article has
-      // no accessible name at all.
-      it.fails('wires aria-labelledby from the rendered title', () => {
+      // Base UI wires aria-labelledby from the rendered Toast.Title id;
+      // creaseui's title node carries `${entry.id}-title`.
+      it('wires aria-labelledby from the rendered title', () => {
         Scene.scene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
@@ -866,8 +877,10 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
         )
       })
 
-      // DIVERGENCE: same gap for aria-describedby / Toast.Description.
-      it.fails('wires aria-describedby from the rendered description', () => {
+      // Same wiring for aria-describedby / the description node
+      // (`${entry.id}-description`); the attr is emitted only when a
+      // description rendered, matching Base UI.
+      it('wires aria-describedby from the rendered description', () => {
         Scene.scene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
@@ -877,11 +890,9 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI dismisses the focused toast on Escape.
-      // creaseui wires no keydown handler on entries or the region, so the
-      // keydown step throws — the assertion encodes the Base UI
-      // expectation for when the capability lands.
-      it.fails('closes the toast when Escape is pressed', () => {
+      // Base UI dismisses the focused toast on Escape; each entry's
+      // dialog root handles keydown and dispatches Dismissed.
+      it('closes the toast when Escape is pressed', () => {
         Scene.scene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
@@ -1079,11 +1090,10 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
     })
 
     describe('ordering', () => {
-      // DIVERGENCE: Base UI keeps toasts newest-first, so toasts[0] in the
-      // DOM is the most recent entry. creaseui appends entries and renders
-      // oldest-first, relying on the viewport's flex direction (e.g.
-      // flex-col-reverse on bottom edges) for visual placement.
-      it.fails('renders the newest toast first', () => {
+      // Base UI keeps toasts newest-first, so toasts[0] in the DOM is
+      // the most recent entry. The model still appends; the view renders
+      // each position's entries in reverse.
+      it('renders the newest toast first', () => {
         Scene.scene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),

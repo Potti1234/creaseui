@@ -92,6 +92,9 @@ const itemAttributes = <Value extends string, Msg>(
     h.DataAttribute('variant', variant),
     h.DataAttribute('size', size),
     h.AriaPressed(isPressed ? 'true' : 'false'),
+    h.AriaDisabled(item.isDisabled === true),
+    ...(isPressed ? [h.DataAttribute('pressed', '')] : []),
+    ...(item.isDisabled === true ? [h.DataAttribute('disabled', '')] : []),
     ...(item.ariaLabel === undefined ? [] : [h.AriaLabel(item.ariaLabel)]),
     h.Class(className(
       styles.item,
@@ -122,6 +125,7 @@ const groupAttributes = <Value extends string, Msg>(props: SharedProps<Value>, h
     h.DataAttribute('size', size),
     h.DataAttribute('arrangement', wrapped ? 'wrapped' : 'joined'),
     h.DataAttribute('orientation', props.orientation === 'vertical' ? 'vertical' : 'horizontal'),
+    ...(props.values !== undefined ? [h.DataAttribute('multiple', '')] : []),
     h.Class(className(styles.group, wrapped && styles.groupWrapped, props.orientation === 'vertical' && styles.groupVertical, variant === 'outline' && styles.outlineGroup, props.layoutStyle)),
   ]
 }

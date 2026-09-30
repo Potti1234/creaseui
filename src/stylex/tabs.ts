@@ -1,6 +1,7 @@
 import * as stylex from "@stylexjs/stylex";
 import type { Html, HtmlBuilder } from "foldkit/html";
 import { Tabs as TabsPrimitive } from "@foldkit/ui";
+import * as TabsBehavior from "@/lib/tabs";
 import type { ComponentLayoutStyle } from "./contracts";
 import { foundationTokens } from "./foundations-tokens.stylex";
 import { className } from "./style";
@@ -114,10 +115,28 @@ const renderTabs = <Value extends string, Msg>(
       selectedValue: p.selectedValue,
       ariaLabel: p.ariaLabel ?? "Tabs",
       orientation: orientation === "horizontal" ? "Horizontal" : "Vertical",
-      isTabDisabled: (value) =>
-        p.tabs.find((tab) => tab.value === value)?.isDisabled ?? false,
-      toView: ({ tablist, tabs, activeIndex }) =>
-        h.div(
+      toView: ({ tablist, tabs, activeIndex }) => {
+        const selectedExists = orderedTabs.some(
+          (tab) => tab.value === p.selectedValue,
+        );
+        const isDisabledAt = (index: number): boolean =>
+          orderedTabs[index]?.isDisabled === true;
+        const focusedIndex = TabsBehavior.focusedTabIndex({
+          maybeFocusedIndex: p.model.maybeFocusedIndex,
+          activeIndex,
+          tabCount: orderedTabs.length,
+          selectedExists,
+          isDisabledAt,
+        });
+        const keyDown = TabsBehavior.tabKeyDown({
+          tabs: orderedTabs.map((tab) => tab.value),
+          focusedIndex,
+          activeIndex,
+          activationMode: p.model.activationMode,
+          orientation: orientation === "horizontal" ? "Horizontal" : "Vertical",
+          isDisabledAt,
+        });
+        return h.div(
           [
             h.DataAttribute("slot", "tabs"),
             h.DataAttribute("orientation", orientation),
@@ -127,7 +146,7 @@ const renderTabs = <Value extends string, Msg>(
           [
             h.div(
               [
-                ...tablist,
+                ...TabsBehavior.tablistAttributes(tablist, orientation),
                 h.DataAttribute("slot", "tabs-list"),
                 h.DataAttribute("variant", variant),
                 ...(p.direction === "rtl" && orientation === "horizontal"
@@ -149,7 +168,15 @@ const renderTabs = <Value extends string, Msg>(
                   : [
                       h.button(
                         [
-                          ...tab.tab,
+                          ...TabsBehavior.triggerAttributes(h, {
+                            attributes: tab.tab,
+                            index: tab.index,
+                            isFocusedStop: tab.index === focusedIndex,
+                            isDisabled: config.isDisabled === true,
+                            isActive: tab.isActive,
+                            keyDown,
+                            toParentMessage: p.toParentMessage,
+                          }),
                           h.DataAttribute("slot", "tabs-trigger"),
                           ...(p.direction === undefined ? [] : [h.Dir(p.direction)]),
                           h.Class(
@@ -176,6 +203,7 @@ const renderTabs = <Value extends string, Msg>(
                     h.div(
                       [
                         ...tab.panel,
+                        h.DataAttribute("index", String(tab.index)),
                         h.DataAttribute("slot", "tabs-content"),
                         h.Class(className(styles.content, p.contentLayoutStyle)),
                       ],
@@ -184,7 +212,8 @@ const renderTabs = <Value extends string, Msg>(
                   ];
             }),
           ],
-        ),
+        );
+      },
     },
     toParentMessage: p.toParentMessage,
   });

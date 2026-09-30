@@ -33,6 +33,7 @@ export const Message = defineMessageUnion({
   'BlurredTooltipTrigger': {},
   'PressedEscapeOnTooltip': {},
   'PressedPointerOnTooltipTrigger': {},
+  'SetTooltipDisabled': { disabled: S.Boolean },
   'CompletedTooltipAnchor': {},
   'CompletedWaitBeforeShowingTooltip': { version: S.Number },
   'CompletedWaitBeforeClosingTooltip': { version: S.Number },
@@ -107,7 +108,7 @@ export const update = (model: Model, message: Message): UpdateReturn => {
         : result(model, next)
     }
     case 'PressedPointerOnTooltipTrigger':
-      return result(model, { ...model, pointerFocusVersion: model.pointerFocusVersion + 1 })
+      return result(model, { ...model, isOpen: false, showVersion: model.showVersion + 1, pointerFocusVersion: model.pointerFocusVersion + 1 })
     case 'CompletedTooltipAnchor':
       return result(model, model)
     case 'FocusedTooltipTrigger':
@@ -126,6 +127,10 @@ export const update = (model: Model, message: Message): UpdateReturn => {
     }
     case 'PressedEscapeOnTooltip':
       return result(model, { ...model, isOpen: false, isDismissed: true, showVersion: model.showVersion + 1, closeVersion: model.closeVersion + 1 })
+    case 'SetTooltipDisabled':
+      return message.disabled
+        ? result(model, { ...model, isOpen: false, showVersion: model.showVersion + 1, closeVersion: model.closeVersion + 1 })
+        : result(model, model)
     case 'CompletedWaitBeforeShowingTooltip':
       return message.version === model.showVersion && model.isHovered && !model.isDismissed
         ? result(model, { ...model, isOpen: true })

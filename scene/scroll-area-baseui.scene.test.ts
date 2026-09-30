@@ -2,6 +2,7 @@ import * as Scene from 'foldkit/scene'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { describe, it } from 'vitest'
 
+import * as ScrollAreaBehavior from '@/lib/scroll-area'
 import * as StyleXScrollArea from '@/stylex/scroll-area'
 import * as TailwindScrollArea from '@/ui/scroll-area'
 
@@ -12,8 +13,9 @@ import * as TailwindScrollArea from '@/ui/scroll-area'
  *
  * creaseui's `scrollArea` is a single styled div backed by native
  * scrollbars — there are no Viewport/Scrollbar/Thumb/Corner parts and
- * no scroll-state machinery — so most of Base UI's suite has no
- * analogue and is recorded here instead of being dropped silently:
+ * no built-in scroll-position/hover machinery (overflow measurement is
+ * opt-in via `model` + `toParentMessage`) — so most of Base UI's suite
+ * has no analogue and is recorded here instead of being dropped silently:
  *  - describeConformance in every file (React internals: ref
  *    instanceof, `render=` element substitution, StrictMode)
  *  - React context errors ("throws when rendered outside
@@ -40,18 +42,50 @@ import * as TailwindScrollArea from '@/ui/scroll-area'
 
 type Model = Readonly<{
   direction: 'ltr' | 'rtl'
+  scrollArea: ScrollAreaBehavior.Model
 }>
 
-type Message = Readonly<{ _tag: 'SetDirection'; direction: 'ltr' | 'rtl' }>
+type Message =
+  | Readonly<{ _tag: 'SetDirection'; direction: 'ltr' | 'rtl' }>
+  | Readonly<{
+      _tag: 'GotScrollAreaViewport'
+      message: ScrollAreaBehavior.Message
+    }>
 
-const initialModel: Model = { direction: 'ltr' }
+const initialModel = (ScrollArea: ScrollAreaModule): Model => ({
+  direction: 'ltr',
+  scrollArea: ScrollArea.init(),
+})
 
 const update = (model: Model, message: Message): { model: Model } => {
   switch (message._tag) {
     case 'SetDirection':
       return { model: { ...model, direction: message.direction } }
+    case 'GotScrollAreaViewport':
+      return {
+        model: {
+          ...model,
+          scrollArea: ScrollAreaBehavior.update(
+            model.scrollArea,
+            message.message,
+          ).model,
+        },
+      }
   }
 }
+
+const scrollAreaMount = { name: ScrollAreaBehavior.ObserveScrollAreaOverflow.name }
+const gotScrollArea = (
+  metrics: Readonly<{
+    scrollWidth: number
+    clientWidth: number
+    scrollHeight: number
+    clientHeight: number
+  }>,
+): Message => ({
+  _tag: 'GotScrollAreaViewport',
+  message: ScrollAreaBehavior.Message.ObservedScrollAreaViewport(metrics),
+})
 
 type ScrollAreaModule = Readonly<{
   scrollArea: <Msg>(
@@ -62,9 +96,12 @@ type ScrollAreaModule = Readonly<{
       direction?: 'ltr' | 'rtl'
       ariaLabel?: string
       tabIndex?: number
+      model?: ScrollAreaBehavior.Model
+      toParentMessage?: (message: ScrollAreaBehavior.Message) => Msg
     },
     h: HtmlBuilder<Msg>,
   ) => Html
+  init: () => ScrollAreaBehavior.Model
 }>
 
 const scrollAreaElement = Scene.selector('[data-slot="scroll-area"]')
@@ -85,7 +122,7 @@ const verifyRenderer = (name: string, ScrollArea: ScrollAreaModule) => {
                 h,
               ),
           },
-          Scene.given(initialModel),
+          Scene.given(initialModel(ScrollArea)),
           // creaseui emits no role at all — stronger than Base UI's
           // "not role=presentation" expectation.
           Scene.expect(scrollAreaElement).not.toHaveAttr('role'),
@@ -93,20 +130,79 @@ const verifyRenderer = (name: string, ScrollArea: ScrollAreaModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI measures overflow and emits tabindex="-1" on
-      // a viewport whose content does not overflow either axis, keeping
-      // it out of the tab order ('measures content mounted after the
-      // viewport initial measurement'). creaseui statically emits
-      // tabIndex=0, so a non-scrollable scroll area stays a tab stop.
-      it.fails('keeps a non-overflowing viewport out of the tab order', () => {
+      // Base UI measures overflow and emits tabindex="-1" on a viewport
+      // whose content does not overflow either axis ('measures content
+      // mounted after the viewport initial measurement'). The wired
+      // scrollArea renders the pre-measurement state (tabIndex=-1) and
+      // its OnMount observer reports real metrics; a measured fit keeps
+      // the viewport out of the tab order. An unwired scrollArea keeps
+      // the historical tabIndex=0.
+      it('keeps a non-overflowing viewport out of the tab order', () => {
         Scene.scene(
           {
             update,
-            view: (_model, h) =>
-              ScrollArea.scrollArea({ children: ['small content'] }, h),
+            view: (model, h) =>
+              ScrollArea.scrollArea(
+                {
+                  model: model.scrollArea,
+                  toParentMessage: message => ({
+                    _tag: 'GotScrollAreaViewport' as const,
+                    message,
+                  }),
+                  children: ['small content'],
+                },
+                h,
+              ),
           },
-          Scene.given(initialModel),
+          Scene.given(initialModel(ScrollArea)),
           Scene.expect(scrollAreaElement).toHaveAttr('tabIndex', '-1'),
+          // The mount's first report: small content fits, so neither
+          // axis overflows and the viewport stays out of the tab order.
+          Scene.Mount.resolve(
+            scrollAreaMount,
+            gotScrollArea({
+              scrollWidth: 200,
+              clientWidth: 200,
+              scrollHeight: 50,
+              clientHeight: 100,
+            }),
+          ),
+          Scene.expect(scrollAreaElement).toHaveAttr('tabIndex', '-1'),
+        )
+      })
+
+      // The other half of Base UI's 'measures content mounted after the
+      // viewport initial measurement': once real overflow is reported,
+      // the viewport re-enters the tab order.
+      it('restores the viewport to the tab order once content overflows', () => {
+        Scene.scene(
+          {
+            update,
+            view: (model, h) =>
+              ScrollArea.scrollArea(
+                {
+                  model: model.scrollArea,
+                  toParentMessage: message => ({
+                    _tag: 'GotScrollAreaViewport' as const,
+                    message,
+                  }),
+                  children: ['scrollable content'],
+                },
+                h,
+              ),
+          },
+          Scene.given(initialModel(ScrollArea)),
+          Scene.expect(scrollAreaElement).toHaveAttr('tabIndex', '-1'),
+          Scene.Mount.resolve(
+            scrollAreaMount,
+            gotScrollArea({
+              scrollWidth: 200,
+              clientWidth: 200,
+              scrollHeight: 400,
+              clientHeight: 100,
+            }),
+          ),
+          Scene.expect(scrollAreaElement).toHaveAttr('tabIndex', '0'),
         )
       })
     })
@@ -128,7 +224,7 @@ const verifyRenderer = (name: string, ScrollArea: ScrollAreaModule) => {
                 h,
               ),
           },
-          Scene.given(initialModel),
+          Scene.given(initialModel(ScrollArea)),
           Scene.expect(scrollAreaElement).toHaveAttr(
             'data-orientation',
             'horizontal',
@@ -147,7 +243,7 @@ const verifyRenderer = (name: string, ScrollArea: ScrollAreaModule) => {
             view: (_model, h) =>
               ScrollArea.scrollArea({ children: ['scrollable content'] }, h),
           },
-          Scene.given(initialModel),
+          Scene.given(initialModel(ScrollArea)),
           Scene.expect(scrollAreaElement).toHaveAttr('data-orientation', 'both'),
         )
       })
@@ -190,7 +286,7 @@ const verifyRenderer = (name: string, ScrollArea: ScrollAreaModule) => {
                 h,
               ),
           },
-          Scene.given(initialModel),
+          Scene.given(initialModel(ScrollArea)),
           Scene.expect(scrollAreaElement).toHaveAttr('dir', 'rtl'),
         )
       })
@@ -224,7 +320,7 @@ const verifyRenderer = (name: string, ScrollArea: ScrollAreaModule) => {
                 ),
               ]),
           },
-          Scene.given(initialModel),
+          Scene.given(initialModel(ScrollArea)),
           Scene.expect(scrollAreaElement).toHaveAttr('dir', 'ltr'),
           Scene.click(Scene.text('switch direction')),
           Scene.expectHandled(),

@@ -34,6 +34,21 @@ export const collapsible = <Msg>(
         : { isDisabled: props.isDisabled }),
       ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
       toView: ({ button, panel, animatePanel }) => {
+        const isDisabled = props.isDisabled === true;
+        const triggerAttributes = button.filter(
+          (attribute) =>
+            // Base UI names the open hook on the trigger `data-panel-open`.
+            !(
+              attribute._tag === 'DataAttribute' && attribute.key === 'open'
+            ) &&
+            // A natively disabled button drops aria-disabled and leaves the
+            // tab order on its own.
+            !(
+              isDisabled &&
+              (attribute._tag === 'AriaDisabled' ||
+                attribute._tag === 'Tabindex')
+            ),
+        );
         return h.div(
           [
             h.DataAttribute('slot', 'collapsible'),
@@ -42,7 +57,9 @@ export const collapsible = <Msg>(
           [
             h.button(
               [
-                ...button,
+                ...triggerAttributes,
+                ...(props.isOpen ? [h.DataAttribute('panel-open', '')] : []),
+                ...(isDisabled ? [h.Disabled(true)] : []),
                 h.Type('button'),
                 h.DataAttribute('slot', 'collapsible-trigger'),
                 ...(props.triggerClass === undefined
@@ -55,6 +72,9 @@ export const collapsible = <Msg>(
               h.div(
                 [
                   ...panel,
+                  ...(props.isOpen
+                    ? []
+                    : [h.DataAttribute('closed', ''), h.Hidden(true)]),
                   h.DataAttribute('slot', 'collapsible-content'),
                   ...(props.contentClass === undefined
                     ? []

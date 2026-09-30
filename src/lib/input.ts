@@ -71,7 +71,11 @@ export const renderInput = <Msg>(
         const isInteractive = props.isDisabled !== true && props.isReadOnly !== true
         const describedBy = descriptionIds(props)
         const inputAttributes = primitiveInput.filter(
-          (attribute) => attribute._tag !== 'AriaDescribedBy',
+          // Disabled controls do not participate in constraint validation, so
+          // aria-invalid drops while data-invalid stays (Base UI parity).
+          (attribute) =>
+            attribute._tag !== 'AriaDescribedBy' &&
+            (attribute._tag !== 'AriaInvalid' || props.isDisabled !== true),
         )
         const control = h.input([
           ...inputAttributes,

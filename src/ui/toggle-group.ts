@@ -69,6 +69,7 @@ const renderToggleGroup = <Value extends string, Msg>(
   const size = props.size ?? 'default'
   const arrangement = props.arrangement ?? 'joined'
   const vertical = props.orientation === 'vertical'
+  const multiple = props.values !== undefined
   const selectedValues: ReadonlyArray<Value> =
     props.values === undefined ? [props.value] : props.values
 
@@ -89,6 +90,7 @@ const renderToggleGroup = <Value extends string, Msg>(
         h.DataAttribute('size', size),
         h.DataAttribute('arrangement', arrangement),
         h.DataAttribute('orientation', vertical ? 'vertical' : 'horizontal'),
+        ...(multiple ? [h.DataAttribute('multiple', '')] : []),
         h.Class(cn(GROUP_CLASS, props.class)),
       ],
       item: () => [],
@@ -104,6 +106,8 @@ const renderToggleGroup = <Value extends string, Msg>(
               ht.DataAttribute('variant', variant),
               ht.DataAttribute('size', size),
               ht.AriaPressed(item.isPressed ? 'true' : 'false'),
+              ht.AriaDisabled(item.isDisabled),
+              ...(item.isPressed ? [ht.DataAttribute('pressed', '')] : []),
               ...(props.direction === undefined ? [] : [ht.Dir(props.direction)]),
               ...(content.ariaLabel === undefined ? [] : [ht.AriaLabel(content.ariaLabel)]),
               ht.Class(cn(toggleVariants({ variant, size }), vertical ? ITEM_CLASS_VERTICAL : ITEM_CLASS, content.class)),
@@ -134,6 +138,7 @@ const renderLegacyToggleGroup = <Value extends string, Msg>(
       h.DataAttribute('size', size),
       h.DataAttribute('arrangement', arrangement),
       h.DataAttribute('orientation', vertical ? 'vertical' : 'horizontal'),
+      ...(props.values !== undefined ? [h.DataAttribute('multiple', '')] : []),
       h.Class(cn(GROUP_CLASS, props.class)),
     ],
     props.items.map((item) => h.button(
@@ -141,7 +146,10 @@ const renderLegacyToggleGroup = <Value extends string, Msg>(
         h.Type('button'),
         h.OnClick(props.onToggle(item.value)),
         h.Disabled(item.isDisabled ?? false),
+        h.AriaDisabled(item.isDisabled ?? false),
+        ...(item.isDisabled === true ? [h.DataAttribute('disabled', '')] : []),
         h.AriaPressed(selectedValues.includes(item.value) ? 'true' : 'false'),
+        ...(selectedValues.includes(item.value) ? [h.DataAttribute('pressed', '')] : []),
         ...(item.ariaLabel === undefined ? [] : [h.AriaLabel(item.ariaLabel)]),
         h.DataAttribute('slot', 'toggle-group-item'),
         h.DataAttribute('variant', variant),

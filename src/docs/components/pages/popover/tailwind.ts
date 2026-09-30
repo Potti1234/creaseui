@@ -54,6 +54,7 @@ const instanceView = (
       side: instance.side,
       align: instance.align,
       class: 'w-40',
+      backdrop: true,
       ...(instance.rtl === true ? { direction: 'rtl' as const } : {}),
       content:
         instance.rtl === true ? headerContent(true, h) : instance.text,
@@ -75,6 +76,7 @@ const basicView = (
       trigger: 'Open Popover',
       triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium',
       align: 'start',
+      backdrop: true,
       content: headerContent(false, h),
     },
     h,
@@ -115,6 +117,7 @@ const formView = (
       align: 'start',
       class: 'w-64',
       focusSelector: '[data-slot=popover-content] input',
+      backdrop: true,
       content: h.div([h.Class('grid gap-4')], [
         headerContent(false, h),
         h.div([h.Class('grid gap-4')], [
@@ -147,6 +150,7 @@ const legacyView = (
       side,
       align,
       focusSelector: '[data-slot=popover-content] input',
+      backdrop: true,
       content: h.div([h.Class('grid gap-2')], [
         h.h4([h.Class('font-medium')], ['Dimensions']),
         h.p(

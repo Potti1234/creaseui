@@ -255,7 +255,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "AvatarImageProps",
       "kind": "type",
-      "signature": "AvatarImageProps = Readonly<{ src: string; alt: string; class?: string; model?: Model; }>"
+      "signature": "AvatarImageProps = Readonly<{ src: string; alt: string; class?: string; model?: Model; /** Base UI parity: keep the img mounted while the source resolves, reporting data-loading/data-error/aria-hidden. */ keepMounted?: boolean; }>"
     },
     {
       "name": "avatarImage",
@@ -265,7 +265,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "AvatarFallbackProps",
       "kind": "type",
-      "signature": "AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; model?: Model; }>"
+      "signature": "AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; model?: Model; /** Source the sibling image is resolving; a stale 'loaded' status re-hides the fallback. */ src?: string; }>"
     },
     {
       "name": "avatarFallback",
@@ -1639,7 +1639,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "FieldSetProps",
       "kind": "type",
-      "signature": "FieldSetProps = Slot & Readonly<{ isDisabled?: boolean }>"
+      "signature": "FieldSetProps = Slot & Readonly<{ id?: string; isDisabled?: boolean }>"
     },
     {
       "name": "fieldSet",
@@ -1649,7 +1649,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "FieldLegendProps",
       "kind": "type",
-      "signature": "FieldLegendProps = Slot & Readonly<{ variant?: 'legend' | 'label' }>"
+      "signature": "FieldLegendProps = Slot & Readonly<{ variant?: 'legend' | 'label'; id?: string }>"
     },
     {
       "name": "fieldLegend",
@@ -2007,7 +2007,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "InputOtpProps",
       "kind": "type",
-      "signature": "InputOtpProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; length?: number; name?: string; ariaLabel?: string; isDisabled?: boolean; isInvalid?: boolean; isRequired?: boolean; class?: string; groupClass?: string; /** Pattern a…"
+      "signature": "InputOtpProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; length?: number; name?: string; ariaLabel?: string; isDisabled?: boolean; isInvalid?: boolean; isRequired?: boolean; /** Focused state of the single input, stamped as …"
     },
     {
       "name": "inputOtp",
@@ -2571,7 +2571,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "PopoverProps",
       "kind": "type",
-      "signature": "PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; content: Html | string; align?: PopoverAlign; side?: PopoverSide; class?: string; direction?: 'ltr' | 'rtl'; focusSelector?…"
+      "signature": "PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; triggerAttributes?: ReadonlyArray<Attribute<Msg>>; content: Html | string; align?: PopoverAlign; side?: PopoverSide; class?…"
     },
     {
       "name": "popover",
@@ -2717,14 +2717,44 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
   ],
   "scroll-area": [
     {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = ScrollAreaBehavior.Model"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = ScrollAreaBehavior.Message"
+    },
+    {
+      "name": "init",
+      "kind": "value",
+      "signature": "init: value"
+    },
+    {
+      "name": "update",
+      "kind": "value",
+      "signature": "update: value"
+    },
+    {
       "name": "ScrollAreaProps",
       "kind": "type",
-      "signature": "ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; orientation?: 'vertical' | 'horizontal' | 'both'; direction?: 'ltr' | 'rtl'; ariaLabel?: string; tabIndex?: number; }>"
+      "signature": "ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; orientation?: 'vertical' | 'horizontal' | 'both'; direction?: 'ltr' | 'rtl'; ariaLabel?: string; tabIndex?: number; model?: Model; }>"
     },
     {
       "name": "scrollArea",
       "kind": "function",
-      "signature": "scrollArea<Msg>(props: ScrollAreaProps, h: HtmlBuilder<Msg>): Html"
+      "signature": "scrollArea<Msg>(props: ScrollAreaProps & Readonly<{ toParentMessage?: (message: Message) => Msg; }>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "select": [

@@ -336,9 +336,7 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
         )
       })
 
-      // DIVERGENCE (low): Base UI emits aria-disabled="false" on enabled
-      // toggles; creaseui omits the attribute entirely on enabled items.
-      it.fails('emits aria-disabled="false" on enabled items', () => {
+      it('emits aria-disabled="false" on enabled items', () => {
         Scene.scene(
           { update, view: view() },
           Scene.given(fresh()),
@@ -366,10 +364,7 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
     })
 
     describe('prop: multiple', () => {
-      // DIVERGENCE (low): Base UI marks a multiple group with the
-      // data-multiple styling hook; creaseui encodes multiplicity only in
-      // which selection prop is used and emits no marker.
-      it.fails('sets data-multiple only when true', () => {
+      it('sets data-multiple only when true', () => {
         Scene.scene(
           { update, view: view() },
           Scene.given(fresh({ multiple: true })),
@@ -525,11 +520,10 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
         },
       )
 
-      // DIVERGENCE (med): Base UI keeps DOM order in a vertical RTL group and
-      // ArrowDown moves one→two→three. creaseui reverses item order for
-      // direction="rtl" regardless of orientation, so ArrowDown walks the
-      // reversed order one→three→two.
-      it.fails('rtl / orientation: vertical', () => {
+      // creaseui only reverses DOM order for horizontal rtl (where it fakes
+      // the flipped arrow mapping); a vertical rtl group keeps DOM order and
+      // ArrowDown walks one→two→three like Base UI.
+      it('rtl / orientation: vertical', () => {
         Scene.scene(
           { update, view: view({ direction: 'rtl', vertical: true }) },
           Scene.given(fresh({ values: ['one'] })),
@@ -648,11 +642,7 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
     })
 
     describe('style hooks', () => {
-      // DIVERGENCE (med): Base UI marks pressed items with data-pressed.
-      // creaseui reflects pressed state only via aria-pressed; the sole
-      // data-* marker is the tabs primitive's data-selected on the
-      // roving-focus item, which tracks focus rather than the pressed set.
-      it.fails('marks the pressed item with data-pressed', () => {
+      it('marks the pressed item with data-pressed', () => {
         Scene.scene(
           { update, view: view() },
           Scene.given(fresh()),

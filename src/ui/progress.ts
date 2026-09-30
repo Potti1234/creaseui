@@ -28,9 +28,10 @@ export const progress = <Msg>(
       h.AriaValuemin(0),
       h.AriaValuemax(normalized.max),
       ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
-      ...(props.valueText === undefined ? [] : [h.AriaValuetext(props.valueText)]),
+      h.AriaValuetext(props.valueText ?? normalized.defaultAriaValueText),
       ...(normalized.value === null ? [] : [h.AriaValuenow(normalized.value)]),
       h.DataAttribute('state', normalized.state),
+      h.DataAttribute(normalized.status, ''),
       h.DataAttribute('slot', 'progress'),
       h.Class(
         cn(

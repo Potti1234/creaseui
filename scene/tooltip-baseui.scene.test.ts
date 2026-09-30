@@ -84,8 +84,27 @@ const leftTrigger = (): Message => ({
 
 const update = (model: Model, message: Message) => {
   switch (message._tag) {
-    case 'SetDisabled':
-      return { model: { ...model, isDisabled: message.disabled } }
+    case 'SetDisabled': {
+      // The app's isDisabled flag and the tooltip's mirror message move
+      // together — Base UI's disabled prop closes an open tooltip, so the
+      // model hears about the transition here rather than in the view.
+      const result = TooltipBehavior.update(
+        model.tip,
+        TooltipBehavior.Message.SetTooltipDisabled({
+          disabled: message.disabled,
+        }),
+      )
+      return {
+        model: { ...model, isDisabled: message.disabled, tip: result.model },
+        commands: Command.mapMessages(result.commands, child => ({
+          _tag: 'GotTooltip' as const,
+          message: child,
+        })),
+        ...(result.outMessage === undefined
+          ? {}
+          : { outMessage: result.outMessage }),
+      }
+    }
     case 'GotTooltip': {
       const result = TooltipBehavior.update(model.tip, message.message)
       return {
@@ -112,6 +131,7 @@ type TooltipModule = Readonly<{
       isDisabled?: boolean
       ariaLabel?: string
       showArrow?: boolean
+      disableHoverablePopup?: boolean
     }>,
     h: HtmlBuilder<Msg>,
   ) => Html
@@ -120,7 +140,11 @@ type TooltipModule = Readonly<{
 const tooltipView =
   (
     Tooltip: TooltipModule,
-    options?: Readonly<{ ariaLabel?: string; showArrow?: boolean }>,
+    options?: Readonly<{
+      ariaLabel?: string
+      showArrow?: boolean
+      disableHoverablePopup?: boolean
+    }>,
   ) =>
   (model: Model, h: HtmlBuilder<Message>): Html =>
     Tooltip.tooltip(
@@ -462,10 +486,10 @@ const verifyRenderer = (name: string, Tooltip: TooltipModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI closes an open tooltip when `disabled` flips
-      // true. creaseui's isDisabled only re-renders the trigger — the
-      // model's isOpen is untouched, so the panel stays mounted.
-      it.fails('should close if open when becoming disabled', () => {
+      // Base UI derives open as `openState && !disabled` and unmounts the
+      // popup when `disabled` flips true; creaseui gates the panel on the
+      // same effective-open in the view.
+      it('should close if open when becoming disabled', () => {
         Scene.scene(
           {
             update,
@@ -498,7 +522,9 @@ const verifyRenderer = (name: string, Tooltip: TooltipModule) => {
           Scene.Mount.resolve(anchorMount, anchored()),
           Scene.click(Scene.text('Disable')),
           Scene.expectHandled(),
+          Scene.expectOutMessage(TooltipBehavior.OutMessage.HiddenTooltip()),
           Scene.expect(panel).toBeAbsent(),
+          Scene.Mount.expectEnded(anchorMount),
         )
       })
 
@@ -537,11 +563,14 @@ const verifyRenderer = (name: string, Tooltip: TooltipModule) => {
     })
 
     describe('prop: disableHoverablePopup', () => {
-      it('always applies pointer-events: none to the popup', () => {
-        // Base UI applies this only when disableHoverablePopup is true;
-        // creaseui has no hoverable mode — the panel is always inert.
+      it('applies pointer-events: none to the positioner when `disableHoverablePopup = true`', () => {
+        // creaseui's panel is the merged positioner+popup element; the prop
+        // opts the panel into the inert style.
         Scene.scene(
-          { update, view: tooltipView(Tooltip) },
+          {
+            update,
+            view: tooltipView(Tooltip, { disableHoverablePopup: true }),
+          },
           Scene.given(initialModel()),
           Scene.focus(trigger),
           Scene.expectHandled(),
@@ -550,22 +579,17 @@ const verifyRenderer = (name: string, Tooltip: TooltipModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI's default (disableHoverablePopup = false) leaves
-      // the positioner hoverable so the pointer can travel onto the popup.
-      // creaseui bakes pointer-events: none into the panel unconditionally.
-      it.fails(
-        'does not apply pointer-events: none to the positioner when `disableHoverablePopup = false`',
-        () => {
-          Scene.scene(
-            { update, view: tooltipView(Tooltip) },
-            Scene.given(initialModel()),
-            Scene.focus(trigger),
-            Scene.expectHandled(),
-            Scene.Mount.resolve(anchorMount, anchored()),
-            Scene.expect(panel).not.toHaveStyle('pointer-events', 'none'),
-          )
-        },
-      )
+      it('does not apply pointer-events: none to the positioner when `disableHoverablePopup = false`', () => {
+        // The default leaves the panel free of the inert style.
+        Scene.scene(
+          { update, view: tooltipView(Tooltip) },
+          Scene.given(initialModel()),
+          Scene.focus(trigger),
+          Scene.expectHandled(),
+          Scene.Mount.resolve(anchorMount, anchored()),
+          Scene.expect(panel).not.toHaveStyle('pointer-events', 'none'),
+        )
+      })
     })
 
     describe('dismissal', () => {
@@ -634,25 +658,23 @@ const verifyRenderer = (name: string, Tooltip: TooltipModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI's trigger closeOnClick (default true) closes an
-      // open tooltip on press. creaseui uses pointerdown only as a
-      // pointer-focus marker — it never closes the tooltip.
-      it.fails(
-        'should close when the trigger is clicked after delay duration',
-        () => {
-          Scene.scene(
-            { update, view: tooltipView(Tooltip) },
-            Scene.given(initialModel()),
-            Scene.focus(trigger),
-            Scene.expectHandled(),
-            Scene.Mount.resolve(anchorMount, anchored()),
-            // creaseui wires no click handler; pointerdown is its press path.
-            Scene.pointerDown(trigger),
-            Scene.expectHandled(),
-            Scene.expect(panel).toBeAbsent(),
-          )
-        },
-      )
+      it('should close when the trigger is clicked after delay duration', () => {
+        // Base UI's useDismiss referencePress (gated on closeOnClick, default
+        // true) closes on pointerdown; creaseui's pointerdown now does the
+        // same while open — it remains the pointer-focus marker too.
+        Scene.scene(
+          { update, view: tooltipView(Tooltip) },
+          Scene.given(initialModel()),
+          Scene.focus(trigger),
+          Scene.expectHandled(),
+          Scene.Mount.resolve(anchorMount, anchored()),
+          // creaseui wires no click handler; pointerdown is its press path.
+          Scene.pointerDown(trigger),
+          Scene.expectHandled(),
+          Scene.expect(panel).toBeAbsent(),
+          Scene.Mount.expectEnded(anchorMount),
+        )
+      })
 
       it.todo(
         'should not open when the trigger was clicked before delay ' +
@@ -725,9 +747,7 @@ const verifyRenderer = (name: string, Tooltip: TooltipModule) => {
     })
 
     describe('<Tooltip.Trigger />', () => {
-      // DIVERGENCE: Base UI marks the open trigger data-popup-open; creaseui
-      // emits no trigger-side open marker (styling keys off the panel).
-      it.fails('marks the trigger data-popup-open while open', () => {
+      it('marks the trigger data-popup-open while open', () => {
         Scene.scene(
           { update, view: tooltipView(Tooltip) },
           Scene.given(initialModel()),
@@ -760,11 +780,9 @@ const verifyRenderer = (name: string, Tooltip: TooltipModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI mirrors the resolved side onto the arrow via
-      // data-side/data-open. creaseui's arrow carries neither — it is styled
-      // from the anchor's runtime data-placement on the panel, which the
-      // vnode-level DSL never reflects.
-      it.fails('mirrors the resolved side', () => {
+      // The arrow mirrors the configured side at vnode level; a runtime
+      // flip by the anchor still reports through the panel's data-placement.
+      it('mirrors the resolved side', () => {
         Scene.scene(
           { update, view: tooltipView(Tooltip) },
           Scene.given(initialModel({ isOpen: true })),

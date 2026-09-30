@@ -1,8 +1,10 @@
-﻿import type { Html, HtmlBuilder } from 'foldkit/html';
+﻿import { Option } from 'effect';
+import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import { Slider as SliderPrimitive } from '@foldkit/ui';
 
-import { normalizeMultiValues, normalizeRange, normalizeRangeValues, updateMultiValue, updateRangeValue } from '@/lib/slider';
+import * as SliderBehavior from '@/lib/slider';
+import { childAttributeTag, clampRangeValue, normalizeMultiValues, normalizeRange, normalizeRangeValues, sliderKeyDirection, updateMultiValue, updateRangeValue } from '@/lib/slider';
 import { cn } from '@/lib/utils';
 
 export const Model = SliderPrimitive.Model;
@@ -12,10 +14,10 @@ export type Message = typeof Message.Type;
 export const OutMessage = SliderPrimitive.OutMessage;
 export type OutMessage = typeof OutMessage.Type;
 
-export const init = SliderPrimitive.init;
-export const update = SliderPrimitive.update;
+export const init = SliderBehavior.init;
+export const update = SliderBehavior.update;
 export const reflectRange = SliderPrimitive.reflectRange;
-export const snapAndClamp = SliderPrimitive.snapAndClamp;
+export const snapAndClamp = SliderBehavior.snapAndClamp;
 export const subscriptions = SliderPrimitive.subscriptions;
 export const subscriptionsForRoot = SliderPrimitive.subscriptionsForRoot;
 export const fractionOfValue = SliderPrimitive.fractionOfValue;
@@ -89,9 +91,13 @@ export const rangeSlider = <Msg>(
         props.ariaLabels?.[index] ??
           (index === 0 ? 'Minimum value' : 'Maximum value'),
       ),
-      ...(props.formatValue === undefined
-        ? []
-        : [h.AriaValuetext(props.formatValue(value, index))]),
+      h.AriaValuenow(value),
+      h.AriaOrientation(orientation),
+      h.AriaValuetext(
+        props.formatValue?.(value, index) ??
+          `${String(value)} ${index === 0 ? 'start' : 'end'} range`,
+      ),
+      h.DataAttribute('index', String(index)),
       ...(props.isReadOnly === true ? [h.AriaReadonly(true)] : []),
       h.Disabled(props.isDisabled ?? false),
       ...(props.name === undefined
@@ -172,12 +178,17 @@ export const slider = <Msg>(
   props: SliderProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
+  /* Base UI clamps a controlled value into [min, max] at ingestion; the thumb
+     position, aria-valuenow and hidden input all reflect the clamped value. */
+  const value = clampRangeValue(props.value, props.model.min, props.model.max);
+  const isInteractive =
+    (props.isDisabled ?? false) === false && (props.isReadOnly ?? false) === false;
   return h.submodel({
     slotId: props.model.id,
     model: props.model,
     view: SliderPrimitive.view,
     viewInputs: {
-      value: props.value,
+      value,
       isDisabled: props.isDisabled ?? false,
       isReadOnly: props.isReadOnly ?? false,
       ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
@@ -213,7 +224,26 @@ export const slider = <Msg>(
             ),
             hs.span(
               [
-                ...thumb,
+                /* The primitive's thumb keydown ignores modifiers. Substitute a
+                   Base UI keymap (Shift promotes arrows to a largeStep move)
+                   while keeping the rest of the published thumb attributes. */
+                ...thumb.filter(
+                  (attribute) =>
+                    childAttributeTag(attribute) !== 'OnKeyDownPreventDefault',
+                ),
+                ...(isInteractive
+                  ? [
+                      hs.OnKeyDownPreventDefault((key, modifiers) =>
+                        Option.map(
+                          sliderKeyDirection(key, modifiers.shiftKey),
+                          (direction) =>
+                            props.toParentMessage(
+                              Message.PressedKeyboardNavigation({ direction, value }),
+                            ),
+                        ),
+                      ),
+                    ]
+                  : []),
                 hs.DataAttribute('slot', 'slider-thumb'),
                 hs.Class(THUMB_CLASS),
               ],
@@ -286,6 +316,9 @@ export const multiSlider = <Msg>(
       h.Step(String(range.step)),
       h.Value(String(value)),
       h.AriaLabel(props.ariaLabels?.[index] ?? `Value ${String(index + 1)}`),
+      h.AriaValuenow(value),
+      h.AriaOrientation(orientation),
+      h.DataAttribute('index', String(index)),
       ...(props.isReadOnly === true ? [h.AriaReadonly(true)] : []),
       h.Disabled(props.isDisabled ?? false),
       ...(props.name === undefined

@@ -58,6 +58,7 @@ export const toggle = <Msg>(
             ...button,
             h.DataAttribute('slot', 'toggle'),
             h.AriaPressed(props.isPressed ? 'true' : 'false'),
+            ...(props.isDisabled === true ? [h.Disabled(true)] : []),
             ...(props.id === undefined ? [] : [h.Id(props.id)]),
             ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
             ...(props.describedBy === undefined

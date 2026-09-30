@@ -20,6 +20,28 @@ docs pages against `shadcn/ui` v4 (`/docs/components/base/*`).
 
 ## Divergence themes (most frequent first)
 
+> **Status update (follow-up fix PR):** all divergences fixable inside
+> creaseui's layers are now resolved — expected-fails went from ~155
+> `it.fails` (304 counting both renderers) to **8 unique assertions**
+> (16 counting both renderers). The 8 leftovers all require changes in the
+> `@foldkit/ui` primitives themselves and stay `it.fails` documenting the
+> Base UI expectation:
+>
+> | Component | Remaining divergence | Blocking foldkit gap |
+> |---|---|---|
+> | combobox | highlight doesn't return to input past last option (loopFocus) | foldkit's internal item nav can't be suppressed via OutMessage |
+> | combobox | Home/End must move the text caret, not item nav | foldkit input keymap routes Home/End to item navigation |
+> | combobox | popup stays mounted when zero options match | `isItemsPanelVisible = isOpen && NonEmpty` inside the primitive |
+> | combobox | hidden input must be `disabled` so it doesn't submit | no `inputAttributes` hook on the combobox primitive |
+> | select | `aria-orientation` should be omitted on vertical listbox | foldkit always renders `AriaOrientation`; no attr-removal seam |
+> | select | focus must not wrap at list edges | foldkit `keyToIndex` wraps keyboard nav internally |
+> | select | unhighlighted item's virtual click must be ignored | foldkit item `OnClick` commits unconditionally; no `event.detail` check |
+> | context-menu | backdrop must block the native contextmenu event | foldkit `OnContextMenu` can't emit `preventDefault` |
+>
+> Everything else below was fixed in the foldkit style — messages/OutMessage
+> flows, pure updates, immutable models — in `src/lib` behavior modules with
+> `src/ui`/`src/stylex` kept in parity, without touching `node_modules`.
+
 1. **`data-*` state hooks missing.** The single largest gap. Base UI stamps
    `data-popup-open` (open trigger), `data-pressed`, `data-checked` /
    `data-unchecked`, `data-complete`, `data-index`, `data-disabled`,
@@ -62,8 +84,7 @@ docs pages against `shadcn/ui` v4 (`/docs/components/base/*`).
    restricts to the contextmenu gesture); hover-card doesn't reopen after
    Escape, closes incorrectly after externally-opened popup; tooltip
    doesn't close when becoming disabled or on post-delay click, no
-   pointer-events handling; navigation-menu doesn't close the previous
-   item when a different trigger opens on mouse/touch.
+   pointer-events handling.
 6. **Component-specific gaps.** Avatar mounts `<img>` immediately (Base UI
    keeps it unmounted until `load`, hides from AT on error/re-src);
    combobox clears selection when input emptied, keeps popup open on empty
@@ -72,8 +93,7 @@ docs pages against `shadcn/ui` v4 (`/docs/components/base/*`).
    switch emits a `value` attribute and misses `data-unchecked` on
    control+thumb; toast no `timeout=0` no-dismiss, no per-toast dismissal
    messages on dismissAll, live region misses `aria-atomic`/`aria-relevant`,
-   no Escape close, wrong stacking order; form doesn't set `novalidate`;
-   scroll-area keeps non-overflowing viewport in tab order; field misses
+   no Escape close, wrong stacking order; field misses
    `data-invalid` omission for valid fields; toggle-group reverses DOM in
    RTL+vertical and misses `aria-disabled="false"`/`data-pressed`.
 7. **Structural / form integration.** Hidden-input `id` conventions differ
@@ -96,15 +116,13 @@ docs pages against `shadcn/ui` v4 (`/docs/components/base/*`).
 | drawer | `aria-describedby` |
 | dropdown-menu | submenu click/third-level; disabled-item nav+typeahead; multi-char/diacritic typeahead; Escape scope; `data-checked`; group label a11y; modal backdrop |
 | field | `data-disabled` on all parts; invalid-while-disabled; fieldset `aria-labelledby`; nested disable |
-| form | `novalidate` not set |
 | hover-card | reopen-after-Escape; externally-opened hover-out; `data-popup-open` |
 | input-otp | `data-complete` root+slots; `data-filled`/`data-focused`; disabled guards |
 | menubar | open-on-focus/arrow; submenu click; closeOnClick semantics; `data-has-submenu-open` |
-| navigation-menu | close-previous on trigger switch; `data-popup-open` |
+| navigation-menu | — |
 | popover | `role=dialog`; `data-popup-open`/`data-pressed`/`data-open`; modal backdrop |
 | progress | formatted `aria-valuetext`; indeterminate text; complete-at-max |
 | radio-group | arrow-select; RTL flip; group `aria-disabled` |
-| scroll-area | non-overflow viewport tabIndex |
 | select | `role=combobox` trigger; focus-selected-on-open; edge wrap; closed-trigger typeahead; native disabled; `aria-readonly`; hidden-input id; `data-placeholder` |
 | slider | range-thumb `aria-valuenow`/`aria-valuetext`/`aria-orientation`; Shift/PageUp largeStep; tiny-step precision; value clamping; `data-index` |
 | switch | stray `value` attr; `data-unchecked` on control+thumb |

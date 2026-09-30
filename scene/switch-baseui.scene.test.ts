@@ -204,16 +204,17 @@ const verifyRenderer = (name: string, Switch: SwitchModule) => {
           },
           Scene.given(initialModel()),
           Scene.expect(switchControl).toHaveAttr('aria-checked', 'false'),
-          // With no `value` prop the mirror submits the default 'on',
-          // matching Base UI's native checkbox behavior.
-          Scene.expect(hiddenInput).toHaveValue(''),
+          // With no `value` prop the mirror emits no `value` attribute
+          // while unchecked and the default 'on' while checked, matching
+          // Base UI's native checkbox behavior.
+          Scene.expect(hiddenInput).not.toHaveAttr('value'),
           Scene.click(switchControl),
           Scene.expectHandled(),
           Scene.expect(switchControl).toHaveAttr('aria-checked', 'true'),
           Scene.expect(hiddenInput).toHaveValue('on'),
           Scene.click(switchControl),
           Scene.expect(switchControl).toHaveAttr('aria-checked', 'false'),
-          Scene.expect(hiddenInput).toHaveValue(''),
+          Scene.expect(hiddenInput).not.toHaveAttr('value'),
         )
       })
 
@@ -514,12 +515,10 @@ const verifyRenderer = (name: string, Switch: SwitchModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI emits no `value` attribute on the hidden input
-      // unless a value prop is given (the browser default 'on' applies).
-      // creaseui's mirror always carries a value attribute — '' while
-      // unchecked, 'on' (or the configured value) while checked. Submitted
-      // form data is identical; severity: low.
-      it.fails('does not emit a value attribute by default', () => {
+      // Base UI emits no `value` attribute on the hidden input unless a
+      // value prop is given (the browser default 'on' applies). creaseui's
+      // mirror likewise omits `value` while unchecked with no prop.
+      it('does not emit a value attribute by default', () => {
         Scene.scene(
           {
             update,
@@ -565,11 +564,10 @@ const verifyRenderer = (name: string, Switch: SwitchModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI mirrors every state hook (data-checked,
-      // data-disabled, data-readonly, data-required) onto the thumb.
-      // creaseui keeps hooks on the control only — the thumb is styled via
-      // group-data-* selectors; severity: medium.
-      it.fails('mirrors the state hooks onto the thumb', () => {
+      // Base UI mirrors every state hook (data-checked, data-disabled,
+      // data-readonly, data-required) onto the thumb. creaseui mirrors the
+      // hooks it supports — data-required stays N/A (no required prop).
+      it('mirrors the state hooks onto the thumb', () => {
         Scene.scene(
           {
             update,
@@ -596,10 +594,7 @@ const verifyRenderer = (name: string, Switch: SwitchModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI emits data-unchecked on the root and thumb
-      // whenever the switch is off. creaseui emits no data-unchecked marker
-      // (unchecked is the absence of data-checked); severity: low.
-      it.fails('marks the control and thumb data-unchecked while off', () => {
+      it('marks the control and thumb data-unchecked while off', () => {
         Scene.scene(
           {
             update,

@@ -5,6 +5,7 @@ import {
   type ControlFieldProps as SharedControlFieldProps,
   type FieldError,
   fieldErrorMessages,
+  prepareFieldsetChildren,
   renderControlField,
 } from '@/lib/field';
 import { cn } from '@/lib/utils';
@@ -20,16 +21,25 @@ type Slot = Readonly<{
   children: ReadonlyArray<Html | string>;
 }>;
 
-export type FieldSetProps = Slot & Readonly<{ isDisabled?: boolean }>;
+export type FieldSetProps = Slot &
+  Readonly<{ id?: string; isDisabled?: boolean }>;
 
 export const fieldSet = <Msg>(
   props: FieldSetProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
+  const legendId = prepareFieldsetChildren(props.children, {
+    ...(props.id === undefined ? {} : { id: props.id }),
+    ...(props.isDisabled === undefined ? {} : { isDisabled: props.isDisabled }),
+  });
+
   return h.fieldset(
     [
       h.DataAttribute('slot', 'field-set'),
+      ...(props.id === undefined ? [] : [h.Id(props.id)]),
+      ...(legendId === undefined ? [] : [h.AriaLabelledBy(legendId)]),
       ...(props.isDisabled === undefined ? [] : [h.Disabled(props.isDisabled)]),
+      ...(props.isDisabled === true ? [h.DataAttribute('disabled', '')] : []),
       h.Class(
         cn(
           'flex flex-col gap-6 has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3',
@@ -42,7 +52,7 @@ export const fieldSet = <Msg>(
 };
 
 export type FieldLegendProps = Slot &
-  Readonly<{ variant?: 'legend' | 'label' }>;
+  Readonly<{ variant?: 'legend' | 'label'; id?: string }>;
 
 export const fieldLegend = <Msg>(
   props: FieldLegendProps,
@@ -54,6 +64,7 @@ export const fieldLegend = <Msg>(
     [
       h.DataAttribute('slot', 'field-legend'),
       h.DataAttribute('variant', variant),
+      ...(props.id === undefined ? [] : [h.Id(props.id)]),
       h.Class(
         cn(
           'mb-3 font-medium data-[variant=legend]:text-base data-[variant=label]:text-sm',

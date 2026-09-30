@@ -389,6 +389,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
         model: model.popover,
         toParentMessage: message => GotPopoverMessage({ message }),
         align: 'start',
+        backdrop: true,
         trigger: h.span([h.Class(${isStyleX ? `className(styles.triggerRow)` : `'flex items-center gap-2'`})], [
           Icon.calendarIcon({ class: ${isStyleX ? `className(styles.icon)` : `'size-4'`} }, h),
           rangeText(model),

@@ -255,11 +255,9 @@ const verifyRenderer = (name: string, Radio: RadioModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI reflects `disabled` onto the radiogroup root as
-      // aria-disabled + data-disabled (and onto each item). creaseui marks
-      // only the items — the group element stays unmarked. Severity: medium
-      // (assistive tech sees enabled group containing disabled radios).
-      it.fails('marks the group root aria-disabled when disabled', () => {
+      // Base UI reflects `disabled` onto the radiogroup root as
+      // aria-disabled + data-disabled (and onto each item).
+      it('marks the group root aria-disabled when disabled', () => {
         Scene.scene(
           { update, view: view({ isDisabled: true }) },
           Scene.given(initialModel(Radio)),
@@ -562,29 +560,26 @@ const verifyRenderer = (name: string, Radio: RadioModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI ignores arrow keys held with Meta/Ctrl/Alt (the
-      // browser may steal them for its own shortcuts); foldkit's keydown
-      // handler ignores modifiers entirely, so the navigation still selects.
-      // Severity: low.
+      // Base UI ignores arrow keys held with Meta/Ctrl/Alt (the browser may
+      // steal them for its own shortcuts): no preventDefault, no navigation,
+      // so the keydown falls through.
       ;(['metaKey', 'ctrlKey', 'altKey'] as const).forEach(modifier => {
-        it.fails(`does not select on arrow keys with ${modifier} held`, () => {
+        it(`does not select on arrow keys with ${modifier} held`, () => {
           Scene.scene(
             { update, view: view() },
             Scene.given(initialModel(Radio, { value: Option.some('a') })),
             Scene.keydown(radioByName('Option A'), 'ArrowDown', {
               [modifier]: true,
             }),
-            Scene.expectHandled(),
+            Scene.expectIgnored(),
             Scene.expect(radioByName('Option B')).not.toBeChecked(),
           )
         })
       })
 
-      // DIVERGENCE: Base UI treats arrow navigation that lands back on the
-      // already-focused radio as a no-op (no selection). foldkit resolves the
-      // index back to the sole enabled option and selects it anyway.
-      // Severity: low.
-      it.fails(
+      // Base UI treats arrow navigation that lands back on the
+      // already-focused radio as a no-op: no preventDefault, no selection.
+      it(
         'does not select when arrow navigation lands on the only enabled radio',
         () => {
           Scene.scene(
@@ -598,29 +593,29 @@ const verifyRenderer = (name: string, Radio: RadioModule) => {
               }),
             ),
             Scene.keydown(radioByName('Option A'), 'ArrowDown'),
-            Scene.expectHandled(),
+            Scene.expectIgnored(),
             Scene.expect(radioByName('Option A')).not.toBeChecked(),
           )
         },
       )
 
-      // DIVERGENCE: Base UI responds to all four arrow keys regardless of
-      // orientation; foldkit gates the axis by the orientation prop, so
-      // ArrowRight is a no-op in a Vertical group. Severity: medium.
-      it.fails('responds to horizontal arrows in a Vertical group', () => {
+      // Base UI responds to all four arrow keys regardless of orientation
+      // (its composite runs with orientation 'both'): ArrowRight navigates
+      // to the next radio even in a Vertical group.
+      it('responds to horizontal arrows in a Vertical group', () => {
         Scene.scene(
           { update, view: view() },
           Scene.given(initialModel(Radio, { value: Option.some('a') })),
           Scene.keydown(radioByName('Option A'), 'ArrowRight'),
-          Scene.expectIgnored(),
+          Scene.expectHandled(),
+          focusAck,
           Scene.expect(radioByName('Option B')).toBeChecked(),
         )
       })
 
-      // DIVERGENCE: Base UI flips left/right under DirectionProvider rtl;
-      // foldkit renders dir="rtl" but never maps it onto the key bindings, so
-      // ArrowLeft still moves to the previous option. Severity: medium.
-      it.fails('flips horizontal arrows in RTL', () => {
+      // Base UI flips left/right under DirectionProvider rtl: ArrowLeft is
+      // the "next" key when direction='rtl'.
+      it('flips horizontal arrows in RTL', () => {
         Scene.scene(
           { update, view: view({ direction: 'rtl', orientation: 'Horizontal' }) },
           Scene.given(initialModel(Radio, { value: Option.some('a') })),

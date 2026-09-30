@@ -145,6 +145,43 @@ export const menubarTailwindPreviewProgram = definePreviewProgram<
   update: (model, message) => {
     switch (message._tag) {
       case 'GotMenuMessage': {
+        if (message.message._tag === 'EscapedBoundary') {
+          // The menu let a horizontal arrow past its edge — the menubar
+          // advances to the next or previous menu and opens it.
+          const sourceIndex = model.menuTargets.indexOf(message.target);
+          const step = message.message.direction === 'forward' ? 1 : -1;
+          const target =
+            model.menuTargets[
+              (sourceIndex + step + model.menuTargets.length) %
+                model.menuTargets.length
+            ];
+          if (target === undefined) return { model: model };
+          const menubarOp = Menubar.update(
+            model.menubar,
+            Menubar.Message.MovedMenubarFocus({
+              index: model.menuTargets.indexOf(target),
+              triggerId: `${model[target].id}-trigger`,
+              menuOpen: true,
+            }),
+          );
+          const next = menubarTargets.reduce<MenubarPreviewModel>(
+            (acc, t) => ({
+              ...acc,
+              [t]: (t === target
+                ? DropdownMenu.open(acc[t])
+                : DropdownMenu.close(acc[t])).model,
+            }),
+            { ...model, menubar: menubarOp.model },
+          );
+          return {
+            model: next,
+            commands: Command.mapMessages(
+              menubarOp.commands ?? [],
+              next2 =>
+                MenubarPreviewMessage.GotMenubarMessage({ message: next2 }),
+            ),
+          };
+        }
         const menuOp = ActionMenu.update(model[message.target], message.message);
         const commands = menuOp.commands ?? [];
         const maybeSelection = Option.fromNullishOr(menuOp.outMessage);
@@ -178,11 +215,19 @@ export const menubarTailwindPreviewProgram = definePreviewProgram<
         const menubarOp = Menubar.update(model.menubar, message.message);
         const commands = menubarOp.commands ?? [];
         const maybeMove = Option.fromNullishOr(menubarOp.outMessage);
-        const index = Option.match(maybeMove, {
-          onNone: () => menubarOp.model.activeIndex,
-          onSome: move => move.index,
-        });
-        const target = model.menuTargets[index];
+        // Only a MovedToMenubar outMessage opens a menu — moves that arrive
+        // with every menu closed (focus, arrow nav) keep them closed.
+        if (Option.isNone(maybeMove)) {
+          return {
+            model: { ...model, menubar: menubarOp.model },
+            commands: Command.mapMessages(
+              commands,
+              next2 =>
+                MenubarPreviewMessage.GotMenubarMessage({ message: next2 }),
+            ),
+          };
+        }
+        const target = model.menuTargets[maybeMove.value.index];
         if (target === undefined) return { model: model };
         const next = menubarTargets.reduce<MenubarPreviewModel>(
           (acc, t) => ({

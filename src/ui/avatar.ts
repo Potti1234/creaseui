@@ -6,19 +6,40 @@ import { cn } from '@/lib/utils';
 
 export const Model = S.Struct({
   status: S.Literals(['loading', 'loaded', 'error']),
+  // The source the current status was resolved for. Base UI resets the
+  // status to 'loading' whenever the requested source changes; recording it
+  // here lets the views derive that reset without a DOM read. Absent means
+  // unresolved, so legacy `{ status }` models keep their status as-is.
+  resolvedSrc: S.optional(S.String),
 });
 export type Model = typeof Model.Type;
 
 
 export const Message = defineMessageUnion({
-  Loaded: {},
-  Failed: {},
+  Loaded: { src: S.String },
+  Failed: { src: S.String },
 });
 export type Message = typeof Message.Type;
 export const init = (): Model => ({ status: 'loading' });
 export const update = (_model: Model, message: Message): Model => ({
   status: message._tag === 'Loaded' ? 'loaded' : 'error',
+  resolvedSrc: message.src,
 });
+
+const effectiveStatus = (
+  model: Model | undefined,
+  src: string | undefined,
+  fallback: 'loading' | 'loaded',
+): 'loading' | 'loaded' | 'error' => {
+  if (model === undefined) return fallback;
+  if (
+    model.resolvedSrc !== undefined &&
+    src !== undefined &&
+    model.resolvedSrc !== src
+  )
+    return 'loading';
+  return model.status;
+};
 
 export type AvatarProps = Readonly<{
   size?: 'default' | 'sm' | 'lg';
@@ -27,7 +48,7 @@ export type AvatarProps = Readonly<{
 }>;
 
 export const avatar = <Msg>(props: AvatarProps, h: HtmlBuilder<Msg>): Html => {
-  return h.div(
+  return h.span(
     [
       h.DataAttribute('slot', 'avatar'),
       h.DataAttribute('size', props.size ?? 'default'),
@@ -47,6 +68,8 @@ export type AvatarImageProps = Readonly<{
   alt: string;
   class?: string;
   model?: Model;
+  /** Base UI parity: keep the img mounted while the source resolves, reporting data-loading/data-error/aria-hidden. */
+  keepMounted?: boolean;
 }>;
 
 export const avatarImage = <Msg>(
@@ -54,27 +77,57 @@ export const avatarImage = <Msg>(
     Readonly<{ toParentMessage?: (message: Message) => Msg }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  if (props.model?.status === 'error') return h.empty;
-
-  return h.img([
-    h.DataAttribute('slot', 'avatar-image'),
-    h.Src(props.src),
-    h.Alt(props.alt),
-    ...(props.toParentMessage === undefined
+  const status = effectiveStatus(props.model, props.src, 'loaded');
+  const wiring =
+    props.toParentMessage === undefined
       ? []
       : [
-          h.OnLoad(props.toParentMessage(Message.Loaded())),
-          h.OnError(props.toParentMessage(Message.Failed())),
-        ]),
-    ...(props.model?.status === 'loaded'
-      ? []
-      : [h.DataAttribute('loading', '')]),
-    h.Class(
-      cn(
-        'relative z-10 aspect-square size-full data-[loading]:opacity-0',
-        props.class,
+          h.OnLoad(props.toParentMessage(Message.Loaded({ src: props.src }))),
+          h.OnError(props.toParentMessage(Message.Failed({ src: props.src }))),
+        ];
+
+  if (props.keepMounted === true)
+    return h.img([
+      h.DataAttribute('slot', 'avatar-image'),
+      h.Src(props.src),
+      h.Alt(props.alt),
+      ...wiring,
+      ...(status === 'loading' ? [h.DataAttribute('loading', '')] : []),
+      ...(status === 'error' ? [h.DataAttribute('error', '')] : []),
+      // Until the image is displayable the fallback owns the accessible name.
+      ...(status === 'loaded' ? [] : [h.AriaHidden(true)]),
+      h.Class(
+        cn(
+          'relative z-10 aspect-square size-full data-[loading]:opacity-0 data-[error]:opacity-0',
+          props.class,
+        ),
       ),
-    ),
+    ]);
+
+  if (status === 'loaded')
+    return h.img([
+      h.DataAttribute('slot', 'avatar-image'),
+      h.Src(props.src),
+      h.Alt(props.alt),
+      ...wiring,
+      h.Class(
+        cn('relative z-10 aspect-square size-full', props.class),
+      ),
+    ]);
+
+  // Base UI's detached `new Image()` preload: the real <img> stays unmounted
+  // until the source resolves, while a hidden probe loads in its place and
+  // reports load/error so the app's Model advances. Once 'loaded' the real
+  // element mounts already cached.
+  if (props.toParentMessage === undefined) return h.empty;
+
+  return h.img([
+    h.DataAttribute('slot', 'avatar-image-probe'),
+    h.Src(props.src),
+    h.Alt(''),
+    h.AriaHidden(true),
+    h.Hidden(true),
+    ...wiring,
   ]);
 };
 
@@ -82,15 +135,18 @@ export type AvatarFallbackProps = Readonly<{
   class?: string;
   children: ReadonlyArray<Html | string>;
   model?: Model;
+  /** Source the sibling image is resolving; a stale 'loaded' status re-hides the fallback. */
+  src?: string;
 }>;
 
 export const avatarFallback = <Msg>(
   props: AvatarFallbackProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  if (props.model?.status === 'loaded') return h.empty;
+  if (effectiveStatus(props.model, props.src, 'loading') === 'loaded')
+    return h.empty;
 
-  return h.div(
+  return h.span(
     [
       h.DataAttribute('slot', 'avatar-fallback'),
       h.Class(

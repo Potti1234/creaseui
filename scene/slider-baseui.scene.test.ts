@@ -64,6 +64,7 @@ const initialModel = (
     min?: number
     max?: number
     step?: number
+    largeStep?: number
   }>,
 ): Model => ({
   slider: TailwindSlider.init({
@@ -71,6 +72,7 @@ const initialModel = (
     min: opts?.min ?? 0,
     max: opts?.max ?? 100,
     step: opts?.step ?? 1,
+    largeStep: opts?.largeStep,
   }),
   value: opts?.value ?? 50,
   values: opts?.values ?? [25, 75],
@@ -283,10 +285,7 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI emits a default aria-valuetext on range thumbs
-      // ("44 start range" / "50 end range"). creaseui only emits
-      // aria-valuetext when `formatValue` is provided.
-      it.fails('should set default aria-valuetext on range slider thumbs', () => {
+      it('should set default aria-valuetext on range slider thumbs', () => {
         Scene.scene(
           { update, view: rangeView({ min: 0, max: 100 }) },
           Scene.given(initialModel(id, { values: [44, 50] })),
@@ -295,10 +294,7 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI sets aria-valuenow on each thumb's input.
-      // creaseui range thumbs are native range inputs that expose `value`
-      // implicitly; no explicit aria-valuenow is emitted.
-      it.fails('exposes aria-valuenow on range slider thumbs', () => {
+      it('exposes aria-valuenow on range slider thumbs', () => {
         Scene.scene(
           { update, view: rangeView({ min: 0, max: 100 }) },
           Scene.given(initialModel(id, { values: [44, 50] })),
@@ -362,10 +358,7 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI sets aria-orientation="vertical" on each thumb
-      // input. creaseui's range thumbs carry no aria-orientation (the single
-      // slider's thumb always reports "horizontal").
-      it.fails('sets the aria-orientation attribute on range thumbs', () => {
+      it('sets the aria-orientation attribute on range thumbs', () => {
         Scene.scene(
           { update, view: rangeView({ min: 0, max: 100, orientation: 'vertical' }) },
           Scene.given(initialModel(id)),
@@ -459,11 +452,7 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI supports e-notation steps like 1e-8. The
-      // foldkit primitive's stepDecimals does not parse exponent notation
-      // ('1e-8' has no '.'), so snapAndClamp rounds every tiny-step value
-      // to 0 — arrow keys can never move a tiny-step slider.
-      it.fails('supports tiny step values without rounding error', () => {
+      it('supports tiny step values without rounding error', () => {
         Scene.scene(
           { update, view: sliderView({ ariaLabel: 'Volume' }) },
           Scene.given(initialModel(id, { value: 0, step: 1e-8 })),
@@ -799,9 +788,7 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI multiplies the move by largeStep when Shift is
-      // held. foldkit ignores modifiers — Shift+ArrowRight moves one step.
-      it.fails('key: ArrowRight increments the value by largeStep when Shift is pressed', () => {
+      it('key: ArrowRight increments the value by largeStep when Shift is pressed', () => {
         Scene.scene(
           { update, view: sliderView({ ariaLabel: 'Volume' }) },
           Scene.given(initialModel(id, { value: 20 })),
@@ -811,13 +798,10 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI steps PageUp by a configurable largeStep (5 here,
-      // so 20 → 25). foldkit has no largeStep prop — PageUp always moves
-      // step*10 (20 → 40 on a step-2 grid).
-      it.fails('key: PageUp preserves largeStep increments when step uses a different grid', () => {
+      it('key: PageUp preserves largeStep increments when step uses a different grid', () => {
         Scene.scene(
           { update, view: sliderView({ ariaLabel: 'Volume' }) },
-          Scene.given(initialModel(id, { value: 20, step: 2 })),
+          Scene.given(initialModel(id, { value: 20, step: 2, largeStep: 5 })),
           Scene.keydown(thumbEl, 'PageUp'),
           Scene.expectHandled(),
           Scene.expect(thumbEl).toHaveAttr('aria-valuenow', '25'),
@@ -884,10 +868,7 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI clamps a controlled value into [min, max].
-      // creaseui renders the value verbatim — the parent must snapAndClamp
-      // the value it owns (per the init contract).
-      it.fails('clamps an out-of-range controlled value', () => {
+      it('clamps an out-of-range controlled value', () => {
         Scene.scene(
           { update, view: sliderView({ ariaLabel: 'Volume' }) },
           Scene.given(initialModel(id, { value: 150 })),
@@ -996,9 +977,7 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI marks each thumb div with data-index.
-      // creaseui range thumbs are bare inputs with no index attribute.
-      it.fails('sets the thumb index data attribute', () => {
+      it('sets the thumb index data attribute', () => {
         Scene.scene(
           { update, view: rangeView({ min: 0, max: 100 }) },
           Scene.given(initialModel(id)),

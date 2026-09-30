@@ -236,7 +236,7 @@ export const dialog = <Msg>(
           [...dialogAttributes, hd.Class(className(DIALOG_CLASS))],
           isVisible
             ? [
-                hd.div([...backdrop, hd.Class(className(OVERLAY_CLASS))], []),
+                hd.div([...backdrop, hd.Role('presentation'), hd.Class(className(OVERLAY_CLASS))], []),
                 hd.div(
                   [
                     ...panel,

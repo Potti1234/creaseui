@@ -55,6 +55,7 @@ const menuView = <Item extends string, Msg>(
     h.Role('menubar'),
     h.DataAttribute('slot', 'menubar'),
     h.AriaLabel(props.ariaLabel ?? 'Application menu'),
+    ...(anyOpen ? [h.DataAttribute('has-submenu-open', '')] : []),
     ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
     h.Class(cn(ROOT_CLASS, props.class)),
   ],
@@ -98,12 +99,13 @@ const renderMenubar = <Item extends string, Msg>(props: MenubarProps<Item, Msg>,
         const menu = props.menus[index]
         if (menu === undefined || !menu.model.isOpen) return true
         if (key === 'Home' || key === 'End') return false
-        if (Option.isSome(menu.model.openSubmenuIndex)) return false
+        if (menu.model.openSubmenuPath.length !== 0) return false
         const forward = props.direction === 'rtl' ? 'ArrowLeft' : 'ArrowRight'
-        const active = menu.items[menu.model.activeIndex]
+        const active = menu.items[menu.model.activePath[0] ?? -1]
         return key !== forward || active === undefined || menu.itemToConfig(active).submenu === undefined
       },
       hoverFocus: props.menus.some((menu) => menu.model.isOpen),
+      hasOpenMenu: props.menus.some((menu) => menu.model.isOpen),
       toView: menus => menuView(props, props.model.activeIndex, index => menus[index]?.attributes ?? [], h),
     },
     toParentMessage: props.toParentMessage,

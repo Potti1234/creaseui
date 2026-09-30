@@ -235,6 +235,7 @@ const itemCallSource = (
         }, h),
         Avatar.avatarFallback({
           model: avatarModel(model, '${item.key}'),
+          src: '${item.src}',
           children: ['${item.fallback}'],
         }, h),${badgeSource(item, renderer)}
       ],
@@ -284,6 +285,7 @@ const clusterSource = (
         }, h)`;
     const fallback = `Avatar.avatarFallback({
           model: avatarModel(model, '${item.key}'),
+          src: '${item.src}',
           children: ['${item.fallback}'],
         }, h)`;
     const triggerProps =
