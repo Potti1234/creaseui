@@ -5,6 +5,7 @@ import { alertDialogPage } from '@/docs/components/pages/alert-dialog';
 import { aspectRatioPage } from '@/docs/components/pages/aspect-ratio';
 import { attachmentPage } from '@/docs/components/pages/attachment';
 import { avatarPage } from '@/docs/components/pages/avatar';
+import { avatarGroupPage } from '@/docs/components/pages/avatar-group';
 import { badgePage } from '@/docs/components/pages/badge';
 import { breadcrumbPage } from '@/docs/components/pages/breadcrumb';
 import { bubblePage } from '@/docs/components/pages/bubble';
@@ -15,6 +16,7 @@ import { cardPage } from '@/docs/components/pages/card';
 import { carouselPage } from '@/docs/components/pages/carousel';
 import { chartPage } from '@/docs/components/pages/chart';
 import { checkboxPage } from '@/docs/components/pages/checkbox';
+import { circularProgressPage } from '@/docs/components/pages/circular-progress';
 import { collapsiblePage } from '@/docs/components/pages/collapsible';
 import { comboboxPage } from '@/docs/components/pages/combobox';
 import { commandPage } from '@/docs/components/pages/command';
@@ -29,6 +31,7 @@ import { emptyPage } from '@/docs/components/pages/empty';
 import { fieldPage } from '@/docs/components/pages/field';
 import { formPage } from '@/docs/components/pages/form';
 import { hoverCardPage } from '@/docs/components/pages/hover-card';
+import { indicatorPage } from '@/docs/components/pages/indicator';
 import { itemPage } from '@/docs/components/pages/item';
 import { inputPage } from '@/docs/components/pages/input';
 import { inputGroupPage } from '@/docs/components/pages/input-group';
@@ -55,14 +58,17 @@ import { skeletonPage } from '@/docs/components/pages/skeleton';
 import { sliderPage } from '@/docs/components/pages/slider';
 import { spinnerPage } from '@/docs/components/pages/spinner';
 import { sonnerPage } from '@/docs/components/pages/sonner';
+import { statPage } from '@/docs/components/pages/stat';
 import { statusDotPage } from '@/docs/components/pages/status-dot';
 import { switchPage } from '@/docs/components/pages/switch';
 import { tabsPage } from '@/docs/components/pages/tabs';
 import { tablePage } from '@/docs/components/pages/table';
 import { textareaPage } from '@/docs/components/pages/textarea';
+import { thumbnailPage } from '@/docs/components/pages/thumbnail';
 import { togglePage } from '@/docs/components/pages/toggle';
 import { toastPage } from '@/docs/components/pages/toast';
 import { toggleGroupPage } from '@/docs/components/pages/toggle-group';
+import { tokenPage } from '@/docs/components/pages/token';
 import { tooltipPage } from '@/docs/components/pages/tooltip';
 import { typographyPage } from '@/docs/components/pages/typography';
 
@@ -75,6 +81,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       aspectRatioPage,
       attachmentPage,
       avatarPage,
+      avatarGroupPage,
       badgePage,
       breadcrumbPage,
       bubblePage,
@@ -85,6 +92,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       carouselPage,
       chartPage,
       checkboxPage,
+      circularProgressPage,
       collapsiblePage,
       comboboxPage,
       commandPage,
@@ -99,6 +107,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       fieldPage,
       formPage,
       hoverCardPage,
+      indicatorPage,
       itemPage,
       inputPage,
       inputGroupPage,
@@ -125,14 +134,17 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       sliderPage,
       spinnerPage,
       sonnerPage,
+      statPage,
       statusDotPage,
       switchPage,
       tabsPage,
       tablePage,
       textareaPage,
+      thumbnailPage,
       togglePage,
       toastPage,
       toggleGroupPage,
+      tokenPage,
       tooltipPage,
       typographyPage,
     ].map((page) => [page.slug, page]),

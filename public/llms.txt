@@ -20,6 +20,7 @@
 - Alert: /docs/components/alert — install with `npx shadcn@latest add Potti1234/creaseui/alert`
 - Aspect Ratio: /docs/components/aspect-ratio — install with `npx shadcn@latest add Potti1234/creaseui/aspect-ratio`
 - Attachment: /docs/components/attachment — install with `npx shadcn@latest add Potti1234/creaseui/attachment`
+- Avatar Group: /docs/components/avatar-group — install with `npx shadcn@latest add Potti1234/creaseui/avatar-group`
 - Avatar: /docs/components/avatar — install with `npx shadcn@latest add Potti1234/creaseui/avatar`
 - Badge: /docs/components/badge — install with `npx shadcn@latest add Potti1234/creaseui/badge`
 - Breadcrumb: /docs/components/breadcrumb — install with `npx shadcn@latest add Potti1234/creaseui/breadcrumb`
@@ -31,6 +32,7 @@
 - Carousel: /docs/components/carousel — install with `npx shadcn@latest add Potti1234/creaseui/carousel`
 - Chart: /docs/components/chart — install with `npx shadcn@latest add Potti1234/creaseui/chart`
 - Checkbox: /docs/components/checkbox — install with `npx shadcn@latest add Potti1234/creaseui/checkbox`
+- Circular Progress: /docs/components/circular-progress — install with `npx shadcn@latest add Potti1234/creaseui/circular-progress`
 - Collapsible: /docs/components/collapsible — install with `npx shadcn@latest add Potti1234/creaseui/collapsible`
 - Combobox: /docs/components/combobox — install with `npx shadcn@latest add Potti1234/creaseui/combobox`
 - Command: /docs/components/command — install with `npx shadcn@latest add Potti1234/creaseui/command`
@@ -45,6 +47,7 @@
 - Field: /docs/components/field — install with `npx shadcn@latest add Potti1234/creaseui/field`
 - Form: /docs/components/form — install with `npx shadcn@latest add Potti1234/creaseui/form`
 - Hover Card: /docs/components/hover-card — install with `npx shadcn@latest add Potti1234/creaseui/hover-card`
+- Indicator: /docs/components/indicator — install with `npx shadcn@latest add Potti1234/creaseui/indicator`
 - Input Group: /docs/components/input-group — install with `npx shadcn@latest add Potti1234/creaseui/input-group`
 - Input Otp: /docs/components/input-otp — install with `npx shadcn@latest add Potti1234/creaseui/input-otp`
 - Input: /docs/components/input — install with `npx shadcn@latest add Potti1234/creaseui/input`
@@ -71,13 +74,16 @@
 - Slider: /docs/components/slider — install with `npx shadcn@latest add Potti1234/creaseui/slider`
 - Sonner: /docs/components/sonner — install with `npx shadcn@latest add Potti1234/creaseui/sonner`
 - Spinner: /docs/components/spinner — install with `npx shadcn@latest add Potti1234/creaseui/spinner`
+- Stat: /docs/components/stat — install with `npx shadcn@latest add Potti1234/creaseui/stat`
 - Status Dot: /docs/components/status-dot — install with `npx shadcn@latest add Potti1234/creaseui/status-dot`
 - Switch: /docs/components/switch — install with `npx shadcn@latest add Potti1234/creaseui/switch`
 - Table: /docs/components/table — install with `npx shadcn@latest add Potti1234/creaseui/table`
 - Tabs: /docs/components/tabs — install with `npx shadcn@latest add Potti1234/creaseui/tabs`
 - Textarea: /docs/components/textarea — install with `npx shadcn@latest add Potti1234/creaseui/textarea`
+- Thumbnail: /docs/components/thumbnail — install with `npx shadcn@latest add Potti1234/creaseui/thumbnail`
 - Toast: /docs/components/toast — install with `npx shadcn@latest add Potti1234/creaseui/toast`
 - Toggle Group: /docs/components/toggle-group — install with `npx shadcn@latest add Potti1234/creaseui/toggle-group`
 - Toggle: /docs/components/toggle — install with `npx shadcn@latest add Potti1234/creaseui/toggle`
+- Token: /docs/components/token — install with `npx shadcn@latest add Potti1234/creaseui/token`
 - Tooltip: /docs/components/tooltip — install with `npx shadcn@latest add Potti1234/creaseui/tooltip`
 - Typography: /docs/components/typography — install with `npx shadcn@latest add Potti1234/creaseui/typography`

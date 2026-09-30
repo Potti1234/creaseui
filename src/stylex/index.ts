@@ -9,6 +9,7 @@ export * as AlertDialog from './alert-dialog.js'
 export * as Alert from './alert.js'
 export * as AspectRatio from './aspect-ratio.js'
 export * as Attachment from './attachment.js'
+export * as AvatarGroup from './avatar-group.js'
 export * as Avatar from './avatar.js'
 export * as Badge from './badge.js'
 export * as Breadcrumb from './breadcrumb.js'
@@ -20,6 +21,7 @@ export * as Card from './card.js'
 export * as Carousel from './carousel.js'
 export * as Chart from './chart.js'
 export * as Checkbox from './checkbox.js'
+export * as CircularProgress from './circular-progress.js'
 export * as Collapsible from './collapsible.js'
 export * as Combobox from './combobox.js'
 export * as Command from './command.js'
@@ -34,6 +36,7 @@ export * as Empty from './empty.js'
 export * as Field from './field.js'
 export * as Form from './form.js'
 export * as HoverCard from './hover-card.js'
+export * as Indicator from './indicator.js'
 export * as InputGroup from './input-group.js'
 export * as InputOtp from './input-otp.js'
 export * as Input from './input.js'
@@ -60,14 +63,17 @@ export * as Skeleton from './skeleton.js'
 export * as Slider from './slider.js'
 export * as Sonner from './sonner.js'
 export * as Spinner from './spinner.js'
+export * as Stat from './stat.js'
 export * as StatusDot from './status-dot.js'
 export * as Switch from './switch.js'
 export * as Table from './table.js'
 export * as Tabs from './tabs.js'
 export * as Textarea from './textarea.js'
+export * as Thumbnail from './thumbnail.js'
 export * as Toast from './toast.js'
 export * as ToggleGroup from './toggle-group.js'
 export * as Toggle from './toggle.js'
+export * as Token from './token.js'
 export * as Tooltip from './tooltip.js'
 export * as Typography from './typography.js'
 
@@ -78,6 +84,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'alert',
   'aspect-ratio',
   'attachment',
+  'avatar-group',
   'avatar',
   'badge',
   'breadcrumb',
@@ -89,6 +96,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'carousel',
   'chart',
   'checkbox',
+  'circular-progress',
   'collapsible',
   'combobox',
   'command',
@@ -103,6 +111,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'field',
   'form',
   'hover-card',
+  'indicator',
   'input-group',
   'input-otp',
   'input',
@@ -129,14 +138,17 @@ export const STYLEX_COMPONENT_NAMES = [
   'slider',
   'sonner',
   'spinner',
+  'stat',
   'status-dot',
   'switch',
   'table',
   'tabs',
   'textarea',
+  'thumbnail',
   'toast',
   'toggle-group',
   'toggle',
+  'token',
   'tooltip',
   'typography',
 ] as const

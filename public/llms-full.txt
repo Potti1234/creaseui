@@ -18,6 +18,7 @@
 - Alert: /docs/components/alert — install with `npx shadcn@latest add Potti1234/creaseui/alert`
 - Aspect Ratio: /docs/components/aspect-ratio — install with `npx shadcn@latest add Potti1234/creaseui/aspect-ratio`
 - Attachment: /docs/components/attachment — install with `npx shadcn@latest add Potti1234/creaseui/attachment`
+- Avatar Group: /docs/components/avatar-group — install with `npx shadcn@latest add Potti1234/creaseui/avatar-group`
 - Avatar: /docs/components/avatar — install with `npx shadcn@latest add Potti1234/creaseui/avatar`
 - Badge: /docs/components/badge — install with `npx shadcn@latest add Potti1234/creaseui/badge`
 - Breadcrumb: /docs/components/breadcrumb — install with `npx shadcn@latest add Potti1234/creaseui/breadcrumb`
@@ -29,6 +30,7 @@
 - Carousel: /docs/components/carousel — install with `npx shadcn@latest add Potti1234/creaseui/carousel`
 - Chart: /docs/components/chart — install with `npx shadcn@latest add Potti1234/creaseui/chart`
 - Checkbox: /docs/components/checkbox — install with `npx shadcn@latest add Potti1234/creaseui/checkbox`
+- Circular Progress: /docs/components/circular-progress — install with `npx shadcn@latest add Potti1234/creaseui/circular-progress`
 - Collapsible: /docs/components/collapsible — install with `npx shadcn@latest add Potti1234/creaseui/collapsible`
 - Combobox: /docs/components/combobox — install with `npx shadcn@latest add Potti1234/creaseui/combobox`
 - Command: /docs/components/command — install with `npx shadcn@latest add Potti1234/creaseui/command`
@@ -43,6 +45,7 @@
 - Field: /docs/components/field — install with `npx shadcn@latest add Potti1234/creaseui/field`
 - Form: /docs/components/form — install with `npx shadcn@latest add Potti1234/creaseui/form`
 - Hover Card: /docs/components/hover-card — install with `npx shadcn@latest add Potti1234/creaseui/hover-card`
+- Indicator: /docs/components/indicator — install with `npx shadcn@latest add Potti1234/creaseui/indicator`
 - Input Group: /docs/components/input-group — install with `npx shadcn@latest add Potti1234/creaseui/input-group`
 - Input Otp: /docs/components/input-otp — install with `npx shadcn@latest add Potti1234/creaseui/input-otp`
 - Input: /docs/components/input — install with `npx shadcn@latest add Potti1234/creaseui/input`
@@ -69,14 +72,17 @@
 - Slider: /docs/components/slider — install with `npx shadcn@latest add Potti1234/creaseui/slider`
 - Sonner: /docs/components/sonner — install with `npx shadcn@latest add Potti1234/creaseui/sonner`
 - Spinner: /docs/components/spinner — install with `npx shadcn@latest add Potti1234/creaseui/spinner`
+- Stat: /docs/components/stat — install with `npx shadcn@latest add Potti1234/creaseui/stat`
 - Status Dot: /docs/components/status-dot — install with `npx shadcn@latest add Potti1234/creaseui/status-dot`
 - Switch: /docs/components/switch — install with `npx shadcn@latest add Potti1234/creaseui/switch`
 - Table: /docs/components/table — install with `npx shadcn@latest add Potti1234/creaseui/table`
 - Tabs: /docs/components/tabs — install with `npx shadcn@latest add Potti1234/creaseui/tabs`
 - Textarea: /docs/components/textarea — install with `npx shadcn@latest add Potti1234/creaseui/textarea`
+- Thumbnail: /docs/components/thumbnail — install with `npx shadcn@latest add Potti1234/creaseui/thumbnail`
 - Toast: /docs/components/toast — install with `npx shadcn@latest add Potti1234/creaseui/toast`
 - Toggle Group: /docs/components/toggle-group — install with `npx shadcn@latest add Potti1234/creaseui/toggle-group`
 - Toggle: /docs/components/toggle — install with `npx shadcn@latest add Potti1234/creaseui/toggle`
+- Token: /docs/components/token — install with `npx shadcn@latest add Potti1234/creaseui/token`
 - Tooltip: /docs/components/tooltip — install with `npx shadcn@latest add Potti1234/creaseui/tooltip`
 - Typography: /docs/components/typography — install with `npx shadcn@latest add Potti1234/creaseui/typography`
 
@@ -166,6 +172,25 @@ Examples: Demo, Image, States, Sizes, Group, Trigger
 - `attachmentTitle<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 - `attachmentDescription<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 - `attachmentTrigger<Msg>(props: Readonly<{ onClick: Msg; label: string; class?: string }>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Avatar Group
+
+A shadcn-styled Avatar Group component for Foldkit.
+
+Source: `src/ui/avatar-group.ts`
+
+Examples: Avatar Group, Avatar Group — Interactive, Avatar — Group, Avatar — Status Dot
+
+- `AvatarGroupSize = 'sm' | 'md' | 'lg' | number` (type)
+- `AvatarShape = 'circle' | 'rounded' | 'square'` (type)
+- `AvatarGroupProps = Readonly<{ /** Accessible name for the group; defaults to "Avatar group". */ ariaLabel?: string; /** Shared avatar size used to compute the 25% overlap. Defaults to 'md'. */ avatarSize?: AvatarGroupSize; children: ReadonlyArray<Html>; class…` (type)
+- `avatarGroup<Msg>(props: AvatarGroupProps, h: HtmlBuilder<Msg>): Html` (function)
+- `AvatarGroupOverflowProps<Msg> = Readonly<{ /** Number of hidden avatars; rendered as "+N" when no children are given. */ count?: number; /** Shared avatar size (px or named); the overflow chip is size + 4px to span the ring. */ avatarSize?: AvatarGroupSize; /…` (type)
+- `avatarGroupOverflow<Msg>(props: AvatarGroupOverflowProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `AvatarStatusDotVariant = 'success' | 'neutral' | 'error'` (type)
+- `AvatarStatusDotSize = 'xsm' | 'sm' | 'md' | 'lg' | 'xl' | number` (type)
+- `AvatarStatusDotProps = Readonly<{ /** Semantic tone: success (online), neutral (offline), error (busy). */ variant: AvatarStatusDotVariant; /** Driving avatar's size — picks the dot diameter tier (10/20/32px). */ avatarSize?: AvatarStatusDotSize; /** Accessib…` (type)
+- `avatarStatusDot<Msg>(props: AvatarStatusDotProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Avatar
 
@@ -388,6 +413,19 @@ Examples: Demo, Invalid State, Basic, Description, Disabled, Group, Table, RTL, 
 
 - `CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> & Readonly<{ class?: string }>` (type)
 - `checkbox<Msg>(props: CheckboxProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Circular Progress
+
+A shadcn-styled Circular Progress component for Foldkit.
+
+Source: `src/ui/circular-progress.ts`
+
+Examples: Circular Progress, Circular Progress — Value Label, Circular Progress — Variants, Circular Progress — Sizes, Circular Progress — Indeterminate, Circular Progress — Disabled, Circular Progress — Empty And Full
+
+- `CircularProgressVariant = 'accent' | 'success' | 'warning' | 'error' | 'neutral'` (type)
+- `CircularProgressSize = 'sm' | 'md' | 'lg'` (type)
+- `CircularProgressProps = Readonly<{ /** Current value. Ignored when isIndeterminate is true. */ value?: number; /** Maximum value. */ max?: number; /** Accessible label for the progress indicator. Required for a11y. */ label: string; /** When true (default), t…` (type)
+- `circularProgress<Msg>(props: CircularProgressProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Collapsible
 
@@ -725,6 +763,23 @@ Examples: Basic, Sides, RTL
 - `HoverCardAlign = 'start' | 'center' | 'end'` (type)
 - `HoverCardProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; content: Html | string; align?: HoverCardAlign; side?: HoverCardSide; isDisabled?: boolean; ariaLabel?: string; triggerClass?: string; class?: s…` (type)
 - `hoverCard<Msg>(props: HoverCardProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Indicator
+
+A shadcn-styled Indicator component for Foldkit.
+
+Source: `src/ui/indicator.ts`
+
+Examples: Indicator, Indicator — Radio, Indicator — Check, Indicator — Sizes, Indicator — Disabled
+
+- `IndicatorState = 'unchecked' | 'checked' | 'indeterminate'` (type)
+- `IndicatorSize = 'sm' | 'md'` (type)
+- `CheckIndicatorProps = Readonly<{ state: 'unchecked' | 'checked'; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered in the mark's slot (e.g. a busy spinner). */ children?: ReadonlyArray<Html>; class?: string; }>` (type)
+- `checkIndicator<Msg>(props: CheckIndicatorProps, h: HtmlBuilder<Msg>): Html` (function)
+- `CheckboxIndicatorProps = Readonly<{ state: IndicatorState; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered inside the box (e.g. a busy spinner). */ children?: ReadonlyArray<Html>; class?: string; }>` (type)
+- `checkboxIndicator<Msg>(props: CheckboxIndicatorProps, h: HtmlBuilder<Msg>): Html` (function)
+- `RadioIndicatorProps = Readonly<{ /** A radio has no partial state; anything other than unchecked reads as selected. */ state: IndicatorState; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered inside the circle (e.g. a busy spinner).…` (type)
+- `radioIndicator<Msg>(props: RadioIndicatorProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Input Group
 
@@ -1217,6 +1272,21 @@ Examples: Basic, Customization, Size, Button, Badge, Input Group, Empty, RTL
 - `SpinnerProps = SpinnerAccessibility & Readonly<{ size?: 'sm' | 'md' | 'lg' | 'xl'; tone?: 'current' | 'muted' | 'primary'; /** Emits data-icon="inline-start|inline-end" for parent icon positioning. */ dataIcon?: 'inline-start' | 'inline-end'; class?: string; …` (type)
 - `spinner<Msg>(props: SpinnerProps, h: HtmlBuilder<Msg>): Html` (function)
 
+### Stat
+
+A shadcn-styled Stat component for Foldkit.
+
+Source: `src/ui/stat.ts`
+
+Examples: Stat, Stat — Sizes, Stat — With Media
+
+- `StatDeltaDirection = 'up' | 'down' | 'flat'` (type)
+- `StatDeltaSentiment = 'positive' | 'negative' | 'neutral'` (type)
+- `StatSize = 'sm' | 'md' | 'lg'` (type)
+- `StatDelta = Readonly<{ /** Pre-formatted change text, e.g. "+12.4%" or "-8 ms". */ value: string; /** Trend direction. Picks the glyph and the default sentiment. */ direction: StatDeltaDirection; /** * Overrides the direction-to-color mapping for inverted met…` (type)
+- `StatProps = Readonly<{ /** Metric name shown above the value, e.g. "Total requests". */ label: string; /** The headline metric, rendered large with tabular numerals. */ value: string; /** Change indicator rendered next to the value. */ delta?: StatDelta; /** …` (type)
+- `stat<Msg>(props: StatProps, h: HtmlBuilder<Msg>): Html` (function)
+
 ### Status Dot
 
 A shadcn-styled Status Dot component for Foldkit.
@@ -1298,6 +1368,18 @@ Examples: Basic, Field, Disabled, Invalid, Button, RTL, Form And Resize
 - `TextareaProps<Msg> = TextareaBehaviorProps<Msg> & Readonly<{ class?: string; }>` (type)
 - `textarea<Msg>(props: TextareaProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
+### Thumbnail
+
+A shadcn-styled Thumbnail component for Foldkit.
+
+Source: `src/ui/thumbnail.ts`
+
+Examples: Thumbnail, Thumbnail — States, Thumbnail — Gallery, Thumbnail — Removable, Thumbnail — Disabled
+
+- `ThumbnailShowRemoveOn = 'always' | 'hover'` (type)
+- `ThumbnailProps<Msg> = Readonly<{ /** Image source. When omitted, the thumbnail shows its placeholder state. */ src?: string; /** Alt text for the image. */ alt?: string; /** Human-readable name shown in tooltips and used in accessible labels. */ label?: strin…` (type)
+- `thumbnail<Msg>(props: ThumbnailProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
 ### Toast
 
 A shadcn-styled Toast component for Foldkit.
@@ -1342,6 +1424,19 @@ Examples: Basic, Outline, With Text, Size, Disabled, RTL
 - `ToggleVariants = VariantProps<typeof toggleVariants>` (type)
 - `ToggleProps<Msg> = Readonly<{ isPressed: boolean; onToggle: Msg; variant?: ToggleVariants['variant']; size?: ToggleVariants['size']; children: ReadonlyArray<Html | string>; isDisabled?: boolean; id?: string; ariaLabel?: string; describedBy?: string; direction…` (type)
 - `toggle<Msg>(props: ToggleProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Token
+
+A shadcn-styled Token component for Foldkit.
+
+Source: `src/ui/token.ts`
+
+Examples: Token, Token — Clickable, Token — Colors, Token — End Content, Token — Icon, Token — Removable
+
+- `TokenColor = | 'default' | 'gray' | 'red' | 'orange' | 'yellow' | 'green' | 'teal' | 'cyan' | 'blue' | 'purple' | 'pink'` (type)
+- `TokenSize = 'sm' | 'md' | 'lg'` (type)
+- `TokenProps<Msg> = Readonly<{ /** Text shown inside the token. */ label: string; /** Semantic colorway; 'default' is the neutral gray chip. */ color?: TokenColor; /** Chip height: sm 20px, md 24px, lg 28px. */ size?: TokenSize; /** Leading glyph, e.g. `h => Ic…` (type)
+- `token<Msg>(props: TokenProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Tooltip
 

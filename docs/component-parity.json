@@ -23,11 +23,17 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 66,
+    "registryItems": 72,
     "creaseOnlyRecipes": [
+      "avatar-group",
+      "circular-progress",
       "data-table",
       "date-picker",
+      "indicator",
+      "stat",
       "status-dot",
+      "thumbnail",
+      "token",
       "typography"
     ]
   },
@@ -138,6 +144,24 @@
         "src/ui/avatar.ts",
         "src/ui/registry.json#avatar",
         "/docs/components/avatar"
+      ]
+    },
+    {
+      "component": "avatar-group",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/avatar-group.ts",
+        "src/ui/registry.json#avatar-group",
+        "/docs/components/avatar-group"
       ]
     },
     {
@@ -319,6 +343,24 @@
         "src/ui/checkbox.ts",
         "src/ui/registry.json#checkbox",
         "/docs/components/checkbox"
+      ]
+    },
+    {
+      "component": "circular-progress",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/circular-progress.ts",
+        "src/ui/registry.json#circular-progress",
+        "/docs/components/circular-progress"
       ]
     },
     {
@@ -573,6 +615,24 @@
         "src/ui/hover-card.ts",
         "src/ui/registry.json#hover-card",
         "/docs/components/hover-card"
+      ]
+    },
+    {
+      "component": "indicator",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/indicator.ts",
+        "src/ui/registry.json#indicator",
+        "/docs/components/indicator"
       ]
     },
     {
@@ -1047,6 +1107,24 @@
       ]
     },
     {
+      "component": "stat",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/stat.ts",
+        "src/ui/registry.json#stat",
+        "/docs/components/stat"
+      ]
+    },
+    {
       "component": "status-dot",
       "upstream": false,
       "classification": "full",
@@ -1137,6 +1215,24 @@
       ]
     },
     {
+      "component": "thumbnail",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/thumbnail.ts",
+        "src/ui/registry.json#thumbnail",
+        "/docs/components/thumbnail"
+      ]
+    },
+    {
       "component": "toast",
       "upstream": true,
       "classification": "full",
@@ -1188,6 +1284,24 @@
         "src/ui/toggle-group.ts",
         "src/ui/registry.json#toggle-group",
         "/docs/components/toggle-group"
+      ]
+    },
+    {
+      "component": "token",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/token.ts",
+        "src/ui/registry.json#token",
+        "/docs/components/token"
       ]
     },
     {
