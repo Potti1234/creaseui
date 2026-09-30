@@ -24,6 +24,7 @@
 - Badge: /docs/components/badge — install with `npx shadcn@latest add Potti1234/creaseui/badge`
 - Banner: /docs/components/banner — install with `npx shadcn@latest add Potti1234/creaseui/banner`
 - Blockquote: /docs/components/blockquote — install with `npx shadcn@latest add Potti1234/creaseui/blockquote`
+- Bottom Sheet: /docs/components/bottom-sheet — install with `npx shadcn@latest add Potti1234/creaseui/bottom-sheet`
 - Breadcrumb: /docs/components/breadcrumb — install with `npx shadcn@latest add Potti1234/creaseui/breadcrumb`
 - Bubble: /docs/components/bubble — install with `npx shadcn@latest add Potti1234/creaseui/bubble`
 - Button Group: /docs/components/button-group — install with `npx shadcn@latest add Potti1234/creaseui/button-group`
@@ -68,6 +69,7 @@
 - Item: /docs/components/item — install with `npx shadcn@latest add Potti1234/creaseui/item`
 - Kbd: /docs/components/kbd — install with `npx shadcn@latest add Potti1234/creaseui/kbd`
 - Label: /docs/components/label — install with `npx shadcn@latest add Potti1234/creaseui/label`
+- Lightbox: /docs/components/lightbox — install with `npx shadcn@latest add Potti1234/creaseui/lightbox`
 - Link: /docs/components/link — install with `npx shadcn@latest add Potti1234/creaseui/link`
 - List Input: /docs/components/list-input — install with `npx shadcn@latest add Potti1234/creaseui/list-input`
 - List: /docs/components/list — install with `npx shadcn@latest add Potti1234/creaseui/list`
@@ -77,6 +79,7 @@
 - Message Scroller: /docs/components/message-scroller — install with `npx shadcn@latest add Potti1234/creaseui/message-scroller`
 - Message: /docs/components/message — install with `npx shadcn@latest add Potti1234/creaseui/message`
 - Metadata List: /docs/components/metadata-list — install with `npx shadcn@latest add Potti1234/creaseui/metadata-list`
+- Mobile Nav: /docs/components/mobile-nav — install with `npx shadcn@latest add Potti1234/creaseui/mobile-nav`
 - More Menu: /docs/components/more-menu — install with `npx shadcn@latest add Potti1234/creaseui/more-menu`
 - Multi Selector: /docs/components/multi-selector — install with `npx shadcn@latest add Potti1234/creaseui/multi-selector`
 - Native Select: /docs/components/native-select — install with `npx shadcn@latest add Potti1234/creaseui/native-select`
@@ -118,6 +121,7 @@
 - Tokenizer: /docs/components/tokenizer — install with `npx shadcn@latest add Potti1234/creaseui/tokenizer`
 - Toolbar: /docs/components/toolbar — install with `npx shadcn@latest add Potti1234/creaseui/toolbar`
 - Tooltip: /docs/components/tooltip — install with `npx shadcn@latest add Potti1234/creaseui/tooltip`
+- Tour: /docs/components/tour — install with `npx shadcn@latest add Potti1234/creaseui/tour`
 - Typography: /docs/components/typography — install with `npx shadcn@latest add Potti1234/creaseui/typography`
 - Visually Hidden: /docs/components/visually-hidden — install with `npx shadcn@latest add Potti1234/creaseui/visually-hidden`
 
@@ -310,6 +314,49 @@ Examples: Blockquote — Showcase, Blockquote — With Attribution, Blockquote �
 
 - `BlockquoteProps = Readonly<{ children: ReadonlyArray<Html | string>; cite?: string; class?: string; }>` (type)
 - `blockquote<Msg>(props: BlockquoteProps, h: HtmlBuilder<Msg>): Html` (function)
+
+### Bottom Sheet
+
+A shadcn-styled Bottom Sheet component for Foldkit.
+
+Source: `src/ui/bottom-sheet.ts`
+
+Examples: Bottom Sheet, Bottom Sheet — Height variants, Bottom Sheet — No scrim, Bottom Sheet — Snap points, Bottom Sheet — Mobile keyboard, Bottom Sheet Switcher, Bottom Sheet Switcher — Review flow
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `OutMessage: value` (value)
+- `OutMessage = typeof OutMessage.Type` (type)
+- `SwitcherModel: value` (value)
+- `SwitcherModel = typeof SwitcherModel.Type` (type)
+- `SwitcherMessage: value` (value)
+- `SwitcherMessage = typeof SwitcherMessage.Type` (type)
+- `SwitcherOutMessage: value` (value)
+- `SwitcherOutMessage = typeof SwitcherOutMessage.Type` (type)
+- `SheetState: value` (value)
+- `SheetState = typeof SheetState.Type` (type)
+- `export { BottomSheetSnapPoint } from '@/lib/bottom-sheet'` (re-export)
+- `export { SheetHeight } from '@/lib/bottom-sheet'` (re-export)
+- `export { SheetPurpose } from '@/lib/bottom-sheet'` (re-export)
+- `init: value` (value)
+- `update: value` (value)
+- `open: value` (value)
+- `close: value` (value)
+- `initSwitcher: value` (value)
+- `updateSwitcher: value` (value)
+- `openSheet: value` (value)
+- `closeSwitcher: value` (value)
+- `OVERSCROLL_PADDING: value` (value)
+- `HEIGHT_BUDGETS: value` (value)
+- `isSheetDragCandidate(target: unknown): false | 'handle' | 'arm'` (function)
+- `SheetDragDispatch<Msg> = Readonly<{ started: (frame: { y: number; timeStamp: number; armOnly: boolean }) => Msg; dragged: (frame: { y: number; timeStamp: number; detents: number[] }) => Msg; ended: (frame: { y: number; timeStamp: number; detents: number[] }) …` (type)
+- `BottomSheetProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; content: Html; class?: string; }>` (type)
+- `bottomSheet<Msg>(props: BottomSheetProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `SwitcherSheetContent = Readonly<{ id: string; content: Html; }>` (type)
+- `BottomSheetSwitcherProps<Msg> = Readonly<{ model: SwitcherModel; toParentMessage: (message: SwitcherMessage) => Msg; sheets: ReadonlyArray<SwitcherSheetContent>; class?: string; }>` (type)
+- `bottomSheetSwitcher<Msg>(props: BottomSheetSwitcherProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Breadcrumb
 
@@ -1200,6 +1247,29 @@ Examples: Basic, Label in Field, RTL
 - `LabelProps = Readonly<{ for?: string; isRequired?: boolean; isDisabled?: boolean; class?: string; children: ReadonlyArray<Html | string>; }>` (type)
 - `label<Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html` (function)
 
+### Lightbox
+
+A shadcn-styled Lightbox component for Foldkit.
+
+Source: `src/ui/lightbox.ts`
+
+Examples: Lightbox, Lightbox — Gallery, Lightbox — Video, Lightbox — Zoom
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `OutMessage: value` (value)
+- `OutMessage = typeof OutMessage.Type` (type)
+- `init: value` (value)
+- `update: value` (value)
+- `open: value` (value)
+- `close: value` (value)
+- `KEYBOARD_PAN_STEP: value` (value)
+- `LightboxMedia = Readonly<{ src: string; alt: string; caption?: string; type?: 'image' | 'video'; }>` (type)
+- `LightboxProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; media: LightboxMedia | ReadonlyArray<LightboxMedia>; hasZoom?: boolean; hasAutoPlay?: boolean; class?: string; }>` (type)
+- `lightbox<Msg>(props: LightboxProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
 ### Link
 
 A shadcn-styled Link component for Foldkit.
@@ -1378,6 +1448,31 @@ Examples: MetadataList, MetadataList — Basic, MetadataList — Collapsible, Me
 - `metadataList<Msg>(props: MetadataListProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `MetadataListItemProps = Readonly<{ label: Html | string; icon?: Html; /** Render the label above the value inside a wrapper (top labels and horizontal layouts). The parent MetadataList resolves this. */ stacked?: boolean; children?: ReadonlyArray<Html | strin…` (type)
 - `metadataListItem<Msg>(props: MetadataListItemProps, h: HtmlBuilder<Msg>): Html` (function)
+
+### Mobile Nav
+
+A shadcn-styled Mobile Nav component for Foldkit.
+
+Source: `src/ui/mobile-nav.ts`
+
+Examples: Mobile Nav, Main, Settings, MobileNav — Basic Drawer, MobileNav — End Side Drawer, MobileNav — Without Title, Mobile Nav Toggle, Pages, MobileNavToggle — Basic
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `OutMessage: value` (value)
+- `OutMessage = typeof OutMessage.Type` (type)
+- `export { MobileNavSide } from '@/lib/mobile-nav'` (re-export)
+- `export { ResolvedSide } from '@/lib/mobile-nav'` (re-export)
+- `init: value` (value)
+- `update: value` (value)
+- `open: value` (value)
+- `close: value` (value)
+- `MobileNavProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; content: Html; title?: string; label?: string; width?: number; class?: string; }>` (type)
+- `mobileNav<Msg>(props: MobileNavProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `MobileNavToggleProps<Msg> = Readonly<{ controls: string; isExpanded: boolean; message: Msg; label?: string; class?: string; }>` (type)
+- `mobileNavToggle<Msg>(props: MobileNavToggleProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### More Menu
 
@@ -2148,6 +2243,33 @@ Examples: Basic, Side, With Keyboard Shortcut, Disabled Button, RTL
 - `TooltipAlign = 'start' | 'center' | 'end'` (type)
 - `TooltipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; content: Html | string; align?: TooltipAlign; side?: TooltipSide; isDisabled?: boolean; ariaLabel?: string; triggerClass?: string; class?: string;…` (type)
 - `tooltip<Msg>(props: TooltipProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Tour
+
+A shadcn-styled Tour component for Foldkit.
+
+Source: `src/ui/tour.ts`
+
+Examples: Tour, Tour — Lightweight, Tour — Callout placement
+
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `OutMessage: value` (value)
+- `OutMessage = typeof OutMessage.Type` (type)
+- `TourDismissSource: value` (value)
+- `TourDismissSource = TourBehavior.TourDismissSource` (type)
+- `init: value` (value)
+- `update: value` (value)
+- `activate: value` (value)
+- `deactivate: value` (value)
+- `HIGHLIGHT_PADDING: value` (value)
+- `TourStepPlacement = 'below' | 'above' | 'start' | 'end'` (type)
+- `TourStepAlignment = 'start' | 'center' | 'end'` (type)
+- `TourStepSpec = Readonly<{ /** Stable step key — the callout is re-keyed per step to re-anchor. */ id: string; /** `id` of the element this step points at (astryx targetRef equivalent — must be interactive for aria, matching Popover's anchor contract). */ targ…` (type)
+- `TourProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; steps: ReadonlyArray<TourStepSpec>; hasBackdrop?: boolean; isStepCountShown?: boolean; class?: string; }>` (type)
+- `tour<Msg>(props: TourProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Typography
 

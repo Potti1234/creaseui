@@ -203,6 +203,23 @@
       ]
     },
     {
+      "name": "bottom-sheet",
+      "type": "registry:ui",
+      "title": "Bottom Sheet",
+      "description": "A shadcn-styled Bottom Sheet component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "bottom-sheet.ts",
+          "type": "registry:ui",
+          "target": "@ui/bottom-sheet.ts"
+        }
+      ]
+    },
+    {
       "name": "breadcrumb",
       "type": "registry:ui",
       "title": "Breadcrumb",
@@ -1007,6 +1024,24 @@
       ]
     },
     {
+      "name": "lightbox",
+      "type": "registry:ui",
+      "title": "Lightbox",
+      "description": "A shadcn-styled Lightbox component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "lightbox.ts",
+          "type": "registry:ui",
+          "target": "@ui/lightbox.ts"
+        }
+      ]
+    },
+    {
       "name": "link",
       "type": "registry:ui",
       "title": "Link",
@@ -1175,6 +1210,24 @@
           "path": "metadata-list.ts",
           "type": "registry:ui",
           "target": "@ui/metadata-list.ts"
+        }
+      ]
+    },
+    {
+      "name": "mobile-nav",
+      "type": "registry:ui",
+      "title": "Mobile Nav",
+      "description": "A shadcn-styled Mobile Nav component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "mobile-nav.ts",
+          "type": "registry:ui",
+          "target": "@ui/mobile-nav.ts"
         }
       ]
     },
@@ -1912,6 +1965,25 @@
           "path": "tooltip.ts",
           "type": "registry:ui",
           "target": "@ui/tooltip.ts"
+        }
+      ]
+    },
+    {
+      "name": "tour",
+      "type": "registry:ui",
+      "title": "Tour",
+      "description": "A shadcn-styled Tour component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/button",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "tour.ts",
+          "type": "registry:ui",
+          "target": "@ui/tour.ts"
         }
       ]
     },

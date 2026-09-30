@@ -10,6 +10,7 @@ import { avatarGroupPage } from '@/docs/components/pages/avatar-group';
 import { badgePage } from '@/docs/components/pages/badge';
 import { bannerPage } from '@/docs/components/pages/banner';
 import { blockquotePage } from '@/docs/components/pages/blockquote';
+import { bottomSheetPage } from '@/docs/components/pages/bottom-sheet';
 import { breadcrumbPage } from '@/docs/components/pages/breadcrumb';
 import { bubblePage } from '@/docs/components/pages/bubble';
 import { buttonPage } from '@/docs/components/pages/button';
@@ -54,6 +55,7 @@ import { inputGroupPage } from '@/docs/components/pages/input-group';
 import { inputOtpPage } from '@/docs/components/pages/input-otp';
 import { kbdPage } from '@/docs/components/pages/kbd';
 import { labelPage } from '@/docs/components/pages/label';
+import { lightboxPage } from '@/docs/components/pages/lightbox';
 import { linkPage } from '@/docs/components/pages/link';
 import { listPage } from '@/docs/components/pages/list';
 import { listInputPage } from '@/docs/components/pages/list-input';
@@ -63,6 +65,7 @@ import { messagePage } from '@/docs/components/pages/message';
 import { messageScrollerPage } from '@/docs/components/pages/message-scroller';
 import { menubarPage } from '@/docs/components/pages/menubar';
 import { metadataListPage } from '@/docs/components/pages/metadata-list';
+import { mobileNavPage } from '@/docs/components/pages/mobile-nav';
 import { moreMenuPage } from '@/docs/components/pages/more-menu';
 import { multiSelectorPage } from '@/docs/components/pages/multi-selector';
 import { nativeSelectPage } from '@/docs/components/pages/native-select';
@@ -104,6 +107,7 @@ import { tokenPage } from '@/docs/components/pages/token';
 import { tokenizerPage } from '@/docs/components/pages/tokenizer';
 import { toolbarPage } from '@/docs/components/pages/toolbar';
 import { tooltipPage } from '@/docs/components/pages/tooltip';
+import { tourPage } from '@/docs/components/pages/tour';
 import { typographyPage } from '@/docs/components/pages/typography';
 import { visuallyHiddenPage } from '@/docs/components/pages/visually-hidden';
 
@@ -121,6 +125,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       badgePage,
       bannerPage,
       blockquotePage,
+      bottomSheetPage,
       breadcrumbPage,
       bubblePage,
       buttonPage,
@@ -165,6 +170,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       inputOtpPage,
       kbdPage,
       labelPage,
+      lightboxPage,
       linkPage,
       listPage,
       listInputPage,
@@ -174,6 +180,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       messageScrollerPage,
       menubarPage,
       metadataListPage,
+      mobileNavPage,
       moreMenuPage,
       multiSelectorPage,
       nativeSelectPage,
@@ -215,6 +222,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       tokenizerPage,
       toolbarPage,
       tooltipPage,
+      tourPage,
       typographyPage,
       visuallyHiddenPage,
     ].map((page) => [page.slug, page]),

@@ -15,6 +15,7 @@ export * as Avatar from './avatar.js'
 export * as Badge from './badge.js'
 export * as Banner from './banner.js'
 export * as Blockquote from './blockquote.js'
+export * as BottomSheet from './bottom-sheet.js'
 export * as Breadcrumb from './breadcrumb.js'
 export * as Bubble from './bubble.js'
 export * as ButtonGroup from './button-group.js'
@@ -59,6 +60,7 @@ export * as Input from './input.js'
 export * as Item from './item.js'
 export * as Kbd from './kbd.js'
 export * as Label from './label.js'
+export * as Lightbox from './lightbox.js'
 export * as Link from './link.js'
 export * as ListInput from './list-input.js'
 export * as List from './list.js'
@@ -68,6 +70,7 @@ export * as Menubar from './menubar.js'
 export * as MessageScroller from './message-scroller.js'
 export * as Message from './message.js'
 export * as MetadataList from './metadata-list.js'
+export * as MobileNav from './mobile-nav.js'
 export * as MoreMenu from './more-menu.js'
 export * as MultiSelector from './multi-selector.js'
 export * as NativeSelect from './native-select.js'
@@ -109,6 +112,7 @@ export * as Token from './token.js'
 export * as Tokenizer from './tokenizer.js'
 export * as Toolbar from './toolbar.js'
 export * as Tooltip from './tooltip.js'
+export * as Tour from './tour.js'
 export * as Typography from './typography.js'
 export * as VisuallyHidden from './visually-hidden.js'
 
@@ -125,6 +129,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'badge',
   'banner',
   'blockquote',
+  'bottom-sheet',
   'breadcrumb',
   'bubble',
   'button-group',
@@ -169,6 +174,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'item',
   'kbd',
   'label',
+  'lightbox',
   'link',
   'list-input',
   'list',
@@ -178,6 +184,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'message-scroller',
   'message',
   'metadata-list',
+  'mobile-nav',
   'more-menu',
   'multi-selector',
   'native-select',
@@ -219,6 +226,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'tokenizer',
   'toolbar',
   'tooltip',
+  'tour',
   'typography',
   'visually-hidden',
 ] as const

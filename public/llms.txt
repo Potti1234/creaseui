@@ -26,6 +26,7 @@
 - Badge: /docs/components/badge — install with `npx shadcn@latest add Potti1234/creaseui/badge`
 - Banner: /docs/components/banner — install with `npx shadcn@latest add Potti1234/creaseui/banner`
 - Blockquote: /docs/components/blockquote — install with `npx shadcn@latest add Potti1234/creaseui/blockquote`
+- Bottom Sheet: /docs/components/bottom-sheet — install with `npx shadcn@latest add Potti1234/creaseui/bottom-sheet`
 - Breadcrumb: /docs/components/breadcrumb — install with `npx shadcn@latest add Potti1234/creaseui/breadcrumb`
 - Bubble: /docs/components/bubble — install with `npx shadcn@latest add Potti1234/creaseui/bubble`
 - Button Group: /docs/components/button-group — install with `npx shadcn@latest add Potti1234/creaseui/button-group`
@@ -70,6 +71,7 @@
 - Item: /docs/components/item — install with `npx shadcn@latest add Potti1234/creaseui/item`
 - Kbd: /docs/components/kbd — install with `npx shadcn@latest add Potti1234/creaseui/kbd`
 - Label: /docs/components/label — install with `npx shadcn@latest add Potti1234/creaseui/label`
+- Lightbox: /docs/components/lightbox — install with `npx shadcn@latest add Potti1234/creaseui/lightbox`
 - Link: /docs/components/link — install with `npx shadcn@latest add Potti1234/creaseui/link`
 - List Input: /docs/components/list-input — install with `npx shadcn@latest add Potti1234/creaseui/list-input`
 - List: /docs/components/list — install with `npx shadcn@latest add Potti1234/creaseui/list`
@@ -79,6 +81,7 @@
 - Message Scroller: /docs/components/message-scroller — install with `npx shadcn@latest add Potti1234/creaseui/message-scroller`
 - Message: /docs/components/message — install with `npx shadcn@latest add Potti1234/creaseui/message`
 - Metadata List: /docs/components/metadata-list — install with `npx shadcn@latest add Potti1234/creaseui/metadata-list`
+- Mobile Nav: /docs/components/mobile-nav — install with `npx shadcn@latest add Potti1234/creaseui/mobile-nav`
 - More Menu: /docs/components/more-menu — install with `npx shadcn@latest add Potti1234/creaseui/more-menu`
 - Multi Selector: /docs/components/multi-selector — install with `npx shadcn@latest add Potti1234/creaseui/multi-selector`
 - Native Select: /docs/components/native-select — install with `npx shadcn@latest add Potti1234/creaseui/native-select`
@@ -120,5 +123,6 @@
 - Tokenizer: /docs/components/tokenizer — install with `npx shadcn@latest add Potti1234/creaseui/tokenizer`
 - Toolbar: /docs/components/toolbar — install with `npx shadcn@latest add Potti1234/creaseui/toolbar`
 - Tooltip: /docs/components/tooltip — install with `npx shadcn@latest add Potti1234/creaseui/tooltip`
+- Tour: /docs/components/tour — install with `npx shadcn@latest add Potti1234/creaseui/tour`
 - Typography: /docs/components/typography — install with `npx shadcn@latest add Potti1234/creaseui/typography`
 - Visually Hidden: /docs/components/visually-hidden — install with `npx shadcn@latest add Potti1234/creaseui/visually-hidden`

@@ -168,6 +168,47 @@ Source: [`src/ui/blockquote.ts`](../src/ui/blockquote.ts)
 | `BlockquoteProps` | type | `BlockquoteProps = Readonly<{ children: ReadonlyArray<Html \| string>; cite?: string; class?: string; }>` |
 | `blockquote` | function | `blockquote<Msg>(props: BlockquoteProps, h: HtmlBuilder<Msg>): Html` |
 
+## Bottom Sheet
+
+Source: [`src/ui/bottom-sheet.ts`](../src/ui/bottom-sheet.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `OutMessage` | value | `OutMessage: value` |
+| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `SwitcherModel` | value | `SwitcherModel: value` |
+| `SwitcherModel` | type | `SwitcherModel = typeof SwitcherModel.Type` |
+| `SwitcherMessage` | value | `SwitcherMessage: value` |
+| `SwitcherMessage` | type | `SwitcherMessage = typeof SwitcherMessage.Type` |
+| `SwitcherOutMessage` | value | `SwitcherOutMessage: value` |
+| `SwitcherOutMessage` | type | `SwitcherOutMessage = typeof SwitcherOutMessage.Type` |
+| `SheetState` | value | `SheetState: value` |
+| `SheetState` | type | `SheetState = typeof SheetState.Type` |
+| `BottomSheetSnapPoint` | re-export | `export { BottomSheetSnapPoint } from '@/lib/bottom-sheet'` |
+| `SheetHeight` | re-export | `export { SheetHeight } from '@/lib/bottom-sheet'` |
+| `SheetPurpose` | re-export | `export { SheetPurpose } from '@/lib/bottom-sheet'` |
+| `init` | value | `init: value` |
+| `update` | value | `update: value` |
+| `open` | value | `open: value` |
+| `close` | value | `close: value` |
+| `initSwitcher` | value | `initSwitcher: value` |
+| `updateSwitcher` | value | `updateSwitcher: value` |
+| `openSheet` | value | `openSheet: value` |
+| `closeSwitcher` | value | `closeSwitcher: value` |
+| `OVERSCROLL_PADDING` | value | `OVERSCROLL_PADDING: value` |
+| `HEIGHT_BUDGETS` | value | `HEIGHT_BUDGETS: value` |
+| `isSheetDragCandidate` | function | `isSheetDragCandidate(target: unknown): false \| 'handle' \| 'arm'` |
+| `SheetDragDispatch` | type | `SheetDragDispatch<Msg> = Readonly<{ started: (frame: { y: number; timeStamp: number; armOnly: boolean }) => Msg; dragged: (frame: { y: number; timeStamp: number; detents: number[] }) => Msg; ended: (frame: { y: number; timeStamp: number; detents: number[] }) …` |
+| `BottomSheetProps` | type | `BottomSheetProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; content: Html; class?: string; }>` |
+| `bottomSheet` | function | `bottomSheet<Msg>(props: BottomSheetProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `SwitcherSheetContent` | type | `SwitcherSheetContent = Readonly<{ id: string; content: Html; }>` |
+| `BottomSheetSwitcherProps` | type | `BottomSheetSwitcherProps<Msg> = Readonly<{ model: SwitcherModel; toParentMessage: (message: SwitcherMessage) => Msg; sheets: ReadonlyArray<SwitcherSheetContent>; class?: string; }>` |
+| `bottomSheetSwitcher` | function | `bottomSheetSwitcher<Msg>(props: BottomSheetSwitcherProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Breadcrumb
 
 Source: [`src/ui/breadcrumb.ts`](../src/ui/breadcrumb.ts)
@@ -969,6 +1010,27 @@ Source: [`src/ui/label.ts`](../src/ui/label.ts)
 | `LabelProps` | type | `LabelProps = Readonly<{ for?: string; isRequired?: boolean; isDisabled?: boolean; class?: string; children: ReadonlyArray<Html \| string>; }>` |
 | `label` | function | `label<Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html` |
 
+## Lightbox
+
+Source: [`src/ui/lightbox.ts`](../src/ui/lightbox.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `OutMessage` | value | `OutMessage: value` |
+| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `init` | value | `init: value` |
+| `update` | value | `update: value` |
+| `open` | value | `open: value` |
+| `close` | value | `close: value` |
+| `KEYBOARD_PAN_STEP` | value | `KEYBOARD_PAN_STEP: value` |
+| `LightboxMedia` | type | `LightboxMedia = Readonly<{ src: string; alt: string; caption?: string; type?: 'image' \| 'video'; }>` |
+| `LightboxProps` | type | `LightboxProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; media: LightboxMedia \| ReadonlyArray<LightboxMedia>; hasZoom?: boolean; hasAutoPlay?: boolean; class?: string; }>` |
+| `lightbox` | function | `lightbox<Msg>(props: LightboxProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Link
 
 Source: [`src/ui/link.ts`](../src/ui/link.ts)
@@ -1129,6 +1191,29 @@ Source: [`src/ui/metadata-list.ts`](../src/ui/metadata-list.ts)
 | `metadataList` | function | `metadataList<Msg>(props: MetadataListProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `MetadataListItemProps` | type | `MetadataListItemProps = Readonly<{ label: Html \| string; icon?: Html; /** Render the label above the value inside a wrapper (top labels and horizontal layouts). The parent MetadataList resolves this. */ stacked?: boolean; children?: ReadonlyArray<Html \| strin…` |
 | `metadataListItem` | function | `metadataListItem<Msg>(props: MetadataListItemProps, h: HtmlBuilder<Msg>): Html` |
+
+## Mobile Nav
+
+Source: [`src/ui/mobile-nav.ts`](../src/ui/mobile-nav.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `OutMessage` | value | `OutMessage: value` |
+| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `MobileNavSide` | re-export | `export { MobileNavSide } from '@/lib/mobile-nav'` |
+| `ResolvedSide` | re-export | `export { ResolvedSide } from '@/lib/mobile-nav'` |
+| `init` | value | `init: value` |
+| `update` | value | `update: value` |
+| `open` | value | `open: value` |
+| `close` | value | `close: value` |
+| `MobileNavProps` | type | `MobileNavProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; content: Html; title?: string; label?: string; width?: number; class?: string; }>` |
+| `mobileNav` | function | `mobileNav<Msg>(props: MobileNavProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `MobileNavToggleProps` | type | `MobileNavToggleProps<Msg> = Readonly<{ controls: string; isExpanded: boolean; message: Msg; label?: string; class?: string; }>` |
+| `mobileNavToggle` | function | `mobileNavToggle<Msg>(props: MobileNavToggleProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## More Menu
 
@@ -1817,6 +1902,31 @@ Source: [`src/ui/tooltip.ts`](../src/ui/tooltip.ts)
 | `TooltipAlign` | type | `TooltipAlign = 'start' \| 'center' \| 'end'` |
 | `TooltipProps` | type | `TooltipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; content: Html \| string; align?: TooltipAlign; side?: TooltipSide; isDisabled?: boolean; ariaLabel?: string; triggerClass?: string; class?: string;…` |
 | `tooltip` | function | `tooltip<Msg>(props: TooltipProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Tour
+
+Source: [`src/ui/tour.ts`](../src/ui/tour.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `OutMessage` | value | `OutMessage: value` |
+| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `TourDismissSource` | value | `TourDismissSource: value` |
+| `TourDismissSource` | type | `TourDismissSource = TourBehavior.TourDismissSource` |
+| `init` | value | `init: value` |
+| `update` | value | `update: value` |
+| `activate` | value | `activate: value` |
+| `deactivate` | value | `deactivate: value` |
+| `HIGHLIGHT_PADDING` | value | `HIGHLIGHT_PADDING: value` |
+| `TourStepPlacement` | type | `TourStepPlacement = 'below' \| 'above' \| 'start' \| 'end'` |
+| `TourStepAlignment` | type | `TourStepAlignment = 'start' \| 'center' \| 'end'` |
+| `TourStepSpec` | type | `TourStepSpec = Readonly<{ /** Stable step key — the callout is re-keyed per step to re-anchor. */ id: string; /** `id` of the element this step points at (astryx targetRef equivalent — must be interactive for aria, matching Popover's anchor contract). */ targ…` |
+| `TourProps` | type | `TourProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; steps: ReadonlyArray<TourStepSpec>; hasBackdrop?: boolean; isStepCountShown?: boolean; class?: string; }>` |
+| `tour` | function | `tour<Msg>(props: TourProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Typography
 

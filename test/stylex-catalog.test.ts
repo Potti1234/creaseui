@@ -422,7 +422,7 @@ describe('complete StyleX catalog', () => {
       .sort()
 
     assert.deepEqual(stylexNames, componentNames)
-    assert.equal(componentNames.length, 107)
+    assert.equal(componentNames.length, 111)
   })
 
   it('does not fall back to Tailwind, CVA, or raw authored class strings', () => {
