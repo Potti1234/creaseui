@@ -9,6 +9,7 @@ import {
   separatorFixtures,
 } from '@/docs/components/pages/separator/shared';
 import * as Separator from '@/stylex/separator';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import { className } from '@/stylex/style';
 import { tokens } from '../../../../stylex/tokens.stylex';
 
@@ -52,10 +53,10 @@ const styles = stylex.create({
     flexDirection: 'column',
   },
   menuItemStretch: { alignSelf: 'stretch' },
-  hiddenBelowMdBlock: {
+  hiddenBelowMdSep: {
     display: { default: 'none', '@media (min-width: 768px)': 'block' },
+    alignSelf: 'stretch',
   },
-  separatorFill: { height: '100%' },
   listStack: {
     gap: '0.5rem',
     display: 'flex',
@@ -128,9 +129,7 @@ export const separatorStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         item(settings.heading, settings.note, false),
         Separator.separator({ orientation: 'vertical', layoutStyle: styles.menuItemStretch }, h),
         item(account.heading, account.note, false),
-        h.div([h.Class(className(styles.hiddenBelowMdBlock))], [
-          Separator.separator({ orientation: 'vertical', layoutStyle: styles.separatorFill }, h),
-        ]),
+        Separator.separator({ orientation: 'vertical', layoutStyle: styles.hiddenBelowMdSep as ComponentLayoutStyle }, h),
         item(help.heading, help.note, true),
       ]);
     }

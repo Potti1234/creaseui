@@ -21,6 +21,7 @@ const styles = stylex.create({
   },
   stackTight: { gap: '0.75rem' },
   stackWide: { gap: '3rem' },
+  icon4: { height: '1rem', width: '1rem' },
 });
 
 const sx = (style: stylex.StaticStyles): string => className(style);
@@ -42,7 +43,7 @@ const markerSxView = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   const icon = (name: string): Html =>
-    Marker.markerIcon({ children: [Icon.icon(name, {}, h)] }, h);
+    Marker.markerIcon({ children: [Icon.icon(name, { class: sx(styles.icon4) }, h)] }, h);
   const content = (text: string, shimmer = false): Html =>
     Marker.markerContent({ ...(shimmer ? { shimmer: true } : {}), children: [text] }, h);
   const spinner = Spinner.spinner({ size: 'sm', isDecorative: true }, h);

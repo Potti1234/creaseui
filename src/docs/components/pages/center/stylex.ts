@@ -22,6 +22,7 @@ const styles = stylex.create({
     height: '1.5rem',
     width: '1.5rem',
   },
+  iconBtn4: { flexShrink: 0, height: '1rem', width: '1rem' },
   cardWide: { width: '32.5rem' },
   cardNarrow: { width: '25rem' },
 });
@@ -58,7 +59,7 @@ const horizontalView = <Msg>(h: HtmlBuilder<Msg>): Html => {
         variant: 'ghost',
         size: 'icon-sm',
         ariaLabel: label,
-        children: [icon(name, {}, h)],
+        children: [icon(name, { class: className(styles.iconBtn4) }, h)],
       },
       h,
     );

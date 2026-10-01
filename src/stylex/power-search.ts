@@ -2020,6 +2020,8 @@ const styles = stylex.create({
     gap: '0.25rem',
     alignItems: 'center',
     backgroundColor: 'transparent',
+    boxShadow:
+      '0 0 0 0 rgb(0 0 0 / 0), 0 0 0 0 rgb(0 0 0 / 0), 0 0 0 0 rgb(0 0 0 / 0), 0 0 0 0 rgb(0 0 0 / 0), 0 1px 2px 0 rgb(0 0 0 / 0.05)',
     display: 'flex',
     flexWrap: 'wrap',
     minHeight: '2.25rem',
@@ -2060,7 +2062,7 @@ const styles = stylex.create({
   },
   chipInteractive: {
     backgroundColor: {
-      default: null,
+      default: tokens.muted,
       ':hover': tokens.accent,
     },
     transitionDuration: interactionTokens.motionFast,
@@ -2088,7 +2090,6 @@ const styles = stylex.create({
     display: 'inline-flex',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
-    maxWidth: '100%',
   },
   tokenLabel: {
     overflow: 'hidden',
@@ -2409,9 +2410,9 @@ const styles = stylex.create({
   srOnly: {
     margin: -1,
     padding: 0,
-    borderStyle: 'none',
+    borderWidth: 0,
     overflow: 'hidden',
-    clip: 'rect(0, 0, 0, 0)',
+    clipPath: 'inset(50%)',
     position: 'absolute',
     whiteSpace: 'nowrap',
     height: 1,

@@ -7,7 +7,7 @@ import { tokens } from './tokens.stylex'
 const styles = stylex.create({
   base: { backgroundColor: tokens.border, flexShrink: 0 },
   horizontal: { height: '1px', width: '100%' },
-  vertical: { alignSelf: 'stretch', width: '1px' },
+  vertical: { height: '100%', width: '1px' },
 })
 
 export type SeparatorProps = Readonly<{

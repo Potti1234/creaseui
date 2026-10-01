@@ -9,7 +9,6 @@ import { className } from './style'
 import { interactionTokens } from './interaction-tokens.stylex.const'
 
 const styles = stylex.create({
-  content: { overflow: 'hidden' },
   root: { display: 'block' },
   trigger: { cursor: interactionTokens.cursorAction },
   sidebarTrigger: { padding: '0.5rem', alignItems: 'center', display: 'flex', textAlign: 'left', minHeight: '2rem', width: '100%', },
@@ -35,6 +34,8 @@ export type CollapsibleProps<Msg> = Readonly<{
   layoutStyle?: ComponentLayoutStyle;
   triggerLayoutStyle?: ComponentLayoutStyle;
   contentLayoutStyle?: ComponentLayoutStyle;
+  triggerStyle?: StaticStyles;
+  contentStyle?: StaticStyles;
 }>;
 
 export const collapsible = <Msg>(
@@ -62,7 +63,7 @@ export const collapsible = <Msg>(
                 ...button,
                 h.Type('button'),
                 h.DataAttribute('slot', 'collapsible-trigger'),
-                h.Class(cn(styles.trigger, props.variant === 'sidebar' && styles.sidebarTrigger, props.triggerLayoutStyle)),
+                h.Class(cn(styles.trigger, props.variant === 'sidebar' && styles.sidebarTrigger, props.triggerStyle, props.triggerLayoutStyle)),
               ],
               [props.trigger],
             ),
@@ -71,7 +72,7 @@ export const collapsible = <Msg>(
                 [
                   ...panel,
                   h.DataAttribute('slot', 'collapsible-content'),
-                  h.Class(cn(styles.content, props.contentLayoutStyle)),
+                  h.Class(cn(props.contentStyle, props.contentLayoutStyle)),
                 ],
                 [props.content],
               ),

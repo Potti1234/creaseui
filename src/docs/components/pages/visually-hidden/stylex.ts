@@ -32,10 +32,26 @@ const styles = stylex.create({
     width: '1rem',
   },
   mutedCard: {
-    padding: '1rem',
-    borderRadius: '0.75rem',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+    overflow: 'hidden',
+    borderColor: 'rgba(0, 0, 0, 0)',
+    borderRadius: '0.875rem',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    paddingBlock: '1rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
     backgroundColor: 'var(--muted)',
   },
+  mutedCardContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.75rem',
+    paddingInline: '1rem',
+  },
+  iconBtn4: { flexShrink: 0, height: '1rem', width: '1rem' },
 });
 
 const COLUMNS = ['Backlog', 'In progress', 'Done'] as const;
@@ -54,7 +70,10 @@ const display = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
 const mutedCard = <Msg>(
   children: ReadonlyArray<Html | string>,
   h: HtmlBuilder<Msg>,
-): Html => h.div([h.Class(className(styles.mutedCard))], [...children]);
+): Html =>
+  h.div([h.Class(className(styles.mutedCard))], [
+    h.div([h.Class(className(styles.mutedCardContent))], [...children]),
+  ]);
 
 const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.vStack(
@@ -86,7 +105,7 @@ const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                                   variant: 'ghost',
                                   size: 'icon',
                                   ariaLabel: action.label,
-                                  children: [icon(action.icon, {}, h)],
+                                  children: [icon(action.icon, { class: className(styles.iconBtn4) }, h)],
                                 },
                                 h,
                               ),

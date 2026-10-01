@@ -14,11 +14,11 @@ import * as Stack from '@/stylex/stack';
 
 const styles = stylex.create({
   fill: { height: '100%', minHeight: 0, width: '100%' },
-  heading: { fontSize: '1.0625rem', fontWeight: 600 },
+  heading: { fontSize: '1.125rem', lineHeight: '1.75rem', fontWeight: 600 },
   body: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   logoLink: { gap: '0.5rem', alignItems: 'center', display: 'flex', },
   logoChip: {
-    borderRadius: '0.375rem',
+    borderRadius: '0.5rem',
     alignItems: 'center',
     backgroundColor: 'var(--primary)',
     color: 'var(--primary-foreground)',
@@ -45,7 +45,7 @@ const styles = stylex.create({
     paddingBlockEnd: '0.25rem',
   },
   navItem: {
-    borderRadius: '0.375rem',
+    borderRadius: '0.5rem',
     gap: '0.5rem',
     paddingInline: '0.5rem',
     alignItems: 'center',
@@ -55,7 +55,7 @@ const styles = stylex.create({
     height: '1.5rem',
   },
   navItemSelected: {
-    borderRadius: '0.375rem',
+    borderRadius: '0.5rem',
     gap: '0.5rem',
     paddingInline: '0.5rem',
     alignItems: 'center',
@@ -75,14 +75,14 @@ const styles = stylex.create({
   },
   topNavItems: { gap: '0.25rem', alignItems: 'center', display: 'flex', },
   topNavItem: {
-    borderRadius: '0.375rem',
+    borderRadius: '0.5rem',
     paddingBlock: '0.25rem',
     paddingInline: '0.5rem',
     color: 'var(--muted-foreground)',
     fontSize: '0.875rem', lineHeight: '1.25rem',
   },
   topNavItemSelected: {
-    borderRadius: '0.375rem',
+    borderRadius: '0.5rem',
     paddingBlock: '0.25rem',
     paddingInline: '0.5rem',
     fontSize: '0.875rem', lineHeight: '1.25rem',
