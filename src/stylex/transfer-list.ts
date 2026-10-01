@@ -1,6 +1,6 @@
 import { Command, type Update } from "foldkit";
-import { Effect, Option, Queue, Schema as S, Stream } from "effect";
-import * as Mount from "foldkit/mount";
+import { Effect, Option, Schema as S } from "effect";
+import { DragAndDrop as Dnd } from "@foldkit/ui";
 import * as stylex from "@stylexjs/stylex";
 import type { Html, HtmlBuilder } from "foldkit/html";
 import { defineMessageUnion } from "foldkit/message";
@@ -14,8 +14,9 @@ import { interactionTokens } from "./interaction-tokens.stylex.const";
 import { tokens } from "./tokens.stylex";
 
 /* Ported from Meta Astryx TransferList.tsx (packages/lab) — dual-panel
-   collection input. Behavior logic mirrors ui/transfer-list.ts; only the
-   styling surface differs (stylex tokens + container queries). */
+   collection input. Behavior logic mirrors ui/transfer-list.ts (reordering
+   delegates to the foldkit DragAndDrop primitive); only the styling surface
+   differs (stylex tokens + container queries). */
 
 // =============================================================================
 // Model
@@ -38,25 +39,13 @@ export type TransferListOption = Readonly<{
   disabledMessage?: string;
 }>;
 
-const ReorderSession = S.Struct({
-  value: S.String,
-  label: S.String,
-  mode: S.Literals(["keyboard", "pointer"]),
-  originalValue: S.Array(S.String),
-  fromIndex: S.Number,
-  toIndex: S.Number,
-  pointerId: S.NullOr(S.Number),
-  pointerStartY: S.NullOr(S.Number),
-  hasPointerMoved: S.Boolean,
-});
-export type ReorderSession = typeof ReorderSession.Type;
-
 export const Model = S.Struct({
   id: S.String,
   /** Ordered selected values — the single source of truth (astryx `value`). */
   value: S.Array(S.String),
   query: S.String,
-  reorder: S.NullOr(ReorderSession),
+  /** Reorder session, delegated to the foldkit DragAndDrop primitive. */
+  dnd: Dnd.Model,
   /** Latest text for the polite aria-live region (astryx useAnnounce). */
   announcement: S.String,
   /** Swallows the click that follows a pointer drag's pointerup. */
@@ -71,7 +60,10 @@ export const init = (config: {
   id: config.id,
   value: [...(config.value ?? [])],
   query: "",
-  reorder: null,
+  dnd: Dnd.init({
+    id: `${config.id}-reorder`,
+    orientation: "Vertical",
+  }),
   announcement: "",
   suppressNextHandleClick: false,
 });
@@ -91,71 +83,20 @@ export const Message = defineMessageUnion({
   ClickedTransferListAddAll: {},
   ClickedTransferListClear: {},
   ClickedReorderHandle: { value: S.String, label: S.String },
-  PressedReorderHandle: {
-    value: S.String,
-    label: S.String,
-    pointerId: S.Number,
-    clientY: S.Number,
-  },
-  MovedReorderPointer: {
-    value: S.String,
-    pointerId: S.Number,
-    clientY: S.Number,
-  },
-  ReleasedReorderPointer: {},
-  CancelledReorderPointer: {},
-  PressedReorderKey: { value: S.String, key: S.String },
-  CompletedMeasurePointerTarget: { clientY: S.Number, targetIndex: S.Number },
+  /** Envelope for the DragAndDrop primitive's message universe — pointer
+      presses, document-level pointer/key events, and command completions
+      all arrive through this tag. */
+  GotDndMessage: { message: Dnd.Message },
   CompletedFocusAfterTransfer: {},
 });
 
-/* Window-level pointer tracking for the drag session: foldkit's element
-   OnPointerMove reports screen coordinates, but astryx hit-tests rows with
-   viewport clientY, so drags are observed here instead (only while a mouse
-   button is held). */
-const ObserveReorderPointer = Mount.defineStream("ObserveReorderPointer", {
-  messages: [Message.MovedReorderPointer, Message.ReleasedReorderPointer],
-  execute: () =>
-    Stream.callback<
-      | typeof Message.MovedReorderPointer.Type
-      | typeof Message.ReleasedReorderPointer.Type
-    >((queue) =>
-      Effect.gen(function* () {
-        yield* Effect.acquireRelease(
-          Effect.sync(() => {
-            const onMove = (event: PointerEvent) => {
-              if (event.buttons === 0) {
-                return;
-              }
-              Queue.offerUnsafe(
-                queue,
-                Message.MovedReorderPointer({
-                  value: "",
-                  pointerId: event.pointerId,
-                  clientY: event.clientY,
-                }),
-              );
-            };
-            const onUp = () => {
-              Queue.offerUnsafe(queue, Message.ReleasedReorderPointer());
-            };
-            window.addEventListener("pointermove", onMove, { passive: true });
-            window.addEventListener("pointerup", onUp);
-            window.addEventListener("pointercancel", onUp);
-            return { onMove, onUp };
-          }),
-          (resource) =>
-            Effect.sync(() => {
-              window.removeEventListener("pointermove", resource.onMove);
-              window.removeEventListener("pointerup", resource.onUp);
-              window.removeEventListener("pointercancel", resource.onUp);
-            }),
-        );
-        return yield* Effect.never;
-      }),
-    ),
-});
 export type Message = typeof Message.Type;
+
+/** Document-level subscriptions the host installs for reordering: pointer
+    tracking, Escape, keyboard moves, and edge auto-scroll. Lift them onto
+    the child's dnd model like the Slider drag subscriptions — see the
+    transfer-list docs example. */
+export const subscriptions = Dnd.subscriptions;
 
 export const OutMessage = defineMessageUnion({
   ChangedTransferList: { value: S.Array(S.String) },
@@ -178,40 +119,6 @@ const FocusAfterTransfer = Command.define("FocusAfterTransfer", {
         document.getElementById(`${rootId}-search`)?.focus();
       }
     }).pipe(Effect.as(Message.CompletedFocusAfterTransfer())),
-});
-
-/** Reads each selected row's midpoint and resolves the drop target index
-    (astryx reads live getBoundingClientRect on every pointermove; rows are
-    static during a session so a per-move read is equivalent). */
-const MeasurePointerTarget = Command.define("MeasurePointerTarget", {
-  args: {
-    rootId: S.String,
-    clientY: S.Number,
-    candidateValues: S.Array(S.String),
-  },
-  messages: [Message.CompletedMeasurePointerTarget],
-  execute: ({ rootId, clientY, candidateValues }) =>
-    Effect.sync(() => {
-      let targetIndex = candidateValues.length;
-      for (const [position, value] of candidateValues.entries()) {
-        const row = document.querySelector<HTMLElement>(
-          `#${rootId} [data-transfer-list-row="${CSS.escape(value)}"]`,
-        );
-        if (row === null) {
-          continue;
-        }
-        const bounds = row.getBoundingClientRect();
-        if (clientY < bounds.top + bounds.height / 2) {
-          targetIndex = position;
-          break;
-        }
-      }
-      return targetIndex;
-    }).pipe(
-      Effect.map((targetIndex) =>
-        Message.CompletedMeasurePointerTarget({ clientY, targetIndex }),
-      ),
-    ),
 });
 
 type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>;
@@ -299,37 +206,160 @@ const moveItem = (
   return nextValue;
 };
 
-const beginReorder = (
-  model: Model,
-  option: { value: string; label: string; isReorderDisabled?: boolean },
-  mode: "keyboard" | "pointer",
-  isReorderable: boolean,
-  pointer?: { pointerId: number; clientY: number },
-): Model => {
-  if (option.isReorderDisabled === true || !isReorderable) {
-    return model;
+/** The selected panel is the only sortable container — the primitive's
+    insertion index counts every `[data-sortable-id]` row including the
+    dragged one, so it converts to a final (post-move) index before the
+    movable-range clamp + `moveItem`. */
+const selectedContainerId = (model: Model): string =>
+  `${model.id}-selected`;
+
+const draggedItemId = (model: Model): string | null => {
+  const dragState = model.dnd.dragState;
+  return dragState._tag === "Idle" ? null : dragState.itemId;
+};
+
+/** Resolves the dragged row's final index from the live drag state, or null
+    when nothing is being dragged toward a real slot. Pointer drags report
+    an insertion index into the DOM (dragged row still counted); keyboard
+    drags report the target index directly. */
+const finalDropIndex = (model: Model): number | null => {
+  const dragState = model.dnd.dragState;
+  const containerId = selectedContainerId(model);
+  if (
+    dragState._tag === "Dragging" &&
+    Option.isSome(dragState.maybeDropTarget) &&
+    dragState.maybeDropTarget.value.containerId === containerId
+  ) {
+    const insertionIndex = dragState.maybeDropTarget.value.index;
+    return insertionIndex > dragState.sourceIndex
+      ? insertionIndex - 1
+      : insertionIndex;
   }
-  const index = model.value.indexOf(option.value);
-  if (index < 0 || (mode === "pointer" && pointer === undefined)) {
-    return model;
+  if (
+    dragState._tag === "KeyboardDragging" &&
+    dragState.targetContainerId === containerId
+  ) {
+    return dragState.targetIndex;
+  }
+  return null;
+};
+
+/** Runs one DragAndDrop primitive message through the child model and
+    translates its outcome into crease announcements + the public
+    ChangedTransferList out-message. */
+const runDnd = (
+  model: Model,
+  optionByValue: ReadonlyMap<string, TransferListOption>,
+  message: Dnd.Message,
+  isReorderable: boolean,
+): UpdateReturn => {
+  if (!isReorderable) {
+    return { model };
+  }
+  const containerId = selectedContainerId(model);
+  const prevState = model.dnd.dragState;
+  if (
+    message._tag === "PressedDraggable" &&
+    (message.containerId !== containerId ||
+      !model.value.includes(message.itemId) ||
+      optionByValue.get(message.itemId)?.isReorderDisabled === true)
+  ) {
+    return { model };
+  }
+  const result = Dnd.update(model.dnd, message);
+  const dnd = result.model;
+  const dragState = dnd.dragState;
+  const commands = Command.mapMessages(result.commands ?? [], (inner) =>
+    Message.GotDndMessage({ message: inner }),
+  );
+  const labelOf = (itemId: string): string =>
+    optionByValue.get(itemId)?.label ?? itemId;
+  let announcement = model.announcement;
+  let value = model.value;
+  const suppressNextHandleClick =
+    model.suppressNextHandleClick || message._tag === "PressedDraggable";
+  let outMessage: OutMessage | undefined;
+
+  if (
+    dragState._tag === "KeyboardDragging" &&
+    prevState._tag !== "KeyboardDragging"
+  ) {
+    announcement = announceGrabbed(
+      labelOf(dragState.itemId),
+      dragState.sourceIndex + 1,
+      value.length,
+    );
+  }
+  const targetNow = finalDropIndex({ ...model, dnd });
+  const targetBefore = finalDropIndex(model);
+  if (
+    targetNow !== null &&
+    (targetBefore === null
+      ? targetNow !==
+        (dragState._tag === "Dragging" || dragState._tag === "KeyboardDragging"
+          ? dragState.sourceIndex
+          : -1)
+      : targetNow !== targetBefore) &&
+    (dragState._tag === "Dragging" || dragState._tag === "KeyboardDragging")
+  ) {
+    announcement = announceMovedToPosition(
+      labelOf(dragState.itemId),
+      targetNow + 1,
+      value.length,
+    );
+  }
+
+  if (result.outMessage !== undefined) {
+    switch (result.outMessage._tag) {
+      case "Cancelled": {
+        if (
+          prevState._tag === "Dragging" ||
+          prevState._tag === "KeyboardDragging"
+        ) {
+          announcement = announceMoveCancelled(labelOf(prevState.itemId));
+        }
+        break;
+      }
+      case "Reordered": {
+        const out = result.outMessage;
+        const label = labelOf(out.itemId);
+        /* Drops on a foreign droppable (the available panel has none, but a
+           sibling TransferList's selected panel does) leave value unchanged. */
+        if (out.toContainerId !== containerId) {
+          announcement = announceReturned(label, out.fromIndex + 1);
+          break;
+        }
+        const rawIndex =
+          prevState._tag === "Dragging" && out.toIndex > out.fromIndex
+            ? out.toIndex - 1
+            : out.toIndex;
+        const { start, end } = movableRange(
+          out.itemId,
+          value,
+          optionByValue,
+        );
+        const clamped = Math.max(start, Math.min(end, rawIndex));
+        if (clamped === out.fromIndex) {
+          announcement = announceReturned(label, out.fromIndex + 1);
+          break;
+        }
+        value = moveItem(value, out.fromIndex, clamped);
+        announcement = announceDropped(label, clamped + 1, value.length);
+        outMessage = OutMessage.ChangedTransferList({ value: [...value] });
+        break;
+      }
+    }
   }
   return {
-    ...model,
-    reorder: {
-      value: option.value,
-      label: option.label,
-      mode,
-      originalValue: [...model.value],
-      fromIndex: index,
-      toIndex: index,
-      pointerId: pointer?.pointerId ?? null,
-      pointerStartY: pointer?.clientY ?? null,
-      hasPointerMoved: false,
+    model: {
+      ...model,
+      value,
+      dnd,
+      announcement,
+      suppressNextHandleClick,
     },
-    announcement:
-      mode === "keyboard"
-        ? announceGrabbed(option.label, index + 1, model.value.length)
-        : model.announcement,
+    commands,
+    ...(outMessage === undefined ? {} : { outMessage }),
   };
 };
 
@@ -344,37 +374,6 @@ export const update = (
   const optionByValue = new Map(
     options.map((option) => [option.value, option]),
   );
-  const finishKeyboard = (cancelled: boolean): UpdateReturn => {
-    const session = model.reorder;
-    if (session === null) {
-      return { model };
-    }
-    if (cancelled) {
-      return {
-        model: {
-          ...model,
-          value: session.originalValue,
-          reorder: null,
-          announcement: announceMoveCancelled(session.label),
-        },
-        outMessage: OutMessage.ChangedTransferList({
-          value: [...session.originalValue],
-        }),
-      };
-    }
-    const index = model.value.indexOf(session.value);
-    return {
-      model: {
-        ...model,
-        reorder: null,
-        announcement: announceDropped(
-          session.label,
-          index + 1,
-          model.value.length,
-        ),
-      },
-    };
-  };
   switch (message._tag) {
     case "SearchedTransferList": {
       const normalized = message.query.trim().toLowerCase();
@@ -402,7 +401,7 @@ export const update = (
       }
       const nextValue = [...model.value, message.value];
       return commit(
-        { ...model, reorder: model.reorder },
+        model,
         nextValue,
         announceAdded(message.label, nextValue.length),
         [
@@ -462,226 +461,49 @@ export const update = (
       return commit(model, nextValue, announceBulkRemoved(removed));
     }
     case "ClickedReorderHandle": {
-      const session = model.reorder;
+      /* The handle's button click arrives after a pointer press — drags set
+         suppressNextHandleClick so the trailing click is swallowed, and a
+         plain click toggles the keyboard drag like astryx. Enter/Space reach
+         the same handler through the click they fire on a focused button. */
       if (model.suppressNextHandleClick) {
         return { model: { ...model, suppressNextHandleClick: false } };
       }
-      if (session !== null && session.mode === "pointer") {
+      const index = model.value.indexOf(message.value);
+      const dragState = model.dnd.dragState;
+      if (
+        index < 0 ||
+        !isReorderable ||
+        optionByValue.get(message.value)?.isReorderDisabled === true
+      ) {
         return { model };
       }
-      if (session?.value === message.value) {
-        return finishKeyboard(false);
-      }
-      const option = optionByValue.get(message.value);
-      return {
-        model: beginReorder(
+      if (
+        dragState._tag === "KeyboardDragging" &&
+        dragState.itemId === message.value
+      ) {
+        return runDnd(
           model,
-          {
-            value: message.value,
-            label: message.label,
-            ...(option?.isReorderDisabled === undefined
-              ? {}
-              : { isReorderDisabled: option.isReorderDisabled }),
-          },
-          "keyboard",
+          optionByValue,
+          Dnd.Message.ConfirmedKeyboardDrop(),
           isReorderable,
-        ),
-      };
-    }
-    case "PressedReorderHandle": {
-      const option = optionByValue.get(message.value);
-      return {
-        model: {
-          ...beginReorder(
-            model,
-            {
-              value: message.value,
-              label: message.label,
-              ...(option?.isReorderDisabled === undefined
-                ? {}
-                : { isReorderDisabled: option.isReorderDisabled }),
-            },
-            "pointer",
-            isReorderable,
-            { pointerId: message.pointerId, clientY: message.clientY },
-          ),
-          suppressNextHandleClick: true,
-        },
-      };
-    }
-    case "MovedReorderPointer": {
-      const session = model.reorder;
-      if (
-        session === null ||
-        session.mode !== "pointer" ||
-        session.pointerId !== message.pointerId
-      ) {
+        );
+      }
+      if (dragState._tag !== "Idle") {
         return { model };
       }
-      const startY = session.pointerStartY ?? message.clientY;
-      const hasCrossedThreshold =
-        session.hasPointerMoved || Math.abs(message.clientY - startY) >= 5;
-      if (!hasCrossedThreshold) {
-        return { model };
-      }
-      const { start, end } = movableRange(
-        session.value,
-        session.originalValue,
-        optionByValue,
-      );
-      const candidateValues = session.originalValue
-        .map((optionValue, originalIndex) => ({ optionValue, originalIndex }))
-        .filter(
-          (candidate) =>
-            candidate.optionValue !== session.value &&
-            candidate.originalIndex >= start &&
-            candidate.originalIndex <= end,
-        )
-        .map((candidate) => candidate.optionValue);
-      return {
-        model: {
-          ...model,
-          reorder: {
-            ...session,
-            hasPointerMoved: true,
-          },
-        },
-        commands: [
-          MeasurePointerTarget({
-            rootId: model.id,
-            clientY: message.clientY,
-            candidateValues,
-          }),
-        ],
-      };
-    }
-    case "CompletedMeasurePointerTarget": {
-      const session = model.reorder;
-      if (session === null || session.mode !== "pointer") {
-        return { model };
-      }
-      const { start, end } = movableRange(
-        session.value,
-        session.originalValue,
-        optionByValue,
-      );
-      /* astryx maps hit rows into remaining-index space then clamps into the
-         movable window — same math, same quirk. */
-      const targetIndex = Math.max(start, Math.min(end, message.targetIndex));
-      return {
-        model: {
-          ...model,
-          reorder: { ...session, toIndex: targetIndex },
-          announcement:
-            session.toIndex === targetIndex
-              ? model.announcement
-              : announceMovedToPosition(
-                  session.label,
-                  targetIndex + 1,
-                  session.originalValue.length,
-                ),
-        },
-      };
-    }
-    case "ReleasedReorderPointer": {
-      const session = model.reorder;
-      if (session === null || session.mode !== "pointer") {
-        return { model };
-      }
-      if (!session.hasPointerMoved) {
-        return {
-          model: { ...model, reorder: null, suppressNextHandleClick: true },
-        };
-      }
-      const hasChanged = session.fromIndex !== session.toIndex;
-      const nextValue = moveItem(
-        session.originalValue,
-        session.fromIndex,
-        session.toIndex,
-      );
-      if (!hasChanged) {
-        return {
-          model: {
-            ...model,
-            reorder: null,
-            suppressNextHandleClick: true,
-            announcement: announceReturned(
-              session.label,
-              session.fromIndex + 1,
-            ),
-          },
-        };
-      }
-      return {
-        model: {
-          ...model,
-          value: nextValue,
-          reorder: null,
-          announcement: announceDropped(
-            session.label,
-            session.toIndex + 1,
-            session.originalValue.length,
-          ),
-        },
-        outMessage: OutMessage.ChangedTransferList({ value: nextValue }),
-      };
-    }
-    case "CancelledReorderPointer": {
-      const session = model.reorder;
-      if (session === null) {
-        return { model };
-      }
-      return {
-        model: {
-          ...model,
-          reorder: null,
-          suppressNextHandleClick: true,
-          announcement: announceMoveCancelled(session.label),
-        },
-      };
-    }
-    case "PressedReorderKey": {
-      const session = model.reorder;
-      if (
-        session === null ||
-        session.value !== message.value ||
-        session.mode !== "keyboard"
-      ) {
-        return { model };
-      }
-      if (message.key === "Escape") {
-        return finishKeyboard(true);
-      }
-      if (message.key === " " || message.key === "Enter") {
-        return finishKeyboard(false);
-      }
-      const { index, start, end } = movableRange(
-        message.value,
-        model.value,
-        optionByValue,
-      );
-      const targets: Record<string, number> = {
-        ArrowUp: index - 1,
-        ArrowDown: index + 1,
-        Home: start,
-        End: end,
-      };
-      const target = targets[message.key];
-      if (target === undefined || index < 0) {
-        return { model };
-      }
-      const clamped = Math.max(start, Math.min(end, target));
-      if (clamped === index) {
-        return { model };
-      }
-      const nextValue = moveItem(model.value, index, clamped);
-      const nextIndex = nextValue.indexOf(message.value);
-      return commit(
+      return runDnd(
         model,
-        nextValue,
-        announceMovedToPosition(session.label, nextIndex + 1, nextValue.length),
+        optionByValue,
+        Dnd.Message.ActivatedKeyboardDrag({
+          itemId: message.value,
+          containerId: selectedContainerId(model),
+          index,
+        }),
+        isReorderable,
       );
     }
+    case "GotDndMessage":
+      return runDnd(model, optionByValue, message.message, isReorderable);
     case "CompletedFocusAfterTransfer":
       return { model };
   }
@@ -1008,27 +830,30 @@ export const transferList = <Msg>(
     return Array.from(groups.entries());
   })();
 
-  const session = model.reorder;
-  const pointerPlacement = (() => {
-    if (
-      session === null ||
-      session.mode !== "pointer" ||
-      !session.hasPointerMoved ||
-      session.toIndex === session.fromIndex
-    ) {
+  const containerId = selectedContainerId(model);
+  const dragState = model.dnd.dragState;
+  const draggedValue = draggedItemId(model);
+  const sourceIndex =
+    dragState._tag === "Dragging" || dragState._tag === "KeyboardDragging"
+      ? dragState.sourceIndex
+      : -1;
+  /* The drop marker sits where the dragged row would land: before the row
+     occupying the target slot when moving up, after it when moving down. */
+  const dropMarker = (() => {
+    const target = finalDropIndex(model);
+    if (target === null || target === sourceIndex || sourceIndex < 0) {
       return null;
     }
-    const remainingValues = session.originalValue.filter(
-      (optionValue) => optionValue !== session.value,
-    );
-    const beforeValue = remainingValues[session.toIndex];
-    if (beforeValue !== undefined) {
-      return { value: beforeValue, position: "before" as const };
+    const markerValue = model.value[target];
+    if (markerValue === undefined) {
+      return null;
     }
-    const afterValue = remainingValues[remainingValues.length - 1];
-    return afterValue === undefined
-      ? null
-      : { value: afterValue, position: "after" as const };
+    return {
+      value: markerValue,
+      position: (target < sourceIndex ? "before" : "after") as
+        | "before"
+        | "after",
+    };
   })();
 
   const selectedLabel = props.selectedLabel ?? "Selected";
@@ -1071,19 +896,29 @@ export const transferList = <Msg>(
       [config.icon],
     );
 
-  const reorderHandle = (option: TransferListOption): Html | null => {
+  const reorderHandle = (
+    option: TransferListOption,
+    orderedIndex: number,
+  ): Html | null => {
     if (!isReorderable) {
       return null;
     }
-    const active = session?.value === option.value;
+    const active = draggedValue === option.value;
     const isReorderDisabled = option.isReorderDisabled === true;
     const disabledReason =
       option.disabledMessage ?? `${option.label} cannot be reordered.`;
+    /* The handle carries data-draggable-id (FocusItem's focus target) and
+       hand-rolls the primitive's draggable() handlers so the row's other
+       buttons never start a drag. Space/Enter activate keyboard drag;
+       during a drag the document subscription routes arrows, drop, and
+       Escape — nothing is dispatched from here while one is in flight. */
     return h.button(
       [
         h.Type("button"),
+        h.DataAttribute("draggable-id", option.value),
         h.AriaLabel(`Reorder ${option.label}`),
         h.AriaDescribedBy(reorderInstructionsId),
+        h.AriaRoleDescription("draggable"),
         h.AriaPressed(active ? "true" : "false"),
         h.Disabled(isReorderDisabled),
         ...(isReorderDisabled ? [h.Title(disabledReason)] : []),
@@ -1095,50 +930,45 @@ export const transferList = <Msg>(
             }),
           ),
         ),
-        h.OnKeyDownPreventDefault((key) => {
-          if (
-            session === null ||
-            session.value !== option.value ||
-            session.mode !== "keyboard"
-          ) {
-            return Option.none();
-          }
-          if (
-            key === "Escape" ||
-            key === " " ||
-            key === "Enter" ||
-            key === "ArrowUp" ||
-            key === "ArrowDown" ||
-            key === "Home" ||
-            key === "End"
-          ) {
-            return Option.some(
-              props.toParentMessage(
-                Message.PressedReorderKey({ value: option.value, key }),
-              ),
-            );
-          }
-          return Option.none();
-        }),
+        h.OnKeyDownPreventDefault((key) =>
+          (key === " " || key === "Enter") &&
+          model.dnd.dragState._tag === "Idle" &&
+          !isReorderDisabled
+            ? Option.some(
+                props.toParentMessage(
+                  Message.GotDndMessage({
+                    message: Dnd.Message.ActivatedKeyboardDrag({
+                      itemId: option.value,
+                      containerId,
+                      index: orderedIndex,
+                    }),
+                  }),
+                ),
+              )
+            : Option.none(),
+        ),
         h.OnPointerDown(
           (
             _pointerType,
             button,
-            _screenX,
-            _screenY,
+            screenX,
+            screenY,
             _timeStamp,
             _clientX,
-            clientY,
-            pointerId,
+            _clientY,
+            _pointerId,
           ) =>
-            button === 0
+            button === 0 && !isReorderDisabled
               ? Option.some(
                   props.toParentMessage(
-                    Message.PressedReorderHandle({
-                      value: option.value,
-                      label: option.label,
-                      pointerId,
-                      clientY,
+                    Message.GotDndMessage({
+                      message: Dnd.Message.PressedDraggable({
+                        itemId: option.value,
+                        containerId,
+                        index: orderedIndex,
+                        screenX,
+                        screenY,
+                      }),
                     }),
                   ),
                 )
@@ -1202,12 +1032,10 @@ export const transferList = <Msg>(
     side: "selected" | "available",
     index: number,
   ): Html => {
-    const active = session?.value === option.value;
-    const isPointerSource = active && session?.mode === "pointer";
+    const active = draggedValue === option.value;
+    const isPointerSource = active && dragState._tag === "Dragging";
     const dropPosition =
-      pointerPlacement?.value === option.value
-        ? pointerPlacement.position
-        : null;
+      dropMarker?.value === option.value ? dropMarker.position : null;
     const orderedIndex = model.value.indexOf(option.value);
     const state =
       option.isTransferDisabled === true || option.isReorderDisabled === true
@@ -1222,6 +1050,13 @@ export const transferList = <Msg>(
         h.DataAttribute("slot", "transfer-list-item"),
         h.DataAttribute("side", side),
         h.DataAttribute("state", state),
+        /* Every selected row keeps data-sortable-id — locked rows stay in
+           the primitive's index space so insertion indices map onto the
+           real list, and the movable-range clamp in update keeps the drop
+           legal. */
+        ...(side === "selected" && isReorderable
+          ? Dnd.sortable(option.value)
+          : []),
         ...(side === "selected"
           ? [
               h.DataAttribute("transfer-list-row", option.value),
@@ -1237,7 +1072,9 @@ export const transferList = <Msg>(
         h.Class(
           className(
             styles.item,
-            active && session?.mode === "keyboard" && styles.itemDragging,
+            active &&
+              dragState._tag === "KeyboardDragging" &&
+              styles.itemDragging,
             isPointerSource && styles.itemPointerSource,
             dropPosition === "before" && styles.itemDropBefore,
             dropPosition === "after" && styles.itemDropAfter,
@@ -1247,7 +1084,7 @@ export const transferList = <Msg>(
       [
         ...(side === "selected"
           ? (() => {
-              const handle = reorderHandle(option);
+              const handle = reorderHandle(option, orderedIndex);
               return handle === null ? [] : [handle];
             })()
           : []),
@@ -1278,7 +1115,13 @@ export const transferList = <Msg>(
       [
         content.length > 0
           ? h.ul(
-              [h.Role("list"), h.Class(className(styles.list))],
+              [
+                h.Role("list"),
+                h.Class(className(styles.list)),
+                ...(side === "selected" && isReorderable
+                  ? [h.DataAttribute("droppable-id", containerId)]
+                  : []),
+              ],
               [...content],
             )
           : h.div(
@@ -1354,9 +1197,6 @@ export const transferList = <Msg>(
         ? []
         : [h.AriaDescribedBy(descriptionId)]),
       h.Class(className(styles.root, props.layoutStyle)),
-      h.OnMount(
-        Mount.mapMessage(ObserveReorderPointer(), props.toParentMessage),
-      ),
     ],
     [
       h.div(

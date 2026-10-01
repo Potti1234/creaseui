@@ -3450,6 +3450,7 @@
       "dependencies": [
         "class-variance-authority@^0.7.1",
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/separator",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -9258,11 +9259,6 @@
           "signature": "TransferListOption = Readonly<{ /** Stable value written to the controlled value array. */ value: string; /** Visible option name and the basis of action labels. */ label: string; /** Optional searchable metadata. Not rendered in the default row. */ descripti…"
         },
         {
-          "name": "ReorderSession",
-          "kind": "type",
-          "signature": "ReorderSession = typeof ReorderSession.Type"
-        },
-        {
           "name": "Model",
           "kind": "value",
           "signature": "Model: value"
@@ -9286,6 +9282,11 @@
           "name": "Message",
           "kind": "type",
           "signature": "Message = typeof Message.Type"
+        },
+        {
+          "name": "subscriptions",
+          "kind": "value",
+          "signature": "subscriptions: value"
         },
         {
           "name": "OutMessage",
