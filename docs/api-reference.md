@@ -50,6 +50,18 @@ Source: [`src/ui/alert.ts`](../src/ui/alert.ts)
 | `alertTitle` | function | `alertTitle<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
 | `alertDescription` | function | `alertDescription<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
 
+## App Shell
+
+Source: [`src/ui/app-shell.ts`](../src/ui/app-shell.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `AppShellVariant` | type | `AppShellVariant = 'elevated' \| 'wash' \| 'surface' \| 'section'` |
+| `AppShellHeight` | type | `AppShellHeight = 'fill' \| 'auto'` |
+| `AppShellSpacing` | type | `AppShellSpacing = 0 \| 0.5 \| 1 \| 1.5 \| 2 \| 3 \| 4 \| 5 \| 6 \| 8 \| 10` |
+| `AppShellProps` | type | `AppShellProps = Readonly<{ /** * Navigation background style controlling how nav areas contrast with * content. * - `wash`: nav uses wash background, no dividers * - `surface`: nav uses surface background, no dividers * - `section`: dividers between nav and c…` |
+| `appShell` | function | `appShell<Msg>(props: AppShellProps, h: HtmlBuilder<Msg>): Html` |
+
 ## Aspect Ratio
 
 Source: [`src/ui/aspect-ratio.ts`](../src/ui/aspect-ratio.ts)
@@ -76,6 +88,23 @@ Source: [`src/ui/attachment.ts`](../src/ui/attachment.ts)
 | `attachmentTitle` | function | `attachmentTitle<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `attachmentDescription` | function | `attachmentDescription<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `attachmentTrigger` | function | `attachmentTrigger<Msg>(props: Readonly<{ onClick: Msg; label: string; class?: string }>, h: HtmlBuilder<Msg>): Html` |
+
+## Avatar Group
+
+Source: [`src/ui/avatar-group.ts`](../src/ui/avatar-group.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `AvatarGroupSize` | type | `AvatarGroupSize = 'sm' \| 'md' \| 'lg' \| number` |
+| `AvatarShape` | type | `AvatarShape = 'circle' \| 'rounded' \| 'square'` |
+| `AvatarGroupProps` | type | `AvatarGroupProps = Readonly<{ /** Accessible name for the group; defaults to "Avatar group". */ ariaLabel?: string; /** Shared avatar size used to compute the 25% overlap. Defaults to 'md'. */ avatarSize?: AvatarGroupSize; children: ReadonlyArray<Html>; class…` |
+| `avatarGroup` | function | `avatarGroup<Msg>(props: AvatarGroupProps, h: HtmlBuilder<Msg>): Html` |
+| `AvatarGroupOverflowProps` | type | `AvatarGroupOverflowProps<Msg> = Readonly<{ /** Number of hidden avatars; rendered as "+N" when no children are given. */ count?: number; /** Shared avatar size (px or named); the overflow chip is size + 4px to span the ring. */ avatarSize?: AvatarGroupSize; /…` |
+| `avatarGroupOverflow` | function | `avatarGroupOverflow<Msg>(props: AvatarGroupOverflowProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `AvatarStatusDotVariant` | type | `AvatarStatusDotVariant = 'success' \| 'neutral' \| 'error'` |
+| `AvatarStatusDotSize` | type | `AvatarStatusDotSize = 'xsm' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| number` |
+| `AvatarStatusDotProps` | type | `AvatarStatusDotProps = Readonly<{ /** Semantic tone: success (online), neutral (offline), error (busy). */ variant: AvatarStatusDotVariant; /** Driving avatar's size — picks the dot diameter tier (10/20/32px). */ avatarSize?: AvatarStatusDotSize; /** Accessib…` |
+| `avatarStatusDot` | function | `avatarStatusDot<Msg>(props: AvatarStatusDotProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Avatar
 
@@ -112,6 +141,73 @@ Source: [`src/ui/badge.ts`](../src/ui/badge.ts)
 | `BadgeVariants` | type | `BadgeVariants = VariantProps<typeof badgeVariants>` |
 | `BadgeProps` | type | `BadgeProps = Readonly<{ children: ReadonlyArray<Html \| string>; variant?: BadgeVariants['variant']; class?: string; /** Renders the badge as an anchor pointing at this URL. */ href?: string; }>` |
 | `badge` | function | `badge<Msg>(props: BadgeProps, h: HtmlBuilder<Msg>): Html` |
+
+## Banner
+
+Source: [`src/ui/banner.ts`](../src/ui/banner.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Model` | re-export | `export { Model } from '@/lib/banner'` |
+| `Message` | re-export | `export { Message } from '@/lib/banner'` |
+| `OutMessage` | re-export | `export { OutMessage } from '@/lib/banner'` |
+| `init` | re-export | `export { init } from '@/lib/banner'` |
+| `update` | re-export | `export { update } from '@/lib/banner'` |
+| `BannerContainer` | re-export | `export { BannerContainer } from '@/lib/banner'` |
+| `BannerElevation` | re-export | `export { BannerElevation } from '@/lib/banner'` |
+| `BannerStatus` | re-export | `export { BannerStatus } from '@/lib/banner'` |
+| `BannerProps` | type | `BannerProps<Msg> = Readonly<{ model: BannerBehavior.Model; toParentMessage: (message: BannerBehavior.Message) => Msg; /** Status type controlling the icon, tint, and ARIA role. */ status: BannerBehavior.BannerStatus; /** Stable id — anchors the disclosure's a…` |
+| `banner` | function | `banner<Msg>(props: BannerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Blockquote
+
+Source: [`src/ui/blockquote.ts`](../src/ui/blockquote.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `BlockquoteProps` | type | `BlockquoteProps = Readonly<{ children: ReadonlyArray<Html \| string>; cite?: string; class?: string; }>` |
+| `blockquote` | function | `blockquote<Msg>(props: BlockquoteProps, h: HtmlBuilder<Msg>): Html` |
+
+## Bottom Sheet
+
+Source: [`src/ui/bottom-sheet.ts`](../src/ui/bottom-sheet.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `OutMessage` | value | `OutMessage: value` |
+| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `SwitcherModel` | value | `SwitcherModel: value` |
+| `SwitcherModel` | type | `SwitcherModel = typeof SwitcherModel.Type` |
+| `SwitcherMessage` | value | `SwitcherMessage: value` |
+| `SwitcherMessage` | type | `SwitcherMessage = typeof SwitcherMessage.Type` |
+| `SwitcherOutMessage` | value | `SwitcherOutMessage: value` |
+| `SwitcherOutMessage` | type | `SwitcherOutMessage = typeof SwitcherOutMessage.Type` |
+| `SheetState` | value | `SheetState: value` |
+| `SheetState` | type | `SheetState = typeof SheetState.Type` |
+| `BottomSheetSnapPoint` | re-export | `export { BottomSheetSnapPoint } from '@/lib/bottom-sheet'` |
+| `SheetHeight` | re-export | `export { SheetHeight } from '@/lib/bottom-sheet'` |
+| `SheetPurpose` | re-export | `export { SheetPurpose } from '@/lib/bottom-sheet'` |
+| `init` | value | `init: value` |
+| `update` | value | `update: value` |
+| `open` | value | `open: value` |
+| `close` | value | `close: value` |
+| `initSwitcher` | value | `initSwitcher: value` |
+| `updateSwitcher` | value | `updateSwitcher: value` |
+| `openSheet` | value | `openSheet: value` |
+| `closeSwitcher` | value | `closeSwitcher: value` |
+| `OVERSCROLL_PADDING` | value | `OVERSCROLL_PADDING: value` |
+| `HEIGHT_BUDGETS` | value | `HEIGHT_BUDGETS: value` |
+| `isSheetDragCandidate` | function | `isSheetDragCandidate(target: unknown): false \| 'handle' \| 'arm'` |
+| `SheetDragDispatch` | type | `SheetDragDispatch<Msg> = Readonly<{ started: (frame: { y: number; timeStamp: number; armOnly: boolean }) => Msg; dragged: (frame: { y: number; timeStamp: number; detents: number[] }) => Msg; ended: (frame: { y: number; timeStamp: number; detents: number[] }) …` |
+| `BottomSheetProps` | type | `BottomSheetProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; content: Html; class?: string; }>` |
+| `bottomSheet` | function | `bottomSheet<Msg>(props: BottomSheetProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `SwitcherSheetContent` | type | `SwitcherSheetContent = Readonly<{ id: string; content: Html; }>` |
+| `BottomSheetSwitcherProps` | type | `BottomSheetSwitcherProps<Msg> = Readonly<{ model: SwitcherModel; toParentMessage: (message: SwitcherMessage) => Msg; sheets: ReadonlyArray<SwitcherSheetContent>; class?: string; }>` |
+| `bottomSheetSwitcher` | function | `bottomSheetSwitcher<Msg>(props: BottomSheetSwitcherProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Breadcrumb
 
@@ -228,6 +324,18 @@ Source: [`src/ui/carousel.ts`](../src/ui/carousel.ts)
 | `CarouselProps` | type | `CarouselProps<Msg> = Readonly<{ model: CarouselBehavior.Model; toParentMessage: (message: CarouselBehavior.Message) => Msg; items: ReadonlyArray<Html \| string>; ariaLabel?: string; orientation?: 'horizontal' \| 'vertical'; loop?: boolean; /** Additional Embla …` |
 | `carousel` | function | `carousel<Msg>(props: CarouselProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
+## Center
+
+Source: [`src/ui/center.ts`](../src/ui/center.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `CenterAxis` | type | `CenterAxis = 'both' \| 'horizontal' \| 'vertical'` |
+| `CenterSpacing` | type | `CenterSpacing = 0 \| 0.5 \| 1 \| 1.5 \| 2 \| 3 \| 4 \| 5 \| 6 \| 8 \| 10` |
+| `CenterSizeValue` | type | `CenterSizeValue = number \| string` |
+| `CenterProps` | type | `CenterProps = Readonly<{ /** * Center mode. * - `both`: center on the flex main and cross axes (default) * - `horizontal`: center on the flex main/inline axis * - `vertical`: center on the flex cross/block axis */ axis?: CenterAxis; /** Renders inline-flex (u…` |
+| `center` | function | `center<Msg>(props: CenterProps, h: HtmlBuilder<Msg>): Html` |
+
 ## Chart
 
 Source: [`src/ui/chart.ts`](../src/ui/chart.ts)
@@ -268,6 +376,39 @@ Source: [`src/ui/chart.ts`](../src/ui/chart.ts)
 | `DonutChartProps` | type | `DonutChartProps = Readonly<{ value: number; max: number; label?: string; sublabel?: string; class?: string; }>` |
 | `donutChart` | function | `donutChart<Msg>(props: DonutChartProps, h: HtmlBuilder<Msg>): Html` |
 
+## Chat Reasoning
+
+Source: [`src/ui/chat-reasoning.ts`](../src/ui/chat-reasoning.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `init` | function | `init(config: { id: string; isExpanded?: boolean; }): Model` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `OutMessage` | value | `OutMessage: value` |
+| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `update` | function | `update(model: Model, message: Message): UpdateReturn` |
+| `ChatReasoningProps` | type | `ChatReasoningProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Reasoning content rendered inside the expanded panel. */ children: ReadonlyArray<Html \| string>; /** Header label. @default 'Thinking' */ label?: string; /** Du…` |
+| `chatReasoning` | function | `chatReasoning<Msg>(props: ChatReasoningProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Checkbox List
+
+Source: [`src/ui/checkbox-list.ts`](../src/ui/checkbox-list.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `CheckboxListDensity` | re-export | `export { CheckboxListDensity } from ` |
+| `CheckboxListEntry` | re-export | `export { CheckboxListEntry } from ` |
+| `CheckboxListItem` | re-export | `export { CheckboxListItem } from ` |
+| `CheckboxListProps` | re-export | `export { CheckboxListProps } from ` |
+| `checkboxListDivider` | re-export | `export { checkboxListDivider } from '@/lib/checkbox-list'` |
+| `InputStatus` | re-export | `export { InputStatus } from '@/lib/input-status'` |
+| `checkboxListItem` | function | `checkboxListItem<Msg>(item: CheckboxListItem<Msg>, h: HtmlBuilder<Msg>, options?: Readonly<{ id?: string density?: CheckboxListDensity isDisabled?: boolean isReadOnly?: boolean }>): Html` |
+| `CheckboxListUiProps` | type | `CheckboxListUiProps<Msg> = CheckboxListProps<Msg> & Readonly<{ class?: string }>` |
+| `checkboxList` | function | `checkboxList<Msg>(props: CheckboxListUiProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Checkbox
 
 Source: [`src/ui/checkbox.ts`](../src/ui/checkbox.ts)
@@ -276,6 +417,62 @@ Source: [`src/ui/checkbox.ts`](../src/ui/checkbox.ts)
 | --- | --- | --- |
 | `CheckboxProps` | type | `CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> & Readonly<{ class?: string }>` |
 | `checkbox` | function | `checkbox<Msg>(props: CheckboxProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Circular Progress
+
+Source: [`src/ui/circular-progress.ts`](../src/ui/circular-progress.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `CircularProgressVariant` | type | `CircularProgressVariant = 'accent' \| 'success' \| 'warning' \| 'error' \| 'neutral'` |
+| `CircularProgressSize` | type | `CircularProgressSize = 'sm' \| 'md' \| 'lg'` |
+| `CircularProgressProps` | type | `CircularProgressProps = Readonly<{ /** Current value. Ignored when isIndeterminate is true. */ value?: number; /** Maximum value. */ max?: number; /** Accessible label for the progress indicator. Required for a11y. */ label: string; /** When true (default), t…` |
+| `circularProgress` | function | `circularProgress<Msg>(props: CircularProgressProps, h: HtmlBuilder<Msg>): Html` |
+
+## Clickable Card
+
+Source: [`src/ui/clickable-card.ts`](../src/ui/clickable-card.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `CardElevation` | re-export | `export { CardElevation } from '@/lib/card-surface'` |
+| `CardPadding` | re-export | `export { CardPadding } from '@/lib/card-surface'` |
+| `CardVariant` | re-export | `export { CardVariant } from '@/lib/card-surface'` |
+| `Message` | re-export | `export { Message } from '@/lib/clickable-card'` |
+| `ClickableCardProps` | type | `ClickableCardProps<Msg> = Readonly<{ /** Accessibility label for the card. Applied to the hidden control that owns keyboard focus so the card surface itself stays a plain <div>. */ label: string; /** Message emitted when the card surface is clicked (not when …` |
+| `clickableCard` | function | `clickableCard<Msg>(props: ClickableCardProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Code Block
+
+Source: [`src/ui/code-block.ts`](../src/ui/code-block.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `init` | re-export | `export { init } from ` |
+| `Model` | re-export | `export { Model } from ` |
+| `Message` | re-export | `export { Message } from ` |
+| `update` | re-export | `export { update } from ` |
+| `SyntaxToken` | re-export | `export { SyntaxToken } from ` |
+| `TokenLine` | re-export | `export { TokenLine } from ` |
+| `codeLines` | re-export | `export { codeLines } from ` |
+| `tokenize` | re-export | `export { tokenize } from ` |
+| `flatTokensToLines` | re-export | `export { flatTokensToLines } from ` |
+| `CodeBlockSize` | type | `CodeBlockSize = 'sm' \| 'md'` |
+| `CodeBlockContainer` | type | `CodeBlockContainer = 'card' \| 'section'` |
+| `CustomTokenizer` | type | `CustomTokenizer = ( code: string, language: string, ) => ReadonlyArray<{ type: string; start: number; end: number }>` |
+| `CodeBlockProps` | type | `CodeBlockProps<Msg> = Readonly<{ /** The CodeBlock submodel state (see `init`/`update` in `@/lib/code-block`). */ model: Model; toParentMessage: (message: Message) => Msg; code: string; language?: string; title?: string; hasLanguageLabel?: boolean; hasLineNum…` |
+| `codeBlock` | function | `codeBlock<Msg>(props: CodeBlockProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Code
+
+Source: [`src/ui/code.ts`](../src/ui/code.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `CodeColor` | type | `CodeColor = 'primary' \| 'secondary' \| 'inherit'` |
+| `CodeSize` | type | `CodeSize = 'inherit'` |
+| `CodeProps` | type | `CodeProps = Readonly<{ children: ReadonlyArray<Html \| string>; color?: CodeColor; size?: CodeSize; class?: string; }>` |
+| `code` | function | `code<Msg>(props: CodeProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Collapsible
 
@@ -372,6 +569,27 @@ Source: [`src/ui/data-table.ts`](../src/ui/data-table.ts)
 | `DataTableProps` | type | `DataTableProps<Row, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; rows: ReadonlyArray<Row>; columns: ReadonlyArray<DataTableColumn<Row>>; rowKey: (row: Row) => string; filterText?: (row: Row) => string; filterPlaceholder?: string…` |
 | `dataTable` | function | `dataTable<Row, Msg>(props: DataTableProps<Row, Msg>, h: HtmlBuilder<Msg>): Html` |
 
+## Date Input
+
+Source: [`src/ui/date-input.ts`](../src/ui/date-input.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `init` | re-export | `export { init } from ` |
+| `inputId` | re-export | `export { inputId } from ` |
+| `Message` | re-export | `export { Message } from ` |
+| `Model` | re-export | `export { Model } from ` |
+| `OutMessage` | re-export | `export { OutMessage } from ` |
+| `reflect` | re-export | `export { reflect } from ` |
+| `reflectConstraints` | re-export | `export { reflectConstraints } from ` |
+| `update` | re-export | `export { update } from ` |
+| `dateFromISO` | re-export | `export { dateFromISO } from "@/lib/date-parse"` |
+| `dateToISO` | re-export | `export { dateToISO } from "@/lib/date-parse"` |
+| `SharedDateFormat` | re-export | `export { SharedDateFormat } from ` |
+| `DateInputStatus` | type | `DateInputStatus = Readonly<{ type: "error" \| "warning" \| "success"; message?: string; }>` |
+| `DateInputProps` | type | `DateInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label?: string; isLabelHidden?: boolean; description?: string; placeholder?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; /** Astryx shows …` |
+| `dateInput` | function | `dateInput<Msg>(props: DateInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Date Picker
 
 Source: [`src/ui/date-picker.ts`](../src/ui/date-picker.ts)
@@ -399,6 +617,53 @@ Source: [`src/ui/date-picker.ts`](../src/ui/date-picker.ts)
 | `updateForRtl` | function | `updateForRtl(model: Model, message: Message): ReturnType<typeof update>` |
 | `DatePickerProps` | type | `DatePickerProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; placeholder?: string; formatDate?: (date: FoldkitCalendar.CalendarDate) => string; name?: string; isDis…` |
 | `datePicker` | function | `datePicker<Msg>(props: DatePickerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Date Range Input
+
+Source: [`src/ui/date-range-input.ts`](../src/ui/date-range-input.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `formatRangeDisplay` | re-export | `export { formatRangeDisplay } from ` |
+| `init` | re-export | `export { init } from ` |
+| `isPresetSelectable` | re-export | `export { isPresetSelectable } from ` |
+| `Message` | re-export | `export { Message } from ` |
+| `Model` | re-export | `export { Model } from ` |
+| `OutMessage` | re-export | `export { OutMessage } from ` |
+| `reflect` | re-export | `export { reflect } from ` |
+| `reflectConstraints` | re-export | `export { reflectConstraints } from ` |
+| `update` | re-export | `export { update } from ` |
+| `Range` | re-export | `export { Range } from ` |
+| `dateFromISO` | re-export | `export { dateFromISO } from "@/lib/date-parse"` |
+| `dateToISO` | re-export | `export { dateToISO } from "@/lib/date-parse"` |
+| `DateRangePreset` | type | `DateRangePreset = Readonly<{ label: string; getRange: () => Range; }>` |
+| `DateRangeInputStatus` | type | `DateRangeInputStatus = Readonly<{ type: "error" \| "warning" \| "success"; message?: string; }>` |
+| `DateRangeInputProps` | type | `DateRangeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; /** Astryx shows it as a focus ring…` |
+| `dateRangeInput` | function | `dateRangeInput<Msg>(props: DateRangeInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Date Time Input
+
+Source: [`src/ui/date-time-input.ts`](../src/ui/date-time-input.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `DateTime` | re-export | `export { type DateTime } from ` |
+| `Message` | re-export | `export { Message } from ` |
+| `Model` | re-export | `export { Model } from ` |
+| `OutMessage` | re-export | `export { OutMessage } from ` |
+| `init` | re-export | `export { init } from ` |
+| `reflect` | re-export | `export { reflect } from ` |
+| `reflectConstraints` | re-export | `export { reflectConstraints } from ` |
+| `update` | re-export | `export { update } from ` |
+| `dateFromISO` | re-export | `export { dateFromISO } from "@/lib/date-parse"` |
+| `dateToISO` | re-export | `export { dateToISO } from "@/lib/date-parse"` |
+| `formatDisplayTime12h` | re-export | `export { formatDisplayTime12h } from "@/lib/time-parse"` |
+| `formatDisplayTime24h` | re-export | `export { formatDisplayTime24h } from "@/lib/time-parse"` |
+| `formatISOTime` | re-export | `export { formatISOTime } from "@/lib/time-parse"` |
+| `SharedDateFormat` | re-export | `export { SharedDateFormat } from ` |
+| `DateTimeInputStatus` | type | `DateTimeInputStatus = Readonly<{ type: "error" \| "warning" \| "success"; message?: string; }>` |
+| `DateTimeInputProps` | type | `DateTimeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; /** Astryx shows it as a focus ring …` |
+| `dateTimeInput` | function | `dateTimeInput<Msg>(props: DateTimeInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Dialog
 
@@ -505,6 +770,17 @@ Source: [`src/ui/empty.ts`](../src/ui/empty.ts)
 | `emptyDescription` | value | `emptyDescription: value` |
 | `emptyContent` | value | `emptyContent: value` |
 
+## Field Status
+
+Source: [`src/ui/field-status.ts`](../src/ui/field-status.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `FieldStatusType` | type | `FieldStatusType = 'warning' \| 'error' \| 'success'` |
+| `FieldStatusVariant` | type | `FieldStatusVariant = 'attached' \| 'detached'` |
+| `FieldStatusProps` | type | `FieldStatusProps = Readonly<{ type: FieldStatusType; message: string; /** @default 'attached' */ variant?: FieldStatusVariant; /** Stable id — inputs reference it via aria-describedby. */ id?: string; class?: string; }>` |
+| `fieldStatus` | function | `fieldStatus<Msg>(props: FieldStatusProps, h: HtmlBuilder<Msg>): Html` |
+
 ## Field
 
 Source: [`src/ui/field.ts`](../src/ui/field.ts)
@@ -535,6 +811,25 @@ Source: [`src/ui/field.ts`](../src/ui/field.ts)
 | `FieldErrorProps` | type | `FieldErrorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html \| string>; errors?: ReadonlyArray<FieldError>; }>` |
 | `fieldError` | function | `fieldError<Msg>(props: FieldErrorProps = {}, h: HtmlBuilder<Msg>): Html` |
 
+## File Input
+
+Source: [`src/ui/file-input.ts`](../src/ui/file-input.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `formatFileSize` | re-export | `export { formatFileSize } from '@/lib/file-input'` |
+| `init` | re-export | `export { init } from '@/lib/file-input'` |
+| `Model` | re-export | `export { Model } from '@/lib/file-input'` |
+| `Message` | re-export | `export { Message } from '@/lib/file-input'` |
+| `OutMessage` | re-export | `export { OutMessage } from '@/lib/file-input'` |
+| `update` | re-export | `export { update } from '@/lib/file-input'` |
+| `validateFiles` | re-export | `export { validateFiles } from '@/lib/file-input'` |
+| `FileInputMode` | re-export | `export { FileInputMode } from '@/lib/file-input'` |
+| `InputStatus` | re-export | `export { InputStatus } from '@/lib/input-status'` |
+| `FileInputProps` | type | `FileInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html \| string /** The accepted files owned by the parent. */ value?: ReadonlyArray<F…` |
+| `FileInputViewInputs` | type | `FileInputViewInputs = Omit< FileInputProps<never>, 'model' \| 'toParentMessage' >` |
+| `fileInput` | function | `fileInput<Msg>(props: FileInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Form
 
 Source: [`src/ui/form.ts`](../src/ui/form.ts)
@@ -556,6 +851,35 @@ Source: [`src/ui/form.ts`](../src/ui/form.ts)
 | `formDescription` | function | `formDescription<Msg>(props: FormDescriptionProps, h: HtmlBuilder<Msg>): Html` |
 | `FormMessageProps` | type | `FormMessageProps = Readonly<{ id?: string; class?: string; message?: string; errors?: ReadonlyArray<Field.FieldError>; }>` |
 | `formMessage` | function | `formMessage<Msg>(props: FormMessageProps = {}, h: HtmlBuilder<Msg>): Html` |
+
+## Grid
+
+Source: [`src/ui/grid.ts`](../src/ui/grid.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `GridAlignment` | type | `GridAlignment = 'start' \| 'center' \| 'end' \| 'stretch'` |
+| `GridSpacing` | type | `GridSpacing = 0 \| 0.5 \| 1 \| 1.5 \| 2 \| 3 \| 4 \| 5 \| 6 \| 8 \| 10` |
+| `GridSizeValue` | type | `GridSizeValue = number \| string` |
+| `GridElement` | type | `GridElement = \| 'article' \| 'aside' \| 'div' \| 'fieldset' \| 'footer' \| 'form' \| 'header' \| 'li' \| 'main' \| 'nav' \| 'ol' \| 'section' \| 'ul'` |
+| `GridColumns` | type | `GridColumns = \| number \| Readonly<{ minWidth: number; max?: number; repeat?: 'fill' \| 'fit'; }>` |
+| `GridProps` | type | `GridProps = Readonly<{ /** Column configuration — a fixed count or a responsive min-width rule. */ columns?: GridColumns; /** Height of each implicit row track in pixels (grid-auto-rows). */ rowHeight?: number; /** Spacing between all grid items (astryx spaci…` |
+| `grid` | function | `grid<Msg>(props: GridProps, h: HtmlBuilder<Msg>): Html` |
+| `GridSpanProps` | type | `GridSpanProps = Readonly<{ /** Columns to span — a number (`grid-column: span N`) or 'full' (1 / -1). */ columns?: number \| 'full'; /** Rows to span (`grid-row: span N`). */ rows?: number; /** The element to render. */ as?: GridElement; children?: ReadonlyArr…` |
+| `gridSpan` | function | `gridSpan<Msg>(props: GridSpanProps, h: HtmlBuilder<Msg>): Html` |
+
+## Heading
+
+Source: [`src/ui/heading.ts`](../src/ui/heading.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `HeadingLevel` | type | `HeadingLevel = 1 \| 2 \| 3 \| 4 \| 5 \| 6` |
+| `HeadingType` | type | `HeadingType = 'display-1' \| 'display-2' \| 'display-3'` |
+| `headingVariants` | value | `headingVariants: value` |
+| `HeadingVariants` | type | `HeadingVariants = VariantProps<typeof headingVariants>` |
+| `HeadingProps` | type | `HeadingProps = Readonly<{ children: ReadonlyArray<Html \| string>; level: HeadingLevel; type?: HeadingType; weight?: TextWeight; accessibilityLevel?: HeadingLevel; color?: TextColor; display?: TextDisplay; maxLines?: number; wordBreak?: TextWordBreak; textWrap…` |
+| `heading` | function | `heading<Msg>(props: HeadingProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Hover Card
 
@@ -585,6 +909,41 @@ Source: [`src/ui/hover-card.ts`](../src/ui/hover-card.ts)
 | `HoverCardAlign` | type | `HoverCardAlign = 'start' \| 'center' \| 'end'` |
 | `HoverCardProps` | type | `HoverCardProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; content: Html \| string; align?: HoverCardAlign; side?: HoverCardSide; isDisabled?: boolean; ariaLabel?: string; triggerClass?: string; class?: s…` |
 | `hoverCard` | function | `hoverCard<Msg>(props: HoverCardProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Indicator
+
+Source: [`src/ui/indicator.ts`](../src/ui/indicator.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `IndicatorState` | type | `IndicatorState = 'unchecked' \| 'checked' \| 'indeterminate'` |
+| `IndicatorSize` | type | `IndicatorSize = 'sm' \| 'md'` |
+| `CheckIndicatorProps` | type | `CheckIndicatorProps = Readonly<{ state: 'unchecked' \| 'checked'; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered in the mark's slot (e.g. a busy spinner). */ children?: ReadonlyArray<Html>; class?: string; }>` |
+| `checkIndicator` | function | `checkIndicator<Msg>(props: CheckIndicatorProps, h: HtmlBuilder<Msg>): Html` |
+| `CheckboxIndicatorProps` | type | `CheckboxIndicatorProps = Readonly<{ state: IndicatorState; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered inside the box (e.g. a busy spinner). */ children?: ReadonlyArray<Html>; class?: string; }>` |
+| `checkboxIndicator` | function | `checkboxIndicator<Msg>(props: CheckboxIndicatorProps, h: HtmlBuilder<Msg>): Html` |
+| `RadioIndicatorProps` | type | `RadioIndicatorProps = Readonly<{ /** A radio has no partial state; anything other than unchecked reads as selected. */ state: IndicatorState; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered inside the circle (e.g. a busy spinner).…` |
+| `radioIndicator` | function | `radioIndicator<Msg>(props: RadioIndicatorProps, h: HtmlBuilder<Msg>): Html` |
+
+## Info Tip
+
+Source: [`src/ui/info-tip.ts`](../src/ui/info-tip.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `OutMessage` | value | `OutMessage: value` |
+| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `init` | value | `init: value` |
+| `update` | value | `update: value` |
+| `InfoTipSize` | type | `InfoTipSize = 'xsm' \| 'sm' \| 'md' \| 'lg'` |
+| `InfoTipSide` | type | `InfoTipSide = 'top' \| 'right' \| 'bottom' \| 'left'` |
+| `InfoTipAlign` | type | `InfoTipAlign = 'start' \| 'center' \| 'end'` |
+| `InfoTipProps` | type | `InfoTipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Content shown in the tooltip. Keep it short and non-interactive. */ content: Html \| string; /** Accessible name for the trigger button. Defaults to 'More information'…` |
+| `infoTip` | function | `infoTip<Msg>(props: InfoTipProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Input Group
 
@@ -668,6 +1027,120 @@ Source: [`src/ui/label.ts`](../src/ui/label.ts)
 | `LabelProps` | type | `LabelProps = Readonly<{ for?: string; isRequired?: boolean; isDisabled?: boolean; class?: string; children: ReadonlyArray<Html \| string>; }>` |
 | `label` | function | `label<Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html` |
 
+## Lightbox
+
+Source: [`src/ui/lightbox.ts`](../src/ui/lightbox.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `OutMessage` | value | `OutMessage: value` |
+| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `init` | value | `init: value` |
+| `update` | value | `update: value` |
+| `open` | value | `open: value` |
+| `close` | value | `close: value` |
+| `KEYBOARD_PAN_STEP` | value | `KEYBOARD_PAN_STEP: value` |
+| `LightboxMedia` | type | `LightboxMedia = Readonly<{ src: string; alt: string; caption?: string; type?: 'image' \| 'video'; }>` |
+| `LightboxProps` | type | `LightboxProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; media: LightboxMedia \| ReadonlyArray<LightboxMedia>; hasZoom?: boolean; hasAutoPlay?: boolean; class?: string; }>` |
+| `lightbox` | function | `lightbox<Msg>(props: LightboxProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Link
+
+Source: [`src/ui/link.ts`](../src/ui/link.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `linkVariants` | value | `linkVariants: value` |
+| `LinkVariants` | type | `LinkVariants = VariantProps<typeof linkVariants>` |
+| `LinkProps` | type | `LinkProps<Msg> = Readonly<{ children: ReadonlyArray<Html \| string>; href?: string; label?: string; hasUnderline?: boolean; isDisabled?: boolean; isExternalLink?: boolean; newTabLabel?: string; target?: string; rel?: string; download?: string; onClick?: Msg; t…` |
+| `link` | function | `link<Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## List Input
+
+Source: [`src/ui/list-input.ts`](../src/ui/list-input.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `init` | re-export | `export { init } from '@/lib/list-input'` |
+| `Model` | re-export | `export { Model } from '@/lib/list-input'` |
+| `Message` | re-export | `export { Message } from '@/lib/list-input'` |
+| `moveItem` | re-export | `export { moveItem } from '@/lib/list-input'` |
+| `OutMessage` | re-export | `export { OutMessage } from '@/lib/list-input'` |
+| `resolveColumnTrack` | re-export | `export { resolveColumnTrack } from '@/lib/list-input'` |
+| `update` | re-export | `export { update } from '@/lib/list-input'` |
+| `ListInputChange` | re-export | `export { ListInputChange } from '@/lib/list-input'` |
+| `ListInputColumn` | re-export | `export { ListInputColumn } from '@/lib/list-input'` |
+| `ListInputRenderContext` | re-export | `export { ListInputRenderContext } from '@/lib/list-input'` |
+| `ListInputValueContext` | re-export | `export { ListInputValueContext } from '@/lib/list-input'` |
+| `InputStatus` | re-export | `export { InputStatus } from '@/lib/input-status'` |
+| `ListInputProps` | type | `ListInputProps<T, Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html \| string /** Controlled records owned by the parent. */ value: ReadonlyArray…` |
+| `listInput` | function | `listInput<T, Msg>(props: ListInputProps<T, Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## List
+
+Source: [`src/ui/list.ts`](../src/ui/list.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `ListDensity` | type | `ListDensity = 'compact' \| 'balanced' \| 'spacious'` |
+| `ListMarkerStyle` | type | `ListMarkerStyle = 'none' \| 'disc' \| 'decimal' \| 'circle'` |
+| `ListEdgeCompensation` | type | `ListEdgeCompensation = 'inline'` |
+| `ListProps` | type | `ListProps = Readonly<{ children: ReadonlyArray<Html>; density?: ListDensity; hasDividers?: boolean; edgeCompensation?: ListEdgeCompensation; /** Header content rendered above the list, associated via aria-labelledby. */ header?: Html \| string; /** List marker…` |
+| `list` | function | `list<Msg>(props: ListProps, h: HtmlBuilder<Msg>): Html` |
+| `ListItemProps` | type | `ListItemProps<Msg> = Readonly<{ /** Primary label. A plain string truncates to one line. */ label: Html \| string; /** Secondary description under the label; strings truncate to one line. */ description?: Html \| string; /** Content rendered before the item (ic…` |
+| `listItem` | function | `listItem<Msg>(props: ListItemProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Log Stream
+
+Source: [`src/ui/log-stream.ts`](../src/ui/log-stream.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `LogStreamLevel` | value | `LogStreamLevel: value` |
+| `LogStreamLevel` | type | `LogStreamLevel = typeof LogStreamLevel.Type` |
+| `LogEntry` | type | `LogEntry = Readonly<{ /** Stable unique key, e.g. `"req-1042"`. */ id: string; /** Pre-formatted timestamp, e.g. `"14:02:11.482"`. Deterministic. */ timestamp: string; level: LogStreamLevel; message: string; /** Emitting service/component, e.g. `"api-gateway"…` |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `init` | function | `init(config: { id: string; /** Initially pinned to the tail. @default false (astryx uncontrolled) */ isFollowing?: boolean; }): Model` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `OutMessage` | value | `OutMessage: value` |
+| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `update` | function | `update(model: Model, message: Message): UpdateReturn` |
+| `LogStreamProps` | type | `LogStreamProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Log rows, oldest first (live tails append at the end). */ entries: ReadonlyArray<LogEntry>; /** Visual treatment; 'terminal' is always dark. @default 'default' */ v…` |
+| `logStream` | function | `logStream<Msg>(props: LogStreamProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Markdown
+
+Source: [`src/ui/markdown.ts`](../src/ui/markdown.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `init` | re-export | `export { init } from '@/lib/markdown'` |
+| `Message` | re-export | `export { Message } from '@/lib/markdown'` |
+| `Model` | re-export | `export { Model } from '@/lib/markdown'` |
+| `update` | re-export | `export { update } from '@/lib/markdown'` |
+| `parseMarkdownBlocks` | re-export | `export { parseMarkdownBlocks } from '@/lib/markdown'` |
+| `parseMarkdownInline` | re-export | `export { parseMarkdownInline } from '@/lib/markdown'` |
+| `sanitizeMarkdownUrl` | re-export | `export { sanitizeMarkdownUrl } from '@/lib/markdown'` |
+| `MarkdownBlock` | re-export | `export { MarkdownBlock } from '@/lib/markdown'` |
+| `MarkdownInline` | re-export | `export { MarkdownInline } from '@/lib/markdown'` |
+| `MarkdownListItem` | re-export | `export { MarkdownListItem } from '@/lib/markdown'` |
+| `MarkdownSource` | re-export | `export { MarkdownSource } from '@/lib/markdown'` |
+| `MarkdownTableAlign` | re-export | `export { MarkdownTableAlign } from '@/lib/markdown'` |
+| `MarkdownTableCell` | re-export | `export { MarkdownTableCell } from '@/lib/markdown'` |
+| `MarkdownTableRow` | re-export | `export { MarkdownTableRow } from '@/lib/markdown'` |
+| `MarkdownDisplay` | type | `MarkdownDisplay = 'block' \| 'inline'` |
+| `MarkdownDensity` | type | `MarkdownDensity = 'default' \| 'compact'` |
+| `MarkdownCitationStyle` | type | `MarkdownCitationStyle = 'label' \| 'number'` |
+| `MarkdownContentAlign` | type | `MarkdownContentAlign = 'start' \| 'center'` |
+| `MarkdownProps` | type | `MarkdownProps<Msg> = Readonly<{ /** Markdown submodel state (owns the per-fence CodeBlock models). */ model: Model; toParentMessage: (message: Message) => Msg; /** Markdown source string. */ children: string; display?: MarkdownDisplay; density?: MarkdownDensi…` |
+| `markdown` | function | `markdown<Msg>(props: MarkdownProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Marker
 
 Source: [`src/ui/marker.ts`](../src/ui/marker.ts)
@@ -737,6 +1210,85 @@ Source: [`src/ui/message.ts`](../src/ui/message.ts)
 | `messageMetadata` | function | `messageMetadata<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 | `messageActions` | function | `messageActions<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` |
 
+## Metadata List
+
+Source: [`src/ui/metadata-list.ts`](../src/ui/metadata-list.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Model` | re-export | `export { Model } from '@/lib/metadata-list'` |
+| `Message` | re-export | `export { Message } from '@/lib/metadata-list'` |
+| `init` | re-export | `export { init } from '@/lib/metadata-list'` |
+| `update` | re-export | `export { update } from '@/lib/metadata-list'` |
+| `resolveLayout` | re-export | `export { resolveLayout } from '@/lib/metadata-list'` |
+| `MetadataListColumns` | re-export | `export { MetadataListColumns } from '@/lib/metadata-list'` |
+| `MetadataListLabelConfig` | re-export | `export { MetadataListLabelConfig } from '@/lib/metadata-list'` |
+| `MetadataListOrientation` | re-export | `export { MetadataListOrientation } from '@/lib/metadata-list'` |
+| `MetadataListProps` | type | `MetadataListProps<Msg> = Readonly<{ model: Behavior.Model; toParentMessage: (message: Behavior.Message) => Msg; /** Stable id — anchors the show-more toggle's aria-controls. */ id: string; /** @default 'single' */ columns?: Behavior.MetadataListColumns; label…` |
+| `metadataList` | function | `metadataList<Msg>(props: MetadataListProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `MetadataListItemProps` | type | `MetadataListItemProps = Readonly<{ label: Html \| string; icon?: Html; /** Render the label above the value inside a wrapper (top labels and horizontal layouts). The parent MetadataList resolves this. */ stacked?: boolean; children?: ReadonlyArray<Html \| strin…` |
+| `metadataListItem` | function | `metadataListItem<Msg>(props: MetadataListItemProps, h: HtmlBuilder<Msg>): Html` |
+
+## Mobile Nav
+
+Source: [`src/ui/mobile-nav.ts`](../src/ui/mobile-nav.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `OutMessage` | value | `OutMessage: value` |
+| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `MobileNavSide` | re-export | `export { MobileNavSide } from '@/lib/mobile-nav'` |
+| `ResolvedSide` | re-export | `export { ResolvedSide } from '@/lib/mobile-nav'` |
+| `init` | value | `init: value` |
+| `update` | value | `update: value` |
+| `open` | value | `open: value` |
+| `close` | value | `close: value` |
+| `MobileNavProps` | type | `MobileNavProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; content: Html; title?: string; label?: string; width?: number; class?: string; }>` |
+| `mobileNav` | function | `mobileNav<Msg>(props: MobileNavProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `MobileNavToggleProps` | type | `MobileNavToggleProps<Msg> = Readonly<{ controls: string; isExpanded: boolean; message: Msg; label?: string; class?: string; }>` |
+| `mobileNavToggle` | function | `mobileNavToggle<Msg>(props: MobileNavToggleProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## More Menu
+
+Source: [`src/ui/more-menu.ts`](../src/ui/more-menu.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Model` | re-export | `export { Model } from '@/ui/dropdown-menu'` |
+| `Message` | re-export | `export { Message } from '@/ui/dropdown-menu'` |
+| `OutMessage` | re-export | `export { OutMessage } from '@/ui/dropdown-menu'` |
+| `init` | re-export | `export { init } from '@/ui/dropdown-menu'` |
+| `update` | re-export | `export { update } from '@/ui/dropdown-menu'` |
+| `flattenOptions` | re-export | `export { flattenOptions } from '@/lib/more-menu'` |
+| `MoreMenuAction` | re-export | `export { MoreMenuAction } from '@/lib/more-menu'` |
+| `MoreMenuOption` | re-export | `export { MoreMenuOption } from '@/lib/more-menu'` |
+| `MoreMenuProps` | type | `MoreMenuProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<MoreMenuOption>; /** Trigger aria-label — the button is always icon-only. @default 'More options' */ label?: string; /** @default 'ghost' */ variant…` |
+| `moreMenu` | function | `moreMenu<Msg>(props: MoreMenuProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Multi Selector
+
+Source: [`src/ui/multi-selector.ts`](../src/ui/multi-selector.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Message` | re-export | `export { Message } from ` |
+| `Model` | re-export | `export { Model } from ` |
+| `OutMessage` | re-export | `export { OutMessage } from ` |
+| `SELECT_ALL_VALUE` | re-export | `export { SELECT_ALL_VALUE } from ` |
+| `init` | re-export | `export { init } from ` |
+| `reflect` | re-export | `export { reflect } from ` |
+| `reflectOptions` | re-export | `export { reflectOptions } from ` |
+| `update` | re-export | `export { update } from ` |
+| `MultiSelectorOption` | type | `MultiSelectorOption = Readonly<{ value: string label: string }>` |
+| `MultiSelectorSection` | type | `MultiSelectorSection = Readonly<{ title: string options: ReadonlyArray<MultiSelectorOption> }>` |
+| `MultiSelectorStatus` | type | `MultiSelectorStatus = Readonly<{ type: 'error' \| 'warning' \| 'success' message?: string }>` |
+| `MultiSelectorProps` | type | `MultiSelectorProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a tooltip on the disa…` |
+| `multiSelector` | function | `multiSelector<Msg>(props: MultiSelectorProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Native Select
 
 Source: [`src/ui/native-select.ts`](../src/ui/native-select.ts)
@@ -765,6 +1317,44 @@ Source: [`src/ui/navigation-menu.ts`](../src/ui/navigation-menu.ts)
 | `navigationMenuLink` | function | `navigationMenuLink<Msg>(props: Slot & Readonly<{ href: string; isActive?: boolean }>, h: HtmlBuilder<Msg>): Html` |
 | `NavigationMenuDisclosureProps` | type | `NavigationMenuDisclosureProps<Msg> = Readonly<{ model: Popover.Model; toParentMessage: (message: Popover.Message) => Msg; label: string; content: Html \| string; class?: string; ariaLabel?: string; pointerIntent?: 'press' \| 'hover-and-press'; }>` |
 | `navigationMenuDisclosure` | function | `navigationMenuDisclosure<Msg>(props: NavigationMenuDisclosureProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Number Input
+
+Source: [`src/ui/number-input.ts`](../src/ui/number-input.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `init` | re-export | `export { init } from '@/lib/number-input'` |
+| `Model` | re-export | `export { Model } from '@/lib/number-input'` |
+| `Message` | re-export | `export { Message } from '@/lib/number-input'` |
+| `OutMessage` | re-export | `export { OutMessage } from '@/lib/number-input'` |
+| `update` | re-export | `export { update } from '@/lib/number-input'` |
+| `NumberInputSize` | re-export | `export { NumberInputSize } from '@/lib/number-input'` |
+| `InputStatus` | re-export | `export { InputStatus } from '@/lib/input-status'` |
+| `NumberInputProps` | type | `NumberInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html \| string /** The committed value owned by the parent (`null`/`undefined` = em…` |
+| `NumberInputViewInputs` | type | `NumberInputViewInputs = Omit< NumberInputProps<never>, 'model' \| 'toParentMessage' >` |
+| `numberInput` | function | `numberInput<Msg>(props: NumberInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Overflow List
+
+Source: [`src/ui/overflow-list.ts`](../src/ui/overflow-list.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Model` | re-export | `export { Model } from '@/lib/overflow-list'` |
+| `Message` | re-export | `export { Message } from '@/lib/overflow-list'` |
+| `OutMessage` | re-export | `export { OutMessage } from '@/lib/overflow-list'` |
+| `init` | re-export | `export { init } from '@/lib/overflow-list'` |
+| `update` | re-export | `export { update } from '@/lib/overflow-list'` |
+| `computeOverflow` | re-export | `export { computeOverflow } from '@/lib/overflow-list'` |
+| `spacingToPx` | re-export | `export { spacingToPx } from '@/lib/overflow-list'` |
+| `collapsedIndices` | re-export | `export { collapsedIndices } from '@/lib/overflow-list'` |
+| `CollapseFrom` | re-export | `export { CollapseFrom } from '@/lib/overflow-list'` |
+| `OverflowBehavior` | re-export | `export { OverflowBehavior } from '@/lib/overflow-list'` |
+| `OverflowListItem` | re-export | `export { OverflowListItem } from '@/lib/overflow-list'` |
+| `SpacingStep` | re-export | `export { SpacingStep } from '@/lib/overflow-list'` |
+| `OverflowListProps` | type | `OverflowListProps<Msg> = Readonly<{ model: Behavior.Model; toParentMessage: (message: Behavior.Message) => Msg; /** @default 2 — spacing-step gap between items. */ gap?: Behavior.SpacingStep; /** @default 0 — floor: always show at least this many items. */ mi…` |
+| `overflowList` | function | `overflowList<Msg>(props: OverflowListProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Pagination
 
@@ -807,6 +1397,46 @@ Source: [`src/ui/popover.ts`](../src/ui/popover.ts)
 | `PopoverAlign` | type | `PopoverAlign = 'start' \| 'center' \| 'end'` |
 | `PopoverProps` | type | `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; content: Html \| string; align?: PopoverAlign; side?: PopoverSide; class?: string; direction?: 'ltr' \| 'rtl'; focusSelector?…` |
 | `popover` | function | `popover<Msg>(props: PopoverProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Power Search
+
+Source: [`src/ui/power-search.ts`](../src/ui/power-search.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `EnumItem` | type | `EnumItem = Readonly<{ value: string; label: string }>` |
+| `PowerSearchEntity` | type | `PowerSearchEntity = Readonly<{ id: string; label: string; photo?: string; }>` |
+| `SearchableItem` | type | `SearchableItem = Readonly<{ id: string; label: string; photo?: string; auxiliaryData?: unknown; }>` |
+| `SearchSource` | type | `SearchSource = Readonly<{ search: (query: string) => ReadonlyArray<SearchableItem>; bootstrap?: () => ReadonlyArray<SearchableItem>; }>` |
+| `DateTimeRangePart` | type | `DateTimeRangePart = \| Readonly<{ type: 'NOW' }> \| Readonly<{ type: 'ABSOLUTE'; unixSeconds: number }> \| Readonly<{ type: 'RELATIVE'; backValue: number; unit: \| 'second' \| 'minute' \| 'hour' \| 'day' \| 'week' \| 'month' \| 'year'; }>` |
+| `DateTimeRange` | type | `DateTimeRange = Readonly<{ start: DateTimeRangePart; end: DateTimeRangePart; }>` |
+| `OperatorValue` | type | `OperatorValue = \| Readonly<{ type: 'empty' }> \| Readonly<{ type: 'string'; searchSource?: SearchSource }> \| Readonly<{ type: 'string_list'; searchSource?: SearchSource }> \| Readonly<{ type: 'integer' }> \| Readonly<{ type: 'float' }> \| Readonly<{ type: 'time' …` |
+| `RelativeDateFilterPreset` | type | `RelativeDateFilterPreset = Readonly<{ key: string; label: string; range: DateTimeRange; }>` |
+| `PowerSearchOperator` | type | `PowerSearchOperator = Readonly<{ key: string; value: OperatorValue }> & (Readonly<{ label: string }> \| Readonly<{ i18nKey: string }>)` |
+| `PowerSearchField` | type | `PowerSearchField = Readonly<{ key: string; label: string; operators: ReadonlyArray<PowerSearchOperator>; icon?: string; defaultOperator?: string; group?: string; description?: string; typeaheadAliases?: ReadonlyArray<string>; typeaheadMinQueryLength?: number;…` |
+| `FilterValue` | type | `FilterValue = \| Readonly<{ type: 'empty' }> \| Readonly<{ type: 'string'; value: string }> \| Readonly<{ type: 'string_list'; value: ReadonlyArray<string> }> \| Readonly<{ type: 'integer'; value: number }> \| Readonly<{ type: 'float'; value: number }> \| Readonly<…` |
+| `PowerSearchFilter` | type | `PowerSearchFilter = Readonly<{ field: string; operator: string; value: FilterValue; isReadOnly?: boolean; }>` |
+| `PartialFilter` | type | `PartialFilter = Readonly<{ field: string; operator?: string; value?: FilterValue; }>` |
+| `PowerSearchConfig` | type | `PowerSearchConfig = Readonly<{ name: string; fields: ReadonlyArray<PowerSearchField>; contentSearchFieldKey?: string; }>` |
+| `PowerSearchChangeType` | type | `PowerSearchChangeType = 'add' \| 'edit' \| 'remove'` |
+| `resolveOperatorLabel` | function | `resolveOperatorLabel(operator: PowerSearchOperator): string` |
+| `InternalPowerSearchConfig` | type | `InternalPowerSearchConfig = Readonly<{ name: string; fields: ReadonlyArray<PowerSearchField>; contentSearchFieldKey?: string; fieldsByKey: ReadonlyMap<string, PowerSearchField>; /** The portion of the fields array that precedes contentSearchFieldKey (astryx e…` |
+| `createInternalConfig` | function | `createInternalConfig(config: PowerSearchConfig): InternalPowerSearchConfig` |
+| `resolveDateTimeRangePart` | function | `resolveDateTimeRangePart(part: DateTimeRangePart, nowSeconds: number = Date.now() / 1000): number` |
+| `formatFilterValue` | function | `formatFilterValue(config: InternalPowerSearchConfig, operatorValue: OperatorValue, filterValue: FilterValue \| undefined, maxLength: number): string` |
+| `PowerSearchSuggestion` | type | `PowerSearchSuggestion = \| Readonly<{ kind: 'group'; label: string }> \| Readonly<{ kind: 'field'; field: PowerSearchField }> \| Readonly<{ kind: 'operator'; field: PowerSearchField; operator: PowerSearchOperator; label: string; }> \| Readonly<{ kind: 'value'; fi…` |
+| `FieldDefinition` | type | `FieldDefinition = Readonly<{ key: string; type: FieldDefinitionType; label?: string; enumValues?: ReadonlyArray<EnumItem>; }>` |
+| `createPowerSearchConfig` | function | `createPowerSearchConfig(definitions: ReadonlyArray<FieldDefinition>, configName?: string): { config: PowerSearchConfig; applyFilters: <Row extends Record<string, unknown>>( filters: ReadonlyArray<PowerSearchFilter>, data: ReadonlyArray<Row>, ) => Row[]; }` |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `init` | function | `init(config: { id: string }): Model` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `OutMessage` | value | `OutMessage: value` |
+| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `update` | function | `update(model: Model, message: Message, config: InternalPowerSearchConfig, filters: ReadonlyArray<PowerSearchFilter>, resultCount: number \| null = null): UpdateReturn` |
+| `PowerSearchProps` | type | `PowerSearchProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Controlled filter list (astryx `filters` prop + `onChange`). */ filters: ReadonlyArray<PowerSearchFilter>; config: InternalPowerSearchConfig; placeholder?: string…` |
+| `powerSearch` | function | `powerSearch<Msg>(props: PowerSearchProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Progress
 
@@ -864,6 +1494,38 @@ Source: [`src/ui/scroll-area.ts`](../src/ui/scroll-area.ts)
 | `ScrollAreaProps` | type | `ScrollAreaProps = Readonly<{ class?: string; children: ReadonlyArray<Html \| string>; orientation?: 'vertical' \| 'horizontal' \| 'both'; direction?: 'ltr' \| 'rtl'; ariaLabel?: string; tabIndex?: number; }>` |
 | `scrollArea` | function | `scrollArea<Msg>(props: ScrollAreaProps, h: HtmlBuilder<Msg>): Html` |
 
+## Section
+
+Source: [`src/ui/section.ts`](../src/ui/section.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `SectionVariant` | type | `SectionVariant = 'section' \| 'transparent' \| 'muted'` |
+| `SectionDivider` | type | `SectionDivider = 'top' \| 'bottom' \| 'start' \| 'end'` |
+| `SectionSpacing` | type | `SectionSpacing = 0 \| 0.5 \| 1 \| 1.5 \| 2 \| 3 \| 4 \| 5 \| 6 \| 8 \| 10` |
+| `SectionSizeValue` | type | `SectionSizeValue = number \| string` |
+| `SectionProps` | type | `SectionProps = Readonly<{ /** * Visual variant. * - `section`: surface (card) background (default) * - `transparent`: no background * - `muted`: muted background, draws attention to a region */ variant?: SectionVariant; /** Divider borders to apply on the giv…` |
+| `section` | function | `section<Msg>(props: SectionProps, h: HtmlBuilder<Msg>): Html` |
+
+## Segmented Control
+
+Source: [`src/ui/segmented-control.ts`](../src/ui/segmented-control.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Message` | re-export | `export { Message } from ` |
+| `Model` | re-export | `export { Model } from ` |
+| `init` | re-export | `export { init } from ` |
+| `OutMessage` | re-export | `export { OutMessage } from ` |
+| `SegmentedControlSize` | type | `SegmentedControlSize = 'sm' \| 'md' \| 'lg'` |
+| `SegmentedControlLayout` | type | `SegmentedControlLayout = 'hug' \| 'fill'` |
+| `SegmentedControlItem` | type | `SegmentedControlItem<Value extends string = string> = Readonly<{ value: Value /** Visible label; also the accessible name when `isLabelHidden` is set. */ label: string /** Icon element displayed before the label. */ icon?: Html isLabelHidden?: boolean isDisab…` |
+| `SegmentedControlProps` | type | `SegmentedControlProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg /** The currently selected value (controlled). */ value: Value /** Accessible label for the radio group (used as aria-label, never rendered v…` |
+| `SegmentedControlBundle` | type | `SegmentedControlBundle<Value extends string> = Readonly<{ update: ReturnType<typeof createBehavior<Value>>['update'] segmentedControl: <Msg>( props: SegmentedControlProps<Value, Msg>, h: HtmlBuilder<Msg>, ) => Html }>` |
+| `create` | function | `create<Value extends string = string>(): SegmentedControlBundle<Value>` |
+| `update` | value | `update: value` |
+| `segmentedControl` | value | `segmentedControl: value` |
+
 ## Select
 
 Source: [`src/ui/select.ts`](../src/ui/select.ts)
@@ -884,6 +1546,19 @@ Source: [`src/ui/select.ts`](../src/ui/select.ts)
 | `create` | function | `create<Value extends string = string>(): SelectBundle<Value>` |
 | `update` | value | `update: value` |
 | `select` | value | `select: value` |
+
+## Selectable Card
+
+Source: [`src/ui/selectable-card.ts`](../src/ui/selectable-card.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `CardElevation` | re-export | `export { CardElevation } from '@/lib/card-surface'` |
+| `CardPadding` | re-export | `export { CardPadding } from '@/lib/card-surface'` |
+| `CardVariant` | re-export | `export { CardVariant } from '@/lib/card-surface'` |
+| `Message` | re-export | `export { Message } from '@/lib/clickable-card'` |
+| `SelectableCardProps` | type | `SelectableCardProps<Msg> = Readonly<{ /** Accessibility label for the card, applied to the hidden checkbox. */ label: string; /** Controlled selection state — the parent owns it. */ isSelected: boolean; /** Message emitted when the card requests a toggle. */ …` |
+| `selectableCard` | function | `selectableCard<Msg>(props: SelectableCardProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Separator
 
@@ -922,6 +1597,32 @@ Source: [`src/ui/sheet.ts`](../src/ui/sheet.ts)
 | `SheetParts` | type | `SheetParts<Msg> = Readonly<{ header: (props: SheetPartProps) => Html; title: (props: Omit<SheetTextPartProps, 'attributes'>) => Html; description: (props: Omit<SheetTextPartProps, 'attributes'>) => Html; footer: (props: SheetPartProps) => Html; close: (props?…` |
 | `SheetProps` | type | `SheetProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; content?: (slots: SheetSlots) => ReadonlyArray<Html>; footer?: (slots: SheetSlots) => ReadonlyArray<Html>; layout?: (parts: SheetParts<…` |
 | `sheet` | function | `sheet<Msg>(props: SheetProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Side Nav
+
+Source: [`src/ui/side-nav.ts`](../src/ui/side-nav.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Message` | re-export | `export { Message } from '@/lib/side-nav'` |
+| `Model` | re-export | `export { Model } from '@/lib/side-nav'` |
+| `OutMessage` | re-export | `export { OutMessage } from '@/lib/side-nav'` |
+| `HEADING_MENU_KEY` | re-export | `export { HEADING_MENU_KEY } from '@/lib/side-nav'` |
+| `flyoutKey` | re-export | `export { flyoutKey } from '@/lib/side-nav'` |
+| `init` | re-export | `export { init } from '@/lib/side-nav'` |
+| `isItemCollapsed` | re-export | `export { isItemCollapsed } from '@/lib/side-nav'` |
+| `menuFor` | re-export | `export { menuFor } from '@/lib/side-nav'` |
+| `update` | re-export | `export { update } from '@/lib/side-nav'` |
+| `visibleWidth` | re-export | `export { visibleWidth } from '@/lib/side-nav'` |
+| `InitConfig` | re-export | `export { InitConfig } from '@/lib/side-nav'` |
+| `SideNavItemData` | type | `SideNavItemData = Readonly<{ id: string; label: string; icon?: string; /** Icon shown instead of `icon` while the item is selected (astryx selectedIcon). */ selectedIcon?: string; isSelected?: boolean; isDisabled?: boolean; href?: string; /** Invoked for item…` |
+| `SideNavMenuItemData` | type | `SideNavMenuItemData = Readonly<{ label: string; href?: string; onSelect?: boolean; icon?: string; isDisabled?: boolean; }>` |
+| `SideNavHeadingData` | type | `SideNavHeadingData = Readonly<{ heading: string; icon?: Html; headingHref?: string; superheading?: string; superheadingHref?: string; subheading?: string; subheadingHref?: string; headerEndContent?: Html; menu?: ReadonlyArray<SideNavMenuItemData>; }>` |
+| `SideNavSectionData` | type | `SideNavSectionData = Readonly<{ title?: string; subtitle?: string; isHeaderHidden?: boolean; endContent?: Html; items: ReadonlyArray<SideNavItemData>; }>` |
+| `ViewInputs` | type | `ViewInputs = Readonly<{ /** Bare top-level items (astryx SideNav children outside a Section). */ items?: ReadonlyArray<SideNavItemData>; sections?: ReadonlyArray<SideNavSectionData>; heading?: SideNavHeadingData; topContent?: Html; footer?: Html; /** Small ic…` |
+| `view` | value | `view: value` |
+| `SideNavProps` | type | `SideNavProps<Msg> = ViewInputs & Readonly<{ model: SideNavLib.Model; toParentMessage: (message: SideNavLib.Message) => Msg; }>` |
+| `sideNav` | function | `sideNav<Msg>(props: SideNavProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Sidebar
 
@@ -1025,6 +1726,73 @@ Source: [`src/ui/spinner.ts`](../src/ui/spinner.ts)
 | `SpinnerProps` | type | `SpinnerProps = SpinnerAccessibility & Readonly<{ size?: 'sm' \| 'md' \| 'lg' \| 'xl'; tone?: 'current' \| 'muted' \| 'primary'; /** Emits data-icon="inline-start\|inline-end" for parent icon positioning. */ dataIcon?: 'inline-start' \| 'inline-end'; class?: string; …` |
 | `spinner` | function | `spinner<Msg>(props: SpinnerProps, h: HtmlBuilder<Msg>): Html` |
 
+## Stack
+
+Source: [`src/ui/stack.ts`](../src/ui/stack.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `StackDirection` | type | `StackDirection = 'horizontal' \| 'vertical'` |
+| `StackMainAlignment` | type | `StackMainAlignment = \| 'start' \| 'center' \| 'end' \| 'between' \| 'around' \| 'evenly'` |
+| `StackCrossAlignment` | type | `StackCrossAlignment = 'start' \| 'center' \| 'end' \| 'stretch'` |
+| `StackAlignment` | type | `StackAlignment = StackMainAlignment \| StackCrossAlignment` |
+| `StackWrap` | type | `StackWrap = 'nowrap' \| 'wrap' \| 'wrap-reverse'` |
+| `StackSpacing` | type | `StackSpacing = 0 \| 0.5 \| 1 \| 1.5 \| 2 \| 3 \| 4 \| 5 \| 6 \| 8 \| 10` |
+| `StackItemSize` | type | `StackItemSize = 'static' \| 'fill'` |
+| `StackItemCrossAlignSelf` | type | `StackItemCrossAlignSelf = 'start' \| 'center' \| 'end' \| 'stretch'` |
+| `StackSizeValue` | type | `StackSizeValue = number \| string` |
+| `StackElement` | type | `StackElement = \| 'article' \| 'aside' \| 'div' \| 'fieldset' \| 'footer' \| 'form' \| 'header' \| 'li' \| 'main' \| 'nav' \| 'ol' \| 'section' \| 'span' \| 'ul'` |
+| `StackProps` | type | `StackProps = Readonly<{ /** * Direction of the stack layout. * - `horizontal`: items flow left-to-right (hStack) * - `vertical`: items flow top-to-bottom (vStack, the default) */ direction?: StackDirection; /** * Horizontal alignment of items. * - `horizontal…` |
+| `stack` | function | `stack<Msg>(props: StackProps, h: HtmlBuilder<Msg>): Html` |
+| `hStack` | function | `hStack<Msg>(props: Omit<StackProps, 'direction'>, h: HtmlBuilder<Msg>): Html` |
+| `vStack` | function | `vStack<Msg>(props: Omit<StackProps, 'direction'>, h: HtmlBuilder<Msg>): Html` |
+| `StackItemProps` | type | `StackItemProps = Readonly<{ /** Overrides the parent stack's cross-axis alignment for this item. */ crossAlignSelf?: StackItemCrossAlignSelf; /** * Size behavior within the stack. * - `static`: intrinsic size, never grows or shrinks (default) * - `fill`: grow…` |
+| `stackItem` | function | `stackItem<Msg>(props: StackItemProps, h: HtmlBuilder<Msg>): Html` |
+
+## Stat
+
+Source: [`src/ui/stat.ts`](../src/ui/stat.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `StatDeltaDirection` | type | `StatDeltaDirection = 'up' \| 'down' \| 'flat'` |
+| `StatDeltaSentiment` | type | `StatDeltaSentiment = 'positive' \| 'negative' \| 'neutral'` |
+| `StatSize` | type | `StatSize = 'sm' \| 'md' \| 'lg'` |
+| `StatDelta` | type | `StatDelta = Readonly<{ /** Pre-formatted change text, e.g. "+12.4%" or "-8 ms". */ value: string; /** Trend direction. Picks the glyph and the default sentiment. */ direction: StatDeltaDirection; /** * Overrides the direction-to-color mapping for inverted met…` |
+| `StatProps` | type | `StatProps = Readonly<{ /** Metric name shown above the value, e.g. "Total requests". */ label: string; /** The headline metric, rendered large with tabular numerals. */ value: string; /** Change indicator rendered next to the value. */ delta?: StatDelta; /** …` |
+| `stat` | function | `stat<Msg>(props: StatProps, h: HtmlBuilder<Msg>): Html` |
+
+## Status Dot
+
+Source: [`src/ui/status-dot.ts`](../src/ui/status-dot.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `statusDotVariants` | value | `statusDotVariants: value` |
+| `StatusDotVariants` | type | `StatusDotVariants = VariantProps<typeof statusDotVariants>` |
+| `StatusDotProps` | type | `StatusDotProps = Readonly<{ /** The semantic color variant. */ variant: NonNullable<StatusDotVariants['variant']>; /** Accessible label describing the status (the dot's aria-label). */ label: string; /** Pulses the dot to indicate activity; honors prefers-red…` |
+| `statusDot` | function | `statusDot<Msg>(props: StatusDotProps, h: HtmlBuilder<Msg>): Html` |
+
+## Stepper
+
+Source: [`src/ui/stepper.ts`](../src/ui/stepper.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Message` | re-export | `export { Message } from ` |
+| `Model` | re-export | `export { Model } from ` |
+| `init` | re-export | `export { init } from ` |
+| `update` | re-export | `export { update } from ` |
+| `OutMessage` | re-export | `export { OutMessage } from ` |
+| `StepperOrientation` | type | `StepperOrientation = 'horizontal' \| 'vertical'` |
+| `StepperIndicatorPosition` | type | `StepperIndicatorPosition = 'separated' \| 'on-track'` |
+| `StepperDensity` | type | `StepperDensity = 'compact' \| 'balanced' \| 'spacious'` |
+| `StepperCollapsedVariant` | type | `StepperCollapsedVariant = \| 'withLabelAndControls' \| 'withLabel' \| 'hiddenLabel'` |
+| `StepperStepStatus` | type | `StepperStepStatus = StepperStatus` |
+| `StepperStep` | type | `StepperStep<Msg> = Readonly<{ label: string description?: string status?: StepperStepStatus isDisabled?: boolean isOptional?: boolean /** 'auto' (default): number while upcoming, check once completed, current ring while active. 'number': always a number badge…` |
+| `StepperProps` | type | `StepperProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg /** Zero-based active step (controlled by the parent). */ activeStep: number steps: ReadonlyArray<StepperStep<Msg>> orientation?: StepperOrientation /** 'separated': bar se…` |
+| `stepper` | function | `stepper<Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Switch
 
 Source: [`src/ui/switch.ts`](../src/ui/switch.ts)
@@ -1076,6 +1844,26 @@ Source: [`src/ui/tabs.ts`](../src/ui/tabs.ts)
 | `update` | value | `update: value` |
 | `tabs` | value | `tabs: value` |
 
+## Text
+
+Source: [`src/ui/text.ts`](../src/ui/text.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `TextType` | type | `TextType = \| 'body' \| 'large' \| 'label' \| 'supporting' \| 'code' \| 'display-1' \| 'display-2' \| 'display-3' \| 'inherit'` |
+| `TextSize` | type | `TextSize = \| '4xs' \| '3xs' \| '2xs' \| 'xsm' \| 'sm' \| 'base' \| 'lg' \| 'xl' \| '2xl' \| '3xl' \| '4xl'` |
+| `TextColor` | type | `TextColor = \| 'primary' \| 'secondary' \| 'disabled' \| 'placeholder' \| 'accent' \| 'inherit'` |
+| `TextWeight` | type | `TextWeight = 'normal' \| 'medium' \| 'semibold' \| 'bold'` |
+| `TextDisplay` | type | `TextDisplay = 'inline' \| 'block'` |
+| `TextJustify` | type | `TextJustify = 'start' \| 'center' \| 'end'` |
+| `TextWordBreak` | type | `TextWordBreak = 'break-word' \| 'break-all'` |
+| `TextWrap` | type | `TextWrap = 'wrap' \| 'nowrap' \| 'balance' \| 'pretty'` |
+| `TextElement` | type | `TextElement = 'span' \| 'p' \| 'div' \| 'label' \| 'h1' \| 'h2' \| 'h3'` |
+| `textVariants` | value | `textVariants: value` |
+| `TextVariants` | type | `TextVariants = VariantProps<typeof textVariants>` |
+| `TextProps` | type | `TextProps = Readonly<{ children: ReadonlyArray<Html \| string>; type?: TextType; size?: TextSize; color?: TextColor; weight?: TextWeight; display?: TextDisplay; maxLines?: number; wordBreak?: TextWordBreak; textWrap?: TextWrap; justify?: TextJustify; hasCapsiz…` |
+| `text` | function | `text<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` |
+
 ## Textarea
 
 Source: [`src/ui/textarea.ts`](../src/ui/textarea.ts)
@@ -1084,6 +1872,74 @@ Source: [`src/ui/textarea.ts`](../src/ui/textarea.ts)
 | --- | --- | --- |
 | `TextareaProps` | type | `TextareaProps<Msg> = TextareaBehaviorProps<Msg> & Readonly<{ class?: string; }>` |
 | `textarea` | function | `textarea<Msg>(props: TextareaProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Thumbnail
+
+Source: [`src/ui/thumbnail.ts`](../src/ui/thumbnail.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `ThumbnailShowRemoveOn` | type | `ThumbnailShowRemoveOn = 'always' \| 'hover'` |
+| `ThumbnailProps` | type | `ThumbnailProps<Msg> = Readonly<{ /** Image source. When omitted, the thumbnail shows its placeholder state. */ src?: string; /** Alt text for the image. */ alt?: string; /** Human-readable name shown in tooltips and used in accessible labels. */ label?: strin…` |
+| `thumbnail` | function | `thumbnail<Msg>(props: ThumbnailProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Time Input
+
+Source: [`src/ui/time-input.ts`](../src/ui/time-input.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `init` | re-export | `export { init } from '@/lib/time-input'` |
+| `Model` | re-export | `export { Model } from '@/lib/time-input'` |
+| `Message` | re-export | `export { Message } from '@/lib/time-input'` |
+| `OutMessage` | re-export | `export { OutMessage } from '@/lib/time-input'` |
+| `update` | re-export | `export { update } from '@/lib/time-input'` |
+| `TimeValue` | re-export | `export { TimeValue } from '@/lib/time-input'` |
+| `InputStatus` | re-export | `export { InputStatus } from '@/lib/input-status'` |
+| `TimeInputProps` | type | `TimeInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html \| string /** The committed value owned by the parent, as "HH:MM" / "HH:MM:SS". …` |
+| `TimeInputViewInputs` | type | `TimeInputViewInputs = Omit< TimeInputProps<never>, 'model' \| 'toParentMessage' >` |
+| `timeInput` | function | `timeInput<Msg>(props: TimeInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Timer
+
+Source: [`src/ui/timer.ts`](../src/ui/timer.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `TimerFormat` | type | `TimerFormat = 'elapsed' \| 'clock'` |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `init` | function | `init(config: { id: string; startTimeMs?: number; format?: TimerFormat; /** Clock override for deterministic previews/tests. Defaults to Date.now(). */ nowMs?: number; }): Model` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `update` | function | `update(model: Model, message: Message): UpdateReturn` |
+| `subscriptions` | value | `subscriptions: value` |
+| `TimerProps` | type | `TimerProps<Msg> = Readonly<{ model: Model; /** Semantic text type. @default 'supporting' */ type?: AstryxTextType; /** Font size override; keeps the type's line height. */ size?: AstryxTextSize; /** Text color. @default 'secondary' */ color?: AstryxTextColor;…` |
+| `timer` | function | `timer<Msg>(props: TimerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Timestamp
+
+Source: [`src/ui/timestamp.ts`](../src/ui/timestamp.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `InstantFormat` | re-export | `export { InstantFormat } from '@/lib/timestamp-format'` |
+| `TimestampFormat` | re-export | `export { TimestampFormat } from '@/lib/timestamp-format'` |
+| `TimestampTooltipEntry` | re-export | `export { TimestampTooltipEntry } from '@/lib/timestamp-format'` |
+| `TimestampTooltipFormat` | re-export | `export { TimestampTooltipFormat } from '@/lib/timestamp-format'` |
+| `formatInstant` | re-export | `export { formatInstant } from '@/lib/timestamp-format'` |
+| `formatRelativeTime` | re-export | `export { formatRelativeTime } from '@/lib/timestamp-format'` |
+| `formatTooltipLines` | re-export | `export { formatTooltipLines } from '@/lib/timestamp-format'` |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `parseValueMs` | function | `parseValueMs(value: string \| number): number` |
+| `init` | function | `init(config: { id: string; value: string \| number; format?: TimestampFormat; autoThreshold?: number; isLive?: boolean; nowMs?: number; }): Model` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `update` | function | `update(model: Model, message: Message): UpdateReturn` |
+| `subscriptions` | value | `subscriptions: value` |
+| `TimestampProps` | type | `TimestampProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Semantic text type. @default 'supporting' */ type?: AstryxTextType; size?: AstryxTextSize; /** Text color. @default 'secondary' */ color?: AstryxTextColor; weight?:…` |
+| `timestamp` | function | `timestamp<Msg>(props: TimestampProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Toast
 
@@ -1124,6 +1980,52 @@ Source: [`src/ui/toggle.ts`](../src/ui/toggle.ts)
 | `ToggleProps` | type | `ToggleProps<Msg> = Readonly<{ isPressed: boolean; onToggle: Msg; variant?: ToggleVariants['variant']; size?: ToggleVariants['size']; children: ReadonlyArray<Html \| string>; isDisabled?: boolean; id?: string; ariaLabel?: string; describedBy?: string; direction…` |
 | `toggle` | function | `toggle<Msg>(props: ToggleProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
+## Token
+
+Source: [`src/ui/token.ts`](../src/ui/token.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `TokenColor` | type | `TokenColor = \| 'default' \| 'gray' \| 'red' \| 'orange' \| 'yellow' \| 'green' \| 'teal' \| 'cyan' \| 'blue' \| 'purple' \| 'pink'` |
+| `TokenSize` | type | `TokenSize = 'sm' \| 'md' \| 'lg'` |
+| `TokenProps` | type | `TokenProps<Msg> = Readonly<{ /** Text shown inside the token. */ label: string; /** Semantic colorway; 'default' is the neutral gray chip. */ color?: TokenColor; /** Chip height: sm 20px, md 24px, lg 28px. */ size?: TokenSize; /** Leading glyph, e.g. `h => Ic…` |
+| `token` | function | `token<Msg>(props: TokenProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Tokenizer
+
+Source: [`src/ui/tokenizer.ts`](../src/ui/tokenizer.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `CREATE_ID_PREFIX` | re-export | `export { CREATE_ID_PREFIX } from ` |
+| `Message` | re-export | `export { Message } from ` |
+| `Model` | re-export | `export { Model } from ` |
+| `OutMessage` | re-export | `export { OutMessage } from ` |
+| `Token` | re-export | `export { type Token } from ` |
+| `init` | re-export | `export { init } from ` |
+| `reflect` | re-export | `export { reflect } from ` |
+| `reflectItems` | re-export | `export { reflectItems } from ` |
+| `update` | re-export | `export { update } from ` |
+| `TokenizerStatus` | type | `TokenizerStatus = Readonly<{ type: 'error' \| 'warning' \| 'success' message?: string }>` |
+| `TokenizerProps` | type | `TokenizerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean isReadOnly?: boolean status?: TokenizerStatus st…` |
+| `tokenizer` | function | `tokenizer<Msg>(props: TokenizerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Toolbar
+
+Source: [`src/ui/toolbar.ts`](../src/ui/toolbar.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Message` | re-export | `export { Message } from ` |
+| `TOOLBAR_EDGE_COMP_ATTR` | re-export | `export { TOOLBAR_EDGE_COMP_ATTR } from ` |
+| `ToolbarSize` | type | `ToolbarSize = 'sm' \| 'md' \| 'lg'` |
+| `ToolbarOrientation` | type | `ToolbarOrientation = 'horizontal' \| 'vertical'` |
+| `ToolbarVariant` | type | `ToolbarVariant = 'transparent' \| 'surface' \| 'muted'` |
+| `ToolbarDivider` | type | `ToolbarDivider = 'top' \| 'bottom' \| 'start' \| 'end'` |
+| `ToolbarGap` | type | `ToolbarGap = 0 \| 0.5 \| 1 \| 1.5 \| 2 \| 3 \| 4 \| 5 \| 6 \| 8 \| 10` |
+| `ToolbarProps` | type | `ToolbarProps<Msg> = Readonly<{ /** Accessible label for the toolbar (aria-label). */ label: string /** Content aligned to the start (left in LTR). */ startContent?: Html \| ReadonlyArray<Html \| string> /** Centered content. When present, switches the layout to…` |
+| `toolbar` | function | `toolbar<Msg>(props: ToolbarProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Tooltip
 
 Source: [`src/ui/tooltip.ts`](../src/ui/tooltip.ts)
@@ -1145,6 +2047,112 @@ Source: [`src/ui/tooltip.ts`](../src/ui/tooltip.ts)
 | `TooltipProps` | type | `TooltipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; content: Html \| string; align?: TooltipAlign; side?: TooltipSide; isDisabled?: boolean; ariaLabel?: string; triggerClass?: string; class?: string;…` |
 | `tooltip` | function | `tooltip<Msg>(props: TooltipProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
+## Top Nav
+
+Source: [`src/ui/top-nav.ts`](../src/ui/top-nav.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `dropdownMenuKey` | re-export | `export { dropdownMenuKey } from "@/lib/top-nav"` |
+| `HEADING_MENU_KEY` | re-export | `export { HEADING_MENU_KEY } from "@/lib/top-nav"` |
+| `init` | re-export | `export { init } from "@/lib/top-nav"` |
+| `isMenuOpen` | re-export | `export { isMenuOpen } from "@/lib/top-nav"` |
+| `menuFor` | re-export | `export { menuFor } from "@/lib/top-nav"` |
+| `Model` | re-export | `export { Model } from "@/lib/top-nav"` |
+| `update` | re-export | `export { update } from "@/lib/top-nav"` |
+| `InitConfig` | re-export | `export { InitConfig } from "@/lib/top-nav"` |
+| `TopNavMenuKind` | re-export | `export { TopNavMenuKind } from "@/lib/top-nav"` |
+| `Message` | re-export | `export { Message } from "@/lib/top-nav"` |
+| `OutMessage` | re-export | `export { OutMessage } from "@/lib/top-nav"` |
+| `TopNavItemData` | type | `TopNavItemData = Readonly<{ kind?: "item"; label: string; href?: string; icon?: string; isSelected?: boolean; isDisabled?: boolean; isIconOnly?: boolean; onSelect?: boolean; }>` |
+| `TopNavMenuItemData` | type | `TopNavMenuItemData = Readonly<{ title: string; description?: string; icon?: Html; href?: string; onSelect?: boolean; }>` |
+| `TopNavMenuData` | type | `TopNavMenuData = Readonly<{ kind: "menu"; label: string; items: ReadonlyArray<TopNavMenuItemData>; }>` |
+| `TopNavMegaMenuItemData` | type | `TopNavMegaMenuItemData = Readonly<{ title: string; description?: string; icon?: Html; href?: string; onSelect?: boolean; }>` |
+| `TopNavMegaMenuFeaturedCardData` | type | `TopNavMegaMenuFeaturedCardData = Readonly<{ title: string; description?: string; image?: string; imageAlt?: string; linkLabel?: string; linkHref?: string; children?: Html; }>` |
+| `TopNavMegaMenuData` | type | `TopNavMegaMenuData = Readonly<{ kind: "megaMenu"; label: string; items: ReadonlyArray<TopNavMegaMenuItemData>; featured?: TopNavMegaMenuFeaturedCardData; }>` |
+| `TopNavEntry` | type | `TopNavEntry = TopNavItemData \| TopNavMenuData \| TopNavMegaMenuData` |
+| `TopNavHeadingMenuItemData` | type | `TopNavHeadingMenuItemData = Readonly<{ label: string; href?: string; onSelect?: boolean; }>` |
+| `TopNavHeadingData` | type | `TopNavHeadingData = Readonly<{ heading?: string; logo?: Html; logoLabel?: string; headingHref?: string; superheading?: string; superheadingHref?: string; subheading?: string; subheadingHref?: string; headerEndContent?: Html; menu?: ReadonlyArray<TopNavHeading…` |
+| `ViewInputs` | type | `ViewInputs = Readonly<{ label?: string; heading?: TopNavHeadingData; startItems?: ReadonlyArray<TopNavEntry>; centerItems?: ReadonlyArray<TopNavEntry>; /** Escape hatch for arbitrary start slot content. */ startContent?: Html; centerContent?: Html; endContent…` |
+| `topNavItem` | function | `topNavItem<Msg>(item: TopNavItemData, emit: (message: TopNavLib.Message) => Msg, h: HtmlBuilder<Msg>): Html` |
+| `topNavMegaMenuItem` | function | `topNavMegaMenuItem<Msg>(item: TopNavMegaMenuItemData, onActivate: Msg \| undefined, h: HtmlBuilder<Msg>): Html` |
+| `topNavMegaMenuFeaturedCard` | function | `topNavMegaMenuFeaturedCard<Msg>(card: TopNavMegaMenuFeaturedCardData, h: HtmlBuilder<Msg>): Html` |
+| `view` | value | `view: value` |
+| `TopNavProps` | type | `TopNavProps<Msg> = ViewInputs & Readonly<{ model: TopNavLib.Model; toParentMessage: (message: TopNavLib.Message) => Msg; }>` |
+| `topNav` | function | `topNav<Msg>(props: TopNavProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Tour
+
+Source: [`src/ui/tour.ts`](../src/ui/tour.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `OutMessage` | value | `OutMessage: value` |
+| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `TourDismissSource` | value | `TourDismissSource: value` |
+| `TourDismissSource` | type | `TourDismissSource = TourBehavior.TourDismissSource` |
+| `init` | value | `init: value` |
+| `update` | value | `update: value` |
+| `activate` | value | `activate: value` |
+| `deactivate` | value | `deactivate: value` |
+| `HIGHLIGHT_PADDING` | value | `HIGHLIGHT_PADDING: value` |
+| `TourStepPlacement` | type | `TourStepPlacement = "below" \| "above" \| "start" \| "end"` |
+| `TourStepAlignment` | type | `TourStepAlignment = "start" \| "center" \| "end"` |
+| `TourStepSpec` | type | `TourStepSpec = Readonly<{ /** Stable step key — the callout is re-keyed per step to re-anchor. */ id: string; /** `id` of the element this step points at (astryx targetRef equivalent — must be interactive for aria, matching Popover's anchor contract). */ targ…` |
+| `TourProps` | type | `TourProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; steps: ReadonlyArray<TourStepSpec>; hasBackdrop?: boolean; isStepCountShown?: boolean; class?: string; }>` |
+| `tour` | function | `tour<Msg>(props: TourProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Transfer List
+
+Source: [`src/ui/transfer-list.ts`](../src/ui/transfer-list.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `TransferListOption` | type | `TransferListOption = Readonly<{ /** Stable value written to the controlled value array. */ value: string; /** Visible option name and the basis of action labels. */ label: string; /** Optional searchable metadata. Not rendered in the default row. */ descripti…` |
+| `ReorderSession` | type | `ReorderSession = typeof ReorderSession.Type` |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `init` | function | `init(config: { id: string; value?: ReadonlyArray<string>; }): Model` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `OutMessage` | value | `OutMessage: value` |
+| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `update` | function | `update(model: Model, message: Message, options: ReadonlyArray<TransferListOption> = [], isReorderable = true): UpdateReturn` |
+| `TransferListProps` | type | `TransferListProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Accessible name for the complete control. */ label: string; /** Visually hides the label while retaining its accessible name. */ isLabelHidden?: boolean; /** Sup…` |
+| `REORDER_INSTRUCTIONS` | value | `REORDER_INSTRUCTIONS: value` |
+| `transferList` | function | `transferList<Msg>(props: TransferListProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Tree List
+
+Source: [`src/ui/tree-list.ts`](../src/ui/tree-list.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Message` | re-export | `export { Message } from '@/lib/tree-list'` |
+| `Model` | re-export | `export { Model } from '@/lib/tree-list'` |
+| `OutMessage` | re-export | `export { OutMessage } from '@/lib/tree-list'` |
+| `findInitialTabbableId` | re-export | `export { findInitialTabbableId } from '@/lib/tree-list'` |
+| `init` | re-export | `export { init } from '@/lib/tree-list'` |
+| `isItemExpanded` | re-export | `export { isItemExpanded } from '@/lib/tree-list'` |
+| `resolveKey` | re-export | `export { resolveKey } from '@/lib/tree-list'` |
+| `tabbableId` | re-export | `export { tabbableId } from '@/lib/tree-list'` |
+| `update` | re-export | `export { update } from '@/lib/tree-list'` |
+| `visibleItems` | re-export | `export { visibleItems } from '@/lib/tree-list'` |
+| `InitConfig` | re-export | `export { InitConfig } from '@/lib/tree-list'` |
+| `TreeListDensity` | re-export | `export { TreeListDensity } from '@/lib/tree-list'` |
+| `TreeListItemData` | re-export | `export { TreeListItemData } from '@/lib/tree-list'` |
+| `UpdateReturn` | re-export | `export { UpdateReturn } from '@/lib/tree-list'` |
+| `TreeListVariant` | re-export | `export { TreeListVariant } from '@/lib/tree-list'` |
+| `VisibleItem` | re-export | `export { VisibleItem } from '@/lib/tree-list'` |
+| `ViewInputs` | type | `ViewInputs = Readonly<{ items: ReadonlyArray<TreeListBehavior.TreeListItemData>; density?: TreeListBehavior.TreeListDensity; variant?: TreeListBehavior.TreeListVariant; header?: Html; ariaLabel?: string; direction?: 'ltr' \| 'rtl'; class?: string; }>` |
+| `view` | value | `view: value` |
+| `TreeListProps` | type | `TreeListProps<Msg> = ViewInputs & Readonly<{ model: TreeListBehavior.Model; toParentMessage: (message: TreeListBehavior.Message) => Msg; }>` |
+| `treeList` | function | `treeList<Msg>(props: TreeListProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Typography
 
 Source: [`src/ui/typography.ts`](../src/ui/typography.ts)
@@ -1162,3 +2170,13 @@ Source: [`src/ui/typography.ts`](../src/ui/typography.ts)
 | `typographyLarge` | function | `typographyLarge<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` |
 | `typographySmall` | function | `typographySmall<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` |
 | `typographyMuted` | function | `typographyMuted<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html` |
+
+## Visually Hidden
+
+Source: [`src/ui/visually-hidden.ts`](../src/ui/visually-hidden.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `VisuallyHiddenElement` | type | `VisuallyHiddenElement = \| 'article' \| 'aside' \| 'code' \| 'div' \| 'em' \| 'footer' \| 'h1' \| 'h2' \| 'h3' \| 'h4' \| 'h5' \| 'h6' \| 'header' \| 'label' \| 'li' \| 'main' \| 'nav' \| 'p' \| 'section' \| 'small' \| 'span' \| 'strong' \| 'ul' \| 'ol'` |
+| `VisuallyHiddenProps` | type | `VisuallyHiddenProps = Readonly<{ /** * HTML tag to render as. Defaults to `'span'` (inline) for the common * icon-label case; pass a block element such as `'div'` when wrapping block * content or hosting an `aria-live` region. This is a structural choice, * n…` |
+| `visuallyHidden` | function | `visuallyHidden<Msg>(props: VisuallyHiddenProps, h: HtmlBuilder<Msg>): Html` |

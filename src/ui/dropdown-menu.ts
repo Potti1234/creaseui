@@ -140,6 +140,9 @@ export type DropdownMenuProps<Item extends string, Msg> = Readonly<{
   placement?: 'inline' | 'sidebarAction';
   triggerTabindex?: number;
   triggerRole?: string;
+  /** aria-label on the trigger button — icon-only triggers need one. */
+  triggerAriaLabel?: string;
+  triggerIsDisabled?: boolean;
   items: ReadonlyArray<Item>;
   itemToConfig: (item: Item) => DropdownMenuItemConfig<Item>;
   align?: DropdownMenuAlign;
@@ -455,11 +458,19 @@ export const dropdownMenu = <Item extends string, Msg>(
         [
           h.Type('button'),
           ...(props.triggerRole === undefined ? [] : [h.Role(props.triggerRole)]),
+          ...(props.triggerAriaLabel === undefined
+            ? []
+            : [h.AriaLabel(props.triggerAriaLabel)]),
+          ...(props.triggerIsDisabled === true
+            ? [h.AriaDisabled(true), h.DataAttribute('disabled', '')]
+            : []),
           h.AriaHasPopup('menu'),
           h.Id(`${props.model.id}-trigger`),
           h.AriaExpanded(props.model.isOpen),
           h.AriaControls(`${props.model.id}-content`),
-          ...(props.openOnContextMenu === true
+          ...(props.triggerIsDisabled === true
+            ? []
+            : props.openOnContextMenu === true
             ? [
                 h.OnContextMenu(props.toParentMessage(Message.OpenedFromContext())),
                 h.OnPointerDown(
@@ -503,6 +514,8 @@ export const dropdownMenu = <Item extends string, Msg>(
                   key,
                   props.direction,
                 )
+              : props.triggerIsDisabled === true
+                ? undefined
               : props.openOnContextMenu === true &&
                   (key === 'ContextMenu' || (key === 'F10' && modifiers.shiftKey))
                 ? Message.Opened()

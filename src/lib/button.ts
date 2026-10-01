@@ -6,6 +6,7 @@ export type ButtonType = 'button' | 'submit' | 'reset'
 export type ButtonBehaviorProps<Msg> = Readonly<{
   children: ReadonlyArray<Html | string>
   onClick?: Msg
+  id?: string
   isDisabled?: boolean
   isLoading?: boolean
   loadingContent?: ReadonlyArray<Html | string>
@@ -89,6 +90,7 @@ export const renderButton = <Msg>(
               ? []
               : [h.DataAttribute('size', props.dataSize)]),
             ...(isDisabled ? [h.Disabled(true)] : []),
+            ...(props.id === undefined ? [] : [h.Id(props.id)]),
             ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
             ...(props.name === undefined ? [] : [h.Name(props.name)]),
             ...(props.value === undefined ? [] : [h.Value(props.value)]),

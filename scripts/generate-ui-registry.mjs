@@ -28,8 +28,8 @@ const categories = {
   'Feedback': new Set(['alert', 'empty', 'message', 'message-scroller', 'progress', 'skeleton', 'sonner', 'spinner', 'toast']),
   'Forms': new Set(['button', 'button-group', 'checkbox', 'combobox', 'field', 'form', 'input', 'input-group', 'input-otp', 'label', 'native-select', 'radio-group', 'select', 'slider', 'switch', 'textarea', 'toggle', 'toggle-group']),
   'Layout': new Set(['aspect-ratio', 'card', 'carousel', 'resizable', 'scroll-area', 'separator', 'sidebar']),
-  'Navigation': new Set(['breadcrumb', 'command', 'menubar', 'navigation-menu', 'pagination', 'tabs']),
-  'Overlay': new Set(['alert-dialog', 'context-menu', 'dialog', 'direction', 'drawer', 'dropdown-menu', 'hover-card', 'popover', 'sheet', 'tooltip']),
+  'Navigation': new Set(['breadcrumb', 'command', 'menubar', 'mobile-nav', 'navigation-menu', 'pagination', 'tabs']),
+  'Overlay': new Set(['alert-dialog', 'bottom-sheet', 'context-menu', 'dialog', 'direction', 'drawer', 'dropdown-menu', 'hover-card', 'lightbox', 'popover', 'sheet', 'tooltip', 'tour']),
 }
 
 const category = name =>

@@ -1,0 +1,545 @@
+import { Option } from 'effect'
+
+import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
+
+import { Listbox as ListboxPrimitive } from '@foldkit/ui'
+
+import * as Icon from '@/lib/icon'
+import {
+  Message,
+  Model,
+  OutMessage,
+  SELECT_ALL_VALUE,
+  init,
+  reflect,
+  reflectOptions,
+  update,
+} from '@/lib/multi-selector'
+import { cn } from '@/lib/utils'
+
+/* Ported from Meta Astryx MultiSelector (packages/core/src/MultiSelector/)
+   — examples and visual spec adapted to Crease UI tokens.
+
+   foldkit's Multi Listbox supplies the trigger button + anchored checkbox
+   option panel (incl. section headings via itemGroupKey). The selection
+   lives in src/lib/multi-selector.ts; the select-all row is a
+   SELECT_ALL_VALUE pseudo-option folded by the lib update.
+
+   PORT NOTE: `hasSearch` has no injectable input slot — foldkit's listbox
+   panel renders items only. The primitive's built-in typeahead search is
+   active while the panel is open instead.
+   PORT NOTE: `presentation: 'bottom-sheet'` renders as the same anchored
+   popover — foldkit anchors panels to the trigger, not the viewport edge.
+   PORT NOTE: select-all toggles the full option set (a filtered subset
+   can't be observed from outside the primitive). */
+
+export {
+  Message,
+  Model,
+  OutMessage,
+  SELECT_ALL_VALUE,
+  init,
+  reflect,
+  reflectOptions,
+  update,
+}
+
+const listboxBundle = ListboxPrimitive.Multi.create<string>()
+
+const LABEL_CLASS = 'text-sm font-medium leading-none text-foreground'
+
+const REQUIRED_CLASS = 'text-destructive'
+
+const OPTIONAL_CLASS = 'text-sm text-muted-foreground'
+
+/* astryx wrapper = bordered input shell; the trigger button inside is
+   borderless and flexes to fill it. */
+const TRIGGER_CLASS =
+  'flex w-full items-center justify-between gap-2 rounded-md border border-input bg-transparent px-3 py-2 text-sm text-foreground shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--ring)_50%,transparent)] hover:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--input)_30%,transparent)] aria-disabled:cursor-default aria-disabled:opacity-50 data-[readonly]:cursor-default aria-invalid:border-destructive aria-invalid:focus-visible:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--destructive)_20%,transparent)] dark:bg-input/30'
+
+const TRIGGER_STATUS_CLASS: Readonly<
+  Record<'error' | 'warning' | 'success', string>
+> = {
+  error: 'border-destructive',
+  warning: 'border-chart-4',
+  success: 'border-chart-2',
+}
+
+/* astryx triggerGhost: borderless, auto width, font-medium, hover wash +
+   :active scale(0.98), disabled drops both. */
+const TRIGGER_GHOST_CLASS =
+  'flex w-auto items-center justify-between gap-2 rounded-md border-0 bg-transparent px-3 py-2 text-sm font-medium text-foreground shadow-none outline-none transition-[background-color,color,opacity,transform] hover:bg-accent focus-visible:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--ring)_50%,transparent)] active:scale-[0.98] aria-disabled:cursor-default aria-disabled:opacity-50 aria-disabled:hover:bg-transparent aria-disabled:active:scale-100 data-[readonly]:cursor-default data-[readonly]:hover:bg-transparent data-[readonly]:active:scale-100'
+
+const TRIGGER_CONTENT_CLASS =
+  'flex min-w-0 flex-1 items-center gap-1 overflow-hidden'
+
+const TRIGGER_TEXT_CLASS = 'overflow-hidden text-ellipsis whitespace-nowrap'
+
+const TRIGGER_PLACEHOLDER_CLASS = 'text-muted-foreground'
+
+const TRIGGER_BADGES_CLASS = 'flex min-w-0 flex-wrap items-center gap-1'
+
+/* astryx badge ~ Token look: neutral bg, radius-inner, supporting text. */
+const TRIGGER_BADGE_CLASS =
+  'inline-flex h-5 shrink-0 items-center rounded-[4px] bg-muted px-1.5 text-xs font-medium text-foreground'
+
+const TRIGGER_OVERFLOW_CLASS =
+  'shrink-0 text-sm font-medium text-muted-foreground'
+
+const TRIGGER_ICON_CLASS =
+  'inline-flex shrink-0 items-center justify-center text-muted-foreground [&>svg]:size-4'
+
+const CHEVRON_CLASS =
+  'inline-flex shrink-0 items-center justify-center text-muted-foreground transition-transform duration-150 ease-out data-[open=true]:rotate-180 [&>svg]:size-4'
+
+const CLEAR_BUTTON_CLASS =
+  'inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground outline-hidden transition-colors hover:bg-accent hover:text-foreground [&>svg]:size-3.5'
+
+const CONTENT_CLASS =
+  'relative z-50 w-(--button-width) min-w-[8rem] overflow-x-hidden overflow-y-auto rounded-md border bg-popover text-popover-foreground shadow-md transition duration-200 ease-out motion-reduce:transition-none data-[closed]:opacity-0 data-[closed]:scale-95'
+
+const VIEWPORT_CLASS = 'w-full scroll-my-1 p-1'
+
+/* astryx option row: checkbox box + label, gap spacing-2, radius-element. */
+const ITEM_CLASS =
+  "group relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[active]:bg-accent data-[active]:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2"
+
+const CHECKBOX_BOX_CLASS =
+  'flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-input bg-transparent transition-colors group-data-[selected]:border-primary group-data-[selected]:bg-primary [&>svg]:size-3 [&>svg]:text-primary-foreground [&>svg]:opacity-0 group-data-[selected]:[&>svg]:opacity-100'
+
+const CHECKBOX_INDETERMINATE_CLASS =
+  'flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-primary bg-primary [&>svg]:size-3 [&>svg]:text-primary-foreground'
+
+const GROUP_HEADING_CLASS = 'px-2 py-1.5 text-xs text-muted-foreground'
+
+const BACKDROP_CLASS = 'fixed inset-0 z-40'
+
+const STATUS_ICON_CLASS: Readonly<
+  Record<'error' | 'warning' | 'success', string>
+> = {
+  error: 'inline-flex shrink-0 items-center text-destructive [&>svg]:size-4',
+  warning: 'inline-flex shrink-0 items-center text-chart-4 [&>svg]:size-4',
+  success: 'inline-flex shrink-0 items-center text-chart-2 [&>svg]:size-4',
+}
+
+const STATUS_MESSAGE_CLASS: Readonly<
+  Record<'error' | 'warning' | 'success', string>
+> = {
+  error: 'text-sm text-destructive',
+  warning: 'text-sm text-chart-4',
+  success: 'text-sm text-chart-2',
+}
+
+const DESCRIPTION_CLASS = 'text-sm text-muted-foreground'
+
+export type MultiSelectorOption = Readonly<{
+  value: string
+  label: string
+}>
+
+export type MultiSelectorSection = Readonly<{
+  title: string
+  options: ReadonlyArray<MultiSelectorOption>
+}>
+
+export type MultiSelectorStatus = Readonly<{
+  type: 'error' | 'warning' | 'success'
+  message?: string
+}>
+
+export type MultiSelectorProps<Msg> = Readonly<{
+  model: Model
+  toParentMessage: (message: Message) => Msg
+  label: string
+  isLabelHidden?: boolean
+  description?: string
+  isOptional?: boolean
+  isRequired?: boolean
+  isDisabled?: boolean
+  /** Astryx shows it as a tooltip on the disabled trigger; accepted but not
+   *  rendered. */
+  disabledMessage?: string
+  isReadOnly?: boolean
+  status?: MultiSelectorStatus
+  statusVariant?: 'attached' | 'detached' | 'tooltip'
+  /** 'input' bordered shell (default) or borderless 'ghost'. */
+  variant?: 'input' | 'ghost'
+  /** astryx `startIcon`; always the search glyph here. */
+  hasStartIcon?: boolean
+  hasClear?: boolean
+  hasSelectAll?: boolean
+  selectAllLabel?: string
+  /** Accepted for API parity — see PORT NOTE (no panel input). */
+  hasSearch?: boolean
+  searchPlaceholder?: string
+  triggerDisplay?: 'count' | 'labels' | 'badges'
+  /** astryx `badgeMaxCount` for triggerDisplay 'badges' (default 3). */
+  badgeMaxCount?: number
+  /** Accepted for API parity — see PORT NOTE. */
+  presentation?: 'popover' | 'bottom-sheet'
+  options: ReadonlyArray<MultiSelectorOption | MultiSelectorSection>
+  placeholder?: string
+  width?: number
+  htmlName?: string
+  class?: string
+  direction?: 'ltr' | 'rtl'
+}>
+
+const isSection = (
+  option: MultiSelectorOption | MultiSelectorSection,
+): option is MultiSelectorSection => 'options' in option
+
+const statusIcon = <Msg>(
+  type: 'error' | 'warning' | 'success',
+  h: HtmlBuilder<Msg>,
+): Html =>
+  h.span([h.Class(STATUS_ICON_CLASS[type]), h.AriaHidden(true)], [
+    type === 'error'
+      ? Icon.octagonX({ class: 'size-4' }, h)
+      : type === 'warning'
+        ? Icon.triangleAlert({ class: 'size-4' }, h)
+        : Icon.circleCheck({ class: 'size-4' }, h),
+  ])
+
+const checkboxBox = (
+  checked: boolean,
+  indeterminate: boolean,
+  h: HtmlBuilder<never>,
+): Html =>
+  indeterminate
+    ? h.span(
+        [h.Class(CHECKBOX_INDETERMINATE_CLASS), h.AriaHidden(true)],
+        [Icon.minus({ class: 'size-3' }, h)],
+      )
+    : h.span([h.Class(CHECKBOX_BOX_CLASS), h.AriaHidden(true)], [
+        Icon.check({ class: 'size-3' }, h),
+      ])
+
+export const multiSelector = <Msg>(
+  props: MultiSelectorProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const model = props.model
+  const toParent = props.toParentMessage
+  const triggerDisplay = props.triggerDisplay ?? 'count'
+  const statusVariant = props.statusVariant ?? 'attached'
+  const variant = props.variant ?? 'input'
+  const isInvalid =
+    props.status?.type === 'error' && statusVariant !== 'detached'
+
+  // Flatten sections for option lookup; groups surface via itemGroupKey.
+  const flatOptions: ReadonlyArray<MultiSelectorOption> = props.options.flatMap(
+    (option) => (isSection(option) ? [...option.options] : [option]),
+  )
+  const labelFor = (value: string): string =>
+    flatOptions.find((option) => option.value === value)?.label ?? value
+
+  const labelId = `${model.id}-label`
+  const descriptionId = `${model.id}-description`
+  const statusMessageId = `${model.id}-status-message`
+  const describedBy = [
+    props.description === undefined ? undefined : descriptionId,
+    props.status?.message === undefined || statusVariant === 'tooltip'
+      ? undefined
+      : statusMessageId,
+  ].filter((id): id is string => id !== undefined)
+
+  const hasSelection = model.values.length > 0
+  const allSelected =
+    flatOptions.length > 0 &&
+    flatOptions.every((option) => model.values.includes(option.value))
+  const someSelected =
+    !allSelected &&
+    flatOptions.some((option) => model.values.includes(option.value))
+
+  const labelView = props.isLabelHidden
+    ? h.label(
+        [
+          h.Id(labelId),
+          h.For(ListboxPrimitive.Multi.buttonId(model.listbox.id)),
+          h.Class(
+            'pointer-events-none absolute m-[-1px] h-px w-px overflow-hidden whitespace-nowrap border-0 p-0 [clip-path:inset(50%)]',
+          ),
+        ],
+        [props.label],
+      )
+    : h.label(
+        [
+          h.Id(labelId),
+          h.For(ListboxPrimitive.Multi.buttonId(model.listbox.id)),
+          h.Class(LABEL_CLASS),
+        ],
+        [
+          props.label,
+          ...(props.isRequired === true
+            ? [h.span([h.Class(REQUIRED_CLASS)], [' *'])]
+            : []),
+          ...(props.isOptional === true
+            ? [h.span([h.Class(OPTIONAL_CLASS)], [' (optional)'])]
+            : []),
+        ],
+      )
+
+  const labels = model.values.map(labelFor)
+  const triggerText =
+    labels.length === 0
+      ? (props.placeholder ?? '')
+      : triggerDisplay === 'count'
+        ? `${labels.length} selected`
+        : triggerDisplay === 'labels'
+          ? labels.length > 3
+            ? `${labels.slice(0, 3).join(', ')}, +${labels.length - 3}`
+            : labels.join(', ')
+          : ''
+
+  const badgeMaxCount = props.badgeMaxCount ?? 3
+  const triggerContent = h.span(
+    [h.Class(TRIGGER_CONTENT_CLASS), h.DataAttribute('slot', 'select-value')],
+    [
+      ...(props.hasStartIcon === true
+        ? [
+            h.span([h.Class(TRIGGER_ICON_CLASS), h.AriaHidden(true)], [
+              Icon.search({ class: 'size-4' }, h),
+            ]),
+          ]
+        : []),
+      ...(triggerDisplay === 'badges' && hasSelection
+        ? [
+            h.span(
+              [h.Class(TRIGGER_BADGES_CLASS)],
+              [
+                ...labels
+                  .slice(0, badgeMaxCount)
+                  .map((label) =>
+                    h.span([h.Class(TRIGGER_BADGE_CLASS)], [label]),
+                  ),
+                ...(labels.length > badgeMaxCount
+                  ? [
+                      h.span(
+                        [h.Class(TRIGGER_OVERFLOW_CLASS)],
+                        [`+${labels.length - badgeMaxCount}`],
+                      ),
+                    ]
+                  : []),
+              ],
+            ),
+          ]
+        : [
+            h.span(
+              [
+                h.Class(
+                  cn(
+                    TRIGGER_TEXT_CLASS,
+                    !hasSelection && TRIGGER_PLACEHOLDER_CLASS,
+                  ),
+                ),
+              ],
+              [triggerText],
+            ),
+          ]),
+    ],
+  )
+
+  const hasStatusIcon =
+    props.status !== undefined &&
+    props.status.type !== 'error' &&
+    statusVariant === 'attached'
+
+  const statusType = props.status?.type
+
+  const viewInputs: ListboxPrimitive.Multi.ViewInputs<string> = {
+    items: [
+      ...(props.hasSelectAll === true ? [SELECT_ALL_VALUE] : []),
+      ...flatOptions.map((option) => option.value),
+    ],
+    itemToConfig: (value, context) =>
+      value === SELECT_ALL_VALUE
+        ? {
+            className: ITEM_CLASS,
+            content: h.span(
+              [
+                h.DataAttribute('slot', 'select-item'),
+                h.Class('contents'),
+              ],
+              [
+                h.span(
+                  [h.Class('flex items-center gap-2')],
+                  [
+                    allSelected || someSelected
+                      ? h.span(
+                          [
+                            h.Class(
+                              cn(
+                                CHECKBOX_BOX_CLASS,
+                                'border-primary bg-primary [&>svg]:text-primary-foreground [&>svg]:opacity-100',
+                              ),
+                            ),
+                            h.AriaHidden(true),
+                          ],
+                          [
+                            allSelected
+                              ? Icon.check({ class: 'size-3' }, h)
+                              : Icon.minus({ class: 'size-3' }, h),
+                          ],
+                        )
+                      : h.span(
+                          [h.Class(CHECKBOX_BOX_CLASS), h.AriaHidden(true)],
+                          [Icon.check({ class: 'size-3' }, h)],
+                        ),
+                    props.selectAllLabel ?? 'Select all',
+                  ],
+                ),
+              ],
+            ),
+          }
+        : {
+            className: ITEM_CLASS,
+            content: h.span(
+              [
+                h.DataAttribute('slot', 'select-item'),
+                h.Class('contents'),
+              ],
+              [
+                h.span(
+                  [h.Class('flex items-center gap-2')],
+                  [
+                    h.span(
+                      [h.Class(CHECKBOX_BOX_CLASS), h.AriaHidden(true)],
+                      [Icon.check({ class: 'size-3' }, h)],
+                    ),
+                    labelFor(value),
+                  ],
+                ),
+              ],
+            ),
+          },
+    selectedValues: model.values,
+    itemToValue: (value) => value,
+    ...(props.options.some(isSection)
+      ? {
+          itemGroupKey: (value) =>
+            props.options
+              .filter(isSection)
+              .find((section) =>
+                section.options.some((entry) => entry.value === value),
+              )?.title ?? '',
+          groupToHeading: (groupKey) => ({
+            content: h.span([h.Class(GROUP_HEADING_CLASS)], [groupKey]),
+            className: 'px-0 py-0',
+          }),
+        }
+      : {}),
+    buttonContent: h.span(
+      [h.Class('contents')],
+      [
+        triggerContent,
+        props.hasClear === true && hasSelection && !props.isDisabled
+          ? h.span(
+              [
+                h.Class(CLEAR_BUTTON_CLASS),
+                h.Role('button'),
+                h.AriaLabel('Clear all'),
+                h.DataAttribute('slot', 'multi-selector-clear'),
+                h.OnClick(toParent(Message.ClickedClearAll()), {
+                  propagation: 'Stop',
+                }),
+              ],
+              [Icon.x({ class: 'size-3.5' }, h)],
+            )
+          : hasStatusIcon && statusType !== undefined
+            ? statusIcon(statusType, h)
+            : h.span(
+                [
+                  h.Class(CHEVRON_CLASS),
+                  h.AriaHidden(true),
+                  h.DataAttribute('open', String(model.listbox.isOpen)),
+                ],
+                [Icon.chevronDown({ class: 'size-4' }, h)],
+              ),
+      ],
+    ),
+    buttonClassName: cn(
+      variant === 'ghost' ? TRIGGER_GHOST_CLASS : TRIGGER_CLASS,
+      props.status !== undefined &&
+        statusVariant !== 'detached' &&
+        variant === 'input' &&
+        TRIGGER_STATUS_CLASS[props.status.type],
+      props.class,
+    ),
+    buttonAttributes: childAttributes([
+      h.DataAttribute('slot', 'multi-selector-trigger'),
+      ...(props.isDisabled === true ? [h.AriaDisabled(true)] : []),
+      ...(props.isReadOnly === true
+        ? [h.DataAttribute('readonly', '')]
+        : []),
+      ...(isInvalid ? [h.AriaInvalid(true)] : []),
+      ...(describedBy.length === 0
+        ? []
+        : [h.AriaDescribedBy(describedBy.join(' '))]),
+    ]),
+    itemsClassName: CONTENT_CLASS,
+    itemsAttributes: childAttributes([h.DataAttribute('slot', 'select-content')]),
+    itemsScrollClassName: VIEWPORT_CLASS,
+    backdropClassName: BACKDROP_CLASS,
+    className: 'flex w-full flex-col',
+    attributes: childAttributes([
+      h.DataAttribute('slot', 'multi-selector'),
+      ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
+    ]),
+    anchor: { placement: 'bottom-start', gap: 4 },
+    isDisabled: props.isDisabled ?? false,
+    isReadOnly: props.isReadOnly ?? false,
+    isInvalid,
+    ariaLabelledBy: labelId,
+    ...(props.htmlName === undefined ? {} : { name: props.htmlName }),
+  }
+
+  const listboxView = h.submodel({
+    slotId: model.listbox.id,
+    model: model.listbox,
+    view: listboxBundle.view,
+    viewInputs,
+    toParentMessage: (message) =>
+      toParent(Message.GotListboxMessage({ message })),
+  })
+
+  return h.div(
+    [
+      h.Class(cn('flex w-full flex-col gap-1.5')),
+      ...(props.width === undefined
+        ? []
+        : [h.Style({ width: `${props.width}px` })]),
+    ],
+    [
+      labelView,
+      listboxView,
+      ...(props.description === undefined
+        ? []
+        : [
+            h.p(
+              [h.Id(descriptionId), h.Class(DESCRIPTION_CLASS)],
+              [props.description],
+            ),
+          ]),
+      ...(props.status?.message === undefined ||
+      statusVariant === 'tooltip' ||
+      statusVariant === 'detached'
+        ? []
+        : [
+            h.div(
+              [
+                h.Id(statusMessageId),
+                h.Class(STATUS_MESSAGE_CLASS[props.status.type]),
+                h.Role('status'),
+              ],
+              [
+                props.status.type === 'error'
+                  ? statusIcon('error', h)
+                  : h.span([], []),
+                props.status.message,
+              ],
+            ),
+          ]),
+    ],
+  )
+}

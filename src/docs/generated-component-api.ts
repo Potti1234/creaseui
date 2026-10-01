@@ -142,6 +142,33 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "alertDescription<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "app-shell": [
+    {
+      "name": "AppShellVariant",
+      "kind": "type",
+      "signature": "AppShellVariant = 'elevated' | 'wash' | 'surface' | 'section'"
+    },
+    {
+      "name": "AppShellHeight",
+      "kind": "type",
+      "signature": "AppShellHeight = 'fill' | 'auto'"
+    },
+    {
+      "name": "AppShellSpacing",
+      "kind": "type",
+      "signature": "AppShellSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10"
+    },
+    {
+      "name": "AppShellProps",
+      "kind": "type",
+      "signature": "AppShellProps = Readonly<{ /** * Navigation background style controlling how nav areas contrast with * content. * - `wash`: nav uses wash background, no dividers * - `surface`: nav uses surface background, no dividers * - `section`: dividers between nav and c…"
+    },
+    {
+      "name": "appShell",
+      "kind": "function",
+      "signature": "appShell<Msg>(props: AppShellProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "aspect-ratio": [
     {
       "name": "AspectRatioProps",
@@ -209,6 +236,58 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "attachmentTrigger",
       "kind": "function",
       "signature": "attachmentTrigger<Msg>(props: Readonly<{ onClick: Msg; label: string; class?: string }>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "avatar-group": [
+    {
+      "name": "AvatarGroupSize",
+      "kind": "type",
+      "signature": "AvatarGroupSize = 'sm' | 'md' | 'lg' | number"
+    },
+    {
+      "name": "AvatarShape",
+      "kind": "type",
+      "signature": "AvatarShape = 'circle' | 'rounded' | 'square'"
+    },
+    {
+      "name": "AvatarGroupProps",
+      "kind": "type",
+      "signature": "AvatarGroupProps = Readonly<{ /** Accessible name for the group; defaults to \"Avatar group\". */ ariaLabel?: string; /** Shared avatar size used to compute the 25% overlap. Defaults to 'md'. */ avatarSize?: AvatarGroupSize; children: ReadonlyArray<Html>; class…"
+    },
+    {
+      "name": "avatarGroup",
+      "kind": "function",
+      "signature": "avatarGroup<Msg>(props: AvatarGroupProps, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "AvatarGroupOverflowProps",
+      "kind": "type",
+      "signature": "AvatarGroupOverflowProps<Msg> = Readonly<{ /** Number of hidden avatars; rendered as \"+N\" when no children are given. */ count?: number; /** Shared avatar size (px or named); the overflow chip is size + 4px to span the ring. */ avatarSize?: AvatarGroupSize; /…"
+    },
+    {
+      "name": "avatarGroupOverflow",
+      "kind": "function",
+      "signature": "avatarGroupOverflow<Msg>(props: AvatarGroupOverflowProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "AvatarStatusDotVariant",
+      "kind": "type",
+      "signature": "AvatarStatusDotVariant = 'success' | 'neutral' | 'error'"
+    },
+    {
+      "name": "AvatarStatusDotSize",
+      "kind": "type",
+      "signature": "AvatarStatusDotSize = 'xsm' | 'sm' | 'md' | 'lg' | 'xl' | number"
+    },
+    {
+      "name": "AvatarStatusDotProps",
+      "kind": "type",
+      "signature": "AvatarStatusDotProps = Readonly<{ /** Semantic tone: success (online), neutral (offline), error (busy). */ variant: AvatarStatusDotVariant; /** Driving avatar's size — picks the dot diameter tier (10/20/32px). */ avatarSize?: AvatarStatusDotSize; /** Accessib…"
+    },
+    {
+      "name": "avatarStatusDot",
+      "kind": "function",
+      "signature": "avatarStatusDot<Msg>(props: AvatarStatusDotProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "avatar": [
@@ -323,6 +402,242 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "badge",
       "kind": "function",
       "signature": "badge<Msg>(props: BadgeProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "banner": [
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/lib/banner'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/banner'"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from '@/lib/banner'"
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/lib/banner'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/lib/banner'"
+    },
+    {
+      "name": "BannerContainer",
+      "kind": "re-export",
+      "signature": "export { BannerContainer } from '@/lib/banner'"
+    },
+    {
+      "name": "BannerElevation",
+      "kind": "re-export",
+      "signature": "export { BannerElevation } from '@/lib/banner'"
+    },
+    {
+      "name": "BannerStatus",
+      "kind": "re-export",
+      "signature": "export { BannerStatus } from '@/lib/banner'"
+    },
+    {
+      "name": "BannerProps",
+      "kind": "type",
+      "signature": "BannerProps<Msg> = Readonly<{ model: BannerBehavior.Model; toParentMessage: (message: BannerBehavior.Message) => Msg; /** Status type controlling the icon, tint, and ARIA role. */ status: BannerBehavior.BannerStatus; /** Stable id — anchors the disclosure's a…"
+    },
+    {
+      "name": "banner",
+      "kind": "function",
+      "signature": "banner<Msg>(props: BannerProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "blockquote": [
+    {
+      "name": "BlockquoteProps",
+      "kind": "type",
+      "signature": "BlockquoteProps = Readonly<{ children: ReadonlyArray<Html | string>; cite?: string; class?: string; }>"
+    },
+    {
+      "name": "blockquote",
+      "kind": "function",
+      "signature": "blockquote<Msg>(props: BlockquoteProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "bottom-sheet": [
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "value",
+      "signature": "OutMessage: value"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "type",
+      "signature": "OutMessage = typeof OutMessage.Type"
+    },
+    {
+      "name": "SwitcherModel",
+      "kind": "value",
+      "signature": "SwitcherModel: value"
+    },
+    {
+      "name": "SwitcherModel",
+      "kind": "type",
+      "signature": "SwitcherModel = typeof SwitcherModel.Type"
+    },
+    {
+      "name": "SwitcherMessage",
+      "kind": "value",
+      "signature": "SwitcherMessage: value"
+    },
+    {
+      "name": "SwitcherMessage",
+      "kind": "type",
+      "signature": "SwitcherMessage = typeof SwitcherMessage.Type"
+    },
+    {
+      "name": "SwitcherOutMessage",
+      "kind": "value",
+      "signature": "SwitcherOutMessage: value"
+    },
+    {
+      "name": "SwitcherOutMessage",
+      "kind": "type",
+      "signature": "SwitcherOutMessage = typeof SwitcherOutMessage.Type"
+    },
+    {
+      "name": "SheetState",
+      "kind": "value",
+      "signature": "SheetState: value"
+    },
+    {
+      "name": "SheetState",
+      "kind": "type",
+      "signature": "SheetState = typeof SheetState.Type"
+    },
+    {
+      "name": "BottomSheetSnapPoint",
+      "kind": "re-export",
+      "signature": "export { BottomSheetSnapPoint } from '@/lib/bottom-sheet'"
+    },
+    {
+      "name": "SheetHeight",
+      "kind": "re-export",
+      "signature": "export { SheetHeight } from '@/lib/bottom-sheet'"
+    },
+    {
+      "name": "SheetPurpose",
+      "kind": "re-export",
+      "signature": "export { SheetPurpose } from '@/lib/bottom-sheet'"
+    },
+    {
+      "name": "init",
+      "kind": "value",
+      "signature": "init: value"
+    },
+    {
+      "name": "update",
+      "kind": "value",
+      "signature": "update: value"
+    },
+    {
+      "name": "open",
+      "kind": "value",
+      "signature": "open: value"
+    },
+    {
+      "name": "close",
+      "kind": "value",
+      "signature": "close: value"
+    },
+    {
+      "name": "initSwitcher",
+      "kind": "value",
+      "signature": "initSwitcher: value"
+    },
+    {
+      "name": "updateSwitcher",
+      "kind": "value",
+      "signature": "updateSwitcher: value"
+    },
+    {
+      "name": "openSheet",
+      "kind": "value",
+      "signature": "openSheet: value"
+    },
+    {
+      "name": "closeSwitcher",
+      "kind": "value",
+      "signature": "closeSwitcher: value"
+    },
+    {
+      "name": "OVERSCROLL_PADDING",
+      "kind": "value",
+      "signature": "OVERSCROLL_PADDING: value"
+    },
+    {
+      "name": "HEIGHT_BUDGETS",
+      "kind": "value",
+      "signature": "HEIGHT_BUDGETS: value"
+    },
+    {
+      "name": "isSheetDragCandidate",
+      "kind": "function",
+      "signature": "isSheetDragCandidate(target: unknown): false | 'handle' | 'arm'"
+    },
+    {
+      "name": "SheetDragDispatch",
+      "kind": "type",
+      "signature": "SheetDragDispatch<Msg> = Readonly<{ started: (frame: { y: number; timeStamp: number; armOnly: boolean }) => Msg; dragged: (frame: { y: number; timeStamp: number; detents: number[] }) => Msg; ended: (frame: { y: number; timeStamp: number; detents: number[] }) …"
+    },
+    {
+      "name": "BottomSheetProps",
+      "kind": "type",
+      "signature": "BottomSheetProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; content: Html; class?: string; }>"
+    },
+    {
+      "name": "bottomSheet",
+      "kind": "function",
+      "signature": "bottomSheet<Msg>(props: BottomSheetProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "SwitcherSheetContent",
+      "kind": "type",
+      "signature": "SwitcherSheetContent = Readonly<{ id: string; content: Html; }>"
+    },
+    {
+      "name": "BottomSheetSwitcherProps",
+      "kind": "type",
+      "signature": "BottomSheetSwitcherProps<Msg> = Readonly<{ model: SwitcherModel; toParentMessage: (message: SwitcherMessage) => Msg; sheets: ReadonlyArray<SwitcherSheetContent>; class?: string; }>"
+    },
+    {
+      "name": "bottomSheetSwitcher",
+      "kind": "function",
+      "signature": "bottomSheetSwitcher<Msg>(props: BottomSheetSwitcherProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "breadcrumb": [
@@ -669,6 +984,33 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "carousel<Msg>(props: CarouselProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "center": [
+    {
+      "name": "CenterAxis",
+      "kind": "type",
+      "signature": "CenterAxis = 'both' | 'horizontal' | 'vertical'"
+    },
+    {
+      "name": "CenterSpacing",
+      "kind": "type",
+      "signature": "CenterSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10"
+    },
+    {
+      "name": "CenterSizeValue",
+      "kind": "type",
+      "signature": "CenterSizeValue = number | string"
+    },
+    {
+      "name": "CenterProps",
+      "kind": "type",
+      "signature": "CenterProps = Readonly<{ /** * Center mode. * - `both`: center on the flex main and cross axes (default) * - `horizontal`: center on the flex main/inline axis * - `vertical`: center on the flex cross/block axis */ axis?: CenterAxis; /** Renders inline-flex (u…"
+    },
+    {
+      "name": "center",
+      "kind": "function",
+      "signature": "center<Msg>(props: CenterProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "chart": [
     {
       "name": "EChartProps",
@@ -836,6 +1178,105 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "donutChart<Msg>(props: DonutChartProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "chat-reasoning": [
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "init",
+      "kind": "function",
+      "signature": "init(config: { id: string; isExpanded?: boolean; }): Model"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "value",
+      "signature": "OutMessage: value"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "type",
+      "signature": "OutMessage = typeof OutMessage.Type"
+    },
+    {
+      "name": "update",
+      "kind": "function",
+      "signature": "update(model: Model, message: Message): UpdateReturn"
+    },
+    {
+      "name": "ChatReasoningProps",
+      "kind": "type",
+      "signature": "ChatReasoningProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Reasoning content rendered inside the expanded panel. */ children: ReadonlyArray<Html | string>; /** Header label. @default 'Thinking' */ label?: string; /** Du…"
+    },
+    {
+      "name": "chatReasoning",
+      "kind": "function",
+      "signature": "chatReasoning<Msg>(props: ChatReasoningProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "checkbox-list": [
+    {
+      "name": "CheckboxListDensity",
+      "kind": "re-export",
+      "signature": "export { CheckboxListDensity } from "
+    },
+    {
+      "name": "CheckboxListEntry",
+      "kind": "re-export",
+      "signature": "export { CheckboxListEntry } from "
+    },
+    {
+      "name": "CheckboxListItem",
+      "kind": "re-export",
+      "signature": "export { CheckboxListItem } from "
+    },
+    {
+      "name": "CheckboxListProps",
+      "kind": "re-export",
+      "signature": "export { CheckboxListProps } from "
+    },
+    {
+      "name": "checkboxListDivider",
+      "kind": "re-export",
+      "signature": "export { checkboxListDivider } from '@/lib/checkbox-list'"
+    },
+    {
+      "name": "InputStatus",
+      "kind": "re-export",
+      "signature": "export { InputStatus } from '@/lib/input-status'"
+    },
+    {
+      "name": "checkboxListItem",
+      "kind": "function",
+      "signature": "checkboxListItem<Msg>(item: CheckboxListItem<Msg>, h: HtmlBuilder<Msg>, options?: Readonly<{ id?: string density?: CheckboxListDensity isDisabled?: boolean isReadOnly?: boolean }>): Html"
+    },
+    {
+      "name": "CheckboxListUiProps",
+      "kind": "type",
+      "signature": "CheckboxListUiProps<Msg> = CheckboxListProps<Msg> & Readonly<{ class?: string }>"
+    },
+    {
+      "name": "checkboxList",
+      "kind": "function",
+      "signature": "checkboxList<Msg>(props: CheckboxListUiProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "checkbox": [
     {
       "name": "CheckboxProps",
@@ -846,6 +1287,154 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "checkbox",
       "kind": "function",
       "signature": "checkbox<Msg>(props: CheckboxProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "circular-progress": [
+    {
+      "name": "CircularProgressVariant",
+      "kind": "type",
+      "signature": "CircularProgressVariant = 'accent' | 'success' | 'warning' | 'error' | 'neutral'"
+    },
+    {
+      "name": "CircularProgressSize",
+      "kind": "type",
+      "signature": "CircularProgressSize = 'sm' | 'md' | 'lg'"
+    },
+    {
+      "name": "CircularProgressProps",
+      "kind": "type",
+      "signature": "CircularProgressProps = Readonly<{ /** Current value. Ignored when isIndeterminate is true. */ value?: number; /** Maximum value. */ max?: number; /** Accessible label for the progress indicator. Required for a11y. */ label: string; /** When true (default), t…"
+    },
+    {
+      "name": "circularProgress",
+      "kind": "function",
+      "signature": "circularProgress<Msg>(props: CircularProgressProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "clickable-card": [
+    {
+      "name": "CardElevation",
+      "kind": "re-export",
+      "signature": "export { CardElevation } from '@/lib/card-surface'"
+    },
+    {
+      "name": "CardPadding",
+      "kind": "re-export",
+      "signature": "export { CardPadding } from '@/lib/card-surface'"
+    },
+    {
+      "name": "CardVariant",
+      "kind": "re-export",
+      "signature": "export { CardVariant } from '@/lib/card-surface'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/clickable-card'"
+    },
+    {
+      "name": "ClickableCardProps",
+      "kind": "type",
+      "signature": "ClickableCardProps<Msg> = Readonly<{ /** Accessibility label for the card. Applied to the hidden control that owns keyboard focus so the card surface itself stays a plain <div>. */ label: string; /** Message emitted when the card surface is clicked (not when …"
+    },
+    {
+      "name": "clickableCard",
+      "kind": "function",
+      "signature": "clickableCard<Msg>(props: ClickableCardProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "code-block": [
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from "
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from "
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from "
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from "
+    },
+    {
+      "name": "SyntaxToken",
+      "kind": "re-export",
+      "signature": "export { SyntaxToken } from "
+    },
+    {
+      "name": "TokenLine",
+      "kind": "re-export",
+      "signature": "export { TokenLine } from "
+    },
+    {
+      "name": "codeLines",
+      "kind": "re-export",
+      "signature": "export { codeLines } from "
+    },
+    {
+      "name": "tokenize",
+      "kind": "re-export",
+      "signature": "export { tokenize } from "
+    },
+    {
+      "name": "flatTokensToLines",
+      "kind": "re-export",
+      "signature": "export { flatTokensToLines } from "
+    },
+    {
+      "name": "CodeBlockSize",
+      "kind": "type",
+      "signature": "CodeBlockSize = 'sm' | 'md'"
+    },
+    {
+      "name": "CodeBlockContainer",
+      "kind": "type",
+      "signature": "CodeBlockContainer = 'card' | 'section'"
+    },
+    {
+      "name": "CustomTokenizer",
+      "kind": "type",
+      "signature": "CustomTokenizer = ( code: string, language: string, ) => ReadonlyArray<{ type: string; start: number; end: number }>"
+    },
+    {
+      "name": "CodeBlockProps",
+      "kind": "type",
+      "signature": "CodeBlockProps<Msg> = Readonly<{ /** The CodeBlock submodel state (see `init`/`update` in `@/lib/code-block`). */ model: Model; toParentMessage: (message: Message) => Msg; code: string; language?: string; title?: string; hasLanguageLabel?: boolean; hasLineNum…"
+    },
+    {
+      "name": "codeBlock",
+      "kind": "function",
+      "signature": "codeBlock<Msg>(props: CodeBlockProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "code": [
+    {
+      "name": "CodeColor",
+      "kind": "type",
+      "signature": "CodeColor = 'primary' | 'secondary' | 'inherit'"
+    },
+    {
+      "name": "CodeSize",
+      "kind": "type",
+      "signature": "CodeSize = 'inherit'"
+    },
+    {
+      "name": "CodeProps",
+      "kind": "type",
+      "signature": "CodeProps = Readonly<{ children: ReadonlyArray<Html | string>; color?: CodeColor; size?: CodeSize; class?: string; }>"
+    },
+    {
+      "name": "code",
+      "kind": "function",
+      "signature": "code<Msg>(props: CodeProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "collapsible": [
@@ -1158,6 +1747,78 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "dataTable<Row, Msg>(props: DataTableProps<Row, Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "date-input": [
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from "
+    },
+    {
+      "name": "inputId",
+      "kind": "re-export",
+      "signature": "export { inputId } from "
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from "
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from "
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from "
+    },
+    {
+      "name": "reflect",
+      "kind": "re-export",
+      "signature": "export { reflect } from "
+    },
+    {
+      "name": "reflectConstraints",
+      "kind": "re-export",
+      "signature": "export { reflectConstraints } from "
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from "
+    },
+    {
+      "name": "dateFromISO",
+      "kind": "re-export",
+      "signature": "export { dateFromISO } from \"@/lib/date-parse\""
+    },
+    {
+      "name": "dateToISO",
+      "kind": "re-export",
+      "signature": "export { dateToISO } from \"@/lib/date-parse\""
+    },
+    {
+      "name": "SharedDateFormat",
+      "kind": "re-export",
+      "signature": "export { SharedDateFormat } from "
+    },
+    {
+      "name": "DateInputStatus",
+      "kind": "type",
+      "signature": "DateInputStatus = Readonly<{ type: \"error\" | \"warning\" | \"success\"; message?: string; }>"
+    },
+    {
+      "name": "DateInputProps",
+      "kind": "type",
+      "signature": "DateInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label?: string; isLabelHidden?: boolean; description?: string; placeholder?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; /** Astryx shows …"
+    },
+    {
+      "name": "dateInput",
+      "kind": "function",
+      "signature": "dateInput<Msg>(props: DateInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "date-picker": [
     {
       "name": "Model",
@@ -1263,6 +1924,175 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "datePicker",
       "kind": "function",
       "signature": "datePicker<Msg>(props: DatePickerProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "date-range-input": [
+    {
+      "name": "formatRangeDisplay",
+      "kind": "re-export",
+      "signature": "export { formatRangeDisplay } from "
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from "
+    },
+    {
+      "name": "isPresetSelectable",
+      "kind": "re-export",
+      "signature": "export { isPresetSelectable } from "
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from "
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from "
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from "
+    },
+    {
+      "name": "reflect",
+      "kind": "re-export",
+      "signature": "export { reflect } from "
+    },
+    {
+      "name": "reflectConstraints",
+      "kind": "re-export",
+      "signature": "export { reflectConstraints } from "
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from "
+    },
+    {
+      "name": "Range",
+      "kind": "re-export",
+      "signature": "export { Range } from "
+    },
+    {
+      "name": "dateFromISO",
+      "kind": "re-export",
+      "signature": "export { dateFromISO } from \"@/lib/date-parse\""
+    },
+    {
+      "name": "dateToISO",
+      "kind": "re-export",
+      "signature": "export { dateToISO } from \"@/lib/date-parse\""
+    },
+    {
+      "name": "DateRangePreset",
+      "kind": "type",
+      "signature": "DateRangePreset = Readonly<{ label: string; getRange: () => Range; }>"
+    },
+    {
+      "name": "DateRangeInputStatus",
+      "kind": "type",
+      "signature": "DateRangeInputStatus = Readonly<{ type: \"error\" | \"warning\" | \"success\"; message?: string; }>"
+    },
+    {
+      "name": "DateRangeInputProps",
+      "kind": "type",
+      "signature": "DateRangeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; /** Astryx shows it as a focus ring…"
+    },
+    {
+      "name": "dateRangeInput",
+      "kind": "function",
+      "signature": "dateRangeInput<Msg>(props: DateRangeInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "date-time-input": [
+    {
+      "name": "DateTime",
+      "kind": "re-export",
+      "signature": "export { type DateTime } from "
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from "
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from "
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from "
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from "
+    },
+    {
+      "name": "reflect",
+      "kind": "re-export",
+      "signature": "export { reflect } from "
+    },
+    {
+      "name": "reflectConstraints",
+      "kind": "re-export",
+      "signature": "export { reflectConstraints } from "
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from "
+    },
+    {
+      "name": "dateFromISO",
+      "kind": "re-export",
+      "signature": "export { dateFromISO } from \"@/lib/date-parse\""
+    },
+    {
+      "name": "dateToISO",
+      "kind": "re-export",
+      "signature": "export { dateToISO } from \"@/lib/date-parse\""
+    },
+    {
+      "name": "formatDisplayTime12h",
+      "kind": "re-export",
+      "signature": "export { formatDisplayTime12h } from \"@/lib/time-parse\""
+    },
+    {
+      "name": "formatDisplayTime24h",
+      "kind": "re-export",
+      "signature": "export { formatDisplayTime24h } from \"@/lib/time-parse\""
+    },
+    {
+      "name": "formatISOTime",
+      "kind": "re-export",
+      "signature": "export { formatISOTime } from \"@/lib/time-parse\""
+    },
+    {
+      "name": "SharedDateFormat",
+      "kind": "re-export",
+      "signature": "export { SharedDateFormat } from "
+    },
+    {
+      "name": "DateTimeInputStatus",
+      "kind": "type",
+      "signature": "DateTimeInputStatus = Readonly<{ type: \"error\" | \"warning\" | \"success\"; message?: string; }>"
+    },
+    {
+      "name": "DateTimeInputProps",
+      "kind": "type",
+      "signature": "DateTimeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; /** Astryx shows it as a focus ring …"
+    },
+    {
+      "name": "dateTimeInput",
+      "kind": "function",
+      "signature": "dateTimeInput<Msg>(props: DateTimeInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "dialog": [
@@ -1625,6 +2455,28 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "emptyContent: value"
     }
   ],
+  "field-status": [
+    {
+      "name": "FieldStatusType",
+      "kind": "type",
+      "signature": "FieldStatusType = 'warning' | 'error' | 'success'"
+    },
+    {
+      "name": "FieldStatusVariant",
+      "kind": "type",
+      "signature": "FieldStatusVariant = 'attached' | 'detached'"
+    },
+    {
+      "name": "FieldStatusProps",
+      "kind": "type",
+      "signature": "FieldStatusProps = Readonly<{ type: FieldStatusType; message: string; /** @default 'attached' */ variant?: FieldStatusVariant; /** Stable id — inputs reference it via aria-describedby. */ id?: string; class?: string; }>"
+    },
+    {
+      "name": "fieldStatus",
+      "kind": "function",
+      "signature": "fieldStatus<Msg>(props: FieldStatusProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "field": [
     {
       "name": "ControlFieldParts",
@@ -1742,6 +2594,68 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "fieldError<Msg>(props: FieldErrorProps = {}, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "file-input": [
+    {
+      "name": "formatFileSize",
+      "kind": "re-export",
+      "signature": "export { formatFileSize } from '@/lib/file-input'"
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/lib/file-input'"
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/lib/file-input'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/file-input'"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from '@/lib/file-input'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/lib/file-input'"
+    },
+    {
+      "name": "validateFiles",
+      "kind": "re-export",
+      "signature": "export { validateFiles } from '@/lib/file-input'"
+    },
+    {
+      "name": "FileInputMode",
+      "kind": "re-export",
+      "signature": "export { FileInputMode } from '@/lib/file-input'"
+    },
+    {
+      "name": "InputStatus",
+      "kind": "re-export",
+      "signature": "export { InputStatus } from '@/lib/input-status'"
+    },
+    {
+      "name": "FileInputProps",
+      "kind": "type",
+      "signature": "FileInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html | string /** The accepted files owned by the parent. */ value?: ReadonlyArray<F…"
+    },
+    {
+      "name": "FileInputViewInputs",
+      "kind": "type",
+      "signature": "FileInputViewInputs = Omit< FileInputProps<never>, 'model' | 'toParentMessage' >"
+    },
+    {
+      "name": "fileInput",
+      "kind": "function",
+      "signature": "fileInput<Msg>(props: FileInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "form": [
     {
       "name": "FormError",
@@ -1817,6 +2731,85 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "formMessage",
       "kind": "function",
       "signature": "formMessage<Msg>(props: FormMessageProps = {}, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "grid": [
+    {
+      "name": "GridAlignment",
+      "kind": "type",
+      "signature": "GridAlignment = 'start' | 'center' | 'end' | 'stretch'"
+    },
+    {
+      "name": "GridSpacing",
+      "kind": "type",
+      "signature": "GridSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10"
+    },
+    {
+      "name": "GridSizeValue",
+      "kind": "type",
+      "signature": "GridSizeValue = number | string"
+    },
+    {
+      "name": "GridElement",
+      "kind": "type",
+      "signature": "GridElement = | 'article' | 'aside' | 'div' | 'fieldset' | 'footer' | 'form' | 'header' | 'li' | 'main' | 'nav' | 'ol' | 'section' | 'ul'"
+    },
+    {
+      "name": "GridColumns",
+      "kind": "type",
+      "signature": "GridColumns = | number | Readonly<{ minWidth: number; max?: number; repeat?: 'fill' | 'fit'; }>"
+    },
+    {
+      "name": "GridProps",
+      "kind": "type",
+      "signature": "GridProps = Readonly<{ /** Column configuration — a fixed count or a responsive min-width rule. */ columns?: GridColumns; /** Height of each implicit row track in pixels (grid-auto-rows). */ rowHeight?: number; /** Spacing between all grid items (astryx spaci…"
+    },
+    {
+      "name": "grid",
+      "kind": "function",
+      "signature": "grid<Msg>(props: GridProps, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "GridSpanProps",
+      "kind": "type",
+      "signature": "GridSpanProps = Readonly<{ /** Columns to span — a number (`grid-column: span N`) or 'full' (1 / -1). */ columns?: number | 'full'; /** Rows to span (`grid-row: span N`). */ rows?: number; /** The element to render. */ as?: GridElement; children?: ReadonlyArr…"
+    },
+    {
+      "name": "gridSpan",
+      "kind": "function",
+      "signature": "gridSpan<Msg>(props: GridSpanProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "heading": [
+    {
+      "name": "HeadingLevel",
+      "kind": "type",
+      "signature": "HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6"
+    },
+    {
+      "name": "HeadingType",
+      "kind": "type",
+      "signature": "HeadingType = 'display-1' | 'display-2' | 'display-3'"
+    },
+    {
+      "name": "headingVariants",
+      "kind": "value",
+      "signature": "headingVariants: value"
+    },
+    {
+      "name": "HeadingVariants",
+      "kind": "type",
+      "signature": "HeadingVariants = VariantProps<typeof headingVariants>"
+    },
+    {
+      "name": "HeadingProps",
+      "kind": "type",
+      "signature": "HeadingProps = Readonly<{ children: ReadonlyArray<Html | string>; level: HeadingLevel; type?: HeadingType; weight?: TextWeight; accessibilityLevel?: HeadingLevel; color?: TextColor; display?: TextDisplay; maxLines?: number; wordBreak?: TextWordBreak; textWrap…"
+    },
+    {
+      "name": "heading",
+      "kind": "function",
+      "signature": "heading<Msg>(props: HeadingProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "hover-card": [
@@ -1929,6 +2922,115 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "hoverCard",
       "kind": "function",
       "signature": "hoverCard<Msg>(props: HoverCardProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "indicator": [
+    {
+      "name": "IndicatorState",
+      "kind": "type",
+      "signature": "IndicatorState = 'unchecked' | 'checked' | 'indeterminate'"
+    },
+    {
+      "name": "IndicatorSize",
+      "kind": "type",
+      "signature": "IndicatorSize = 'sm' | 'md'"
+    },
+    {
+      "name": "CheckIndicatorProps",
+      "kind": "type",
+      "signature": "CheckIndicatorProps = Readonly<{ state: 'unchecked' | 'checked'; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered in the mark's slot (e.g. a busy spinner). */ children?: ReadonlyArray<Html>; class?: string; }>"
+    },
+    {
+      "name": "checkIndicator",
+      "kind": "function",
+      "signature": "checkIndicator<Msg>(props: CheckIndicatorProps, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "CheckboxIndicatorProps",
+      "kind": "type",
+      "signature": "CheckboxIndicatorProps = Readonly<{ state: IndicatorState; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered inside the box (e.g. a busy spinner). */ children?: ReadonlyArray<Html>; class?: string; }>"
+    },
+    {
+      "name": "checkboxIndicator",
+      "kind": "function",
+      "signature": "checkboxIndicator<Msg>(props: CheckboxIndicatorProps, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "RadioIndicatorProps",
+      "kind": "type",
+      "signature": "RadioIndicatorProps = Readonly<{ /** A radio has no partial state; anything other than unchecked reads as selected. */ state: IndicatorState; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered inside the circle (e.g. a busy spinner).…"
+    },
+    {
+      "name": "radioIndicator",
+      "kind": "function",
+      "signature": "radioIndicator<Msg>(props: RadioIndicatorProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "info-tip": [
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "value",
+      "signature": "OutMessage: value"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "type",
+      "signature": "OutMessage = typeof OutMessage.Type"
+    },
+    {
+      "name": "init",
+      "kind": "value",
+      "signature": "init: value"
+    },
+    {
+      "name": "update",
+      "kind": "value",
+      "signature": "update: value"
+    },
+    {
+      "name": "InfoTipSize",
+      "kind": "type",
+      "signature": "InfoTipSize = 'xsm' | 'sm' | 'md' | 'lg'"
+    },
+    {
+      "name": "InfoTipSide",
+      "kind": "type",
+      "signature": "InfoTipSide = 'top' | 'right' | 'bottom' | 'left'"
+    },
+    {
+      "name": "InfoTipAlign",
+      "kind": "type",
+      "signature": "InfoTipAlign = 'start' | 'center' | 'end'"
+    },
+    {
+      "name": "InfoTipProps",
+      "kind": "type",
+      "signature": "InfoTipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Content shown in the tooltip. Keep it short and non-interactive. */ content: Html | string; /** Accessible name for the trigger button. Defaults to 'More information'…"
+    },
+    {
+      "name": "infoTip",
+      "kind": "function",
+      "signature": "infoTip<Msg>(props: InfoTipProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "input-group": [
@@ -2141,6 +3243,378 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "label",
       "kind": "function",
       "signature": "label<Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "lightbox": [
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "value",
+      "signature": "OutMessage: value"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "type",
+      "signature": "OutMessage = typeof OutMessage.Type"
+    },
+    {
+      "name": "init",
+      "kind": "value",
+      "signature": "init: value"
+    },
+    {
+      "name": "update",
+      "kind": "value",
+      "signature": "update: value"
+    },
+    {
+      "name": "open",
+      "kind": "value",
+      "signature": "open: value"
+    },
+    {
+      "name": "close",
+      "kind": "value",
+      "signature": "close: value"
+    },
+    {
+      "name": "KEYBOARD_PAN_STEP",
+      "kind": "value",
+      "signature": "KEYBOARD_PAN_STEP: value"
+    },
+    {
+      "name": "LightboxMedia",
+      "kind": "type",
+      "signature": "LightboxMedia = Readonly<{ src: string; alt: string; caption?: string; type?: 'image' | 'video'; }>"
+    },
+    {
+      "name": "LightboxProps",
+      "kind": "type",
+      "signature": "LightboxProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; media: LightboxMedia | ReadonlyArray<LightboxMedia>; hasZoom?: boolean; hasAutoPlay?: boolean; class?: string; }>"
+    },
+    {
+      "name": "lightbox",
+      "kind": "function",
+      "signature": "lightbox<Msg>(props: LightboxProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "link": [
+    {
+      "name": "linkVariants",
+      "kind": "value",
+      "signature": "linkVariants: value"
+    },
+    {
+      "name": "LinkVariants",
+      "kind": "type",
+      "signature": "LinkVariants = VariantProps<typeof linkVariants>"
+    },
+    {
+      "name": "LinkProps",
+      "kind": "type",
+      "signature": "LinkProps<Msg> = Readonly<{ children: ReadonlyArray<Html | string>; href?: string; label?: string; hasUnderline?: boolean; isDisabled?: boolean; isExternalLink?: boolean; newTabLabel?: string; target?: string; rel?: string; download?: string; onClick?: Msg; t…"
+    },
+    {
+      "name": "link",
+      "kind": "function",
+      "signature": "link<Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "list-input": [
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/lib/list-input'"
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/lib/list-input'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/list-input'"
+    },
+    {
+      "name": "moveItem",
+      "kind": "re-export",
+      "signature": "export { moveItem } from '@/lib/list-input'"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from '@/lib/list-input'"
+    },
+    {
+      "name": "resolveColumnTrack",
+      "kind": "re-export",
+      "signature": "export { resolveColumnTrack } from '@/lib/list-input'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/lib/list-input'"
+    },
+    {
+      "name": "ListInputChange",
+      "kind": "re-export",
+      "signature": "export { ListInputChange } from '@/lib/list-input'"
+    },
+    {
+      "name": "ListInputColumn",
+      "kind": "re-export",
+      "signature": "export { ListInputColumn } from '@/lib/list-input'"
+    },
+    {
+      "name": "ListInputRenderContext",
+      "kind": "re-export",
+      "signature": "export { ListInputRenderContext } from '@/lib/list-input'"
+    },
+    {
+      "name": "ListInputValueContext",
+      "kind": "re-export",
+      "signature": "export { ListInputValueContext } from '@/lib/list-input'"
+    },
+    {
+      "name": "InputStatus",
+      "kind": "re-export",
+      "signature": "export { InputStatus } from '@/lib/input-status'"
+    },
+    {
+      "name": "ListInputProps",
+      "kind": "type",
+      "signature": "ListInputProps<T, Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html | string /** Controlled records owned by the parent. */ value: ReadonlyArray…"
+    },
+    {
+      "name": "listInput",
+      "kind": "function",
+      "signature": "listInput<T, Msg>(props: ListInputProps<T, Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "list": [
+    {
+      "name": "ListDensity",
+      "kind": "type",
+      "signature": "ListDensity = 'compact' | 'balanced' | 'spacious'"
+    },
+    {
+      "name": "ListMarkerStyle",
+      "kind": "type",
+      "signature": "ListMarkerStyle = 'none' | 'disc' | 'decimal' | 'circle'"
+    },
+    {
+      "name": "ListEdgeCompensation",
+      "kind": "type",
+      "signature": "ListEdgeCompensation = 'inline'"
+    },
+    {
+      "name": "ListProps",
+      "kind": "type",
+      "signature": "ListProps = Readonly<{ children: ReadonlyArray<Html>; density?: ListDensity; hasDividers?: boolean; edgeCompensation?: ListEdgeCompensation; /** Header content rendered above the list, associated via aria-labelledby. */ header?: Html | string; /** List marker…"
+    },
+    {
+      "name": "list",
+      "kind": "function",
+      "signature": "list<Msg>(props: ListProps, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "ListItemProps",
+      "kind": "type",
+      "signature": "ListItemProps<Msg> = Readonly<{ /** Primary label. A plain string truncates to one line. */ label: Html | string; /** Secondary description under the label; strings truncate to one line. */ description?: Html | string; /** Content rendered before the item (ic…"
+    },
+    {
+      "name": "listItem",
+      "kind": "function",
+      "signature": "listItem<Msg>(props: ListItemProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "log-stream": [
+    {
+      "name": "LogStreamLevel",
+      "kind": "value",
+      "signature": "LogStreamLevel: value"
+    },
+    {
+      "name": "LogStreamLevel",
+      "kind": "type",
+      "signature": "LogStreamLevel = typeof LogStreamLevel.Type"
+    },
+    {
+      "name": "LogEntry",
+      "kind": "type",
+      "signature": "LogEntry = Readonly<{ /** Stable unique key, e.g. `\"req-1042\"`. */ id: string; /** Pre-formatted timestamp, e.g. `\"14:02:11.482\"`. Deterministic. */ timestamp: string; level: LogStreamLevel; message: string; /** Emitting service/component, e.g. `\"api-gateway\"…"
+    },
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "init",
+      "kind": "function",
+      "signature": "init(config: { id: string; /** Initially pinned to the tail. @default false (astryx uncontrolled) */ isFollowing?: boolean; }): Model"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "value",
+      "signature": "OutMessage: value"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "type",
+      "signature": "OutMessage = typeof OutMessage.Type"
+    },
+    {
+      "name": "update",
+      "kind": "function",
+      "signature": "update(model: Model, message: Message): UpdateReturn"
+    },
+    {
+      "name": "LogStreamProps",
+      "kind": "type",
+      "signature": "LogStreamProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Log rows, oldest first (live tails append at the end). */ entries: ReadonlyArray<LogEntry>; /** Visual treatment; 'terminal' is always dark. @default 'default' */ v…"
+    },
+    {
+      "name": "logStream",
+      "kind": "function",
+      "signature": "logStream<Msg>(props: LogStreamProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "markdown": [
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/lib/markdown'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/markdown'"
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/lib/markdown'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/lib/markdown'"
+    },
+    {
+      "name": "parseMarkdownBlocks",
+      "kind": "re-export",
+      "signature": "export { parseMarkdownBlocks } from '@/lib/markdown'"
+    },
+    {
+      "name": "parseMarkdownInline",
+      "kind": "re-export",
+      "signature": "export { parseMarkdownInline } from '@/lib/markdown'"
+    },
+    {
+      "name": "sanitizeMarkdownUrl",
+      "kind": "re-export",
+      "signature": "export { sanitizeMarkdownUrl } from '@/lib/markdown'"
+    },
+    {
+      "name": "MarkdownBlock",
+      "kind": "re-export",
+      "signature": "export { MarkdownBlock } from '@/lib/markdown'"
+    },
+    {
+      "name": "MarkdownInline",
+      "kind": "re-export",
+      "signature": "export { MarkdownInline } from '@/lib/markdown'"
+    },
+    {
+      "name": "MarkdownListItem",
+      "kind": "re-export",
+      "signature": "export { MarkdownListItem } from '@/lib/markdown'"
+    },
+    {
+      "name": "MarkdownSource",
+      "kind": "re-export",
+      "signature": "export { MarkdownSource } from '@/lib/markdown'"
+    },
+    {
+      "name": "MarkdownTableAlign",
+      "kind": "re-export",
+      "signature": "export { MarkdownTableAlign } from '@/lib/markdown'"
+    },
+    {
+      "name": "MarkdownTableCell",
+      "kind": "re-export",
+      "signature": "export { MarkdownTableCell } from '@/lib/markdown'"
+    },
+    {
+      "name": "MarkdownTableRow",
+      "kind": "re-export",
+      "signature": "export { MarkdownTableRow } from '@/lib/markdown'"
+    },
+    {
+      "name": "MarkdownDisplay",
+      "kind": "type",
+      "signature": "MarkdownDisplay = 'block' | 'inline'"
+    },
+    {
+      "name": "MarkdownDensity",
+      "kind": "type",
+      "signature": "MarkdownDensity = 'default' | 'compact'"
+    },
+    {
+      "name": "MarkdownCitationStyle",
+      "kind": "type",
+      "signature": "MarkdownCitationStyle = 'label' | 'number'"
+    },
+    {
+      "name": "MarkdownContentAlign",
+      "kind": "type",
+      "signature": "MarkdownContentAlign = 'start' | 'center'"
+    },
+    {
+      "name": "MarkdownProps",
+      "kind": "type",
+      "signature": "MarkdownProps<Msg> = Readonly<{ /** Markdown submodel state (owns the per-fence CodeBlock models). */ model: Model; toParentMessage: (message: Message) => Msg; /** Markdown source string. */ children: string; display?: MarkdownDisplay; density?: MarkdownDensi…"
+    },
+    {
+      "name": "markdown",
+      "kind": "function",
+      "signature": "markdown<Msg>(props: MarkdownProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "marker": [
@@ -2356,6 +3830,269 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "messageActions<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "metadata-list": [
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/lib/metadata-list'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/metadata-list'"
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/lib/metadata-list'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/lib/metadata-list'"
+    },
+    {
+      "name": "resolveLayout",
+      "kind": "re-export",
+      "signature": "export { resolveLayout } from '@/lib/metadata-list'"
+    },
+    {
+      "name": "MetadataListColumns",
+      "kind": "re-export",
+      "signature": "export { MetadataListColumns } from '@/lib/metadata-list'"
+    },
+    {
+      "name": "MetadataListLabelConfig",
+      "kind": "re-export",
+      "signature": "export { MetadataListLabelConfig } from '@/lib/metadata-list'"
+    },
+    {
+      "name": "MetadataListOrientation",
+      "kind": "re-export",
+      "signature": "export { MetadataListOrientation } from '@/lib/metadata-list'"
+    },
+    {
+      "name": "MetadataListProps",
+      "kind": "type",
+      "signature": "MetadataListProps<Msg> = Readonly<{ model: Behavior.Model; toParentMessage: (message: Behavior.Message) => Msg; /** Stable id — anchors the show-more toggle's aria-controls. */ id: string; /** @default 'single' */ columns?: Behavior.MetadataListColumns; label…"
+    },
+    {
+      "name": "metadataList",
+      "kind": "function",
+      "signature": "metadataList<Msg>(props: MetadataListProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "MetadataListItemProps",
+      "kind": "type",
+      "signature": "MetadataListItemProps = Readonly<{ label: Html | string; icon?: Html; /** Render the label above the value inside a wrapper (top labels and horizontal layouts). The parent MetadataList resolves this. */ stacked?: boolean; children?: ReadonlyArray<Html | strin…"
+    },
+    {
+      "name": "metadataListItem",
+      "kind": "function",
+      "signature": "metadataListItem<Msg>(props: MetadataListItemProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "mobile-nav": [
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "value",
+      "signature": "OutMessage: value"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "type",
+      "signature": "OutMessage = typeof OutMessage.Type"
+    },
+    {
+      "name": "MobileNavSide",
+      "kind": "re-export",
+      "signature": "export { MobileNavSide } from '@/lib/mobile-nav'"
+    },
+    {
+      "name": "ResolvedSide",
+      "kind": "re-export",
+      "signature": "export { ResolvedSide } from '@/lib/mobile-nav'"
+    },
+    {
+      "name": "init",
+      "kind": "value",
+      "signature": "init: value"
+    },
+    {
+      "name": "update",
+      "kind": "value",
+      "signature": "update: value"
+    },
+    {
+      "name": "open",
+      "kind": "value",
+      "signature": "open: value"
+    },
+    {
+      "name": "close",
+      "kind": "value",
+      "signature": "close: value"
+    },
+    {
+      "name": "MobileNavProps",
+      "kind": "type",
+      "signature": "MobileNavProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; content: Html; title?: string; label?: string; width?: number; class?: string; }>"
+    },
+    {
+      "name": "mobileNav",
+      "kind": "function",
+      "signature": "mobileNav<Msg>(props: MobileNavProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "MobileNavToggleProps",
+      "kind": "type",
+      "signature": "MobileNavToggleProps<Msg> = Readonly<{ controls: string; isExpanded: boolean; message: Msg; label?: string; class?: string; }>"
+    },
+    {
+      "name": "mobileNavToggle",
+      "kind": "function",
+      "signature": "mobileNavToggle<Msg>(props: MobileNavToggleProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "more-menu": [
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/ui/dropdown-menu'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/ui/dropdown-menu'"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from '@/ui/dropdown-menu'"
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/ui/dropdown-menu'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/ui/dropdown-menu'"
+    },
+    {
+      "name": "flattenOptions",
+      "kind": "re-export",
+      "signature": "export { flattenOptions } from '@/lib/more-menu'"
+    },
+    {
+      "name": "MoreMenuAction",
+      "kind": "re-export",
+      "signature": "export { MoreMenuAction } from '@/lib/more-menu'"
+    },
+    {
+      "name": "MoreMenuOption",
+      "kind": "re-export",
+      "signature": "export { MoreMenuOption } from '@/lib/more-menu'"
+    },
+    {
+      "name": "MoreMenuProps",
+      "kind": "type",
+      "signature": "MoreMenuProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<MoreMenuOption>; /** Trigger aria-label — the button is always icon-only. @default 'More options' */ label?: string; /** @default 'ghost' */ variant…"
+    },
+    {
+      "name": "moreMenu",
+      "kind": "function",
+      "signature": "moreMenu<Msg>(props: MoreMenuProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "multi-selector": [
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from "
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from "
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from "
+    },
+    {
+      "name": "SELECT_ALL_VALUE",
+      "kind": "re-export",
+      "signature": "export { SELECT_ALL_VALUE } from "
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from "
+    },
+    {
+      "name": "reflect",
+      "kind": "re-export",
+      "signature": "export { reflect } from "
+    },
+    {
+      "name": "reflectOptions",
+      "kind": "re-export",
+      "signature": "export { reflectOptions } from "
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from "
+    },
+    {
+      "name": "MultiSelectorOption",
+      "kind": "type",
+      "signature": "MultiSelectorOption = Readonly<{ value: string label: string }>"
+    },
+    {
+      "name": "MultiSelectorSection",
+      "kind": "type",
+      "signature": "MultiSelectorSection = Readonly<{ title: string options: ReadonlyArray<MultiSelectorOption> }>"
+    },
+    {
+      "name": "MultiSelectorStatus",
+      "kind": "type",
+      "signature": "MultiSelectorStatus = Readonly<{ type: 'error' | 'warning' | 'success' message?: string }>"
+    },
+    {
+      "name": "MultiSelectorProps",
+      "kind": "type",
+      "signature": "MultiSelectorProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a tooltip on the disa…"
+    },
+    {
+      "name": "multiSelector",
+      "kind": "function",
+      "signature": "multiSelector<Msg>(props: MultiSelectorProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "native-select": [
     {
       "name": "NativeSelectOption",
@@ -2433,6 +4170,130 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "navigationMenuDisclosure",
       "kind": "function",
       "signature": "navigationMenuDisclosure<Msg>(props: NavigationMenuDisclosureProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "number-input": [
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/lib/number-input'"
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/lib/number-input'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/number-input'"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from '@/lib/number-input'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/lib/number-input'"
+    },
+    {
+      "name": "NumberInputSize",
+      "kind": "re-export",
+      "signature": "export { NumberInputSize } from '@/lib/number-input'"
+    },
+    {
+      "name": "InputStatus",
+      "kind": "re-export",
+      "signature": "export { InputStatus } from '@/lib/input-status'"
+    },
+    {
+      "name": "NumberInputProps",
+      "kind": "type",
+      "signature": "NumberInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html | string /** The committed value owned by the parent (`null`/`undefined` = em…"
+    },
+    {
+      "name": "NumberInputViewInputs",
+      "kind": "type",
+      "signature": "NumberInputViewInputs = Omit< NumberInputProps<never>, 'model' | 'toParentMessage' >"
+    },
+    {
+      "name": "numberInput",
+      "kind": "function",
+      "signature": "numberInput<Msg>(props: NumberInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "overflow-list": [
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "computeOverflow",
+      "kind": "re-export",
+      "signature": "export { computeOverflow } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "spacingToPx",
+      "kind": "re-export",
+      "signature": "export { spacingToPx } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "collapsedIndices",
+      "kind": "re-export",
+      "signature": "export { collapsedIndices } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "CollapseFrom",
+      "kind": "re-export",
+      "signature": "export { CollapseFrom } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "OverflowBehavior",
+      "kind": "re-export",
+      "signature": "export { OverflowBehavior } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "OverflowListItem",
+      "kind": "re-export",
+      "signature": "export { OverflowListItem } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "SpacingStep",
+      "kind": "re-export",
+      "signature": "export { SpacingStep } from '@/lib/overflow-list'"
+    },
+    {
+      "name": "OverflowListProps",
+      "kind": "type",
+      "signature": "OverflowListProps<Msg> = Readonly<{ model: Behavior.Model; toParentMessage: (message: Behavior.Message) => Msg; /** @default 2 — spacing-step gap between items. */ gap?: Behavior.SpacingStep; /** @default 0 — floor: always show at least this many items. */ mi…"
+    },
+    {
+      "name": "overflowList",
+      "kind": "function",
+      "signature": "overflowList<Msg>(props: OverflowListProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "pagination": [
@@ -2577,6 +4438,173 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "popover",
       "kind": "function",
       "signature": "popover<Msg>(props: PopoverProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "power-search": [
+    {
+      "name": "EnumItem",
+      "kind": "type",
+      "signature": "EnumItem = Readonly<{ value: string; label: string }>"
+    },
+    {
+      "name": "PowerSearchEntity",
+      "kind": "type",
+      "signature": "PowerSearchEntity = Readonly<{ id: string; label: string; photo?: string; }>"
+    },
+    {
+      "name": "SearchableItem",
+      "kind": "type",
+      "signature": "SearchableItem = Readonly<{ id: string; label: string; photo?: string; auxiliaryData?: unknown; }>"
+    },
+    {
+      "name": "SearchSource",
+      "kind": "type",
+      "signature": "SearchSource = Readonly<{ search: (query: string) => ReadonlyArray<SearchableItem>; bootstrap?: () => ReadonlyArray<SearchableItem>; }>"
+    },
+    {
+      "name": "DateTimeRangePart",
+      "kind": "type",
+      "signature": "DateTimeRangePart = | Readonly<{ type: 'NOW' }> | Readonly<{ type: 'ABSOLUTE'; unixSeconds: number }> | Readonly<{ type: 'RELATIVE'; backValue: number; unit: | 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year'; }>"
+    },
+    {
+      "name": "DateTimeRange",
+      "kind": "type",
+      "signature": "DateTimeRange = Readonly<{ start: DateTimeRangePart; end: DateTimeRangePart; }>"
+    },
+    {
+      "name": "OperatorValue",
+      "kind": "type",
+      "signature": "OperatorValue = | Readonly<{ type: 'empty' }> | Readonly<{ type: 'string'; searchSource?: SearchSource }> | Readonly<{ type: 'string_list'; searchSource?: SearchSource }> | Readonly<{ type: 'integer' }> | Readonly<{ type: 'float' }> | Readonly<{ type: 'time' …"
+    },
+    {
+      "name": "RelativeDateFilterPreset",
+      "kind": "type",
+      "signature": "RelativeDateFilterPreset = Readonly<{ key: string; label: string; range: DateTimeRange; }>"
+    },
+    {
+      "name": "PowerSearchOperator",
+      "kind": "type",
+      "signature": "PowerSearchOperator = Readonly<{ key: string; value: OperatorValue }> & (Readonly<{ label: string }> | Readonly<{ i18nKey: string }>)"
+    },
+    {
+      "name": "PowerSearchField",
+      "kind": "type",
+      "signature": "PowerSearchField = Readonly<{ key: string; label: string; operators: ReadonlyArray<PowerSearchOperator>; icon?: string; defaultOperator?: string; group?: string; description?: string; typeaheadAliases?: ReadonlyArray<string>; typeaheadMinQueryLength?: number;…"
+    },
+    {
+      "name": "FilterValue",
+      "kind": "type",
+      "signature": "FilterValue = | Readonly<{ type: 'empty' }> | Readonly<{ type: 'string'; value: string }> | Readonly<{ type: 'string_list'; value: ReadonlyArray<string> }> | Readonly<{ type: 'integer'; value: number }> | Readonly<{ type: 'float'; value: number }> | Readonly<…"
+    },
+    {
+      "name": "PowerSearchFilter",
+      "kind": "type",
+      "signature": "PowerSearchFilter = Readonly<{ field: string; operator: string; value: FilterValue; isReadOnly?: boolean; }>"
+    },
+    {
+      "name": "PartialFilter",
+      "kind": "type",
+      "signature": "PartialFilter = Readonly<{ field: string; operator?: string; value?: FilterValue; }>"
+    },
+    {
+      "name": "PowerSearchConfig",
+      "kind": "type",
+      "signature": "PowerSearchConfig = Readonly<{ name: string; fields: ReadonlyArray<PowerSearchField>; contentSearchFieldKey?: string; }>"
+    },
+    {
+      "name": "PowerSearchChangeType",
+      "kind": "type",
+      "signature": "PowerSearchChangeType = 'add' | 'edit' | 'remove'"
+    },
+    {
+      "name": "resolveOperatorLabel",
+      "kind": "function",
+      "signature": "resolveOperatorLabel(operator: PowerSearchOperator): string"
+    },
+    {
+      "name": "InternalPowerSearchConfig",
+      "kind": "type",
+      "signature": "InternalPowerSearchConfig = Readonly<{ name: string; fields: ReadonlyArray<PowerSearchField>; contentSearchFieldKey?: string; fieldsByKey: ReadonlyMap<string, PowerSearchField>; /** The portion of the fields array that precedes contentSearchFieldKey (astryx e…"
+    },
+    {
+      "name": "createInternalConfig",
+      "kind": "function",
+      "signature": "createInternalConfig(config: PowerSearchConfig): InternalPowerSearchConfig"
+    },
+    {
+      "name": "resolveDateTimeRangePart",
+      "kind": "function",
+      "signature": "resolveDateTimeRangePart(part: DateTimeRangePart, nowSeconds: number = Date.now() / 1000): number"
+    },
+    {
+      "name": "formatFilterValue",
+      "kind": "function",
+      "signature": "formatFilterValue(config: InternalPowerSearchConfig, operatorValue: OperatorValue, filterValue: FilterValue | undefined, maxLength: number): string"
+    },
+    {
+      "name": "PowerSearchSuggestion",
+      "kind": "type",
+      "signature": "PowerSearchSuggestion = | Readonly<{ kind: 'group'; label: string }> | Readonly<{ kind: 'field'; field: PowerSearchField }> | Readonly<{ kind: 'operator'; field: PowerSearchField; operator: PowerSearchOperator; label: string; }> | Readonly<{ kind: 'value'; fi…"
+    },
+    {
+      "name": "FieldDefinition",
+      "kind": "type",
+      "signature": "FieldDefinition = Readonly<{ key: string; type: FieldDefinitionType; label?: string; enumValues?: ReadonlyArray<EnumItem>; }>"
+    },
+    {
+      "name": "createPowerSearchConfig",
+      "kind": "function",
+      "signature": "createPowerSearchConfig(definitions: ReadonlyArray<FieldDefinition>, configName?: string): { config: PowerSearchConfig; applyFilters: <Row extends Record<string, unknown>>( filters: ReadonlyArray<PowerSearchFilter>, data: ReadonlyArray<Row>, ) => Row[]; }"
+    },
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "init",
+      "kind": "function",
+      "signature": "init(config: { id: string }): Model"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "value",
+      "signature": "OutMessage: value"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "type",
+      "signature": "OutMessage = typeof OutMessage.Type"
+    },
+    {
+      "name": "update",
+      "kind": "function",
+      "signature": "update(model: Model, message: Message, config: InternalPowerSearchConfig, filters: ReadonlyArray<PowerSearchFilter>, resultCount: number | null = null): UpdateReturn"
+    },
+    {
+      "name": "PowerSearchProps",
+      "kind": "type",
+      "signature": "PowerSearchProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Controlled filter list (astryx `filters` prop + `onChange`). */ filters: ReadonlyArray<PowerSearchFilter>; config: InternalPowerSearchConfig; placeholder?: string…"
+    },
+    {
+      "name": "powerSearch",
+      "kind": "function",
+      "signature": "powerSearch<Msg>(props: PowerSearchProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "progress": [
@@ -2727,6 +4755,100 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "scrollArea<Msg>(props: ScrollAreaProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "section": [
+    {
+      "name": "SectionVariant",
+      "kind": "type",
+      "signature": "SectionVariant = 'section' | 'transparent' | 'muted'"
+    },
+    {
+      "name": "SectionDivider",
+      "kind": "type",
+      "signature": "SectionDivider = 'top' | 'bottom' | 'start' | 'end'"
+    },
+    {
+      "name": "SectionSpacing",
+      "kind": "type",
+      "signature": "SectionSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10"
+    },
+    {
+      "name": "SectionSizeValue",
+      "kind": "type",
+      "signature": "SectionSizeValue = number | string"
+    },
+    {
+      "name": "SectionProps",
+      "kind": "type",
+      "signature": "SectionProps = Readonly<{ /** * Visual variant. * - `section`: surface (card) background (default) * - `transparent`: no background * - `muted`: muted background, draws attention to a region */ variant?: SectionVariant; /** Divider borders to apply on the giv…"
+    },
+    {
+      "name": "section",
+      "kind": "function",
+      "signature": "section<Msg>(props: SectionProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "segmented-control": [
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from "
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from "
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from "
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from "
+    },
+    {
+      "name": "SegmentedControlSize",
+      "kind": "type",
+      "signature": "SegmentedControlSize = 'sm' | 'md' | 'lg'"
+    },
+    {
+      "name": "SegmentedControlLayout",
+      "kind": "type",
+      "signature": "SegmentedControlLayout = 'hug' | 'fill'"
+    },
+    {
+      "name": "SegmentedControlItem",
+      "kind": "type",
+      "signature": "SegmentedControlItem<Value extends string = string> = Readonly<{ value: Value /** Visible label; also the accessible name when `isLabelHidden` is set. */ label: string /** Icon element displayed before the label. */ icon?: Html isLabelHidden?: boolean isDisab…"
+    },
+    {
+      "name": "SegmentedControlProps",
+      "kind": "type",
+      "signature": "SegmentedControlProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg /** The currently selected value (controlled). */ value: Value /** Accessible label for the radio group (used as aria-label, never rendered v…"
+    },
+    {
+      "name": "SegmentedControlBundle",
+      "kind": "type",
+      "signature": "SegmentedControlBundle<Value extends string> = Readonly<{ update: ReturnType<typeof createBehavior<Value>>['update'] segmentedControl: <Msg>( props: SegmentedControlProps<Value, Msg>, h: HtmlBuilder<Msg>, ) => Html }>"
+    },
+    {
+      "name": "create",
+      "kind": "function",
+      "signature": "create<Value extends string = string>(): SegmentedControlBundle<Value>"
+    },
+    {
+      "name": "update",
+      "kind": "value",
+      "signature": "update: value"
+    },
+    {
+      "name": "segmentedControl",
+      "kind": "value",
+      "signature": "segmentedControl: value"
+    }
+  ],
   "select": [
     {
       "name": "Model",
@@ -2797,6 +4919,38 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "select",
       "kind": "value",
       "signature": "select: value"
+    }
+  ],
+  "selectable-card": [
+    {
+      "name": "CardElevation",
+      "kind": "re-export",
+      "signature": "export { CardElevation } from '@/lib/card-surface'"
+    },
+    {
+      "name": "CardPadding",
+      "kind": "re-export",
+      "signature": "export { CardPadding } from '@/lib/card-surface'"
+    },
+    {
+      "name": "CardVariant",
+      "kind": "re-export",
+      "signature": "export { CardVariant } from '@/lib/card-surface'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/clickable-card'"
+    },
+    {
+      "name": "SelectableCardProps",
+      "kind": "type",
+      "signature": "SelectableCardProps<Msg> = Readonly<{ /** Accessibility label for the card, applied to the hidden checkbox. */ label: string; /** Controlled selection state — the parent owns it. */ isSelected: boolean; /** Message emitted when the card requests a toggle. */ …"
+    },
+    {
+      "name": "selectableCard",
+      "kind": "function",
+      "signature": "selectableCard<Msg>(props: SelectableCardProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "separator": [
@@ -2921,6 +5075,103 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "sheet",
       "kind": "function",
       "signature": "sheet<Msg>(props: SheetProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "side-nav": [
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/side-nav'"
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/lib/side-nav'"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from '@/lib/side-nav'"
+    },
+    {
+      "name": "HEADING_MENU_KEY",
+      "kind": "re-export",
+      "signature": "export { HEADING_MENU_KEY } from '@/lib/side-nav'"
+    },
+    {
+      "name": "flyoutKey",
+      "kind": "re-export",
+      "signature": "export { flyoutKey } from '@/lib/side-nav'"
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/lib/side-nav'"
+    },
+    {
+      "name": "isItemCollapsed",
+      "kind": "re-export",
+      "signature": "export { isItemCollapsed } from '@/lib/side-nav'"
+    },
+    {
+      "name": "menuFor",
+      "kind": "re-export",
+      "signature": "export { menuFor } from '@/lib/side-nav'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/lib/side-nav'"
+    },
+    {
+      "name": "visibleWidth",
+      "kind": "re-export",
+      "signature": "export { visibleWidth } from '@/lib/side-nav'"
+    },
+    {
+      "name": "InitConfig",
+      "kind": "re-export",
+      "signature": "export { InitConfig } from '@/lib/side-nav'"
+    },
+    {
+      "name": "SideNavItemData",
+      "kind": "type",
+      "signature": "SideNavItemData = Readonly<{ id: string; label: string; icon?: string; /** Icon shown instead of `icon` while the item is selected (astryx selectedIcon). */ selectedIcon?: string; isSelected?: boolean; isDisabled?: boolean; href?: string; /** Invoked for item…"
+    },
+    {
+      "name": "SideNavMenuItemData",
+      "kind": "type",
+      "signature": "SideNavMenuItemData = Readonly<{ label: string; href?: string; onSelect?: boolean; icon?: string; isDisabled?: boolean; }>"
+    },
+    {
+      "name": "SideNavHeadingData",
+      "kind": "type",
+      "signature": "SideNavHeadingData = Readonly<{ heading: string; icon?: Html; headingHref?: string; superheading?: string; superheadingHref?: string; subheading?: string; subheadingHref?: string; headerEndContent?: Html; menu?: ReadonlyArray<SideNavMenuItemData>; }>"
+    },
+    {
+      "name": "SideNavSectionData",
+      "kind": "type",
+      "signature": "SideNavSectionData = Readonly<{ title?: string; subtitle?: string; isHeaderHidden?: boolean; endContent?: Html; items: ReadonlyArray<SideNavItemData>; }>"
+    },
+    {
+      "name": "ViewInputs",
+      "kind": "type",
+      "signature": "ViewInputs = Readonly<{ /** Bare top-level items (astryx SideNav children outside a Section). */ items?: ReadonlyArray<SideNavItemData>; sections?: ReadonlyArray<SideNavSectionData>; heading?: SideNavHeadingData; topContent?: Html; footer?: Html; /** Small ic…"
+    },
+    {
+      "name": "view",
+      "kind": "value",
+      "signature": "view: value"
+    },
+    {
+      "name": "SideNavProps",
+      "kind": "type",
+      "signature": "SideNavProps<Msg> = ViewInputs & Readonly<{ model: SideNavLib.Model; toParentMessage: (message: SideNavLib.Message) => Msg; }>"
+    },
+    {
+      "name": "sideNav",
+      "kind": "function",
+      "signature": "sideNav<Msg>(props: SideNavProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "sidebar": [
@@ -3268,6 +5519,209 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "spinner<Msg>(props: SpinnerProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "stack": [
+    {
+      "name": "StackDirection",
+      "kind": "type",
+      "signature": "StackDirection = 'horizontal' | 'vertical'"
+    },
+    {
+      "name": "StackMainAlignment",
+      "kind": "type",
+      "signature": "StackMainAlignment = | 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly'"
+    },
+    {
+      "name": "StackCrossAlignment",
+      "kind": "type",
+      "signature": "StackCrossAlignment = 'start' | 'center' | 'end' | 'stretch'"
+    },
+    {
+      "name": "StackAlignment",
+      "kind": "type",
+      "signature": "StackAlignment = StackMainAlignment | StackCrossAlignment"
+    },
+    {
+      "name": "StackWrap",
+      "kind": "type",
+      "signature": "StackWrap = 'nowrap' | 'wrap' | 'wrap-reverse'"
+    },
+    {
+      "name": "StackSpacing",
+      "kind": "type",
+      "signature": "StackSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10"
+    },
+    {
+      "name": "StackItemSize",
+      "kind": "type",
+      "signature": "StackItemSize = 'static' | 'fill'"
+    },
+    {
+      "name": "StackItemCrossAlignSelf",
+      "kind": "type",
+      "signature": "StackItemCrossAlignSelf = 'start' | 'center' | 'end' | 'stretch'"
+    },
+    {
+      "name": "StackSizeValue",
+      "kind": "type",
+      "signature": "StackSizeValue = number | string"
+    },
+    {
+      "name": "StackElement",
+      "kind": "type",
+      "signature": "StackElement = | 'article' | 'aside' | 'div' | 'fieldset' | 'footer' | 'form' | 'header' | 'li' | 'main' | 'nav' | 'ol' | 'section' | 'span' | 'ul'"
+    },
+    {
+      "name": "StackProps",
+      "kind": "type",
+      "signature": "StackProps = Readonly<{ /** * Direction of the stack layout. * - `horizontal`: items flow left-to-right (hStack) * - `vertical`: items flow top-to-bottom (vStack, the default) */ direction?: StackDirection; /** * Horizontal alignment of items. * - `horizontal…"
+    },
+    {
+      "name": "stack",
+      "kind": "function",
+      "signature": "stack<Msg>(props: StackProps, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "hStack",
+      "kind": "function",
+      "signature": "hStack<Msg>(props: Omit<StackProps, 'direction'>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "vStack",
+      "kind": "function",
+      "signature": "vStack<Msg>(props: Omit<StackProps, 'direction'>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "StackItemProps",
+      "kind": "type",
+      "signature": "StackItemProps = Readonly<{ /** Overrides the parent stack's cross-axis alignment for this item. */ crossAlignSelf?: StackItemCrossAlignSelf; /** * Size behavior within the stack. * - `static`: intrinsic size, never grows or shrinks (default) * - `fill`: grow…"
+    },
+    {
+      "name": "stackItem",
+      "kind": "function",
+      "signature": "stackItem<Msg>(props: StackItemProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "stat": [
+    {
+      "name": "StatDeltaDirection",
+      "kind": "type",
+      "signature": "StatDeltaDirection = 'up' | 'down' | 'flat'"
+    },
+    {
+      "name": "StatDeltaSentiment",
+      "kind": "type",
+      "signature": "StatDeltaSentiment = 'positive' | 'negative' | 'neutral'"
+    },
+    {
+      "name": "StatSize",
+      "kind": "type",
+      "signature": "StatSize = 'sm' | 'md' | 'lg'"
+    },
+    {
+      "name": "StatDelta",
+      "kind": "type",
+      "signature": "StatDelta = Readonly<{ /** Pre-formatted change text, e.g. \"+12.4%\" or \"-8 ms\". */ value: string; /** Trend direction. Picks the glyph and the default sentiment. */ direction: StatDeltaDirection; /** * Overrides the direction-to-color mapping for inverted met…"
+    },
+    {
+      "name": "StatProps",
+      "kind": "type",
+      "signature": "StatProps = Readonly<{ /** Metric name shown above the value, e.g. \"Total requests\". */ label: string; /** The headline metric, rendered large with tabular numerals. */ value: string; /** Change indicator rendered next to the value. */ delta?: StatDelta; /** …"
+    },
+    {
+      "name": "stat",
+      "kind": "function",
+      "signature": "stat<Msg>(props: StatProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "status-dot": [
+    {
+      "name": "statusDotVariants",
+      "kind": "value",
+      "signature": "statusDotVariants: value"
+    },
+    {
+      "name": "StatusDotVariants",
+      "kind": "type",
+      "signature": "StatusDotVariants = VariantProps<typeof statusDotVariants>"
+    },
+    {
+      "name": "StatusDotProps",
+      "kind": "type",
+      "signature": "StatusDotProps = Readonly<{ /** The semantic color variant. */ variant: NonNullable<StatusDotVariants['variant']>; /** Accessible label describing the status (the dot's aria-label). */ label: string; /** Pulses the dot to indicate activity; honors prefers-red…"
+    },
+    {
+      "name": "statusDot",
+      "kind": "function",
+      "signature": "statusDot<Msg>(props: StatusDotProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "stepper": [
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from "
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from "
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from "
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from "
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from "
+    },
+    {
+      "name": "StepperOrientation",
+      "kind": "type",
+      "signature": "StepperOrientation = 'horizontal' | 'vertical'"
+    },
+    {
+      "name": "StepperIndicatorPosition",
+      "kind": "type",
+      "signature": "StepperIndicatorPosition = 'separated' | 'on-track'"
+    },
+    {
+      "name": "StepperDensity",
+      "kind": "type",
+      "signature": "StepperDensity = 'compact' | 'balanced' | 'spacious'"
+    },
+    {
+      "name": "StepperCollapsedVariant",
+      "kind": "type",
+      "signature": "StepperCollapsedVariant = | 'withLabelAndControls' | 'withLabel' | 'hiddenLabel'"
+    },
+    {
+      "name": "StepperStepStatus",
+      "kind": "type",
+      "signature": "StepperStepStatus = StepperStatus"
+    },
+    {
+      "name": "StepperStep",
+      "kind": "type",
+      "signature": "StepperStep<Msg> = Readonly<{ label: string description?: string status?: StepperStepStatus isDisabled?: boolean isOptional?: boolean /** 'auto' (default): number while upcoming, check once completed, current ring while active. 'number': always a number badge…"
+    },
+    {
+      "name": "StepperProps",
+      "kind": "type",
+      "signature": "StepperProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg /** Zero-based active step (controlled by the parent). */ activeStep: number steps: ReadonlyArray<StepperStep<Msg>> orientation?: StepperOrientation /** 'separated': bar se…"
+    },
+    {
+      "name": "stepper",
+      "kind": "function",
+      "signature": "stepper<Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "switch": [
     {
       "name": "SwitchSize",
@@ -3424,6 +5878,73 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "tabs: value"
     }
   ],
+  "text": [
+    {
+      "name": "TextType",
+      "kind": "type",
+      "signature": "TextType = | 'body' | 'large' | 'label' | 'supporting' | 'code' | 'display-1' | 'display-2' | 'display-3' | 'inherit'"
+    },
+    {
+      "name": "TextSize",
+      "kind": "type",
+      "signature": "TextSize = | '4xs' | '3xs' | '2xs' | 'xsm' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl'"
+    },
+    {
+      "name": "TextColor",
+      "kind": "type",
+      "signature": "TextColor = | 'primary' | 'secondary' | 'disabled' | 'placeholder' | 'accent' | 'inherit'"
+    },
+    {
+      "name": "TextWeight",
+      "kind": "type",
+      "signature": "TextWeight = 'normal' | 'medium' | 'semibold' | 'bold'"
+    },
+    {
+      "name": "TextDisplay",
+      "kind": "type",
+      "signature": "TextDisplay = 'inline' | 'block'"
+    },
+    {
+      "name": "TextJustify",
+      "kind": "type",
+      "signature": "TextJustify = 'start' | 'center' | 'end'"
+    },
+    {
+      "name": "TextWordBreak",
+      "kind": "type",
+      "signature": "TextWordBreak = 'break-word' | 'break-all'"
+    },
+    {
+      "name": "TextWrap",
+      "kind": "type",
+      "signature": "TextWrap = 'wrap' | 'nowrap' | 'balance' | 'pretty'"
+    },
+    {
+      "name": "TextElement",
+      "kind": "type",
+      "signature": "TextElement = 'span' | 'p' | 'div' | 'label' | 'h1' | 'h2' | 'h3'"
+    },
+    {
+      "name": "textVariants",
+      "kind": "value",
+      "signature": "textVariants: value"
+    },
+    {
+      "name": "TextVariants",
+      "kind": "type",
+      "signature": "TextVariants = VariantProps<typeof textVariants>"
+    },
+    {
+      "name": "TextProps",
+      "kind": "type",
+      "signature": "TextProps = Readonly<{ children: ReadonlyArray<Html | string>; type?: TextType; size?: TextSize; color?: TextColor; weight?: TextWeight; display?: TextDisplay; maxLines?: number; wordBreak?: TextWordBreak; textWrap?: TextWrap; justify?: TextJustify; hasCapsiz…"
+    },
+    {
+      "name": "text",
+      "kind": "function",
+      "signature": "text<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "textarea": [
     {
       "name": "TextareaProps",
@@ -3434,6 +5955,214 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "textarea",
       "kind": "function",
       "signature": "textarea<Msg>(props: TextareaProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "thumbnail": [
+    {
+      "name": "ThumbnailShowRemoveOn",
+      "kind": "type",
+      "signature": "ThumbnailShowRemoveOn = 'always' | 'hover'"
+    },
+    {
+      "name": "ThumbnailProps",
+      "kind": "type",
+      "signature": "ThumbnailProps<Msg> = Readonly<{ /** Image source. When omitted, the thumbnail shows its placeholder state. */ src?: string; /** Alt text for the image. */ alt?: string; /** Human-readable name shown in tooltips and used in accessible labels. */ label?: strin…"
+    },
+    {
+      "name": "thumbnail",
+      "kind": "function",
+      "signature": "thumbnail<Msg>(props: ThumbnailProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "time-input": [
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/lib/time-input'"
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/lib/time-input'"
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/time-input'"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from '@/lib/time-input'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/lib/time-input'"
+    },
+    {
+      "name": "TimeValue",
+      "kind": "re-export",
+      "signature": "export { TimeValue } from '@/lib/time-input'"
+    },
+    {
+      "name": "InputStatus",
+      "kind": "re-export",
+      "signature": "export { InputStatus } from '@/lib/input-status'"
+    },
+    {
+      "name": "TimeInputProps",
+      "kind": "type",
+      "signature": "TimeInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html | string /** The committed value owned by the parent, as \"HH:MM\" / \"HH:MM:SS\". …"
+    },
+    {
+      "name": "TimeInputViewInputs",
+      "kind": "type",
+      "signature": "TimeInputViewInputs = Omit< TimeInputProps<never>, 'model' | 'toParentMessage' >"
+    },
+    {
+      "name": "timeInput",
+      "kind": "function",
+      "signature": "timeInput<Msg>(props: TimeInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "timer": [
+    {
+      "name": "TimerFormat",
+      "kind": "type",
+      "signature": "TimerFormat = 'elapsed' | 'clock'"
+    },
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "init",
+      "kind": "function",
+      "signature": "init(config: { id: string; startTimeMs?: number; format?: TimerFormat; /** Clock override for deterministic previews/tests. Defaults to Date.now(). */ nowMs?: number; }): Model"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "update",
+      "kind": "function",
+      "signature": "update(model: Model, message: Message): UpdateReturn"
+    },
+    {
+      "name": "subscriptions",
+      "kind": "value",
+      "signature": "subscriptions: value"
+    },
+    {
+      "name": "TimerProps",
+      "kind": "type",
+      "signature": "TimerProps<Msg> = Readonly<{ model: Model; /** Semantic text type. @default 'supporting' */ type?: AstryxTextType; /** Font size override; keeps the type's line height. */ size?: AstryxTextSize; /** Text color. @default 'secondary' */ color?: AstryxTextColor;…"
+    },
+    {
+      "name": "timer",
+      "kind": "function",
+      "signature": "timer<Msg>(props: TimerProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "timestamp": [
+    {
+      "name": "InstantFormat",
+      "kind": "re-export",
+      "signature": "export { InstantFormat } from '@/lib/timestamp-format'"
+    },
+    {
+      "name": "TimestampFormat",
+      "kind": "re-export",
+      "signature": "export { TimestampFormat } from '@/lib/timestamp-format'"
+    },
+    {
+      "name": "TimestampTooltipEntry",
+      "kind": "re-export",
+      "signature": "export { TimestampTooltipEntry } from '@/lib/timestamp-format'"
+    },
+    {
+      "name": "TimestampTooltipFormat",
+      "kind": "re-export",
+      "signature": "export { TimestampTooltipFormat } from '@/lib/timestamp-format'"
+    },
+    {
+      "name": "formatInstant",
+      "kind": "re-export",
+      "signature": "export { formatInstant } from '@/lib/timestamp-format'"
+    },
+    {
+      "name": "formatRelativeTime",
+      "kind": "re-export",
+      "signature": "export { formatRelativeTime } from '@/lib/timestamp-format'"
+    },
+    {
+      "name": "formatTooltipLines",
+      "kind": "re-export",
+      "signature": "export { formatTooltipLines } from '@/lib/timestamp-format'"
+    },
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "parseValueMs",
+      "kind": "function",
+      "signature": "parseValueMs(value: string | number): number"
+    },
+    {
+      "name": "init",
+      "kind": "function",
+      "signature": "init(config: { id: string; value: string | number; format?: TimestampFormat; autoThreshold?: number; isLive?: boolean; nowMs?: number; }): Model"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "update",
+      "kind": "function",
+      "signature": "update(model: Model, message: Message): UpdateReturn"
+    },
+    {
+      "name": "subscriptions",
+      "kind": "value",
+      "signature": "subscriptions: value"
+    },
+    {
+      "name": "TimestampProps",
+      "kind": "type",
+      "signature": "TimestampProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Semantic text type. @default 'supporting' */ type?: AstryxTextType; size?: AstryxTextSize; /** Text color. @default 'secondary' */ color?: AstryxTextColor; weight?:…"
+    },
+    {
+      "name": "timestamp",
+      "kind": "function",
+      "signature": "timestamp<Msg>(props: TimestampProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "toast": [
@@ -3532,6 +6261,137 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "toggle<Msg>(props: ToggleProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "token": [
+    {
+      "name": "TokenColor",
+      "kind": "type",
+      "signature": "TokenColor = | 'default' | 'gray' | 'red' | 'orange' | 'yellow' | 'green' | 'teal' | 'cyan' | 'blue' | 'purple' | 'pink'"
+    },
+    {
+      "name": "TokenSize",
+      "kind": "type",
+      "signature": "TokenSize = 'sm' | 'md' | 'lg'"
+    },
+    {
+      "name": "TokenProps",
+      "kind": "type",
+      "signature": "TokenProps<Msg> = Readonly<{ /** Text shown inside the token. */ label: string; /** Semantic colorway; 'default' is the neutral gray chip. */ color?: TokenColor; /** Chip height: sm 20px, md 24px, lg 28px. */ size?: TokenSize; /** Leading glyph, e.g. `h => Ic…"
+    },
+    {
+      "name": "token",
+      "kind": "function",
+      "signature": "token<Msg>(props: TokenProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "tokenizer": [
+    {
+      "name": "CREATE_ID_PREFIX",
+      "kind": "re-export",
+      "signature": "export { CREATE_ID_PREFIX } from "
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from "
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from "
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from "
+    },
+    {
+      "name": "Token",
+      "kind": "re-export",
+      "signature": "export { type Token } from "
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from "
+    },
+    {
+      "name": "reflect",
+      "kind": "re-export",
+      "signature": "export { reflect } from "
+    },
+    {
+      "name": "reflectItems",
+      "kind": "re-export",
+      "signature": "export { reflectItems } from "
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from "
+    },
+    {
+      "name": "TokenizerStatus",
+      "kind": "type",
+      "signature": "TokenizerStatus = Readonly<{ type: 'error' | 'warning' | 'success' message?: string }>"
+    },
+    {
+      "name": "TokenizerProps",
+      "kind": "type",
+      "signature": "TokenizerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean isReadOnly?: boolean status?: TokenizerStatus st…"
+    },
+    {
+      "name": "tokenizer",
+      "kind": "function",
+      "signature": "tokenizer<Msg>(props: TokenizerProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "toolbar": [
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from "
+    },
+    {
+      "name": "TOOLBAR_EDGE_COMP_ATTR",
+      "kind": "re-export",
+      "signature": "export { TOOLBAR_EDGE_COMP_ATTR } from "
+    },
+    {
+      "name": "ToolbarSize",
+      "kind": "type",
+      "signature": "ToolbarSize = 'sm' | 'md' | 'lg'"
+    },
+    {
+      "name": "ToolbarOrientation",
+      "kind": "type",
+      "signature": "ToolbarOrientation = 'horizontal' | 'vertical'"
+    },
+    {
+      "name": "ToolbarVariant",
+      "kind": "type",
+      "signature": "ToolbarVariant = 'transparent' | 'surface' | 'muted'"
+    },
+    {
+      "name": "ToolbarDivider",
+      "kind": "type",
+      "signature": "ToolbarDivider = 'top' | 'bottom' | 'start' | 'end'"
+    },
+    {
+      "name": "ToolbarGap",
+      "kind": "type",
+      "signature": "ToolbarGap = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10"
+    },
+    {
+      "name": "ToolbarProps",
+      "kind": "type",
+      "signature": "ToolbarProps<Msg> = Readonly<{ /** Accessible label for the toolbar (aria-label). */ label: string /** Content aligned to the start (left in LTR). */ startContent?: Html | ReadonlyArray<Html | string> /** Centered content. When present, switches the layout to…"
+    },
+    {
+      "name": "toolbar",
+      "kind": "function",
+      "signature": "toolbar<Msg>(props: ToolbarProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "tooltip": [
     {
       "name": "Model",
@@ -3604,6 +6464,404 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "tooltip<Msg>(props: TooltipProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "top-nav": [
+    {
+      "name": "dropdownMenuKey",
+      "kind": "re-export",
+      "signature": "export { dropdownMenuKey } from \"@/lib/top-nav\""
+    },
+    {
+      "name": "HEADING_MENU_KEY",
+      "kind": "re-export",
+      "signature": "export { HEADING_MENU_KEY } from \"@/lib/top-nav\""
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from \"@/lib/top-nav\""
+    },
+    {
+      "name": "isMenuOpen",
+      "kind": "re-export",
+      "signature": "export { isMenuOpen } from \"@/lib/top-nav\""
+    },
+    {
+      "name": "menuFor",
+      "kind": "re-export",
+      "signature": "export { menuFor } from \"@/lib/top-nav\""
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from \"@/lib/top-nav\""
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from \"@/lib/top-nav\""
+    },
+    {
+      "name": "InitConfig",
+      "kind": "re-export",
+      "signature": "export { InitConfig } from \"@/lib/top-nav\""
+    },
+    {
+      "name": "TopNavMenuKind",
+      "kind": "re-export",
+      "signature": "export { TopNavMenuKind } from \"@/lib/top-nav\""
+    },
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from \"@/lib/top-nav\""
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from \"@/lib/top-nav\""
+    },
+    {
+      "name": "TopNavItemData",
+      "kind": "type",
+      "signature": "TopNavItemData = Readonly<{ kind?: \"item\"; label: string; href?: string; icon?: string; isSelected?: boolean; isDisabled?: boolean; isIconOnly?: boolean; onSelect?: boolean; }>"
+    },
+    {
+      "name": "TopNavMenuItemData",
+      "kind": "type",
+      "signature": "TopNavMenuItemData = Readonly<{ title: string; description?: string; icon?: Html; href?: string; onSelect?: boolean; }>"
+    },
+    {
+      "name": "TopNavMenuData",
+      "kind": "type",
+      "signature": "TopNavMenuData = Readonly<{ kind: \"menu\"; label: string; items: ReadonlyArray<TopNavMenuItemData>; }>"
+    },
+    {
+      "name": "TopNavMegaMenuItemData",
+      "kind": "type",
+      "signature": "TopNavMegaMenuItemData = Readonly<{ title: string; description?: string; icon?: Html; href?: string; onSelect?: boolean; }>"
+    },
+    {
+      "name": "TopNavMegaMenuFeaturedCardData",
+      "kind": "type",
+      "signature": "TopNavMegaMenuFeaturedCardData = Readonly<{ title: string; description?: string; image?: string; imageAlt?: string; linkLabel?: string; linkHref?: string; children?: Html; }>"
+    },
+    {
+      "name": "TopNavMegaMenuData",
+      "kind": "type",
+      "signature": "TopNavMegaMenuData = Readonly<{ kind: \"megaMenu\"; label: string; items: ReadonlyArray<TopNavMegaMenuItemData>; featured?: TopNavMegaMenuFeaturedCardData; }>"
+    },
+    {
+      "name": "TopNavEntry",
+      "kind": "type",
+      "signature": "TopNavEntry = TopNavItemData | TopNavMenuData | TopNavMegaMenuData"
+    },
+    {
+      "name": "TopNavHeadingMenuItemData",
+      "kind": "type",
+      "signature": "TopNavHeadingMenuItemData = Readonly<{ label: string; href?: string; onSelect?: boolean; }>"
+    },
+    {
+      "name": "TopNavHeadingData",
+      "kind": "type",
+      "signature": "TopNavHeadingData = Readonly<{ heading?: string; logo?: Html; logoLabel?: string; headingHref?: string; superheading?: string; superheadingHref?: string; subheading?: string; subheadingHref?: string; headerEndContent?: Html; menu?: ReadonlyArray<TopNavHeading…"
+    },
+    {
+      "name": "ViewInputs",
+      "kind": "type",
+      "signature": "ViewInputs = Readonly<{ label?: string; heading?: TopNavHeadingData; startItems?: ReadonlyArray<TopNavEntry>; centerItems?: ReadonlyArray<TopNavEntry>; /** Escape hatch for arbitrary start slot content. */ startContent?: Html; centerContent?: Html; endContent…"
+    },
+    {
+      "name": "topNavItem",
+      "kind": "function",
+      "signature": "topNavItem<Msg>(item: TopNavItemData, emit: (message: TopNavLib.Message) => Msg, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "topNavMegaMenuItem",
+      "kind": "function",
+      "signature": "topNavMegaMenuItem<Msg>(item: TopNavMegaMenuItemData, onActivate: Msg | undefined, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "topNavMegaMenuFeaturedCard",
+      "kind": "function",
+      "signature": "topNavMegaMenuFeaturedCard<Msg>(card: TopNavMegaMenuFeaturedCardData, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "view",
+      "kind": "value",
+      "signature": "view: value"
+    },
+    {
+      "name": "TopNavProps",
+      "kind": "type",
+      "signature": "TopNavProps<Msg> = ViewInputs & Readonly<{ model: TopNavLib.Model; toParentMessage: (message: TopNavLib.Message) => Msg; }>"
+    },
+    {
+      "name": "topNav",
+      "kind": "function",
+      "signature": "topNav<Msg>(props: TopNavProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "tour": [
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "value",
+      "signature": "OutMessage: value"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "type",
+      "signature": "OutMessage = typeof OutMessage.Type"
+    },
+    {
+      "name": "TourDismissSource",
+      "kind": "value",
+      "signature": "TourDismissSource: value"
+    },
+    {
+      "name": "TourDismissSource",
+      "kind": "type",
+      "signature": "TourDismissSource = TourBehavior.TourDismissSource"
+    },
+    {
+      "name": "init",
+      "kind": "value",
+      "signature": "init: value"
+    },
+    {
+      "name": "update",
+      "kind": "value",
+      "signature": "update: value"
+    },
+    {
+      "name": "activate",
+      "kind": "value",
+      "signature": "activate: value"
+    },
+    {
+      "name": "deactivate",
+      "kind": "value",
+      "signature": "deactivate: value"
+    },
+    {
+      "name": "HIGHLIGHT_PADDING",
+      "kind": "value",
+      "signature": "HIGHLIGHT_PADDING: value"
+    },
+    {
+      "name": "TourStepPlacement",
+      "kind": "type",
+      "signature": "TourStepPlacement = \"below\" | \"above\" | \"start\" | \"end\""
+    },
+    {
+      "name": "TourStepAlignment",
+      "kind": "type",
+      "signature": "TourStepAlignment = \"start\" | \"center\" | \"end\""
+    },
+    {
+      "name": "TourStepSpec",
+      "kind": "type",
+      "signature": "TourStepSpec = Readonly<{ /** Stable step key — the callout is re-keyed per step to re-anchor. */ id: string; /** `id` of the element this step points at (astryx targetRef equivalent — must be interactive for aria, matching Popover's anchor contract). */ targ…"
+    },
+    {
+      "name": "TourProps",
+      "kind": "type",
+      "signature": "TourProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; steps: ReadonlyArray<TourStepSpec>; hasBackdrop?: boolean; isStepCountShown?: boolean; class?: string; }>"
+    },
+    {
+      "name": "tour",
+      "kind": "function",
+      "signature": "tour<Msg>(props: TourProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "transfer-list": [
+    {
+      "name": "TransferListOption",
+      "kind": "type",
+      "signature": "TransferListOption = Readonly<{ /** Stable value written to the controlled value array. */ value: string; /** Visible option name and the basis of action labels. */ label: string; /** Optional searchable metadata. Not rendered in the default row. */ descripti…"
+    },
+    {
+      "name": "ReorderSession",
+      "kind": "type",
+      "signature": "ReorderSession = typeof ReorderSession.Type"
+    },
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "init",
+      "kind": "function",
+      "signature": "init(config: { id: string; value?: ReadonlyArray<string>; }): Model"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "value",
+      "signature": "OutMessage: value"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "type",
+      "signature": "OutMessage = typeof OutMessage.Type"
+    },
+    {
+      "name": "update",
+      "kind": "function",
+      "signature": "update(model: Model, message: Message, options: ReadonlyArray<TransferListOption> = [], isReorderable = true): UpdateReturn"
+    },
+    {
+      "name": "TransferListProps",
+      "kind": "type",
+      "signature": "TransferListProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Accessible name for the complete control. */ label: string; /** Visually hides the label while retaining its accessible name. */ isLabelHidden?: boolean; /** Sup…"
+    },
+    {
+      "name": "REORDER_INSTRUCTIONS",
+      "kind": "value",
+      "signature": "REORDER_INSTRUCTIONS: value"
+    },
+    {
+      "name": "transferList",
+      "kind": "function",
+      "signature": "transferList<Msg>(props: TransferListProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "tree-list": [
+    {
+      "name": "Message",
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/tree-list'"
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/lib/tree-list'"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "re-export",
+      "signature": "export { OutMessage } from '@/lib/tree-list'"
+    },
+    {
+      "name": "findInitialTabbableId",
+      "kind": "re-export",
+      "signature": "export { findInitialTabbableId } from '@/lib/tree-list'"
+    },
+    {
+      "name": "init",
+      "kind": "re-export",
+      "signature": "export { init } from '@/lib/tree-list'"
+    },
+    {
+      "name": "isItemExpanded",
+      "kind": "re-export",
+      "signature": "export { isItemExpanded } from '@/lib/tree-list'"
+    },
+    {
+      "name": "resolveKey",
+      "kind": "re-export",
+      "signature": "export { resolveKey } from '@/lib/tree-list'"
+    },
+    {
+      "name": "tabbableId",
+      "kind": "re-export",
+      "signature": "export { tabbableId } from '@/lib/tree-list'"
+    },
+    {
+      "name": "update",
+      "kind": "re-export",
+      "signature": "export { update } from '@/lib/tree-list'"
+    },
+    {
+      "name": "visibleItems",
+      "kind": "re-export",
+      "signature": "export { visibleItems } from '@/lib/tree-list'"
+    },
+    {
+      "name": "InitConfig",
+      "kind": "re-export",
+      "signature": "export { InitConfig } from '@/lib/tree-list'"
+    },
+    {
+      "name": "TreeListDensity",
+      "kind": "re-export",
+      "signature": "export { TreeListDensity } from '@/lib/tree-list'"
+    },
+    {
+      "name": "TreeListItemData",
+      "kind": "re-export",
+      "signature": "export { TreeListItemData } from '@/lib/tree-list'"
+    },
+    {
+      "name": "UpdateReturn",
+      "kind": "re-export",
+      "signature": "export { UpdateReturn } from '@/lib/tree-list'"
+    },
+    {
+      "name": "TreeListVariant",
+      "kind": "re-export",
+      "signature": "export { TreeListVariant } from '@/lib/tree-list'"
+    },
+    {
+      "name": "VisibleItem",
+      "kind": "re-export",
+      "signature": "export { VisibleItem } from '@/lib/tree-list'"
+    },
+    {
+      "name": "ViewInputs",
+      "kind": "type",
+      "signature": "ViewInputs = Readonly<{ items: ReadonlyArray<TreeListBehavior.TreeListItemData>; density?: TreeListBehavior.TreeListDensity; variant?: TreeListBehavior.TreeListVariant; header?: Html; ariaLabel?: string; direction?: 'ltr' | 'rtl'; class?: string; }>"
+    },
+    {
+      "name": "view",
+      "kind": "value",
+      "signature": "view: value"
+    },
+    {
+      "name": "TreeListProps",
+      "kind": "type",
+      "signature": "TreeListProps<Msg> = ViewInputs & Readonly<{ model: TreeListBehavior.Model; toParentMessage: (message: TreeListBehavior.Message) => Msg; }>"
+    },
+    {
+      "name": "treeList",
+      "kind": "function",
+      "signature": "treeList<Msg>(props: TreeListProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "typography": [
     {
       "name": "typographyH1",
@@ -3659,6 +6917,23 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "typographyMuted",
       "kind": "function",
       "signature": "typographyMuted<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "visually-hidden": [
+    {
+      "name": "VisuallyHiddenElement",
+      "kind": "type",
+      "signature": "VisuallyHiddenElement = | 'article' | 'aside' | 'code' | 'div' | 'em' | 'footer' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'header' | 'label' | 'li' | 'main' | 'nav' | 'p' | 'section' | 'small' | 'span' | 'strong' | 'ul' | 'ol'"
+    },
+    {
+      "name": "VisuallyHiddenProps",
+      "kind": "type",
+      "signature": "VisuallyHiddenProps = Readonly<{ /** * HTML tag to render as. Defaults to `'span'` (inline) for the common * icon-label case; pass a block element such as `'div'` when wrapping block * content or hosting an `aria-live` region. This is a structural choice, * n…"
+    },
+    {
+      "name": "visuallyHidden",
+      "kind": "function",
+      "signature": "visuallyHidden<Msg>(props: VisuallyHiddenProps, h: HtmlBuilder<Msg>): Html"
     }
   ]
 };

@@ -302,3 +302,31 @@
     background-position: 0 0;
   }
 }
+
+/* Astryx CircularProgress port — indeterminate ring rotation + fill dash
+   shimmy (packages/lab/src/CircularProgress/CircularProgress.tsx). Tailwind
+   utilities animate-[circular-progress-rotate_*] /
+   animate-[circular-progress-dash_*] reference these names. */
+@keyframes circular-progress-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes circular-progress-dash {
+  0% {
+    stroke-dasharray: 2% 300%;
+    stroke-dashoffset: 0%;
+  }
+  50% {
+    stroke-dasharray: 175% 300%;
+    stroke-dashoffset: -68%;
+  }
+  100% {
+    stroke-dasharray: 2% 300%;
+    stroke-dashoffset: -302%;
+  }
+}

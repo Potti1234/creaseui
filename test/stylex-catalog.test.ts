@@ -10,11 +10,15 @@ const componentNames = readdirSync('src/ui')
   .sort()
 
 const infrastructureNames = new Set([
+  'card.markers.stylex',
   'complex-tokens.stylex',
   'contracts',
   'foundations-tokens.stylex',
+  'astryx-text',
   'index',
   'interaction-tokens.stylex.const',
+  'log-stream-terminal-ink.stylex',
+  'log-stream-terminal.stylex',
   'overlay-boundary',
   'overlay-tokens.stylex',
   'style',
@@ -36,6 +40,10 @@ const pascalCase = (name: string): string =>
 const intentionallyRemovedStylingExports = new Map<string, ReadonlySet<string>>([
   ['badge', new Set(['BadgeVariants', 'badgeVariants'])],
   ['button', new Set(['ButtonVariants', 'buttonVariants'])],
+  ['heading', new Set(['HeadingVariants', 'headingVariants'])],
+  ['link', new Set(['LinkVariants', 'linkVariants'])],
+  ['status-dot', new Set(['StatusDotVariants', 'statusDotVariants'])],
+  ['text', new Set(['TextVariants', 'textVariants'])],
 ])
 
 const parse = (path: string): ts.SourceFile =>
@@ -417,7 +425,7 @@ describe('complete StyleX catalog', () => {
       .sort()
 
     assert.deepEqual(stylexNames, componentNames)
-    assert.equal(componentNames.length, 65)
+    assert.equal(componentNames.length, 120)
   })
 
   it('does not fall back to Tailwind, CVA, or raw authored class strings', () => {

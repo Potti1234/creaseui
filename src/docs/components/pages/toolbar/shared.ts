@@ -1,0 +1,432 @@
+import type { DocsExample } from '@/docs/components/page-definition';
+import { foldkitApplication } from '@/docs/components/pages/authored-page';
+
+export type ToolbarFixtureKind =
+  | 'threeSlot'
+  | 'cardHeader'
+  | 'sizes'
+  | 'tabs'
+  | 'bulk'
+  | 'filter';
+
+export type ToolbarFixture = Readonly<{
+  title: string;
+  description?: string;
+  heroOnly?: boolean;
+  kind: ToolbarFixtureKind;
+  width: number;
+}>;
+
+export const toolbarFixtures: Readonly<[ToolbarFixture, ...Array<ToolbarFixture>]> = [
+  {
+    title: 'Toolbar — Three Slot',
+    heroOnly: true,
+    kind: 'threeSlot',
+    width: 600,
+  },
+  {
+    title: 'Toolbar — Card Header',
+    description:
+      'A toolbar as a card header with a left-aligned title and icon actions on the right. Use Toolbar instead of a bare header when your card header has interactive actions; Toolbar adds start/end slot layout and keyboard navigation.',
+    kind: 'cardHeader',
+    width: 500,
+  },
+  {
+    title: 'Toolbar — Sizes',
+    description:
+      'Small, medium, and large toolbars side by side. Set the size on the toolbar once and size child controls to match (astryx cascades it automatically).',
+    kind: 'sizes',
+    width: 500,
+  },
+  {
+    title: 'Toolbar — Tab Navigation',
+    description:
+      'A toolbar with tabs in the start slot and an action button at the end. Use as a card or section header when content is split into tabs with a primary action alongside.',
+    kind: 'tabs',
+    width: 600,
+  },
+  {
+    title: 'Toolbar — Bulk Actions',
+    description:
+      'A compact toolbar with the muted variant for showing bulk selection actions. Use when the user selects multiple items in a list or table and needs quick access to batch operations.',
+    kind: 'bulk',
+    width: 640,
+  },
+  {
+    title: 'Toolbar — Table Filter',
+    description:
+      'Filter bar above a table: a search box leads the row, each field beside it is a filter clause, followed by a live result count and a clear-all action. Adapted: astryx folds clauses into an OverflowList and a column picker popover — this port renders the clauses inline.',
+    kind: 'filter',
+    width: 760,
+  },
+];
+
+export type FilterField = 'status' | 'priority' | 'customer';
+
+export const FILTER_FIELDS: ReadonlyArray<Readonly<{
+  key: FilterField;
+  label: string;
+  options: ReadonlyArray<string>;
+}>> = [
+  {
+    key: 'status',
+    label: 'Status',
+    options: ['Scheduled', 'In progress', 'On hold', 'Overdue', 'Completed'],
+  },
+  { key: 'priority', label: 'Priority', options: ['High', 'Normal', 'Low'] },
+  {
+    key: 'customer',
+    label: 'Customer',
+    options: [
+      'Northgate Dental',
+      'Riverside Club',
+      'Summit Medical',
+      'Harborview Hotel',
+    ],
+  },
+];
+
+export type Job = Readonly<{
+  id: string;
+  job: string;
+  customer: string;
+  status: string;
+  priority: string;
+}>;
+
+export const JOBS: ReadonlyArray<Job> = [
+  {
+    id: 'SJ-2136',
+    job: 'VAV zones not cooling',
+    customer: 'Northgate Dental',
+    status: 'In progress',
+    priority: 'High',
+  },
+  {
+    id: 'SJ-2135',
+    job: 'Exhaust fan noise',
+    customer: 'Riverside Club',
+    status: 'On hold',
+    priority: 'Normal',
+  },
+  {
+    id: 'SJ-2134',
+    job: 'Humidifier board fault',
+    customer: 'Summit Medical',
+    status: 'Overdue',
+    priority: 'High',
+  },
+  {
+    id: 'SJ-2133',
+    job: 'Economizer stuck shut',
+    customer: 'Northgate Dental',
+    status: 'Scheduled',
+    priority: 'Normal',
+  },
+  {
+    id: 'SJ-2132',
+    job: 'Contactor replacement',
+    customer: 'Harborview Hotel',
+    status: 'Completed',
+    priority: 'Low',
+  },
+];
+
+const SIMPLE_BODY: Readonly<Record<'threeSlot' | 'cardHeader' | 'sizes' | 'tabs' | 'bulk', string>> = {
+  threeSlot: `Toolbar.toolbar({
+      label: 'Document toolbar',
+      dividers: ['bottom'],
+      toParentMessage: m => GotToolbarMessage({ message: m }),
+      startContent: [
+        Button.button({
+          variant: 'ghost',
+          size: 'icon-sm',
+          ariaLabel: 'Back',
+          leadingIcon: Icon.icon('arrow-left', {}, h),
+          children: [],
+        }, h),
+      ],
+      centerContent: h.h4([h.Class('text-base font-medium')], ['Title']),
+      endContent: [
+        Button.button({ variant: 'secondary', children: ['Discard'] }, h),
+        Button.button({ variant: 'default', children: ['Save'] }, h),
+      ],
+    }, h)`,
+  cardHeader: `Toolbar.toolbar({
+      label: 'User list actions',
+      size: 'sm',
+      dividers: ['bottom'],
+      toParentMessage: m => GotToolbarMessage({ message: m }),
+      startContent: [h.h4([h.Class('text-base font-medium')], ['Card title'])],
+      endContent: [
+        Button.button({
+          variant: 'ghost',
+          size: 'icon-sm',
+          ariaLabel: 'Filter',
+          leadingIcon: Icon.icon('funnel', {}, h),
+          children: [],
+        }, h),
+        Button.button({
+          variant: 'default',
+          size: 'icon-sm',
+          ariaLabel: 'Add user',
+          leadingIcon: Icon.icon('plus', {}, h),
+          children: [],
+        }, h),
+      ],
+    }, h)`,
+  sizes: `...(['sm', 'md', 'lg'] as const).map(size =>
+      h.div([h.Class('rounded-xl border')], [
+        Toolbar.toolbar({
+          label: \`\${size} toolbar\`,
+          size,
+          toParentMessage: m => GotToolbarMessage({ message: m }),
+          startContent: [h.h4([h.Class('text-base font-medium')], [size])],
+          endContent: [
+            Button.button({
+              variant: 'ghost',
+              size: 'icon-sm',
+              ariaLabel: 'Filter',
+              leadingIcon: Icon.icon('funnel', {}, h),
+              children: [],
+            }, h),
+            Button.button({
+              variant: 'default',
+              size: 'sm',
+              leadingIcon: Icon.icon('plus', {}, h),
+              children: ['Add'],
+            }, h),
+          ],
+        }, h),
+      ]))`,
+  tabs: `Toolbar.toolbar({
+      label: 'Section navigation',
+      dividers: ['bottom'],
+      toParentMessage: m => GotToolbarMessage({ message: m }),
+      startContent: [
+        Tabs.tabs({
+          model: model.tabs,
+          selectedValue: model.selectedTab,
+          toParentMessage: m => GotTabsMessage({ message: m }),
+          tabs: [
+            { value: 'overview', label: 'Overview', content: '' },
+            { value: 'analytics', label: 'Analytics', content: '' },
+            { value: 'settings', label: 'Settings', content: '' },
+          ],
+        }, h),
+      ],
+      endContent: [
+        Button.button({
+          variant: 'default',
+          size: 'icon-sm',
+          ariaLabel: 'New item',
+          leadingIcon: Icon.icon('plus', {}, h),
+          children: [],
+        }, h),
+      ],
+    }, h)`,
+  bulk: `Toolbar.toolbar({
+      label: 'Bulk actions',
+      size: 'sm',
+      variant: 'muted',
+      dividers: ['bottom'],
+      toParentMessage: m => GotToolbarMessage({ message: m }),
+      startContent: [
+        Badge.badge({ variant: 'secondary', children: [\`\${model.selectedRows.length} selected\`] }, h),
+        Button.button({ variant: 'ghost', size: 'icon-sm', ariaLabel: 'Delete', leadingIcon: Icon.icon('trash-2', {}, h), children: [] }, h),
+        Button.button({ variant: 'ghost', size: 'icon-sm', ariaLabel: 'Archive', leadingIcon: Icon.icon('archive', {}, h), children: [] }, h),
+      ],
+      endContent: [
+        Button.button({ variant: 'ghost', size: 'sm', onClick: ClickedDeselectAll(), children: ['Deselect all'] }, h),
+      ],
+    }, h)`,
+};
+
+const filterBody = (isStyleX: boolean): string => `Toolbar.toolbar({
+      label: 'Job filters',
+      size: 'sm',
+      dividers: ['bottom'],
+      toParentMessage: m => GotToolbarMessage({ message: m }),
+      startContent: [
+        Input.input({ id: 'filter-search', label: 'Search jobs', placeholder: 'Search', value: model.search, onInput: v => ChangedSearch({ value: v }),${isStyleX ? ' layoutStyle: styles.searchInput,' : ` class: 'w-40',`} }, h),
+        NativeSelect.nativeSelect({ id: 'status-filter', label: 'Status', value: model.status, onChange: v => ChangedClause({ field: 'status', value: v }), options: [{ value: '', label: 'Status' }, ...STATUS_OPTIONS] }, h),
+        NativeSelect.nativeSelect({ id: 'priority-filter', label: 'Priority', value: model.priority, onChange: v => ChangedClause({ field: 'priority', value: v }), options: [{ value: '', label: 'Priority' }, ...PRIORITY_OPTIONS] }, h),
+        h.span([h.Class('text-muted-foreground text-xs')], [\`\${resultsFor(model).length} of \${JOBS.length}\`]),
+        Button.button({ variant: 'link', size: 'sm', onClick: ClickedClearFilters(), children: ['Clear all'] }, h),
+      ],
+    }, h)`;
+
+const emitSource = (fixture: ToolbarFixture, isStyleX: boolean): string => {
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
+  const lib = isStyleX ? 'stylex' : 'ui';
+  const hasTabs = fixture.kind === 'tabs';
+  const hasBulk = fixture.kind === 'bulk';
+  const hasFilter = fixture.kind === 'filter';
+  const hasState = hasTabs || hasBulk || hasFilter;
+
+  const filterDecls = hasFilter
+    ? `type Job = Readonly<{ id: string; job: string; customer: string; status: string; priority: string }>
+
+const JOBS: ReadonlyArray<Job> = ${JSON.stringify(JOBS, null, 2)}
+
+const STATUS_OPTIONS: ReadonlyArray<Readonly<{ value: string; label: string }>> = [
+  ${(FILTER_FIELDS[0]?.options ?? []).map(option => `{ value: '${option}', label: '${option}' }`).join(',\n  ')},
+]
+
+const PRIORITY_OPTIONS: ReadonlyArray<Readonly<{ value: string; label: string }>> = [
+  ${(FILTER_FIELDS[1]?.options ?? []).map(option => `{ value: '${option}', label: '${option}' }`).join(',\n  ')},
+]
+
+`
+    : '';
+
+  const modelDecl = hasState
+    ? `${filterDecls}export const Model = S.Struct({${hasTabs ? `
+  tabs: Tabs.Model,
+  selectedTab: S.String,` : ''}${hasBulk ? `
+  selectedRows: S.Array(S.String),` : ''}${hasFilter ? `
+  search: S.String,
+  status: S.String,
+  priority: S.String,
+  customer: S.String,` : ''}
+})
+export type Model = typeof Model.Type`
+    : `export const Model = S.Struct({})
+export type Model = typeof Model.Type`;
+
+  const messageDecls = [
+    `export const GotToolbarMessage = taggedStruct('GotToolbarMessage${tag}', {
+  message: Toolbar.Message,
+})`,
+    ...(hasTabs
+      ? [`export const GotTabsMessage = taggedStruct('GotTabsMessage${tag}', {
+  message: Tabs.Message,
+})`]
+      : []),
+    ...(hasBulk
+      ? [`export const ClickedDeselectAll = taggedStruct('ClickedDeselectAll${tag}', {})`]
+      : []),
+    ...(hasFilter
+      ? [`export const ChangedSearch = taggedStruct('ChangedSearch${tag}', { value: S.String })
+export const ChangedClause = taggedStruct('ChangedClause${tag}', { field: S.String, value: S.String })
+export const ClickedClearFilters = taggedStruct('ClickedClearFilters${tag}', {})`]
+      : []),
+  ];
+  const unionVariants = [
+    'GotToolbarMessage',
+    ...(hasTabs ? ['GotTabsMessage'] : []),
+    ...(hasBulk ? ['ClickedDeselectAll'] : []),
+    ...(hasFilter ? ['ChangedSearch', 'ChangedClause', 'ClickedClearFilters'] : []),
+  ];
+
+  const initDecl = `export const init = (): Update.Return<Model, Message> => ({
+  model: {${hasTabs ? `
+    tabs: Tabs.init({ id: 'docs-toolbar-tabs' }),
+    selectedTab: 'overview',` : ''}${hasBulk ? `
+    selectedRows: ['1', '3', '5'],` : ''}${hasFilter ? `
+    search: '',
+    status: '',
+    priority: '',
+    customer: '',` : ''}
+  },
+})`;
+
+  const updateCases = [
+    `    case 'GotToolbarMessage${tag}':
+      return { model }`,
+    ...(hasTabs
+      ? [`    case 'GotTabsMessage${tag}': {
+      const next = Tabs.update(model.tabs, message.message)
+      const selection = next.outMessage?._tag === 'Selected' ? next.outMessage.value : undefined
+      return {
+        model: {
+          ...model,
+          tabs: next.model,
+          ...(selection === undefined ? {} : { selectedTab: selection }),
+        },
+        commands: Command.mapMessages(next.commands ?? [], m => GotTabsMessage({ message: m })),
+      }
+    }`]
+      : []),
+    ...(hasBulk
+      ? [`    case 'ClickedDeselectAll${tag}':
+      return { model: { ...model, selectedRows: [] } }`]
+      : []),
+    ...(hasFilter
+      ? [`    case 'ChangedSearch${tag}':
+      return { model: { ...model, search: message.value } }
+    case 'ChangedClause${tag}':
+      return { model: { ...model, [message.field]: message.value } }
+    case 'ClickedClearFilters${tag}':
+      return { model: { ...model, search: '', status: '', priority: '', customer: '' } }`]
+      : []),
+  ];
+
+  const toolbarBody =
+    fixture.kind === 'filter' ? filterBody(isStyleX) : SIMPLE_BODY[fixture.kind];
+
+  const toolbarCalls: string =
+    fixture.kind === 'sizes'
+      ? `h.div([h.Class('flex w-[500px] flex-col gap-4')], [\n${SIMPLE_BODY.sizes}\n    ])`
+      : `${fixture.kind === 'threeSlot' || fixture.kind === 'cardHeader' || fixture.kind === 'tabs' ? `h.div([h.Class('w-[${fixture.width}px]')], [\n` : ''}${toolbarBody}${fixture.kind === 'threeSlot' || fixture.kind === 'cardHeader' || fixture.kind === 'tabs' ? '\n    ])' : ''}`;
+
+  return foldkitApplication({
+    title: fixture.title,
+    imports: `import { Schema as S } from 'effect'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
+import { type Document, type HtmlBuilder } from 'foldkit/html'
+import { taggedStruct } from 'foldkit/schema'
+import * as Icon from '@/lib/icon'
+import * as Toolbar from '@/${lib}/toolbar'
+import * as Button from '@/${lib}/button'
+${hasTabs ? `import * as Tabs from '@/${lib}/tabs'
+` : ''}${hasBulk ? `import * as Badge from '@/${lib}/badge'
+` : ''}${hasFilter ? `import * as Input from '@/${lib}/input'
+import * as NativeSelect from '@/${lib}/native-select'
+` : ''}${hasFilter && isStyleX ? `import * as stylex from '@stylexjs/stylex'
+const styles = stylex.create({ searchInput: { width: '10rem' } })
+` : ''}`,
+    model: modelDecl,
+    messages: `${messageDecls.join('\n')}
+export const Message = S.Union([${unionVariants.join(', ')}])
+export type Message = typeof Message.Type`,
+    init: initDecl,
+    update: `export const update = (
+  model: Model,
+  message: Message,
+): Update.Return<Model, Message> => {
+  switch (message._tag) {
+${updateCases.join('\n')}
+  }
+}`,
+    view: `${hasFilter ? `const resultsFor = (model: Model): ReadonlyArray<Job> =>
+  JOBS.filter(
+    job =>
+      (model.search === '' ||
+        \`\${job.job} \${job.customer} \${job.id}\`
+          .toLowerCase()
+          .includes(model.search.toLowerCase())) &&
+      (model.status === '' || job.status === model.status) &&
+      (model.priority === '' || job.priority === model.priority),
+  )
+
+` : ''}export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: '${fixture.title}',
+  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+    ${toolbarCalls},
+  ]),
+})`,
+  });
+};
+
+export const toolbarExamples = (
+  renderer: 'tailwind' | 'stylex',
+): ReadonlyArray<DocsExample> =>
+  toolbarFixtures.map(fixture => ({
+    title: fixture.title,
+    ...(fixture.description === undefined
+      ? {}
+      : { description: fixture.description }),
+    ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
+    code: emitSource(fixture, renderer === 'stylex'),
+  }));
