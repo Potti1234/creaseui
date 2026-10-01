@@ -24,7 +24,6 @@ export const complexTokens = stylex.defineVars({
   smallRadius: '2px',
   overlaySurface: 'color-mix(in oklab, var(--foreground) 50%, transparent)',
   transparent: 'transparent',
-  sidebarWidthIcon: 'var(--sidebar-width-icon)',
   sidebarEdgeRing: '0 0 0 1px var(--sidebar-border)',
   sidebarAccentRing: '0 0 0 1px var(--sidebar-accent)',
   chart1Soft10: 'color-mix(in oklab, var(--chart-1) 10%, transparent)',
