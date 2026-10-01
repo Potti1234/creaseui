@@ -7,45 +7,54 @@ import { sidebarFixtures, type SidebarFixtureKind } from '@/docs/components/page
 import * as DropdownMenu from '@/stylex/dropdown-menu';
 import * as Icon from '@/lib/icon';
 import * as Sidebar from '@/stylex/sidebar';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import { className } from '@/stylex/style';
 
 const styles = stylex.create({
   actionAnchor: { position: 'absolute', zIndex: 30, right: '0.25rem', top: '0.375rem', },
-  actionTrigger: { borderRadius: '0.375rem', alignItems: 'center', backgroundColor: { default: 'transparent', ':hover': 'var(--sidebar-accent)' }, color: { default: 'var(--sidebar-foreground)', ':hover': 'var(--sidebar-accent-foreground)' }, display: 'flex', justifyContent: 'center', outlineStyle: 'none', height: '1.25rem', width: '1.25rem', },
-  accountAvatar: { borderRadius: '0.5rem', alignItems: 'center', backgroundColor: 'var(--sidebar-primary)', color: 'var(--sidebar-primary-foreground)', display: 'grid', flexShrink: 0, fontSize: '0.75rem', lineHeight: '1rem', fontWeight: 600, justifyContent: 'center', height: '2rem', width: '2rem', },
-  accountCopy: { display: 'grid', flexGrow: 1, lineHeight: 1.25, textAlign: 'left', minWidth: 0, },
-  accountEmail: { overflow: 'hidden', fontSize: '0.75rem', lineHeight: '1rem', opacity: 0.7, textOverflow: 'ellipsis', whiteSpace: 'nowrap', },
+  actionTrigger: { alignItems: 'center', display: 'flex' },
+  actionTriggerButton: { borderRadius: 'var(--radius-md)', alignItems: 'center', backgroundColor: { default: 'transparent', ':hover': 'var(--sidebar-accent)' }, color: { default: 'var(--sidebar-foreground)', ':hover': 'var(--sidebar-accent-foreground)' }, display: 'flex', justifyContent: 'center', outlineStyle: 'none', height: '1.25rem', width: '1.25rem', },
+  actionIcon: { height: '1rem', width: '1rem' },
+  itemIcon: { flexShrink: 0, height: '1rem', width: '1rem' },
+  itemLabel: { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  accountIcon: { height: '0.875rem', width: '0.875rem' },
+  accountAvatar: { borderRadius: 'var(--radius)', backgroundColor: 'var(--sidebar-primary)', color: 'var(--sidebar-primary-foreground)', display: 'grid', flexShrink: 0, fontSize: '0.75rem', lineHeight: '1rem', fontWeight: 600, placeItems: 'center', height: '2rem', width: '2rem', },
+  accountCopy: { display: 'grid', flexBasis: '0%', flexGrow: 1, lineHeight: 1.25, textAlign: 'left', minWidth: 0, },
+  accountEmail: { overflow: 'hidden', color: 'color-mix(in oklab, var(--sidebar-foreground) 70%, transparent)', fontSize: '0.75rem', lineHeight: '1rem', textOverflow: 'ellipsis', whiteSpace: 'nowrap', },
   accountName: { overflow: 'hidden', fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500, textOverflow: 'ellipsis', whiteSpace: 'nowrap', },
-  brand: { gap: '0.5rem', overflow: 'hidden', paddingBlock: '0.25rem', paddingInline: '0.5rem', alignItems: 'center', display: 'flex', whiteSpace: 'nowrap', },
-  brandMark: { borderRadius: '0.375rem', alignItems: 'center', backgroundColor: 'var(--sidebar-primary)', color: 'var(--sidebar-primary-foreground)', display: 'grid', flexShrink: 0, fontSize: '0.75rem', lineHeight: '1rem', fontWeight: 600, justifyContent: 'center', height: '1.75rem', width: '1.75rem', },
-  brandName: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 600 },
-  frame: { borderColor: 'var(--border)', borderRadius: '0.5rem', borderStyle: 'solid', borderWidth: 1, overflow: 'hidden', backgroundColor: 'var(--background)', position: 'relative', height: '26rem', minHeight: 0, width: '100%', },
-  feedback: { paddingInline: '0.5rem', color: 'var(--sidebar-foreground)', fontSize: '0.75rem', lineHeight: '1rem', opacity: 0.7, paddingTop: '0.5rem', },
-  inset: { minHeight: 0 },
+  brand: { gap: '0.5rem', paddingBlock: '0.25rem', paddingInline: '0.5rem', alignItems: 'center', display: 'flex' },
+  brandMark: { borderRadius: 'var(--radius-md)', backgroundColor: 'var(--sidebar-primary)', color: 'var(--sidebar-primary-foreground)', display: 'grid', flexShrink: 0, fontSize: '0.75rem', lineHeight: '1rem', fontWeight: 600, placeItems: 'center', height: '1.75rem', width: '1.75rem', },
+  brandName: { overflow: 'hidden', fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 600, textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  frame: { borderColor: 'var(--border)', borderRadius: 'var(--radius)', borderStyle: 'solid', borderWidth: 1, overflow: 'hidden', backgroundColor: 'var(--background)', position: 'relative', height: '26rem', minHeight: 0, width: '100%', },
+  frameInset: { borderColor: 'var(--border)', borderRadius: 'var(--radius)', borderStyle: 'solid', borderWidth: 1, overflow: 'hidden', backgroundColor: 'var(--sidebar)', position: 'relative', height: '26rem', minHeight: 0, width: '100%', },
+  feedback: { paddingInline: '0.5rem', color: 'color-mix(in oklab, var(--sidebar-foreground) 70%, transparent)', fontSize: '0.75rem', lineHeight: '1rem', paddingTop: '0.5rem', },
+  inset: { minHeight: 0, overflow: 'auto' },
   pageHeader: { gap: '0.5rem', paddingInline: '1rem', alignItems: 'center', display: 'flex', flexShrink: 0, borderBottomColor: 'var(--border)', borderBottomStyle: 'solid', borderBottomWidth: 1, height: '3rem', },
-  pageTitle: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 600 },
-  provider: { height: '26rem', minHeight: 0 },
-  skeletonBlock: { borderRadius: '0.5rem', backgroundColor: 'var(--muted)', height: '6rem', },
-  skeletonBlockWide: { borderRadius: '0.5rem',
+  pageTitle: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 700 },
+  staticProviderPanel: { borderColor: 'var(--border)', borderRadius: 'var(--radius)', borderStyle: 'solid', borderWidth: 1, overflow: 'hidden', backgroundColor: 'var(--background)', height: '100%', maxWidth: '18rem', minHeight: 0, width: '100%', },
+  skeletonBlock: { borderRadius: 'var(--radius)', backgroundColor: 'var(--muted)', height: '6rem', },
+  skeletonBlockWide: { borderRadius: 'var(--radius)',
  backgroundColor: 'var(--muted)',
- gridColumnEnd: '-1',
- gridColumnStart: '1',
+ gridColumnEnd: { default: 'auto', '@media (min-width: 640px)': 'span 2' },
+ gridColumnStart: { default: 'auto', '@media (min-width: 640px)': 'span 2' },
  height: '8rem', },
   pageMain: { padding: '1rem', gap: '1rem', display: 'grid', gridTemplateColumns: { default: 'minmax(0, 1fr)', '@media (min-width: 640px)': 'repeat(2, minmax(0, 1fr))' }, },
   staticFrame: { padding: '1rem', alignItems: 'stretch', backgroundColor: 'color-mix(in oklab, var(--muted) 30%, transparent)', display: 'flex', justifyContent: 'center', height: '20rem', width: '100%', },
-  staticPanel: { borderColor: 'var(--border)', borderRadius: '0.5rem', borderStyle: 'solid', borderWidth: 1, overflow: 'hidden', backgroundColor: 'var(--background)', maxWidth: '18rem', width: '100%', },
-  staticProvider: { height: '100%', minHeight: 0, width: '100%' },
+
   staticTitle: { paddingBlock: '0.25rem', paddingInline: '0.5rem', fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 600, },
-  accountTrigger: { padding: '0.5rem', borderRadius: '0.375rem', gap: '0.5rem', alignItems: 'center', backgroundColor: { default: 'transparent', ':hover': 'var(--sidebar-accent)' }, color: { default: 'var(--sidebar-foreground)', ':hover': 'var(--sidebar-accent-foreground)' }, display: 'flex', outlineStyle: 'none', textAlign: 'left', width: '100%', },
-  learnChevron: { transitionDuration: '150ms', transitionProperty: 'transform', height: '1rem', marginLeft: 'auto', width: '1rem', },
+  accountTrigger: { gap: '0.5rem', alignItems: 'center', display: 'flex', textAlign: 'left', width: '100%' },
+  accountTriggerButton: { padding: '0.5rem', borderRadius: 'var(--radius-md)', gap: '0.5rem', overflow: 'hidden', alignItems: 'center', backgroundColor: { default: 'transparent', ':hover': 'var(--sidebar-accent)' }, color: { default: 'var(--sidebar-foreground)', ':hover': 'var(--sidebar-accent-foreground)' }, display: 'flex', fontSize: '0.875rem', lineHeight: '1.25rem', outlineStyle: 'none', textAlign: 'left', width: '100%', },
+  badgeAccent: { color: 'var(--sidebar-accent-foreground)' },
+  menuButtonActionPad: { paddingRight: '2rem' },
+  learnChevron: { transitionDuration: '150ms', transitionProperty: 'transform', flexShrink: 0, height: '1rem', marginLeft: 'auto', width: '1rem', },
   learnChevronOpen: { transform: 'rotate(90deg)' },
   noMatches: { paddingBlock: '0.375rem', paddingInline: '0.5rem', color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem', },
-  srOnly: { margin: -1, padding: 0, overflow: 'hidden', position: 'absolute', height: 1, width: 1, },
+  srOnly: { borderWidth: 0, clipPath: 'inset(50%)', margin: -1, padding: 0, overflow: 'hidden', position: 'absolute', whiteSpace: 'nowrap', height: 1, width: 1, },
 });
 
 const isStaticStyle = (value: unknown): value is StaticStyles => typeof value === 'object' && value !== null;
 const cx = (...values: ReadonlyArray<unknown>): string => className(...values.filter(isStaticStyle));
-const iconLabel = <Msg>(name: string, label: string, h: HtmlBuilder<Msg>): ReadonlyArray<Html | string> => [Icon.icon(name, {}, h), h.span([], [label])];
+const iconLabel = <Msg>(name: string, label: string, h: HtmlBuilder<Msg>, truncate = false): ReadonlyArray<Html | string> => [Icon.icon(name, { class: cx(styles.itemIcon) }, h), h.span(truncate ? [h.Class(cx(styles.itemLabel))] : [], [label])];
 
 const actionItems = ['open', 'rename', 'delete'] as const;
 const accountItems = ['profile', 'settings', 'sign out'] as const;
@@ -56,7 +65,8 @@ const actionMenu = <Msg>(model: DropdownMenu.Model, label: string, send: (json: 
 ], [DropdownMenu.dropdownMenu({
   model,
   toParentMessage: (message) => send(JSON.stringify({ _tag: 'GotSidebarPreviewActionMenuMessage', message })),
-  trigger: h.span([h.Class(cx(styles.actionTrigger))], [Icon.moreHorizontal({}, h), h.span([h.Class(cx(styles.srOnly))], [label])]),
+  trigger: h.span([h.Class(cx(styles.actionTrigger))], [Icon.moreHorizontal({ class: cx(styles.actionIcon) }, h), h.span([h.Class(cx(styles.srOnly))], [label])]),
+  triggerLayoutStyle: styles.actionTriggerButton as ComponentLayoutStyle,
   ariaLabel: label,
   align: 'end',
   items: actionItems,
@@ -76,7 +86,7 @@ const primaryNavigation = <Msg>(model: { actionMenu: DropdownMenu.Model; query: 
   children: entries.length === 0
     ? [Sidebar.sidebarMenuItem({ children: [h.span([h.Class(cx(styles.noMatches))], ['No matching navigation'])] }, h)]
     : entries.map(([label, iconName], index) => Sidebar.sidebarMenuItem({ children: [
-      Sidebar.sidebarMenuButton({ href: '#', isActive: index === 0, tooltip: label ?? '', children: iconLabel(iconName ?? 'circle', label ?? '', h) }, h),
+      Sidebar.sidebarMenuButton({ href: '#', isActive: index === 0, tooltip: label ?? '', ...(index === 2 && query === '' ? { layoutStyle: styles.menuButtonActionPad as ComponentLayoutStyle } : {}), children: iconLabel(iconName ?? 'circle', label ?? '', h) }, h),
       ...(index === 1 && query === '' ? [Sidebar.sidebarMenuBadge({ children: ['12'] }, h)] : []),
       ...(index === 2 && query === '' ? [actionMenu(model.actionMenu, 'Project actions', send, h)] : []),
     ] }, h)),
@@ -97,10 +107,11 @@ const nestedNavigation = <Msg>(model: { learnOpen: boolean }, send: (json: strin
 const account = <Msg>(model: { accountMenu: DropdownMenu.Model }, send: (json: string) => Msg, h: HtmlBuilder<Msg>): Html => Sidebar.sidebarMenu({ children: [Sidebar.sidebarMenuItem({ children: [DropdownMenu.dropdownMenu({
   model: model.accountMenu,
   toParentMessage: (message) => send(JSON.stringify({ _tag: 'GotSidebarPreviewAccountMenuMessage', message })),
+  triggerLayoutStyle: styles.accountTriggerButton as ComponentLayoutStyle,
   trigger: h.span([h.Class(cx(styles.accountTrigger))], [
     h.span([h.Class(cx(styles.accountAvatar))], ['AL']),
     h.span([h.Class(cx(styles.accountCopy))], [h.span([h.Class(cx(styles.accountName))], ['Ada Lovelace']), h.span([h.Class(cx(styles.accountEmail))], ['ada@example.com'])]),
-    Icon.chevronsUpDown({}, h),
+    Icon.chevronsUpDown({ class: cx(styles.accountIcon) }, h),
   ]),
   ariaLabel: 'Account menu',
   side: 'top',
@@ -143,38 +154,38 @@ const shell = <Msg>(kind: SidebarFixtureKind, model: { sidebar: Sidebar.Model; a
     presentation: 'contained',
     isMobileOpen: model.sidebar.isMobileOpen,
     onMobileDismiss: sidebarMessage(Sidebar.Message.SetMobileOpen({ isOpen: false })),
-    children: [...sidebarBody(model, send, queryMessage, h), Sidebar.sidebarRail({ onClick: desktopToggle }, h)],
+    children: [...sidebarBody(model, send, queryMessage, h), Sidebar.sidebarRail({ onClick: desktopToggle, side }, h)],
   }, h);
   const inset = Sidebar.sidebarInset({
     variant,
     state,
-    layoutStyle: styles.inset,
+    layoutStyle: styles.inset as ComponentLayoutStyle,
     children: pageContent(kind === 'shell' ? 'Product overview' : sidebarFixtures.find((fixture) => fixture.kind === kind)?.title ?? 'Workspace', trigger, h),
   }, h);
 
-  return h.div([h.Class(cx(styles.frame))], [Sidebar.sidebarProvider({
+  return Sidebar.sidebarProvider({
     state,
     ...(kind === 'right' ? { width: '18rem', mobileWidth: '20rem', iconWidth: '3.25rem' } : {}),
-    layoutStyle: styles.provider,
+    layoutStyle: (kind === 'inset' ? styles.frameInset : styles.frame) as ComponentLayoutStyle,
     children: side === 'right' ? [inset, panel] : [panel, inset],
-  }, h)]);
+  }, h);
 };
 
 const staticPanel = <Msg>(kind: 'menu' | 'nested' | 'loading', model: { actionMenu: DropdownMenu.Model; accountMenu: DropdownMenu.Model; learnOpen: boolean; feedback: string }, send: (json: string) => Msg, h: HtmlBuilder<Msg>): Html => {
   const content = kind === 'menu'
     ? Sidebar.sidebarMenu({ children: [
-        Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ isActive: true, children: iconLabel('gauge', 'Overview', h) }, h), Sidebar.sidebarMenuBadge({ children: ['12'] }, h)] }, h),
-        Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ variant: 'outline', children: iconLabel('inbox', 'Inbox', h) }, h), actionMenu(model.actionMenu, 'Inbox actions', send, h)] }, h),
-        Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ onClick: send(JSON.stringify({ _tag: 'CreatedSidebarPreviewProject' })), variant: 'primary', children: iconLabel('plus', 'Create project', h) }, h)] }, h),
+        Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ isActive: true, children: iconLabel('gauge', 'Overview', h, true) }, h), Sidebar.sidebarMenuBadge({ layoutStyle: styles.badgeAccent as ComponentLayoutStyle, children: ['12'] }, h)] }, h),
+        Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ variant: 'outline', layoutStyle: styles.menuButtonActionPad as ComponentLayoutStyle, children: iconLabel('inbox', 'Inbox', h, true) }, h), actionMenu(model.actionMenu, 'Inbox actions', send, h)] }, h),
+        Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuButton({ onClick: send(JSON.stringify({ _tag: 'CreatedSidebarPreviewProject' })), variant: 'primary', children: iconLabel('plus', 'Create project', h, true) }, h)] }, h),
       ] }, h)
     : kind === 'nested'
       ? nestedNavigation(model, send, h)
       : Sidebar.sidebarMenu({ children: [82, 68, 76, 58].map((widthPercent) => Sidebar.sidebarMenuItem({ children: [Sidebar.sidebarMenuSkeleton({ showIcon: true, widthPercent }, h)] }, h)) }, h);
 
-  return h.div([h.Class(cx(styles.staticFrame))], [h.div([h.Class(cx(styles.staticPanel))], [Sidebar.sidebarProvider({ width: '18rem', layoutStyle: styles.staticProvider, children: [Sidebar.sidebar({ collapsible: 'none', children: [
+  return h.div([h.Class(cx(styles.staticFrame))], [Sidebar.sidebarProvider({ width: '18rem', layoutStyle: styles.staticProviderPanel as ComponentLayoutStyle, children: [Sidebar.sidebar({ collapsible: 'none', children: [
     Sidebar.sidebarHeader({ children: [h.div([h.Class(cx(styles.staticTitle))], [kind === 'loading' ? 'Loading projects' : 'Crease Workspace'])] }, h),
     Sidebar.sidebarContent({ children: [Sidebar.sidebarGroup({ children: [Sidebar.sidebarGroupLabel({ children: [kind === 'nested' ? 'Resources' : 'Workspace'] }, h), Sidebar.sidebarGroupContent({ children: [content] }, h), ...(kind === 'menu' && model.feedback !== '' ? [h.p([h.Role('status'), h.AriaLive('polite'), h.Class(cx(styles.feedback))], [model.feedback])] : [])] }, h)] }, h),
-  ] }, h)] }, h)])]);
+  ] }, h)] }, h)]);
 };
 
 export const sidebarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(index: number, model: unknown, send: (json: string) => Msg, h: HtmlBuilder<Msg>) => {

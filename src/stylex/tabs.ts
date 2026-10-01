@@ -68,12 +68,34 @@ const styles = stylex.create({
     outlineStyle: "none",
     whiteSpace: "nowrap",
     height: "calc(100% - 1px)",
+    position: "relative",
   },
   triggerVertical: { justifyContent: "start", width: "100%" },
+  afterBase: {
+    "::after": {
+      backgroundColor: tokens.foreground,
+      content: '""',
+      opacity: 0,
+      position: "absolute",
+      transitionProperty: "opacity",
+    },
+  },
+  afterHorizontal: {
+    "::after": { bottom: "-5px", height: "0.125rem", left: 0, right: 0 },
+  },
+  afterVertical: {
+    "::after": { bottom: 0, right: "-0.25rem", top: 0, width: "0.125rem" },
+  },
   selected: {
     backgroundColor: tokens.background,
-    boxShadow: foundationTokens.shadowXs,
+    boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
     color: tokens.foreground,
+  },
+  selectedLine: {
+    backgroundColor: foundationTokens.transparent,
+    boxShadow: tokens.shadowNone,
+    color: tokens.foreground,
+    "::after": { opacity: 1 },
   },
   disabled: { opacity: 0.5, pointerEvents: "none" },
   content: { flex: "1", outlineStyle: "none" },
@@ -157,7 +179,14 @@ const renderTabs = <Value extends string, Msg>(
                               styles.trigger,
                               orientation === "vertical" &&
                                 styles.triggerVertical,
-                              tab.index === activeIndex && styles.selected,
+                              styles.afterBase,
+                              orientation === "horizontal"
+                                ? styles.afterHorizontal
+                                : styles.afterVertical,
+                              tab.index === activeIndex &&
+                                (variant === "line"
+                                  ? styles.selectedLine
+                                  : styles.selected),
                               config.isDisabled && styles.disabled,
                               p.triggerLayoutStyle,
                             ),

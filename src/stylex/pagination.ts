@@ -14,17 +14,22 @@ export * from '@/lib/pagination'
 type SlotProps = Readonly<{ children: ReadonlyArray<Html | string>; layoutStyle?: ComponentLayoutStyle; ariaLabel?: string; direction?: 'ltr' | 'rtl' }>
 
 const styles = stylex.create({
-  active: { borderColor: tokens.border, borderStyle: 'solid', borderWidth: 1 },
-  disabled: { cursor: interactionTokens.cursorDisabled, opacity: 0.5 },
+  active: { borderColor: tokens.border, backgroundColor: { default: tokens.background, ':hover': tokens.muted }, boxShadow: tokens.shadowSm, color: { default: tokens.foreground, ':hover': tokens.foreground } },
+  actionActive: { backgroundColor: { default: tokens.background, ':hover': tokens.muted }, boxShadow: tokens.shadowSm, color: { default: tokens.foreground, ':hover': tokens.foreground } },
+  directionLink: { gap: '0.25rem', paddingInline: '0.625rem', },
+  disabled: { cursor: interactionTokens.cursorDisabled, opacity: 0.5, pointerEvents: 'none' },
   content: { gap: '0.25rem', alignItems: 'center', display: 'flex', flexDirection: 'row', },
   ellipsis: { alignItems: 'center', display: 'flex', justifyContent: 'center', height: '2.25rem', width: '2.25rem', },
-  link: { borderRadius: tokens.controlRadius, alignItems: 'center', backgroundColor: { default: tokens.transparent, ':hover': tokens.accent }, color: { default: tokens.foreground, ':hover': tokens.accentForeground }, display: 'inline-flex', fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500, justifyContent: 'center', textDecorationLine: 'none', },
+  ellipsisIcon: { height: '1rem', width: '1rem' },
+  iconSize: { flexShrink: 0, height: '1rem', width: '1rem' },
+  labelSpan: { display: { default: 'none', '@media (min-width: 640px)': 'block' } },
+  link: { borderRadius: tokens.controlRadius, alignItems: 'center', backgroundClip: 'padding-box', backgroundColor: { default: tokens.transparent, ':hover': tokens.muted }, borderColor: tokens.transparent, borderStyle: 'solid', borderWidth: 1, color: { default: tokens.foreground, ':hover': tokens.foreground }, display: 'inline-flex', flexShrink: 0, fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500, justifyContent: 'center', outlineStyle: 'none', textDecorationLine: 'none', userSelect: 'none', whiteSpace: 'nowrap', },
   nav: { marginInline: 'auto', display: 'flex', justifyContent: 'center', width: '100%', },
-  sizeDefault: { paddingInline: '0.75rem', height: '2rem', },
-  sizeIcon: { height: '2rem', width: '2rem' },
-  sizeLg: { paddingInline: '1.5rem', height: '2.5rem', },
-  sizeSm: { paddingInline: '0.625rem', height: '1.75rem', },
-  srOnly: { margin: -1, padding: 0, overflow: 'hidden', position: 'absolute', height: 1, width: 1, },
+  sizeDefault: { gap: '0.375rem', paddingInline: '0.625rem', height: '2.25rem', },
+  sizeIcon: { height: '2.25rem', width: '2.25rem' },
+  sizeLg: { gap: '0.375rem', paddingInline: '0.625rem', height: '2.5rem', },
+  sizeSm: { gap: '0.25rem', paddingInline: '0.625rem', height: '2rem', },
+  srOnly: { margin: -1, padding: 0, borderWidth: 0, clipPath: 'inset(50%)', overflow: 'hidden', position: 'absolute', whiteSpace: 'nowrap', height: 1, width: 1, },
 })
 
 const sizes = { default: styles.sizeDefault, sm: styles.sizeSm, lg: styles.sizeLg, icon: styles.sizeIcon } as const
@@ -47,21 +52,21 @@ export const paginationLink = <Msg>(props: PaginationLinkProps, h: HtmlBuilder<M
 
 export type PaginationDirectionProps = Readonly<{ href?: string; isDisabled?: boolean; layoutStyle?: ComponentLayoutStyle; direction?: 'ltr' | 'rtl'; label?: string }>
 export const paginationPrevious = <Msg>(props: PaginationDirectionProps, h: HtmlBuilder<Msg>): Html => {
-  const icon = props.direction === 'rtl' ? Icon.chevronRight<Msg>({}, h) : Icon.chevronLeft<Msg>({}, h);
+  const icon = props.direction === 'rtl' ? Icon.chevronRight<Msg>({ class: className(styles.iconSize) }, h) : Icon.chevronLeft<Msg>({ class: className(styles.iconSize) }, h);
   const label = props.label ?? 'Previous';
-  return props.isDisabled === true || props.href === undefined ? h.span([h.Role('link'), h.AriaDisabled(true), h.Tabindex(-1), h.AriaLabel('Go to previous page'), h.DataAttribute('slot', 'pagination-previous'), h.Class(className(styles.link, styles.sizeDefault, styles.disabled, props.layoutStyle))], [icon, label]) : paginationLink({ href: props.href, ariaLabel: 'Go to previous page', size: 'default', layoutStyle: props.layoutStyle, children: [icon, label] }, h);
+  return props.isDisabled === true || props.href === undefined ? h.span([h.Role('link'), h.AriaDisabled(true), h.Tabindex(-1), h.AriaLabel('Go to previous page'), h.DataAttribute('slot', 'pagination-previous'), h.Class(className(styles.link, styles.sizeDefault, styles.directionLink, styles.disabled, props.layoutStyle))], [icon, h.span([h.Class(className(styles.labelSpan))], [label])]) : paginationLink({ href: props.href, ariaLabel: 'Go to previous page', size: 'default', layoutStyle: (props.layoutStyle === undefined ? styles.directionLink : { ...styles.directionLink, ...props.layoutStyle }) as ComponentLayoutStyle, children: [icon, h.span([h.Class(className(styles.labelSpan))], [label])] }, h);
 };
 export const paginationNext = <Msg>(props: PaginationDirectionProps, h: HtmlBuilder<Msg>): Html => {
-  const icon = props.direction === 'rtl' ? Icon.chevronLeft<Msg>({}, h) : Icon.chevronRight<Msg>({}, h);
+  const icon = props.direction === 'rtl' ? Icon.chevronLeft<Msg>({ class: className(styles.iconSize) }, h) : Icon.chevronRight<Msg>({ class: className(styles.iconSize) }, h);
   const label = props.label ?? 'Next';
-  return props.isDisabled === true || props.href === undefined ? h.span([h.Role('link'), h.AriaDisabled(true), h.Tabindex(-1), h.AriaLabel('Go to next page'), h.DataAttribute('slot', 'pagination-next'), h.Class(className(styles.link, styles.sizeDefault, styles.disabled, props.layoutStyle))], [label, icon]) : paginationLink({ href: props.href, ariaLabel: 'Go to next page', size: 'default', layoutStyle: props.layoutStyle, children: [label, icon] }, h);
+  return props.isDisabled === true || props.href === undefined ? h.span([h.Role('link'), h.AriaDisabled(true), h.Tabindex(-1), h.AriaLabel('Go to next page'), h.DataAttribute('slot', 'pagination-next'), h.Class(className(styles.link, styles.sizeDefault, styles.directionLink, styles.disabled, props.layoutStyle))], [h.span([h.Class(className(styles.labelSpan))], [label]), icon]) : paginationLink({ href: props.href, ariaLabel: 'Go to next page', size: 'default', layoutStyle: (props.layoutStyle === undefined ? styles.directionLink : { ...styles.directionLink, ...props.layoutStyle }) as ComponentLayoutStyle, children: [h.span([h.Class(className(styles.labelSpan))], [label]), icon] }, h);
 };
 
 export type PaginationEllipsisProps = Readonly<{ layoutStyle?: ComponentLayoutStyle }>
-export const paginationEllipsis = <Msg>(props: PaginationEllipsisProps = {}, h: HtmlBuilder<Msg>): Html => h.span([h.AriaHidden(true), h.DataAttribute('slot', 'pagination-ellipsis'), h.Class(className(styles.ellipsis, props.layoutStyle))], [Icon.moreHorizontal<Msg>({}, h), h.span([h.Class(className(styles.srOnly))], ['More pages'])])
+export const paginationEllipsis = <Msg>(props: PaginationEllipsisProps = {}, h: HtmlBuilder<Msg>): Html => h.span([h.AriaHidden(true), h.DataAttribute('slot', 'pagination-ellipsis'), h.Class(className(styles.ellipsis, props.layoutStyle))], [Icon.moreHorizontal<Msg>({ class: className(styles.ellipsisIcon) }, h), h.span([h.Class(className(styles.srOnly))], ['More pages'])])
 
-const actionButton = <Msg>(page: number, current: number, label: string, message: Msg, h: HtmlBuilder<Msg>): Html => h.button([h.Type('button'), h.OnClick(message), h.AriaLabel(label), ...(page === current ? [h.AriaCurrent('page'), h.DataAttribute('active', 'true')] : []), h.DataAttribute('slot', 'pagination-button'), h.Class(className(styles.link, styles.sizeIcon, page === current && styles.active))], [String(page)])
-const actionDirection = <Msg>(direction: 'previous' | 'next', disabled: boolean, message: Msg, h: HtmlBuilder<Msg>): Html => h.button([h.Type('button'), h.Disabled(disabled), h.OnClick(message), h.AriaLabel(`Go to ${direction} page`), h.DataAttribute('slot', `pagination-${direction}`), h.Class(className(styles.link, styles.sizeDefault, disabled && styles.disabled))], direction === 'previous' ? [Icon.chevronLeft<Msg>({}, h), 'Previous'] : ['Next', Icon.chevronRight<Msg>({}, h)])
+const actionButton = <Msg>(page: number, current: number, label: string, message: Msg, h: HtmlBuilder<Msg>): Html => h.button([h.Type('button'), h.OnClick(message), h.AriaLabel(label), ...(page === current ? [h.AriaCurrent('page'), h.DataAttribute('active', 'true')] : []), h.DataAttribute('slot', 'pagination-button'), h.Class(className(styles.link, styles.sizeIcon, page === current && styles.actionActive))], [String(page)])
+const actionDirection = <Msg>(direction: 'previous' | 'next', disabled: boolean, message: Msg, h: HtmlBuilder<Msg>): Html => h.button([h.Type('button'), h.Disabled(disabled), h.OnClick(message), h.AriaLabel(`Go to ${direction} page`), h.DataAttribute('slot', `pagination-${direction}`), h.Class(className(styles.link, styles.sizeDefault, styles.directionLink))], direction === 'previous' ? [Icon.chevronLeft<Msg>({ class: className(styles.iconSize) }, h), h.span([h.Class(className(styles.labelSpan))], ['Previous'])] : [h.span([h.Class(className(styles.labelSpan))], ['Next']), Icon.chevronRight<Msg>({ class: className(styles.iconSize) }, h)])
 
 export const paginationPages = <Msg>(props: PaginationRecipeProps<Msg>, h: HtmlBuilder<Msg>): Html => {
   const normalized = normalizePagination(props)
