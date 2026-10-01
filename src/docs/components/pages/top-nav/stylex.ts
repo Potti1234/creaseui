@@ -53,7 +53,7 @@ const styles = stylex.create({
   logoGlyph: { height: '1rem', width: '1rem' },
   plainGlyph: { height: '1.25rem', width: '1.25rem' },
   menuItemIcon: { height: '1.25rem', width: '1.25rem' },
-  itemIcon: { height: '1rem', width: '1rem' },
+  itemIcon: { flexShrink: 0, height: '1rem', width: '1rem' },
   endIcon: { height: '1.25rem', width: '1.25rem' },
   navWidth600: { maxWidth: '100%', width: '600px' },
 });
@@ -206,7 +206,7 @@ export const topNavStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
 ): Html => {
   const fixture = topNavFixtures[exampleIndex] ?? topNavFixtures[0];
   if (fixture.kind === 'megaItems') {
-    return h.div(
+    return h.div([h.Class(className(styles.page))], [h.div(
       [h.Class(className(styles.itemsGrid))],
       fixture.megaItems.map(item =>
         TopNav.topNavMegaMenuItem(
@@ -230,15 +230,15 @@ export const topNavStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           h,
         ),
       ),
-    );
+    )]);
   }
   if (fixture.kind === 'featuredCard') {
-    return h.div([h.Class(className(styles.cardWrap))], [
+    return h.div([h.Class(className(styles.page))], [h.div([h.Class(className(styles.cardWrap))], [
       TopNav.topNavMegaMenuFeaturedCard(
         decorateFeaturedCard(fixture.featuredCard),
         h,
       ),
-    ]);
+    ])]);
   }
   const navs = (model as { navs: Record<string, TopNav.Model> }).navs;
   const navViews = fixture.navs.map((nav: TopNavFixtureNav, index) => {

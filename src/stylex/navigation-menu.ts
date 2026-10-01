@@ -83,10 +83,11 @@ export type NavigationMenuDisclosureProps<Msg> = Readonly<{
 export const navigationMenuDisclosure = <Msg>(props: NavigationMenuDisclosureProps<Msg>, h: HtmlBuilder<Msg>): Html => Popover.popover({
   model: props.model,
   toParentMessage: props.toParentMessage,
-  trigger: h.span([h.Class(className(styles.link, styles.trigger, props.layoutStyle)), h.AriaLabel(props.ariaLabel ?? props.label), ...(props.pointerIntent === 'hover-and-press' && !props.model.isOpen ? [h.OnMouseEnter(props.toParentMessage(Popover.RequestedOpen()))] : [])], [
+  trigger: h.span([h.Class(className(styles.trigger, props.layoutStyle)), h.AriaLabel(props.ariaLabel ?? props.label), ...(props.pointerIntent === 'hover-and-press' && !props.model.isOpen ? [h.OnMouseEnter(props.toParentMessage(Popover.RequestedOpen()))] : [])], [
     props.label,
     Icon.chevronDown<Msg>({ class: className(styles.disclosureIcon, props.model.isOpen && styles.disclosureIconOpen) }, h),
   ]),
+  triggerLayoutStyle: styles.link as ComponentLayoutStyle,
   content: h.div([h.Class(className(styles.content))], [props.content]),
   align: 'start',
   focusSelector: 'a',
