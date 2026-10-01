@@ -1,8 +1,9 @@
-import type { Html, HtmlBuilder } from 'foldkit/html'
+import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
+import { Option } from 'effect'
 
 import * as Icon from '@/lib/icon'
 import { cn } from '@/lib/utils'
-import { type Entry, type Message, type Model, type Position, type Variant, Message as ToastMessages } from '@/lib/toast'
+import { ActivatedToastAction, type Entry, type Message, type Model, type Position, type Variant, Message as ToastMessages } from '@/lib/toast'
 import { buttonVariants } from '@/ui/button'
 
 export * from '@/lib/toast'
@@ -45,33 +46,55 @@ export type SonnerProps<Msg> = Readonly<{
   position?: Position
 }>
 
+/** Mirrors the upstream Toast view's animation attributes so the entry
+ *  participates in the primitive's enter/leave lifecycle. */
+const animationAttributes = <Msg>(entry: Entry, h: HtmlBuilder<Msg>): ReadonlyArray<Attribute<Msg>> => {
+  switch (entry.animation.transitionState) {
+    case 'EnterStart': return [
+      h.DataAttribute('closed', ''), h.DataAttribute('enter', ''), h.DataAttribute('transition', ''),
+    ]
+    case 'EnterAnimating': return [h.DataAttribute('enter', ''), h.DataAttribute('transition', '')]
+    case 'LeaveStart': return [h.DataAttribute('leave', ''), h.DataAttribute('transition', '')]
+    case 'LeaveAnimating': return [
+      h.DataAttribute('closed', ''), h.DataAttribute('leave', ''), h.DataAttribute('transition', ''),
+    ]
+    default: return []
+  }
+}
+
+/** `data-closed` phases (enter start, leave end) fade the entry via the
+ *  existing opacity/transform transition. */
+const isVisuallyClosed = (entry: Entry): boolean =>
+  entry.animation.transitionState === 'EnterStart' || entry.animation.transitionState === 'LeaveAnimating'
+
 const entryView = <Msg>(entry: Entry, props: SonnerProps<Msg>, h: HtmlBuilder<Msg>): Html => h.article(
   [
-    h.Key(entry.id),
-    h.Role(entry.variant === 'Error' ? 'alert' : 'status'),
+    h.Key(entry.id), h.Id(entry.id),
+    h.Role(entry.payload.variant === 'Error' ? 'alert' : 'status'),
     h.DataAttribute('slot', 'sonner-toast'),
-    h.DataAttribute('variant', entry.variant.toLowerCase()),
-    h.DataAttribute('paused', String(entry.isPaused)),
-    ...(props.pausePolicy === 'none' || entry.sticky ? [] : [
-      h.OnMouseEnter(props.toParentMessage(ToastMessages.PausedToast({ id: entry.id }))),
-      h.OnMouseLeave(props.toParentMessage(ToastMessages.ResumedToast({ id: entry.id }))),
+    h.DataAttribute('variant', entry.payload.variant.toLowerCase()),
+    h.DataAttribute('paused', String(entry.isHovered)),
+    ...(props.pausePolicy === 'none' || Option.isNone(entry.maybeDuration) ? [] : [
+      h.OnMouseEnter(props.toParentMessage(ToastMessages.HoveredEntry({ entryId: entry.id }))),
+      h.OnMouseLeave(props.toParentMessage(ToastMessages.LeftEntry({ entryId: entry.id }))),
     ]),
-    h.Class(cn('group pointer-events-auto relative flex w-full items-start gap-3 overflow-hidden rounded-lg border bg-popover p-4 pr-8 text-popover-foreground shadow-lg transition-[opacity,transform] duration-200 motion-reduce:transition-none', props.entryClass)),
+    ...animationAttributes(entry, h),
+    h.Class(cn('group pointer-events-auto relative flex w-full items-start gap-3 overflow-hidden rounded-lg border bg-popover p-4 pr-8 text-popover-foreground shadow-lg transition-[opacity,transform] duration-200 motion-reduce:transition-none', isVisuallyClosed(entry) && 'opacity-0', props.entryClass)),
   ],
   [
-    ...(variantIcon(entry.variant, h) === undefined ? [] : [variantIcon(entry.variant, h)!]),
+    ...(variantIcon(entry.payload.variant, h) === undefined ? [] : [variantIcon(entry.payload.variant, h)!]),
     h.div([h.Class('grid flex-1 gap-1')], [
       h.div([h.Class('text-sm font-semibold')], [entry.payload.title]),
       ...(entry.payload.description === undefined ? [] : [h.div([h.Class('text-sm text-muted-foreground')], [entry.payload.description])]),
     ]),
     ...(entry.payload.actionLabel === undefined ? [] : [h.button([
       h.Type('button'),
-      h.OnClick(props.toParentMessage(ToastMessages.ActivatedToastAction({ id: entry.id }))),
+      h.OnClick(props.toParentMessage(ActivatedToastAction({ id: entry.id }))),
       h.Class(cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'shrink-0 bg-transparent hover:bg-secondary')),
     ], [entry.payload.actionLabel])]),
     h.button([
       h.Type('button'), h.AriaLabel('Dismiss notification'),
-      h.OnClick(props.toParentMessage(ToastMessages.Dismissed({ id: entry.id }))),
+      h.OnClick(props.toParentMessage(ToastMessages.Dismissed({ entryId: entry.id }))),
       h.Class(cn(buttonVariants({ variant: 'ghost', size: 'icon-xs' }), 'absolute top-2 right-2 p-1 text-foreground/50 opacity-0 transition-opacity motion-reduce:transition-none hover:text-foreground focus:opacity-100 group-hover:opacity-100')),
     ], [Icon.x<Msg>({ class: 'size-4' }, h)]),
   ],

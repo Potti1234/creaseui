@@ -16,7 +16,7 @@ import * as Sonner from '@/ui/sonner';
 const GotSonnerPreviewMessage = defineMessageUnion({
   ClickedSonnerButton: { index: S.Number },
   CompletedPromiseToast: {},
-  GotSonnerPreviewMessage: { message: Sonner.Message },
+  GotSonnerPreviewMessage: { message: S.Union([Sonner.Message, Sonner.ActivatedToastAction]) },
 });
 type PreviewMessage = typeof GotSonnerPreviewMessage.Type;
 

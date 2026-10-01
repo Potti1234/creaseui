@@ -156,7 +156,7 @@ export type Model = typeof Model.Type`,
       )
       .join('\n')}
 export const GotSonnerMessage = taggedStruct('GotSonnerMessage${tag}', {
-  message: Sonner.Message,
+  message: S.Union([Sonner.Message, Sonner.ActivatedToastAction]),
 })${hasPromise ? `
 export const CompletedPromise = taggedStruct('CompletedPromise${tag}')` : ''}
 export const Message = S.Union([${[...clickTags, 'GotSonnerMessage', ...(hasPromise ? ['CompletedPromise'] : [])].join(', ')}])
