@@ -43,12 +43,15 @@ export type ProgressProps = Readonly<{
   direction?: 'ltr' | 'rtl';
   layoutStyle?: ComponentLayoutStyle;
 }>;
+const PRIMITIVE_DATA_KEYS = new Set(["state", "indeterminate", "value", "min", "max"]);
+
 const keepProgressAttribute = <Msg>(
   attr: Attribute<Msg>,
   hasId: boolean,
 ): boolean =>
   !(attr._tag === "Id" && !hasId) &&
-  !(attr._tag === "AriaLabelledBy" && !hasId);
+  !(attr._tag === "AriaLabelledBy" && !hasId) &&
+  !(attr._tag === "DataAttribute" && PRIMITIVE_DATA_KEYS.has(attr.key));
 
 export const progress = <Msg>(
   props: ProgressProps,
@@ -68,6 +71,7 @@ export const progress = <Msg>(
           [
             ...progressAttrs.filter((attr) => keepProgressAttribute(attr, hasId)),
             ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
+            h.DataAttribute("state", normalized.state),
             h.DataAttribute("slot", "progress"),
             h.Class(className(styles.root, props.layoutStyle)),
           ],
