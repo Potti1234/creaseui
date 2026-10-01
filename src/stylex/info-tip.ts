@@ -63,10 +63,10 @@ const styles = stylex.create({
     verticalAlign: 'middle',
   },
   content: { overflowY: 'visible' },
-  iconXsm: { fontSize: '0.75rem', lineHeight: '1rem' },
-  iconSm: { fontSize: '1rem', lineHeight: '1.5rem' },
-  iconMd: { fontSize: '1.25rem', lineHeight: '1.75rem' },
-  iconLg: { fontSize: '1.5rem', lineHeight: '2rem' },
+  iconXsm: { height: '0.75rem', width: '0.75rem' },
+  iconSm: { height: '1rem', width: '1rem' },
+  iconMd: { height: '1.25rem', width: '1.25rem' },
+  iconLg: { height: '1.5rem', width: '1.5rem' },
 });
 
 export type InfoTipSize = 'xsm' | 'sm' | 'md' | 'lg';
@@ -128,7 +128,6 @@ export const infoTip = <Msg>(
           h.Class(
             className(
               styles.trigger,
-              SIZE_STYLE[props.size ?? 'sm'],
               props.layoutStyle,
             ),
           ),
@@ -145,7 +144,12 @@ export const infoTip = <Msg>(
               : Option.none(),
           ),
         ],
-        [Icon.info({}, h)],
+        [
+          Icon.info(
+            { class: className(SIZE_STYLE[props.size ?? 'sm']) },
+            h,
+          ),
+        ],
       ),
       ...(props.model.isOpen
         ? [

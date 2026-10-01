@@ -2,6 +2,7 @@ import * as stylex from '@stylexjs/stylex';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import {
   timestampFixtures,
   type TimestampFixture,
@@ -19,6 +20,10 @@ const styles = stylex.create({
     color: 'var(--muted-foreground)',
     fontSize: '0.75rem',
     lineHeight: '1.25rem',
+  },
+  disabledInk: {
+    color: 'color-mix(in oklab, var(--muted-foreground) 60%, transparent)',
+    opacity: 1,
   },
 });
 
@@ -46,6 +51,9 @@ const stampView = <Msg>(
         ),
       ...(stamp.type === undefined ? {} : { type: stamp.type }),
       ...(stamp.color === undefined ? {} : { color: stamp.color }),
+      ...(stamp.color === 'disabled'
+        ? { layoutStyle: styles.disabledInk as ComponentLayoutStyle }
+        : {}),
       ...(stamp.isTimezoneShown === true ? { isTimezoneShown: true } : {}),
       ...(stamp.tooltipEntries === undefined
         ? {}

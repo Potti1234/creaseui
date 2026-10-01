@@ -63,6 +63,10 @@ const base = stylex.create({
   },
   tint: { color: tokens.primary },
   tintDisabled: { color: tokens.mutedForeground },
+  glyph: { height: '1rem', width: '1rem' },
+  checkGlyph: { color: tokens.primaryForeground },
+  markShown: { display: 'block' },
+  markHidden: { display: 'none' },
   disabled: { opacity: 0.5 },
   disabledUnchecked: {
     borderColor: tokens.border,
@@ -86,15 +90,28 @@ export type IndicatorState = 'unchecked' | 'checked' | 'indeterminate';
 /** `sm` renders a 20px control, `md` a 24px control. */
 export type IndicatorSize = 'sm' | 'md';
 
+const isCheckedState = (state: IndicatorState): boolean =>
+  state === 'checked';
+
 const isCheckedOrIndeterminate = (state: IndicatorState): boolean =>
   state !== 'unchecked';
 
-const checkmark = <Msg>(size: IndicatorSize, h: HtmlBuilder<Msg>): Html =>
+const checkmark = <Msg>(
+  state: IndicatorState,
+  size: IndicatorSize,
+  h: HtmlBuilder<Msg>,
+): Html =>
   h.svg(
     [
       h.ViewBox('0 0 10 10'),
       h.Width(size === 'sm' ? '12' : '14'),
       h.Height(size === 'sm' ? '12' : '14'),
+      h.Class(
+        className(
+          base.checkGlyph,
+          isCheckedState(state) ? base.markShown : base.markHidden,
+        ),
+      ),
       h.DataAttribute('slot', 'checkbox-indicator-check'),
     ],
     [
@@ -146,18 +163,15 @@ export const checkIndicator = <Msg>(
   if (!isChecked) {
     return h.empty;
   }
-  return h.span(
-    [
-      h.AriaHidden(true),
-      h.Class(
-        className(
-          base.slot,
-          props.isDisabled === true ? base.tintDisabled : base.tint,
-          props.layoutStyle,
-        ),
+  return Icon.check(
+    {
+      class: className(
+        base.glyph,
+        props.isDisabled === true ? base.tintDisabled : base.tint,
+        props.layoutStyle,
       ),
-    ],
-    [Icon.check({}, h)],
+    },
+    h,
   );
 };
 
@@ -200,16 +214,22 @@ export const checkboxIndicator = <Msg>(
     props.children !== undefined && props.children.length > 0
       ? [...props.children]
       : [
-          props.state === 'checked' ? checkmark(size, h) : h.empty,
-          props.state === 'indeterminate'
-            ? h.span(
-                [
-                  h.DataAttribute('slot', 'checkbox-indicator-dash'),
-                  h.Class(className(base.dash, size === 'sm' ? base.dashSm : base.dashMd)),
-                ],
-                [],
-              )
-            : h.empty,
+          checkmark(props.state, size, h),
+          h.span(
+            [
+              h.DataAttribute('slot', 'checkbox-indicator-dash'),
+              h.Class(
+                className(
+                  base.dash,
+                  size === 'sm' ? base.dashSm : base.dashMd,
+                  props.state === 'indeterminate'
+                    ? base.markShown
+                    : base.markHidden,
+                ),
+              ),
+            ],
+            [],
+          ),
         ],
   );
 };

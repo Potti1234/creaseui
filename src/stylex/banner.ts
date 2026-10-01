@@ -78,6 +78,7 @@ const styles = stylex.create({
   },
   headerContent: {
     display: 'flex',
+    flexBasis: '0%',
     flexDirection: 'column',
     flexGrow: 1,
     minWidth: 0,
@@ -137,10 +138,12 @@ const styles = stylex.create({
     borderEndStartRadius: tokens.cardRadius,
   },
   iconSm: {
+    flexShrink: 0,
     height: '1rem',
     width: '1rem',
   },
   chevron: {
+    flexShrink: 0,
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'transform',
     transitionTimingFunction: interactionTokens.easingStandard,

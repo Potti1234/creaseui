@@ -286,7 +286,12 @@ const styles = stylex.create({
      tone — muted-foreground carries the hint in Crease UI. Applied to the
      time element itself; crease's HoverCard owns the trigger button. */
   triggerUnderline: {
+    backgroundColor: 'transparent',
     cursor: interactionTokens.cursorDefault,
+    display: 'inline',
+    fontFamily: 'inherit',
+    padding: 0,
+    textAlign: 'left',
     textDecorationColor: tokens.mutedForeground,
     textDecorationLine: 'underline',
     textDecorationStyle: 'dashed',
@@ -424,7 +429,6 @@ export const timestamp = <Msg>(
       h.Class(
         className(
           styles.time,
-          ...(showTooltip ? [styles.triggerUnderline] : []),
           ...astryxTextStylex({
             ...(props.type === undefined
               ? { type: 'supporting' as const }
@@ -533,6 +537,7 @@ export const timestamp = <Msg>(
           Message.GotTimestampHoverCardMessage({ message }),
         ),
       trigger: timeElement,
+      triggerLayoutStyle: styles.triggerUnderline as ComponentLayoutStyle,
       content: cardContent,
       side: 'top',
       align: 'center',

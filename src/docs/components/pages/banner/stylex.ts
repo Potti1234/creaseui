@@ -29,21 +29,20 @@ const styles = stylex.create({
   },
   detailList: {
     margin: 0,
-    gap: '0.25rem',
-    display: 'flex',
-    flexDirection: 'column',
+    display: 'block',
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
     listStyleType: 'disc',
     paddingInlineStart: '1.25rem',
   },
+  detailLi: { marginBottom: '0.25rem' },
 });
 
 const detailChildren = <Msg>(h: HtmlBuilder<Msg>): Html =>
   h.div([h.Class(className(styles.detailStack))], [
     h.p([h.Class(className(styles.detailText))], ['Changed settings:']),
     h.ul([h.Class(className(styles.detailList))], [
-      h.li([], ['Authentication method updated']),
+      h.li([h.Class(className(styles.detailLi))], ['Authentication method updated']),
       h.li([], ['Rate limits modified']),
     ]),
   ]);

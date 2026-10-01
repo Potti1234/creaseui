@@ -38,9 +38,8 @@ const styles = stylex.create({
   success: { color: tokens.alertSuccess },
   warning: { color: tokens.alertWarning },
   error: { color: tokens.destructive },
-  icon: { gridRow: 'span 2', gridColumnStart: '1', height: '1rem', width: '1rem' },
+  icon: { gridRow: 'span 2 / span 2', gridColumnStart: '1', height: '1rem', width: '1rem' },
   title: {
-    overflow: "hidden",
     fontWeight: 500,
     gridColumnStart: "2",
     letterSpacing: "-0.025em",

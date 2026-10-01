@@ -11,8 +11,9 @@ const styles = stylex.create({
   row: { gap: '1rem', alignItems: 'center', display: 'flex', },
   circleLg: { height: '3rem', width: '3rem' },
   circleSm: { flexShrink: 0, height: '2.5rem', width: '2.5rem', },
-  lines: { gap: '0.5rem', display: 'grid', },
-  lineWide: { height: '1rem', width: '15.625rem' },
+  lines: { display: 'block', },
+  linesGrid: { gap: '0.5rem', display: 'grid', },
+  lineWide: { height: '1rem', marginBottom: '0.5rem', width: '15.625rem' },
   lineMid: { height: '1rem', width: '12.5rem' },
   line150: { height: '1rem', width: '9.375rem' },
   line100: { height: '1rem', width: '6.25rem' },
@@ -55,7 +56,7 @@ const styles = stylex.create({
     width: '100%',
   },
   tableRow: { gap: '1rem', display: 'flex', },
-  cellGrow: { flexGrow: 1, height: '1rem', },
+  cellGrow: { flexBasis: '0%', flexGrow: 1, flexShrink: 1, height: '1rem', },
   cellW24: { height: '1rem', width: '6rem' },
   cellW20: { height: '1rem', width: '5rem' },
 });
@@ -96,7 +97,7 @@ export const skeletonStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           { shape: 'circle', layoutStyle: styles.circleSm },
           h,
         ),
-        h.div([h.Class(className(styles.lines))], [
+        h.div([h.Class(className(styles.linesGrid))], [
           Skeleton.skeleton({ layoutStyle: styles.line150 }, h),
           Skeleton.skeleton({ layoutStyle: styles.line100 }, h),
         ]),
