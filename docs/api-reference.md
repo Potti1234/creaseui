@@ -789,9 +789,11 @@ Source: [`src/ui/field.ts`](../src/ui/field.ts)
 | --- | --- | --- |
 | `ControlFieldParts` | re-export | `export { ControlFieldParts } from '@/lib/field'` |
 | `FieldError` | re-export | `export { FieldError } from '@/lib/field'` |
-| `FieldSetProps` | type | `FieldSetProps = Slot & Readonly<{ isDisabled?: boolean }>` |
+| `fieldSetLegendId` | value | `fieldSetLegendId: value` |
+| `fieldSetDescriptionId` | value | `fieldSetDescriptionId: value` |
+| `FieldSetProps` | type | `FieldSetProps = Slot & Readonly<{ isDisabled?: boolean; /** Base id; wires legend/description ids and aria-describedby via the foldkit Fieldset primitive. Pair with `fieldSetLegendId` and `fieldSetDescriptionId`. */ id?: string; /** Set when a `fieldDescripti…` |
 | `fieldSet` | function | `fieldSet<Msg>(props: FieldSetProps, h: HtmlBuilder<Msg>): Html` |
-| `FieldLegendProps` | type | `FieldLegendProps = Slot & Readonly<{ variant?: 'legend' \| 'label' }>` |
+| `FieldLegendProps` | type | `FieldLegendProps = Slot & Readonly<{ variant?: 'legend' \| 'label'; id?: string }>` |
 | `fieldLegend` | function | `fieldLegend<Msg>(props: FieldLegendProps, h: HtmlBuilder<Msg>): Html` |
 | `FieldGroupProps` | type | `FieldGroupProps = Slot & Readonly<{ variant?: 'default' \| 'outline' }>` |
 | `fieldGroup` | function | `fieldGroup<Msg>(props: FieldGroupProps, h: HtmlBuilder<Msg>): Html` |
@@ -805,7 +807,7 @@ Source: [`src/ui/field.ts`](../src/ui/field.ts)
 | `FieldLabelProps` | type | `FieldLabelProps = Slot & Readonly<{ for?: string }>` |
 | `fieldLabel` | function | `fieldLabel<Msg>(props: FieldLabelProps, h: HtmlBuilder<Msg>): Html` |
 | `fieldTitle` | function | `fieldTitle<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
-| `fieldDescription` | function | `fieldDescription<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
+| `fieldDescription` | function | `fieldDescription<Msg>(props: Slot & Readonly<{ id?: string }>, h: HtmlBuilder<Msg>): Html` |
 | `FieldSeparatorProps` | type | `FieldSeparatorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html \| string>; }>` |
 | `fieldSeparator` | function | `fieldSeparator<Msg>(props: FieldSeparatorProps = {}, h: HtmlBuilder<Msg>): Html` |
 | `FieldErrorProps` | type | `FieldErrorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html \| string>; errors?: ReadonlyArray<FieldError>; }>` |

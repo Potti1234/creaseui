@@ -3479,9 +3479,19 @@
           "signature": "export { FieldError } from '@/lib/field'"
         },
         {
+          "name": "fieldSetLegendId",
+          "kind": "value",
+          "signature": "fieldSetLegendId: value"
+        },
+        {
+          "name": "fieldSetDescriptionId",
+          "kind": "value",
+          "signature": "fieldSetDescriptionId: value"
+        },
+        {
           "name": "FieldSetProps",
           "kind": "type",
-          "signature": "FieldSetProps = Slot & Readonly<{ isDisabled?: boolean }>"
+          "signature": "FieldSetProps = Slot & Readonly<{ isDisabled?: boolean; /** Base id; wires legend/description ids and aria-describedby via the foldkit Fieldset primitive. Pair with `fieldSetLegendId` and `fieldSetDescriptionId`. */ id?: string; /** Set when a `fieldDescripti…"
         },
         {
           "name": "fieldSet",
@@ -3491,7 +3501,7 @@
         {
           "name": "FieldLegendProps",
           "kind": "type",
-          "signature": "FieldLegendProps = Slot & Readonly<{ variant?: 'legend' | 'label' }>"
+          "signature": "FieldLegendProps = Slot & Readonly<{ variant?: 'legend' | 'label'; id?: string }>"
         },
         {
           "name": "fieldLegend",
@@ -3561,7 +3571,7 @@
         {
           "name": "fieldDescription",
           "kind": "function",
-          "signature": "fieldDescription<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html"
+          "signature": "fieldDescription<Msg>(props: Slot & Readonly<{ id?: string }>, h: HtmlBuilder<Msg>): Html"
         },
         {
           "name": "FieldSeparatorProps",
