@@ -2466,8 +2466,10 @@
       "source": "src/ui/data-table.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/data-table",
       "dependencies": [
+        "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/input",
         "Potti1234/creaseui/table",
         "Potti1234/creaseui/utils"
       ],
@@ -3220,6 +3222,7 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/separator",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -7492,6 +7495,7 @@
       "source": "src/ui/sonner.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/sonner",
       "dependencies": [
+        "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -9224,8 +9228,10 @@
       "source": "src/ui/transfer-list.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/transfer-list",
       "dependencies": [
+        "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/input",
         "Potti1234/creaseui/utils"
       ],
       "examples": [

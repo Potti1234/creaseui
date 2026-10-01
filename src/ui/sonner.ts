@@ -3,6 +3,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as Icon from '@/lib/icon'
 import { cn } from '@/lib/utils'
 import { type Entry, type Message, type Model, type Position, type Variant, Message as ToastMessages } from '@/lib/toast'
+import { buttonVariants } from '@/ui/button'
 
 export * from '@/lib/toast'
 
@@ -66,12 +67,12 @@ const entryView = <Msg>(entry: Entry, props: SonnerProps<Msg>, h: HtmlBuilder<Ms
     ...(entry.payload.actionLabel === undefined ? [] : [h.button([
       h.Type('button'),
       h.OnClick(props.toParentMessage(ToastMessages.ActivatedToastAction({ id: entry.id }))),
-      h.Class('inline-flex h-8 shrink-0 items-center justify-center rounded-md border bg-transparent px-3 text-sm font-medium hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring'),
+      h.Class(cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'shrink-0 bg-transparent hover:bg-secondary')),
     ], [entry.payload.actionLabel])]),
     h.button([
       h.Type('button'), h.AriaLabel('Dismiss notification'),
       h.OnClick(props.toParentMessage(ToastMessages.Dismissed({ id: entry.id }))),
-      h.Class('absolute top-2 right-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity motion-reduce:transition-none hover:text-foreground focus:opacity-100 group-hover:opacity-100'),
+      h.Class(cn(buttonVariants({ variant: 'ghost', size: 'icon-xs' }), 'absolute top-2 right-2 p-1 text-foreground/50 opacity-0 transition-opacity motion-reduce:transition-none hover:text-foreground focus:opacity-100 group-hover:opacity-100')),
     ], [Icon.x<Msg>({ class: 'size-4' }, h)]),
   ],
 )
