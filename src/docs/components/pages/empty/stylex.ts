@@ -2,6 +2,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html';
 import * as stylex from '@stylexjs/stylex';
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import {
   type EmptyFixture,
   emptyFixtures,
@@ -27,20 +28,24 @@ const styles = stylex.create({
     height: '100%',
   },
   avatarSize: { height: '3rem', width: '3rem' },
+  avatarImgAspect: { aspectRatio: '1 / 1', borderRadius: 0, objectFit: 'fill' },
+  avatarSizeOverlap: { height: '3rem', marginInlineEnd: '-0.5rem', width: '3rem' },
   actionRow: {
     gap: '0.5rem',
-    display: 'flex',
     justifyContent: 'center',
   },
   linkRow: {
     gap: '0.25rem',
-    textDecoration: 'underline',
+    textDecorationLine: { default: 'none', ':hover': 'underline' },
     alignItems: 'center',
     color: 'var(--muted-foreground)',
     display: 'inline-flex',
     fontSize: '0.875rem', lineHeight: '1.25rem',
     textUnderlineOffset: '4px',
   },
+  mediaIconSvg: { flexShrink: 0, height: '1.5rem', width: '1.5rem' },
+  buttonIcon: { flexShrink: 0, height: '1rem', width: '1rem' },
+  addonIcon: { height: '1rem', width: '1rem' },
   inputWidth: { width: '75%' },
   helpLink: { textDecoration: 'underline' },
 });
@@ -66,14 +71,17 @@ const avatarNode = <Msg>(
   src: string,
   alt: string,
   fallback: string,
-  big: boolean,
+  inGroup: boolean,
+  nonLast: boolean,
   h: HtmlBuilder<Msg>,
 ): Html =>
   Avatar.avatar(
     {
-      ...(big ? { grayscale: true, layoutStyle: styles.avatarSize } : {}),
+      grayscale: true,
+      ...(inGroup ? { ring: true } : {}),
+      layoutStyle: nonLast ? styles.avatarSizeOverlap : styles.avatarSize,
       children: [
-        Avatar.avatarImage({ src, alt, model: { status: 'loaded' } }, h),
+        Avatar.avatarImage({ src, alt, model: { status: 'loaded' }, layoutStyle: styles.avatarImgAspect as ComponentLayoutStyle }, h),
         Avatar.avatarFallback({ children: [fallback] }, h),
       ],
     },
@@ -109,7 +117,7 @@ const emptyView = <Msg>(
         headerBlock(
           'No Projects Yet',
           "You haven't created any projects yet. Get started by creating your first project.",
-          Empty.emptyMedia({ variant: 'icon', children: [Icon.icon('folder-code', {}, h)] }, h),
+          Empty.emptyMedia({ variant: 'icon', children: [Icon.icon('folder-code', { class: className(styles.mediaIconSvg) }, h)] }, h),
           h,
         ),
         Empty.emptyContent(
@@ -131,7 +139,7 @@ const emptyView = <Msg>(
           headerBlock(
             'Cloud Storage Empty',
             'Upload files to your cloud storage to access them anywhere.',
-            Empty.emptyMedia({ variant: 'icon', children: [Icon.icon('cloud', {}, h)] }, h),
+            Empty.emptyMedia({ variant: 'icon', children: [Icon.icon('cloud', { class: className(styles.mediaIconSvg) }, h)] }, h),
             h,
           ),
           Empty.emptyContent({ children: [action('outline', 'Upload Files')] }, h),
@@ -143,11 +151,11 @@ const emptyView = <Msg>(
           headerBlock(
             'No Notifications',
             "You're all caught up. New notifications will appear here.",
-            Empty.emptyMedia({ variant: 'icon', children: [Icon.icon('bell', {}, h)] }, h),
+            Empty.emptyMedia({ variant: 'icon', children: [Icon.icon('bell', { class: className(styles.mediaIconSvg) }, h)] }, h),
             h,
           ),
           Empty.emptyContent(
-            { children: [action('outline', 'Refresh', Icon.icon('refresh-ccw', {}, h))] },
+            { children: [action('outline', 'Refresh', Icon.icon('refresh-ccw', { class: className(styles.buttonIcon) }, h))] },
             h,
           ),
         ]),
@@ -161,7 +169,7 @@ const emptyView = <Msg>(
             {
               variant: 'default',
               children: [
-                avatarNode('https://github.com/shadcn.png', '@shadcn', 'LR', true, h),
+                avatarNode('https://github.com/shadcn.png', '@shadcn', 'LR', false, false, h),
               ],
             },
             h,
@@ -188,7 +196,9 @@ const emptyView = <Msg>(
                         ['https://github.com/maxleiter.png', '@maxleiter', 'LR'],
                         ['https://github.com/evilrabbit.png', '@evilrabbit', 'ER'],
                       ] as const
-                    ).map(([src, alt, fb]) => avatarNode(src, alt, fb, false, h)),
+                    ).map(([src, alt, fb], i, arr) =>
+                      avatarNode(src, alt, fb, true, i < arr.length - 1, h),
+                    ),
                   },
                   h,
                 ),
@@ -199,7 +209,7 @@ const emptyView = <Msg>(
           h,
         ),
         Empty.emptyContent(
-          { children: [action('default', 'Invite Members', Icon.icon('plus', {}, h))] },
+          { children: [action('default', 'Invite Members', Icon.icon('plus', { class: className(styles.buttonIcon) }, h))] },
           h,
         ),
       ]);
@@ -237,7 +247,7 @@ const emptyView = <Msg>(
                       },
                       h,
                     ),
-                    InputGroup.inputGroupAddon({ children: [Icon.icon('search', {}, h)] }, h),
+                    InputGroup.inputGroupAddon({ children: [Icon.icon('search', { class: className(styles.addonIcon) }, h)] }, h),
                     InputGroup.inputGroupAddon(
                       { align: 'inline-end', children: [Kbd.kbd({ children: ['/'] }, h)] },
                       h,
@@ -271,7 +281,7 @@ const emptyView = <Msg>(
           headerBlock(
             emptyRtlCopy.title,
             emptyRtlCopy.description,
-            Empty.emptyMedia({ variant: 'icon', children: [Icon.icon('folder-code', {}, h)] }, h),
+            Empty.emptyMedia({ variant: 'icon', children: [Icon.icon('folder-code', { class: className(styles.mediaIconSvg) }, h)] }, h),
             h,
           ),
           Empty.emptyContent(

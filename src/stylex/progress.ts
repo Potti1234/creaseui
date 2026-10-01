@@ -13,7 +13,7 @@ const styles = stylex.create({
   root: {
     borderRadius: foundationTokens.radiusFull,
     overflow: "hidden",
-    backgroundColor: foundationTokens.primarySoft,
+    backgroundColor: 'color-mix(in oklab, var(--primary) 20%, transparent)',
     position: "relative",
     height: "0.5rem",
     width: "100%",
@@ -66,7 +66,7 @@ export const progress = <Msg>(
         [
           h.DataAttribute("slot", "progress-indicator"),
           h.Class(
-            className(styles.indicator, normalized.value === null && styles.indeterminate),
+            className(normalized.value === null ? styles.indeterminate : styles.indicator),
           ),
           h.Style({
             transform:

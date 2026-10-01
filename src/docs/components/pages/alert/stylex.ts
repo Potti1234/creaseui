@@ -2,6 +2,7 @@ import * as stylex from '@stylexjs/stylex';
 import type { HtmlBuilder } from 'foldkit/html';
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import { className } from '@/stylex/style';
 import { alertFixtures } from '@/docs/components/pages/alert/shared';
 import * as Icon from '@/lib/icon';
@@ -11,6 +12,8 @@ import * as Button from '@/stylex/button';
 const styles = stylex.create({
   wrap: { gap: '1rem', display: 'grid', maxWidth: '28rem', width: '100%', },
   action: { gridColumnStart: '2', marginTop: '0.5rem' },
+  iconSvg: { height: '1rem', width: '1rem' },
+  amber: { backgroundColor: 'var(--color-amber-50)', borderColor: 'var(--color-amber-200)', color: 'var(--color-amber-900)' },
 });
 
 export const alertStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
@@ -29,8 +32,9 @@ export const alertStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       Alert.alert({
         severity: item.severity,
         announcement: item.announcement,
+        ...(fixture.colors === undefined ? {} : { layoutStyle: styles.amber as ComponentLayoutStyle }),
         children: [
-          Alert.alertIcon({ children: [Icon.icon(item.icon, {}, h)] }, h),
+          Alert.alertIcon({ children: [Icon.icon(item.icon, { class: className(styles.iconSvg) }, h)] }, h),
           Alert.alertTitle({ children: [item.title] }, h),
           Alert.alertDescription({ children: [item.description] }, h),
           ...(item.actionLabel === undefined
