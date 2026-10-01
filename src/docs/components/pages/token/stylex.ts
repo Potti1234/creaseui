@@ -17,9 +17,9 @@ const styles = stylex.create({
   caption: {
     color: tokens.mutedForeground,
     fontSize: '0.75rem',
-    lineHeight: '1.25rem',
+    lineHeight: '1rem',
   },
-  iconSm: { fontSize: '0.75rem', lineHeight: '1rem' },
+  iconSm: { height: '0.75rem', width: '0.75rem' },
 });
 
 /* Literal icon names keep `icons:generate` statically scannable. */

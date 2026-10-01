@@ -6,9 +6,9 @@ import { defineMessageUnion } from 'foldkit/message'
 
 import * as MessageScrollerBehavior from '@/lib/message-scroller'
 import type { ComponentLayoutStyle } from './contracts'
+import { foundationTokens } from './foundations-tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
 import { logStreamTerminalInk } from './log-stream-terminal-ink.stylex'
-import { logStreamTerminalTheme } from './log-stream-terminal.stylex'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
 
@@ -132,7 +132,7 @@ const FOLLOW_THRESHOLD_PX = 24;
 
 const styles = stylex.create({
   root: {
-    borderRadius: tokens.cardRadius,
+    borderRadius: foundationTokens.radiusLg,
     borderStyle: 'solid',
     borderWidth: 1,
     overflow: 'hidden',
@@ -146,18 +146,18 @@ const styles = stylex.create({
     borderColor: tokens.border,
     backgroundColor: tokens.card,
   },
-  rootTerminal: {},
+  rootTerminal: {
+    borderColor: '#26262a',
+    backgroundColor: '#0a0a0a',
+  },
   viewport: {
     overscrollBehavior: 'contain',
     scrollbarWidth: 'thin',
     overflowY: 'auto',
   },
   row: {
-    paddingBlock: '0.25rem',
     paddingInline: '0.75rem',
-    borderBlockEndColor: tokens.border,
-    borderBlockEndStyle: 'solid',
-    borderBlockEndWidth: { default: 1, ':last-child': 0 },
+    alignItems: 'baseline',
     columnGap: '0.75rem',
     containIntrinsicBlockSize: 'auto 28px',
     contentVisibility: 'auto',
@@ -168,8 +168,23 @@ const styles = stylex.create({
        omits it. */
     textAlign: 'start',
     transitionDuration: interactionTokens.motionFast,
-    transitionTimingFunction: interactionTokens.easingStandard,
+    transitionProperty: 'opacity',
+    transitionTimingFunction: 'ease-out',
   },
+  rowDefault: {
+    paddingBlock: '0.25rem',
+    borderBlockEndColor: tokens.border,
+    borderBlockEndStyle: 'solid',
+    borderBlockEndWidth: { default: 1, ':last-child': 0 },
+    color: tokens.foreground,
+  },
+  rowTerminal: {
+    paddingBlock: '1px',
+    borderBlockEndWidth: 0,
+    color: '#b9b9c0',
+  },
+  rowWarn: { backgroundColor: 'color-mix(in srgb, var(--chart-4) 5%, transparent)' },
+  rowError: { backgroundColor: 'color-mix(in srgb, var(--destructive) 6%, transparent)' },
   colsTimeSource: {
     gridTemplateColumns: '96px 52px 128px minmax(0, 1fr)',
   },
@@ -194,11 +209,18 @@ const styles = stylex.create({
     fontSize: '0.875rem', lineHeight: '1.25rem',
     width: '100%',
   },
+  rowButtonHover: {
+    backgroundColor: { default: null, ':hover': 'color-mix(in oklab, var(--muted) 50%, transparent)' },
+  },
+  rowButtonHoverTerminal: {
+    backgroundColor: { default: null, ':hover': '#141417' },
+  },
   timestamp: {
     color: tokens.mutedForeground,
     fontVariantNumeric: 'tabular-nums',
     whiteSpace: 'nowrap',
   },
+  timestampTerm: { color: '#8b8b94' },
   level: {
     fontSize: '0.75rem',
     fontWeight: 600,
@@ -213,6 +235,7 @@ const styles = stylex.create({
     whiteSpace: 'nowrap',
     minWidth: 0,
   },
+  sourceTerm: { color: '#8b8b94' },
   message: {
     overflowWrap: 'break-word',
     whiteSpace: 'pre-wrap',
@@ -227,7 +250,9 @@ const styles = stylex.create({
     borderBlockEndWidth: 1,
   },
   detailTerminal: {
+    borderBlockEndColor: '#26262a',
     backgroundColor: logStreamTerminalInk.detailSurface,
+    color: '#b9b9c0',
   },
   jump: {
     borderColor: tokens.border,
@@ -236,35 +261,43 @@ const styles = stylex.create({
     borderWidth: 1,
     paddingBlock: '0.25rem',
     paddingInline: '0.75rem',
-    backgroundColor: tokens.card,
+    backgroundColor: { default: tokens.card, ':hover': tokens.muted },
+    boxShadow: 'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px',
     color: tokens.foreground,
     cursor: interactionTokens.cursorAction,
     fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     fontSize: '0.875rem', lineHeight: '1.25rem',
     fontWeight: 500,
+    outlineColor: { default: null, ':focus-visible': tokens.ring },
+    outlineOffset: { default: null, ':focus-visible': '2px' },
+    outlineStyle: { default: null, ':focus-visible': 'solid' },
+    outlineWidth: { default: null, ':focus-visible': '2px' },
     position: 'absolute',
     bottom: '0.75rem',
     right: '0.75rem',
+  },
+  jumpTerminal: {
+    borderColor: '#26262a',
+    backgroundColor: { default: '#141417', ':hover': '#1d1d21' },
+    color: '#e8e8ea',
   },
   levelInfo: {
     color: tokens.mutedForeground,
   },
   levelDebug: {
-    color: tokens.mutedForeground,
+    color: 'color-mix(in oklab, var(--muted-foreground) 60%, transparent)',
   },
   levelWarn: {
-    /* PORT-NOTE: astryx's warning yellow has no warning-ink token; destructive
-       red is the closest semantic token on the themed surface. */
-    color: tokens.destructive,
+    color: tokens.alertWarning,
   },
   levelError: {
     color: tokens.destructive,
   },
   levelTermInfo: {
-    color: tokens.cardForeground,
+    color: '#b9b9c0',
   },
   levelTermDebug: {
-    color: tokens.mutedForeground,
+    color: '#8b8b94',
   },
   levelTermWarn: {
     color: logStreamTerminalInk.warn,
@@ -273,7 +306,7 @@ const styles = stylex.create({
     color: logStreamTerminalInk.error,
   },
   messageTerm: {
-    color: tokens.cardForeground,
+    color: '#b9b9c0',
   },
   messageTermWarn: {
     color: logStreamTerminalInk.warn,
@@ -345,7 +378,17 @@ export const logStream = <Msg>(
     const cells: ReadonlyArray<Html | string> = [
       ...(hasTimestamps
         ? [
-            h.span([h.Class(className(styles.timestamp))], [entry.timestamp]),
+            h.span(
+              [
+                h.Class(
+                  className(
+                    styles.timestamp,
+                    isTerminal && styles.timestampTerm,
+                  ),
+                ),
+              ],
+              [entry.timestamp],
+            ),
           ]
         : []),
       h.span(
@@ -363,7 +406,9 @@ export const logStream = <Msg>(
         ? [
             h.span(
               [
-                h.Class(className(styles.source)),
+                h.Class(
+                  className(styles.source, isTerminal && styles.sourceTerm),
+                ),
                 ...(entry.source === undefined
                   ? []
                   : [h.Title(entry.source)]),
@@ -391,12 +436,19 @@ export const logStream = <Msg>(
       ),
     ];
 
+    const rowVariant = isTerminal ? styles.rowTerminal : styles.rowDefault;
+    const rowLevel =
+      !isTerminal && entry.level === 'error'
+        ? styles.rowError
+        : !isTerminal && entry.level === 'warn'
+          ? styles.rowWarn
+          : null;
     if (!isExpandable) {
       return [
         h.div(
           [
             h.DataAttribute('level', entry.level),
-            h.Class(className(styles.row, colsStyle)),
+            h.Class(className(styles.row, rowVariant, rowLevel, colsStyle)),
           ],
           [...cells],
         ),
@@ -413,7 +465,18 @@ export const logStream = <Msg>(
               Message.ToggledLogStreamEntry({ id: entry.id }),
             ),
           ),
-          h.Class(className(styles.row, styles.rowButton, colsStyle)),
+          h.Class(
+            className(
+              styles.row,
+              rowVariant,
+              styles.rowButton,
+              isTerminal
+                ? styles.rowButtonHoverTerminal
+                : styles.rowButtonHover,
+              rowLevel,
+              colsStyle,
+            ),
+          ),
         ],
         [...cells],
       ),
@@ -443,7 +506,6 @@ export const logStream = <Msg>(
         className(
           styles.root,
           isTerminal ? styles.rootTerminal : styles.rootDefault,
-          isTerminal ? (logStreamTerminalTheme as never) : null,
           props.layoutStyle,
         ),
       ),
@@ -492,7 +554,9 @@ export const logStream = <Msg>(
               [
                 h.Type('button'),
                 h.OnClick(props.toParentMessage(Message.ClickedJumpToLatest())),
-                h.Class(className(styles.jump)),
+                h.Class(
+                  className(styles.jump, isTerminal && styles.jumpTerminal),
+                ),
               ],
               ['Jump to latest ↓'],
             ),
