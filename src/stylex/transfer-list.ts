@@ -6,7 +6,9 @@ import type { Html, HtmlBuilder } from "foldkit/html";
 import { defineMessageUnion } from "foldkit/message";
 
 import * as Icon from "@/lib/icon";
+import { buttonVisualStyles } from "./button";
 import type { ComponentLayoutStyle } from "./contracts";
+import { input } from "./input";
 import { className } from "./style";
 import { interactionTokens } from "./interaction-tokens.stylex.const";
 import { tokens } from "./tokens.stylex";
@@ -751,34 +753,16 @@ const styles = stylex.create({
     top: "50%",
   },
   searchInput: {
-    borderColor: tokens.input,
-    borderRadius: tokens.controlRadius,
-    borderStyle: "solid",
-    borderWidth: 1,
-    backgroundColor: "transparent",
-    color: tokens.foreground,
-    fontSize: "0.875rem",
-    outlineStyle: "none",
     height: "2.25rem",
     paddingLeft: "2rem",
     paddingRight: "2rem",
-    width: "100%",
   },
   clearSearch: {
-    borderRadius: tokens.controlRadius,
-    borderStyle: "none",
-    alignItems: "center",
-    backgroundColor: "transparent",
     color: tokens.mutedForeground,
-    cursor: interactionTokens.cursorAction,
-    display: "inline-flex",
-    justifyContent: "center",
     position: "absolute",
     transform: "translateY(-50%)",
-    height: "1.5rem",
     right: "0.375rem",
     top: "50%",
-    width: "1.5rem",
   },
   srOnly: {
     margin: "-1px",
@@ -837,24 +821,10 @@ const styles = stylex.create({
     lineHeight: "1.25rem",
   },
   headerAction: {
-    borderStyle: "none",
     paddingBlock: 0,
     paddingInline: 0,
-    textDecoration: {
-      default: "none",
-      ":hover": "underline",
-    },
-    backgroundColor: "transparent",
-    color: tokens.primary,
-    cursor: {
-      default: interactionTokens.cursorAction,
-      ":disabled": interactionTokens.cursorDefault,
-    },
-    fontSize: "0.875rem",
     fontWeight: 400,
-    lineHeight: "1.25rem",
     minBlockSize: "1.5rem",
-    opacity: { default: 1, ":disabled": 0.5 },
     height: "auto",
   },
   panelBody: {
@@ -934,21 +904,7 @@ const styles = stylex.create({
     minWidth: 0,
   },
   iconButton: {
-    borderRadius: tokens.controlRadius,
-    borderStyle: "none",
-    alignItems: "center",
-    backgroundColor: "transparent",
     color: tokens.mutedForeground,
-    cursor: {
-      default: interactionTokens.cursorAction,
-      ":disabled": interactionTokens.cursorDefault,
-    },
-    display: "inline-flex",
-    flexShrink: 0,
-    justifyContent: "center",
-    opacity: { default: 1, ":disabled": 0.5 },
-    height: "1.5rem",
-    width: "1.5rem",
   },
   /* PORT-NOTE: astryx uses grab/grabbing cursors; no interaction token exists
      for them so the stylex port falls back to the action cursor. */
@@ -1105,7 +1061,12 @@ export const transferList = <Msg>(
         ...(config.dataAction === undefined
           ? []
           : [h.DataAttribute("transfer-list-action", config.dataAction)]),
-        h.Class(className(styles.iconButton)),
+        h.Class(
+          className(
+            ...buttonVisualStyles({ variant: "ghost", size: "icon-xs" }),
+            styles.iconButton,
+          ),
+        ),
       ],
       [config.icon],
     );
@@ -1185,6 +1146,7 @@ export const transferList = <Msg>(
         ),
         h.Class(
           className(
+            ...buttonVisualStyles({ variant: "ghost", size: "icon-xs" }),
             styles.iconButton,
             styles.reorderHandle,
             active && styles.reorderHandleActive,
@@ -1373,7 +1335,12 @@ export const transferList = <Msg>(
         h.Disabled(isDisabled),
         h.OnClick(message),
         h.DataAttribute("transfer-list-header-action", "true"),
-        h.Class(className(styles.headerAction)),
+        h.Class(
+          className(
+            ...buttonVisualStyles({ variant: "link" }),
+            styles.headerAction,
+          ),
+        ),
       ],
       [text],
     );
@@ -1426,20 +1393,22 @@ export const transferList = <Msg>(
                       [h.Class(className(styles.searchIcon))],
                       [Icon.icon("search", { class: "size-4" }, h)],
                     ),
-                    h.input([
-                      h.Id(`${model.id}-search`),
-                      h.Type("text"),
-                      h.Role("searchbox"),
-                      h.AriaLabel(props.searchLabel ?? `Search ${props.label}`),
-                      h.Placeholder(props.searchPlaceholder ?? "Search…"),
-                      h.Value(model.query),
-                      h.OnInput((value) =>
-                        props.toParentMessage(
-                          Message.SearchedTransferList({ query: value }),
-                        ),
-                      ),
-                      h.Class(className(styles.searchInput)),
-                    ]),
+                    input(
+                      {
+                        id: `${model.id}-search`,
+                        type: "text",
+                        role: "searchbox",
+                        ariaLabel: props.searchLabel ?? `Search ${props.label}`,
+                        placeholder: props.searchPlaceholder ?? "Search…",
+                        value: model.query,
+                        onInput: (value) =>
+                          props.toParentMessage(
+                            Message.SearchedTransferList({ query: value }),
+                          ),
+                        inputStyle: styles.searchInput,
+                      },
+                      h,
+                    ),
                     ...(model.query === ""
                       ? []
                       : [
@@ -1447,7 +1416,15 @@ export const transferList = <Msg>(
                             [
                               h.Type("button"),
                               h.AriaLabel("Clear search"),
-                              h.Class(className(styles.clearSearch)),
+                              h.Class(
+                                className(
+                                  ...buttonVisualStyles({
+                                    variant: "ghost",
+                                    size: "icon-xs",
+                                  }),
+                                  styles.clearSearch,
+                                ),
+                              ),
                               h.OnClick(
                                 props.toParentMessage(
                                   Message.SearchedTransferList({ query: "" }),

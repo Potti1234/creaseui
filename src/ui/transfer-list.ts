@@ -6,6 +6,8 @@ import { defineMessageUnion } from "foldkit/message";
 
 import * as Icon from "@/lib/icon";
 import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/ui/button";
+import { input } from "@/ui/input";
 
 /* Ported from Meta Astryx TransferList.tsx (packages/lab) — a controlled
    dual-panel collection input for choosing and ordering values. astryx's
@@ -832,7 +834,10 @@ export const transferList = <Msg>(
           ? []
           : [h.DataAttribute("transfer-list-action", config.dataAction)]),
         h.Class(
-          "inline-flex size-6 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50",
+          cn(
+            buttonVariants({ variant: "ghost", size: "icon-xs" }),
+            "rounded-md text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+          ),
         ),
       ],
       [config.icon],
@@ -913,7 +918,8 @@ export const transferList = <Msg>(
         ),
         h.Class(
           cn(
-            "-ml-1.5 inline-flex size-6 shrink-0 cursor-grab items-center justify-center rounded-md text-muted-foreground touch-none hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-default disabled:opacity-50",
+            buttonVariants({ variant: "ghost", size: "icon-xs" }),
+            "-ml-1.5 cursor-grab rounded-md text-muted-foreground touch-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-default",
             active && "cursor-grabbing",
           ),
         ),
@@ -1104,7 +1110,10 @@ export const transferList = <Msg>(
         h.OnClick(message),
         h.DataAttribute("transfer-list-header-action", "true"),
         h.Class(
-          "h-auto min-h-6 px-0 py-0 text-sm font-normal leading-5 text-primary hover:underline disabled:pointer-events-none disabled:opacity-50",
+          cn(
+            buttonVariants({ variant: "link" }),
+            "h-auto min-h-6 px-0 py-0 font-normal leading-5",
+          ),
         ),
       ],
       [text],
@@ -1166,22 +1175,22 @@ export const transferList = <Msg>(
                       ],
                       [Icon.icon("search", { class: "size-4" }, h)],
                     ),
-                    h.input([
-                      h.Id(`${model.id}-search`),
-                      h.Type("text"),
-                      h.Role("searchbox"),
-                      h.AriaLabel(props.searchLabel ?? `Search ${props.label}`),
-                      h.Placeholder(props.searchPlaceholder ?? "Search…"),
-                      h.Value(model.query),
-                      h.OnInput((value) =>
-                        props.toParentMessage(
-                          Message.SearchedTransferList({ query: value }),
-                        ),
-                      ),
-                      h.Class(
-                        "h-9 w-full rounded-md border border-input bg-transparent pl-8 pr-8 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
-                      ),
-                    ]),
+                    input(
+                      {
+                        id: `${model.id}-search`,
+                        type: "text",
+                        role: "searchbox",
+                        ariaLabel: props.searchLabel ?? `Search ${props.label}`,
+                        placeholder: props.searchPlaceholder ?? "Search…",
+                        value: model.query,
+                        onInput: (value) =>
+                          props.toParentMessage(
+                            Message.SearchedTransferList({ query: value }),
+                          ),
+                        class: "h-9 pl-8 pr-8 text-sm",
+                      },
+                      h,
+                    ),
                     ...(model.query === ""
                       ? []
                       : [
@@ -1190,7 +1199,13 @@ export const transferList = <Msg>(
                               h.Type("button"),
                               h.AriaLabel("Clear search"),
                               h.Class(
-                                "absolute right-1.5 top-1/2 inline-flex size-6 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground",
+                                cn(
+                                  buttonVariants({
+                                    variant: "ghost",
+                                    size: "icon-xs",
+                                  }),
+                                  "absolute right-1.5 top-1/2 -translate-y-1/2 rounded-md text-muted-foreground",
+                                ),
                               ),
                               h.OnClick(
                                 props.toParentMessage(

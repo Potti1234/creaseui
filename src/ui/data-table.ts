@@ -6,6 +6,8 @@ import { type Message, type Model, Message as DataTableStateMessages } from '@/l
 import { projectDataTable, type DataTableMode } from '@/lib/data-table-adapter';
 import * as Icon from '@/lib/icon';
 import { cn } from '@/lib/utils';
+import { buttonVariants } from '@/ui/button';
+import { input } from '@/ui/input';
 import * as Table from '@/ui/table';
 
 export * from '@/lib/data-table-state';
@@ -135,18 +137,19 @@ export const dataTable = <Row, Msg>(
           ...(props.filterText === undefined
             ? []
             : [
-                h.input([
-                  h.Type('search'),
-                  h.Value(props.model.filter),
-                  h.OnInput((value) =>
-                    props.toParentMessage(DataTableStateMessages.Filtered({ value })),
-                  ),
-                  h.Placeholder(props.filterPlaceholder ?? 'Filter rows…'),
-                  h.AriaLabel(props.filterPlaceholder ?? 'Filter rows'),
-                  h.Class(
-                    'h-10 w-full max-w-sm rounded-md border border-input bg-transparent px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
-                  ),
-                ]),
+                input(
+                  {
+                    id: `${instanceId}-filter`,
+                    type: 'search',
+                    value: props.model.filter,
+                    onInput: (value) =>
+                      props.toParentMessage(DataTableStateMessages.Filtered({ value })),
+                    placeholder: props.filterPlaceholder ?? 'Filter rows…',
+                    ariaLabel: props.filterPlaceholder ?? 'Filter rows',
+                    class: 'h-10 max-w-sm px-3 text-sm',
+                  },
+                  h,
+                ),
               ]),
           ...(props.enableColumnVisibility === true
             ? [
@@ -167,7 +170,10 @@ export const dataTable = <Row, Msg>(
                         h.AriaHasPopup('menu'),
                         h.OnClick(props.toParentMessage(DataTableStateMessages.ToggledColumnsMenu())),
                         h.Class(
-                          'flex h-10 cursor-pointer items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted/50',
+                          cn(
+                            buttonVariants({ variant: 'outline' }),
+                            'h-10 gap-2 px-3 font-medium hover:bg-muted/50',
+                          ),
                         ),
                       ],
                       [
@@ -445,7 +451,10 @@ export const dataTable = <Row, Msg>(
                   h.Disabled(page === 0),
                   h.OnClick(props.toParentMessage(DataTableStateMessages.ChangedPage({ page: 0 }))),
                   h.Class(
-                    'h-10 rounded-md border px-3 text-sm font-medium transition-transform active:scale-[0.96] disabled:pointer-events-none disabled:opacity-50',
+                    cn(
+                      buttonVariants({ variant: 'outline' }),
+                      'h-10 px-3 font-medium transition-transform active:scale-[0.96]',
+                    ),
                   ),
                 ],
                 ['First'],
@@ -458,7 +467,10 @@ export const dataTable = <Row, Msg>(
                     props.toParentMessage(DataTableStateMessages.ChangedPage({ page: page - 1 })),
                   ),
                   h.Class(
-                    'h-10 rounded-md border px-3 text-sm font-medium transition-transform active:scale-[0.96] disabled:pointer-events-none disabled:opacity-50',
+                    cn(
+                      buttonVariants({ variant: 'outline' }),
+                      'h-10 px-3 font-medium transition-transform active:scale-[0.96]',
+                    ),
                   ),
                 ],
                 ['Previous'],
@@ -471,7 +483,10 @@ export const dataTable = <Row, Msg>(
                     props.toParentMessage(DataTableStateMessages.ChangedPage({ page: page + 1 })),
                   ),
                   h.Class(
-                    'h-10 rounded-md border px-3 text-sm font-medium transition-transform active:scale-[0.96] disabled:pointer-events-none disabled:opacity-50',
+                    cn(
+                      buttonVariants({ variant: 'outline' }),
+                      'h-10 px-3 font-medium transition-transform active:scale-[0.96]',
+                    ),
                   ),
                 ],
                 ['Next'],
@@ -487,7 +502,10 @@ export const dataTable = <Row, Msg>(
                     ),
                   ),
                   h.Class(
-                    'h-10 rounded-md border px-3 text-sm font-medium transition-transform active:scale-[0.96] disabled:pointer-events-none disabled:opacity-50',
+                    cn(
+                      buttonVariants({ variant: 'outline' }),
+                      'h-10 px-3 font-medium transition-transform active:scale-[0.96]',
+                    ),
                   ),
                 ],
                 ['Last'],
