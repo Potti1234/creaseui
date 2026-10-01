@@ -85,8 +85,8 @@ const tipCall = (
     : `h.span([], ['${esc(fixture.content)} ', Kbd.kbd({ children: ['${tip.kbd}'] }, h)])`;
   const triggerClass = isStyleX
     ? tip.iconTrigger === true
-      ? '    triggerLayoutStyle: styles.iconTrigger,'
-      : ''
+      ? '    triggerLayoutStyle: styles.iconTrigger as ComponentLayoutStyle,'
+      : '    triggerLayoutStyle: styles.trigger as ComponentLayoutStyle,'
     : tip.iconTrigger === true
       ? "    triggerClass: 'inline-flex size-9 items-center justify-center rounded-md border',"
       : "    triggerClass: 'w-fit rounded-md border px-3 py-2 text-sm capitalize',";
@@ -96,7 +96,7 @@ const tipCall = (
     trigger: ${trigger},
     content: ${content},
     side: '${tip.side ?? 'top'}',
-${tip.isDisabled === true ? '    isDisabled: true,\n' : ''}${triggerClass === '' ? '' : `${triggerClass}\n`}  }, h)`;
+${tip.isDisabled === true ? '    isDisabled: true,\n' : ''}${triggerClass}\n  }, h)`;
 };
 
 const emitBody = (fixture: TooltipFixture, isStyleX: boolean): string => {
@@ -127,8 +127,8 @@ const emitApplication = (
       usesRow ? "\n  row: { display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }," : ''
     }${
       usesIcon
-        ? "\n  iconTrigger: { width: '2.25rem', height: '2.25rem' },"
-        : ''
+        ? "\n  iconTrigger: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '2.25rem', height: '2.25rem', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--border)', borderRadius: 'var(--radius-md)' },"
+        : "\n  trigger: { width: 'fit-content', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--border)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem', fontSize: '0.875rem', lineHeight: '1.25rem', textTransform: 'capitalize' },"
     }\n})`
     : '';
   return foldkitApplication({
@@ -137,7 +137,7 @@ const emitApplication = (
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
-${isStyleX ? "import * as stylex from '@stylexjs/stylex'\n" : ''}${isStyleX && usesRow ? "import { className } from '@/stylex/style'\n" : ''}${usesIcon ? `import * as Icon from '@/lib/icon'\n` : ''}${usesKbd ? `import * as Kbd from '@/${base}/kbd'\n` : ''}import * as Tooltip from '@/${base}/tooltip'${stylesBlock}`,
+${isStyleX ? "import * as stylex from '@stylexjs/stylex'\n" : ''}${isStyleX ? "import type { ComponentLayoutStyle } from '@/stylex/contracts'\n" : ''}${isStyleX && usesRow ? "import { className } from '@/stylex/style'\n" : ''}${usesIcon ? `import * as Icon from '@/lib/icon'\n` : ''}${usesKbd ? `import * as Kbd from '@/${base}/kbd'\n` : ''}import * as Tooltip from '@/${base}/tooltip'${stylesBlock}`,
     model: `export const Model = S.Struct({
   tooltips: S.Record(S.String, Tooltip.Model),
 })
