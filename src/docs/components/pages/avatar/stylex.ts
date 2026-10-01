@@ -3,6 +3,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html';
 import * as stylex from '@stylexjs/stylex';
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import {
   avatarFixtures,
   type AvatarClusterSpec,
@@ -32,8 +33,9 @@ const styles = stylex.create({
     filter: 'grayscale(100%)',
     flexWrap: 'wrap',
   },
-  badgeIcon: { fontSize: '0.5rem' },
-  countIcon: { fontSize: '1rem', lineHeight: '1.5rem' },
+  badgeIcon: { height: '0.5rem', width: '0.5rem' },
+  countIcon: { height: '1rem', width: '1rem' },
+  avatarTrigger: { borderRadius: '50%' },
 });
 
 type PreviewSnapshot = {
@@ -48,7 +50,8 @@ const itemView = <Msg>(
   model: PreviewSnapshot,
   item: AvatarItemSpec,
   index: number,
-  grouped: boolean,
+  overlap: boolean,
+  ring: boolean,
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
@@ -69,8 +72,8 @@ const itemView = <Msg>(
     {
       ...(item.size === undefined ? {} : { size: item.size }),
       ...(item.grayscale === 'avatar' ? { grayscale: true } : {}),
-      ...(grouped ? { ring: true } : {}),
-      ...(grouped && index > 0 ? { overlap: true } : {}),
+      ...(ring ? { ring: true } : {}),
+      ...(overlap ? { overlap: true } : {}),
       children: [
         Avatar.avatarImage(
           {
@@ -130,7 +133,15 @@ const clusterView = <Msg>(
           ...(cluster.grayscale === true ? { grayscale: true } : {}),
           children: [
             ...cluster.items.map((item, index) =>
-              itemView(model, item, index, true, onMessageJson, h),
+              itemView(
+                model,
+                item,
+                index,
+                index < cluster.items.length - 1 || count !== undefined,
+                true,
+                onMessageJson,
+                h,
+              ),
             ),
             ...(count === undefined ? [] : [count]),
           ],
@@ -180,8 +191,7 @@ const clusterView = <Msg>(
           },
           h,
         ),
-        triggerButtonVariant: 'ghost',
-        triggerButtonSize: 'icon',
+        triggerLayoutStyle: styles.avatarTrigger as ComponentLayoutStyle,
         items: fixture.menuItems.map(entry => entry.label),
         itemToConfig: item =>
           fixture.menuItems?.find(entry => entry.label === item)
@@ -198,7 +208,7 @@ const clusterView = <Msg>(
     )];
   }
   return cluster.items.map((entry, index) =>
-    itemView(model, entry, index, false, onMessageJson, h),
+    itemView(model, entry, index, false, false, onMessageJson, h),
   );
 };
 

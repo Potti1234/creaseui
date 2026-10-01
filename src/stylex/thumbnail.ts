@@ -69,9 +69,10 @@ const styles = stylex.create({
   },
   removeSlot: {
     insetInlineEnd: '0.25rem',
+    display: 'inline-flex',
     lineHeight: 0,
     position: 'absolute',
-    zIndex: 1,
+    zIndex: 10,
     top: '0.25rem',
   },
   removeSlotHover: {
@@ -89,10 +90,10 @@ const styles = stylex.create({
     },
     alignItems: 'center',
     backgroundColor: {
-      default: complexTokens.overlaySurface,
-      ':hover': complexTokens.opaqueMutedSurface,
+      default: 'var(--thumbnail-overlay)',
+      ':hover': 'var(--thumbnail-overlay-hover)',
     },
-    color: tokens.statusPlateInk,
+    color: 'rgb(255 255 255)',
     cursor: interactionTokens.cursorAction,
     display: 'inline-flex',
     justifyContent: 'center',
@@ -105,11 +106,11 @@ const styles = stylex.create({
   uploadOverlay: {
     borderRadius: foundationTokens.radiusMd,
     alignItems: 'center',
-    backgroundColor: complexTokens.overlaySurface,
+    backgroundColor: 'var(--thumbnail-overlay)',
     display: 'flex',
     justifyContent: 'center',
     position: 'absolute',
-    zIndex: 1,
+    zIndex: 10,
     bottom: 0,
     left: 0,
     right: 0,
@@ -118,16 +119,14 @@ const styles = stylex.create({
   spin: {
     animationDuration: interactionTokens.motionLoopFast,
     animationIterationCount: 'infinite',
-    animationName: {
-      default: spinFrames,
-      '@media (prefers-reduced-motion: reduce)': 'none',
-    },
+    animationName: spinFrames,
     animationTimingFunction: interactionTokens.easingLinear,
-    color: tokens.statusPlateInk,
-    display: 'inline-flex',
-    fontSize: '1rem', lineHeight: '1.5rem',
+    color: 'rgb(255 255 255)',
+    display: 'block',
+    height: '1rem',
+    width: '1rem',
   },
-  iconXsm: { fontSize: '0.75rem', lineHeight: '1rem' },
+  iconXsm: { height: '0.75rem', width: '0.75rem' },
   interactiveButton: {
     padding: 0,
     borderStyle: 'none',
@@ -136,6 +135,7 @@ const styles = stylex.create({
     backgroundColor: 'transparent',
     cursor: interactionTokens.cursorAction,
     display: 'block',
+    borderRadius: 'inherit',
     filter: {
       default: 'none',
       '@media (hover: hover)': {
@@ -276,13 +276,11 @@ export const thumbnail = <Msg>(
           showImage ? h.div([h.Class(className(styles.insetBorder))], []) : h.empty,
           showUploadOverlay
             ? h.div(
-                [h.Class(className(styles.uploadOverlay))],
                 [
-                  h.span(
-                    [h.Class(className(styles.spin))],
-                    [Icon.loaderCircle({}, h)],
-                  ),
+                  h.Class(className(styles.uploadOverlay)),
+                  h.Style({ '--thumbnail-overlay': 'oklab(0 0 0 / 0.4)' }),
                 ],
+                [Icon.loaderCircle({ class: className(styles.spin) }, h)],
               )
             : h.empty,
         ],
@@ -303,6 +301,10 @@ export const thumbnail = <Msg>(
                   h.Type('button'),
                   h.AriaLabel(`Remove ${accessibleName}`),
                   h.Class(className(styles.removeButton)),
+                  h.Style({
+                    '--thumbnail-overlay': 'oklab(0 0 0 / 0.4)',
+                    '--thumbnail-overlay-hover': 'oklab(0 0 0 / 0.5)',
+                  }),
                   h.OnClick(props.onRemove as Msg, { propagation: 'Stop' }),
                 ],
                 [Icon.x({ class: className(styles.iconXsm) }, h)],

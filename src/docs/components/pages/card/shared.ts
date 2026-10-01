@@ -88,7 +88,7 @@ const STYLEX_STYLES = {
   loginWrap: `{ display: 'grid', gap: '1rem', justifyItems: 'center', maxWidth: '24rem', width: '100%', marginInline: 'auto' }`,
   fieldGrid: `{ display: 'grid', gap: '0.5rem' }`,
   fieldRow: `{ display: 'flex', alignItems: 'center' }`,
-  link: `{ color: 'inherit', fontSize: '0.875rem', lineHeight: '1.25rem', marginInlineStart: 'auto', textDecorationLine: 'underline', textUnderlineOffset: '4px' }`,
+  link: `{ color: 'inherit', fontSize: '0.875rem', lineHeight: '1.25rem', marginLeft: 'auto', textDecorationLine: { default: 'none', ':hover': 'underline' }, textUnderlineOffset: '4px' }`,
   footerCol: `{ flexDirection: 'column', gap: '0.5rem', display: 'flex', width: '100%' }`,
   wFull: `{ width: '100%' }`,
   list: `{ display: 'grid', gap: '0.5rem', paddingBlock: '0.5rem', fontSize: '0.875rem', lineHeight: '1.25rem', listStyle: 'none', paddingInlineStart: 0 }`,
@@ -97,17 +97,16 @@ const STYLEX_STYLES = {
   liMarker: `{ width: '1rem', height: '1rem' }`,
   edgeCard: `{ marginInline: 'auto', maxWidth: '24rem', width: '100%' }`,
   edgeContent: `{ marginBlockEnd: 'calc(var(--card-spacing, 1.5rem) * -1)' }`,
-  edgeScroll: `{ marginInline: 'calc(var(--card-spacing, 1.5rem) * -1)', maxHeight: '12rem', overflowY: 'scroll', borderTopWidth: 1, borderTopStyle: 'solid', borderTopColor: 'var(--border)', backgroundColor: 'color-mix(in oklab, var(--muted) 50%, transparent)', paddingInline: 'var(--card-spacing, 1.5rem)', paddingBlock: '1rem', fontSize: '0.875rem', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '1rem' }`,
+  edgeScroll: `{ marginInline: 'calc(var(--card-spacing, 1.5rem) * -1)', maxHeight: '12rem', overflowY: 'scroll', borderTopWidth: 1, borderTopStyle: 'solid', borderTopColor: 'var(--border)', backgroundColor: 'color-mix(in oklab, var(--muted) 50%, transparent)', paddingInline: 'var(--card-spacing, 1.5rem)', paddingBlock: '1rem', fontSize: '0.875rem', lineHeight: 1.625, display: 'flex', flexDirection: 'column', gap: '1rem' }`,
   edgeFooterInner: `{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', width: '100%' }`,
   imageWrap: `{ position: 'relative', marginInline: 'auto', maxWidth: '24rem', width: '100%' }`,
-  overlay: `{ position: 'absolute', inset: 0, zIndex: 30, aspectRatio: '16 / 9', backgroundColor: 'rgba(0,0,0,0.35)' }`,
+  overlay: `{ position: 'absolute', inset: 0, zIndex: 30, aspectRatio: '16 / 9', backgroundColor: 'color-mix(in oklab, var(--color-black, #000) 35%, transparent)' }`,
   cover: `{ position: 'relative', zIndex: 20, aspectRatio: '16 / 9', width: '100%', objectFit: 'cover', filter: 'grayscale(100%) brightness(0.6)' }`,
-  footerPad: `{ marginBlockEnd: '1.5rem' }`,
 } as const;
 type StylexStyleKey = keyof typeof STYLEX_STYLES;
 
 const stylexImports = (keys: ReadonlyArray<StylexStyleKey>): string =>
-  `import * as stylex from '@stylexjs/stylex'\n\nconst styles = stylex.create({\n${keys.map(k => `  ${k}: ${STYLEX_STYLES[k]},`).join('\n')}\n})`;
+  `import * as stylex from '@stylexjs/stylex'\nimport type { ComponentLayoutStyle } from '@/stylex/contracts'\n\nconst styles = stylex.create({\n${keys.map(k => `  ${k}: ${STYLEX_STYLES[k]},`).join('\n')}\n})`;
 
 const styleKeysFor = (kind: CardFixture['kind']): ReadonlyArray<StylexStyleKey> => {
   const login: ReadonlyArray<StylexStyleKey> = ['frame', 'fieldGrid', 'fieldRow', 'link', 'footerCol', 'wFull'];
@@ -115,7 +114,7 @@ const styleKeysFor = (kind: CardFixture['kind']): ReadonlyArray<StylexStyleKey> 
     case 'spacing': return ['loginWrap', ...login];
     case 'small': return ['smallCard', 'list', 'li', 'liIcon', 'liMarker', 'footerCol', 'wFull'];
     case 'edge': return ['edgeCard', 'edgeContent', 'edgeScroll', 'edgeFooterInner'];
-    case 'image': return ['imageWrap', 'overlay', 'cover', 'footerPad', 'wFull'];
+    case 'image': return ['imageWrap', 'overlay', 'cover', 'wFull'];
     default: return login;
   }
 };
@@ -194,11 +193,9 @@ const loginCardSource = (
       Button.button({ class: 'w-full', children: ['${copy.login}'] }, h),
       Button.button({ variant: 'outline', class: 'w-full', children: ['${copy.google}'] }, h),
     ] }, h)`
-      : `Card.cardFooter({ children: [
-      h.div([${cls(opts.renderer, '', 'footerCol')}], [
+      : `Card.cardFooter({ layoutStyle: styles.footerCol as ComponentLayoutStyle, children: [
       Button.button({ layoutStyle: styles.wFull, children: ['${copy.login}'] }, h),
       Button.button({ variant: 'outline', layoutStyle: styles.wFull, children: ['${copy.google}'] }, h),
-      ]),
     ] }, h)`}
   ],
 }, h)`;
@@ -233,11 +230,9 @@ const smallCardSource = (renderer: 'tailwind' | 'stylex'): string => `Card.card(
       Button.button({ size: 'sm', class: 'w-full', children: ['Set up scheduled reports'] }, h),
       Button.button({ variant: 'outline', size: 'sm', class: 'w-full', children: ["See what's new"] }, h),
     ] }, h)`
-      : `Card.cardFooter({ children: [
-      h.div([${cls(renderer, '', 'footerCol')}], [
+      : `Card.cardFooter({ layoutStyle: styles.footerCol as ComponentLayoutStyle, children: [
       Button.button({ size: 'sm', layoutStyle: styles.wFull, children: ['Set up scheduled reports'] }, h),
       Button.button({ variant: 'outline', size: 'sm', layoutStyle: styles.wFull, children: ["See what's new"] }, h),
-      ]),
     ] }, h)`}
   ],
 }, h)`;
@@ -262,18 +257,17 @@ const edgeCardSource = (renderer: 'tailwind' | 'stylex'): string => `Card.card({
       Button.button({ variant: 'outline', children: ['Decline'] }, h),
       Button.button({ children: ['Accept'] }, h),
     ] }, h)`
-      : `Card.cardFooter({ children: [
-      h.div([${cls(renderer, '', 'edgeFooterInner')}], [
+      : `Card.cardFooter({ layoutStyle: styles.edgeFooterInner as ComponentLayoutStyle, children: [
       Button.button({ variant: 'outline', children: ['Decline'] }, h),
       Button.button({ children: ['Accept'] }, h),
-      ]),
     ] }, h)`},
   ],
 }, h)`;
 
 const imageCardSource = (renderer: 'tailwind' | 'stylex'): string => {
   const cardExpr = `Card.card({
-  ${renderer === 'tailwind' ? `class: 'relative mx-auto w-full max-w-sm pt-0',` : `density: 'flush',`}
+  ${renderer === 'tailwind' ? `class: 'relative mx-auto w-full max-w-sm pt-0',` : `density: 'flush',
+  layoutStyle: styles.imageWrap as ComponentLayoutStyle,`}
   children: [
     h.div([${cls(renderer, 'absolute inset-0 z-30 aspect-video bg-black/35', 'overlay')}]),
     h.img([
@@ -288,16 +282,12 @@ const imageCardSource = (renderer: 'tailwind' | 'stylex'): string => {
       Card.cardTitle({ children: ['Design systems meetup'] }, h),
       Card.cardDescription({ children: ['A practical talk on component APIs, accessibility, and shipping faster.'] }, h),
     ] }, h),
-    Card.cardFooter({ ${renderer === 'stylex' ? 'layoutStyle: styles.footerPad, ' : ''}children: [
+    Card.cardFooter({ children: [
       Button.button({ ${prop(renderer, 'w-full', 'wFull')}, children: ['View Event'] }, h),
     ] }, h),
   ],
 }, h)`;
-  return renderer === 'tailwind'
-    ? cardExpr
-    : `h.div([${cls(renderer, '', 'imageWrap')}], [
-      ${cardExpr.split('\n').join('\n      ')},
-    ])`;
+  return cardExpr;
 };
 
 const fixtureImports = (
@@ -467,9 +457,10 @@ export const update = (
         ${
           renderer === 'tailwind'
             ? loginCardSource({ rtl: false, spacingVar: 'dynamic', renderer }).split('\n').join('\n        ')
-            : `h.div([h.Style({ '--card-spacing': \`\${Number(model.spacing) * 4}px\` })], [
-          ${loginCardSource({ rtl: false, spacingVar: 'none', renderer }).split('\n').join('\n          ')},
-        ])`
+            : loginCardSource({ rtl: false, spacingVar: 'none', renderer }).replace(
+                'layoutStyle: styles.frame,',
+                'layoutStyle: styles.frame,\n  spacing: `\${Number(model.spacing) * 4}px`,',
+              ).split('\n').join('\n        ')
         },
       ]),
     ],

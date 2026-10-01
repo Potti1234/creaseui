@@ -16,7 +16,8 @@ const styles = stylex.create({
     overflow: 'hidden',
     paddingBlock: 'var(--card-spacing,1.5rem)',
     backgroundColor: tokens.card,
-    boxShadow: tokens.shadowCard,
+    boxShadow:
+      'rgb(0 0 0 / 0.1) 0px 1px 3px 0px, rgb(0 0 0 / 0.1) 0px 1px 2px -1px',
     color: tokens.cardForeground,
     display: 'flex',
     flexDirection: 'column',
@@ -24,17 +25,29 @@ const styles = stylex.create({
   },
   cardFlush: {
     overflow: 'hidden',
-    paddingBlock: 0,
+    paddingTop: 0,
   },
   header: {
     gap: '0.25rem',
     paddingInline: 'var(--card-spacing,1.5rem)',
     display: 'grid',
+    alignItems: 'flex-start',
+    borderTopLeftRadius: tokens.cardRadius,
+    borderTopRightRadius: tokens.cardRadius,
+    gridAutoRows: 'min-content',
+    gridTemplateColumns: {
+      default: null,
+      ':has(> [data-slot=card-action])': '1fr auto',
+    },
+    gridTemplateRows: {
+      default: null,
+      ':has(> [data-slot=card-description])': 'auto auto',
+    },
   },
   title: {
-    fontSize: '1rem',
+    fontSize: 'var(--card-title-fs, 1rem)',
     fontWeight: 500,
-    lineHeight: 'normal',
+    lineHeight: '1.5',
   },
   description: {
     color: tokens.mutedForeground,
@@ -58,6 +71,8 @@ const styles = stylex.create({
     paddingInline: 'var(--card-spacing,1.5rem)',
     alignItems: 'center',
     display: 'flex',
+    borderBottomLeftRadius: tokens.cardRadius,
+    borderBottomRightRadius: tokens.cardRadius,
   },
 })
 
@@ -71,6 +86,8 @@ export type CardProps = Slot & Readonly<{
   element?: 'div' | 'section' | 'article'
   density?: 'default' | 'flush'
   size?: 'default' | 'sm'
+  /** Overrides the --card-spacing CSS variable (spacing demo). */
+  spacing?: string
 }>
 
 const slot =
@@ -85,7 +102,11 @@ export const card = <Msg>(props: CardProps, h: HtmlBuilder<Msg>): Html => {
   const attributes = [
     h.DataAttribute('slot', 'card'),
     h.DataAttribute('size', props.size ?? 'default'),
-    h.Style({ '--card-spacing': props.size === 'sm' ? '1rem' : '1.5rem' }),
+    h.Style({
+      '--card-spacing':
+        props.spacing ?? (props.size === 'sm' ? '1rem' : '1.5rem'),
+      '--card-title-fs': props.size === 'sm' ? '0.875rem' : '1rem',
+    }),
     h.Class(className(
       styles.card,
       props.density === 'flush' && styles.cardFlush,

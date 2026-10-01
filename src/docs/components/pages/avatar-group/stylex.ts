@@ -2,6 +2,7 @@ import * as stylex from '@stylexjs/stylex';
 import type { HtmlBuilder } from 'foldkit/html';
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import {
   avatarGroupFixtures,
   type AvatarEntry,
@@ -18,16 +19,18 @@ const styles = stylex.create({
   caption: {
     color: tokens.mutedForeground,
     fontSize: '0.75rem',
-    lineHeight: '1.25rem',
+    lineHeight: '1rem',
   },
   row: { gap: '1rem', alignItems: 'center', display: 'flex', },
   avatarWrap: { position: 'relative' },
   dotSlot: { insetInlineEnd: '-4px', position: 'absolute', bottom: '-4px', },
   /* Member-avatar negative margins mirror the group's --avatar-group-overlap
-     (25% of 24/32/40px) — StyleX cannot read the custom property. */
-  memberSm: { marginInlineStart: '-0.375rem' },
-  memberDefault: { marginInlineStart: '-0.5rem' },
-  memberLg: { marginInlineStart: '-0.625rem' },
+     (25% of 24/32/40px) — StyleX cannot read the custom property. The
+     box-content + 2px surface border mirrors the group's
+     [&_[data-slot=avatar]]:box-content/:border-2/:border-background selector. */
+  memberSm: { marginInlineStart: '-0.375rem', boxSizing: 'content-box', borderColor: tokens.background, borderStyle: 'solid', borderWidth: '2px' },
+  memberDefault: { marginInlineStart: '-0.5rem', boxSizing: 'content-box', borderColor: tokens.background, borderStyle: 'solid', borderWidth: '2px' },
+  memberLg: { marginInlineStart: '-0.625rem', boxSizing: 'content-box', borderColor: tokens.background, borderStyle: 'solid', borderWidth: '2px' },
 });
 
 const initials = (name: string): string =>
@@ -45,13 +48,13 @@ const avatarView = <Msg>(
   Avatar.avatar(
     {
       size,
-      ring: true,
-      layoutStyle:
+      layoutStyle: (
         size === 'lg'
           ? styles.memberLg
           : size === 'sm'
             ? styles.memberSm
-            : styles.memberDefault,
+            : styles.memberDefault
+      ) as ComponentLayoutStyle,
       children: [
         entry.src === undefined
           ? Avatar.avatarFallback({ children: [initials(entry.name)] }, h)

@@ -117,7 +117,7 @@ const thumbnailImports = (isStyleX: boolean): string =>
     ...(isStyleX
       ? [`import * as stylex from '@stylexjs/stylex'
 
-const styles = stylex.create({ column: { display: 'flex', flexDirection: 'column', gap: '0.75rem' }, row: { display: 'flex', gap: '0.75rem', alignItems: 'flex-end', flexWrap: 'wrap' }, item: { display: 'flex', flexDirection: 'column', gap: '0.25rem', alignItems: 'center' }, caption: { fontSize: '0.75rem', lineHeight: '1.25rem', color: 'var(--muted-foreground)' } })`]
+const styles = stylex.create({ column: { display: 'flex', flexDirection: 'column', gap: '1rem' }, section: { display: 'flex', flexDirection: 'column', gap: '0.25rem' }, row: { display: 'flex', gap: '0.75rem', alignItems: 'flex-end', flexWrap: 'wrap' }, rowCenter: { display: 'flex', gap: '0.75rem', alignItems: 'center' }, item: { display: 'flex', flexDirection: 'column', gap: '0.25rem', alignItems: 'center' }, caption: { fontSize: '0.75rem', lineHeight: '1rem', color: 'var(--muted-foreground)' } })`]
       : []),
     `const NIGHT_FOREST = '${NIGHT_FOREST}'`,
     `const MISTY_VALLEY = '${MISTY_VALLEY}'`,
@@ -143,9 +143,9 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
   const componentImports = thumbnailImports(isStyleX);
   const sectionLabel = (text: string) =>
     `h.span([h.Class(${isStyleX ? "stylex.props(styles.caption).className ?? ''" : "'text-xs text-muted-foreground'"})], ['${text}'])`;
-  const rowWrap = (items: ReadonlyArray<ThumbnailItem>) =>
+  const rowWrap = (items: ReadonlyArray<ThumbnailItem>, centered = false) =>
     `h.div(
-        [h.Class(${isStyleX ? "stylex.props(styles.row).className ?? ''" : "'flex items-end gap-3'"})],
+        [h.Class(${isStyleX ? `stylex.props(styles.${centered ? 'rowCenter' : 'row'}).className ?? ''` : `'flex ${centered ? 'items-center' : 'items-end flex-wrap'} gap-3'`})],
         [
           ${items.map(item => itemBlock(item, isStyleX)).join(',\n          ')},
         ],
@@ -159,12 +159,12 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
       [h.Class(${isStyleX ? "stylex.props(styles.column).className ?? ''" : "'flex flex-col gap-4'"})],
       [
         h.div(
-          [h.Class(${isStyleX ? "stylex.props(styles.column).className ?? ''" : "'flex flex-col gap-1'"})],
-          [${sectionLabel(fixture.items[0]?.caption ?? 'Enabled')}, ${rowWrap(fixture.items.slice(0, 2))}],
+          [h.Class(${isStyleX ? "stylex.props(styles.section).className ?? ''" : "'flex flex-col gap-1'"})],
+          [${sectionLabel(fixture.items[0]?.caption ?? 'Enabled')}, ${rowWrap(fixture.items.slice(0, 2), true)}],
         ),
         h.div(
-          [h.Class(${isStyleX ? "stylex.props(styles.column).className ?? ''" : "'flex flex-col gap-1'"})],
-          [${sectionLabel(fixture.items[2]?.caption ?? 'Disabled')}, ${rowWrap(fixture.items.slice(2))}],
+          [h.Class(${isStyleX ? "stylex.props(styles.section).className ?? ''" : "'flex flex-col gap-1'"})],
+          [${sectionLabel(fixture.items[2]?.caption ?? 'Disabled')}, ${rowWrap(fixture.items.slice(2), true)}],
         ),
       ],
     )`

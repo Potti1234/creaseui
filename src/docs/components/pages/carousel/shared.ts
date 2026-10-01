@@ -103,20 +103,14 @@ const slideSource = (
   const isSx = renderer === 'stylex';
   const card = `Card.card({
                 children: [
-                  Card.cardContent({
-                    children: [${
+                  Card.cardContent({${
                       isSx
-                        ? `h.div(
-                      [h.Class(className(styles.slideContent))],
-                      [String(index + 1)],
-                    )`
-                        : `String(index + 1)`
-                    }],${
-                      isSx
-                        ? ''
+                        ? `
+                    layoutStyle: styles.cardContent as ComponentLayoutStyle,`
                         : `
                     class: 'flex aspect-square items-center justify-center p-6 text-4xl font-semibold',`
                     }
+                    children: [String(index + 1)],
                   }, h),
                 ],
               }, h)`;
@@ -189,13 +183,13 @@ const viewBodySource = (
 const stylexStylesSource = (fixture: CarouselFixture): string => {
   const parts: Array<string> = [`  carousel: { width: '100%' },`];
   parts.push(
-    `  slideContent: { alignItems: 'center', aspectRatio: '1/1', display: 'flex', fontSize: '2.25rem', lineHeight: '2.5rem', fontWeight: 600, justifyContent: 'center', padding: '1.5rem' },`,
+    `  cardContent: { alignItems: 'center', aspectRatio: '1/1', display: 'flex', fontSize: '2.25rem', lineHeight: '2.5rem', fontWeight: 600, justifyContent: 'center', padding: '1.5rem' },`,
   );
   if (fixture.padded === true)
     parts.push(`  slidePadding: { padding: '0.5rem' },`);
   if (fixture.status === true)
     parts.push(
-      `  apiWrap: { marginInline: 'auto', maxWidth: '20rem' },`,
+      `  apiWrap: { marginInline: 'auto', maxWidth: '20rem', width: '100%' },`,
       `  apiStatus: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem', paddingBlock: '0.5rem', textAlign: 'center' },`,
     );
   return `
@@ -217,6 +211,7 @@ ${f.autoplay === true ? `import Autoplay from 'embla-carousel-autoplay'\n` : ''}
 import * as Card from '@/${sx ? 'stylex' : 'ui'}/card'
 import * as Carousel from '@/${sx ? 'stylex' : 'ui'}/carousel'${sx ? `
 import * as stylex from '@stylexjs/stylex'
+import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import { className } from '@/stylex/style'${stylexStylesSource(f)}` : ''}`,
     model: `export const Model = S.Struct({ carousel: Carousel.Model })
 export type Model = typeof Model.Type`,

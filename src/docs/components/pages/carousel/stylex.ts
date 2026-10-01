@@ -7,11 +7,13 @@ import {
   type CarouselFixture,
 } from '@/docs/components/pages/carousel/shared';
 import * as Card from '@/stylex/card';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import * as Carousel from '@/stylex/carousel';
 import { className } from '@/stylex/style';
 
 const styles = stylex.create({
-  wrap: { maxWidth: '20rem', width: '100%' },
+  wrap: { marginLeft: 'auto', marginRight: 'auto', maxWidth: '20rem', width: '100%' },
+  carousel: { width: '100%' },
   cardContent: {
     padding: '1.5rem',
     alignItems: 'center',
@@ -62,11 +64,8 @@ export const carouselStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         children: [
           Card.cardContent(
             {
-              children: [
-                h.div([h.Class(className(styles.cardContent))], [
-                  String(i + 1),
-                ]),
-              ],
+              layoutStyle: styles.cardContent as ComponentLayoutStyle,
+              children: [String(i + 1)],
             },
             h,
           ),
@@ -96,7 +95,7 @@ export const carouselStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             plugins: [Autoplay({ delay: 2000, stopOnInteraction: true })],
           }
         : {}),
-      layoutStyle: styles.wrap,
+      layoutStyle: styles.carousel,
       items: cards,
     },
     h,
