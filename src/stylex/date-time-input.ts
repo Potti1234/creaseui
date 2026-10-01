@@ -87,9 +87,11 @@ const styles = stylex.create({
     userSelect: "none",
   },
   labelHidden: {
+    borderWidth: 0,
     margin: -1,
     overflow: "hidden",
     clip: "rect(0 0 0 0)",
+    padding: 0,
     position: "absolute",
     whiteSpace: "nowrap",
     height: 1,
@@ -100,6 +102,7 @@ const styles = stylex.create({
   description: { color: tokens.mutedForeground, fontSize: "0.875rem", lineHeight: '1.25rem' },
   row: { gap: "0.5rem", display: "flex", flexWrap: "wrap" },
   fullWidth: { width: "100%" },
+  fieldFit: { width: "fit-content" },
   wrapper: {
     borderColor: {
       default: tokens.input,
@@ -164,7 +167,10 @@ const styles = stylex.create({
   iconButton: {
     borderRadius: foundationTokens.radiusSm,
     alignItems: "center",
-    backgroundColor: "transparent",
+    backgroundColor: {
+      default: tokens.transparent,
+      ":hover": tokens.accent,
+    },
     color: {
       default: tokens.mutedForeground,
       ":hover": tokens.foreground,
@@ -181,7 +187,6 @@ const styles = stylex.create({
   },
   icon: {
     alignItems: "center",
-    color: tokens.mutedForeground,
     display: "inline-flex",
     flexShrink: 0,
     justifyContent: "center",
@@ -190,6 +195,7 @@ const styles = stylex.create({
     backgroundColor: "transparent",
     color: tokens.foreground,
     display: "block",
+    flexBasis: "0%",
     flexGrow: 1,
     fontFamily: "inherit",
     fontSize: "0.875rem", lineHeight: '1.25rem',
@@ -202,7 +208,10 @@ const styles = stylex.create({
   clearButton: {
     borderRadius: foundationTokens.radiusSm,
     alignItems: "center",
-    backgroundColor: "transparent",
+    backgroundColor: {
+      default: tokens.transparent,
+      ":hover": tokens.accent,
+    },
     color: {
       default: tokens.mutedForeground,
       ":hover": tokens.foreground,
@@ -226,16 +235,19 @@ const styles = stylex.create({
   },
   statusError: {
     color: tokens.destructive,
+    alignItems: "center",
     display: "inline-flex",
     flexShrink: 0,
   },
   statusWarning: {
     color: tokens.alertWarning,
+    alignItems: "center",
     display: "inline-flex",
     flexShrink: 0,
   },
   statusSuccess: {
     color: tokens.alertSuccess,
+    alignItems: "center",
     display: "inline-flex",
     flexShrink: 0,
   },
@@ -275,10 +287,12 @@ const styles = stylex.create({
   timeOptionSm: { paddingBlock: "0.25rem", paddingInline: "0.5rem" },
   timeOptionLg: { paddingBlock: "0.5rem" },
   srOnly: {
+    borderWidth: 0,
     clip: "rect(0 0 0 0)",
     height: 1,
     margin: -1,
     overflow: "hidden",
+    padding: 0,
     position: "absolute",
     whiteSpace: "nowrap",
     width: 1,
@@ -816,7 +830,7 @@ export const dateTimeInput = <Msg>(
       h.Class(
         className(
           styles.field,
-          props.width === undefined ? null : styles.fullWidth,
+          props.width === undefined ? styles.fieldFit : styles.fullWidth,
           props.layoutStyle,
         ),
       ),

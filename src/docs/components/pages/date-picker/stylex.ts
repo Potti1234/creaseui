@@ -16,7 +16,9 @@ import * as Icon from '@/lib/icon';
 import * as Input from '@/stylex/input';
 import * as InputGroup from '@/stylex/input-group';
 import * as Popover from '@/stylex/popover';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import { className } from '@/stylex/style';
+import { tokens } from '../../../../stylex/tokens.stylex';
 
 const styles = stylex.create({
   triggerRow: {
@@ -25,15 +27,17 @@ const styles = stylex.create({
     justifyContent: 'space-between',
     width: '100%',
   },
-  chevron: { opacity: 0.5, height: '1rem', width: '1rem', },
+  chevron: { flexShrink: 0, opacity: 0.5, height: '1rem', width: '1rem', },
   trigger: { width: '11rem' },
-  demoTrigger: { width: '13.25rem' },
-  rangeTrigger: { width: '15rem' },
-  iconTrigger: { height: '1.25rem', width: '1.25rem' },
+  demoTrigger: { width: '11rem' },
+  rangeTrigger: { alignItems: 'center', backgroundClip: 'border-box', backgroundColor: tokens.background, borderColor: tokens.input, borderRadius: 'calc(var(--radius) - 2px)', borderStyle: 'solid', borderWidth: 1, boxShadow: tokens.shadowSm, color: tokens.foreground, display: 'inline-flex', fontSize: '0.875rem', fontWeight: 400, gap: '0.5rem', height: '2rem', justifyContent: 'flex-start', lineHeight: '1.25rem', paddingInline: '0.625rem', whiteSpace: 'nowrap', width: '15rem' },
+  iconTrigger: { alignItems: 'center', borderRadius: '0.375rem', height: '1.25rem', justifyContent: 'center', width: '1.25rem' },
   icon: { height: '1rem', width: '1rem' },
+  iconShrink: { flexShrink: 0, height: '1rem', width: '1rem' },
   srOnly: {
     overflow: 'hidden',
     clipPath: 'inset(50%)',
+    margin: '-1px',
     position: 'absolute',
     height: '1px',
     width: '1px',
@@ -43,14 +47,15 @@ const styles = stylex.create({
   field60: { marginInline: 'auto', width: '15rem', },
   fieldNatural: { marginInline: 'auto', maxWidth: '20rem', },
   timeRow: {
-    gap: '1rem',
     marginInline: 'auto',
-    display: 'flex',
     flexDirection: 'row',
     maxWidth: '20rem',
   },
-  timeField: { width: '8rem' },
+  timeField: { width: '5.625rem' },
+  timeInput: { minWidth: 0 },
+  fullField: { width: '12.625rem' },
   centerRow: { gap: '0.5rem', alignItems: 'center', display: 'flex', },
+  iconRow: { alignItems: 'center', display: 'flex', },
 });
 
 interface Preview {
@@ -178,7 +183,7 @@ export const datePickerStyleXPreview: StyleXExamplePreviewProvider = <
                 Icon.calendarIcon({ class: className(styles.icon) }, h),
                 rangeText,
               ]),
-              triggerLayoutStyle: styles.rangeTrigger,
+              triggerLayoutStyle: styles.rangeTrigger as ComponentLayoutStyle,
               content: Calendar.calendar(
                 {
                   model: preview.calendar,
@@ -254,10 +259,10 @@ export const datePickerStyleXPreview: StyleXExamplePreviewProvider = <
                           ariaLabel: 'Select date',
                           triggerContent: () =>
                             h.span(
-                              [h.Class(className(styles.centerRow))],
+                              [h.Class(className(styles.iconRow))],
                               [
                                 Icon.calendarIcon(
-                                  { class: className(styles.icon) },
+                                  { class: className(styles.iconShrink) },
                                   h,
                                 ),
                                 h.span(
@@ -266,7 +271,7 @@ export const datePickerStyleXPreview: StyleXExamplePreviewProvider = <
                                 ),
                               ],
                             ),
-                          triggerLayoutStyle: styles.iconTrigger,
+                          triggerLayoutStyle: styles.iconTrigger as ComponentLayoutStyle,
                         },
                         h,
                       ),
@@ -285,11 +290,13 @@ export const datePickerStyleXPreview: StyleXExamplePreviewProvider = <
   }
 
   if (kind === 'time') {
-    return h.div(
-      [h.Class(className(styles.timeRow))],
-      [
+    return Field.fieldGroup(
+      {
+        layoutStyle: styles.timeRow as ComponentLayoutStyle,
+        children: [
           Field.field(
             {
+              layoutStyle: styles.fullField,
               children: [
                 Field.fieldLabel(
                   { for: 'date-picker-optional', children: ['Date'] },
@@ -311,6 +318,7 @@ export const datePickerStyleXPreview: StyleXExamplePreviewProvider = <
                 Input.input(
                   {
                     id: 'time-picker-optional',
+                    layoutStyle: styles.timeInput as ComponentLayoutStyle,
                     value: preview.timeValue,
                     onInput: value =>
                       onMessageJson(
@@ -325,6 +333,8 @@ export const datePickerStyleXPreview: StyleXExamplePreviewProvider = <
             h,
           ),
         ],
+      },
+      h,
     );
   }
 
