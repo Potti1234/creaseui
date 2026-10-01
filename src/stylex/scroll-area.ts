@@ -16,7 +16,7 @@ export type ScrollAreaProps = Readonly<{
 
 const styles = stylex.create({
   base: {
-    borderRadius: tokens.controlRadius,
+    borderRadius: 'inherit',
     boxShadow: { default: tokens.shadowNone, ':focus-visible': tokens.focusRingShadow },
     outlineColor: { default: tokens.transparent, ':focus-visible': tokens.ring },
     outlineStyle: { default: 'none', ':focus-visible': 'solid' },

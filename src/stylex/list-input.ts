@@ -71,6 +71,9 @@ const styles = stylex.create({
     opacity: 0.5,
   },
   srOnly: {
+    margin: -1,
+    padding: 0,
+    borderWidth: 0,
     overflow: 'hidden',
     clipPath: 'inset(50%)',
     position: 'absolute',
@@ -119,15 +122,13 @@ const styles = stylex.create({
     display: 'grid',
     rowGap: {
       [containerQuery]: '0.5rem',
-      default: 0,
+      default: null,
     },
     minWidth: 0,
   },
   fields: {
-    gap: {
-      [containerQuery]: '0.5rem',
-      default: '0.25rem',
-    },
+    columnGap: '0.25rem',
+    rowGap: '0.5rem',
     alignItems: 'end',
     display: {
       [containerQuery]: 'contents',

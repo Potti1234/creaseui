@@ -15,6 +15,7 @@ import * as Button from '@/stylex/button';
 import * as DropdownMenu from '@/stylex/dropdown-menu';
 import * as Item from '@/stylex/item';
 import { className } from '@/stylex/style';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import type * as DropdownMenuModel from '@/stylex/dropdown-menu';
 
 const styles = stylex.create({
@@ -53,15 +54,21 @@ const styles = stylex.create({
     objectFit: 'cover',
     width: '100%',
   },
-  cover: { borderRadius: 'calc(var(--radius) - 4px)', objectFit: 'cover' },
+  cover: { filter: 'grayscale(100%)', objectFit: 'cover' },
   muted: { color: 'var(--muted-foreground)' },
-  songTitle: {
+  titleClamp: {
+    display: '-webkit-box',
     overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
+    WebkitBoxOrient: 'vertical',
+    WebkitLineClamp: 1,
   },
-  duration: { flexShrink: 0 },
+  duration: { flexShrink: 0, flexGrow: 0, flexBasis: 'auto', textAlign: 'center' },
   avatarStack: { display: 'flex' },
+  avatarOverlap: { marginRight: '-0.5rem' },
+  avatar65: { height: '1.625rem', width: '1.625rem' },
+  icon4: { height: '1rem', width: '1rem' },
+  icon5: { height: '1.25rem', width: '1.25rem' },
+  iconBtn4: { flexShrink: 0, height: '1rem', width: '1rem' },
   menuItem: { width: '100%' },
   triggerContent: { gap: '0.5rem', alignItems: 'center', display: 'flex', },
 });
@@ -72,6 +79,7 @@ const sx = (style: stylex.StaticStyles): string => className(style);
 
 const peopleAvatar = <Msg>(
   person: (typeof itemPeople)[number],
+  layoutStyle: ComponentLayoutStyle | null,
   h: HtmlBuilder<Msg>,
 ): Html =>
   Item.itemMedia(
@@ -79,8 +87,9 @@ const peopleAvatar = <Msg>(
       children: [
         Avatar.avatar(
           {
-            size: 'sm',
+            size: 'lg',
             grayscale: true,
+            layoutStyle: layoutStyle ?? undefined,
             children: [
               Avatar.avatarImage({ src: person.avatar, alt: `@${person.username}` }, h),
               Avatar.avatarFallback({ children: [person.username.charAt(0)] }, h),
@@ -131,12 +140,12 @@ const demoStack = <Msg>(h: HtmlBuilder<Msg>, t: typeof itemRtlCopy | null): Html
         element: 'a',
         href: '#',
         children: [
-          Item.itemMedia({ children: [Icon.icon('badge-check', {}, h)] }, h),
+          Item.itemMedia({ children: [Icon.icon('badge-check', { class: sx(styles.icon5) }, h)] }, h),
           Item.itemContent(
             { children: [Item.itemTitle({ children: [verified] }, h)] },
             h,
           ),
-          Item.itemActions({ children: [Icon.icon('chevron-right', {}, h)] }, h),
+          Item.itemActions({ children: [Icon.icon('chevron-right', { class: sx(styles.icon4) }, h)] }, h),
         ],
       },
       h,
@@ -180,7 +189,7 @@ export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             {
               ...props,
               children: [
-                Item.itemMedia({ variant: 'icon', children: [Icon.icon('inbox', {}, h)] }, h),
+                Item.itemMedia({ variant: 'icon', children: [Icon.icon('inbox', { class: sx(styles.icon4) }, h)] }, h),
                 Item.itemContent(
                   {
                     children: [
@@ -203,7 +212,7 @@ export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           {
             variant: 'outline',
             children: [
-              Item.itemMedia({ variant: 'icon', children: [Icon.icon('shield-alert', {}, h)] }, h),
+              Item.itemMedia({ variant: 'icon', children: [Icon.icon('shield-alert', { class: sx(styles.icon4) }, h)] }, h),
               Item.itemContent(
                 {
                   children: [
@@ -265,7 +274,7 @@ export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                         size: 'icon-sm',
                         rounded: true,
                         ariaLabel: 'Invite',
-                        children: [Icon.icon('plus', {}, h)],
+                        children: [Icon.icon('plus', { class: sx(styles.iconBtn4) }, h)],
                       },
                       h,
                     ),
@@ -287,9 +296,9 @@ export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                     h.div([h.Class(sx(styles.avatarStack))], [
                       Avatar.avatar(
                         {
-                          size: 'sm',
-                          overlap: true,
+                          ring: true,
                           grayscale: true,
+                          layoutStyle: styles.avatarOverlap,
                           children: [
                             Avatar.avatarImage({ src: 'https://github.com/shadcn.png', alt: '@shadcn' }, h),
                             Avatar.avatarFallback({ children: ['CN'] }, h),
@@ -299,9 +308,9 @@ export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                       ),
                       Avatar.avatar(
                         {
-                          size: 'sm',
-                          overlap: true,
+                          ring: true,
                           grayscale: true,
+                          layoutStyle: styles.avatarOverlap,
                           children: [
                             Avatar.avatarImage({ src: 'https://github.com/maxleiter.png', alt: '@maxleiter' }, h),
                             Avatar.avatarFallback({ children: ['LR'] }, h),
@@ -311,8 +320,7 @@ export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                       ),
                       Avatar.avatar(
                         {
-                          size: 'sm',
-                          overlap: true,
+                          ring: true,
                           grayscale: true,
                           children: [
                             Avatar.avatarImage({ src: 'https://github.com/evilrabbit.png', alt: '@evilrabbit' }, h),
@@ -350,7 +358,7 @@ export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       return h.div([h.Class(sx(styles.stackMd))], [
         Item.itemGroup(
           {
-            spacing: 'md',
+            spacing: 'lg',
             children: itemMusic.map(song =>
               Item.item(
                 {
@@ -377,11 +385,10 @@ export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                         children: [
                           Item.itemTitle(
                             {
+                              layoutStyle: styles.titleClamp as ComponentLayoutStyle,
                               children: [
-                                h.span([h.Class(sx(styles.songTitle))], [
-                                  `${song.title} - `,
-                                  h.span([h.Class(sx(styles.muted))], [song.album]),
-                                ]),
+                                `${song.title} - `,
+                                h.span([h.Class(sx(styles.muted))], [song.album]),
                               ],
                             },
                             h,
@@ -393,7 +400,7 @@ export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                     ),
                     Item.itemContent(
                       {
-                        layoutStyle: styles.duration,
+                        layoutStyle: styles.duration as ComponentLayoutStyle,
                         children: [Item.itemDescription({ children: [song.duration] }, h)],
                       },
                       h,
@@ -416,7 +423,7 @@ export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
               {
                 variant: 'outline',
                 children: [
-                  peopleAvatar(person, h),
+                  peopleAvatar(person, null, h),
                   Item.itemContent(
                     {
                       children: [
@@ -435,7 +442,7 @@ export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                             size: 'icon',
                             rounded: true,
                             ariaLabel: `Invite ${person.username}`,
-                            children: [Icon.icon('plus', {}, h)],
+                            children: [Icon.icon('plus', { class: sx(styles.iconBtn4) }, h)],
                           },
                           h,
                         ),
@@ -456,7 +463,7 @@ export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         Item.itemGroup(
           {
             columns: 3,
-            spacing: 'md',
+            spacing: 'lg',
             children: itemModels.map(entry =>
               Item.item(
                 {
@@ -505,7 +512,7 @@ export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                 },
                 h,
               ),
-              Item.itemActions({ children: [Icon.icon('chevron-right', {}, h)] }, h),
+              Item.itemActions({ children: [Icon.icon('chevron-right', { class: sx(styles.icon4) }, h)] }, h),
             ],
           },
           h,
@@ -527,7 +534,7 @@ export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                 },
                 h,
               ),
-              Item.itemActions({ children: [Icon.icon('external-link', {}, h)] }, h),
+              Item.itemActions({ children: [Icon.icon('external-link', { class: sx(styles.icon4) }, h)] }, h),
             ],
           },
           h,
@@ -541,7 +548,7 @@ export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             onMessageJson(JSON.stringify({ _tag: 'GotDropdownMessage', message })),
           trigger: h.span(
             [h.Class(sx(styles.triggerContent))],
-            ['Select', Icon.icon('chevron-down', {}, h)],
+            ['Select', Icon.icon('chevron-down', { class: sx(styles.iconBtn4) }, h)],
           ),
           triggerButtonVariant: 'outline',
           ariaLabel: 'Select a person',
@@ -556,7 +563,7 @@ export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                   size: 'xs',
                   layoutStyle: styles.menuItem,
                   children: [
-                    peopleAvatar(person, h),
+                    peopleAvatar(person, styles.avatar65, h),
                     Item.itemContent(
                       {
                         children: [
