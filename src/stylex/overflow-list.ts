@@ -163,14 +163,14 @@ export const overflowList = <Msg>(
               props.layoutStyle,
             ),
           ),
-          h.Style(gapStyle),
-          ...(isMultiRow && model.rowHeight > 0 && maxRows !== undefined
-            ? [
-                h.Style({
+          h.Style({
+            ...gapStyle,
+            ...(isMultiRow && model.rowHeight > 0 && maxRows !== undefined
+              ? {
                   maxHeight: `calc(${String(model.rowHeight)}px * ${String(maxRows)} + ${String(gapPx)}px * ${String(maxRows - 1)})`,
-                }),
-              ]
-            : []),
+                }
+              : {}),
+          }),
         ],
         [
           ...(collapseFrom === 'start' &&

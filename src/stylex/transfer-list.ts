@@ -735,7 +735,6 @@ const styles = stylex.create({
     gap: "0.5rem",
     alignItems: "flex-end",
     display: "flex",
-    minWidth: 0,
   },
   searchWrap: {
     flex: "1",
