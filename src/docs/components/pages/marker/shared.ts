@@ -138,7 +138,7 @@ const emitMessages = (fixture: MarkerFixture): string => {
   if (kindUsesSonner(fixture.kind)) {
     fields.push(
       '  ClickedRevert: {},',
-      '  GotSonnerMessage: { message: Sonner.Message },',
+      '  GotSonnerMessage: { message: S.Union([Sonner.Message, Sonner.ActivatedToastAction]) },',
     );
   }
   if (fields.length === 0) {

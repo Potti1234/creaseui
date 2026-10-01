@@ -1,8 +1,10 @@
 import * as stylex from '@stylexjs/stylex'
-import type { Html, HtmlBuilder } from 'foldkit/html'
+import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
+
+import { Option } from 'effect'
 
 import * as Icon from '@/lib/icon'
-import { type Entry, type Message, type Model, type Position, type Variant, Message as ToastMessages } from '@/lib/toast'
+import { ActivatedToastAction, type Entry, type Message, type Model, type Position, type Variant, Message as ToastMessages } from '@/lib/toast'
 import type { StaticStyles } from '@stylexjs/stylex'
 
 import { buttonVisualStyles } from './button'
@@ -28,6 +30,7 @@ const styles = stylex.create({
   viewportRight: { right: 0 },
   viewportTop: { top: 0 },
   viewportBottomEdge: { bottom: 0 },
+  visuallyClosed: { opacity: 0 },
 })
 
 const variantIcon = <Msg>(variant: Variant, h: HtmlBuilder<Msg>): Html | undefined => {
@@ -69,16 +72,38 @@ export type SonnerProps<Msg> = Readonly<{
   position?: Position
 }>
 
+/** Mirrors the upstream Toast view's animation attributes so the entry
+ *  participates in the primitive's enter/leave lifecycle. */
+const animationAttributes = <Msg>(entry: Entry, h: HtmlBuilder<Msg>): ReadonlyArray<Attribute<Msg>> => {
+  switch (entry.animation.transitionState) {
+    case 'EnterStart': return [
+      h.DataAttribute('closed', ''), h.DataAttribute('enter', ''), h.DataAttribute('transition', ''),
+    ]
+    case 'EnterAnimating': return [h.DataAttribute('enter', ''), h.DataAttribute('transition', '')]
+    case 'LeaveStart': return [h.DataAttribute('leave', ''), h.DataAttribute('transition', '')]
+    case 'LeaveAnimating': return [
+      h.DataAttribute('closed', ''), h.DataAttribute('leave', ''), h.DataAttribute('transition', ''),
+    ]
+    default: return []
+  }
+}
+
+/** `data-closed` phases (enter start, leave end) fade the entry via the
+ *  existing opacity/transform transition. */
+const isVisuallyClosed = (entry: Entry): boolean =>
+  entry.animation.transitionState === 'EnterStart' || entry.animation.transitionState === 'LeaveAnimating'
+
 const entryView = <Msg>(entry: Entry, props: SonnerProps<Msg>, h: HtmlBuilder<Msg>): Html => h.article([
-  h.Key(entry.id), h.Role(entry.variant === 'Error' ? 'alert' : 'status'),
-  h.DataAttribute('slot', 'sonner-toast'), h.DataAttribute('variant', entry.variant.toLowerCase()), h.DataAttribute('paused', String(entry.isPaused)),
-  ...(props.pausePolicy === 'none' || entry.sticky ? [] : [h.OnMouseEnter(props.toParentMessage(ToastMessages.PausedToast({ id: entry.id }))), h.OnMouseLeave(props.toParentMessage(ToastMessages.ResumedToast({ id: entry.id })))]),
-  h.Class(className(styles.toast, props.entryLayoutStyle)),
+  h.Key(entry.id), h.Id(entry.id), h.Role(entry.payload.variant === 'Error' ? 'alert' : 'status'),
+  h.DataAttribute('slot', 'sonner-toast'), h.DataAttribute('variant', entry.payload.variant.toLowerCase()), h.DataAttribute('paused', String(entry.isHovered)),
+  ...(props.pausePolicy === 'none' || Option.isNone(entry.maybeDuration) ? [] : [h.OnMouseEnter(props.toParentMessage(ToastMessages.HoveredEntry({ entryId: entry.id }))), h.OnMouseLeave(props.toParentMessage(ToastMessages.LeftEntry({ entryId: entry.id })))]),
+  ...animationAttributes(entry, h),
+  h.Class(className(styles.toast, isVisuallyClosed(entry) ? styles.visuallyClosed : undefined, props.entryLayoutStyle)),
 ], [
-  ...(variantIcon(entry.variant, h) === undefined ? [] : [variantIcon(entry.variant, h)!]),
+  ...(variantIcon(entry.payload.variant, h) === undefined ? [] : [variantIcon(entry.payload.variant, h)!]),
   h.div([h.Class(className(styles.body))], [h.div([h.Class(className(styles.title))], [entry.payload.title]), ...(entry.payload.description === undefined ? [] : [h.div([h.Class(className(styles.description))], [entry.payload.description])])]),
-  ...(entry.payload.actionLabel === undefined ? [] : [h.button([h.Type('button'), h.OnClick(props.toParentMessage(ToastMessages.ActivatedToastAction({ id: entry.id }))), h.Class(className(...buttonVisualStyles({ variant: 'outline', size: 'sm' }), styles.action))], [entry.payload.actionLabel])]),
-  h.button([h.Type('button'), h.AriaLabel('Dismiss notification'), h.OnClick(props.toParentMessage(ToastMessages.Dismissed({ id: entry.id }))), h.Class(className(...buttonVisualStyles({ variant: 'ghost', size: 'icon-xs' }), styles.dismiss))], [Icon.x<Msg>({}, h)]),
+  ...(entry.payload.actionLabel === undefined ? [] : [h.button([h.Type('button'), h.OnClick(props.toParentMessage(ActivatedToastAction({ id: entry.id }))), h.Class(className(...buttonVisualStyles({ variant: 'outline', size: 'sm' }), styles.action))], [entry.payload.actionLabel])]),
+  h.button([h.Type('button'), h.AriaLabel('Dismiss notification'), h.OnClick(props.toParentMessage(ToastMessages.Dismissed({ entryId: entry.id }))), h.Class(className(...buttonVisualStyles({ variant: 'ghost', size: 'icon-xs' }), styles.dismiss))], [Icon.x<Msg>({}, h)]),
 ])
 
 export const sonner = <Msg>(props: SonnerProps<Msg>, h: HtmlBuilder<Msg>): Html => {
