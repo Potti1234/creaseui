@@ -53,7 +53,7 @@ const styles = stylex.create({
   },
   alternative: { marginTop: '0.75rem' },
   alternativeHidden: { overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', clipPath: 'inset(50%)', position: 'absolute', whiteSpace: 'nowrap', height: '1px', width: '1px', },
-  status: { alignItems: 'center', color: tokens.mutedForeground, display: 'flex', fontSize: '0.875rem', lineHeight: '1.25rem', justifyContent: 'center' },
+  status: { alignItems: 'center', color: tokens.mutedForeground, display: 'flex', fontSize: '0.875rem', justifyContent: 'center', lineHeight: '1.25rem', },
   spark: {
     height: '3.5rem',
   },

@@ -13,7 +13,7 @@ const styles = stylex.create({
     display: "grid",
     gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
   },
-  amount: { fontSize: "1.5rem", lineHeight: '2rem', fontVariantNumeric: "tabular-nums" },
+  amount: { fontSize: "1.5rem", fontVariantNumeric: "tabular-nums", lineHeight: '2rem', },
   tabular: { fontVariantNumeric: "tabular-nums" },
   paymentContent: {
     display: "flex",

@@ -62,13 +62,14 @@ const styles = stylex.create({
       ":hover": tokens.foreground,
     },
     display: "inline-flex",
-    fontSize: "0.875rem", lineHeight: '1.25rem',
+    fontSize: "0.875rem",
     fontWeight: 500,
     justifyContent: "center",
+ lineHeight: '1.25rem',
     outlineStyle: "none",
+    position: "relative",
     whiteSpace: "nowrap",
     height: "calc(100% - 1px)",
-    position: "relative",
   },
   triggerVertical: { justifyContent: "start", width: "100%" },
   afterBase: {
@@ -88,7 +89,7 @@ const styles = stylex.create({
   },
   selected: {
     backgroundColor: tokens.background,
-    boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+    boxShadow: foundationTokens.shadowSm,
     color: tokens.foreground,
   },
   selectedLine: {

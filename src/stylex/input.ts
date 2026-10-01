@@ -3,6 +3,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { type InputBehaviorProps, renderInput } from '@/lib/input'
 import type { ComponentLayoutStyle } from './contracts'
+import { joinStyles } from './button-group-join.stylex'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
@@ -85,6 +86,8 @@ export const input = <Msg>(props: InputProps<Msg>, h: HtmlBuilder<Msg>): Html =>
         h.Class(
           className(
             styles.input,
+            joinStyles.join,
+            joinStyles.inputGrow,
             props.isDisabled && styles.disabled,
             props.isInvalid && styles.invalid,
             props.layoutStyle,

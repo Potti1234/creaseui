@@ -30,8 +30,6 @@ const styles = stylex.create({
       ':has([data-slot="input-group-control"]:focus-visible)':
         tokens.focusRingShadow,
     },
-    transitionDuration: interactionTokens.motionFast,
-    transitionProperty: "color, box-shadow",
     display: "flex",
     flexDirection: {
       default: "row",
@@ -40,6 +38,8 @@ const styles = stylex.create({
     },
     outlineStyle: "none",
     position: "relative",
+    transitionDuration: interactionTokens.motionFast,
+    transitionProperty: "color, box-shadow",
     height: {
       default: "2rem",
       ':has(> [data-align="block-end"])': "auto",
@@ -49,7 +49,7 @@ const styles = stylex.create({
     minWidth: 0,
     width: "100%",
   },
-  radiusXl: { borderRadius: "1rem" },
+  radiusXl: { borderRadius: foundationTokens.radius2xl },
   radiusFull: { borderRadius: foundationTokens.radiusFull },
   addon: {
     gap: "0.5rem",
@@ -58,57 +58,58 @@ const styles = stylex.create({
     color: tokens.mutedForeground,
     cursor: interactionTokens.cursorText,
     display: "flex",
-    fontSize: "0.875rem", lineHeight: '1.25rem',
+    fontSize: "0.875rem",
     fontWeight: 500,
     justifyContent: "center",
+ lineHeight: '1.25rem',
     userSelect: "none",
   },
   inlineStart: {
     order: -9999,
-    paddingLeft: "0.75rem",
     marginLeft: {
       default: null,
       ':has(> button)': "-0.45rem",
       ':has(> kbd)': "-0.35rem",
     },
+    paddingLeft: "0.75rem",
   },
   inlineEnd: {
     order: 9999,
-    paddingRight: "0.75rem",
     marginRight: {
       default: null,
       ':has(> button)': "-0.45rem",
       ':has(> kbd)': "-0.35rem",
     },
+    paddingRight: "0.75rem",
   },
   blockStart: {
-    order: -9999,
-    width: "100%",
-    justifyContent: "flex-start",
     paddingInline: "0.75rem",
+    justifyContent: "flex-start",
+    order: -9999,
     paddingBlockStart: {
       default: "0.75rem",
       ':where([data-slot="input-group"]:has(> input) > *)': "0.625rem",
     },
+    width: "100%",
   },
   blockEnd: {
-    order: 9999,
-    width: "100%",
-    justifyContent: "flex-start",
     paddingInline: "0.75rem",
+    justifyContent: "flex-start",
+    order: 9999,
     paddingBlockEnd: {
       default: "0.75rem",
       ':where([data-slot="input-group"]:has(> input) > *)': "0.625rem",
     },
+    width: "100%",
   },
   button: {
+    gap: "0.5rem",
     alignItems: "center",
     boxShadow: foundationTokens.shadowNone,
     display: "flex",
-    gap: "0.5rem",
   },
   buttonXs: {
-    borderRadius: "calc(var(--radius) - 5px)",
+    borderRadius: foundationTokens.radiusNested,
     gap: "0.25rem",
     paddingInline: "0.5rem",
     height: "1.5rem",
@@ -119,7 +120,7 @@ const styles = stylex.create({
     height: "2rem",
   },
   buttonIcon: {
-    borderRadius: "calc(var(--radius) - 5px)",
+    borderRadius: foundationTokens.radiusNested,
     paddingInline: 0,
     height: "1.5rem",
     width: "1.5rem",
@@ -137,30 +138,12 @@ const styles = stylex.create({
     borderRadius: "0px",
     borderStyle: "solid",
     borderWidth: 0,
-    display: "flex",
-    flex: "1 1 0%",
-    paddingBlockStart: {
-      default: "0.25rem",
-      ':where([data-slot="input-group"]:has(> [data-align="block-end"]) > *)':
-        "0.75rem",
-    },
-    paddingBlockEnd: {
-      default: "0.25rem",
-      ':where([data-slot="input-group"]:has(> [data-align="block-start"]) > *)':
-        "0.75rem",
-    },
-    paddingLeft: {
-      default: "0.625rem",
-      ':where([data-slot="input-group"]:has(> [data-align="inline-start"]) > *)':
-        "0.5rem",
-    },
-    paddingRight: {
-      default: "0.625rem",
-      ':where([data-slot="input-group"]:has(> [data-align="inline-end"]) > *)':
-        "0.5rem",
-    },
     backgroundColor: foundationTokens.transparent,
     boxShadow: foundationTokens.shadowNone,
+    display: "flex",
+    flexBasis: '0%',
+    flexGrow: '1',
+    flexShrink: '1',
     fontFamily: "inherit",
     fontSize: {
       default: "1rem",
@@ -171,8 +154,28 @@ const styles = stylex.create({
       '@media (min-width: 768px)': "1.25rem",
     },
     outlineStyle: "none",
+    paddingBlockEnd: {
+      default: "0.25rem",
+      ':where([data-slot="input-group"]:has(> [data-align="block-start"]) > *)':
+        "0.75rem",
+    },
+    paddingBlockStart: {
+      default: "0.25rem",
+      ':where([data-slot="input-group"]:has(> [data-align="block-end"]) > *)':
+        "0.75rem",
+    },
     height: "2rem",
     minWidth: 0,
+    paddingLeft: {
+      default: "0.625rem",
+      ':where([data-slot="input-group"]:has(> [data-align="inline-start"]) > *)':
+        "0.5rem",
+    },
+    paddingRight: {
+      default: "0.625rem",
+      ':where([data-slot="input-group"]:has(> [data-align="inline-end"]) > *)':
+        "0.5rem",
+    },
     width: "100%",
   },
   textarea: {
@@ -181,11 +184,13 @@ const styles = stylex.create({
     borderRadius: "0px",
     borderStyle: "solid",
     borderWidth: 0,
-    flex: "1 1 0%",
     paddingBlock: "0.5rem",
     paddingInline: "0.75rem",
     backgroundColor: foundationTokens.transparent,
     boxShadow: foundationTokens.shadowNone,
+    flexBasis: '0%',
+    flexGrow: '1',
+    flexShrink: '1',
     fontFamily: "inherit",
     fontSize: {
       default: "1rem",

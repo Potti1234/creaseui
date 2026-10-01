@@ -43,9 +43,10 @@ const styles = stylex.create({
   },
   forgotLink: {
     color: { default: tokens.mutedForeground, ":hover": tokens.foreground },
-    fontSize: "0.75rem", lineHeight: '1rem',
+    fontSize: "0.75rem",
     fontWeight: 500,
     letterSpacing: "0.05em",
+ lineHeight: '1rem',
     textTransform: "uppercase",
   },
   footer: { gap: "1rem", display: "flex", flexDirection: "column", width: "100%" },

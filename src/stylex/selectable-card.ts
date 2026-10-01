@@ -11,6 +11,7 @@ import { pressableAttributes } from "@/lib/clickable-card";
 import type { ComponentLayoutStyle } from "./contracts";
 import { interactionTokens } from "./interaction-tokens.stylex.const";
 import { className } from "./style";
+import { foundationTokens } from './foundations-tokens.stylex';
 import { tokens } from "./tokens.stylex";
 
 /* Ported from Meta Astryx SelectableCard.tsx — a card that toggles between
@@ -40,25 +41,13 @@ const styles = stylex.create({
     transitionTimingFunction: interactionTokens.easingStandard,
   },
   interactive: {
+    backgroundImage: {
+      default: 'none',
+      ':hover': `linear-gradient(${foundationTokens.foregroundFaint}, ${foundationTokens.foregroundFaint})`,
+      ':active': `linear-gradient(${foundationTokens.foregroundSoft}, ${foundationTokens.foregroundSoft})`,
+    },
     color: "inherit",
     cursor: interactionTokens.cursorAction,
-    '::after': {
-      content: '""',
-      position: 'absolute',
-      inset: 0,
-      borderRadius: 'inherit',
-      pointerEvents: 'none',
-      backgroundColor: 'transparent',
-      transitionDuration: interactionTokens.motionFast,
-      transitionProperty: 'background-color',
-      transitionTimingFunction: interactionTokens.easingStandard,
-    },
-    ':hover::after': {
-      backgroundColor: 'color-mix(in oklab, var(--foreground) 5%, transparent)',
-    },
-    ':active::after': {
-      backgroundColor: 'color-mix(in oklab, var(--foreground) 10%, transparent)',
-    },
   },
   disabled: {
     cursor: interactionTokens.cursorDefault,

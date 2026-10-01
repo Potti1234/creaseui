@@ -4,6 +4,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
+import { foundationTokens } from './foundations-tokens.stylex';
 import { tokens } from './tokens.stylex'
 
 const styles = stylex.create({
@@ -17,7 +18,7 @@ const styles = stylex.create({
     paddingBlock: 'var(--card-spacing,1.5rem)',
     backgroundColor: tokens.card,
     boxShadow:
-      'rgb(0 0 0 / 0.1) 0px 1px 3px 0px, rgb(0 0 0 / 0.1) 0px 1px 2px -1px',
+      foundationTokens.shadowSm,
     color: tokens.cardForeground,
     display: 'flex',
     flexDirection: 'column',
@@ -30,24 +31,26 @@ const styles = stylex.create({
   header: {
     gap: '0.25rem',
     paddingInline: 'var(--card-spacing,1.5rem)',
-    display: 'grid',
     alignItems: 'flex-start',
-    borderTopLeftRadius: tokens.cardRadius,
-    borderTopRightRadius: tokens.cardRadius,
+    containerName: 'card-header',
+    containerType: 'inline-size',
+    display: 'grid',
     gridAutoRows: 'min-content',
     gridTemplateColumns: {
       default: null,
-      ':has(> [data-slot=card-action])': '1fr auto',
+      ':has([data-slot=card-action])': '1fr auto',
     },
     gridTemplateRows: {
       default: null,
-      ':has(> [data-slot=card-description])': 'auto auto',
+      ':has([data-slot=card-description])': 'auto auto',
     },
+    borderTopLeftRadius: tokens.cardRadius,
+    borderTopRightRadius: tokens.cardRadius,
   },
   title: {
     fontSize: 'var(--card-title-fs, 1rem)',
     fontWeight: 500,
-    lineHeight: '1.5',
+    lineHeight: foundationTokens.leadingNormal,
   },
   description: {
     color: tokens.mutedForeground,

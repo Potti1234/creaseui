@@ -87,11 +87,11 @@ const styles = stylex.create({
     userSelect: "none",
   },
   labelHidden: {
-    borderWidth: 0,
     margin: -1,
+    padding: 0,
+    borderWidth: 0,
     overflow: "hidden",
     clip: "rect(0 0 0 0)",
-    padding: 0,
     position: "absolute",
     whiteSpace: "nowrap",
     height: 1,

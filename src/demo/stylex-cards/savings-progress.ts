@@ -13,7 +13,7 @@ const styles = stylex.create({
   detail: { paddingBlock: '0.75rem', alignItems: 'center', display: 'flex', justifyContent: 'space-between', width: '100%', },
   footer: { gap: 0, paddingBlock: '0.625rem', display: 'flex', flexDirection: 'column', width: '100%', },
   label: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
-  value: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 600 },
+  value: { fontSize: '0.875rem', fontWeight: 600, lineHeight: '1.25rem', },
   valueNumeric: { fontVariantNumeric: 'tabular-nums' },
 });
 

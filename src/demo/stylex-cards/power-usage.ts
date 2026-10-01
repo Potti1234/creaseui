@@ -34,9 +34,9 @@ const styles = stylex.create({
     height: '0.5rem',
     width: '100%',
   },
-  usage: { fontSize: '1.125rem', lineHeight: '1.75rem', fontVariantNumeric: 'tabular-nums', fontWeight: 600 },
+  usage: { fontSize: '1.125rem', fontVariantNumeric: 'tabular-nums', fontWeight: 600, lineHeight: '1.75rem', },
   usageAccent: { color: interactionCardTokens.usageAccent },
-  value: { fontSize: '0.875rem', lineHeight: '1.25rem', fontVariantNumeric: 'tabular-nums', fontWeight: 500 },
+  value: { fontSize: '0.875rem', fontVariantNumeric: 'tabular-nums', fontWeight: 500, lineHeight: '1.25rem', },
 })
 
 const chartData = [

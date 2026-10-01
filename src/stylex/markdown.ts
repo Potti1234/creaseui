@@ -191,7 +191,7 @@ const styles = stylex.create({
   },
   taskMarker: {
     borderColor: tokens.input,
-    borderRadius: '4px',
+    borderRadius: foundationTokens.radiusBase,
     borderStyle: 'solid',
     borderWidth: '1px',
     alignItems: 'center',

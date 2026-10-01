@@ -10,6 +10,7 @@ import { foundationTokens } from './foundations-tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
 import { logStreamTerminalInk } from './log-stream-terminal-ink.stylex'
 import { className } from './style'
+import { complexTokens } from './complex-tokens.stylex';
 import { tokens } from './tokens.stylex'
 
 /* Ported from Meta Astryx LogStream.tsx (packages/lab) — mirrors
@@ -147,8 +148,8 @@ const styles = stylex.create({
     backgroundColor: tokens.card,
   },
   rootTerminal: {
-    borderColor: '#26262a',
-    backgroundColor: '#0a0a0a',
+    borderColor: logStreamTerminalInk.edge,
+    backgroundColor: logStreamTerminalInk.surface,
   },
   viewport: {
     overscrollBehavior: 'contain',
@@ -169,7 +170,7 @@ const styles = stylex.create({
     textAlign: 'start',
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'opacity',
-    transitionTimingFunction: 'ease-out',
+    transitionTimingFunction: interactionTokens.easingOut,
   },
   rowDefault: {
     paddingBlock: '0.25rem',
@@ -181,10 +182,10 @@ const styles = stylex.create({
   rowTerminal: {
     paddingBlock: '1px',
     borderBlockEndWidth: 0,
-    color: '#b9b9c0',
+    color: logStreamTerminalInk.text,
   },
-  rowWarn: { backgroundColor: 'color-mix(in srgb, var(--chart-4) 5%, transparent)' },
-  rowError: { backgroundColor: 'color-mix(in srgb, var(--destructive) 6%, transparent)' },
+  rowWarn: { backgroundColor: complexTokens.chart4Soft5 },
+  rowError: { backgroundColor: complexTokens.destructiveSoft6 },
   colsTimeSource: {
     gridTemplateColumns: '96px 52px 128px minmax(0, 1fr)',
   },
@@ -210,17 +211,17 @@ const styles = stylex.create({
     width: '100%',
   },
   rowButtonHover: {
-    backgroundColor: { default: null, ':hover': 'color-mix(in oklab, var(--muted) 50%, transparent)' },
+    backgroundColor: { default: null, ':hover': complexTokens.mutedSurface },
   },
   rowButtonHoverTerminal: {
-    backgroundColor: { default: null, ':hover': '#141417' },
+    backgroundColor: { default: null, ':hover': logStreamTerminalInk.hover },
   },
   timestamp: {
     color: tokens.mutedForeground,
     fontVariantNumeric: 'tabular-nums',
     whiteSpace: 'nowrap',
   },
-  timestampTerm: { color: '#8b8b94' },
+  timestampTerm: { color: logStreamTerminalInk.textDim },
   level: {
     fontSize: '0.75rem',
     fontWeight: 600,
@@ -235,7 +236,7 @@ const styles = stylex.create({
     whiteSpace: 'nowrap',
     minWidth: 0,
   },
-  sourceTerm: { color: '#8b8b94' },
+  sourceTerm: { color: logStreamTerminalInk.textDim },
   message: {
     overflowWrap: 'break-word',
     whiteSpace: 'pre-wrap',
@@ -250,9 +251,9 @@ const styles = stylex.create({
     borderBlockEndWidth: 1,
   },
   detailTerminal: {
-    borderBlockEndColor: '#26262a',
     backgroundColor: logStreamTerminalInk.detailSurface,
-    color: '#b9b9c0',
+    borderBlockEndColor: logStreamTerminalInk.edge,
+    color: logStreamTerminalInk.text,
   },
   jump: {
     borderColor: tokens.border,
@@ -262,12 +263,13 @@ const styles = stylex.create({
     paddingBlock: '0.25rem',
     paddingInline: '0.75rem',
     backgroundColor: { default: tokens.card, ':hover': tokens.muted },
-    boxShadow: 'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px',
+    boxShadow: foundationTokens.shadowMd,
     color: tokens.foreground,
     cursor: interactionTokens.cursorAction,
     fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
     fontWeight: 500,
+ lineHeight: '1.25rem',
     outlineColor: { default: null, ':focus-visible': tokens.ring },
     outlineOffset: { default: null, ':focus-visible': '2px' },
     outlineStyle: { default: null, ':focus-visible': 'solid' },
@@ -277,15 +279,15 @@ const styles = stylex.create({
     right: '0.75rem',
   },
   jumpTerminal: {
-    borderColor: '#26262a',
-    backgroundColor: { default: '#141417', ':hover': '#1d1d21' },
-    color: '#e8e8ea',
+    borderColor: logStreamTerminalInk.edge,
+    backgroundColor: { default: logStreamTerminalInk.hover, ':hover': logStreamTerminalInk.hoverStrong },
+    color: logStreamTerminalInk.textBright,
   },
   levelInfo: {
     color: tokens.mutedForeground,
   },
   levelDebug: {
-    color: 'color-mix(in oklab, var(--muted-foreground) 60%, transparent)',
+    color: foundationTokens.mutedForeground60,
   },
   levelWarn: {
     color: tokens.alertWarning,
@@ -294,10 +296,10 @@ const styles = stylex.create({
     color: tokens.destructive,
   },
   levelTermInfo: {
-    color: '#b9b9c0',
+    color: logStreamTerminalInk.text,
   },
   levelTermDebug: {
-    color: '#8b8b94',
+    color: logStreamTerminalInk.textDim,
   },
   levelTermWarn: {
     color: logStreamTerminalInk.warn,
@@ -306,7 +308,7 @@ const styles = stylex.create({
     color: logStreamTerminalInk.error,
   },
   messageTerm: {
-    color: '#b9b9c0',
+    color: logStreamTerminalInk.text,
   },
   messageTermWarn: {
     color: logStreamTerminalInk.warn,

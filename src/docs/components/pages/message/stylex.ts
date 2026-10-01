@@ -41,6 +41,8 @@ const styles = stylex.create({
   fontNormal: { fontWeight: 400 },
   destructive: { color: 'var(--destructive)', fontWeight: 400, },
   fontMedium: { fontWeight: 500 },
+  mediaImage: { aspectRatio: '1', objectFit: 'cover', width: '100%' },
+  iconMd: { height: '1rem', width: '1rem' },
 });
 
 const sx = (style: stylex.StaticStyles): string => className(style);
@@ -100,7 +102,7 @@ const part = <Msg>(
               {
                 variant: 'image',
                 children: [
-                  h.img([h.Src(ATTACHMENT_IMAGE_URL), h.Alt('Workspace')]),
+                  h.img([h.Src(ATTACHMENT_IMAGE_URL), h.Alt('Workspace'), h.Class(sx(styles.mediaImage))]),
                 ],
               },
               h,
@@ -114,7 +116,7 @@ const part = <Msg>(
         {
           children: [
             Attachment.attachmentMedia(
-              { children: [Icon.icon('file-text', {}, h)] },
+              { children: [Icon.icon('file-text', { class: className(styles.iconMd) }, h)] },
               h,
             ),
             Attachment.attachmentContent(
@@ -183,24 +185,16 @@ const footer = <Msg>(
           size: 'icon',
           ariaLabel: label,
           onClick: send(onMessageJson, 'ClickedAction'),
-          children: [Icon.icon(icon, {}, h)],
+          children: [Icon.icon(icon, { class: className(styles.iconMd) }, h)],
         },
         h,
       );
     return Message.messageFooter(
       {
         children: [
-          h.div(
-            [
-              h.Class('contents'),
-              h.DataAttribute('variant', 'ghost'),
-            ],
-            [
-              btn('copy', 'Copy'),
-              btn('thumbs-up', 'Like'),
-              btn('thumbs-down', 'Dislike'),
-            ],
-          ),
+          btn('copy', 'Copy'),
+          btn('thumbs-up', 'Like'),
+          btn('thumbs-down', 'Dislike'),
         ],
       },
       h,

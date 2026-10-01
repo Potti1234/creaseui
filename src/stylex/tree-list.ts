@@ -467,7 +467,7 @@ const renderItem = <Msg>(
         className(
           styles.item,
           interactive &&
-            // eslint-disable-next-line no-restricted-syntax -- marker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
+            // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
             (treeItemScope as unknown as StaticStyles),
         ),
       ),

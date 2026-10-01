@@ -45,6 +45,7 @@ import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
 import { buttonVisualStyles } from './button'
+import { joinStyles } from './button-group-join.stylex'
 import type { ButtonSize, ButtonVariant, ComponentLayoutStyle } from './contracts'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
@@ -529,21 +530,20 @@ export const dropdownMenu = <Item extends string, Msg>(
           h.DataAttribute('slot', 'dropdown-menu-trigger'),
           h.Style({ anchorName: `--${props.model.id}-menu` }),
           ...(props.triggerTabindex === undefined ? [] : [h.Tabindex(props.triggerTabindex)]),
-          ...(props.triggerLayoutStyle === undefined
-            ? []
-            : [h.Class(className(props.triggerLayoutStyle))]),
-          ...(props.triggerButtonVariant === undefined && props.triggerButtonSize === undefined
-            ? []
-            : [
-                h.Class(
-                  className(
-                    ...buttonVisualStyles({
-                      variant: props.triggerButtonVariant ?? 'default',
-                      size: props.triggerButtonSize ?? 'default',
-                    }),
-                  ),
-                ),
-              ]),
+          h.Class(
+            className(
+              joinStyles.join,
+              ...(props.triggerButtonVariant === undefined && props.triggerButtonSize === undefined
+                ? []
+                : buttonVisualStyles({
+                    variant: props.triggerButtonVariant ?? 'default',
+                    size: props.triggerButtonSize ?? 'default',
+                  })),
+              ...(props.triggerLayoutStyle === undefined
+                ? []
+                : [props.triggerLayoutStyle]),
+            ),
+          ),
           h.OnKeyDownPreventDefault((key, modifiers) => {
             const message = props.model.isOpen
               ? menuKey(

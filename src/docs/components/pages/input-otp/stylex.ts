@@ -24,7 +24,6 @@ const styles = stylex.create({
   medium: { fontWeight: 500 },
   fieldFit: { width: 'fit-content' },
   fieldRtl: { marginInline: 'auto', maxWidth: '20rem' },
-  labelFit: { width: 'fit-content' },
 });
 
 interface InputOtpPreviewShape {
@@ -56,7 +55,7 @@ export const inputOtpStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     }, h);
 
   const lbl = (forId: string, text: string): Html =>
-    Field.fieldLabel({ for: forId, children: [text], layoutStyle: styles.labelFit }, h);
+    Field.fieldLabel({ for: forId, children: [text] }, h);
 
   const sep2 = (index: number): Html =>
     index === 2 ? InputOtp.inputOtpSeparator(h) : h.span([], []);

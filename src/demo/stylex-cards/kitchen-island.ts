@@ -40,7 +40,7 @@ const styles = stylex.create({
     width: '1rem',
   },
   iconGlyph: { display: 'inline-flex', flexShrink: 0, height: '1rem', width: '1rem' },
-  label: { flexShrink: 0, fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
+  label: { flexShrink: 0, fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem', },
   scenes: { gap: '0.5rem', display: 'flex', flexDirection: 'column', },
   setting: {
     borderColor: tokens.border,

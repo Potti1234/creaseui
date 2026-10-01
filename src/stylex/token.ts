@@ -131,49 +131,49 @@ const colorRed = stylex.create({
    emulated with a solid gradient over the chart custom property. */
 const colorOrange = stylex.create({
   root: {
-    backgroundColor: 'color-mix(in oklab, var(--chart-1) 10%, transparent)',
+    backgroundColor: complexTokens.chart1Soft10,
     color: complexTokens.chart1,
   },
 });
 const colorYellow = stylex.create({
   root: {
-    backgroundColor: 'color-mix(in oklab, var(--chart-4) 15%, transparent)',
+    backgroundColor: complexTokens.chart4Soft15,
     color: complexTokens.chart5,
   },
 });
 const colorGreen = stylex.create({
   root: {
-    backgroundColor: 'color-mix(in oklab, var(--chart-2) 10%, transparent)',
+    backgroundColor: complexTokens.chart2Soft10,
     color: tokens.alertSuccess,
   },
 });
 const colorTeal = stylex.create({
   root: {
-    backgroundColor: 'color-mix(in oklab, var(--chart-2) 15%, transparent)',
+    backgroundColor: complexTokens.chart2Soft15,
     color: complexTokens.chart2,
   },
 });
 const colorCyan = stylex.create({
   root: {
-    backgroundColor: 'color-mix(in oklab, var(--chart-2) 25%, transparent)',
+    backgroundColor: complexTokens.chart2Soft25,
     color: complexTokens.chart2,
   },
 });
 const colorBlue = stylex.create({
   root: {
-    backgroundColor: 'color-mix(in oklab, var(--chart-3) 10%, transparent)',
+    backgroundColor: complexTokens.chart3Soft10,
     color: complexTokens.chart3,
   },
 });
 const colorPurple = stylex.create({
   root: {
-    backgroundColor: 'color-mix(in oklab, var(--chart-3) 15%, transparent)',
+    backgroundColor: complexTokens.chart3Soft15,
     color: complexTokens.chart3,
   },
 });
 const colorPink = stylex.create({
   root: {
-    backgroundColor: 'color-mix(in oklab, var(--destructive) 15%, transparent)',
+    backgroundColor: complexTokens.destructiveSoft15,
     color: tokens.destructive,
   },
 });

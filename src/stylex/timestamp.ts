@@ -286,11 +286,11 @@ const styles = stylex.create({
      tone — muted-foreground carries the hint in Crease UI. Applied to the
      time element itself; crease's HoverCard owns the trigger button. */
   triggerUnderline: {
+    padding: 0,
     backgroundColor: 'transparent',
     cursor: interactionTokens.cursorDefault,
     display: 'inline',
     fontFamily: 'inherit',
-    padding: 0,
     textAlign: 'left',
     textDecorationColor: tokens.mutedForeground,
     textDecorationLine: 'underline',

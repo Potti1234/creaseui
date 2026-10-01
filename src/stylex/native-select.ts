@@ -14,7 +14,10 @@ const styles = stylex.create({
     borderRadius: foundationTokens.radiusMd,
     borderStyle: "solid",
     borderWidth: 1,
-    paddingBlock: "0.375rem",
+    paddingBlock: {
+      default: "0.375rem",
+      ':is([data-size="sm"])': "0.25rem",
+    },
     appearance: "none",
     backgroundColor: foundationTokens.transparent,
     boxShadow: {
@@ -49,7 +52,7 @@ const styles = stylex.create({
     top: "50%",
     width: "1rem",
   },
-  option: { backgroundColor: 'rgb(255, 255, 255)', color: 'rgb(0, 0, 0)' },
+  option: { backgroundColor: foundationTokens.nativeOptionSurface, color: foundationTokens.nativeOptionInk },
   field: { gap: "0.5rem", display: "grid" },
   label: {
     gap: "0.5rem",

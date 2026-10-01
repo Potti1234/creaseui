@@ -3,6 +3,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import type { ComponentLayoutStyle } from './contracts';
 import { className } from './style';
+import { foundationTokens } from './foundations-tokens.stylex';
 import { tokens } from './tokens.stylex';
 
 /* Ported from Meta Astryx Code (packages/core/src/Code/Code.tsx) — examples
@@ -16,7 +17,7 @@ export type CodeSize = 'inherit';
 
 const styles = stylex.create({
   base: {
-    borderRadius: '4px',
+    borderRadius: foundationTokens.radiusBase,
     paddingBlock: 0,
     paddingInline: '0.25rem',
     backgroundColor: tokens.muted,

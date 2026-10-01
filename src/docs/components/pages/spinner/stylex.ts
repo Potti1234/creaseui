@@ -32,6 +32,7 @@ const styles = stylex.create({
   amount: { fontSize: '0.875rem', lineHeight: '1.25rem', fontVariantNumeric: 'tabular-nums' },
   itemEnd: { flexBasis: 'auto', flexGrow: 0, flexShrink: 0, justifyContent: 'flex-end' },
   spinnerIcon: { flexShrink: 0 },
+  iconMd: { height: '1rem', width: '1rem' },
   srOnly: {
     margin: '-1px',
     overflow: 'hidden',
@@ -264,7 +265,7 @@ const fixtureView = <Msg>(
                       {
                         variant: 'default',
                         children: [
-                          Icon.arrowUp({}, h),
+                          Icon.arrowUp({ class: className(styles.iconMd) }, h),
                           h.span([h.Class(className(styles.srOnly))], ['Send']),
                         ],
                       },

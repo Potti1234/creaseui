@@ -21,6 +21,7 @@ import type { ComponentLayoutStyle } from './contracts';
 import { foundationTokens } from './foundations-tokens.stylex';
 import { interactionTokens } from './interaction-tokens.stylex.const';
 import { className } from './style';
+import { complexTokens } from './complex-tokens.stylex';
 import { tokens } from './tokens.stylex';
 
 /* Ported from Meta Astryx CodeBlock (packages/core/src/CodeBlock/CodeBlock.tsx)
@@ -44,17 +45,17 @@ export type CodeBlockContainer = 'card' | 'section';
 /* astryx syntax token types → Crease UI chart/semantic colors, mirroring
    tokenColorClass in src/ui/code-block.ts (text-chart-N utilities). */
 const tokenColorStyles = stylex.create({
-  keyword: { color: 'var(--chart-3)' },
-  string: { color: 'var(--chart-2)' },
+  keyword: { color: complexTokens.chart3 },
+  string: { color: complexTokens.chart2 },
   comment: { color: tokens.mutedForeground },
-  number: { color: 'var(--chart-4)' },
-  constant: { color: 'var(--chart-4)' },
-  function: { color: 'var(--chart-3)' },
-  type: { color: 'var(--chart-5)' },
+  number: { color: complexTokens.chart4 },
+  constant: { color: complexTokens.chart4 },
+  function: { color: complexTokens.chart3 },
+  type: { color: complexTokens.chart5 },
   variable: { color: tokens.foreground },
-  operator: { color: 'var(--chart-2)' },
-  property: { color: 'var(--chart-2)' },
-  attribute: { color: 'var(--chart-2)' },
+  operator: { color: complexTokens.chart2 },
+  property: { color: complexTokens.chart2 },
+  attribute: { color: complexTokens.chart2 },
   tag: { color: tokens.destructive },
   punctuation: { color: tokens.mutedForeground },
 });
@@ -269,6 +270,7 @@ const styles = stylex.create({
     position: 'absolute',
     top: '0.5rem',
   },
+  copyButtonInk: { color: tokens.mutedForeground },
 });
 
 const buildSpanLine = <Msg>(
@@ -366,6 +368,7 @@ export const codeBlock = <Msg>(
           onClick: props.toParentMessage(
             Message.ClickedCopyCode({ code: props.code }),
           ),
+          layoutStyle: styles.copyButtonInk as ComponentLayoutStyle,
           children: [
             isCopied
               ? Icon.icon<Msg>('check', {}, h)

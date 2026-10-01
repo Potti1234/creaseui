@@ -17,7 +17,7 @@ export type CarouselProps<Msg> = Readonly<{
 }>
 
 const styles = stylex.create({
-  button: { borderColor: tokens.border, borderRadius: '50%', borderStyle: 'solid', borderWidth: 1, alignItems: 'center', backgroundColor: { default: tokens.background, ':hover': tokens.accent }, boxShadow: tokens.shadowSm, display: 'flex', justifyContent: 'center', position: 'absolute', height: '2rem', width: '2rem', },
+  button: { borderColor: tokens.border, borderRadius: '50%', borderStyle: 'solid', borderWidth: 1, alignItems: 'center', backgroundColor: { default: tokens.background, ':hover': tokens.accent }, boxShadow: tokens.shadowSm, display: 'flex', justifyContent: 'center', opacity: { default: null, ':disabled': 0.5 }, pointerEvents: { default: null, ':disabled': 'none' }, position: 'absolute', height: '2rem', width: '2rem', },
   buttonDisabled: { opacity: 0.5, pointerEvents: 'none' },
   content: { overflow: 'hidden', outlineStyle: 'none', },
   contentVertical: { height: '100%' },
@@ -26,7 +26,7 @@ const styles = stylex.create({
   horizontalNext: { transform: 'translateY(-50%)', right: '-3rem', top: '50%', },
   item: { flexGrow: 0, flexShrink: 0, scrollSnapAlign: 'start', minWidth: 0, },
   root: { boxShadow: { default: tokens.shadowNone, ':focus-visible': tokens.focusRingShadow }, outlineStyle: 'none', position: 'relative' },
-  srOnly: { margin: -1, padding: 0, overflow: 'hidden', position: 'absolute', clipPath: 'inset(50%)', whiteSpace: 'nowrap', height: 1, width: 1, },
+  srOnly: { margin: -1, padding: 0, overflow: 'hidden', clipPath: 'inset(50%)', position: 'absolute', whiteSpace: 'nowrap', height: 1, width: 1, },
   track: { display: 'flex', touchAction: 'pan-y', marginLeft: '-1rem', },
   trackVertical: { flexDirection: 'column', touchAction: 'pan-x', height: '100%', marginLeft: 0, marginTop: '-1rem', },
   verticalItem: { minHeight: 0, paddingTop: '1rem' },

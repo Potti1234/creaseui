@@ -402,7 +402,7 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             InputGroup.inputGroupAddon({
               align: 'inline-end',
               children: [
-                dropdownMenu(0, 'More', Icon.icon('ellipsis', { ariaLabel: 'More', class: className(styles.iconMd) }, h), styles.iconButton as ComponentLayoutStyle, FILE_MENU_ITEMS),
+                dropdownMenu(0, 'More', Icon.icon('ellipsis', { ariaLabel: 'More' }, h), styles.iconButton as ComponentLayoutStyle, FILE_MENU_ITEMS),
               ],
             }, h),
           ],

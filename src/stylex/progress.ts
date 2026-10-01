@@ -13,7 +13,7 @@ const styles = stylex.create({
   root: {
     borderRadius: foundationTokens.radiusFull,
     overflow: "hidden",
-    backgroundColor: 'color-mix(in oklab, var(--primary) 20%, transparent)',
+    backgroundColor: foundationTokens.primarySoft20,
     position: "relative",
     height: "0.5rem",
     width: "100%",

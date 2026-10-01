@@ -9,6 +9,7 @@ import * as Icon from '@/lib/icon';
 import type { ComponentLayoutStyle } from './contracts';
 import { className } from './style';
 import { interactionTokens } from './interaction-tokens.stylex.const';
+import { foundationTokens } from './foundations-tokens.stylex';
 import { tokens } from './tokens.stylex';
 import { astryxTextStylex } from './astryx-text';
 
@@ -2021,7 +2022,7 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: 'transparent',
     boxShadow:
-      '0 0 0 0 rgb(0 0 0 / 0), 0 0 0 0 rgb(0 0 0 / 0), 0 0 0 0 rgb(0 0 0 / 0), 0 0 0 0 rgb(0 0 0 / 0), 0 1px 2px 0 rgb(0 0 0 / 0.05)',
+      foundationTokens.shadowXs,
     display: 'flex',
     flexWrap: 'wrap',
     minHeight: '2.25rem',
@@ -2202,8 +2203,9 @@ const styles = stylex.create({
   },
   groupLabel: {
     color: tokens.mutedForeground,
-    fontSize: '0.75rem', lineHeight: '1rem',
+    fontSize: '0.75rem',
     fontWeight: 500,
+ lineHeight: '1rem',
     paddingBottom: '0.25rem',
     paddingLeft: '0.5rem',
     paddingRight: '0.5rem',
@@ -2243,8 +2245,9 @@ const styles = stylex.create({
   },
   fieldLabel: {
     color: tokens.mutedForeground,
-    fontSize: '0.75rem', lineHeight: '1rem',
+    fontSize: '0.75rem',
     fontWeight: 500,
+ lineHeight: '1rem',
     marginBottom: '0.25rem',
   },
   inputControl: {
@@ -2336,8 +2339,9 @@ const styles = stylex.create({
     },
     cursor: interactionTokens.cursorAction,
     display: 'inline-flex',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
     fontWeight: 500,
+ lineHeight: '1.25rem',
     height: '2rem',
     paddingLeft: '0.75rem',
     paddingRight: '0.75rem',
@@ -2353,8 +2357,9 @@ const styles = stylex.create({
     color: tokens.primaryForeground,
     cursor: interactionTokens.cursorAction,
     display: 'inline-flex',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
     fontWeight: 500,
+ lineHeight: '1.25rem',
     height: '2rem',
     paddingLeft: '0.75rem',
     paddingRight: '0.75rem',
@@ -2385,8 +2390,9 @@ const styles = stylex.create({
       ':hover': tokens.foreground,
     },
     cursor: interactionTokens.cursorAction,
-    fontSize: '0.75rem', lineHeight: '1rem',
+    fontSize: '0.75rem',
     fontWeight: 500,
+ lineHeight: '1rem',
   },
   removeSubButton: {
     padding: 0,

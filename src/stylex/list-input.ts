@@ -82,8 +82,9 @@ const styles = stylex.create({
     width: '1px',
   },
   labelIndicator: {
-    fontSize: '0.75rem', lineHeight: '1rem',
+    fontSize: '0.75rem',
     fontWeight: 400,
+ lineHeight: '1rem',
   },
   description: {
     color: tokens.mutedForeground,
@@ -127,13 +128,13 @@ const styles = stylex.create({
     minWidth: 0,
   },
   fields: {
-    columnGap: '0.25rem',
-    rowGap: '0.5rem',
     alignItems: 'end',
+    columnGap: '0.25rem',
     display: {
       [containerQuery]: 'contents',
       default: 'grid',
     },
+    rowGap: '0.5rem',
     minWidth: 0,
   },
   fieldCell: {
@@ -265,8 +266,9 @@ const styles = stylex.create({
   },
   emptyTitle: {
     color: tokens.foreground,
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
     fontWeight: 500,
+ lineHeight: '1.25rem',
   },
   emptyDescription: {
     color: tokens.mutedForeground,

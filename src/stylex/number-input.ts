@@ -74,8 +74,9 @@ const styles = stylex.create({
     width: '1px',
   },
   labelIndicator: {
-    fontSize: '0.75rem', lineHeight: '1rem',
+    fontSize: '0.75rem',
     fontWeight: 400,
+ lineHeight: '1rem',
   },
   description: {
     color: tokens.mutedForeground,
@@ -158,7 +159,9 @@ const styles = stylex.create({
     backgroundColor: 'transparent',
     color: tokens.foreground,
     display: 'block',
-    flex: '1 1 0%',
+    flexBasis: '0%',
+    flexGrow: '1',
+    flexShrink: '1',
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
     outlineStyle: 'none',
@@ -237,7 +240,9 @@ const styles = stylex.create({
       ':disabled': interactionTokens.cursorDefault,
     },
     display: 'flex',
-    flex: '1 1 0%',
+    flexBasis: '0%',
+    flexGrow: '1',
+    flexShrink: '1',
     justifyContent: 'center',
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'background-color, color',
@@ -293,7 +298,9 @@ const styles = stylex.create({
     color: tokens.alertSuccess,
   },
   statusText: {
-    flex: '1 1 0%',
+    flexBasis: '0%',
+    flexGrow: '1',
+    flexShrink: '1',
   },
   statusIconRow: {
     alignItems: 'center',

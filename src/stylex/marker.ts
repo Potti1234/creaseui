@@ -33,16 +33,6 @@ const styles = stylex.create({
   },
   default: {},
   separator: {
-    '::before': {
-      backgroundColor: tokens.border,
-      content: '""',
-      flexBasis: '0%',
-      flexGrow: 1,
-      flexShrink: 1,
-      height: '1px',
-      marginRight: '0.25rem',
-      minWidth: 0,
-    },
     '::after': {
       backgroundColor: tokens.border,
       content: '""',
@@ -51,6 +41,16 @@ const styles = stylex.create({
       flexShrink: 1,
       height: '1px',
       marginLeft: '0.25rem',
+      minWidth: 0,
+    },
+    '::before': {
+      backgroundColor: tokens.border,
+      content: '""',
+      flexBasis: '0%',
+      flexGrow: 1,
+      flexShrink: 1,
+      height: '1px',
+      marginRight: '0.25rem',
       minWidth: 0,
     },
   },
@@ -84,7 +84,6 @@ const styles = stylex.create({
     textAlign: { default: null, [stylex.when.ancestor(':is([data-variant=separator])')]: 'center' },
   },
   shimmer: {
-    '--_ps-spread': 'calc(3ch + 40px)',
     WebkitTextFillColor: 'transparent',
     animationDuration: interactionTokens.motionLoopSlow,
     animationIterationCount: 'infinite',
@@ -92,9 +91,9 @@ const styles = stylex.create({
     animationTimingFunction: interactionTokens.easingLinear,
     backgroundClip: 'text',
     backgroundImage:
-      'linear-gradient(110deg, currentColor calc(50% - var(--_ps-spread)), color-mix(in oklch, color-mix(in oklch, currentColor 20%, transparent), currentColor 50%) calc(50% - var(--_ps-spread) * 0.5), color-mix(in oklch, currentColor 20%, transparent) 50%, color-mix(in oklch, color-mix(in oklch, currentColor 20%, transparent), currentColor 50%) calc(50% + var(--_ps-spread) * 0.5), currentColor calc(50% + var(--_ps-spread)))',
+      'linear-gradient(110deg, currentColor calc(50% - (3ch + 40px)), color-mix(in oklch, color-mix(in oklch, currentColor 20%, transparent), currentColor 50%) calc(50% - (3ch + 40px) * 0.5), color-mix(in oklch, currentColor 20%, transparent) 50%, color-mix(in oklch, color-mix(in oklch, currentColor 20%, transparent), currentColor 50%) calc(50% + (3ch + 40px) * 0.5), currentColor calc(50% + (3ch + 40px)))',
     backgroundRepeat: 'no-repeat',
-    backgroundSize: 'calc(200% + var(--_ps-spread) * 2) 100%',
+    backgroundSize: 'calc(200% + (3ch + 40px) * 2) 100%',
   },
 });
 

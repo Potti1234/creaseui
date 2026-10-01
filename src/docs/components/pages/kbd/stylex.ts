@@ -28,6 +28,7 @@ const styles = stylex.create({
     alignItems: 'center',
     display: 'inline-flex',
   },
+  iconMd: { height: '1rem', width: '1rem' },
   inputStack: {
     gap: '1.5rem',
     display: 'flex',
@@ -152,7 +153,7 @@ const kbdSxView = <Msg>(
               ariaLabel: 'Search',
             }, h),
             InputGroup.inputGroupAddon({
-              children: [Icon.icon('search', {}, h)],
+              children: [Icon.icon('search', { class: className(styles.iconMd) }, h)],
             }, h),
             InputGroup.inputGroupAddon({
               align: 'inline-end',

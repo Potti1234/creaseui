@@ -6,6 +6,7 @@ import { defineMessageUnion } from 'foldkit/message'
 import * as Icon from '@/lib/icon'
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
+import { complexTokens } from './complex-tokens.stylex';
 import { tokens } from './tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
 
@@ -35,7 +36,7 @@ const styles = stylex.create({
   handle: { alignItems: 'center', backgroundColor: tokens.border, boxShadow: { default: tokens.shadowNone, ':focus-visible': tokens.focusRingShadow }, display: 'flex', justifyContent: 'center', outlineStyle: 'none', position: 'relative', touchAction: 'none' },
   handleHorizontal: { cursor: interactionTokens.cursorResizeHorizontal, height: '100%', width: 1 },
   handleVertical: { cursor: interactionTokens.cursorResizeVertical, height: 1, width: '100%' },
-  grip: { borderColor: tokens.border, borderRadius: '0.125rem', borderStyle: 'solid', borderWidth: 1, alignItems: 'center', backgroundColor: tokens.border, display: 'flex', justifyContent: 'center', zIndex: 10, height: '1rem', width: '0.75rem', },
+  grip: { borderColor: tokens.border, borderRadius: complexTokens.smallRadius, borderStyle: 'solid', borderWidth: 1, alignItems: 'center', backgroundColor: tokens.border, display: 'flex', justifyContent: 'center', zIndex: 10, height: '1rem', width: '0.75rem', },
   icon: { height: '0.75rem', width: '0.75rem' },
   iconSm: { height: '0.625rem', width: '0.625rem' },
   iconVertical: { transform: 'rotate(90deg)' },

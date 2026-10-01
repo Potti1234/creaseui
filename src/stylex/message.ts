@@ -24,11 +24,11 @@ const styles = stylex.create({
     display: 'flex',
     flexShrink: 0,
     justifyContent: 'center',
-    minWidth: '2rem',
     transform: {
       default: null,
       [stylex.when.ancestor(':has([data-slot="message-footer"])', messageScope)]: 'translateY(-2rem)',
     },
+    minWidth: '2rem',
     width: 'fit-content',
   },
   content: {
@@ -50,14 +50,15 @@ const styles = stylex.create({
       default: null,
       [stylex.when.ancestor('[data-align="end"]', messageScope)]: 'flex-end',
     },
+    color: tokens.mutedForeground,
+    display: 'flex',
+    fontSize: '0.75rem',
+    fontWeight: 500,
     justifyContent: {
       default: null,
       [stylex.when.ancestor('[data-align="end"]', messageScope)]: 'flex-end',
     },
-    color: tokens.mutedForeground,
-    display: 'flex',
-    fontSize: '0.75rem', lineHeight: '1rem',
-    fontWeight: 500,
+ lineHeight: '1rem',
     maxWidth: '100%',
     minWidth: 0,
   },
@@ -74,8 +75,9 @@ const styles = stylex.create({
     },
     color: tokens.mutedForeground,
     display: 'flex',
-    fontSize: '0.75rem', lineHeight: '1rem',
+    fontSize: '0.75rem',
     fontWeight: 500,
+ lineHeight: '1rem',
     maxWidth: '100%',
     minWidth: 0,
   },
@@ -88,8 +90,9 @@ const styles = stylex.create({
     },
     color: tokens.mutedForeground,
     display: 'flex',
-    fontSize: '0.75rem', lineHeight: '1rem',
+    fontSize: '0.75rem',
     fontWeight: 500,
+ lineHeight: '1rem',
     maxWidth: '100%',
     minWidth: 0,
   },
@@ -113,7 +116,7 @@ export const message = <Msg>(props: ChildrenProps & Readonly<{ align?: 'start' |
   const align = props.align ?? 'start'
   return h.div(
     [h.DataAttribute('slot', 'message'), h.DataAttribute('align', align), ...(props.announcement === 'status' ? [h.Role('status'), h.AriaLive('polite')] : []), ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]), h.Class(className(styles.message, align === 'end' && styles.end,
-      // eslint-disable-next-line no-restricted-syntax -- marker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
+      // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
       messageScope as unknown as StaticStyles,
       props.layoutStyle))],
     [...props.children],

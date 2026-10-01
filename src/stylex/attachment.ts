@@ -3,6 +3,7 @@ import type { StaticStyles } from "@stylexjs/stylex";
 import type { Html, HtmlBuilder } from "foldkit/html";
 import type { ComponentLayoutStyle } from "./contracts";
 import { attachmentScope } from "./attachment.markers.stylex";
+import { messageScope } from "./message.markers.stylex";
 import { buttonVisualStyles } from "./button";
 import { foundationTokens } from "./foundations-tokens.stylex";
 import { className } from "./style";
@@ -23,6 +24,20 @@ const styles = stylex.create({
     borderStyle: "solid",
     borderWidth: 1,
     gap: "0.5rem",
+    paddingBlock: {
+      default: null,
+      ':has([data-slot=attachment-content]):not(:has([data-slot=attachment-media]))': '0.5rem',
+      ':has([data-slot=attachment-media])': '0.5rem',
+    },
+    paddingInline: {
+      default: null,
+      ':has([data-slot=attachment-content]):not(:has([data-slot=attachment-media]))': '0.625rem',
+      ':has([data-slot=attachment-media])': '0.5rem',
+    },
+    alignSelf: {
+      default: null,
+      [stylex.when.ancestor('[data-align="end"]', messageScope)]: 'flex-end',
+    },
     backgroundColor: {
       default: tokens.card,
       ':has(> a):hover': `color-mix(in oklab, ${tokens.muted} 50%, transparent)`,
@@ -30,7 +45,7 @@ const styles = stylex.create({
     },
     boxShadow: {
       default: tokens.shadowNone,
-      ':focus-within': '0 0 0 1px color-mix(in oklab, var(--ring) 50%, transparent)',
+      ':focus-within': foundationTokens.ringShadow1,
     },
     color: tokens.cardForeground,
     display: "flex",
@@ -41,49 +56,40 @@ const styles = stylex.create({
     position: "relative",
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: "color, background-color, border-color, text-decoration-color, fill, stroke",
-    paddingInline: {
-      default: null,
-      ':has([data-slot=attachment-media])': '0.5rem',
-      ':has([data-slot=attachment-content]):not(:has([data-slot=attachment-media]))': '0.625rem',
-    },
-    paddingBlock: {
-      default: null,
-      ':has([data-slot=attachment-media])': '0.5rem',
-      ':has([data-slot=attachment-content]):not(:has([data-slot=attachment-media]))': '0.5rem',
-    },
     maxWidth: "100%",
     minWidth: 0,
     width: "fit-content",
   },
   sm: {
     gap: "0.625rem",
-    fontSize: "0.75rem",
-    lineHeight: '1rem',
-    paddingInline: {
-      default: null,
-      ':has([data-slot=attachment-media])': '0.375rem',
-      ':has([data-slot=attachment-content]):not(:has([data-slot=attachment-media]))': '0.5rem',
-    },
     paddingBlock: {
       default: null,
-      ':has([data-slot=attachment-media])': '0.375rem',
       ':has([data-slot=attachment-content]):not(:has([data-slot=attachment-media]))': '0.375rem',
+      ':has([data-slot=attachment-media])': '0.375rem',
     },
+    paddingInline: {
+      default: null,
+      ':has([data-slot=attachment-content]):not(:has([data-slot=attachment-media]))': '0.5rem',
+      ':has([data-slot=attachment-media])': '0.375rem',
+    },
+    fontSize: "0.75rem",
+    lineHeight: '1rem',
   },
   xs: {
     borderRadius: foundationTokens.radiusLg,
     gap: "0.375rem",
-    fontSize: "0.75rem", lineHeight: '1rem',
-    paddingInline: {
-      default: null,
-      ':has([data-slot=attachment-media])': '0.25rem',
-      ':has([data-slot=attachment-content]):not(:has([data-slot=attachment-media]))': '0.375rem',
-    },
     paddingBlock: {
       default: null,
-      ':has([data-slot=attachment-media])': '0.25rem',
       ':has([data-slot=attachment-content]):not(:has([data-slot=attachment-media]))': '0.25rem',
+      ':has([data-slot=attachment-media])': '0.25rem',
     },
+    paddingInline: {
+      default: null,
+      ':has([data-slot=attachment-content]):not(:has([data-slot=attachment-media]))': '0.375rem',
+      ':has([data-slot=attachment-media])': '0.25rem',
+    },
+    fontSize: "0.75rem",
+ lineHeight: '1rem',
   },
   horizontal: { alignItems: "center", minWidth: "10rem" },
   vertical: {
@@ -143,50 +149,49 @@ const styles = stylex.create({
   },
   content: {
     flex: "1",
-    lineHeight: 1.25,
-    maxWidth: "100%",
-    minWidth: 0,
     paddingInline: {
       default: null,
       [stylex.when.ancestor('[data-orientation=vertical]', attachmentScope)]:
         '0.25rem',
     },
+    lineHeight: 1.25,
+    maxWidth: "100%",
+    minWidth: 0,
   },
   actions: {
-    alignItems: "center",
-    display: "flex",
-    flexShrink: 0,
     gap: {
       default: null,
       [stylex.when.ancestor('[data-orientation=vertical]', attachmentScope)]:
         '0.25rem',
     },
+    alignItems: "center",
+    display: "flex",
+    flexShrink: 0,
     position: {
       default: 'relative',
       [stylex.when.ancestor('[data-orientation=vertical]', attachmentScope)]:
         'absolute',
+    },
+    zIndex: 20,
+    right: {
+      default: null,
+      [stylex.when.ancestor('[data-orientation=vertical]', attachmentScope)]:
+        '0.75rem',
     },
     top: {
       default: null,
       [stylex.when.ancestor('[data-orientation=vertical]', attachmentScope)]:
         '0.75rem',
     },
-    right: {
-      default: null,
-      [stylex.when.ancestor('[data-orientation=vertical]', attachmentScope)]:
-        '0.75rem',
-    },
-    zIndex: 20,
   },
   group: {
     gap: "0.75rem",
     paddingBlock: "0.25rem",
+    scrollSnapType: 'x mandatory',
     display: "flex",
     minWidth: 0,
     overflowX: "auto",
     overscrollBehaviorX: 'contain',
-    scrollPaddingInline: '0.25rem',
-    scrollSnapType: 'x mandatory',
   },
   title: {
     overflow: "hidden",
@@ -214,21 +219,21 @@ const styles = stylex.create({
   },
   trigger: {
     inset: 0,
-    outlineStyle: "none",
-    position: "absolute",
-    zIndex: 10,
     boxShadow: {
       default: null,
       ':focus-visible': tokens.focusRingShadow,
     },
+    outlineStyle: "none",
+    position: "absolute",
+    zIndex: 10,
   },
   action: {
-    backgroundClip: 'padding-box',
     borderColor: tokens.transparent,
-    borderRadius: 'min(var(--radius-md), 8px)',
+    borderRadius: foundationTokens.radiusMdCap8,
     borderStyle: 'solid',
     borderWidth: 1,
     gap: 'normal',
+    backgroundClip: 'padding-box',
   },
 });
 export const attachmentVariants = (

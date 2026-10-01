@@ -14,11 +14,13 @@ import * as Avatar from '@/stylex/avatar';
 import * as Button from '@/stylex/button';
 import * as DropdownMenu from '@/stylex/dropdown-menu';
 import * as Item from '@/stylex/item';
+import { tokens } from '../../../../stylex/tokens.stylex';
 import { className } from '@/stylex/style';
 import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import type * as DropdownMenuModel from '@/stylex/dropdown-menu';
 
 const styles = stylex.create({
+  triggerBorderTransparent: { borderColor: tokens.transparent },
   stackMd: {
     gap: '1.5rem',
     display: 'flex',
@@ -551,6 +553,7 @@ export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             ['Select', Icon.icon('chevron-down', { class: sx(styles.iconBtn4) }, h)],
           ),
           triggerButtonVariant: 'outline',
+          triggerLayoutStyle: styles.triggerBorderTransparent as ComponentLayoutStyle,
           ariaLabel: 'Select a person',
           align: 'end',
           items: itemPeople.map(person => person.username),

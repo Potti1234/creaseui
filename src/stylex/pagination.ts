@@ -23,13 +23,13 @@ const styles = stylex.create({
   ellipsisIcon: { height: '1rem', width: '1rem' },
   iconSize: { flexShrink: 0, height: '1rem', width: '1rem' },
   labelSpan: { display: { default: 'none', '@media (min-width: 640px)': 'block' } },
-  link: { borderRadius: tokens.controlRadius, alignItems: 'center', backgroundClip: 'padding-box', backgroundColor: { default: tokens.transparent, ':hover': tokens.muted }, borderColor: tokens.transparent, borderStyle: 'solid', borderWidth: 1, color: { default: tokens.foreground, ':hover': tokens.foreground }, display: 'inline-flex', flexShrink: 0, fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500, justifyContent: 'center', outlineStyle: 'none', textDecorationLine: 'none', userSelect: 'none', whiteSpace: 'nowrap', },
+  link: { borderColor: tokens.transparent, borderRadius: tokens.controlRadius, borderStyle: 'solid', borderWidth: 1, alignItems: 'center', backgroundClip: 'padding-box', backgroundColor: { default: tokens.transparent, ':hover': tokens.muted }, color: { default: tokens.foreground, ':hover': tokens.foreground }, display: 'inline-flex', flexShrink: 0, fontSize: '0.875rem', fontWeight: 500, justifyContent: 'center', lineHeight: '1.25rem', outlineStyle: 'none', textDecorationLine: 'none', userSelect: 'none', whiteSpace: 'nowrap', },
   nav: { marginInline: 'auto', display: 'flex', justifyContent: 'center', width: '100%', },
   sizeDefault: { gap: '0.375rem', paddingInline: '0.625rem', height: '2.25rem', },
   sizeIcon: { height: '2.25rem', width: '2.25rem' },
   sizeLg: { gap: '0.375rem', paddingInline: '0.625rem', height: '2.5rem', },
   sizeSm: { gap: '0.25rem', paddingInline: '0.625rem', height: '2rem', },
-  srOnly: { margin: -1, padding: 0, borderWidth: 0, clipPath: 'inset(50%)', overflow: 'hidden', position: 'absolute', whiteSpace: 'nowrap', height: 1, width: 1, },
+  srOnly: { margin: -1, padding: 0, borderWidth: 0, overflow: 'hidden', clipPath: 'inset(50%)', position: 'absolute', whiteSpace: 'nowrap', height: 1, width: 1, },
 })
 
 const sizes = { default: styles.sizeDefault, sm: styles.sizeSm, lg: styles.sizeLg, icon: styles.sizeIcon } as const

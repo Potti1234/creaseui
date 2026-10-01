@@ -71,8 +71,9 @@ const styles = stylex.create({
     width: '1px',
   },
   labelIndicator: {
-    fontSize: '0.75rem', lineHeight: '1rem',
+    fontSize: '0.75rem',
     fontWeight: 400,
+ lineHeight: '1rem',
   },
   description: {
     color: tokens.mutedForeground,
@@ -188,7 +189,9 @@ const styles = stylex.create({
   namesCompact: {
     overflow: 'hidden',
     color: tokens.foreground,
-    flex: '1 1 0%',
+    flexBasis: '0%',
+    flexGrow: '1',
+    flexShrink: '1',
     fontSize: '0.875rem',
     fontWeight: 500,
     lineHeight: '1.25rem',
@@ -203,7 +206,9 @@ const styles = stylex.create({
   },
   placeholderCompact: {
     overflow: 'hidden',
-    flex: '1 1 0%',
+    flexBasis: '0%',
+    flexGrow: '1',
+    flexShrink: '1',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     minWidth: 0,
@@ -304,7 +309,9 @@ const styles = stylex.create({
     color: tokens.alertSuccess,
   },
   statusText: {
-    flex: '1 1 0%',
+    flexBasis: '0%',
+    flexGrow: '1',
+    flexShrink: '1',
   },
   statusIconRow: {
     alignItems: 'center',

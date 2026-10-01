@@ -68,8 +68,8 @@ const styles = stylex.create({
     width: '100%',
   },
   removeSlot: {
-    insetInlineEnd: '0.25rem',
     display: 'inline-flex',
+    insetInlineEnd: '0.25rem',
     lineHeight: 0,
     position: 'absolute',
     zIndex: 10,
@@ -90,10 +90,10 @@ const styles = stylex.create({
     },
     alignItems: 'center',
     backgroundColor: {
-      default: 'var(--thumbnail-overlay)',
-      ':hover': 'var(--thumbnail-overlay-hover)',
+      default: foundationTokens.overlay40,
+      ':hover': foundationTokens.overlay50,
     },
-    color: 'rgb(255 255 255)',
+    color: foundationTokens.white,
     cursor: interactionTokens.cursorAction,
     display: 'inline-flex',
     justifyContent: 'center',
@@ -106,7 +106,7 @@ const styles = stylex.create({
   uploadOverlay: {
     borderRadius: foundationTokens.radiusMd,
     alignItems: 'center',
-    backgroundColor: 'var(--thumbnail-overlay)',
+    backgroundColor: foundationTokens.overlay40,
     display: 'flex',
     justifyContent: 'center',
     position: 'absolute',
@@ -121,7 +121,7 @@ const styles = stylex.create({
     animationIterationCount: 'infinite',
     animationName: spinFrames,
     animationTimingFunction: interactionTokens.easingLinear,
-    color: 'rgb(255 255 255)',
+    color: foundationTokens.white,
     display: 'block',
     height: '1rem',
     width: '1rem',
@@ -129,13 +129,13 @@ const styles = stylex.create({
   iconXsm: { height: '0.75rem', width: '0.75rem' },
   interactiveButton: {
     padding: 0,
+    borderRadius: 'inherit',
     borderStyle: 'none',
     borderWidth: 0,
     appearance: 'none',
     backgroundColor: 'transparent',
     cursor: interactionTokens.cursorAction,
     display: 'block',
-    borderRadius: 'inherit',
     filter: {
       default: 'none',
       '@media (hover: hover)': {

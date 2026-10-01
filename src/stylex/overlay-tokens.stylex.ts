@@ -225,8 +225,9 @@ export const overlayStyles = stylex.create({
   },
   shortcut: {
     color: tokens.mutedForeground,
-    fontSize: '0.75rem', lineHeight: '1rem',
+    fontSize: '0.75rem',
     letterSpacing: '0.1em',
+ lineHeight: '1rem',
     marginLeft: 'auto',
   },
   title: {
@@ -266,8 +267,9 @@ export const overlayStyles = stylex.create({
     color: tokens.foreground,
     cursor: interactionTokens.cursorAction,
     display: 'inline-flex',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
     justifyContent: 'space-between',
+ lineHeight: '1.25rem',
     opacity: {
       default: 1,
       ':is([data-disabled], [aria-disabled="true"])': 0.5,

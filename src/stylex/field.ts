@@ -37,30 +37,30 @@ const styles = stylex.create({
     display: "flex",
     flexDirection: "column",
   },
-  legend: { fontSize: "1rem", lineHeight: '1.5rem', fontWeight: 500, marginBottom: "0.75rem" },
+  legend: { fontSize: "1rem", fontWeight: 500, lineHeight: '1.5rem', marginBottom: "0.75rem", },
   legendLabel: { fontSize: "0.875rem", lineHeight: '1.25rem' },
   group: {
-    containerName: "field-group",
-    containerType: "inline-size",
     gap: {
-      default: "1.75rem",
       '[data-slot="checkbox-group"]': "0.75rem",
+      default: "1.75rem",
       ':where([data-slot="field-group"] > *)': "1rem",
     },
+    containerName: "field-group",
+    containerType: "inline-size",
     display: "flex",
     flexDirection: "column",
     width: "100%",
   },
   field: {
+    padding: {
+      default: null,
+      ':where([data-slot="field-label"] > *)': "1rem",
+    },
     gap: "0.5rem",
     display: "flex",
     marginBlockEnd: {
       default: null,
       ':where([data-slot="form"] > *:not(:last-child))': "1.5rem",
-    },
-    padding: {
-      default: null,
-      ':where([data-slot="field-label"] > *)': "1rem",
     },
     width: "100%",
   },
@@ -93,9 +93,6 @@ const styles = stylex.create({
     lineHeight: 1.375,
   },
   label: {
-    gap: "0.5rem",
-    alignItems: "center",
-    display: "flex",
     flex: {
       default: null,
       ':where([data-slot="field"][data-orientation="horizontal"] > *)': "auto",
@@ -104,12 +101,16 @@ const styles = stylex.create({
         ':where([data-slot="field"][data-orientation="responsive"] > *)': "auto",
       },
     },
-    fontSize: "0.875rem", lineHeight: '1.25rem',
+    gap: "0.5rem",
+    alignItems: "center",
+    display: "flex",
+    fontSize: "0.875rem",
     fontWeight: 500,
+ lineHeight: '1.25rem',
     width: {
       default: null,
-      ':where([data-slot="field"][data-orientation="vertical"] > *)': "100%",
       ':where([data-slot="field"][data-orientation="responsive"] > *)': "100%",
+      ':where([data-slot="field"][data-orientation="vertical"] > *)': "100%",
       "@container field-group (min-width: 28rem)": {
         default: null,
         ':where([data-slot="field"][data-orientation="responsive"] > *)': "auto",
@@ -118,11 +119,6 @@ const styles = stylex.create({
   },
   controlLabel: { lineHeight: 1, userSelect: "none" },
   fieldLabel: {
-    backgroundColor: {
-      default: null,
-      ':has([data-checked])':
-        "color-mix(in oklab, var(--primary) 5%, transparent)",
-    },
     borderColor: {
       default: tokens.border,
       ':has([data-checked])': tokens.primary,
@@ -139,6 +135,11 @@ const styles = stylex.create({
       default: null,
       ':has(>[data-slot=field])': 1,
     },
+    backgroundColor: {
+      default: null,
+      ':has([data-checked])':
+        foundationTokens.primaryFaint,
+    },
     flexDirection: {
       default: null,
       ':has(>[data-slot=field])': "column",
@@ -147,9 +148,9 @@ const styles = stylex.create({
     userSelect: "none",
     width: {
       default: "fit-content",
-      ':has(>[data-slot=field])': "100%",
-      ':where([data-slot="field"][data-orientation="vertical"] > *)': "100%",
       ':where([data-slot="field"][data-orientation="responsive"] > *)': "100%",
+      ':where([data-slot="field"][data-orientation="vertical"] > *)': "100%",
+      ':has(>[data-slot=field])': "100%",
       "@container field-group (min-width: 28rem)": {
         default: null,
         ':where([data-slot="field"][data-orientation="responsive"] > *)': "auto",
@@ -164,9 +165,6 @@ const styles = stylex.create({
   },
   fontNormal: { fontWeight: 400 },
   title: {
-    gap: "0.5rem",
-    alignItems: "center",
-    display: "flex",
     flex: {
       default: null,
       ':where([data-slot="field"][data-orientation="horizontal"] > *)': "auto",
@@ -175,13 +173,16 @@ const styles = stylex.create({
         ':where([data-slot="field"][data-orientation="responsive"] > *)': "auto",
       },
     },
+    gap: "0.5rem",
+    alignItems: "center",
+    display: "flex",
     fontSize: "0.875rem",
     fontWeight: 500,
     lineHeight: 1.375,
     width: {
       default: "fit-content",
-      ':where([data-slot="field"][data-orientation="vertical"] > *)': "100%",
       ':where([data-slot="field"][data-orientation="responsive"] > *)': "100%",
+      ':where([data-slot="field"][data-orientation="vertical"] > *)': "100%",
       "@container field-group (min-width: 28rem)": {
         default: null,
         ':where([data-slot="field"][data-orientation="responsive"] > *)': "auto",
@@ -195,21 +196,21 @@ const styles = stylex.create({
     lineHeight: 1.5,
   },
   descriptionSpacing: {
-    marginTop: {
-      default: null,
-      ':last-child': "0px",
-      ':nth-last-child(2)': "-0.25rem",
-      ':is([data-slot="field-legend"][data-variant="legend"] + *)': "-0.375rem",
-    },
     textWrap: {
       default: null,
       ':where([data-slot="field"]:has([data-orientation="horizontal"]) *)': "balance",
     },
+    marginTop: {
+      default: null,
+      ':is([data-slot="field-legend"][data-variant="legend"] + *)': "-0.375rem",
+      ':last-child': "0px",
+      ':nth-last-child(2)': "-0.25rem",
+    },
   },
   separator: {
+    marginBlock: "-0.5rem",
     fontSize: "0.875rem",
     lineHeight: "1.25rem",
-    marginBlock: "-0.5rem",
     marginBlockEnd: {
       default: null,
       ':where([data-slot="field-group"][data-variant="outline"] *)': "-0.5rem",
@@ -235,7 +236,7 @@ const styles = stylex.create({
     position: "relative",
     width: "fit-content",
   },
-  error: { color: tokens.destructive, fontSize: "0.875rem", lineHeight: '1.25rem', fontWeight: 400 },
+  error: { color: tokens.destructive, fontSize: "0.875rem", fontWeight: 400, lineHeight: '1.25rem', },
   errorList: {
     gap: "0.25rem",
     display: "flex",
@@ -289,7 +290,7 @@ export const fieldGroup = <Msg>(
       h.Class(
         className(
           styles.group,
-          // eslint-disable-next-line no-restricted-syntax -- marker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
+          // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
           fieldGroupScope as unknown as StaticStyles,
           p.layoutStyle,
         ),
@@ -300,6 +301,7 @@ export const fieldGroup = <Msg>(
 const orientationMarker = (
   orientation: NonNullable<FieldVariants["orientation"]>,
 ): StaticStyles =>
+  // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
   (orientation === "horizontal"
     ? fieldHorizontalScope
     : orientation === "responsive"
@@ -327,6 +329,7 @@ export const controlField = <Msg>(
             styles.field,
             styles[orientation] as StaticStyles,
             (p.isInvalid === true || p.error !== undefined || fieldErrorMessages(p.errors).length > 0) && styles.invalid,
+            // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
             p.isDisabled && (fieldDisabledScope as unknown as StaticStyles),
             orientationMarker(orientation),
             p.layoutStyle,
@@ -367,6 +370,7 @@ export const field = <Msg>(p: FieldProps, h: HtmlBuilder<Msg>): Html => {
           styles.field,
           styles[orientation] as StaticStyles,
           p.isInvalid && styles.invalid,
+          // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
           p.isDisabled && (fieldDisabledScope as unknown as StaticStyles),
           orientationMarker(orientation),
           p.layoutStyle,
@@ -398,7 +402,7 @@ export const fieldLabel = <Msg>(
           styles.label,
           styles.fieldLabel,
           styles.labelDisabled,
-          // eslint-disable-next-line no-restricted-syntax -- marker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
+          // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
           fieldLabelScope as unknown as StaticStyles,
           p.weight === 'normal' && styles.fontNormal,
           p.layoutStyle,

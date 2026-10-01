@@ -38,9 +38,10 @@ const styles = stylex.create({
   },
   amount: {
     display: { default: "none", "@media (min-width: 768px)": "block" },
-    fontSize: "0.875rem", lineHeight: '1.25rem',
+    fontSize: "0.875rem",
     fontVariantNumeric: "tabular-nums",
     fontWeight: 600,
+ lineHeight: '1.25rem',
   },
 });
 

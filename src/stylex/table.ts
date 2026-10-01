@@ -12,10 +12,10 @@ type SlotProps = Readonly<{ children: ReadonlyArray<Html | string>; layoutStyle?
 const styles = stylex.create({
   body: {},
   caption: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem', marginTop: '1rem' },
-  cell: { padding: '0.5rem', verticalAlign: 'middle', whiteSpace: 'nowrap' },
+  cell: { padding: { default: '0.5rem', ':has([role=checkbox])': '0.5rem 0 0.5rem 0.5rem' }, verticalAlign: 'middle', whiteSpace: 'nowrap' },
   container: { position: 'relative', overflowX: 'auto', width: '100%', },
   footer: { backgroundColor: complexTokens.mutedSurface, fontWeight: 500, borderTopColor: tokens.border, borderTopStyle: 'solid', borderTopWidth: 1, },
-  head: { paddingInline: '0.5rem', color: tokens.foreground, fontWeight: 500, textAlign: 'left', verticalAlign: 'middle', whiteSpace: 'nowrap', height: '2.5rem', },
+  head: { padding: { default: '0 0.5rem', ':has([role=checkbox])': '0 0 0 0.5rem' }, color: tokens.foreground, fontWeight: 500, textAlign: 'left', verticalAlign: 'middle', whiteSpace: 'nowrap', height: '2.5rem', },
   header: { borderBottomColor: tokens.border, borderBottomStyle: 'solid', borderBottomWidth: 1, },
   row: { backgroundColor: { default: tokens.transparent, ':hover': complexTokens.mutedSurface }, transitionProperty: 'color, background-color', borderBottomColor: tokens.border, borderBottomStyle: 'solid', borderBottomWidth: { default: 1, ':last-child': 0 }, },
   table: { borderCollapse: 'collapse', captionSide: 'bottom', fontSize: '0.875rem', lineHeight: '1.25rem', width: '100%' },

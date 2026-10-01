@@ -26,11 +26,11 @@ const styles = stylex.create({
   buttonInactive: { opacity: 0, pointerEvents: 'none', transform: 'translateX(-50%) scale(0.95)' },
   buttonStart: { top: '1rem' },
   icon: { height: '1rem', width: '1rem' },
-  iconStart: { height: '1rem', width: '1rem', rotate: '180deg' },
+  iconStart: { rotate: '180deg', height: '1rem', width: '1rem', },
   content: { gap: '2rem', display: 'flex', flexDirection: 'column', height: 'max-content', minHeight: '100%', },
   item: { containIntrinsicSize: 'auto 10rem', contentVisibility: 'auto', flexShrink: 0, minWidth: 0 },
   root: { overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'relative', height: '100%', minHeight: 0, width: '100%', },
-  srOnly: { margin: -1, padding: 0, borderWidth: 0, clipPath: 'inset(50%)', overflow: 'hidden', position: 'absolute', whiteSpace: 'nowrap', height: 1, width: 1, },
+  srOnly: { margin: -1, padding: 0, borderWidth: 0, overflow: 'hidden', clipPath: 'inset(50%)', position: 'absolute', whiteSpace: 'nowrap', height: 1, width: 1, },
   viewport: { overscrollBehavior: 'contain', height: '100%', minHeight: 0, minWidth: 0, overflowY: 'auto', width: '100%', },
   viewportPending: { visibility: 'hidden' },
 })

@@ -14,6 +14,6 @@ export type { RadioGroupOption } from '@/lib/radio-group'
 export type RadioGroupProps<Msg>=RadioGroupBehaviorProps<Msg>&Readonly<{columns?:1|2;layoutStyle?:ComponentLayoutStyle}>
 export { Message, Model, init, update };export type { OutMessage }
 export const radioGroup=<Msg>(p:RadioGroupProps<Msg>,h:HtmlBuilder<Msg>):Html=>renderRadioGroup(p,{group:[h.Class(className(styles.group,p.columns===2&&styles.groupColumns2,p.layoutStyle))],row:[h.Class(className(styles.row))],item:state=>[h.Class(className(styles.item,
-  // eslint-disable-next-line no-restricted-syntax -- marker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
+  // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
   radioItemScope as unknown as StaticStyles,
   state.isDisabled&&styles.disabled,p.options[state.index]?.isInvalid===true&&styles.invalid))],indicator:[h.Class(className(styles.indicator))],text:[h.Class(className(styles.text))],label:[h.Class(className(styles.label))],description:[h.Class(className(styles.description))]},(isSelected,indicatorH)=>isSelected?Icon.circleIcon({class:className(styles.dot)},indicatorH):indicatorH.empty,h)

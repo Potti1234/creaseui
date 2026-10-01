@@ -37,13 +37,13 @@ const styles = stylex.create({
   media: {
     gap: "0.5rem",
     alignItems: "center",
-    display: "flex",
-    flexShrink: 0,
-    justifyContent: "center",
     alignSelf: {
       default: null,
       [stylex.when.ancestor(":has([data-slot=item-description])")]: "flex-start",
     },
+    display: "flex",
+    flexShrink: 0,
+    justifyContent: "center",
     translate: {
       default: null,
       [stylex.when.ancestor(":has([data-slot=item-description])")]: "0px 0.125rem",
@@ -81,14 +81,14 @@ const styles = stylex.create({
     width: "fit-content",
   },
   description: {
+    overflow: "hidden",
+    WebkitBoxOrient: "vertical",
     color: tokens.mutedForeground,
     display: "-webkit-box",
     fontSize: "0.875rem",
     fontWeight: 400,
     lineHeight: 1.5,
-    overflow: "hidden",
     textWrap: "balance",
-    WebkitBoxOrient: "vertical",
   },
   actions: { gap: "0.5rem", alignItems: "center", display: "flex" },
   header: {

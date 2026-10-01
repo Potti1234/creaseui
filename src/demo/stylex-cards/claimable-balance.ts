@@ -39,14 +39,16 @@ const styles = stylex.create({
   },
   label: { color: tokens.mutedForeground, fontSize: "0.875rem", lineHeight: '1.25rem' },
   value: {
-    fontSize: "0.875rem", lineHeight: '1.25rem',
+    fontSize: "0.875rem",
     fontVariantNumeric: "tabular-nums",
     fontWeight: 500,
+ lineHeight: '1.25rem',
   },
   total: {
-    fontSize: "0.875rem", lineHeight: '1.25rem',
+    fontSize: "0.875rem",
     fontVariantNumeric: "tabular-nums",
     fontWeight: 600,
+ lineHeight: '1.25rem',
   },
   footer: { paddingBlock: "0.625rem" },
 });

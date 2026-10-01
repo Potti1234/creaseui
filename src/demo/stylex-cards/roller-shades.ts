@@ -24,7 +24,7 @@ const styles = stylex.create({
   content: { gap: '1rem', display: 'flex', flexDirection: 'column', },
   flex: { flexGrow: 1 },
   footer: { paddingBlock: '0.625rem' },
-  label: { color: tokens.mutedForeground, fontSize: '0.75rem', lineHeight: '1rem', fontWeight: 500, letterSpacing: '0.05em', textTransform: 'uppercase' },
+  label: { color: tokens.mutedForeground, fontSize: '0.75rem', fontWeight: 500, letterSpacing: '0.05em', lineHeight: '1rem', textTransform: 'uppercase', },
   shade: { borderColor: tokens.border, borderRadius: tokens.cardRadius, borderStyle: 'solid', borderWidth: 1, overflow: 'hidden', backgroundColor: cardTokens.muted, display: 'flex', flexDirection: 'column', height: '8rem', },
   shadeFill: { backgroundColor: tokens.mutedForeground, transitionDuration: interactionTokens.motionSlow, transitionProperty: 'height' },
   sliderRow: { gap: '0.75rem', alignItems: 'center', display: 'flex', },

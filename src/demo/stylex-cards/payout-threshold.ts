@@ -25,7 +25,7 @@ import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   action: { display: 'grid', width: '100%' },
-  amount: { fontSize: '1.5rem', lineHeight: '2rem', fontVariantNumeric: 'tabular-nums', fontWeight: 600 },
+  amount: { fontSize: '1.5rem', fontVariantNumeric: 'tabular-nums', fontWeight: 600, lineHeight: '2rem', },
   between: { alignItems: 'center', display: 'flex', justifyContent: 'space-between' },
   full: { width: '100%' },
   icon: { display: 'inline-flex', flexShrink: 0, height: '1rem', width: '1rem' },
