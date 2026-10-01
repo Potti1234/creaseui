@@ -17,7 +17,7 @@ const styles = stylex.create({
   heading: {
     fontSize: '1.25rem',
     fontWeight: 600,
-    letterSpacing: '-0.01em',
+    letterSpacing: '-0.025em',
     lineHeight: '1.75rem',
   },
   body: {

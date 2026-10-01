@@ -84,7 +84,7 @@ const styles = stylex.create({
       ':hover:not(:is([data-checked], [aria-disabled="true"]))': foundationTokens.foregroundSoft,
       ':is([data-checked])': tokens.background,
     },
-    boxShadow: { default: 'none', ':is([data-checked])': tokens.shadowSm },
+    boxShadow: { default: 'none', ':is([data-checked])': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)' },
     color: { default: tokens.mutedForeground, ':is([data-checked])': tokens.foreground },
     cursor: { default: interactionTokens.cursorAction, ':is([aria-disabled="true"])': interactionTokens.cursorDefault },
     display: 'inline-flex',
@@ -124,6 +124,10 @@ const styles = stylex.create({
   itemLabelHidden: {
     overflow: 'hidden',
     clip: 'rect(0,0,0,0)',
+    clipPath: 'inset(50%)',
+    margin: '-1px',
+    padding: 0,
+    borderWidth: 0,
     position: 'absolute',
     whiteSpace: 'nowrap',
     height: '1px',
@@ -144,9 +148,9 @@ const styles = stylex.create({
     fontSize: '0.875rem', lineHeight: '1.25rem',
     height: '2rem',
   },
-  iconSizeSm: { fontSize: '0.875rem', lineHeight: '1.25rem', height: '0.875rem', width: '0.875rem' },
-  iconSizeMd: { fontSize: '1rem', lineHeight: '1.5rem', height: '1rem', width: '1rem' },
-  iconSizeLg: { fontSize: '1.125rem', lineHeight: '1.75rem', height: '1.125rem', width: '1.125rem' },
+  iconSizeSm: { height: '0.875rem', width: '0.875rem' },
+  iconSizeMd: { height: '1rem', width: '1rem' },
+  iconSizeLg: { height: '1.125rem', width: '1.125rem' },
 })
 
 const ITEM_SIZE_STYLE: Readonly<Record<SegmentedControlSize, unknown>> = {
