@@ -148,6 +148,45 @@ const resolveFocusButton = Scene.Command.resolveAllExact([
   PopoverPrimitive.Message.CompletedFocusButton(),
 ])
 
+/* foldkit 0.164's Animation commands carry a `generation` arg that the result
+   Messages must echo back. Read it off the pending Command. */
+const pendingAnimationGeneration = (
+  commands: ReadonlyArray<Readonly<{ name: string; args?: Record<string, unknown> }>>,
+  name?: string,
+): number => {
+  const pending = commands.find(
+    command =>
+      command.name === (name ?? 'WaitForPaint') ||
+      command.name === 'WaitForAnimationSettled' ||
+      command.name === 'DetectMovementOrAnimationEnd',
+  )
+  const generation = pending?.args?.['generation']
+  if (typeof generation !== 'number') {
+    throw new Error(`Expected a pending animation Command, found none.`)
+  }
+  return generation
+}
+
+/* Resolves an EnterStart → EnterAnimating (or LeaveStart → LeaveAnimating)
+   paint+settle Command pair. Both waits share one transition generation. */
+const animationPaintedThenSettled = (
+  simulation: Scene.SceneSimulation<Model, Message>,
+) =>
+  Scene.Command.resolveAll(
+    [
+      Animation.WaitForPaint,
+      Animation.Message.CompletedWaitForPaint({
+        generation: pendingAnimationGeneration(simulation.commands),
+      }),
+    ],
+    [
+      Animation.WaitForAnimationSettled,
+      Animation.Message.EndedAnimation({
+        generation: pendingAnimationGeneration(simulation.commands),
+      }),
+    ],
+  )(simulation)
+
 // expectEnded steps are single-use: the closure drains its matchers on the
 // first run, so build a fresh pair for every scene.
 const endedPanelMounts = () => [
@@ -667,14 +706,7 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
             Scene.expectOutMessage(PopoverPrimitive.OutMessage.Opened()),
             Scene.expect(panel).toExist(),
             Scene.expect(panel).toHaveAttr('data-enter', ''),
-            Scene.Command.resolve(
-              Animation.WaitForPaint,
-              Animation.Message.CompletedWaitForPaint(),
-            ),
-            Scene.Command.resolve(
-              Animation.WaitForAnimationSettled,
-              Animation.Message.EndedAnimation(),
-            ),
+            animationPaintedThenSettled,
             resolvePanelMounts,
             Scene.expect(panel).not.toHaveAttr('data-enter', ''),
             Scene.click(trigger),
@@ -684,17 +716,26 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
             // animation reports it has settled.
             Scene.expect(panel).toExist(),
             Scene.expect(panel).toHaveAttr('data-leave', ''),
-            Scene.Command.resolve(
-              Animation.WaitForPaint,
-              Animation.Message.CompletedWaitForPaint(),
-            ),
+            (simulation) =>
+              Scene.Command.resolve(
+                Animation.WaitForPaint,
+                Animation.Message.CompletedWaitForPaint({
+                  generation: pendingAnimationGeneration(simulation.commands),
+                }),
+              )(simulation),
             Scene.expect(panel).toExist(),
-            Scene.Command.resolve(
-              PopoverPrimitive.DetectMovementOrAnimationEnd,
-              PopoverPrimitive.Message.GotAnimationMessage({
-                message: Animation.Message.EndedAnimation(),
-              }),
-            ),
+            (simulation) =>
+              Scene.Command.resolve(
+                PopoverPrimitive.DetectMovementOrAnimationEnd,
+                PopoverPrimitive.Message.GotAnimationMessage({
+                  message: Animation.Message.EndedAnimation({
+                    generation: pendingAnimationGeneration(
+                      simulation.commands,
+                      'DetectMovementOrAnimationEnd',
+                    ),
+                  }),
+                }),
+              )(simulation),
             Scene.expect(panel).toBeAbsent(),
             ...endedPanelMounts(),
             Scene.Command.resolve(

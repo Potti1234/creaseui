@@ -199,6 +199,9 @@ const renderSelect = <Item, Value extends string, Msg>(
     ...buildAnchor(props, values),
     itemsClassName: CONTENT_CLASS,
     itemsAttributes: childAttributes([
+      // Upstream 0.164 stamps tabindex="-1" on the listbox; Base UI parity
+      // expects the popup listbox to remain tabbable, so restore tabindex="0".
+      hs.Tabindex(0),
       hs.DataAttribute('slot', 'select-content'),
     ]),
     itemsScrollClassName: VIEWPORT_CLASS,
