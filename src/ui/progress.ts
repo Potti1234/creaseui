@@ -1,4 +1,5 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import { Progress as ProgressPrimitive } from '@foldkit/ui';
+import type { Attribute, Html, HtmlBuilder } from 'foldkit/html';
 
 import { normalizeProgress } from '@/lib/progress';
 import { cn } from '@/lib/utils';
@@ -14,52 +15,66 @@ export type ProgressProps = Readonly<{
   class?: string;
 }>;
 
+const keepProgressAttribute = <Msg>(
+  attr: Attribute<Msg>,
+  hasId: boolean,
+): boolean =>
+  // The primitive always stamps an id and an aria-labelledby fallback; crease
+  // keeps both optional, so drop them when the caller supplied neither.
+  !(attr._tag === 'Id' && !hasId) &&
+  !(attr._tag === 'AriaLabelledBy' && !hasId);
+
 export const progress = <Msg>(
   props: ProgressProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
   const normalized = normalizeProgress(props.value, props.max);
+  const hasId = props.id !== undefined;
 
-  return h.div(
-    [
-      ...(props.id === undefined ? [] : [h.Id(props.id)]),
-      ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
-      h.Role('progressbar'),
-      h.AriaValuemin(0),
-      h.AriaValuemax(normalized.max),
-      ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
-      ...(props.valueText === undefined ? [] : [h.AriaValuetext(props.valueText)]),
-      ...(normalized.value === null ? [] : [h.AriaValuenow(normalized.value)]),
-      h.DataAttribute('state', normalized.state),
-      h.DataAttribute('slot', 'progress'),
-      h.Class(
-        cn(
-          'relative h-2 w-full overflow-hidden rounded-full bg-primary/20',
-          props.class,
+  return ProgressPrimitive.view(
+    {
+      id: props.id ?? 'progress',
+      ...(normalized.value === null ? {} : { value: normalized.value }),
+      max: normalized.max,
+      ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
+      ...(props.valueText === undefined ? {} : { valueText: props.valueText }),
+      toView: ({ progress: progressAttrs }) =>
+        h.div(
+          [
+            ...progressAttrs.filter((attr) => keepProgressAttribute(attr, hasId)),
+            ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
+            h.DataAttribute('slot', 'progress'),
+            h.Class(
+              cn(
+                'relative h-2 w-full overflow-hidden rounded-full bg-primary/20',
+                props.class,
+              ),
+            ),
+          ],
+          [
+            h.div(
+              [
+                h.DataAttribute('slot', 'progress-indicator'),
+                h.Class('h-full w-full flex-1 bg-primary transition-all motion-reduce:transition-none'),
+                h.Style({
+                  transform:
+                    normalized.percentage === null
+                      ? 'translateX(-60%)'
+                      : `translateX(${(props.direction === 'rtl' ? 1 : -1) * (100 - normalized.percentage)}%)`,
+                }),
+                ...(normalized.value === null
+                  ? [
+                      h.Class(
+                        'animate-[progress-indeterminate_1.5s_ease-in-out_infinite] motion-reduce:animate-none',
+                      ),
+                    ]
+                  : []),
+              ],
+              [],
+            ),
+          ],
         ),
-      ),
-    ],
-    [
-      h.div(
-        [
-          h.DataAttribute('slot', 'progress-indicator'),
-          h.Class('h-full w-full flex-1 bg-primary transition-all motion-reduce:transition-none'),
-          h.Style({
-            transform:
-              normalized.percentage === null
-                ? 'translateX(-60%)'
-                : `translateX(${(props.direction === 'rtl' ? 1 : -1) * (100 - normalized.percentage)}%)`,
-          }),
-          ...(normalized.value === null
-            ? [
-                h.Class(
-                  'animate-[progress-indeterminate_1.5s_ease-in-out_infinite] motion-reduce:animate-none',
-                ),
-              ]
-            : []),
-        ],
-        [],
-      ),
-    ],
+    },
+    h,
   );
 };

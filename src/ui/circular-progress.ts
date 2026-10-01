@@ -1,4 +1,5 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import { Progress as ProgressPrimitive } from '@foldkit/ui';
+import type { Attribute, Html, HtmlBuilder } from 'foldkit/html';
 
 import { cn } from '@/lib/utils';
 
@@ -87,22 +88,18 @@ export const circularProgress = <Msg>(
   const showLabel = props.isLabelHidden !== true;
   const showValueLabel = props.hasValueLabel === true && !isIndeterminate;
   const hasCenterContent = props.children !== undefined && props.children.length > 0;
-  const labelId = props.id === undefined ? undefined : `${props.id}-label`;
+  const labelId = props.id === undefined ? undefined : ProgressPrimitive.labelId(props.id);
 
   const fillVariant = isDisabled ? 'neutral' : variant;
   const trackVariant = isDisabled ? 'neutral' : variant;
 
-  const svgAttrs = [
-    h.Role('progressbar'),
-    ...(labelId === undefined ? [h.AriaLabel(props.label)] : [h.AriaLabelledBy(labelId)]),
-    ...(isIndeterminate
-      ? []
-      : [
-          h.AriaValuenow(clampedValue),
-          h.AriaValuemin(0),
-          h.AriaValuemax(safeMax),
-          h.AriaValuetext(valueText),
-        ]),
+  // The root div already owns the element id; the svg carries the
+  // progressbar semantics, so drop the duplicated Id attribute.
+  const svgProgressAttributes = (attrs: ReadonlyArray<Attribute<Msg>>): ReadonlyArray<Attribute<Msg>> =>
+    attrs.filter((attr) => attr._tag !== 'Id');
+
+  const svgAttrs = (attrs: ReadonlyArray<Attribute<Msg>>) => [
+    ...svgProgressAttributes(attrs),
     h.Width(String(diameter)),
     h.Height(String(diameter)),
     h.ViewBox(`0 0 ${diameter} ${diameter}`),
@@ -201,7 +198,20 @@ export const circularProgress = <Msg>(
       h.div(
         [h.Class('relative inline-flex')],
         [
-          h.svg(svgAttrs, [trackCircle, fillCircle]),
+          ProgressPrimitive.view(
+            {
+              id: props.id ?? 'circular-progress',
+              ...(isIndeterminate ? {} : { value: clampedValue }),
+              max: safeMax,
+              ...(labelId === undefined
+                ? { ariaLabel: props.label }
+                : { ariaLabelledBy: labelId }),
+              ...(isIndeterminate ? {} : { valueText: formatValueLabel }),
+              toView: ({ progress: progressAttrs }) =>
+                h.svg(svgAttrs(progressAttrs), [trackCircle, fillCircle]),
+            },
+            h,
+          ),
           ...(hasCenterContent || showValueLabel
             ? [
                 h.div(

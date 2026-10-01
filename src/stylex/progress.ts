@@ -1,5 +1,6 @@
 import * as stylex from "@stylexjs/stylex";
-import type { Html, HtmlBuilder } from "foldkit/html";
+import { Progress as ProgressPrimitive } from "@foldkit/ui";
+import type { Attribute, Html, HtmlBuilder } from "foldkit/html";
 import type { ComponentLayoutStyle } from "./contracts";
 import { foundationTokens } from "./foundations-tokens.stylex";
 import { className } from "./style";
@@ -42,42 +43,54 @@ export type ProgressProps = Readonly<{
   direction?: 'ltr' | 'rtl';
   layoutStyle?: ComponentLayoutStyle;
 }>;
+const keepProgressAttribute = <Msg>(
+  attr: Attribute<Msg>,
+  hasId: boolean,
+): boolean =>
+  !(attr._tag === "Id" && !hasId) &&
+  !(attr._tag === "AriaLabelledBy" && !hasId);
+
 export const progress = <Msg>(
   props: ProgressProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
   const normalized = normalizeProgress(props.value, props.max);
-  return h.div(
-    [
-      ...(props.id === undefined ? [] : [h.Id(props.id)]),
-      ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
-      h.Role("progressbar"),
-      h.AriaValuemin(0),
-      h.AriaValuemax(normalized.max),
-      ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
-      ...(props.valueText === undefined ? [] : [h.AriaValuetext(props.valueText)]),
-      ...(normalized.value === null ? [] : [h.AriaValuenow(normalized.value)]),
-      h.DataAttribute("state", normalized.state),
-      h.DataAttribute("slot", "progress"),
-      h.Class(className(styles.root, props.layoutStyle)),
-    ],
-    [
-      h.div(
-        [
-          h.DataAttribute("slot", "progress-indicator"),
-          h.Class(
-            className(styles.indicator, normalized.value === null && styles.indeterminate),
-          ),
-          h.Style({
-            transform:
-              normalized.percentage === null
-                ? "translateX(-60%)"
-                : `translateX(${(props.direction === 'rtl' ? 1 : -1) * (100 - normalized.percentage)}%)`,
-          }),
-        ],
-        [],
-      ),
-    ],
+  const hasId = props.id !== undefined;
+  return ProgressPrimitive.view(
+    {
+      id: props.id ?? "progress",
+      ...(normalized.value === null ? {} : { value: normalized.value }),
+      max: normalized.max,
+      ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
+      ...(props.valueText === undefined ? {} : { valueText: props.valueText }),
+      toView: ({ progress: progressAttrs }) =>
+        h.div(
+          [
+            ...progressAttrs.filter((attr) => keepProgressAttribute(attr, hasId)),
+            ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
+            h.DataAttribute("slot", "progress"),
+            h.Class(className(styles.root, props.layoutStyle)),
+          ],
+          [
+            h.div(
+              [
+                h.DataAttribute("slot", "progress-indicator"),
+                h.Class(
+                  className(styles.indicator, normalized.value === null && styles.indeterminate),
+                ),
+                h.Style({
+                  transform:
+                    normalized.percentage === null
+                      ? "translateX(-60%)"
+                      : `translateX(${(props.direction === 'rtl' ? 1 : -1) * (100 - normalized.percentage)}%)`,
+                }),
+              ],
+              [],
+            ),
+          ],
+        ),
+    },
+    h,
   );
 };
 
