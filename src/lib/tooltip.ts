@@ -84,7 +84,10 @@ const toPrimitiveMessage = (message: Message): TooltipPrimitive.Message => {
     case 'BlurredTooltipTrigger': return TooltipPrimitive.Message.BlurredTrigger()
     case 'PressedEscapeOnTooltip': return TooltipPrimitive.Message.PressedEscape()
     case 'PressedPointerOnTooltipTrigger':
-      return TooltipPrimitive.Message.PressedPointerOnTrigger({ pointerType: message.pointerType })
+      // Crease suppresses a pointer-induced focus for every pointer type
+      // (Base UI focus-visible parity). Upstream only treats 'mouse' that
+      // way, so the adapter remaps before the primitive records it.
+      return TooltipPrimitive.Message.PressedPointerOnTrigger({ pointerType: 'mouse' })
     case 'CompletedTooltipAnchor': return TooltipPrimitive.Message.CompletedAnchorTooltip()
     case 'CompletedWaitBeforeShowingTooltip':
       return TooltipPrimitive.Message.CompletedWaitBeforeShowing({ version: message.version })
