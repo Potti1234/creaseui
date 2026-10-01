@@ -82,3 +82,34 @@ Checkbox/radio state PERSISTS across close+reopen (submodel keeps it) — toggle
 - Mid-string cursor edits are worse: Home + digit wiped the entire pending value (reproduced twice). Avoid cursor-position edits; retype the whole string.
 - The listbox path (`hasTimeOptions`) and the typed path are gated by the SAME model flag — before probing the listbox, confirm `hasTimeOptions: true` in the vite-log model dump (`/tmp/vite-dev.log` relays browser console + model state), not just `role=combobox` in the DOM.
 - `anchorSetup could not find a trigger` console.error once per mount = the `-button` anchor id wasn't in the queried root at panel-mount (mount-order race — panel repositions fine at open). Cosmetic; re-check whether it reproduces on a settled build before reporting as a regression.
+
+## Desktop click transform (full-size window, 1600x1091 CSS viewport)
+When Chrome runs maximized at `--force-device-scale-factor=2` (real 3264x2440, CSS 1600x1091, tool space 1024x768), the client<->tool mapping is:
+`client_x = tool_x * 1.5625`, `client_y = tool_y * 1.5625 - 85.75`
+(≈80-90 tool px of browser chrome sits above client_y=0). Calibrate once per session with the capture-phase recorder, then read target positions off screenshots directly.
+
+## hover:none environment — hover-reveal states UNVERIFIABLE visually
+This box's Chrome is launched as a coarse-pointer device: `matchMedia('(hover:hover)') === false`.
+Tailwind v4 gates ALL `hover:`/`group-hover:` utilities behind `@media (hover:hover)` → they can never fire here.
+- Sonner dismiss X (`opacity-0 group-hover:opacity-100`) never appears on hover. Verify via `focus:opacity-100` instead: `el.focus()` reveals it for screenshots.
+- `hover:bg-muted` / `hover:underline` can't be seen either — verify the class exists on the element AND the matching rule exists in `document.styleSheets`.
+- `devin-hidden="true"` may appear transiently on elements — injected by test tooling during snapshots, NOT app markup. Ignore it.
+
+## Ephemeral auto-dismiss UI (sonner toasts ~4s)
+Toasts die before the click→console round-trip completes. Arm a MutationObserver FIRST that captures the dismiss button's classes/rect at mount (and optionally `x.focus()` so the reveal-on-hover X stays visible for the recording), then trigger the toast.
+
+## Stale vite dep cache crash (blank page)
+`SyntaxError: ...does not provide an export named 'Progress'` + white screen = `node_modules/.vite` cache predates a dependency bump. Fix: `setsid bash -c 'npx vite --host 127.0.0.1 --port 4173 --force > /tmp/vite-dev.log 2>&1'` — use `setsid`, not `(cmd &)`; the child dies with the shell otherwise.
+
+## Docs-page quirks (shared-renderer verification)
+- Each docs example shows a COLLAPSED code-preview strip that lazy-renders — appearing between screenshots is NOT a state change.
+- The collapsed strip's "View Code" label sits ~170px below the preview card — clicks aimed at row items can hit it if the transform is off.
+- Renderer toggle ("Preview styling engine" Tailwind/StyleX, aria-pressed) lives near the page top; full-page reload resets it to Tailwind.
+- `type="search"` inputs get a native X clear button — clicking it fires input events and resets the model (good reset path for recordings).
+- Data-table column-chooser rows: only the `role="checkbox"` button's ~40px hit-zone toggles; clicking the row's text label is a silent no-op (pre-existing foldkit behavior, not a bug).
+
+## DOM markers proving shared-renderer usage (composition refactors)
+- Tailwind `input()`: `file:text-foreground`, `selection:bg-primary`, `md:text-sm`, `min-w-0`
+- Tailwind `buttonVariants`: `group/button` base + `border-border bg-background shadow-xs` (outline), `size-6` (icon-xs), `text-primary underline-offset-4 hover:underline` (link), `h-8` (sm)
+- Tailwind `separator()`: `data-slot="separator"`, `data-orientation`, `aria-orientation`, `shrink-0 bg-border`
+- StyleX equivalents: atomic classes literally named `input__styles.input`, `button__base.root`, `separator__styles.base` + component-scoped overrides like `transfer-list__styles.searchInput`

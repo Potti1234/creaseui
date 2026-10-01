@@ -1,25 +1,15 @@
 import type { Update } from 'foldkit'
-import { Duration, Effect, Option, Schema as S } from 'effect'
+import { Duration, Effect, Schema as S } from 'effect'
 import * as Command from 'foldkit/command'
+import { Tooltip as TooltipPrimitive } from '@foldkit/ui'
 import { defineMessageUnion } from 'foldkit/message'
 
-export const Model = S.Struct({
-  id: S.String,
-  isOpen: S.Boolean,
-  isHovered: S.Boolean,
-  isFocused: S.Boolean,
-  isDismissed: S.Boolean,
-  showDelayMs: S.Number,
-  closeDelayMs: S.Number,
-  showVersion: S.Number,
-  closeVersion: S.Number,
-  pointerFocusVersion: S.Number,
-})
+/* The visibility state machine is the foldkit Tooltip primitive; this module
+   keeps crease's message/OutMessage vocabulary as a thin adapter so callers
+   (and the two renderer skins) keep a stable API. */
+
+export const Model = TooltipPrimitive.Model
 export type Model = typeof Model.Type
-
-
-
-
 
 
 
@@ -32,7 +22,7 @@ export const Message = defineMessageUnion({
   'FocusedTooltipTrigger': {},
   'BlurredTooltipTrigger': {},
   'PressedEscapeOnTooltip': {},
-  'PressedPointerOnTooltipTrigger': {},
+  'PressedPointerOnTooltipTrigger': { pointerType: S.String },
   'CompletedTooltipAnchor': {},
   'CompletedWaitBeforeShowingTooltip': { version: S.Number },
   'CompletedWaitBeforeClosingTooltip': { version: S.Number },
@@ -53,20 +43,13 @@ export type InitConfig = Readonly<{
   closeDelay?: Duration.Input
 }>
 
-const millis = (input: Duration.Input): number => Math.max(0, Duration.toMillis(input))
+export const init = (config: InitConfig): Model =>
+  TooltipPrimitive.init({
+    id: config.id,
+    ...(config.showDelay === undefined ? {} : { showDelay: config.showDelay }),
+  })
 
-export const init = (config: InitConfig): Model => ({
-  id: config.id,
-  isOpen: false,
-  isHovered: false,
-  isFocused: false,
-  isDismissed: false,
-  showDelayMs: millis(config.showDelay ?? '500 millis'),
-  closeDelayMs: millis(config.closeDelay ?? '100 millis'),
-  showVersion: 0,
-  closeVersion: 0,
-  pointerFocusVersion: 0,
-})
+const millis = (input: Duration.Input): number => Math.max(0, Duration.toMillis(input))
 
 export const WaitBeforeShowing = Command.define('WaitBeforeShowingTooltip', {
   args: { delayMs: S.Number, version: S.Number },
@@ -76,66 +59,58 @@ export const WaitBeforeShowing = Command.define('WaitBeforeShowingTooltip', {
   ),
 })
 
-export const WaitBeforeClosing = Command.define('WaitBeforeClosingTooltip', {
-  args: { delayMs: S.Number, version: S.Number },
-  messages: [Message['CompletedWaitBeforeClosingTooltip']],
-  execute: ({ delayMs, version }) => Effect.sleep(`${delayMs} millis`).pipe(
-    Effect.as(Message['CompletedWaitBeforeClosingTooltip']({ version })),
-  ),
-})
-
-type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
-
-const result = (previous: Model, next: Model, commands: ReadonlyArray<Command.Command<Message>> = []): UpdateReturn => ({ model: next, commands: commands, ...(previous.isOpen === next.isOpen
-    ? {}
-    : { outMessage: next.isOpen ? OutMessage['ShownTooltip']() : OutMessage['HiddenTooltip']() }) })
-
-export const update = (model: Model, message: Message): UpdateReturn => {
+const toPrimitiveMessage = (message: Message): TooltipPrimitive.Message => {
   switch (message._tag) {
-    case 'EnteredTooltipTrigger': {
-      const showVersion = model.showVersion + 1
-      const next = { ...model, isHovered: true, closeVersion: model.closeVersion + 1, showVersion }
-      return model.isOpen || model.isDismissed
-        ? result(model, next)
-        : result(model, next, [WaitBeforeShowing({ delayMs: model.showDelayMs, version: showVersion })])
-    }
-    case 'LeftTooltipTrigger': {
-      const closeVersion = model.closeVersion + 1
-      const next = { ...model, isHovered: false, isDismissed: model.isFocused && model.isDismissed, showVersion: model.showVersion + 1, closeVersion }
-      return model.isOpen && !model.isFocused
-        ? result(model, next, [WaitBeforeClosing({ delayMs: model.closeDelayMs, version: closeVersion })])
-        : result(model, next)
-    }
+    case 'EnteredTooltipTrigger': return TooltipPrimitive.Message.EnteredTrigger()
+    case 'LeftTooltipTrigger': return TooltipPrimitive.Message.LeftTrigger()
+    case 'FocusedTooltipTrigger': return TooltipPrimitive.Message.FocusedTrigger()
+    case 'BlurredTooltipTrigger': return TooltipPrimitive.Message.BlurredTrigger()
+    case 'PressedEscapeOnTooltip': return TooltipPrimitive.Message.PressedEscape()
     case 'PressedPointerOnTooltipTrigger':
-      return result(model, { ...model, pointerFocusVersion: model.pointerFocusVersion + 1 })
-    case 'CompletedTooltipAnchor':
-      return result(model, model)
-    case 'FocusedTooltipTrigger':
-      if (model.pointerFocusVersion > 0) {
-        return result(model, { ...model, pointerFocusVersion: 0 })
-      }
-      return model.isDismissed
-        ? result(model, { ...model, isFocused: true })
-        : result(model, { ...model, isFocused: true, isOpen: true, showVersion: model.showVersion + 1, closeVersion: model.closeVersion + 1 })
-    case 'BlurredTooltipTrigger': {
-      const closeVersion = model.closeVersion + 1
-      const next = { ...model, isFocused: false, isDismissed: model.isHovered && model.isDismissed, showVersion: model.showVersion + 1, closeVersion, pointerFocusVersion: 0 }
-      return model.isOpen && !model.isHovered
-        ? result(model, next, [WaitBeforeClosing({ delayMs: model.closeDelayMs, version: closeVersion })])
-        : result(model, next)
-    }
-    case 'PressedEscapeOnTooltip':
-      return result(model, { ...model, isOpen: false, isDismissed: true, showVersion: model.showVersion + 1, closeVersion: model.closeVersion + 1 })
+      return TooltipPrimitive.Message.PressedPointerOnTrigger({ pointerType: message.pointerType })
+    case 'CompletedTooltipAnchor': return TooltipPrimitive.Message.CompletedAnchorTooltip()
     case 'CompletedWaitBeforeShowingTooltip':
-      return message.version === model.showVersion && model.isHovered && !model.isDismissed
-        ? result(model, { ...model, isOpen: true })
-        : result(model, model)
+      return TooltipPrimitive.Message.CompletedWaitBeforeShowing({ version: message.version })
+    // The primitive closes immediately on disengage; there is no closing wait.
     case 'CompletedWaitBeforeClosingTooltip':
-      return message.version === model.closeVersion && !model.isHovered && !model.isFocused
-        ? result(model, { ...model, isOpen: false })
-        : result(model, model)
+      return TooltipPrimitive.Message.CompletedWaitBeforeShowing({ version: -1 })
   }
 }
 
-export const reflectShowDelay = (model: Model, showDelay: Duration.Input): Model => ({ ...model, showDelayMs: millis(showDelay) })
-export const reflectCloseDelay = (model: Model, closeDelay: Duration.Input): Model => ({ ...model, closeDelayMs: millis(closeDelay) })
+const fromPrimitiveMessage = (message: TooltipPrimitive.Message): Message => {
+  switch (message._tag) {
+    case 'CompletedWaitBeforeShowing':
+      return Message.CompletedWaitBeforeShowingTooltip({ version: message.version })
+    case 'CompletedAnchorTooltip': return Message.CompletedTooltipAnchor()
+    case 'EnteredTrigger': return Message.EnteredTooltipTrigger()
+    case 'LeftTrigger': return Message.LeftTooltipTrigger()
+    case 'FocusedTrigger': return Message.FocusedTooltipTrigger()
+    case 'BlurredTrigger': return Message.BlurredTooltipTrigger()
+    case 'PressedEscape': return Message.PressedEscapeOnTooltip()
+    case 'PressedPointerOnTrigger':
+      return Message.PressedPointerOnTooltipTrigger({ pointerType: message.pointerType })
+  }
+}
+
+const toOutMessage = (out: TooltipPrimitive.OutMessage): OutMessage =>
+  out._tag === 'Shown' ? OutMessage.ShownTooltip() : OutMessage.HiddenTooltip()
+
+type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
+
+export const update = (model: Model, message: Message): UpdateReturn => {
+  // The primitive has no close-delay concept; a stale closing completion is a no-op.
+  if (message._tag === 'CompletedWaitBeforeClosingTooltip') return { model }
+  const result = TooltipPrimitive.update(model, toPrimitiveMessage(message))
+  return {
+    model: result.model,
+    commands: Command.mapMessages(result.commands ?? [], fromPrimitiveMessage),
+    ...(result.outMessage === undefined
+      ? {}
+      : { outMessage: toOutMessage(result.outMessage) }),
+  }
+}
+
+export const reflectShowDelay = TooltipPrimitive.reflectShowDelay
+
+/** @deprecated The foldkit Tooltip has no close delay; kept for API compatibility. */
+export const reflectCloseDelay = (model: Model, _closeDelay: Duration.Input): Model => model
