@@ -56,6 +56,12 @@ const intentionallyRemovedStylingExports = new Map<string, ReadonlySet<string>>(
   ['text', new Set(['TextVariants', 'textVariants'])],
 ])
 
+/** Documented control-level escapes for composite components — not a
+ *  theming surface; visual choices stay on named variants. */
+const sanctionedStaticStyleEscapes = new Map<string, ReadonlySet<string>>([
+  ['input', new Set(['InputProps.inputStyle'])],
+])
+
 const parse = (path: string): ts.SourceFile =>
   ts.createSourceFile(
     path,
@@ -520,7 +526,9 @@ describe('complete StyleX catalog', () => {
     const violations: Array<string> = []
 
     for (const name of componentNames) {
+      const allowlist = sanctionedStaticStyleEscapes.get(name) ?? new Set()
       const findings = publicStaticStyleEscapes(parse(`src/stylex/${name}.ts`))
+        .filter(finding => !allowlist.has(finding))
       if (findings.length > 0) violations.push(`${name}: ${findings.join(', ')}`)
     }
 

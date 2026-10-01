@@ -1,4 +1,5 @@
 import * as stylex from '@stylexjs/stylex'
+import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { type InputBehaviorProps, renderInput } from '@/lib/input'
@@ -74,6 +75,8 @@ const styles = stylex.create({
 export type InputProps<Msg> = InputBehaviorProps<Msg> & Readonly<{
   /** Parent-layout positioning only. Add visual choices as named variants. */
   layoutStyle?: ComponentLayoutStyle
+  /** Control-level overrides for composite inputs (e.g. icon inset padding). */
+  inputStyle?: StaticStyles
 }>
 
 export const input = <Msg>(props: InputProps<Msg>, h: HtmlBuilder<Msg>): Html =>
@@ -90,6 +93,7 @@ export const input = <Msg>(props: InputProps<Msg>, h: HtmlBuilder<Msg>): Html =>
             joinStyles.inputGrow,
             props.isDisabled && styles.disabled,
             props.isInvalid && styles.invalid,
+            props.inputStyle,
             props.layoutStyle,
           ),
         ),

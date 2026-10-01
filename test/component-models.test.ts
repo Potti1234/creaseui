@@ -162,10 +162,10 @@ describe('stateful component models', () => {
     ); const hovering = op7__.model;
     const op8__ = HoverCard.update(
       hovering,
-      HoverCard.Message.CompletedWaitBeforeShowingHoverCard({ version: hovering.showVersion }),
+      HoverCard.Message.CompletedWaitBeforeShowingHoverCard({ version: hovering.pendingOpenVersion }),
     ); const opened = op8__.model;
     const op9__ = HoverCard.update(opened, HoverCard.Message.LeftHoverCard()); const leaving = op9__.model;;
-    const staleVersion = leaving.closeVersion;
+    const staleVersion = leaving.pendingCloseVersion;
     const op10__ = HoverCard.update(leaving, HoverCard.Message.EnteredHoverCard()); const reentered = op10__.model;;
     const op11__ = HoverCard.update(
       reentered,
@@ -179,14 +179,17 @@ describe('stateful component models', () => {
       Sonner.init({ id: 'notifications' }),
       Sonner.success({ title: 'Saved', actionLabel: 'Undo', sticky: true }),
     );
-    assert.equal(commands.length, 0);
+    assert.equal(commands.length, 1);
     assert.equal(model.entries[0]?.payload.actionLabel, 'Undo');
-    const { model: empty, outMessage: dismissed } = Sonner.dismiss(
+    const { model: leaving, outMessage: dismissed } = Sonner.dismiss(
       model,
       model.entries[0]?.id ?? '',
     );
-    assert.equal(empty.entries.length, 0);
-    assert.equal(dismissed?._tag, 'DismissedToast');
+    /* Dismissal starts the leave transition; the entry is removed and the
+       DismissedToast OutMessage emitted once the transition completes. */
+    assert.equal(leaving.entries.length, 1);
+    assert.equal(leaving.entries[0]?.animation.transitionState, 'LeaveStart');
+    assert.equal(dismissed, undefined);
   });
 
   it('persists desktop sidebar toggles and separates mobile state', () => {

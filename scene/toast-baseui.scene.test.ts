@@ -1,7 +1,9 @@
-import { Duration } from 'effect'
+import { Duration, Option } from 'effect'
 import { Command } from 'foldkit'
 import * as Scene from 'foldkit/scene'
 import type { Html, HtmlBuilder } from 'foldkit/html'
+import { Animation as AnimationPrimitive } from '@foldkit/ui'
+import * as ToastPrimitive from '@foldkit/ui/toast'
 import { describe, it } from 'vitest'
 
 import * as ToastBehavior from '@/lib/toast'
@@ -17,14 +19,22 @@ import * as TailwindToast from '@/ui/toast'
  * base-ui HEAD).
  *
  * creaseui's toast component is a recipe alias over the Sonner-style
- * notification engine in `@/lib/toast`: the parent owns the Model,
- * `show`/`updateToast`/`dismiss`/`dismissAll` return versioned timer
- * Commands, and the view renders one <section> live region per active
- * position holding role=status|alert articles. Base UI's fake-timer cases
- * are ported by asserting and resolving the scheduled
- * `WaitBeforeDismissing` Commands directly — the pending Command IS the
- * timer, so "auto-dismisses after N ms" reads as "resolving that Command
- * removes the entry".
+ * notification engine in `@/lib/toast`, which adapts `@foldkit/ui`'s
+ * `Toast` primitive: the parent owns the Model, `show`/`updateToast`/
+ * `dismiss`/`dismissAll` return versioned timer Commands, and the view
+ * renders one <section> live region per active position holding
+ * role=status|alert articles. Base UI's fake-timer cases are ported by
+ * asserting and resolving the scheduled `WaitBeforeDismissal` Commands
+ * directly — the pending Command IS the timer, so "auto-dismisses after
+ * N ms" reads as "resolving that Command starts the leave animation".
+ *
+ * The primitive drives a full enter/leave animation lifecycle per entry:
+ * `show` schedules `WaitForPaint` (+ `WaitForAnimationSettled` after it)
+ * for the enter transition and a `WaitBeforeDismissal` for non-sticky
+ * entries; dismissal schedules the same paint/settle pair for the leave
+ * transition and removes the entry (emitting `DismissedToast`) only when
+ * it settles. `settleAllAnimations` below drains every pending animation
+ * Command, echoing each Command's recorded transition generation.
  *
  * Base UI cases with no creaseui analogue are recorded here instead of
  * being dropped silently:
@@ -45,11 +55,13 @@ import * as TailwindToast from '@/ui/toast'
  *    hand-off to the next toast, Escape-scoped-to-portals — no real focus
  *    in the DSL.
  *  - ending/transitionStatus animation phases, `updateKey`, and
- *    onRemove-vs-onClose staging — creaseui removes entries synchronously
- *    and has no exit-animation state; DismissedToast doubles as removal.
- *  - `add` accepting a caller-specified id / upsert-by-add — creaseui
- *    generates ids as `${modelId}-${nextId}`; `updateToast` is the update
- *    path. "returns a toast id" has no scene-visible analogue.
+ *    onRemove-vs-onClose staging — the primitive's per-entry leave
+ *    animation covers the same lifecycle; DismissedToast fires on
+ *    TransitionedOut as removal.
+ *  - `add` accepting a caller-specified id / upsert-by-add — the
+ *    primitive generates ids as `${modelId}-entry-${nextEntryKey}`;
+ *    `updateToast` is the update path. "returns a toast id" has no
+ *    scene-visible analogue.
  *  - `update(id, fn)` function-updater form — `updateToast` takes a
  *    partial input object.
  *  - `manager.promise(...)` loading/success/error lifecycle — creaseui
@@ -62,14 +74,15 @@ import * as TailwindToast from '@/ui/toast'
  *  - Event-object payloads (`eventDetails.cancel()`, modifier reporting)
  *    — foldkit dispatches plain messages.
  *
- * Scene mechanics worth knowing: `WaitBeforeDismissing` is an unkeyed
- * Command, so the DSL refuses to dispatch a new Message while one is
- * pending (unkeyed Commands must resolve before the next interaction).
- * Tests that need a toast AND further interaction therefore either seed
- * entries through `Scene.given` (a seeded entry carries timer state as
- * data, with no pending Command) or add sticky toasts (which never
- * schedule one). Stale-timer and pause/resume completions are delivered
- * with `Scene.Subscription.emit` once no Command is pending.
+ * Scene mechanics worth knowing: `WaitBeforeDismissal` and the animation
+ * Commands are unkeyed, so the DSL refuses to dispatch a new Message
+ * while one is pending (unkeyed Commands must resolve before the next
+ * interaction). Tests that need a toast AND further interaction
+ * therefore either seed entries through `Scene.given` (a seeded entry
+ * carries timer/animation state as data, with no pending Command) or
+ * drain the enter animation with `settleAllAnimations` after each add.
+ * Stale-timer and pause/resume completions are delivered with
+ * `Scene.Subscription.emit` once no Command is pending.
  */
 
 type Model = Readonly<{
@@ -229,20 +242,48 @@ const makeView =
     )
 
 /** Rebuilds the Entry `show` produces so OutMessage assertions compare the
- *  full payload, not just the title. */
+ *  full payload, not just the title. `Default` maps to the primitive's
+ *  `Info` variant on the entry while the payload keeps the crease variant. */
 const entryOf = (id: string, input: ToastBehavior.ShowInput): ToastBehavior.Entry => ({
   id,
+  variant: input.variant === 'Default' ? 'Info' : input.variant,
+  animation: {
+    id,
+    isShowing: true,
+    transitionState: 'Idle',
+    transitionGeneration: 1,
+  },
+  maybeDuration:
+    input.sticky === true
+      ? Option.none()
+      : Option.some(Duration.fromInputUnsafe(input.duration ?? '4 seconds')),
+  pendingDismissVersion: 0,
+  isHovered: false,
+  swipeState: ToastPrimitive.SwipeState.Idle(),
+  swipeVersion: 0,
   payload: {
     title: input.title,
+    variant: input.variant,
     ...(input.description === undefined ? {} : { description: input.description }),
     ...(input.actionLabel === undefined ? {} : { actionLabel: input.actionLabel }),
     ...(input.position === undefined ? {} : { position: input.position }),
   },
-  variant: input.variant,
-  sticky: input.sticky ?? false,
-  durationMs: Math.max(0, Duration.toMillis(input.duration ?? '4 seconds')),
-  timerVersion: 0,
-  isPaused: false,
+})
+
+/** The entry snapshot the primitive's `DismissedToast` carries — the toast
+ *  mid-leave (`isShowing: false`, `LeaveAnimating`, generation 2), which is
+ *  the state the entry is in when its leave transition settles. */
+const leavingEntryOf = (
+  id: string,
+  input: ToastBehavior.ShowInput,
+): ToastBehavior.Entry => ({
+  ...entryOf(id, input),
+  animation: {
+    id,
+    isShowing: false,
+    transitionState: 'LeaveAnimating',
+    transitionGeneration: 2,
+  },
 })
 
 /** A Model with entries already showing — the scene-level stand-in for
@@ -251,8 +292,78 @@ const entryOf = (id: string, input: ToastBehavior.ShowInput): ToastBehavior.Entr
 const seededModel = (
   ...entries: ReadonlyArray<ToastBehavior.Entry>
 ): Model => ({
-  toasts: { id: 'toasts', nextId: entries.length, entries: [...entries] },
+  toasts: {
+    id: 'toasts',
+    defaultDuration: Duration.seconds(4),
+    entries: [...entries],
+    nextEntryKey: entries.length,
+    maybeSwipeConfig: Option.none(),
+  },
 })
+
+const ANIMATION_COMMAND_NAMES = new Set(['WaitForPaint', 'WaitForAnimationSettled'])
+
+type AnySimulation<M, Msg, Out> = Scene.SceneSimulation<M, Msg, Out>
+
+/** Resolves the earliest pending animation Command, echoing its recorded
+ *  transition generation so stale waits no-op exactly like the real ones. */
+const settleOneAnimation = <M, Msg, Out>(
+  simulation: AnySimulation<M, Msg, Out>,
+): AnySimulation<M, Msg, Out> => {
+  const pending = simulation.commands.find(command => ANIMATION_COMMAND_NAMES.has(command.name))
+  const generation = pending?.args?.['generation']
+  if (pending === undefined || typeof generation !== 'number') {
+    throw new Error('Expected a pending animation Command, found none.')
+  }
+  // resolveAll's ordered consumption handles multiple pending Commands that
+  // share a name and args (e.g. two entries' leave paints after dismissAll).
+  return pending.name === 'WaitForPaint'
+    ? Scene.Command.resolveAll(
+        [
+          AnimationPrimitive.WaitForPaint,
+          AnimationPrimitive.Message.CompletedWaitForPaint({ generation }),
+        ],
+      )(simulation)
+    : Scene.Command.resolveAll(
+        [
+          AnimationPrimitive.WaitForAnimationSettled,
+          AnimationPrimitive.Message.EndedAnimation({ generation }),
+        ],
+      )(simulation)
+}
+
+/** Drains every pending animation Command — paint+settle pairs for any
+ *  enter/leave transitions in flight — until the stack is animation-idle.
+ *  Leave drains remove the entries and emit their DismissedToast outs. */
+const settleAllAnimations = <M, Msg, Out>(
+  simulation: AnySimulation<M, Msg, Out>,
+): AnySimulation<M, Msg, Out> => {
+  let sim = simulation
+  while (sim.commands.some(command => ANIMATION_COMMAND_NAMES.has(command.name))) {
+    sim = settleOneAnimation(sim)
+  }
+  return sim
+}
+
+/** Resolves the pending `WaitBeforeDismissal` for an entry, echoing its
+ *  recorded timer version — the scene analogue of the timer firing. */
+const dismissTimerFires =
+  (entryId: string) =>
+  <M, Msg, Out>(simulation: AnySimulation<M, Msg, Out>): AnySimulation<M, Msg, Out> => {
+    const pending = simulation.commands.find(
+      command =>
+        command.name === 'WaitBeforeDismissal' &&
+        command.args?.['entryId'] === entryId,
+    )
+    const version = pending?.args?.['version']
+    if (typeof version !== 'number') {
+      throw new Error(`Expected a pending WaitBeforeDismissal for ${entryId}, found none.`)
+    }
+    return Scene.Command.resolve(
+      ToastPrimitive.WaitBeforeDismissal,
+      ToastPrimitive.Message.CompletedWaitBeforeDismissal({ entryId, version }),
+    )(simulation)
+  }
 
 const toastLocator = Scene.selector('[data-slot="sonner-toast"]')
 const allToasts = Scene.all.selector('[data-slot="sonner-toast"]')
@@ -275,27 +386,21 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.expect(toastLocator).toExist(),
           Scene.expect(toastLocator).toContainText('Saved'),
           Scene.Command.expectHas(
-            ToastBehavior.WaitBeforeDismissing({
-              id: 'toasts-0',
-              durationMs: 4000,
-              timerVersion: 0,
+            ToastPrimitive.WaitBeforeDismissal({
+              entryId: 'toasts-entry-0',
+              version: 0,
+              duration: Duration.millis(4000),
             }),
           ),
-          Scene.Command.resolve(
-            ToastBehavior.WaitBeforeDismissing({
-              id: 'toasts-0',
-              durationMs: 4000,
-              timerVersion: 0,
-            }),
-            ToastBehavior.Message.CompletedWaitBeforeDismissingToast({
-              id: 'toasts-0',
-              timerVersion: 0,
-            }),
-          ),
+          dismissTimerFires('toasts-entry-0'),
+          // Dismissal starts the leave animation; the entry stays mounted
+          // until the transition reports it has settled.
+          Scene.expect(toastLocator).toExist(),
+          settleAllAnimations,
           Scene.expect(toastLocator).toBeAbsent(),
           Scene.expectOutMessage(
             ToastBehavior.OutMessage.DismissedToast({
-              entry: entryOf('toasts-0', DEFAULT),
+              entry: leavingEntryOf('toasts-entry-0', DEFAULT),
             }),
           ),
         )
@@ -310,8 +415,10 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
           Scene.expectHandled(),
+          settleAllAnimations,
           Scene.click(Scene.role('button', { name: 'add sticky info' })),
           Scene.expectHandled(),
+          settleAllAnimations,
           Scene.expectAll(allToasts).toHaveCount(2),
           Scene.expect(Scene.nth(allToasts, 0)).toContainText(
             'Could not save changes',
@@ -385,6 +492,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           }),
           Scene.click(Scene.role('button', { name: 'add a' })),
           Scene.expectHandled(),
+          settleAllAnimations,
           Scene.inside(
             Scene.role('region', { name: 'Lane A' }),
             Scene.expectAll(allToasts).toHaveCount(1),
@@ -412,30 +520,21 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.expectHandled(),
           Scene.expect(toastLocator).toExist(),
           Scene.Command.expectHas(
-            ToastBehavior.WaitBeforeDismissing({
-              id: 'toasts-0',
-              durationMs: 1000,
-              timerVersion: 0,
+            ToastPrimitive.WaitBeforeDismissal({
+              entryId: 'toasts-entry-0',
+              version: 0,
+              duration: Duration.millis(1000),
             }),
           ),
-          Scene.Command.resolve(
-            ToastBehavior.WaitBeforeDismissing({
-              id: 'toasts-0',
-              durationMs: 1000,
-              timerVersion: 0,
-            }),
-            ToastBehavior.Message.CompletedWaitBeforeDismissingToast({
-              id: 'toasts-0',
-              timerVersion: 0,
-            }),
-          ),
+          dismissTimerFires('toasts-entry-0'),
+          settleAllAnimations,
           Scene.expect(toastLocator).toBeAbsent(),
         )
       })
 
       // DIVERGENCE: Base UI treats `timeout: 0` as "never auto-dismiss".
       // creaseui's `sticky` flag is the opt-out — a 0ms duration still
-      // schedules WaitBeforeDismissing, which removes the entry the moment
+      // schedules WaitBeforeDismissal, which removes the entry the moment
       // the timer completes.
       it.fails('does not auto-dismiss when the timeout is 0', () => {
         Scene.scene(
@@ -455,7 +554,11 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.click(Scene.role('button', { name: 'add sticky' })),
           Scene.expectHandled(),
           Scene.expect(Scene.role('alert')).toExist(),
-          Scene.Command.expectNone(),
+          // Only the enter-animation paint is pending — no dismissal timer.
+          Scene.Command.expectExact(
+            AnimationPrimitive.WaitForPaint({ generation: 1 }),
+          ),
+          settleAllAnimations,
         )
       })
     })
@@ -467,11 +570,16 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
           Scene.expectHandled(),
+          settleAllAnimations,
           Scene.click(dismissButton),
           Scene.expectHandled(),
+          // The leave animation lingers; DismissedToast arrives when it
+          // settles, alongside the actual removal.
+          Scene.expect(toastLocator).toExist(),
+          settleAllAnimations,
           Scene.expectOutMessage(
             ToastBehavior.OutMessage.DismissedToast({
-              entry: entryOf('toasts-0', STICKY_ERROR),
+              entry: leavingEntryOf('toasts-entry-0', STICKY_ERROR),
             }),
           ),
           Scene.expect(toastLocator).toBeAbsent(),
@@ -484,20 +592,11 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add timed' })),
           Scene.expectHandled(),
-          Scene.Command.resolve(
-            ToastBehavior.WaitBeforeDismissing({
-              id: 'toasts-0',
-              durationMs: 1000,
-              timerVersion: 0,
-            }),
-            ToastBehavior.Message.CompletedWaitBeforeDismissingToast({
-              id: 'toasts-0',
-              timerVersion: 0,
-            }),
-          ),
+          dismissTimerFires('toasts-entry-0'),
+          settleAllAnimations,
           Scene.expectOutMessage(
             ToastBehavior.OutMessage.DismissedToast({
-              entry: entryOf('toasts-0', TIMED),
+              entry: leavingEntryOf('toasts-entry-0', TIMED),
             }),
           ),
         )
@@ -511,6 +610,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
           Scene.expectHandled(),
+          settleAllAnimations,
           Scene.expect(toastLocator).toContainText('Could not save changes'),
           Scene.click(Scene.role('button', { name: 'update first' })),
           Scene.expectHandled(),
@@ -526,41 +626,35 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           // flight — seeding keeps no Command pending so the stale
           // completion below can be emitted before updating.
           Scene.given(
-            seededModel({ ...entryOf('toasts-0', DEFAULT), timerVersion: 1 }),
+            seededModel({
+              ...entryOf('toasts-entry-0', DEFAULT),
+              pendingDismissVersion: 1,
+            }),
           ),
           // A completion for the superseded v0 timer is ignored.
           Scene.Subscription.emit({
             _tag: 'GotToastMessage',
             message:
-              ToastBehavior.Message.CompletedWaitBeforeDismissingToast({
-                id: 'toasts-0',
-                timerVersion: 0,
+              ToastPrimitive.Message.CompletedWaitBeforeDismissal({
+                entryId: 'toasts-entry-0',
+                version: 0,
               }),
           }),
           Scene.expect(toastLocator).toExist(),
           Scene.expect(toastLocator).toContainText('Saved'),
           Scene.click(Scene.role('button', { name: 'update first' })),
           Scene.expectHandled(),
-          // updateToast bumps timerVersion and reschedules under v2.
+          // updateToast bumps pendingDismissVersion and reschedules under v2.
           Scene.Command.expectExact(
-            ToastBehavior.WaitBeforeDismissing({
-              id: 'toasts-0',
-              durationMs: 4000,
-              timerVersion: 2,
+            ToastPrimitive.WaitBeforeDismissal({
+              entryId: 'toasts-entry-0',
+              version: 2,
+              duration: Duration.millis(4000),
             }),
           ),
           Scene.expect(toastLocator).toContainText('Updated'),
-          Scene.Command.resolve(
-            ToastBehavior.WaitBeforeDismissing({
-              id: 'toasts-0',
-              durationMs: 4000,
-              timerVersion: 2,
-            }),
-            ToastBehavior.Message.CompletedWaitBeforeDismissingToast({
-              id: 'toasts-0',
-              timerVersion: 2,
-            }),
-          ),
+          dismissTimerFires('toasts-entry-0'),
+          settleAllAnimations,
           Scene.expect(toastLocator).toBeAbsent(),
         )
       })
@@ -571,27 +665,22 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
           Scene.expectHandled(),
-          Scene.Command.expectNone(),
+          // Sticky: only the enter animation is pending, no dismissal timer.
+          Scene.Command.expectExact(
+            AnimationPrimitive.WaitForPaint({ generation: 1 }),
+          ),
+          settleAllAnimations,
           Scene.click(Scene.role('button', { name: 'arm first timer' })),
           Scene.expectHandled(),
           Scene.Command.expectHas(
-            ToastBehavior.WaitBeforeDismissing({
-              id: 'toasts-0',
-              durationMs: 1000,
-              timerVersion: 1,
+            ToastPrimitive.WaitBeforeDismissal({
+              entryId: 'toasts-entry-0',
+              version: 1,
+              duration: Duration.millis(1000),
             }),
           ),
-          Scene.Command.resolve(
-            ToastBehavior.WaitBeforeDismissing({
-              id: 'toasts-0',
-              durationMs: 1000,
-              timerVersion: 1,
-            }),
-            ToastBehavior.Message.CompletedWaitBeforeDismissingToast({
-              id: 'toasts-0',
-              timerVersion: 1,
-            }),
-          ),
+          dismissTimerFires('toasts-entry-0'),
+          settleAllAnimations,
           Scene.expect(toastLocator).toBeAbsent(),
         )
       })
@@ -604,9 +693,14 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
           Scene.expectHandled(),
+          settleAllAnimations,
           Scene.expect(toastLocator).toExist(),
           Scene.click(dismissButton),
           Scene.expectHandled(),
+          // The entry lingers in its leave animation, then unmounts on
+          // settle.
+          Scene.expect(toastLocator).toExist(),
+          settleAllAnimations,
           Scene.expect(toastLocator).toBeAbsent(),
         )
       })
@@ -617,35 +711,40 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
           Scene.expectHandled(),
+          settleAllAnimations,
           Scene.click(Scene.role('button', { name: 'add sticky info' })),
           Scene.expectHandled(),
+          settleAllAnimations,
           Scene.expectAll(allToasts).toHaveCount(2),
           Scene.click(Scene.role('button', { name: 'dismiss all' })),
           Scene.expectHandled(),
+          settleAllAnimations,
           Scene.expectAll(allToasts).toHaveCount(0),
         )
       })
 
-      // DIVERGENCE: Base UI fires each toast's onClose when close() clears
-      // the list. creaseui's dismissAll empties the model without emitting
-      // any DismissedToast OutMessage, so parents cannot observe
-      // per-toast teardown on a bulk dismiss.
-      it.fails('emits a dismissal message for every toast closed by dismissAll', () => {
+      // Upstream behavior change: the Toast primitive emits DismissedToast
+      // for every entry once its leave transition settles, so bulk
+      // dismissals are observable per-toast now.
+      it('emits a dismissal message for every toast closed by dismissAll', () => {
         Scene.scene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
           Scene.expectHandled(),
+          settleAllAnimations,
           Scene.click(Scene.role('button', { name: 'add sticky info' })),
           Scene.expectHandled(),
+          settleAllAnimations,
           Scene.click(Scene.role('button', { name: 'dismiss all' })),
           Scene.expectHandled(),
+          settleAllAnimations,
           Scene.expectOutMessages(
             ToastBehavior.OutMessage.DismissedToast({
-              entry: entryOf('toasts-0', STICKY_ERROR),
+              entry: leavingEntryOf('toasts-entry-0', STICKY_ERROR),
             }),
             ToastBehavior.OutMessage.DismissedToast({
-              entry: entryOf('toasts-1', STICKY_INFO),
+              entry: leavingEntryOf('toasts-entry-1', STICKY_INFO),
             }),
           ),
         )
@@ -657,6 +756,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
           Scene.expectHandled(),
+          settleAllAnimations,
           Scene.click(Scene.role('button', { name: 'dismiss unknown' })),
           Scene.expectHandled(),
           Scene.expectNoOutMessage(),
@@ -671,18 +771,19 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           { update, view: makeView(Toast) },
           // Seeded non-sticky entry — a pending Command would block the
           // hover interaction, so the in-flight timer is model state only.
-          Scene.given(seededModel(entryOf('toasts-0', TIMED))),
+          Scene.given(seededModel(entryOf('toasts-entry-0', TIMED))),
           Scene.hover(toastLocator),
           Scene.expectHandled(),
           Scene.expect(toastLocator).toHaveAttr('data-paused', 'true'),
-          // The in-flight timer still completes, but a paused entry
-          // ignores it and stays rendered.
+          // The in-flight timer still completes, but HoveredEntry bumped
+          // pendingDismissVersion so the v0 completion is stale — the
+          // paused entry stays rendered.
           Scene.Subscription.emit({
             _tag: 'GotToastMessage',
             message:
-              ToastBehavior.Message.CompletedWaitBeforeDismissingToast({
-                id: 'toasts-0',
-                timerVersion: 0,
+              ToastPrimitive.Message.CompletedWaitBeforeDismissal({
+                entryId: 'toasts-entry-0',
+                version: 0,
               }),
           }),
           Scene.expect(toastLocator).toExist(),
@@ -692,38 +793,30 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       it('resumes timers when not hovering', () => {
         Scene.scene(
           { update, view: makeView(Toast) },
-          Scene.given(seededModel(entryOf('toasts-0', TIMED))),
+          Scene.given(seededModel(entryOf('toasts-entry-0', TIMED))),
           Scene.hover(toastLocator),
           Scene.expectHandled(),
           Scene.expect(toastLocator).toHaveAttr('data-paused', 'true'),
-          // The DSL has no mouseleave/unhover step — emit the ResumedToast
+          // The DSL has no mouseleave/unhover step — emit the LeftEntry
           // the OnMouseLeave handler dispatches (wiring asserted via
           // toHaveHandler below).
           Scene.Subscription.emit({
             _tag: 'GotToastMessage',
-            message: ToastBehavior.Message.ResumedToast({ id: 'toasts-0' }),
+            message: ToastPrimitive.Message.LeftEntry({ entryId: 'toasts-entry-0' }),
           }),
           Scene.expect(toastLocator).toHaveAttr('data-paused', 'false'),
           Scene.expect(toastLocator).toHaveHandler('mouseleave'),
-          // Resuming bumps the version and re-arms a fresh timer.
+          // HoveredEntry and LeftEntry each bumped the version, so the
+          // re-armed timer runs under v2.
           Scene.Command.expectHas(
-            ToastBehavior.WaitBeforeDismissing({
-              id: 'toasts-0',
-              durationMs: 1000,
-              timerVersion: 1,
+            ToastPrimitive.WaitBeforeDismissal({
+              entryId: 'toasts-entry-0',
+              version: 2,
+              duration: Duration.millis(1000),
             }),
           ),
-          Scene.Command.resolve(
-            ToastBehavior.WaitBeforeDismissing({
-              id: 'toasts-0',
-              durationMs: 1000,
-              timerVersion: 1,
-            }),
-            ToastBehavior.Message.CompletedWaitBeforeDismissingToast({
-              id: 'toasts-0',
-              timerVersion: 1,
-            }),
-          ),
+          dismissTimerFires('toasts-entry-0'),
+          settleAllAnimations,
           Scene.expect(toastLocator).toBeAbsent(),
         )
       })
@@ -739,17 +832,8 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.expectHandled(),
           Scene.expect(toastLocator).not.toHaveHandler('mouseenter'),
           Scene.expect(toastLocator).not.toHaveHandler('mouseleave'),
-          Scene.Command.resolve(
-            ToastBehavior.WaitBeforeDismissing({
-              id: 'toasts-0',
-              durationMs: 4000,
-              timerVersion: 0,
-            }),
-            ToastBehavior.Message.CompletedWaitBeforeDismissingToast({
-              id: 'toasts-0',
-              timerVersion: 0,
-            }),
-          ),
+          dismissTimerFires('toasts-entry-0'),
+          settleAllAnimations,
         )
       })
 
@@ -761,6 +845,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.expectHandled(),
           Scene.expect(Scene.role('alert')).not.toHaveHandler('mouseenter'),
           Scene.expect(Scene.role('alert')).not.toHaveHandler('mouseleave'),
+          settleAllAnimations,
         )
       })
 
@@ -809,8 +894,10 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
           Scene.expectHandled(),
+          settleAllAnimations,
           Scene.click(Scene.role('button', { name: 'add sticky info' })),
           Scene.expectHandled(),
+          settleAllAnimations,
           Scene.expect(
             Scene.first(
               Scene.filter(Scene.all.role('status'), { hasText: 'Still here' }),
@@ -902,17 +989,8 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.expect(dismissButton).toHaveAccessibleName(
             'Dismiss notification',
           ),
-          Scene.Command.resolve(
-            ToastBehavior.WaitBeforeDismissing({
-              id: 'toasts-0',
-              durationMs: 4000,
-              timerVersion: 0,
-            }),
-            ToastBehavior.Message.CompletedWaitBeforeDismissingToast({
-              id: 'toasts-0',
-              timerVersion: 0,
-            }),
-          ),
+          dismissTimerFires('toasts-entry-0'),
+          settleAllAnimations,
         )
       })
     })
@@ -924,16 +1002,19 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky action' })),
           Scene.expectHandled(),
+          settleAllAnimations,
           Scene.expect(actionButton).toExist(),
           Scene.click(actionButton),
           Scene.expectHandled(),
           // Base UI's action callback maps to the ActivatedToast
-          // OutMessage; activation also removes the entry.
+          // OutMessage; activation also removes the entry (once the
+          // leave transition settles).
           Scene.expectOutMessage(
             ToastBehavior.OutMessage.ActivatedToast({
-              entry: entryOf('toasts-0', STICKY_UNDO),
+              entry: entryOf('toasts-entry-0', STICKY_UNDO),
             }),
           ),
+          settleAllAnimations,
           Scene.expect(toastLocator).toBeAbsent(),
         )
       })
@@ -948,17 +1029,8 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
             toastLocator,
             Scene.expectAll(Scene.all.role('button')).toHaveCount(1),
           ),
-          Scene.Command.resolve(
-            ToastBehavior.WaitBeforeDismissing({
-              id: 'toasts-0',
-              durationMs: 1000,
-              timerVersion: 0,
-            }),
-            ToastBehavior.Message.CompletedWaitBeforeDismissingToast({
-              id: 'toasts-0',
-              timerVersion: 0,
-            }),
-          ),
+          dismissTimerFires('toasts-entry-0'),
+          settleAllAnimations,
         )
       })
     })
@@ -974,17 +1046,8 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.click(Scene.role('button', { name: 'add' })),
           Scene.expectHandled(),
           Scene.expect(Scene.text('Saved')).toExist(),
-          Scene.Command.resolve(
-            ToastBehavior.WaitBeforeDismissing({
-              id: 'toasts-0',
-              durationMs: 4000,
-              timerVersion: 0,
-            }),
-            ToastBehavior.Message.CompletedWaitBeforeDismissingToast({
-              id: 'toasts-0',
-              timerVersion: 0,
-            }),
-          ),
+          dismissTimerFires('toasts-entry-0'),
+          settleAllAnimations,
         )
       })
     })
@@ -997,17 +1060,8 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.click(Scene.role('button', { name: 'add' })),
           Scene.expectHandled(),
           Scene.expect(Scene.text('Sunday at 9:00 AM')).toExist(),
-          Scene.Command.resolve(
-            ToastBehavior.WaitBeforeDismissing({
-              id: 'toasts-0',
-              durationMs: 4000,
-              timerVersion: 0,
-            }),
-            ToastBehavior.Message.CompletedWaitBeforeDismissingToast({
-              id: 'toasts-0',
-              timerVersion: 0,
-            }),
-          ),
+          dismissTimerFires('toasts-entry-0'),
+          settleAllAnimations,
         )
       })
 
@@ -1021,17 +1075,8 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           // The TIMED input has no description; the article renders only
           // the title node (plus its dismiss control).
           Scene.expect(toastLocator).not.toContainText('Sunday at 9:00 AM'),
-          Scene.Command.resolve(
-            ToastBehavior.WaitBeforeDismissing({
-              id: 'toasts-0',
-              durationMs: 1000,
-              timerVersion: 0,
-            }),
-            ToastBehavior.Message.CompletedWaitBeforeDismissingToast({
-              id: 'toasts-0',
-              timerVersion: 0,
-            }),
-          ),
+          dismissTimerFires('toasts-entry-0'),
+          settleAllAnimations,
         )
       })
     })
@@ -1054,8 +1099,10 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
           Scene.expectHandled(),
+          settleAllAnimations,
           Scene.click(Scene.role('button', { name: 'add positioned sticky' })),
           Scene.expectHandled(),
+          settleAllAnimations,
           Scene.expect(
             Scene.selector('section[data-position="top-left"]'),
           ).toExist(),
@@ -1089,8 +1136,10 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
           Scene.expectHandled(),
+          settleAllAnimations,
           Scene.click(Scene.role('button', { name: 'add sticky info' })),
           Scene.expectHandled(),
+          settleAllAnimations,
           Scene.expect(Scene.nth(allToasts, 0)).toContainText('Still here'),
         )
       })

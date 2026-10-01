@@ -156,6 +156,58 @@ const acquireResources = Scene.Mount.resolve(
   DialogPrimitive.AcquireResources,
   DialogPrimitive.Message.SucceededAcquireResources(),
 )
+/* foldkit 0.164's Animation commands carry a `generation` arg that the result
+   Messages must echo back. Read it off the pending Command. */
+const pendingAnimationGeneration = (
+  commands: ReadonlyArray<Readonly<{ name: string; args?: Record<string, unknown> }>>,
+): number => {
+  const pending = commands.find(
+    command =>
+      command.name === 'WaitForPaint' || command.name === 'WaitForAnimationSettled',
+  )
+  const generation = pending?.args?.['generation']
+  if (typeof generation !== 'number') {
+    throw new Error('Expected a pending animation Command, found none.')
+  }
+  return generation
+}
+
+/* Resolves a paint+settle Command pair; both waits share one transition
+   generation. */
+const animationPaintedThenSettled = (
+  simulation: Scene.SceneSimulation<Model, Message>,
+) =>
+  Scene.Command.resolveAll(
+    [
+      AnimationPrimitive.WaitForPaint,
+      AnimationPrimitive.Message.CompletedWaitForPaint({
+        generation: pendingAnimationGeneration(simulation.commands),
+      }),
+    ],
+    [
+      AnimationPrimitive.WaitForAnimationSettled,
+      AnimationPrimitive.Message.EndedAnimation({
+        generation: pendingAnimationGeneration(simulation.commands),
+      }),
+    ],
+  )(simulation)
+
+const animationPainted = (simulation: Scene.SceneSimulation<Model, Message>) =>
+  Scene.Command.resolve(
+    AnimationPrimitive.WaitForPaint,
+    AnimationPrimitive.Message.CompletedWaitForPaint({
+      generation: pendingAnimationGeneration(simulation.commands),
+    }),
+  )(simulation)
+
+const animationSettled = (simulation: Scene.SceneSimulation<Model, Message>) =>
+  Scene.Command.resolve(
+    AnimationPrimitive.WaitForAnimationSettled,
+    AnimationPrimitive.Message.EndedAnimation({
+      generation: pendingAnimationGeneration(simulation.commands),
+    }),
+  )(simulation)
+
 const closeCompleted = Scene.Command.resolve(
   DialogPrimitive.CloseDialog,
   DialogPrimitive.Message.CompletedCloseDialog(),
@@ -448,14 +500,7 @@ const verifyRenderer = (name: string, AlertDialog: AlertDialogModule) => {
             Scene.expectHandled(),
             showSucceeded,
             // EnterStart → EnterAnimating → Idle
-            Scene.Command.resolve(
-              AnimationPrimitive.WaitForPaint,
-              AnimationPrimitive.Message.CompletedWaitForPaint(),
-            ),
-            Scene.Command.resolve(
-              AnimationPrimitive.WaitForAnimationSettled,
-              AnimationPrimitive.Message.EndedAnimation(),
-            ),
+            animationPaintedThenSettled,
             acquireResources,
             Scene.expect(popup).toExist(),
             Scene.click(cancelButton),
@@ -466,18 +511,12 @@ const verifyRenderer = (name: string, AlertDialog: AlertDialogModule) => {
             // LeaveStart: still mounted, leave flag applied.
             Scene.expect(popup).toExist(),
             Scene.expect(overlay).toHaveAttr('data-leave', ''),
-            Scene.Command.resolve(
-              AnimationPrimitive.WaitForPaint,
-              AnimationPrimitive.Message.CompletedWaitForPaint(),
-            ),
+            animationPainted,
             // LeaveAnimating: still mounted, now flagged closed+leave.
             Scene.expect(popup).toExist(),
             Scene.expect(overlay).toHaveAttr('data-closed', ''),
             Scene.expect(overlay).toHaveAttr('data-leave', ''),
-            Scene.Command.resolve(
-              AnimationPrimitive.WaitForAnimationSettled,
-              AnimationPrimitive.Message.EndedAnimation(),
-            ),
+            animationSettled,
             // TransitionedOut lifts the CloseDialog command.
             closeCompleted,
             Scene.expect(popup).toBeAbsent(),

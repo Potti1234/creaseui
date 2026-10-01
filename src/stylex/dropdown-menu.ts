@@ -24,6 +24,7 @@ const styles = stylex.create({
   right: { left: '100%', marginLeft: '0.25rem' },
   menuContent: { minWidth: '8rem', overflow: 'visible', padding: '0.25rem', position: 'absolute', width: 'max-content' },
   submenuPanel: { minWidth: '8rem', overflow: 'visible', padding: '0.25rem', width: 'max-content', zIndex: 50 },
+  separatorMargins: { marginBlock: '0.25rem' },
   shortcut: { color: tokens.mutedForeground, fontSize: '0.75rem', lineHeight: '1rem', letterSpacing: '0.1em', marginLeft: 'auto' },
   top: { bottom: '100%', marginBottom: '0.25rem' },
 })
@@ -46,6 +47,7 @@ import type { StaticStyles } from '@stylexjs/stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
 import { buttonVisualStyles } from './button'
 import { joinStyles } from './button-group-join.stylex'
+import { separator } from './separator' 
 import type { ButtonSize, ButtonVariant, ComponentLayoutStyle } from './contracts'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
@@ -461,9 +463,9 @@ export const dropdownMenu = <Item extends string, Msg>(
     if (config.group !== previousGroup || config.separatorBefore === true) {
       if (grouped.length > 0)
         grouped.push(
-          h.div(
-            [h.Role('separator'), h.Class(className(overlayStyles.separator))],
-            [],
+          separator(
+            { decorative: false, layoutStyle: styles.separatorMargins },
+            h,
           ),
         );
       if (config.group !== previousGroup && config.group !== undefined)

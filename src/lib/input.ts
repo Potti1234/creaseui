@@ -25,6 +25,9 @@ export type InputBehaviorProps<Msg> = Readonly<{
   autocomplete?: string
   inputMode?: InputMode
   describedBy?: string
+  /** Extra WAI-ARIA role for composite inputs (e.g. 'searchbox', 'combobox'). */
+  role?: string
+  ariaLabel?: string
   isDisabled?: boolean
   isReadOnly?: boolean
   isInvalid?: boolean
@@ -85,6 +88,10 @@ export const renderInput = <Msg>(
             ? []
             : [h.Autocomplete(props.autocomplete)]),
           ...(props.inputMode === undefined ? [] : [h.InputMode(props.inputMode)]),
+          ...(props.role === undefined ? [] : [h.Role(props.role)]),
+          ...(props.ariaLabel === undefined
+            ? []
+            : [h.AriaLabel(props.ariaLabel)]),
           ...(describedBy === undefined ? [] : [h.AriaDescribedBy(describedBy)]),
           ...visual.input,
         ])

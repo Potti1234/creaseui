@@ -474,7 +474,7 @@ describe('StyleX component authoring contract', () => {
     const stylex = readFileSync('src/stylex/sonner.ts', 'utf8')
     const toast = readFileSync('src/ui/toast.ts', 'utf8')
 
-    assert.match(behavior, /timerVersion/u)
+    assert.match(behavior, /pendingDismissVersion/u)
     assert.match(behavior, /export const updateToast/u)
     assert.match(behavior, /ActivatedToast/u)
     assert.match(tailwind, /@\/lib\/toast/u)
@@ -491,8 +491,8 @@ describe('StyleX component authoring contract', () => {
 
     assert.match(behavior, /WaitBeforeShowingTooltip/u)
     assert.match(behavior, /WaitBeforeClosingTooltip/u)
-    assert.match(behavior, /showVersion/u)
-    assert.match(behavior, /closeVersion/u)
+    assert.match(behavior, /TooltipPrimitive/u)
+    assert.match(behavior, /version/u)
     assert.match(tailwind, /@\/lib\/tooltip/u)
     assert.match(stylex, /@\/lib\/tooltip/u)
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/tooltip['"]/u)

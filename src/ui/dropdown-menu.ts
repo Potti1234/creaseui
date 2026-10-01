@@ -7,6 +7,7 @@ import { defineMessageUnion } from 'foldkit/message';
 import * as Icon from '@/lib/icon';
 import * as Behavior from '@/lib/dropdown-menu-behavior';
 import { cn } from '@/lib/utils';
+import { separator } from '@/ui/separator';
 
 export const Model = S.Struct({
   id: S.String,
@@ -433,10 +434,7 @@ export const dropdownMenu = <Item extends string, Msg>(
     if (config.group !== previousGroup || config.separatorBefore === true) {
       if (grouped.length > 0)
         grouped.push(
-          h.div(
-            [h.Role('separator'), h.Class('-mx-1 my-1 h-px bg-border')],
-            [],
-          ),
+          separator({ decorative: false, class: '-mx-1 my-1' }, h),
         );
       if (config.group !== previousGroup && config.group !== undefined)
         grouped.push(

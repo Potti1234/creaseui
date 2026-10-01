@@ -1,4 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
+import { Progress as ProgressPrimitive } from '@foldkit/ui';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import type { ComponentLayoutStyle } from './contracts';
@@ -182,7 +183,7 @@ export const circularProgress = <Msg>(
   const showLabel = props.isLabelHidden !== true;
   const showValueLabel = props.hasValueLabel === true && !isIndeterminate;
   const hasCenterContent = props.children !== undefined && props.children.length > 0;
-  const labelId = props.id === undefined ? undefined : `${props.id}-label`;
+  const labelId = props.id === undefined ? undefined : ProgressPrimitive.labelId(props.id);
 
   const fillVariant = isDisabled ? 'neutral' : variant;
   const trackVariant = isDisabled ? 'neutral' : variant;
@@ -234,30 +235,30 @@ export const circularProgress = <Msg>(
       h.div(
         [h.Class(className(styles.ringWrapper))],
         [
-          h.svg(
-            [
-              h.Role('progressbar'),
+          ProgressPrimitive.view(
+            {
+              id: props.id ?? 'circular-progress',
+              ...(isIndeterminate ? {} : { value: clampedValue }),
+              max: safeMax,
               ...(labelId === undefined
-                ? [h.AriaLabel(props.label)]
-                : [h.AriaLabelledBy(labelId)]),
-              ...(isIndeterminate
-                ? []
-                : [
-                    h.AriaValuenow(clampedValue),
-                    h.AriaValuemin(0),
-                    h.AriaValuemax(safeMax),
-                    h.AriaValuetext(valueText),
-                  ]),
-              h.Width(String(diameter)),
-              h.Height(String(diameter)),
-              h.ViewBox(`0 0 ${diameter} ${diameter}`),
-              h.Class(
-                className(
-                  styles.svg,
-                  isIndeterminate ? styles.svgIndeterminate : styles.svgDeterminate,
-                ),
-              ),
-            ],
+                ? { ariaLabel: props.label }
+                : { ariaLabelledBy: labelId }),
+              ...(isIndeterminate ? {} : { valueText: formatValueLabel }),
+              toView: ({ progress: progressAttrs }) =>
+                h.svg(
+                  [
+                    // Root div owns the element id; the svg carries progressbar semantics.
+                    ...progressAttrs.filter((attr) => attr._tag !== 'Id'),
+                    h.Width(String(diameter)),
+                    h.Height(String(diameter)),
+                    h.ViewBox(`0 0 ${diameter} ${diameter}`),
+                    h.Class(
+                      className(
+                        styles.svg,
+                        isIndeterminate ? styles.svgIndeterminate : styles.svgDeterminate,
+                      ),
+                    ),
+                  ],
             [
               h.circle(
                 [
@@ -270,6 +271,7 @@ export const circularProgress = <Msg>(
                 ],
                 [],
               ),
+
               h.circle(
                 [
                   h.DataAttribute('slot', 'circular-progress-fill'),
@@ -295,6 +297,9 @@ export const circularProgress = <Msg>(
                 [],
               ),
             ],
+          ),
+            },
+            h,
           ),
           ...(hasCenterContent || showValueLabel
             ? [

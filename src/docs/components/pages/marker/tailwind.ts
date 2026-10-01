@@ -18,7 +18,7 @@ type MarkerPreviewModel = S.Schema.Type<typeof MarkerPreviewModel>;
 
 const MarkerPreviewMessage = defineMessageUnion({
   ClickedRevert: {},
-  GotSonnerMessage: { message: Sonner.Message },
+  GotSonnerMessage: { message: S.Union([Sonner.Message, Sonner.ActivatedToastAction]) },
 });
 type MarkerPreviewMessage = typeof MarkerPreviewMessage.Type;
 

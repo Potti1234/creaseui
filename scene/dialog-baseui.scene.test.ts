@@ -292,6 +292,43 @@ const dialogView =
       ),
     ])
 
+/* foldkit 0.164's Animation commands carry a `generation` arg that the result
+   Messages must echo back. Read it off the pending Command so the test does
+   not hardcode a generation number. */
+const pendingAnimationGeneration = (
+  commands: ReadonlyArray<Readonly<{ name: string; args?: Record<string, unknown> }>>,
+  name = 'WaitForPaint',
+): number => {
+  const pending = commands.find(
+    command => command.name === name || command.name === 'WaitForAnimationSettled',
+  )
+  const generation = pending?.args?.['generation']
+  if (typeof generation !== 'number') {
+    throw new Error(`Expected a pending animation Command, found none.`)
+  }
+  return generation
+}
+
+/* Resolves the EnterStart → EnterAnimating (or LeaveStart → LeaveAnimating)
+   paint+settle Command pair. Both waits share one transition generation. */
+const animationPaintedThenSettled = (
+  simulation: Scene.SceneSimulation<Model, Message, DialogPrimitive.OutMessage>,
+) =>
+  Scene.Command.resolveAll(
+    [
+      Animation.WaitForPaint,
+      Animation.Message.CompletedWaitForPaint({
+        generation: pendingAnimationGeneration(simulation.commands),
+      }),
+    ],
+    [
+      Animation.WaitForAnimationSettled,
+      Animation.Message.EndedAnimation({
+        generation: pendingAnimationGeneration(simulation.commands),
+      }),
+    ],
+  )(simulation)
+
 /* Steps shared by most cases: drive a fresh open to fully settled. */
 const openDialog = (
   options: { isAnimated?: boolean } = {},
@@ -303,18 +340,7 @@ const openDialog = (
     DialogPrimitive.ShowDialog,
     DialogPrimitive.Message.SucceededShowDialog(),
   ),
-  ...(options.isAnimated
-    ? [
-        Scene.Command.resolve(
-          Animation.WaitForPaint,
-          Animation.Message.CompletedWaitForPaint(),
-        ),
-        Scene.Command.resolve(
-          Animation.WaitForAnimationSettled,
-          Animation.Message.EndedAnimation(),
-        ),
-      ]
-    : []),
+  ...(options.isAnimated ? [animationPaintedThenSettled] : []),
   Scene.Mount.resolve(
     DialogPrimitive.AcquireResources,
     DialogPrimitive.Message.SucceededAcquireResources(),
@@ -731,16 +757,7 @@ const verifyRenderer = (
           // Still leaving: no close-completion message has reached the parent.
           Scene.expect(lastDialogMessage).toHaveText('RequestedClose'),
           Scene.expect(panel).toExist(),
-          Scene.Command.resolveAll(
-            [
-              Animation.WaitForPaint,
-              Animation.Message.CompletedWaitForPaint(),
-            ],
-            [
-              Animation.WaitForAnimationSettled,
-              Animation.Message.EndedAnimation(),
-            ],
-          ),
+          animationPaintedThenSettled,
           Scene.Mount.expectEnded(DialogPrimitive.AcquireResources),
           Scene.Command.resolve(
             DialogPrimitive.CloseDialog,
@@ -836,16 +853,7 @@ const verifyRenderer = (
           Scene.expect(backdrop).not.toHaveHandler('click'),
           Scene.expect(backdrop).toHaveAttr('data-leave'),
           Scene.expect(panel).toExist(),
-          Scene.Command.resolveAll(
-            [
-              Animation.WaitForPaint,
-              Animation.Message.CompletedWaitForPaint(),
-            ],
-            [
-              Animation.WaitForAnimationSettled,
-              Animation.Message.EndedAnimation(),
-            ],
-          ),
+          animationPaintedThenSettled,
           Scene.Mount.expectEnded(DialogPrimitive.AcquireResources),
           Scene.Command.resolve(
             DialogPrimitive.CloseDialog,

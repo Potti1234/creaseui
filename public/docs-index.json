@@ -2466,8 +2466,10 @@
       "source": "src/ui/data-table.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/data-table",
       "dependencies": [
+        "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/input",
         "Potti1234/creaseui/table",
         "Potti1234/creaseui/utils"
       ],
@@ -3220,6 +3222,7 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/separator",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -3476,9 +3479,19 @@
           "signature": "export { FieldError } from '@/lib/field'"
         },
         {
+          "name": "fieldSetLegendId",
+          "kind": "value",
+          "signature": "fieldSetLegendId: value"
+        },
+        {
+          "name": "fieldSetDescriptionId",
+          "kind": "value",
+          "signature": "fieldSetDescriptionId: value"
+        },
+        {
           "name": "FieldSetProps",
           "kind": "type",
-          "signature": "FieldSetProps = Slot & Readonly<{ isDisabled?: boolean }>"
+          "signature": "FieldSetProps = Slot & Readonly<{ isDisabled?: boolean; /** Base id; wires legend/description ids and aria-describedby via the foldkit Fieldset primitive. Pair with `fieldSetLegendId` and `fieldSetDescriptionId`. */ id?: string; /** Set when a `fieldDescripti…"
         },
         {
           "name": "fieldSet",
@@ -3488,7 +3501,7 @@
         {
           "name": "FieldLegendProps",
           "kind": "type",
-          "signature": "FieldLegendProps = Slot & Readonly<{ variant?: 'legend' | 'label' }>"
+          "signature": "FieldLegendProps = Slot & Readonly<{ variant?: 'legend' | 'label'; id?: string }>"
         },
         {
           "name": "fieldLegend",
@@ -3558,7 +3571,7 @@
         {
           "name": "fieldDescription",
           "kind": "function",
-          "signature": "fieldDescription<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html"
+          "signature": "fieldDescription<Msg>(props: Slot & Readonly<{ id?: string }>, h: HtmlBuilder<Msg>): Html"
         },
         {
           "name": "FieldSeparatorProps",
@@ -7492,6 +7505,7 @@
       "source": "src/ui/sonner.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/sonner",
       "dependencies": [
+        "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -9224,8 +9238,10 @@
       "source": "src/ui/transfer-list.ts",
       "install": "npx shadcn@latest add Potti1234/creaseui/transfer-list",
       "dependencies": [
+        "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/input",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
