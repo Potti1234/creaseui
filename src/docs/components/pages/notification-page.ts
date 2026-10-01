@@ -27,7 +27,7 @@ import * as ${config.namespace} from '@/${renderer === 'stylex' ? 'stylex' : 'ui
 export type Model = typeof Model.Type`,
     messages: `import { taggedStruct } from 'foldkit/schema'
 export const ClickedShow = taggedStruct('ClickedShow${config.title}${example.replaceAll(/[^a-zA-Z0-9]/g, '')}');
-export const GotNotificationMessage = taggedStruct('Got${config.title}Message${example.replaceAll(/[^a-zA-Z0-9]/g, '')}', { message: ${config.namespace}.Message });
+export const GotNotificationMessage = taggedStruct('Got${config.title}Message${example.replaceAll(/[^a-zA-Z0-9]/g, '')}', { message: S.Union([${config.namespace}.Message, ${config.namespace}.ActivatedToastAction]) });
 export const Message = S.Union([ClickedShow, GotNotificationMessage])
 export type Message = typeof Message.Type`,
     init: `export const init = (): Update.Return<Model, Message> => ({ model: { notifications: ${config.namespace}.init({ id: '${config.slug}-demo' }), maybeLastDismissedTitle: Option.none() } })`,

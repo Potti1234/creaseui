@@ -1,5 +1,5 @@
 import type { Update } from 'foldkit'
-import { Duration, Option, Schema as S } from 'effect'
+import { Duration, Equal, Option, Schema as S } from 'effect'
 import * as Command from 'foldkit/command'
 import { defineMessageUnion } from 'foldkit/message'
 import { taggedStruct } from 'foldkit/schema'
@@ -50,10 +50,11 @@ const primitiveVariant = (variant: Variant): 'Info' | 'Success' | 'Warning' | 'E
   variant === 'Default' ? 'Info' : variant
 
 /** Maps the primitive's `DismissedToast({payload})` back to crease's
- *  `{entry}` shape by matching the payload object identity. */
+ *  `{entry}` shape by structural payload equality — the primitive rebuilds
+ *  the payload through Schema decoding, so identity comparison misses. */
 const toOutMessage = (model: Model, out: typeof Toast.OutMessage.Type | undefined): OutMessage | undefined => {
   if (out === undefined) return undefined
-  const entry = model.entries.find(candidate => candidate.payload === out.payload)
+  const entry = model.entries.find(candidate => Equal.equals(candidate.payload, out.payload))
   return entry === undefined ? undefined : OutMessage.DismissedToast({ entry })
 }
 
