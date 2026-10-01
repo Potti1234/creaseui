@@ -1,4 +1,5 @@
 import { type VariantProps, cva } from 'class-variance-authority';
+import { Fieldset as FieldsetPrimitive } from '@foldkit/ui';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import {
@@ -8,8 +9,14 @@ import {
   renderControlField,
 } from '@/lib/field';
 import { cn } from '@/lib/utils';
+import { separator } from '@/ui/separator';
 
 export type { ControlFieldParts, FieldError } from '@/lib/field';
+
+/** Legend id for the fieldset's `id`; pass to `fieldLegend`'s `id` prop. */
+export const fieldSetLegendId = FieldsetPrimitive.legendId;
+/** Description id for the fieldset's `id`; pass to `fieldDescription`'s `id` prop. */
+export const fieldSetDescriptionId = FieldsetPrimitive.descriptionId;
 
 /* Ported from shadcn/ui field.tsx as structural foldkit view functions.
    Stateful selectors are adapted to foldkit's valueless data-disabled and
@@ -20,29 +27,58 @@ type Slot = Readonly<{
   children: ReadonlyArray<Html | string>;
 }>;
 
-export type FieldSetProps = Slot & Readonly<{ isDisabled?: boolean }>;
+export type FieldSetProps = Slot &
+  Readonly<{
+    isDisabled?: boolean;
+    /** Base id; wires legend/description ids and aria-describedby via the
+        foldkit Fieldset primitive. Pair with `fieldSetLegendId` and
+        `fieldSetDescriptionId`. */
+    id?: string;
+    /** Set when a `fieldDescription` is rendered inside this fieldset. */
+    hasDescription?: boolean;
+  }>;
 
 export const fieldSet = <Msg>(
   props: FieldSetProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
+  const className = cn(
+    'flex flex-col gap-6 has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3',
+    props.class,
+  );
+
+  if (props.id !== undefined) {
+    return FieldsetPrimitive.view(
+      {
+        id: props.id,
+        ...(props.isDisabled === undefined ? {} : { isDisabled: props.isDisabled }),
+        ...(props.hasDescription === undefined ? {} : { hasDescription: props.hasDescription }),
+        toView: ({ fieldset }) =>
+          h.fieldset(
+            [
+              ...fieldset,
+              h.DataAttribute('slot', 'field-set'),
+              h.Class(className),
+            ],
+            [...props.children],
+          ),
+      },
+      h,
+    );
+  }
+
   return h.fieldset(
     [
       h.DataAttribute('slot', 'field-set'),
       ...(props.isDisabled === undefined ? [] : [h.Disabled(props.isDisabled)]),
-      h.Class(
-        cn(
-          'flex flex-col gap-6 has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3',
-          props.class,
-        ),
-      ),
+      h.Class(className),
     ],
     [...props.children],
   );
 };
 
 export type FieldLegendProps = Slot &
-  Readonly<{ variant?: 'legend' | 'label' }>;
+  Readonly<{ variant?: 'legend' | 'label'; id?: string }>;
 
 export const fieldLegend = <Msg>(
   props: FieldLegendProps,
@@ -53,6 +89,7 @@ export const fieldLegend = <Msg>(
   return h.legend(
     [
       h.DataAttribute('slot', 'field-legend'),
+      ...(props.id === undefined ? [] : [h.Id(props.id)]),
       h.DataAttribute('variant', variant),
       h.Class(
         cn(
@@ -222,12 +259,13 @@ export const fieldTitle = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
 };
 
 export const fieldDescription = <Msg>(
-  props: Slot,
+  props: Slot & Readonly<{ id?: string }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
   return h.p(
     [
       h.DataAttribute('slot', 'field-description'),
+      ...(props.id === undefined ? [] : [h.Id(props.id)]),
       h.Class(
         cn(
           'text-sm leading-normal font-normal text-muted-foreground group-has-[[data-orientation=horizontal]]/field:text-balance',
@@ -264,16 +302,12 @@ export const fieldSeparator = <Msg>(
       ),
     ],
     [
-      h.div(
-        [
-          h.DataAttribute('slot', 'separator'),
-          h.DataAttribute('orientation', 'horizontal'),
-          h.Role('none'),
-          h.Class(
-            'shrink-0 bg-border data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px absolute inset-0 top-1/2',
-          ),
-        ],
-        [],
+      separator(
+        {
+          decorative: true,
+          class: 'absolute inset-0 top-1/2',
+        },
+        h,
       ),
       ...(hasContent
         ? [

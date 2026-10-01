@@ -491,8 +491,8 @@ describe('StyleX component authoring contract', () => {
 
     assert.match(behavior, /WaitBeforeShowingTooltip/u)
     assert.match(behavior, /WaitBeforeClosingTooltip/u)
-    assert.match(behavior, /showVersion/u)
-    assert.match(behavior, /closeVersion/u)
+    assert.match(behavior, /TooltipPrimitive/u)
+    assert.match(behavior, /version/u)
     assert.match(tailwind, /@\/lib\/tooltip/u)
     assert.match(stylex, /@\/lib\/tooltip/u)
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/tooltip['"]/u)

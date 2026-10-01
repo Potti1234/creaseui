@@ -102,7 +102,7 @@ export const tooltip = <Msg>(
                       h.Class(className(styles.disabledTrigger)),
                       h.OnMouseEnter(send(TooltipBehavior.Message.EnteredTooltipTrigger())),
                       h.OnMouseLeave(send(TooltipBehavior.Message.LeftTooltipTrigger())),
-                      h.OnPointerDown(() => Option.some(send(TooltipBehavior.Message.PressedPointerOnTooltipTrigger()))),
+                      h.OnPointerDown((pointerType) => Option.some(send(TooltipBehavior.Message.PressedPointerOnTooltipTrigger({ pointerType })))),
                     ],
                     [
                       h.button(
@@ -123,7 +123,7 @@ export const tooltip = <Msg>(
                     [
                       h.Id(triggerId), h.Type('button'), h.AriaDescribedBy(panelId), h.Disabled(false),
                       ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
-                      h.OnMouseEnter(send(TooltipBehavior.Message.EnteredTooltipTrigger())), h.OnMouseLeave(send(TooltipBehavior.Message.LeftTooltipTrigger())), h.OnFocus(send(TooltipBehavior.Message.FocusedTooltipTrigger())), h.OnBlur(send(TooltipBehavior.Message.BlurredTooltipTrigger())), h.OnPointerDown(() => Option.some(send(TooltipBehavior.Message.PressedPointerOnTooltipTrigger()))), h.OnKeyDownPreventDefault(key => key === 'Escape' && props.model.isOpen ? Option.some(send(TooltipBehavior.Message.PressedEscapeOnTooltip())) : Option.none()),
+                      h.OnMouseEnter(send(TooltipBehavior.Message.EnteredTooltipTrigger())), h.OnMouseLeave(send(TooltipBehavior.Message.LeftTooltipTrigger())), h.OnFocus(send(TooltipBehavior.Message.FocusedTooltipTrigger())), h.OnBlur(send(TooltipBehavior.Message.BlurredTooltipTrigger())), h.OnPointerDown((pointerType) => Option.some(send(TooltipBehavior.Message.PressedPointerOnTooltipTrigger({ pointerType })))), h.OnKeyDownPreventDefault(key => key === 'Escape' && props.model.isOpen ? Option.some(send(TooltipBehavior.Message.PressedEscapeOnTooltip())) : Option.none()),
                       h.DataAttribute('slot', 'tooltip-trigger'),
                       ...(props.triggerLayoutStyle === undefined
                         ? []

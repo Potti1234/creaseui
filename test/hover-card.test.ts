@@ -7,14 +7,14 @@ test('stale show and close completions cannot override pointer ownership', () =>
   const initial = HoverCard.init({ id: 'profile', showDelay: 200, closeDelay: 100 })
   const op1__ = HoverCard.update(initial, HoverCard.Message.EnteredHoverCard()); const entered = op1__.model;
   const op2__ = HoverCard.update(entered, HoverCard.Message.LeftHoverCard()); const left = op2__.model;
-  const op3__ = HoverCard.update(left, HoverCard.Message.CompletedWaitBeforeShowingHoverCard({ version: entered.showVersion })); const staleShow = op3__.model;
+  const op3__ = HoverCard.update(left, HoverCard.Message.CompletedWaitBeforeShowingHoverCard({ version: entered.pendingOpenVersion })); const staleShow = op3__.model;
   assert.equal(staleShow.isOpen, false)
 
   const op4__ = HoverCard.update(left, HoverCard.Message.EnteredHoverCard()); const enteredAgain = op4__.model;
-  const op5__ = HoverCard.update(enteredAgain, HoverCard.Message.CompletedWaitBeforeShowingHoverCard({ version: enteredAgain.showVersion })); const open = op5__.model;
+  const op5__ = HoverCard.update(enteredAgain, HoverCard.Message.CompletedWaitBeforeShowingHoverCard({ version: enteredAgain.pendingOpenVersion })); const open = op5__.model;
   const op6__ = HoverCard.update(open, HoverCard.Message.LeftHoverCard()); const leaving = op6__.model;
   const op7__ = HoverCard.update(leaving, HoverCard.Message.EnteredHoverCard()); const reentered = op7__.model;
-  const op8__ = HoverCard.update(reentered, HoverCard.Message.CompletedWaitBeforeClosingHoverCard({ version: leaving.closeVersion })); const staleClose = op8__.model;
+  const op8__ = HoverCard.update(reentered, HoverCard.Message.CompletedWaitBeforeClosingHoverCard({ version: leaving.pendingCloseVersion })); const staleClose = op8__.model;
   assert.equal(staleClose.isOpen, true)
 })
 
