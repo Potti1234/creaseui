@@ -35,22 +35,33 @@ const styles = stylex.create({
       default: tokens.shadowSm,
       ':focus-visible': tokens.focusRingShadow,
     },
-    color: tokens.foreground,
     display: 'flex',
     fontFamily: 'inherit',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: {
+      default: '1rem',
+      '@media (min-width: 768px)': '0.875rem',
+    },
+    lineHeight: {
+      default: '1.5rem',
+      '@media (min-width: 768px)': '1.25rem',
+    },
     outlineStyle: 'none',
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'color, border-color, box-shadow',
     height: '2rem',
     minWidth: 0,
-    width: '100%',
+    width: {
+      default: '100%',
+      '@container field-group (min-width: 28rem)': {
+        default: null,
+        ':where([data-slot="field"][data-orientation="responsive"] > *)': 'auto',
+      },
+    },
     '::placeholder': { color: tokens.mutedForeground },
   },
   disabled: { cursor: interactionTokens.cursorDisabled, opacity: 0.5, pointerEvents: 'none' },
   invalid: {
     borderColor: tokens.destructive,
-    boxShadow: tokens.destructiveRingShadow,
   },
   description: {
     color: tokens.mutedForeground,

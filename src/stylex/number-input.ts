@@ -65,6 +65,7 @@ const styles = stylex.create({
     opacity: 0.5,
   },
   srOnly: {
+    margin: '-1px',
     overflow: 'hidden',
     clipPath: 'inset(50%)',
     position: 'absolute',
@@ -84,8 +85,8 @@ const styles = stylex.create({
   statusWrapper: {
     display: 'flex',
     flexDirection: 'column',
-    isolation: 'isolate',
     position: 'relative',
+    zIndex: 0,
   },
   wrapper: {
     borderRadius: foundationTokens.radiusMd,
@@ -157,7 +158,7 @@ const styles = stylex.create({
     backgroundColor: 'transparent',
     color: tokens.foreground,
     display: 'block',
-    flexGrow: 1,
+    flex: '1 1 0%',
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
     outlineStyle: 'none',
@@ -236,7 +237,7 @@ const styles = stylex.create({
       ':disabled': interactionTokens.cursorDefault,
     },
     display: 'flex',
-    flexGrow: 1,
+    flex: '1 1 0%',
     justifyContent: 'center',
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'background-color, color',
@@ -292,7 +293,7 @@ const styles = stylex.create({
     color: tokens.alertSuccess,
   },
   statusText: {
-    flexGrow: 1,
+    flex: '1 1 0%',
   },
   statusIconRow: {
     alignItems: 'center',

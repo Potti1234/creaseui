@@ -14,6 +14,7 @@ import * as Kbd from '@/stylex/kbd';
 import * as Popover from '@/stylex/popover';
 import * as Spinner from '@/stylex/spinner';
 import { className } from '@/stylex/style';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 
 const styles = stylex.create({
   stack: { gap: '1.5rem', display: 'grid', maxWidth: '24rem', width: '100%', },
@@ -21,10 +22,13 @@ const styles = stylex.create({
   stackWide: { gap: '1rem', display: 'grid', maxWidth: '28rem', width: '100%', },
   stackLoose: { gap: '2.5rem', display: 'grid', maxWidth: '24rem', width: '100%', },
   group: { maxWidth: '20rem' },
+  groupWide: { maxWidth: '24rem' },
+  iconMd: { height: '1rem', width: '1rem' },
+  kbdFix: { fontFamily: 'var(--font-sans)', gap: '0.25rem', borderRadius: 'calc(var(--radius) - 5px)', width: 'fit-content' },
   textXs: { fontSize: '0.75rem', lineHeight: '1rem' },
   monoText: { fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)' },
   codeArea: { minHeight: '200px' },
-  push: { marginInlineStart: 'auto' },
+  push: { marginLeft: 'auto' },
   iconButton: {
     borderRadius: 'calc(var(--radius) - 5px)',
     alignItems: 'center',
@@ -33,6 +37,17 @@ const styles = stylex.create({
     justifyContent: 'center',
     height: '1.5rem',
     width: '1.5rem',
+  },
+  menuTrigger: {
+    display: 'flex',
+    height: '1.5rem',
+    alignItems: 'center',
+    gap: '0.25rem',
+    borderRadius: 'calc(var(--radius) - 5px)',
+    paddingInline: '0.375rem',
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
+    color: 'var(--muted-foreground)',
   },
   popoverContent: {
     gap: '0.25rem',
@@ -44,12 +59,13 @@ const styles = stylex.create({
   favorite: { fill: 'var(--primary)', stroke: 'var(--primary)' },
   customArea: {
     fieldSizing: 'content',
-    borderRadius: '0.375rem',
+    borderRadius: 'calc(var(--radius) - 2px)',
     paddingBlock: '0.625rem',
     paddingInline: '0.75rem',
     backgroundColor: 'transparent',
     display: 'flex',
-    fontSize: '1rem', lineHeight: '1.5rem',
+    fontSize: { default: '1rem', '@media (min-width: 768px)': '0.875rem' },
+    lineHeight: { default: '1.5rem', '@media (min-width: 768px)': '1.25rem' },
     outlineStyle: 'none',
     resize: 'none',
     minHeight: '4rem',
@@ -113,7 +129,7 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     dropdownIndex: number,
     ariaLabel: string,
     trigger: Html | string,
-    triggerButtonSize: 'icon-xs' | 'xs',
+    triggerLayoutStyle: ComponentLayoutStyle,
     items: ReadonlyArray<string>,
   ): Html => {
     const dropdown = m.dropdowns[dropdownIndex];
@@ -123,8 +139,7 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       toParentMessage: message =>
         onMessageJson(JSON.stringify({ _tag: 'GotDropdownMessage', index: dropdownIndex, message })),
       trigger,
-      triggerButtonVariant: 'ghost',
-      triggerButtonSize,
+      triggerLayoutStyle,
       ariaLabel,
       align: 'end',
       items,
@@ -138,7 +153,7 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         layoutStyle: styles.group,
         children: [
           in_('demo', 'input-group-demo', { placeholder: 'Search...' }),
-          InputGroup.inputGroupAddon({ children: [Icon.icon('search', {}, h)] }, h),
+          InputGroup.inputGroupAddon({ children: [Icon.icon('search', { class: className(styles.iconMd) }, h)] }, h),
           InputGroup.inputGroupAddon({ align: 'inline-end', children: ['12 results'] }, h),
         ],
       }, h);
@@ -150,7 +165,7 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             InputGroup.inputGroup({
               children: [
                 in_('alignStart', 'inline-start-input', { placeholder: 'Search...' }),
-                InputGroup.inputGroupAddon({ align: 'inline-start', children: [Icon.icon('search', {}, h)] }, h),
+                InputGroup.inputGroupAddon({ align: 'inline-start', children: [Icon.icon('search', { class: className(styles.iconMd) }, h)] }, h),
               ],
             }, h),
             dsc('Icon positioned at the start.'),
@@ -162,7 +177,7 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             InputGroup.inputGroup({
               children: [
                 in_('alignEnd', 'inline-end-input', { type: 'password', placeholder: 'Enter password' }),
-                InputGroup.inputGroupAddon({ align: 'inline-end', children: [Icon.icon('eye-off', {}, h)] }, h),
+                InputGroup.inputGroupAddon({ align: 'inline-end', children: [Icon.icon('eye-off', { class: className(styles.iconMd) }, h)] }, h),
               ],
             }, h),
             dsc('Icon positioned at the end.'),
@@ -194,9 +209,9 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                     InputGroup.inputGroupAddon({
                       align: 'block-start',
                       children: [
-                        Icon.icon('file-code', {}, h),
+                        Icon.icon('file-code', { class: className(styles.iconMd) }, h),
                         InputGroup.inputGroupText({ children: [h.span([h.Class(className(styles.monoText))], ['script.js'])] }, h),
-                        InputGroup.inputGroupButton({ size: 'icon-xs', layoutStyle: styles.push, children: [Icon.icon('copy', {}, h)] }, h),
+                        InputGroup.inputGroupButton({ size: 'icon-xs', layoutStyle: styles.push, children: [Icon.icon('copy', { class: className(styles.iconMd) }, h)] }, h),
                       ],
                     }, h),
                   ],
@@ -249,20 +264,20 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         InputGroup.inputGroup({
           children: [
             in_('iconSearch', 'icon-search', { placeholder: 'Search...' }),
-            InputGroup.inputGroupAddon({ children: [Icon.icon('search', {}, h)] }, h),
+            InputGroup.inputGroupAddon({ children: [Icon.icon('search', { class: className(styles.iconMd) }, h)] }, h),
           ],
         }, h),
         InputGroup.inputGroup({
           children: [
             in_('iconEmail', 'icon-email', { type: 'email', placeholder: 'Enter your email' }),
-            InputGroup.inputGroupAddon({ children: [Icon.icon('mail', {}, h)] }, h),
+            InputGroup.inputGroupAddon({ children: [Icon.icon('mail', { class: className(styles.iconMd) }, h)] }, h),
           ],
         }, h),
         InputGroup.inputGroup({
           children: [
             in_('iconCard', 'icon-card', { placeholder: 'Card number' }),
-            InputGroup.inputGroupAddon({ children: [Icon.icon('credit-card', {}, h)] }, h),
-            InputGroup.inputGroupAddon({ align: 'inline-end', children: [Icon.icon('check', {}, h)] }, h),
+            InputGroup.inputGroupAddon({ children: [Icon.icon('credit-card', { class: className(styles.iconMd) }, h)] }, h),
+            InputGroup.inputGroupAddon({ align: 'inline-end', children: [Icon.icon('check', { class: className(styles.iconMd) }, h)] }, h),
           ],
         }, h),
         InputGroup.inputGroup({
@@ -270,7 +285,7 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             in_('iconCardStar', 'icon-card-star', { placeholder: 'Card number' }),
             InputGroup.inputGroupAddon({
               align: 'inline-end',
-              children: [Icon.icon('star', {}, h), Icon.icon('info', {}, h)],
+              children: [Icon.icon('star', { class: className(styles.iconMd) }, h), Icon.icon('info', { class: className(styles.iconMd) }, h)],
             }, h),
           ],
         }, h),
@@ -323,7 +338,7 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                   size: 'icon-xs',
                   ariaLabel: 'Copy',
                   onClick: onMessageJson(JSON.stringify({ _tag: 'ClickedCopy' })),
-                  children: [m.isCopied ? Icon.icon('check', {}, h) : Icon.icon('copy', {}, h)],
+                  children: [m.isCopied ? Icon.icon('check', { class: className(styles.iconMd) }, h) : Icon.icon('copy', { class: className(styles.iconMd) }, h)],
                 }, h),
               ],
             }, h),
@@ -336,7 +351,8 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
               model: m.popover,
               toParentMessage: message =>
                 onMessageJson(JSON.stringify({ _tag: 'GotPopoverMessage', message })),
-              trigger: h.span([h.Class(className(styles.iconButton))], [Icon.icon('info', {}, h)]),
+              trigger: Icon.icon('info', { class: className(styles.iconMd) }, h),
+              triggerLayoutStyle: styles.iconButton as ComponentLayoutStyle,
               align: 'start',
               content: h.div([h.Class(className(styles.popoverContent))], [
                 h.p([h.Class(className(styles.popoverTitle))], ['Your connection is not secure.']),
@@ -352,7 +368,7 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                   size: 'icon-xs',
                   onClick: onMessageJson(JSON.stringify({ _tag: 'ClickedFavorite' })),
                   children: [
-                    Icon.icon('star', { class: m.isFavorite ? className(styles.favorite) : '' }, h),
+                    Icon.icon('star', { class: m.isFavorite ? className(styles.iconMd, styles.favorite) : className(styles.iconMd) }, h),
                   ],
                 }, h),
               ],
@@ -371,11 +387,11 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       ]);
     case 'kbd':
       return InputGroup.inputGroup({
-        layoutStyle: styles.group,
+        layoutStyle: styles.groupWide,
         children: [
           in_('kbd', 'kbd-search', { placeholder: 'Search...' }),
-          InputGroup.inputGroupAddon({ children: [Icon.icon('search', {}, h)] }, h),
-          InputGroup.inputGroupAddon({ align: 'inline-end', children: [Kbd.kbd({ children: ['⌘K'] }, h)] }, h),
+          InputGroup.inputGroupAddon({ children: [Icon.icon('search', { class: className(styles.iconMd) }, h)] }, h),
+          InputGroup.inputGroupAddon({ align: 'inline-end', children: [Kbd.kbd({ layoutStyle: styles.kbdFix as ComponentLayoutStyle, children: ['⌘K'] }, h)] }, h),
         ],
       }, h);
     case 'dropdown':
@@ -386,7 +402,7 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             InputGroup.inputGroupAddon({
               align: 'inline-end',
               children: [
-                dropdownMenu(0, 'More', Icon.icon('ellipsis', { ariaLabel: 'More' }, h), 'icon-xs', FILE_MENU_ITEMS),
+                dropdownMenu(0, 'More', Icon.icon('ellipsis', { ariaLabel: 'More', class: className(styles.iconMd) }, h), styles.iconButton as ComponentLayoutStyle, FILE_MENU_ITEMS),
               ],
             }, h),
           ],
@@ -398,7 +414,7 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             InputGroup.inputGroupAddon({
               align: 'inline-end',
               children: [
-                dropdownMenu(1, 'Search in', 'Search In... ⌄', 'xs', SEARCH_MENU_ITEMS),
+                dropdownMenu(1, 'Search in', 'Search In... ⌄', styles.menuTrigger as ComponentLayoutStyle, SEARCH_MENU_ITEMS),
               ],
             }, h),
           ],
@@ -447,15 +463,15 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
               align: 'block-end',
               children: [
                 InputGroup.inputGroupText({ children: ['Line 1, Column 1'] }, h),
-                InputGroup.inputGroupButton({ size: 'sm', variant: 'default', layoutStyle: styles.push, children: ['Run ', Icon.icon('corner-down-left', {}, h)] }, h),
+                InputGroup.inputGroupButton({ size: 'sm', variant: 'default', layoutStyle: styles.push, children: ['Run ', Icon.icon('corner-down-left', { class: className(styles.iconMd) }, h)] }, h),
               ],
             }, h),
             InputGroup.inputGroupAddon({
               align: 'block-start',
               children: [
-                InputGroup.inputGroupText({ children: [Icon.icon('file-code', {}, h), 'script.js'] }, h),
-                InputGroup.inputGroupButton({ size: 'icon-xs', layoutStyle: styles.push, children: [Icon.icon('refresh-cw', {}, h)] }, h),
-                InputGroup.inputGroupButton({ size: 'icon-xs', children: [Icon.icon('copy', {}, h)] }, h),
+                InputGroup.inputGroupText({ children: [Icon.icon('file-code', { class: className(styles.iconMd) }, h), 'script.js'] }, h),
+                InputGroup.inputGroupButton({ size: 'icon-xs', layoutStyle: styles.push, children: [Icon.icon('refresh-cw', { class: className(styles.iconMd) }, h)] }, h),
+                InputGroup.inputGroupButton({ size: 'icon-xs', children: [Icon.icon('copy', { class: className(styles.iconMd) }, h)] }, h),
               ],
             }, h),
           ],
@@ -485,7 +501,7 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         InputGroup.inputGroup({
           children: [
             in_('rtlSearch', 'rtl-search', { placeholder: t.placeholder }),
-            InputGroup.inputGroupAddon({ children: [Icon.icon('search', {}, h)] }, h),
+            InputGroup.inputGroupAddon({ children: [Icon.icon('search', { class: className(styles.iconMd) }, h)] }, h),
             InputGroup.inputGroupAddon({ align: 'inline-end', children: [t.results] }, h),
           ],
         }, h),

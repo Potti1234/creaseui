@@ -44,7 +44,8 @@ const styles = stylex.create({
     containerType: "inline-size",
     gap: {
       default: "1.75rem",
-      [stylex.when.ancestor(":is(*)", fieldGroupScope)]: "1rem",
+      '[data-slot="checkbox-group"]': "0.75rem",
+      ':where([data-slot="field-group"] > *)': "1rem",
     },
     display: "flex",
     flexDirection: "column",
@@ -53,9 +54,13 @@ const styles = stylex.create({
   field: {
     gap: "0.5rem",
     display: "flex",
+    marginBlockEnd: {
+      default: null,
+      ':where([data-slot="form"] > *:not(:last-child))': "1.5rem",
+    },
     padding: {
       default: null,
-      [stylex.when.ancestor(":is(*)", fieldLabelScope)]: "1rem",
+      ':where([data-slot="field-label"] > *)': "1rem",
     },
     width: "100%",
   },
@@ -69,7 +74,10 @@ const styles = stylex.create({
   },
   responsive: {
     alignItems: {
-      "@container field-group (min-width: 28rem)": "center",
+      "@container field-group (min-width: 28rem)": {
+        default: "center",
+        ':has(> [data-slot="field-content"])': "flex-start",
+      },
     },
     flexDirection: {
       default: "column",
@@ -90,11 +98,23 @@ const styles = stylex.create({
     display: "flex",
     flex: {
       default: null,
-      [stylex.when.ancestor(":not(:has(> [data-slot=field-content]))", fieldHorizontalScope)]: "auto",
-      [stylex.when.ancestor(":not(:has(> [data-slot=field-content]))", fieldResponsiveScope)]: "auto",
+      ':where([data-slot="field"][data-orientation="horizontal"] > *)': "auto",
+      "@container field-group (min-width: 28rem)": {
+        default: null,
+        ':where([data-slot="field"][data-orientation="responsive"] > *)': "auto",
+      },
     },
     fontSize: "0.875rem", lineHeight: '1.25rem',
     fontWeight: 500,
+    width: {
+      default: null,
+      ':where([data-slot="field"][data-orientation="vertical"] > *)': "100%",
+      ':where([data-slot="field"][data-orientation="responsive"] > *)': "100%",
+      "@container field-group (min-width: 28rem)": {
+        default: null,
+        ':where([data-slot="field"][data-orientation="responsive"] > *)': "auto",
+      },
+    },
   },
   controlLabel: { lineHeight: 1, userSelect: "none" },
   fieldLabel: {
@@ -128,8 +148,12 @@ const styles = stylex.create({
     width: {
       default: "fit-content",
       ':has(>[data-slot=field])': "100%",
-      [stylex.when.ancestor(":is(*)", fieldVerticalScope)]: "100%",
-      [stylex.when.ancestor(":is(*)", fieldResponsiveScope)]: "100%",
+      ':where([data-slot="field"][data-orientation="vertical"] > *)': "100%",
+      ':where([data-slot="field"][data-orientation="responsive"] > *)': "100%",
+      "@container field-group (min-width: 28rem)": {
+        default: null,
+        ':where([data-slot="field"][data-orientation="responsive"] > *)': "auto",
+      },
     },
   },
   labelDisabled: {
@@ -143,13 +167,25 @@ const styles = stylex.create({
     gap: "0.5rem",
     alignItems: "center",
     display: "flex",
+    flex: {
+      default: null,
+      ':where([data-slot="field"][data-orientation="horizontal"] > *)': "auto",
+      "@container field-group (min-width: 28rem)": {
+        default: null,
+        ':where([data-slot="field"][data-orientation="responsive"] > *)': "auto",
+      },
+    },
     fontSize: "0.875rem",
     fontWeight: 500,
     lineHeight: 1.375,
     width: {
       default: "fit-content",
-      [stylex.when.ancestor(":is(*)", fieldVerticalScope)]: "100%",
-      [stylex.when.ancestor(":is(*)", fieldResponsiveScope)]: "100%",
+      ':where([data-slot="field"][data-orientation="vertical"] > *)': "100%",
+      ':where([data-slot="field"][data-orientation="responsive"] > *)': "100%",
+      "@container field-group (min-width: 28rem)": {
+        default: null,
+        ':where([data-slot="field"][data-orientation="responsive"] > *)': "auto",
+      },
     },
   },
   description: {
@@ -158,16 +194,33 @@ const styles = stylex.create({
     fontWeight: 400,
     lineHeight: 1.5,
   },
+  descriptionSpacing: {
+    marginTop: {
+      default: null,
+      ':last-child': "0px",
+      ':nth-last-child(2)': "-0.25rem",
+      ':is([data-slot="field-legend"][data-variant="legend"] + *)': "-0.375rem",
+    },
+    textWrap: {
+      default: null,
+      ':where([data-slot="field"]:has([data-orientation="horizontal"]) *)': "balance",
+    },
+  },
   separator: {
     fontSize: "0.875rem",
     lineHeight: "1.25rem",
     marginBlock: "-0.5rem",
+    marginBlockEnd: {
+      default: null,
+      ':where([data-slot="field-group"][data-variant="outline"] *)': "-0.5rem",
+    },
     position: "relative",
     height: "1.25rem",
   },
   rule: {
     inset: 0,
     backgroundColor: tokens.border,
+    flexShrink: 0,
     position: "absolute",
     height: "1px",
     top: "50%",
@@ -366,7 +419,13 @@ export const fieldDescription = <Msg>(p: Slot, h: HtmlBuilder<Msg>): Html =>
   h.p(
     [
       h.DataAttribute("slot", "field-description"),
-      h.Class(className(styles.description, p.layoutStyle)),
+      h.Class(
+        className(
+          styles.description,
+          styles.descriptionSpacing,
+          p.layoutStyle,
+        ),
+      ),
     ],
     [...p.children],
   );
