@@ -58,7 +58,13 @@ const bubble = <Msg>(part: BubblePart, h: HtmlBuilder<Msg>): Html =>
     {
       ...(part.variant === 'muted' ? { variant: 'muted' as const } : {}),
       children: [
-        Bubble.bubbleContent({ children: [part.content] }, h),
+        Bubble.bubbleContent(
+          {
+            ...(part.variant === 'muted' ? { variant: 'muted' as const } : {}),
+            children: [part.content],
+          },
+          h,
+        ),
         ...(part.reactions === undefined
           ? []
           : [
@@ -184,9 +190,17 @@ const footer = <Msg>(
     return Message.messageFooter(
       {
         children: [
-          btn('copy', 'Copy'),
-          btn('thumbs-up', 'Like'),
-          btn('thumbs-down', 'Dislike'),
+          h.div(
+            [
+              h.Class('contents'),
+              h.DataAttribute('variant', 'ghost'),
+            ],
+            [
+              btn('copy', 'Copy'),
+              btn('thumbs-up', 'Like'),
+              btn('thumbs-down', 'Dislike'),
+            ],
+          ),
         ],
       },
       h,
@@ -196,7 +210,13 @@ const footer = <Msg>(
     return Message.messageFooter(
       {
         children: [
-          h.span([h.Class(sx(styles.destructive))], ['Failed to send']),
+          h.span(
+            [
+              h.Class(sx(styles.destructive)),
+              h.DataAttribute('variant', 'ghost'),
+            ],
+            ['Failed to send'],
+          ),
           Button.button(
             {
               variant: 'ghost',

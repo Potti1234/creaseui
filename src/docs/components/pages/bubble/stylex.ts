@@ -16,6 +16,8 @@ import * as Bubble from '@/stylex/bubble';
 import * as Button from '@/stylex/button';
 import * as Popover from '@/stylex/popover';
 import * as Tooltip from '@/stylex/tooltip';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
+import { foundationTokens } from '../../../../stylex/foundations-tokens.stylex';
 import { className } from '@/stylex/style';
 
 const styles = stylex.create({
@@ -44,7 +46,7 @@ const styles = stylex.create({
     width: '100%',
   },
   preLine: { whiteSpace: 'pre-line' },
-  chevron: { fontSize: '1rem', lineHeight: '1.5rem' },
+  chevron: { height: '1rem', width: '1rem' },
   triggerLink: {
     padding: 0,
     gap: '0.25rem',
@@ -53,7 +55,31 @@ const styles = stylex.create({
     display: 'inline-flex',
   },
   icon: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
-  iconTrigger: { height: '1.5rem', width: '1.5rem' },
+  iconTrigger: {
+    alignItems: 'center',
+    backgroundColor: { default: null, ':hover': 'var(--accent)' },
+    borderRadius: foundationTokens.radiusMd,
+    color: { default: 'var(--muted-foreground)', ':hover': 'var(--accent-foreground)' },
+    display: 'flex',
+    height: '1.5rem',
+    justifyContent: 'center',
+    width: '1.5rem',
+  },
+  iconTriggerPopover: {
+    alignItems: 'center',
+    backgroundColor: { default: null, ':hover': 'var(--accent)' },
+    borderRadius: foundationTokens.radiusMd,
+    color: {
+      default: 'var(--muted-foreground)',
+      ':hover': 'var(--accent-foreground)',
+      '[aria-expanded="true"]': 'var(--destructive)',
+    },
+    display: 'inline-flex',
+    height: '1.5rem',
+    justifyContent: 'center',
+    width: '1.5rem',
+  },
+  reactionsFlat: { paddingBlock: 0, paddingInline: 0 },
   popoverContent: { gap: '0.25rem', display: 'grid', },
   popoverTitle: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
   popoverCopy: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
@@ -113,6 +139,7 @@ const reactionsView = <Msg>(
     case 'tooltip':
       return Bubble.bubbleReactions(
         {
+          layoutStyle: styles.reactionsFlat as ComponentLayoutStyle,
           children: [
             Tooltip.tooltip(
               {
@@ -121,15 +148,8 @@ const reactionsView = <Msg>(
                   onMessageJson(
                     JSON.stringify({ _tag: 'GotTooltipMessage', message }),
                   ),
-                trigger: Icon.icon(
-                  reactions.icon,
-                  {
-                    class: className(styles.icon),
-                    ariaLabel: 'Show error details',
-                  },
-                  h,
-                ),
-                triggerLayoutStyle: styles.iconTrigger,
+                trigger: Icon.icon(reactions.icon, {}, h),
+                triggerLayoutStyle: styles.iconTrigger as ComponentLayoutStyle,
                 content: reactions.content,
                 ariaLabel: 'Read receipt',
               },
@@ -158,7 +178,7 @@ const reactionsView = <Msg>(
                   },
                   h,
                 ),
-                triggerLayoutStyle: styles.iconTrigger,
+                triggerLayoutStyle: styles.iconTriggerPopover as ComponentLayoutStyle,
                 content: h.div(
                   [h.Class(className(styles.popoverContent))],
                   [

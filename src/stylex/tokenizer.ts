@@ -87,6 +87,7 @@ const styles = stylex.create({
     cursor: interactionTokens.cursorDefault,
     display: 'flex',
     flexWrap: 'wrap',
+    opacity: { default: null, ':is([aria-disabled="true"])': 0.5 },
     outlineStyle: 'none',
     position: 'relative',
     transitionDuration: interactionTokens.motionFast,
@@ -98,7 +99,6 @@ const styles = stylex.create({
   wrapperWithTokens: {
     paddingBlock: 'calc(0.25rem - 1px)',
     paddingInline: 'calc(0.25rem - 1px)',
-    rowGap: 'calc(0.25rem - 1px)',
   },
   wrapperError: {
     borderColor: {
@@ -142,7 +142,7 @@ const styles = stylex.create({
   },
   iconSize: { height: '1rem', width: '1rem' },
   token: {
-    borderRadius: foundationTokens.radiusSm,
+    borderRadius: '4px',
     gap: '0.25rem',
     overflow: 'hidden',
     alignItems: 'center',
@@ -175,7 +175,6 @@ const styles = stylex.create({
     display: 'inline-flex',
     flexShrink: 0,
     justifyContent: 'center',
-    marginInlineEnd: 'calc(-1 * 0.25rem)',
     outlineStyle: 'none',
     height: '1rem',
     width: '1rem',
@@ -203,6 +202,7 @@ const styles = stylex.create({
     backgroundColor: 'transparent',
     color: tokens.foreground,
     display: 'block',
+    flexBasis: '0%',
     flexGrow: 1,
     fontFamily: 'inherit',
     fontSize: '0.875rem', lineHeight: '1.25rem',
@@ -273,16 +273,19 @@ const styles = stylex.create({
     fontSize: '0.875rem', lineHeight: '1.25rem',
   },
   statusError: {
+    alignItems: 'center',
     color: tokens.destructive,
     display: 'inline-flex',
     flexShrink: 0,
   },
   statusWarning: {
+    alignItems: 'center',
     color: tokens.alertWarning,
     display: 'inline-flex',
     flexShrink: 0,
   },
   statusSuccess: {
+    alignItems: 'center',
     color: tokens.alertSuccess,
     display: 'inline-flex',
     flexShrink: 0,
@@ -603,8 +606,9 @@ export const tokenizer = <Msg>(
               [
                 h.Class(
                   className(
-                    styles.startIcon,
-                    model.tokens.length > 0 && styles.startIconWithTokens,
+                    model.tokens.length > 0
+                      ? styles.startIconWithTokens
+                      : styles.startIcon,
                   ),
                 ),
                 h.AriaHidden(true),
