@@ -126,7 +126,10 @@ export const timeInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
 ): Html => {
   const fixture = timeInputFixtures[exampleIndex] ?? timeInputFixtures[0];
   const previewModel = model as {
-    inputs: ReadonlyArray<{ input: TimeInput.Model; value: unknown }>;
+    inputs: ReadonlyArray<{
+      input: TimeInput.Model;
+      value: Option.Option<string>;
+    }>;
   };
   return h.div(
     [
@@ -151,7 +154,7 @@ export const timeInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
               })),
             id: `docs-time-input-${fixtureEntry.id}`,
             label: fixtureEntry.label,
-            value: entry.value as string | null,
+            value: Option.getOrNull(entry.value),
             ...(fixtureEntry.placeholder === undefined ? {} : { placeholder: fixtureEntry.placeholder }),
             ...(fixtureEntry.min === undefined ? {} : { min: fixtureEntry.min }),
             ...(fixtureEntry.max === undefined ? {} : { max: fixtureEntry.max }),

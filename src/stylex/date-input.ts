@@ -76,9 +76,12 @@ const styles = stylex.create({
     userSelect: "none",
   },
   labelHidden: {
+    borderWidth: 0,
     overflow: "hidden",
     clip: "rect(0, 0, 0, 0)",
     clipPath: "inset(50%)",
+    margin: "-1px",
+    padding: 0,
     position: "absolute",
     whiteSpace: "nowrap",
     height: "1px",
@@ -165,7 +168,10 @@ const styles = stylex.create({
   iconButton: {
     borderRadius: foundationTokens.radiusSm,
     alignItems: "center",
-    backgroundColor: tokens.transparent,
+    backgroundColor: {
+      default: tokens.transparent,
+      ":hover": tokens.accent,
+    },
     color: {
       default: tokens.mutedForeground,
       ":hover": tokens.foreground,
@@ -196,7 +202,10 @@ const styles = stylex.create({
   clearButton: {
     borderRadius: foundationTokens.radiusSm,
     alignItems: "center",
-    backgroundColor: tokens.transparent,
+    backgroundColor: {
+      default: tokens.transparent,
+      ":hover": tokens.accent,
+    },
     color: {
       default: tokens.mutedForeground,
       ":hover": tokens.foreground,
@@ -248,11 +257,15 @@ const styles = stylex.create({
   statusWarning: { color: tokens.alertWarning, fontSize: "0.875rem", lineHeight: '1.25rem' },
   statusSuccess: { color: tokens.alertSuccess, fontSize: "0.875rem", lineHeight: '1.25rem' },
   control: { width: "100%" },
+  fieldFit: { width: "fit-content" },
   invalidAlert: {
+    borderWidth: 0,
     clip: "rect(0, 0, 0, 0)",
     clipPath: "inset(50%)",
     height: "1px",
+    margin: "-1px",
     overflow: "hidden",
+    padding: 0,
     position: "absolute",
     whiteSpace: "nowrap",
     width: "1px",
@@ -386,7 +399,7 @@ export const dateInput = <Msg>(
       h.Class(
         className(
           styles.field,
-          ...(props.width === undefined ? [styles.control] : []),
+          ...(props.width === undefined ? [styles.fieldFit] : [styles.control]),
           props.layoutStyle,
         ),
       ),
