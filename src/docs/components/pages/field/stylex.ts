@@ -21,6 +21,7 @@ import * as Slider from '@/stylex/slider';
 import * as Switch from '@/stylex/switch';
 import * as Textarea from '@/stylex/textarea';
 import { className } from '@/stylex/style';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 
 const styles = stylex.create({
   page: { maxWidth: '28rem', width: '100%' },
@@ -544,15 +545,18 @@ const fieldView = <Msg>(
                     { children: ['Select the items you want to show on the desktop.'] },
                     h,
                   ),
-                  h.div(
-                        [h.Class(className(styles.gapSm))],
-                        [
+                  Field.fieldGroup(
+                    {
+                      layoutStyle: styles.gapSm as ComponentLayoutStyle,
+                      children: [
                         checkRow(model, msg, h, { id: 'docs-field-hard-disks', field: 'hardDisks', label: 'Hard disks' }),
                         checkRow(model, msg, h, { id: 'docs-field-external-disks', field: 'externalDisks', label: 'External disks' }),
                         checkRow(model, msg, h, { id: 'docs-field-cds', field: 'cdsDvds', label: 'CDs, DVDs, and iPods' }),
                         checkRow(model, msg, h, { id: 'docs-field-servers', field: 'connectedServers', label: 'Connected servers' }),
-                        ],
-                      ),
+                      ],
+                    },
+                    h,
+                  ),
                 ],
               },
               h,
@@ -689,17 +693,20 @@ const fieldView = <Msg>(
                     },
                     h,
                   ),
-                  h.div(
-                        [h.Class(className(styles.gapSm))],
-                        [
+                  Field.fieldGroup(
+                    {
+                      layoutStyle: styles.gapSm as ComponentLayoutStyle,
+                      children: [
                         checkRow(model, msg, h, {
                           id: 'docs-field-push',
                           field: 'push',
                           label: 'Push notifications',
                           isDisabled: true,
                         }),
-                        ],
-                      ),
+                      ],
+                    },
+                    h,
+                  ),
                 ],
               },
               h,
@@ -723,9 +730,10 @@ const fieldView = <Msg>(
                     },
                     h,
                   ),
-                  h.div(
-                        [h.Class(className(styles.gapSm))],
-                        [
+                  Field.fieldGroup(
+                    {
+                      layoutStyle: styles.gapSm as ComponentLayoutStyle,
+                      children: [
                         checkRow(model, msg, h, {
                           id: 'docs-field-push-tasks',
                           field: 'pushTasks',
@@ -736,8 +744,10 @@ const fieldView = <Msg>(
                           field: 'emailTasks',
                           label: 'Email notifications',
                         }),
-                        ],
-                      ),
+                      ],
+                    },
+                    h,
+                  ),
                 ],
               },
               h,

@@ -17,12 +17,14 @@ import * as Input from '@/stylex/input';
 import * as InputGroup from '@/stylex/input-group';
 import * as Select from '@/stylex/select';
 import { className } from '@/stylex/style';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 
 const styles = stylex.create({
   gridTwo: { gap: '1rem', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', },
-  gridSm: { gap: '1rem', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', maxWidth: '24rem', },
+  gridSm: { display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', maxWidth: '24rem', },
   form: { maxWidth: '24rem', width: '100%', },
   push: { marginInlineStart: 'auto' },
+  iconMd: { height: '1rem', width: '1rem' },
   destructive: { color: 'var(--destructive)' },
 });
 
@@ -141,21 +143,20 @@ export const inputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       }, h);
     case 'grid':
       return Field.fieldGroup({
+        layoutStyle: styles.gridSm as ComponentLayoutStyle,
         children: [
-          h.div([h.Class(className(styles.gridSm))], [
-            Field.field({
-              children: [
-                lbl('first-name', ['First Name'], h),
-                textIn(m, 'firstName', 'first-name', onMessageJson, { placeholder: 'Jordan' }, h),
-              ],
-            }, h),
-            Field.field({
-              children: [
-                lbl('last-name', ['Last Name'], h),
-                textIn(m, 'lastName', 'last-name', onMessageJson, { placeholder: 'Lee' }, h),
-              ],
-            }, h),
-          ]),
+          Field.field({
+            children: [
+              lbl('first-name', ['First Name'], h),
+              textIn(m, 'firstName', 'first-name', onMessageJson, { placeholder: 'Jordan' }, h),
+            ],
+          }, h),
+          Field.field({
+            children: [
+              lbl('last-name', ['Last Name'], h),
+              textIn(m, 'lastName', 'last-name', onMessageJson, { placeholder: 'Lee' }, h),
+            ],
+          }, h),
         ],
       }, h);
     case 'required':
@@ -190,7 +191,7 @@ export const inputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
               }, h),
               InputGroup.inputGroupAddon({
                 align: 'inline-end',
-                children: [Icon.icon('info', {}, h)],
+                children: [Icon.icon('info', { class: className(styles.iconMd) }, h)],
               }, h),
             ],
           }, h),
