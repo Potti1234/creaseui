@@ -27,7 +27,7 @@ const source = (fixture: (typeof dataTableFixtures)[number], renderer: 'tailwind
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-${stylex ? "import * as stylex from '@stylexjs/stylex'\n" : ''}
+${stylex ? "import * as stylex from '@stylexjs/stylex'\nimport type { ComponentLayoutStyle } from '@/stylex/contracts'\n" : ''}
 import * as DataTable from '@/${stylex ? 'stylex' : 'ui'}/data-table'`,
     model: `type Payment = Readonly<{ id: string; status: string; email: string; amount: number }>
 
@@ -45,16 +45,16 @@ export type Message = typeof Message.Type`,
     case 'GotDataTableMessage${tag}': return { model: { ...model, table: DataTable.update(model.table, message.message) } }
   }
 }`,
-    view: `${stylex ? "const styles = stylex.create({ amount: { display: 'block', textAlign: 'right' } })\n\n" : ''}const columns${stylex ? ' = (h: HtmlBuilder<Message>): ReadonlyArray<DataTable.DataTableColumn<Payment>> =>' : ': ReadonlyArray<DataTable.DataTableColumn<Payment>> ='} [
+    view: `${stylex ? "const styles = stylex.create({ amount: { textAlign: 'right' } })\n\n" : ''}const columns: ReadonlyArray<DataTable.DataTableColumn<Payment>> = [
   { key: 'status', header: '${fixture.rtl ? 'الحالة' : 'Status'}', cell: row => row.status, sortValue: row => row.status },
   { key: 'email', header: '${fixture.rtl ? 'البريد الإلكتروني' : 'Email'}', cell: row => row.email, sortValue: row => row.email },
-  { key: 'amount', header: '${fixture.rtl ? 'المبلغ' : 'Amount'}', ${stylex ? "cell: row => h.span([h.Class(stylex.props(styles.amount).className ?? '')], [`$${row.amount.toFixed(2)}`])" : "class: 'text-right', cell: row => `$${row.amount.toFixed(2)}`"}, sortValue: row => row.amount },
+  { key: 'amount', header: '${fixture.rtl ? 'المبلغ' : 'Amount'}', ${stylex ? "layoutStyle: styles.amount as ComponentLayoutStyle, cell: row => `$${row.amount.toFixed(2)}`" : "class: 'text-right', cell: row => `$${row.amount.toFixed(2)}`"}, sortValue: row => row.amount },
 ]
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Data Table — ${fixture.title}',
   body: h.main([], [h.div(${fixture.rtl ? "[h.Dir('rtl')], " : '[], '}[
-    DataTable.dataTable({ model: model.table, toParentMessage: message => GotDataTableMessage({ message }), rows: payments, columns${stylex ? ': columns(h)' : ''}, rowKey: row => row.id,${fixture.filter ? ` filterText: row => \`\${row.status} \${row.email}\`, filterPlaceholder: '${filterPlaceholder}',` : ''}${fixture.server ? " mode: 'server', rowCount: 42," : ''} enableRowSelection: true, enableColumnVisibility: true, pageSizeOptions: [5, 10, 20], ariaLabel: '${fixture.rtl ? 'المدفوعات' : 'Payments'}' }, h),
+    DataTable.dataTable({ model: model.table, toParentMessage: message => GotDataTableMessage({ message }), rows: payments, columns, rowKey: row => row.id,${fixture.filter ? ` filterText: row => \`\${row.status} \${row.email}\`, filterPlaceholder: '${filterPlaceholder}',` : ''}${fixture.server ? " mode: 'server', rowCount: 42," : ''} enableRowSelection: true, enableColumnVisibility: true, pageSizeOptions: [5, 10, 20], ariaLabel: '${fixture.rtl ? 'المدفوعات' : 'Payments'}' }, h),
   ])]),
 })`,
   });

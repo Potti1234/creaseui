@@ -20,7 +20,7 @@ const styles = stylex.create({
   framed: {
     padding: '0.5rem',
     borderColor: 'var(--border)',
-    borderRadius: '0.375rem',
+    borderRadius: 'var(--radius-md)',
     borderStyle: 'dashed',
     borderWidth: '1px',
   },
@@ -32,7 +32,7 @@ const styles = stylex.create({
   card: {
     padding: '0.5rem',
     borderColor: 'var(--border)',
-    borderRadius: '0.5rem',
+    borderRadius: 'var(--radius-lg)',
     borderStyle: 'solid',
     borderWidth: '1px',
     backgroundColor: 'var(--card)',
@@ -41,7 +41,7 @@ const styles = stylex.create({
   resizableCard: {
     padding: '0.5rem',
     borderColor: 'var(--border)',
-    borderRadius: '0.5rem',
+    borderRadius: 'var(--radius-lg)',
     borderStyle: 'solid',
     borderWidth: '1px',
     overflow: 'hidden',
@@ -53,7 +53,7 @@ const styles = stylex.create({
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
   },
-  indicatorLabel: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
+  indicatorLabel: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem', },
 });
 
 type PreviewMessageCarrier<Msg> = (messageJson: string) => Msg;

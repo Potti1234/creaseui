@@ -3,6 +3,7 @@
 
 import { Option } from 'effect';
 import * as stylex from '@stylexjs/stylex';
+import type { StaticStyles } from '@stylexjs/stylex';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 import { defineView } from 'foldkit/submodel';
 
@@ -11,6 +12,7 @@ import * as TreeListBehavior from '@/lib/tree-list';
 import type { ComponentLayoutStyle } from './contracts';
 import { foundationTokens } from './foundations-tokens.stylex';
 import { interactionTokens } from './interaction-tokens.stylex.const';
+import { treeItemScope } from './tree-list.markers.stylex';
 import { className } from './style';
 import { tokens } from './tokens.stylex';
 
@@ -53,18 +55,6 @@ const styles = stylex.create({
     outlineStyle: 'none',
     position: 'relative',
     width: '100%',
-  },
-  // astryx `publishFocusVisibleVars` on the <li> + `focusWithinOrPublished`
-  // on the row box: the li is the focusable element, so it carries the ring
-  // (own :focus-visible covers row focus, :has() covers the inner
-  // button/anchor). The li shares the row's radius so the ring hugs it.
-  itemInteractive: {
-    borderRadius: foundationTokens.radiusMd,
-    boxShadow: {
-      default: 'none',
-      ':focus-visible': tokens.focusRingShadow,
-      ':has(:focus-visible)': tokens.focusRingShadow,
-    },
   },
   branches: {
     margin: 0,
@@ -113,6 +103,11 @@ const styles = stylex.create({
     backgroundColor: {
       default: 'transparent',
       ':hover': tokens.accent,
+    },
+    boxShadow: {
+      default: 'none',
+      [stylex.when.ancestor(':focus-visible', treeItemScope)]: tokens.focusRingShadow,
+      ':has(:focus-visible)': tokens.focusRingShadow,
     },
     cursor: interactionTokens.cursorAction,
     transitionDuration: interactionTokens.motionFast,
@@ -193,7 +188,6 @@ const styles = stylex.create({
     },
     display: 'flex',
     flexShrink: 0,
-    fontSize: '1rem', lineHeight: '1.5rem',
     justifyContent: 'center',
     marginInlineEnd: 'calc(0.25rem * -1)',
     marginInlineStart: '0.25rem',
@@ -201,8 +195,6 @@ const styles = stylex.create({
     width: '1rem',
   },
   chevronSvg: {
-    display: 'flex',
-    fontSize: '1rem', lineHeight: '1.5rem',
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'transform',
     transitionTimingFunction: interactionTokens.easingStandard,
@@ -472,7 +464,12 @@ const renderItem = <Msg>(
         ),
       ),
       h.Class(
-        className(styles.item, interactive && styles.itemInteractive),
+        className(
+          styles.item,
+          interactive &&
+            // eslint-disable-next-line no-restricted-syntax -- marker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
+            (treeItemScope as unknown as StaticStyles),
+        ),
       ),
     ],
     [
