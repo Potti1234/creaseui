@@ -246,10 +246,20 @@ ${fixture.rows
   )
   .join('\n\n')}`;
 
-const mediaChildrenSource = (fixture: AttachmentFixture): string => {
-  const iconFallback = `Icon.icon(item.icon ?? 'file', {}, h)`;
+const mediaChildrenSource = (
+  fixture: AttachmentFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const iconFallback =
+    renderer === 'stylex'
+      ? `Icon.icon(item.icon ?? 'file', { class: stylex.props(styles.mediaIcon).className ?? '' }, h)`
+      : `Icon.icon(item.icon ?? 'file', {}, h)`;
+  const imgSource =
+    renderer === 'stylex'
+      ? `h.img([h.Src(item.src), h.Alt(item.name), h.Class(stylex.props(styles.mediaImg).className ?? '')])`
+      : `h.img([h.Src(item.src), h.Alt(item.name)])`;
   const imgOrIcon = needsAnySrc(fixture)
-    ? `item.src !== undefined\n            ? h.img([h.Src(item.src), h.Alt(item.name)])\n            : ${iconFallback}`
+    ? `item.src !== undefined\n            ? ${imgSource}\n            : ${iconFallback}`
     : iconFallback;
   return needsSpinner(fixture)
     ? `item.spinner === true\n          ? Spinner.spinner({ size: 'md' as const, isDecorative: true }, h)\n          : ${imgOrIcon}`
@@ -265,9 +275,12 @@ const actionOnClickSource = (fixture: AttachmentFixture): string => {
   return `${retry ? `action.icon === 'refresh-cw' ? Message['ClickedRetry']({ name: item.name }) : ` : ''}${copy ? `action.icon === 'copy' ? Message['ClickedCopy']({ name: item.name }) : ` : ''}${tail}`;
 };
 
-const itemChildrenSource = (fixture: AttachmentFixture): string => `[
+const itemChildrenSource = (
+  fixture: AttachmentFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => `[
       Attachment.attachmentMedia({ ${needsAnySrc(fixture) ? `variant: item.src === undefined ? 'icon' as const : 'image' as const, ` : ''}children: [
-        ${mediaChildrenSource(fixture)},
+        ${mediaChildrenSource(fixture, renderer)},
       ] }, h),
       Attachment.attachmentContent({ children: [
         Attachment.attachmentTitle({ children: [item.name] }, h),${needsMeta(fixture) ? `
@@ -277,7 +290,7 @@ const itemChildrenSource = (fixture: AttachmentFixture): string => `[
         Attachment.attachmentAction({
           onClick: ${actionOnClickSource(fixture)},
           label: action.label,
-          children: [Icon.icon(action.icon, {}, h)],
+          children: [Icon.icon(action.icon, ${renderer === 'stylex' ? `{ class: stylex.props(styles.actionIcon).className ?? '' }` : '{}'}, h)],
         }, h),
       ) }, h)]),` : ''}${needsDialog(fixture) ? `
       ...(item.triggerLabel === undefined ? [] : [Attachment.attachmentTrigger({ onClick: Message['ClickedPreview']({ name: item.name }), label: item.triggerLabel }, h)]),` : ''}
@@ -302,7 +315,7 @@ const attachmentCallSource = (
       state: item.state ?? 'done',` : ''}${needsSize(fixture) ? `
       size: item.size ?? 'default',` : ''}${needsOrientation(fixture) ? `
       orientation: item.orientation ?? 'horizontal',` : ''}${widthProp}
-      children: ${itemChildrenSource(fixture)},
+      children: ${itemChildrenSource(fixture, renderer)},
     }, h)`;
 };
 
@@ -353,8 +366,15 @@ const stylexStylesSource = (fixture: AttachmentFixture): string => {
   const itemWidth = fixture.rows.some(row => row.itemWidth !== undefined)
     ? `\n  itemWidth: { width: '16rem' },`
     : '';
+  const mediaImg = needsAnySrc(fixture)
+    ? `\n  mediaImg: { aspectRatio: '1', objectFit: 'cover', width: '100%' },`
+    : '';
+  const mediaIcon = `\n  mediaIcon: { height: '1rem', width: '1rem' },`;
+  const actionIcon = needsActions(fixture)
+    ? `\n  actionIcon: { flexShrink: 0, height: '0.75rem', width: '0.75rem' },`
+    : '';
   return `const styles = stylex.create({
-${frameDecl}${fullWidth}${itemWidth}
+${frameDecl}${fullWidth}${itemWidth}${mediaImg}${mediaIcon}${actionIcon}
 })
 
 `;

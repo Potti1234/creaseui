@@ -11,7 +11,7 @@ import { tokens } from '../../../../stylex/tokens.stylex';
 import * as Thumbnail from '@/stylex/thumbnail';
 
 const styles = stylex.create({
-  column: { gap: '0.75rem', display: 'flex', flexDirection: 'column', },
+  column: { gap: '1rem', display: 'flex', flexDirection: 'column', },
   section: { gap: '0.25rem', display: 'flex', flexDirection: 'column', },
   row: { gap: '0.75rem', alignItems: 'flex-end', display: 'flex', flexWrap: 'wrap', },
   rowCenter: { gap: '0.75rem', alignItems: 'center', display: 'flex', },
@@ -19,7 +19,7 @@ const styles = stylex.create({
   caption: {
     color: tokens.mutedForeground,
     fontSize: '0.75rem',
-    lineHeight: '1.25rem',
+    lineHeight: '1rem',
   },
 });
 

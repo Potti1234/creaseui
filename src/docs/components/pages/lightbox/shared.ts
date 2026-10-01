@@ -121,8 +121,9 @@ ${items
 
 const emitStyles = `const styles = stylex.create({
   thumbGrid: { display: 'grid', gap: '0.5rem', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', width: '8.5rem' },
-  thumb: { borderRadius: '0.375rem', cursor: 'pointer', overflow: 'hidden', padding: 0 },
+  thumb: { borderRadius: 'calc(var(--radius) - 2px)', cursor: 'pointer', overflow: 'hidden', padding: 0 },
   thumbImg: { aspectRatio: '1 / 1', display: 'block', height: '100%', objectFit: 'cover', width: '100%' },
+  triggerButton: { backgroundClip: 'padding-box' },
 })`;
 
 const emitView = (fixture: LightboxFixture, isStyleX: boolean): string => {
@@ -145,7 +146,7 @@ const emitView = (fixture: LightboxFixture, isStyleX: boolean): string => {
         ]),
       ),
     )`
-      : `Button.button({ variant: 'outline', onClick: ClickedOpenLightbox(), children: ['${sq(fixture.triggerLabel)}'] }, h)`;
+      : `Button.button({ variant: 'outline', onClick: ClickedOpenLightbox(), ${isStyleX ? "layoutStyle: styles.triggerButton as ComponentLayoutStyle, " : ''}children: ['${sq(fixture.triggerLabel)}'] }, h)`;
   return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Lightbox — ${sq(fixture.title)}',
   body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
@@ -170,7 +171,7 @@ const source = (
   const imports = `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n" : ''}
+${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\nimport type { ComponentLayoutStyle } from '@/stylex/contracts'\n" : ''}
 import * as Button from '@/${isStyleX ? 'stylex' : 'ui'}/button'
 import * as Lightbox from '@/${isStyleX ? 'stylex' : 'ui'}/lightbox'${isStyleX ? `\n\n${emitStyles}` : ''}`;
   return foldkitApplication({

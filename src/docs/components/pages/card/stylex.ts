@@ -10,6 +10,7 @@ import * as Icon from '@/lib/icon';
 import * as Input from '@/stylex/input';
 import * as Label from '@/stylex/label';
 import * as ToggleGroup from '@/stylex/toggle-group';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import { className } from '@/stylex/style';
 
 const IMAGE_URL = 'https://avatar.vercel.sh/shadcn1';
@@ -24,8 +25,8 @@ const styles = stylex.create({
   link: {
     color: 'inherit',
     fontSize: '0.875rem', lineHeight: '1.25rem',
-    marginInlineStart: 'auto',
-    textDecorationLine: 'underline',
+    marginLeft: 'auto',
+    textDecorationLine: { default: 'none', ':hover': 'underline' },
     textUnderlineOffset: '4px',
   },
   footerCol: { gap: '0.5rem', display: 'flex', flexDirection: 'column', width: '100%', },
@@ -44,7 +45,7 @@ const styles = stylex.create({
     display: 'flex',
     flexDirection: 'column',
     fontSize: '0.875rem',
-    lineHeight: 1.6,
+    lineHeight: 1.625,
     borderTopColor: 'var(--border)',
     borderTopStyle: 'solid',
     borderTopWidth: 1,
@@ -56,7 +57,7 @@ const styles = stylex.create({
   overlay: {
     inset: 0,
     aspectRatio: '16 / 9',
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    backgroundColor: 'color-mix(in oklab, var(--color-black, #000) 35%, transparent)',
     position: 'absolute',
     zIndex: 30,
   },
@@ -69,7 +70,6 @@ const styles = stylex.create({
     width: '100%',
   },
   liMarker: { height: '1rem', width: '1rem', },
-  footerPad: { marginBlockEnd: '1.5rem' },
 });
 
 type PreviewModel = Readonly<{
@@ -89,6 +89,7 @@ const spacingOptions: ReadonlyArray<{ value: SpacingValue; label: string }> = [
 const loginCard = <Msg>(
   opts: Readonly<{
     rtl?: boolean;
+    spacing?: string;
     email: string;
     password: string;
     onEmail: (value: string) => Msg;
@@ -111,6 +112,7 @@ const loginCard = <Msg>(
   return Card.card(
     {
       layoutStyle: styles.frame,
+      ...(opts.spacing === undefined ? {} : { spacing: opts.spacing }),
       children: [
         Card.cardHeader({
           children: [
@@ -157,11 +159,10 @@ const loginCard = <Msg>(
           ],
         }, h),
         Card.cardFooter({
+          layoutStyle: styles.footerCol as ComponentLayoutStyle,
           children: [
-            h.div([h.Class(className(styles.footerCol))], [
-              Button.button({ layoutStyle: styles.wFull, children: [copy.login] }, h),
-              Button.button({ variant: 'outline', layoutStyle: styles.wFull, children: [copy.google] }, h),
-            ]),
+            Button.button({ layoutStyle: styles.wFull, children: [copy.login] }, h),
+            Button.button({ variant: 'outline', layoutStyle: styles.wFull, children: [copy.google] }, h),
           ],
         }, h),
       ],
@@ -226,11 +227,10 @@ export const cardStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
               ],
             }, h),
             Card.cardFooter({
+              layoutStyle: styles.footerCol as ComponentLayoutStyle,
               children: [
-                h.div([h.Class(className(styles.footerCol))], [
-                  Button.button({ size: 'sm', layoutStyle: styles.wFull, children: ['Set up scheduled reports'] }, h),
-                  Button.button({ variant: 'outline', size: 'sm', layoutStyle: styles.wFull, children: ["See what's new"] }, h),
-                ]),
+                Button.button({ size: 'sm', layoutStyle: styles.wFull, children: ['Set up scheduled reports'] }, h),
+                Button.button({ variant: 'outline', size: 'sm', layoutStyle: styles.wFull, children: ["See what's new"] }, h),
               ],
             }, h),
           ],
@@ -255,9 +255,10 @@ export const cardStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           },
           h,
         ),
-        h.div([h.Style({ '--card-spacing': `${Number(previewModel.spacing) * 4}px` })], [
-          loginCard({ ...inputProps }, h),
-        ]),
+        loginCard({
+          spacing: `${Number(previewModel.spacing) * 4}px`,
+          ...inputProps,
+        }, h),
       ]);
     case 'edge':
       return Card.card(
@@ -284,11 +285,10 @@ export const cardStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
               ],
             }, h),
             Card.cardFooter({
+              layoutStyle: styles.edgeFooterInner as ComponentLayoutStyle,
               children: [
-                h.div([h.Class(className(styles.edgeFooterInner))], [
-                  Button.button({ variant: 'outline', children: ['Decline'] }, h),
-                  Button.button({ children: ['Accept'] }, h),
-                ]),
+                Button.button({ variant: 'outline', children: ['Decline'] }, h),
+                Button.button({ children: ['Accept'] }, h),
               ],
             }, h),
           ],
@@ -296,10 +296,10 @@ export const cardStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         h,
       );
     case 'image':
-      return h.div([h.Class(className(styles.imageWrap))], [
-        Card.card(
+      return Card.card(
         {
           density: 'flush',
+          layoutStyle: styles.imageWrap as ComponentLayoutStyle,
           children: [
             h.div([h.Class(className(styles.overlay))]),
             h.img([
@@ -321,13 +321,11 @@ export const cardStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
               ],
             }, h),
             Card.cardFooter({
-              layoutStyle: styles.footerPad,
               children: [Button.button({ layoutStyle: styles.wFull, children: ['View Event'] }, h)],
             }, h),
           ],
         },
         h,
-      ),
-      ]);
+      );
   }
 };

@@ -26,7 +26,7 @@ const styles = stylex.create({
   horizontalNext: { transform: 'translateY(-50%)', right: '-3rem', top: '50%', },
   item: { flexGrow: 0, flexShrink: 0, scrollSnapAlign: 'start', minWidth: 0, },
   root: { boxShadow: { default: tokens.shadowNone, ':focus-visible': tokens.focusRingShadow }, outlineStyle: 'none', position: 'relative' },
-  srOnly: { margin: -1, padding: 0, overflow: 'hidden', position: 'absolute', height: 1, width: 1, },
+  srOnly: { margin: -1, padding: 0, overflow: 'hidden', position: 'absolute', clipPath: 'inset(50%)', whiteSpace: 'nowrap', height: 1, width: 1, },
   track: { display: 'flex', touchAction: 'pan-y', marginLeft: '-1rem', },
   trackVertical: { flexDirection: 'column', touchAction: 'pan-x', height: '100%', marginLeft: 0, marginTop: '-1rem', },
   verticalItem: { minHeight: 0, paddingTop: '1rem' },

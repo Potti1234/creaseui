@@ -33,11 +33,11 @@ const styles = stylex.create({
   container: { aspectRatio: '16 / 9', display: 'flex', fontSize: '0.75rem', lineHeight: '1rem', justifyContent: 'center' },
   donut: { marginInline: 'auto', aspectRatio: '1 / 1', height: 'auto', width: '100%', },
   donutCompact: { maxWidth: '18rem' },
-  key: { borderRadius: complexTokens.smallRadius, backgroundColor: 'currentColor', flexShrink: 0, height: '0.5rem', width: '0.5rem', },
+  key: { borderRadius: complexTokens.smallRadius, flexShrink: 0, height: '0.5rem', width: '0.5rem', },
   legend: { gap: '1rem', alignItems: 'center', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', },
   legendItem: { gap: '0.375rem', alignItems: 'center', display: 'flex', },
   muted: { color: tokens.mutedForeground },
-  tooltip: { borderColor: tokens.border, borderRadius: tokens.controlRadius, borderStyle: 'solid', borderWidth: 1, gap: '0.375rem', paddingBlock: '0.375rem', paddingInline: '0.625rem', backgroundColor: tokens.background, boxShadow: tokens.shadowCard, display: 'grid', fontSize: '0.75rem', lineHeight: '1rem', minWidth: '8rem', },
+  tooltip: { borderColor: tokens.border, borderRadius: tokens.radius, borderStyle: 'solid', borderWidth: 1, gap: '0.375rem', paddingBlock: '0.375rem', paddingInline: '0.625rem', backgroundColor: tokens.background, boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)', display: 'grid', fontSize: '0.75rem', lineHeight: '1rem', minWidth: '8rem', },
   tooltipItem: { gap: '0.5rem', alignItems: 'center', display: 'flex', },
   tooltipLabel: { fontWeight: 500 },
   tooltipValue: { color: tokens.foreground, fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)', fontVariantNumeric: 'tabular-nums', fontWeight: 500, marginLeft: 'auto' },
@@ -49,10 +49,10 @@ export const chartContainer = <Msg>(props: ChartContainerProps, h: HtmlBuilder<M
 }
 
 export type ChartLegendProps = Readonly<{ config: ChartConfig; series?: ReadonlyArray<string>; layoutStyle?: ComponentLayoutStyle }>
-export const chartLegend = <Msg>(props: ChartLegendProps, h: HtmlBuilder<Msg>): Html => { const variables = Object.entries(props.config).reduce<Record<string, string>>((result, [key, series]) => series.color === undefined ? result : { ...result, [`--color-${key}`]: series.color }, {}); return h.div([h.DataAttribute('slot', 'chart-legend'), h.Class(className(styles.legend, props.layoutStyle)), h.Style(variables)], (props.series ?? Object.keys(props.config)).flatMap((key) => { const series = props.config[key]; return series === undefined ? [] : [h.div([h.Class(className(styles.legendItem))], [series.icon ?? h.span([h.Class(className(styles.key)), h.Style({ color: `var(--color-${key})` })], []), series.label ?? key])] })) }
+export const chartLegend = <Msg>(props: ChartLegendProps, h: HtmlBuilder<Msg>): Html => { const variables = Object.entries(props.config).reduce<Record<string, string>>((result, [key, series]) => series.color === undefined ? result : { ...result, [`--color-${key}`]: series.color }, {}); return h.div([h.DataAttribute('slot', 'chart-legend'), h.Class(className(styles.legend, props.layoutStyle)), h.Style(variables)], (props.series ?? Object.keys(props.config)).flatMap((key) => { const series = props.config[key]; return series === undefined ? [] : [h.div([h.Class(className(styles.legendItem))], [series.icon ?? h.span([h.Class(className(styles.key)), h.Style({ backgroundColor: `var(--color-${key})` })], []), series.label ?? key])] })) }
 
 export type ChartTooltipItem = Readonly<{ key: string; value: Html | string }>
-export const chartTooltipContent = <Msg>(props: Readonly<{ config: ChartConfig; label?: Html | string; items: ReadonlyArray<ChartTooltipItem>; layoutStyle?: ComponentLayoutStyle }>, h: HtmlBuilder<Msg>): Html => h.div([h.DataAttribute('slot', 'chart-tooltip'), h.Class(className(styles.tooltip, props.layoutStyle))], [...(props.label === undefined ? [] : [h.div([h.Class(className(styles.tooltipLabel))], [props.label])]), ...props.items.map((item) => h.div([h.Class(className(styles.tooltipItem))], [h.span([h.Class(className(styles.key)), h.Style({ color: `var(--color-${item.key})` })], []), h.span([h.Class(className(styles.muted))], [props.config[item.key]?.label ?? item.key]), h.span([h.Class(className(styles.tooltipValue))], [item.value])]))])
+export const chartTooltipContent = <Msg>(props: Readonly<{ config: ChartConfig; label?: Html | string; items: ReadonlyArray<ChartTooltipItem>; layoutStyle?: ComponentLayoutStyle }>, h: HtmlBuilder<Msg>): Html => h.div([h.DataAttribute('slot', 'chart-tooltip'), h.Class(className(styles.tooltip, props.layoutStyle))], [...(props.label === undefined ? [] : [h.div([h.Class(className(styles.tooltipLabel))], [props.label])]), ...props.items.map((item) => h.div([h.Class(className(styles.tooltipItem))], [h.span([h.Class(className(styles.key)), h.Style({ backgroundColor: `var(--color-${item.key})` })], []), h.span([h.Class(className(styles.muted))], [props.config[item.key]?.label ?? item.key]), h.span([h.Class(className(styles.tooltipValue))], [item.value])]))])
 
 const finite = (value: number): number => Number.isFinite(value) ? value : 0
 export type BarChartDatum = Readonly<{ label: string; value: number }>

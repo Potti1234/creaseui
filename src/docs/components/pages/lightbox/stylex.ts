@@ -9,15 +9,20 @@ import {
 } from '@/docs/components/pages/lightbox/shared';
 import type * as LightboxModel from '@/stylex/lightbox';
 import * as Button from '@/stylex/button';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import * as Lightbox from '@/stylex/lightbox';
+import { foundationTokens } from '../../../../stylex/foundations-tokens.stylex';
 import { className } from '@/stylex/style';
 
 const styles = stylex.create({
   thumb: {
     padding: 0,
-    borderRadius: '0.375rem',
+    borderRadius: foundationTokens.radiusMd,
     overflow: 'hidden',
     cursor: 'pointer',
+  },
+  triggerButton: {
+    backgroundClip: 'padding-box',
   },
   thumbGrid: {
     gap: '0.5rem',
@@ -76,6 +81,7 @@ export const lightboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           {
             variant: 'outline',
             onClick: msg(onMessageJson, 'ClickedOpenLightboxPreview'),
+            layoutStyle: styles.triggerButton as ComponentLayoutStyle,
             children: [fixture.triggerLabel],
           },
           h,

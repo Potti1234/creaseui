@@ -44,7 +44,8 @@ export type ResizableFixture = (typeof resizableFixtures)[number];
 
 const STYLES_BLOCK = `
 const styles = stylex.create({
-  group: { height: '16rem', width: '100%', maxWidth: '28rem' },
+  group: { height: '13rem', width: '100%', maxWidth: '28rem' },
+  groupTall: { height: '16rem', width: '100%', maxWidth: '28rem' },
   panel: { alignItems: 'center', display: 'flex', height: '100%', justifyContent: 'center', padding: '1.5rem', width: '100%' },
   label: { fontWeight: 600 },
 })
@@ -106,7 +107,7 @@ export type Message = typeof Message.Type`,
       extent: 448,
       ${fixture.withHandle ? 'withHandle: true,' : ''}
       ariaLabel: '${fixture.ariaLabel}',
-      ${isStyleX ? 'layoutStyle: styles.group' : "class: 'h-64 w-full max-w-md'"},
+      ${isStyleX ? 'layoutStyle: styles.groupTall' : "class: 'h-64 w-full max-w-md'"},
       first: h.div([h.Class(${isStyleX ? 'className(styles.panel, styles.label)' : "'flex size-full items-center justify-center p-6 font-semibold'"})], ['${fixture.first}']),
       second: h.div([h.Class(${isStyleX ? 'className(styles.panel, styles.label)' : "'flex size-full items-center justify-center p-6 font-semibold'"})], ['${fixture.second}']),
     }, h),

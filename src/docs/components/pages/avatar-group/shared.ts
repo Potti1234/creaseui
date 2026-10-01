@@ -115,7 +115,7 @@ const avatarSource = (entry: AvatarEntry, size: string, isStyleX: boolean): stri
     ? `[Avatar.avatarFallback({ children: ['${initials(entry.name)}'] }, h)]`
     : `[Avatar.avatarImage({ src: ${uriConstName(entry.src)}, alt: '${entry.name}', model: { status: 'loaded' } }, h)]`;
   return isStyleX
-    ? `Avatar.avatar({ size: '${size}', ring: true, layoutStyle: styles.${size === 'lg' ? 'memberLg' : size === 'sm' ? 'memberSm' : 'memberDefault'}, children: ${children} }, h)`
+    ? `Avatar.avatar({ size: '${size}', layoutStyle: styles.${size === 'lg' ? 'memberLg' : size === 'sm' ? 'memberSm' : 'memberDefault'} as ComponentLayoutStyle, children: ${children} }, h)`
     : `Avatar.avatar({ size: '${size}', children: ${children} }, h)`;
 };
 
@@ -163,8 +163,9 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
     `import * as Avatar from '@/${isStyleX ? 'stylex' : 'ui'}/avatar'`,
     isStyleX
       ? `import * as stylex from '@stylexjs/stylex'
+import type { ComponentLayoutStyle } from '@/stylex/contracts'
 
-const styles = stylex.create({ column: { display: 'flex', flexDirection: 'column', gap: '2rem' }, section: { display: 'flex', flexDirection: 'column', gap: '0.375rem' }, caption: { fontSize: '0.75rem', lineHeight: '1.25rem', color: 'var(--muted-foreground)' }, row: { display: 'flex', gap: '1rem', alignItems: 'center' }, avatarWrap: { position: 'relative' }, dotSlot: { position: 'absolute', bottom: '-4px', insetInlineEnd: '-4px' }, memberSm: { marginInlineStart: '-0.375rem' }, memberDefault: { marginInlineStart: '-0.5rem' }, memberLg: { marginInlineStart: '-0.625rem' } })`
+const styles = stylex.create({ column: { display: 'flex', flexDirection: 'column', gap: '2rem' }, section: { display: 'flex', flexDirection: 'column', gap: '0.375rem' }, caption: { fontSize: '0.75rem', lineHeight: '1rem', color: 'var(--muted-foreground)' }, row: { display: 'flex', gap: '1rem', alignItems: 'center' }, avatarWrap: { position: 'relative' }, dotSlot: { position: 'absolute', bottom: '-4px', insetInlineEnd: '-4px' }, memberSm: { marginInlineStart: '-0.375rem', boxSizing: 'content-box', borderColor: 'var(--background)', borderStyle: 'solid', borderWidth: '2px' }, memberDefault: { marginInlineStart: '-0.5rem', boxSizing: 'content-box', borderColor: 'var(--background)', borderStyle: 'solid', borderWidth: '2px' }, memberLg: { marginInlineStart: '-0.625rem', boxSizing: 'content-box', borderColor: 'var(--background)', borderStyle: 'solid', borderWidth: '2px' } })`
       : '',
     `const NIGHT_FOREST = '${NIGHT_FOREST}'`,
     `const MISTY_VALLEY = '${MISTY_VALLEY}'`,
