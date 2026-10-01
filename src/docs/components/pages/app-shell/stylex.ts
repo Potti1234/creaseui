@@ -14,7 +14,7 @@ import * as Stack from '@/stylex/stack';
 
 const styles = stylex.create({
   fill: { height: '100%', minHeight: 0, width: '100%' },
-  heading: { fontSize: '1.125rem', lineHeight: '1.75rem', fontWeight: 600 },
+  heading: { fontSize: '1.125rem', fontWeight: 600, lineHeight: '1.75rem', },
   body: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   logoLink: { gap: '0.5rem', alignItems: 'center', display: 'flex', },
   logoChip: {
@@ -28,7 +28,7 @@ const styles = stylex.create({
     width: '1.5rem',
   },
   logoIcon: { height: '1rem', width: '1rem' },
-  logoText: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 600 },
+  logoText: { fontSize: '0.875rem', fontWeight: 600, lineHeight: '1.25rem', },
   sideNav: {
     padding: '0.5rem',
     gap: '0.25rem',
@@ -40,8 +40,9 @@ const styles = stylex.create({
   navSectionTitle: {
     paddingInline: '0.5rem',
     color: 'var(--muted-foreground)',
-    fontSize: '0.75rem', lineHeight: '1rem',
+    fontSize: '0.75rem',
     fontWeight: 500,
+ lineHeight: '1rem',
     paddingBlockEnd: '0.25rem',
   },
   navItem: {
@@ -61,8 +62,9 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: 'var(--accent)',
     display: 'flex',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
     fontWeight: 500,
+ lineHeight: '1.25rem',
     height: '1.5rem',
   },
   navItemIcon: { height: '1rem', width: '1rem' },
@@ -85,8 +87,9 @@ const styles = stylex.create({
     borderRadius: '0.5rem',
     paddingBlock: '0.25rem',
     paddingInline: '0.5rem',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
     fontWeight: 500,
+ lineHeight: '1.25rem',
   },
 });
 

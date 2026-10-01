@@ -41,13 +41,13 @@ const styles = stylex.create({
     alignItems: 'flex-start',
     display: 'flex',
   },
-  iconMd: { width: '1rem', height: '1rem', flexShrink: 0, pointerEvents: 'none' },
+  iconMd: { flexShrink: 0, pointerEvents: 'none', height: '1rem', width: '1rem', },
   spinnerIcon: { flexShrink: 0, pointerEvents: 'none' },
   iconRtl: { transform: 'rotate(180deg)' },
   triggerBorderTransparent: { borderColor: foundationTokens.transparent },
-  iconXs: { width: '0.75rem', height: '0.75rem', flexShrink: 0, pointerEvents: 'none' },
-  joinedRight: { borderTopRightRadius: 0, borderBottomRightRadius: 0 },
-  joinedLeft: { borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderLeftWidth: 0 },
+  iconXs: { flexShrink: 0, pointerEvents: 'none', height: '0.75rem', width: '0.75rem', },
+  joinedRight: { borderBottomRightRadius: 0, borderTopRightRadius: 0, },
+  joinedLeft: { borderBottomLeftRadius: 0, borderLeftWidth: 0, borderTopLeftRadius: 0, },
   hiddenSmFlex: { display: { default: 'none', '@media (min-width: 40rem)': 'flex' } },
 
 });

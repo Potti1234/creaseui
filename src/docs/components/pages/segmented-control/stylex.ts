@@ -12,7 +12,7 @@ import { className } from '@/stylex/style';
 
 const styles = stylex.create({
   frame: { width: '400px' },
-  iconFill: { width: '100%', height: '100%' },
+  iconFill: { height: '100%', width: '100%', },
 });
 
 const Bundle = SegmentedControl.create<string>();

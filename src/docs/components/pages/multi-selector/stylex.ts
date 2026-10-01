@@ -31,8 +31,9 @@ const styles = stylex.create({
     backgroundColor: 'transparent',
     color: 'var(--foreground)',
     cursor: 'pointer',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
     fontWeight: 500,
+ lineHeight: '1.25rem',
   },
 });
 

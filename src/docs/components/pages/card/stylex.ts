@@ -24,10 +24,11 @@ const styles = stylex.create({
   fieldRow: { alignItems: 'center', display: 'flex', },
   link: {
     color: 'inherit',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
-    marginLeft: 'auto',
+    fontSize: '0.875rem',
+ lineHeight: '1.25rem',
     textDecorationLine: { default: 'none', ':hover': 'underline' },
     textUnderlineOffset: '4px',
+    marginLeft: 'auto',
   },
   footerCol: { gap: '0.5rem', display: 'flex', flexDirection: 'column', width: '100%', },
   wFull: { width: '100%' },

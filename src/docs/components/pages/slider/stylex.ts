@@ -32,7 +32,7 @@ const styles = stylex.create({
     display: 'flex',
     justifyContent: 'space-between',
   },
-  label: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
+  label: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem', },
   controlledValue: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
   verticalSlider: { height: '10rem' },
 });

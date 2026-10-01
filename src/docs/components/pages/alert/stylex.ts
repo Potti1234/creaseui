@@ -13,7 +13,7 @@ const styles = stylex.create({
   wrap: { gap: '1rem', display: 'grid', maxWidth: '28rem', width: '100%', },
   action: { gridColumnStart: '2', marginTop: '0.5rem' },
   iconSvg: { height: '1rem', width: '1rem' },
-  amber: { backgroundColor: 'var(--color-amber-50)', borderColor: 'var(--color-amber-200)', color: 'var(--color-amber-900)' },
+  amber: { borderColor: 'var(--color-amber-200)', backgroundColor: 'var(--color-amber-50)', color: 'var(--color-amber-900)', },
 });
 
 export const alertStyleXPreview: StyleXExamplePreviewProvider = <Msg>(

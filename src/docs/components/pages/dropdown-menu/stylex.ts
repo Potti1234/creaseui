@@ -22,8 +22,11 @@ const styles = stylex.create({
     borderRadius: 'var(--radius-md)',
     borderStyle: 'solid',
     borderWidth: '1px',
-    fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500,
-    padding: '0.5rem 1rem',
+    paddingBlock: '0.5rem',
+    paddingInline: '1rem',
+    fontSize: '0.875rem',
+ fontWeight: 500,
+ lineHeight: '1.25rem',
   },
   triggerAvatar: { borderRadius: '9999px' },
 });

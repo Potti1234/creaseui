@@ -28,8 +28,8 @@ const styles = stylex.create({
     minHeight: '100vh',
   },
   sheetBody: { padding: '1rem', gap: '1rem', display: 'flex', flexDirection: 'column', },
-  sheetHeading: { fontSize: '1rem', lineHeight: '1.5rem', fontWeight: 600 },
-  sheetHeadingCapitalize: { fontSize: '1rem', lineHeight: '1.5rem', fontWeight: 600, textTransform: 'capitalize' },
+  sheetHeading: { fontSize: '1rem', fontWeight: 600, lineHeight: '1.5rem', },
+  sheetHeadingCapitalize: { fontSize: '1rem', fontWeight: 600, lineHeight: '1.5rem', textTransform: 'capitalize', },
   sheetText: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   sheetMeta: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
   filterRows: { gap: '0.5rem', display: 'flex', flexDirection: 'column', },
@@ -39,9 +39,9 @@ const styles = stylex.create({
   triggerRow: { gap: '0.5rem', display: 'flex', flexWrap: 'wrap', },
   pageStack: { padding: '1rem', gap: '0.75rem', display: 'flex', flexDirection: 'column', },
   pageStackNarrow: { gap: '0.75rem', display: 'flex', flexDirection: 'column', maxWidth: '28rem', },
-  pageHeading: { fontSize: '1rem', lineHeight: '1.5rem', fontWeight: 600 },
+  pageHeading: { fontSize: '1rem', fontWeight: 600, lineHeight: '1.5rem', },
   timeRow: { gap: '0.5rem', alignItems: 'center', display: 'flex', },
-  timeLabel: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
+  timeLabel: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem', },
   timeMeta: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
   stepsList: { display: 'flex', flexDirection: 'column' },
   stepRow: { gap: '0.75rem', paddingBlock: '0.5rem', alignItems: 'center', display: 'flex', },
@@ -49,7 +49,7 @@ const styles = stylex.create({
   stepLabel: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   stepDetail: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
   stepDistance: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
-  itemLabel: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
+  itemLabel: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem', },
 });
 
 type PreviewModel = Readonly<{

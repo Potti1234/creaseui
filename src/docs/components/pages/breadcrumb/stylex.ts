@@ -21,13 +21,13 @@ const styles = stylex.create({
     display: 'flex',
   },
   ellipsisTrigger: {
-    alignItems: 'center',
     borderRadius: 'calc(var(--radius) - 2px)',
+    alignItems: 'center',
     backgroundColor: { default: 'transparent', ':hover': 'var(--accent)' },
     color: { default: null, ':hover': 'var(--accent-foreground)' },
     display: 'inline-flex',
-    height: '2rem',
     justifyContent: 'center',
+    height: '2rem',
     width: '2rem',
   },
 });

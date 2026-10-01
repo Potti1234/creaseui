@@ -32,7 +32,7 @@ const styles = stylex.create({
     maxWidth: '28rem',
     width: '100%',
   },
-  heading: { fontSize: '1.125rem', lineHeight: '1.75rem', fontWeight: 600 },
+  heading: { fontSize: '1.125rem', fontWeight: 600, lineHeight: '1.75rem', },
   body: {
     color: 'var(--muted-foreground)',
     fontSize: '0.875rem',

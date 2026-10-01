@@ -19,7 +19,7 @@ import * as VisuallyHidden from '@/stylex/visually-hidden';
 const styles = stylex.create({
   supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
   body: { fontSize: '0.875rem', lineHeight: '1.25rem' },
-  bodyBold: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 700 },
+  bodyBold: { fontSize: '0.875rem', fontWeight: 700, lineHeight: '1.25rem', },
   display: { fontSize: '1.8125rem', fontWeight: 400, lineHeight: '1.2414' },
   smallIcon: {
     color: 'var(--muted-foreground)',
@@ -32,24 +32,24 @@ const styles = stylex.create({
     width: '1rem',
   },
   mutedCard: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-    overflow: 'hidden',
     borderColor: 'rgba(0, 0, 0, 0)',
     borderRadius: '0.875rem',
     borderStyle: 'solid',
     borderWidth: 1,
+    gap: '1rem',
+    overflow: 'hidden',
     paddingBlock: '1rem',
-    fontSize: '0.875rem',
-    lineHeight: '1.25rem',
     backgroundColor: 'var(--muted)',
-  },
-  mutedCardContent: {
     display: 'flex',
     flexDirection: 'column',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
+  mutedCardContent: {
     gap: '0.75rem',
     paddingInline: '1rem',
+    display: 'flex',
+    flexDirection: 'column',
   },
   iconBtn4: { flexShrink: 0, height: '1rem', width: '1rem' },
 });

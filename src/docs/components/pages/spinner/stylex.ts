@@ -29,7 +29,7 @@ const styles = stylex.create({
     flexDirection: 'column',
   },
   accent: { color: 'var(--chart-2)' },
-  amount: { fontSize: '0.875rem', lineHeight: '1.25rem', fontVariantNumeric: 'tabular-nums' },
+  amount: { fontSize: '0.875rem', fontVariantNumeric: 'tabular-nums', lineHeight: '1.25rem', },
   itemEnd: { flexBasis: 'auto', flexGrow: 0, flexShrink: 0, justifyContent: 'flex-end' },
   spinnerIcon: { flexShrink: 0 },
   iconMd: { height: '1rem', width: '1rem' },

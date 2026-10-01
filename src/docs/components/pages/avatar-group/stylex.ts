@@ -28,9 +28,9 @@ const styles = stylex.create({
      (25% of 24/32/40px) — StyleX cannot read the custom property. The
      box-content + 2px surface border mirrors the group's
      [&_[data-slot=avatar]]:box-content/:border-2/:border-background selector. */
-  memberSm: { marginInlineStart: '-0.375rem', boxSizing: 'content-box', borderColor: tokens.background, borderStyle: 'solid', borderWidth: '2px' },
-  memberDefault: { marginInlineStart: '-0.5rem', boxSizing: 'content-box', borderColor: tokens.background, borderStyle: 'solid', borderWidth: '2px' },
-  memberLg: { marginInlineStart: '-0.625rem', boxSizing: 'content-box', borderColor: tokens.background, borderStyle: 'solid', borderWidth: '2px' },
+  memberSm: { borderColor: tokens.background, borderStyle: 'solid', borderWidth: '2px', boxSizing: 'content-box', marginInlineStart: '-0.375rem', },
+  memberDefault: { borderColor: tokens.background, borderStyle: 'solid', borderWidth: '2px', boxSizing: 'content-box', marginInlineStart: '-0.5rem', },
+  memberLg: { borderColor: tokens.background, borderStyle: 'solid', borderWidth: '2px', boxSizing: 'content-box', marginInlineStart: '-0.625rem', },
 });
 
 const initials = (name: string): string =>

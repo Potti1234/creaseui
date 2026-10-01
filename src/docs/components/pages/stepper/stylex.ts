@@ -23,8 +23,9 @@ const styles = stylex.create({
   panel: { width: '220px' },
   panelHeading: {
     marginInline: 0,
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
     fontWeight: 500,
+ lineHeight: '1.25rem',
     marginBlockEnd: '0.5rem',
     marginBlockStart: 0,
   },
@@ -34,7 +35,7 @@ const styles = stylex.create({
   fullWidth: { width: '100%' },
   cardStack: { gap: '0.5rem', display: 'flex', flexDirection: 'column', },
   cardTitleRow: { gap: '0.5rem', alignItems: 'center', display: 'flex', },
-  cardLabel: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
+  cardLabel: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem', },
   cardMeta: { margin: 0, color: tokens.mutedForeground, fontSize: '0.75rem', lineHeight: '1rem', },
 });
 

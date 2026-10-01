@@ -14,12 +14,12 @@ for (const kind of chartFamilyKinds) Chart.registerChart(chartFamilyHostId(kind)
 for (const kind of chartUpstreamKinds) Chart.registerChart(chartUpstreamHostId(kind), (theme, variant) => chartUpstreamOption(kind, theme, variant));
 
 const styles = stylex.create({
-  button: { borderColor: 'var(--border)', borderRadius: 'var(--radius-md)', borderStyle: 'solid', borderWidth: 1, marginBottom: '0.75rem', paddingBlock: '0.5rem', paddingInline: '0.75rem', fontSize: '0.875rem', lineHeight: '1.25rem' },
+  button: { borderColor: 'var(--border)', borderRadius: 'var(--radius-md)', borderStyle: 'solid', borderWidth: 1, paddingBlock: '0.5rem', paddingInline: '0.75rem', fontSize: '0.875rem', lineHeight: '1.25rem', marginBottom: '0.75rem', },
   chart: { maxWidth: '36rem' },
   chartHost: { height: '16rem', width: '100%' },
   demoCard: { maxWidth: '36rem', width: '100%' },
   demoRow: { alignItems: { default: 'stretch', '@media (min-width: 640px)': 'center' }, display: 'flex', flexDirection: { default: 'column', '@media (min-width: 640px)': 'row' } },
-  demoTitle: { display: 'flex', flexBasis: '0%', flexDirection: 'column', flexGrow: 1, gap: '0.25rem', justifyContent: 'center' },
+  demoTitle: { gap: '0.25rem', display: 'flex', flexBasis: '0%', flexDirection: 'column', flexGrow: 1, justifyContent: 'center', },
   demoButtons: { display: 'flex' },
   demoButton: { borderColor: 'var(--border)',
  borderStyle: 'solid',

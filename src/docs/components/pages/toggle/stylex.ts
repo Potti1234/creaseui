@@ -17,7 +17,7 @@ const styles = stylex.create({
     display: 'flex',
     flexWrap: 'wrap',
   },
-  iconMd: { width: '1rem', height: '1rem', flexShrink: 0, pointerEvents: 'none' },
+  iconMd: { flexShrink: 0, pointerEvents: 'none', height: '1rem', width: '1rem', },
 });
 
 interface TogglePreviewShape {

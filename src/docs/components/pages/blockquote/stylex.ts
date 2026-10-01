@@ -27,7 +27,8 @@ const styles = stylex.create({
     maxWidth: '640px',
   },
   spanningCard: {
-    gridColumn: 'span 2 / span 2',
+    gridColumnEnd: 'span 2',
+    gridColumnStart: 'span 2',
   },
 });
 

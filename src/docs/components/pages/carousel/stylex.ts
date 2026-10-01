@@ -19,9 +19,10 @@ const styles = stylex.create({
     alignItems: 'center',
     aspectRatio: '1/1',
     display: 'flex',
-    fontSize: '2.25rem', lineHeight: '2.5rem',
+    fontSize: '2.25rem',
     fontWeight: 600,
     justifyContent: 'center',
+ lineHeight: '2.5rem',
   },
   slidePadding: { padding: '0.5rem' },
   apiStatus: {

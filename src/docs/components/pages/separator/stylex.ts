@@ -54,8 +54,8 @@ const styles = stylex.create({
   },
   menuItemStretch: { alignSelf: 'stretch' },
   hiddenBelowMdSep: {
-    display: { default: 'none', '@media (min-width: 768px)': 'block' },
     alignSelf: 'stretch',
+    display: { default: 'none', '@media (min-width: 768px)': 'block' },
   },
   listStack: {
     gap: '0.5rem',

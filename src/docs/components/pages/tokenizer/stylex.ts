@@ -27,8 +27,9 @@ const styles = stylex.create({
     backgroundColor: 'var(--primary)',
     color: 'var(--primary-foreground)',
     cursor: 'pointer',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
     fontWeight: 500,
+ lineHeight: '1.25rem',
   },
 });
 

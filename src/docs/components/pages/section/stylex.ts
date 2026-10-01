@@ -14,7 +14,7 @@ import * as Section from '@/stylex/section';
 import * as Stack from '@/stylex/stack';
 
 const styles = stylex.create({
-  boldBody: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 600 },
+  boldBody: { fontSize: '0.875rem', fontWeight: 600, lineHeight: '1.25rem', },
   supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
   bodyMuted: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
   body: { fontSize: '0.875rem', lineHeight: '1.25rem' },
