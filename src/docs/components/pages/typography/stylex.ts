@@ -45,6 +45,9 @@ const styles = stylex.create({
     listStyleType: 'disc',
     marginInlineStart: '1.5rem',
   },
+  listItem: {
+    marginTop: '0.5rem',
+  },
   link: {
     color: 'var(--primary)',
     fontWeight: 500,
@@ -108,7 +111,7 @@ const articleView = <Msg>(
       Typography.typographyP({ children: [a.subjectsNotAmused] }, h),
       h.ul(
         [h.Class(className(styles.list))],
-        a.list.map(item => h.li([], [item])),
+        a.list.map(item => h.li([h.Class(className(styles.listItem))], [item])),
       ),
       Typography.typographyP({ children: [a.stoppedTelling] }, h),
       Typography.typographyH3({ children: [a.jokestersRevolt] }, h),
@@ -139,7 +142,9 @@ const fixtureView = <Msg>(
   if (fixture.kind === 'list') {
     return h.ul(
       [h.Class(className(styles.list))],
-      typographyArticle.list.map(item => h.li([], [item])),
+      typographyArticle.list.map(item =>
+        h.li([h.Class(className(styles.listItem))], [item]),
+      ),
     );
   }
   const children = fixture.children ?? [''];

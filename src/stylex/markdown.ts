@@ -183,11 +183,15 @@ const styles = stylex.create({
     textAlign: 'end',
   },
   cellStart: {},
+  theadBorderless: {
+    borderBottomWidth: 0,
+  },
+  rowBorderBottom: {
+    borderBottomWidth: '1px',
+  },
   taskMarker: {
     borderColor: tokens.input,
-    /* PORT-NOTE: needs token 'radiusInner' = 4px — astrxy's inner radius;
-       radiusSm (radius-4px = 6px) is the nearest existing token. */
-    borderRadius: foundationTokens.radiusSm,
+    borderRadius: '4px',
     borderStyle: 'solid',
     borderWidth: '1px',
     alignItems: 'center',
@@ -596,9 +600,7 @@ const renderBlock = <Msg>(
         },
         h,
       );
-      return ctx.contentWidth === undefined
-        ? headingEl
-        : h.div(widthAttrs(ctx, h), [headingEl]);
+      return headingEl;
     }
     case 'paragraph':
       return h.div(
@@ -649,9 +651,7 @@ const renderBlock = <Msg>(
         },
         h,
       );
-      return ctx.contentWidth === undefined
-        ? quoteEl
-        : h.div(widthAttrs(ctx, h), [quoteEl]);
+      return quoteEl;
     }
     case 'list': {
       const isTaskList =
@@ -737,25 +737,23 @@ const renderBlock = <Msg>(
               children: [
                 tableHeader(
                   {
+                    layoutStyle:
+                      styles.theadBorderless as ComponentLayoutStyle,
                     children: [
                       tableRow(
                         {
+                          layoutStyle:
+                            styles.rowBorderBottom as ComponentLayoutStyle,
                           children: (headerRow?.children ?? []).map(
                             (cell, columnIndex) =>
                               tableHead(
                                 {
-                                  children: [
-                                    h.div(
-                                      [
-                                        h.Class(
-                                          className(alignStyle(columnIndex)),
-                                        ),
-                                      ],
-                                      cell.children.map(child =>
-                                        renderInline(child, ctx, h),
-                                      ),
-                                    ),
-                                  ],
+                                  layoutStyle: alignStyle(
+                                    columnIndex,
+                                  ) as ComponentLayoutStyle,
+                                  children: cell.children.map(child =>
+                                    renderInline(child, ctx, h),
+                                  ),
                                 },
                                 h,
                               ),
@@ -775,18 +773,12 @@ const renderBlock = <Msg>(
                           children: row.children.map((cell, columnIndex) =>
                             tableCell(
                               {
-                                children: [
-                                  h.div(
-                                    [
-                                      h.Class(
-                                        className(alignStyle(columnIndex)),
-                                      ),
-                                    ],
-                                    cell.children.map(child =>
-                                      renderInline(child, ctx, h),
-                                    ),
-                                  ),
-                                ],
+                                layoutStyle: alignStyle(
+                                  columnIndex,
+                                ) as ComponentLayoutStyle,
+                                children: cell.children.map(child =>
+                                  renderInline(child, ctx, h),
+                                ),
                               },
                               h,
                             ),
