@@ -2115,12 +2115,12 @@ Source: [`src/ui/transfer-list.ts`](../src/ui/transfer-list.ts)
 | Export | Kind | Signature |
 | --- | --- | --- |
 | `TransferListOption` | type | `TransferListOption = Readonly<{ /** Stable value written to the controlled value array. */ value: string; /** Visible option name and the basis of action labels. */ label: string; /** Optional searchable metadata. Not rendered in the default row. */ descripti…` |
-| `ReorderSession` | type | `ReorderSession = typeof ReorderSession.Type` |
 | `Model` | value | `Model: value` |
 | `Model` | type | `Model = typeof Model.Type` |
 | `init` | function | `init(config: { id: string; value?: ReadonlyArray<string>; }): Model` |
 | `Message` | value | `Message: value` |
 | `Message` | type | `Message = typeof Message.Type` |
+| `subscriptions` | value | `subscriptions: value` |
 | `OutMessage` | value | `OutMessage: value` |
 | `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
 | `update` | function | `update(model: Model, message: Message, options: ReadonlyArray<TransferListOption> = [], isReorderable = true): UpdateReturn` |

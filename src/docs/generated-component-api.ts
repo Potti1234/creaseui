@@ -6710,11 +6710,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "TransferListOption = Readonly<{ /** Stable value written to the controlled value array. */ value: string; /** Visible option name and the basis of action labels. */ label: string; /** Optional searchable metadata. Not rendered in the default row. */ descripti…"
     },
     {
-      "name": "ReorderSession",
-      "kind": "type",
-      "signature": "ReorderSession = typeof ReorderSession.Type"
-    },
-    {
       "name": "Model",
       "kind": "value",
       "signature": "Model: value"
@@ -6738,6 +6733,11 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "Message",
       "kind": "type",
       "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "subscriptions",
+      "kind": "value",
+      "signature": "subscriptions: value"
     },
     {
       "name": "OutMessage",

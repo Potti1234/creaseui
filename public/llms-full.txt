@@ -2483,12 +2483,12 @@ Source: `src/ui/transfer-list.ts`
 Examples: Visible fields, Locked fields, Unordered, Searchable, Empty states
 
 - `TransferListOption = Readonly<{ /** Stable value written to the controlled value array. */ value: string; /** Visible option name and the basis of action labels. */ label: string; /** Optional searchable metadata. Not rendered in the default row. */ descripti…` (type)
-- `ReorderSession = typeof ReorderSession.Type` (type)
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
 - `init(config: { id: string; value?: ReadonlyArray<string>; }): Model` (function)
 - `Message: value` (value)
 - `Message = typeof Message.Type` (type)
+- `subscriptions: value` (value)
 - `OutMessage: value` (value)
 - `OutMessage = typeof OutMessage.Type` (type)
 - `update(model: Model, message: Message, options: ReadonlyArray<TransferListOption> = [], isReorderable = true): UpdateReturn` (function)

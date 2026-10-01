@@ -376,6 +376,32 @@ export const init = (): Update.Return<Model, Message> => ({
     }` : ''}
   }
 }`,
+    subscriptions: `export const subscriptions = Subscription.aggregate<Model, Message>()(
+  Subscription.lift({
+    pointer: ${ns}.subscriptions.documentPointer,
+    escape: ${ns}.subscriptions.documentEscape,
+    keyboard: ${ns}.subscriptions.documentKeyboard,
+    scroll: ${ns}.subscriptions.autoScroll,
+  })<Model, Message>({
+    toChildModel: model => model.list.dnd,
+    toParentMessage: message =>
+      GotListMessage({
+        message: ${ns}.Message.GotDndMessage({ message }),
+      }),
+  }),${isPair ? `
+  Subscription.lift({
+    list2Pointer: ${ns}.subscriptions.documentPointer,
+    list2Escape: ${ns}.subscriptions.documentEscape,
+    list2Keyboard: ${ns}.subscriptions.documentKeyboard,
+    list2AutoScroll: ${ns}.subscriptions.autoScroll,
+  })<Model, Message>({
+    toChildModel: model => model.list2.dnd,
+    toParentMessage: message =>
+      GotList2Message({
+        message: ${ns}.Message.GotDndMessage({ message }),
+      }),
+  }),` : ''}
+)`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${fixture.title}',
   body: h.main(

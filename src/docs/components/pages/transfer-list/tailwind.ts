@@ -1,5 +1,5 @@
 import { Schema as S } from 'effect';
-import { Command } from 'foldkit';
+import { Command, Subscription } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 import { defineMessageUnion } from 'foldkit/message';
 
@@ -178,4 +178,30 @@ export const transferListTailwindPreviewProgram = definePreviewProgram<
     const fixture = transferListFixtures[index] ?? transferListFixtures[0];
     return fixtureView(fixture, model, h);
   },
+  subscriptions: Subscription.aggregate<Model, Got>()(
+    Subscription.lift({
+      listPointer: TransferList.subscriptions.documentPointer,
+      listEscape: TransferList.subscriptions.documentEscape,
+      listKeyboard: TransferList.subscriptions.documentKeyboard,
+      listAutoScroll: TransferList.subscriptions.autoScroll,
+    })<Model, Got>({
+      toChildModel: (model) => model.list.dnd,
+      toParentMessage: (message) =>
+        Got.GotListMessage({
+          message: TransferList.Message.GotDndMessage({ message }),
+        }),
+    }),
+    Subscription.lift({
+      list2Pointer: TransferList.subscriptions.documentPointer,
+      list2Escape: TransferList.subscriptions.documentEscape,
+      list2Keyboard: TransferList.subscriptions.documentKeyboard,
+      list2AutoScroll: TransferList.subscriptions.autoScroll,
+    })<Model, Got>({
+      toChildModel: (model) => model.list2.dnd,
+      toParentMessage: (message) =>
+        Got.GotList2Message({
+          message: TransferList.Message.GotDndMessage({ message }),
+        }),
+    }),
+  ),
 });

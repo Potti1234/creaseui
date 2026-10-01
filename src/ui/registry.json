@@ -798,6 +798,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/separator",
         "Potti1234/creaseui/utils"
       ],
       "files": [
