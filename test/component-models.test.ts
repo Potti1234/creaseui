@@ -162,10 +162,10 @@ describe('stateful component models', () => {
     ); const hovering = op7__.model;
     const op8__ = HoverCard.update(
       hovering,
-      HoverCard.Message.CompletedWaitBeforeShowingHoverCard({ version: hovering.showVersion }),
+      HoverCard.Message.CompletedWaitBeforeShowingHoverCard({ version: hovering.pendingOpenVersion }),
     ); const opened = op8__.model;
     const op9__ = HoverCard.update(opened, HoverCard.Message.LeftHoverCard()); const leaving = op9__.model;;
-    const staleVersion = leaving.closeVersion;
+    const staleVersion = leaving.pendingCloseVersion;
     const op10__ = HoverCard.update(leaving, HoverCard.Message.EnteredHoverCard()); const reentered = op10__.model;;
     const op11__ = HoverCard.update(
       reentered,

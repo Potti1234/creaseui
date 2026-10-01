@@ -27,13 +27,16 @@ test('focus owns visibility when pointer leaves and close completion is stale', 
   assert.equal(closeCommands.length, 0)
 })
 
-test('pointer leave closes an unfocused tooltip immediately', () => {
+test('pointer leave closes an unfocused tooltip after the close delay', () => {
   const open = { ...Tooltip.init({ id: 'tip', closeDelay: 100 }), isOpen: true, isHovered: true }
   const op8__ = Tooltip.update(open, Tooltip.Message.LeftTooltipTrigger()); const left = op8__.model;
 
-  assert.equal(left.isOpen, false)
+  // The close wait keeps the tooltip open until it completes.
+  assert.equal(left.isOpen, true)
+  const op9__ = Tooltip.update(left, Tooltip.Message.CompletedWaitBeforeClosingTooltip({ version: left.pendingCloseVersion })); const closed = op9__.model;
+  assert.equal(closed.isOpen, false)
 
-  const op9__ = Tooltip.update({ ...open, isFocused: true }, Tooltip.Message.LeftTooltipTrigger()); const focusedLeft = op9__.model;
+  const op10__ = Tooltip.update({ ...open, isFocused: true }, Tooltip.Message.LeftTooltipTrigger()); const focusedLeft = op10__.model;
   assert.equal(focusedLeft.isOpen, true)
 })
 
@@ -46,12 +49,13 @@ test('pointer-induced focus does not open a touch tooltip', () => {
   assert.equal(focused.isFocused, false)
 })
 
-test('Escape dismisses until the pointer disengages from the trigger', () => {
+test('Escape dismisses until both pointer and focus disengage', () => {
   const open = { ...Tooltip.init({ id: 'tip' }), isOpen: true, isHovered: true, isFocused: true }
   const op13__ = Tooltip.update(open, Tooltip.Message.PressedEscapeOnTooltip()); const dismissed = op13__.model; const hidden = op13__.outMessage;
   const op14__ = Tooltip.update(dismissed, Tooltip.Message.LeftTooltipTrigger()); const left = op14__.model;
+  const op15__ = Tooltip.update(left, Tooltip.Message.BlurredTooltipTrigger()); const blurred = op15__.model;
 
   assert.equal(hidden !== undefined, true)
-  assert.equal(dismissed.isDismissed, true)
-  assert.equal(left.isDismissed, false)
+  assert.equal(left.isDismissed, true)
+  assert.equal(blurred.isDismissed, false)
 })

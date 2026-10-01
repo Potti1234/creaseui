@@ -110,7 +110,21 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       const result = HoverIntentPrimitive.update(toPrimitiveModel(model), toPrimitiveMessage(message))
       return {
         model: { ...model, ...result.model },
-        commands: Command.mapMessages(result.commands ?? [], fromPrimitiveMessage),
+        /* Primitive Commands are re-expressed with crease names/args so
+           callers keep resolving `WaitBeforeShowingHoverCard` /
+           `WaitBeforeClosingHoverCard`. */
+        commands: (result.commands ?? []).map(command => {
+          const args = command.args as { delay?: Duration.Duration, version?: number } | undefined
+          if (args?.delay !== undefined && args.version !== undefined) {
+            if (command.name === 'WaitBeforeOpening') {
+              return WaitBeforeShowing({ delayMs: Duration.toMillis(args.delay), version: args.version })
+            }
+            if (command.name === 'WaitBeforeClosing') {
+              return WaitBeforeClosing({ delayMs: Duration.toMillis(args.delay), version: args.version })
+            }
+          }
+          return Command.mapMessage(command, fromPrimitiveMessage)
+        }),
       }
     }
   }
