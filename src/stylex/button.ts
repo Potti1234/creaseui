@@ -30,10 +30,9 @@ const base = stylex.create({
     },
     borderRadius: tokens.controlRadius,
     borderStyle: 'solid',
-    borderWidth: 0,
-    gap: '0.5rem',
+    borderWidth: 1,
     alignItems: 'center',
-    appearance: 'none',
+    backgroundClip: 'padding-box',
     boxShadow: {
       default: tokens.shadowNone,
       ':focus-visible': tokens.focusRingShadow,
@@ -47,6 +46,7 @@ const base = stylex.create({
     justifyContent: 'center',
     lineHeight: '1.25rem',
     outlineStyle: 'none',
+    userSelect: 'none',
     transform: {
       default: 'none',
       ':active': interactionTokens.pressTransform,
@@ -127,7 +127,7 @@ const sizes = stylex.create({
     height: '2.25rem',
   },
   xs: {
-    borderRadius: foundationTokens.radiusSm,
+    borderRadius: 'min(var(--radius-md), 8px)',
     gap: '0.25rem',
     paddingInline: '0.5rem',
     fontSize: '0.75rem',
@@ -135,7 +135,7 @@ const sizes = stylex.create({
     height: '1.5rem',
   },
   sm: {
-    borderRadius: foundationTokens.radiusSm,
+    borderRadius: 'min(var(--radius-md), 10px)',
     gap: '0.25rem',
     paddingInline: '0.625rem',
     height: '2rem',
@@ -151,13 +151,13 @@ const sizes = stylex.create({
     width: '2.25rem',
   },
   'icon-xs': {
-    borderRadius: foundationTokens.radiusSm,
+    borderRadius: 'min(var(--radius-md), 8px)',
     paddingInline: 0,
     height: '1.5rem',
     width: '1.5rem',
   },
   'icon-sm': {
-    borderRadius: foundationTokens.radiusSm,
+    borderRadius: 'min(var(--radius-md), 10px)',
     paddingInline: 0,
     height: '2rem',
     width: '2rem',
@@ -173,10 +173,10 @@ const sizes = stylex.create({
    (has-data-[icon=inline-*]); StyleX cannot select descendants, so the
    docs pass `iconInset` explicitly. */
 const iconInset = stylex.create({
-  startCompact: { paddingInlineStart: '0.375rem' },
-  startRoomy: { paddingInlineStart: '0.5rem' },
-  endCompact: { paddingInlineEnd: '0.375rem' },
-  endRoomy: { paddingInlineEnd: '0.5rem' },
+  startCompact: { paddingLeft: '0.375rem' },
+  startRoomy: { paddingLeft: '0.5rem' },
+  endCompact: { paddingRight: '0.375rem' },
+  endRoomy: { paddingRight: '0.5rem' },
 })
 
 const shape = stylex.create({

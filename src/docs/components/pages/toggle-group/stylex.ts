@@ -10,13 +10,15 @@ import {
 } from '@/docs/components/pages/toggle-group/shared';
 import * as Field from '@/stylex/field';
 import * as Icon from '@/lib/icon';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import * as ToggleGroup from '@/stylex/toggle-group';
 import { className } from '@/stylex/style';
 
 const styles = stylex.create({
   stack: { gap: '1rem', display: 'flex', flexDirection: 'column', },
+  wFull: { width: '100%' },
   weightItem: {
-    borderRadius: '0.75rem',
+    borderRadius: 'calc(var(--radius) + 4px)',
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'column',
@@ -24,13 +26,22 @@ const styles = stylex.create({
     height: '4rem',
     width: '4rem',
   },
-  weightLight: { fontSize: '1.5rem', fontWeight: 300, lineHeight: 1, },
+  weightItemBox: {
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '4rem',
+    justifyContent: 'center',
+    width: '4rem',
+  },
+  iconMd: { width: '1rem', height: '1rem', flexShrink: 0, pointerEvents: 'none' },
+  weightLight: { fontSize: '1.5rem', fontWeight: 'inherit', lineHeight: 1, },
   weightNormal: { fontSize: '1.5rem', fontWeight: 400, lineHeight: 1, },
   weightMedium: { fontSize: '1.5rem', fontWeight: 500, lineHeight: 1, },
   weightBold: { fontSize: '1.5rem', fontWeight: 700, lineHeight: 1, },
   weightLabel: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem', },
   inlineCode: {
-    borderRadius: '0.375rem',
+    borderRadius: 'var(--radius-md)',
     paddingBlock: '0.125rem',
     paddingInline: '0.25rem',
     backgroundColor: 'var(--muted)',
@@ -56,7 +67,7 @@ const weightClass = (weight: string) =>
 
 const itemChildren = <Msg>(item: TGItem, h: HtmlBuilder<Msg>): ReadonlyArray<Html | string> => {
   if (item.icon !== undefined) {
-    return [Icon.icon(item.icon, {}, h)];
+    return [Icon.icon(item.icon, { class: className(styles.iconMd) }, h)];
   }
   if (item.weight !== undefined) {
     return [
@@ -77,6 +88,9 @@ const itemConfig = <Msg>(item: TGItem, h: HtmlBuilder<Msg>) => ({
   ariaLabel: item.ariaLabel,
   children: itemChildren(item, h),
   ...(item.isDisabled === true ? { isDisabled: true } : {}),
+  ...(item.weight !== undefined
+    ? { layoutStyle: styles.weightItemBox as ComponentLayoutStyle }
+    : {}),
 });
 
 const groupView = <Msg>(
@@ -84,6 +98,7 @@ const groupView = <Msg>(
   preview: PreviewShape,
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
+  groupLayoutStyle?: ComponentLayoutStyle,
 ): Html =>
   Bundle.toggleGroup({
     model: preview.groups[group.id] ?? ToggleGroup.init({ id: group.id }),
@@ -111,6 +126,7 @@ const groupView = <Msg>(
       ? { orientation: 'vertical' as const }
       : {}),
     ...(group.rtl === true ? { direction: 'rtl' as const } : {}),
+    ...(groupLayoutStyle === undefined ? {} : { layoutStyle: groupLayoutStyle }),
   }, h);
 
 export const toggleGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
@@ -133,7 +149,7 @@ export const toggleGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     return Field.field({
       children: [
         Field.fieldLabel({ children: ['Font Weight'] }, h),
-        groupView(group, preview, onMessageJson, h),
+        groupView(group, preview, onMessageJson, h, styles.wFull as ComponentLayoutStyle),
         Field.fieldDescription({
           children: [
             'Use ',

@@ -76,10 +76,6 @@ const styles = stylex.create({
     opacity: 0.5,
     pointerEvents: 'none',
   },
-  standalone: {
-    fontSize: '0.875rem',
-    lineHeight: 1.4286,
-  },
   focusVisible: {
     outlineColor: {
       default: null,
@@ -115,6 +111,7 @@ const styles = stylex.create({
     borderWidth: 0,
     overflow: 'hidden',
     clip: 'rect(0, 0, 0, 0)',
+    clipPath: 'inset(50%)',
     position: 'absolute',
     whiteSpace: 'nowrap',
     height: '1px',
@@ -230,7 +227,6 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
     styles.focusVisible,
     ...(isDisabled ? [styles.disabled] : []),
     ...(props.hasUnderline === true ? [styles.hasUnderline] : []),
-    ...(props.isStandalone === true ? [styles.standalone] : []),
   ];
 
   if (renderAsButton) {
