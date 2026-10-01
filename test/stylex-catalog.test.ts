@@ -10,19 +10,29 @@ const componentNames = readdirSync('src/ui')
   .sort()
 
 const infrastructureNames = new Set([
+  'attachment.markers.stylex',
+  'avatar.markers.stylex',
+  'bubble.markers.stylex',
+  'button-group-join.stylex',
+  'calendar.markers.stylex',
   'card.markers.stylex',
+  'checkbox.markers.stylex',
   'complex-tokens.stylex',
   'contracts',
+  'field.markers.stylex',
   'foundations-tokens.stylex',
   'astryx-text',
   'index',
   'interaction-tokens.stylex.const',
   'log-stream-terminal-ink.stylex',
   'log-stream-terminal.stylex',
+  'message.markers.stylex',
   'overlay-boundary',
   'overlay-tokens.stylex',
+  'radio-group.markers.stylex',
   'style',
   'tokens.stylex',
+  'tree-list.markers.stylex',
 ])
 
 const registry = JSON.parse(readFileSync('src/ui/registry.json', 'utf8')) as {
