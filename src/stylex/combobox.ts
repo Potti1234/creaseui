@@ -7,12 +7,32 @@ import * as Icon from '@/lib/icon';
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
+import { foundationTokens } from './foundations-tokens.stylex'
+import { tokens } from './tokens.stylex'
 import type { ComponentLayoutStyle } from './contracts'
 import { themedAnchor } from './overlay-boundary'
 import { className } from './style'
 
 const styles = stylex.create({
   contents: { display: 'contents' },
+  inputWrapperFix: {
+    position: 'relative',
+    height: { default: '2.25rem', ':is([data-size="sm"])': '2rem' },
+    '::before': {
+      color: tokens.mutedForeground,
+      content: '"⌕"',
+      flexShrink: 0,
+      fontSize: '0.875rem',
+      lineHeight: '1.25rem',
+    },
+  },
+  inputFix: {
+    borderRadius: foundationTokens.radiusMd,
+    paddingBlock: '0.75rem',
+    display: 'flex',
+    opacity: { default: 1, ':is([data-disabled], [aria-disabled="true"])': 0.5 },
+    '::placeholder': { color: tokens.mutedForeground },
+  },
 })
 
 const isStaticStyle = (value: unknown): value is StaticStyles =>
@@ -199,14 +219,14 @@ const buildBaseViewInputs = <Item, Value extends string, Msg>(
           ),
         };
       },
-      inputClassName: className(INPUT_CLASS),
+      inputClassName: className(INPUT_CLASS, styles.inputFix),
       inputAttributes: childAttributes([
         hc.DataAttribute('slot', 'command-input'),
       ]),
       ...(props.placeholder === undefined
         ? {}
         : { inputPlaceholder: props.placeholder }),
-      inputWrapperClassName: cn(INPUT_WRAPPER_CLASS, props.triggerLayoutStyle),
+      inputWrapperClassName: cn(INPUT_WRAPPER_CLASS, styles.inputWrapperFix, props.triggerLayoutStyle),
       inputWrapperAttributes: childAttributes([
         hc.DataAttribute('slot', 'command-input-wrapper'),
         hc.DataAttribute('size', props.size ?? 'default'),

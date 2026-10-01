@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex';
 import type { HtmlBuilder } from 'foldkit/html';
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
@@ -8,7 +9,22 @@ import {
 } from '@/docs/components/pages/checkbox/shared';
 import * as Checkbox from '@/stylex/checkbox';
 import * as Field from '@/stylex/field';
+import { className } from '@/stylex/style';
 import * as Table from '@/stylex/table';
+
+const styles = stylex.create({
+  wide: {
+    maxWidth: '24rem',
+    width: '100%',
+  },
+  wide2xl: {
+    maxWidth: '42rem',
+    width: '100%',
+  },
+  descOffset: {
+    marginTop: '-0.375rem',
+  },
+});
 
 export const checkboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -28,9 +44,10 @@ export const checkboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   const fixture = checkboxFixtures[exampleIndex];
   if (fixture === undefined) return undefined;
   if (fixture.kind === 'group') {
-    return Field.fieldSet({ children: [
+    return h.div([h.Class(className(styles.wide))], [
+      Field.fieldSet({ children: [
       Field.fieldLegend({ children: ['Show these items on the desktop:'] }, h),
-      Field.fieldDescription({ children: ['Select the items you want to show on the desktop.'] }, h),
+      Field.fieldDescription({ layoutStyle: styles.descOffset, children: ['Select the items you want to show on the desktop.'] }, h),
       Field.fieldGroup({ children: checkboxGroupItems.map(item => Checkbox.checkbox({
         id: `desktop-${item.id}`,
         isChecked: preview[item.id],
@@ -39,10 +56,12 @@ export const checkboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         name: 'desktop-items',
         value: item.id,
       }, h)) }, h),
-    ] }, h);
+      ] }, h),
+    ]);
   }
   if (fixture.kind === 'table') {
-    return Table.table({ children: [
+    return h.div([h.Class(className(styles.wide2xl))], [
+      Table.table({ children: [
       Table.tableHeader({ children: [
         Table.tableRow({ children: [
           Table.tableHead({ children: [Checkbox.checkbox({
@@ -69,7 +88,8 @@ export const checkboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           Table.tableCell({ children: [row.role] }, h),
         ],
       }, h)) }, h),
-    ] }, h);
+      ] }, h),
+    ]);
   }
   const checkbox = Checkbox.checkbox({
     id: `docs-checkbox-${String(exampleIndex)}`,

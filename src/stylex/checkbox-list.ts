@@ -68,8 +68,9 @@ const styles = stylex.create({
     width: '1px',
   },
   labelIndicator: {
-    fontSize: '0.75rem', lineHeight: '1rem',
+    fontSize: '0.75rem',
     fontWeight: 400,
+ lineHeight: '1rem',
   },
   description: {
     color: tokens.mutedForeground,
@@ -85,6 +86,9 @@ const styles = stylex.create({
   },
   listGap: {
     gap: '0.125rem',
+  },
+  listFlush: {
+    gap: 0,
   },
   divider: {
     marginInline: '0.5rem',
@@ -208,6 +212,7 @@ const styles = stylex.create({
   itemContent: {
     gap: 0,
     display: 'flex',
+    flexBasis: '0%',
     flexDirection: 'column',
     flexGrow: 1,
     minWidth: 0,
@@ -436,7 +441,7 @@ export const checkboxList = <Msg>(
       description: [h.Class(className(styles.description))],
       group: [],
       list: [
-        h.Class(className(styles.list, props.hasDividers !== true && styles.listGap)),
+        h.Class(className(styles.list, props.hasDividers === true ? styles.listFlush : styles.listGap)),
       ],
       divider: [h.Class(className(styles.divider))],
       status: {

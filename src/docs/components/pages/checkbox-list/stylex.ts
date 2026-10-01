@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex';
 import { Schema as S } from 'effect';
 import { defineMessageUnion } from 'foldkit/message';
 import type { Html, HtmlBuilder } from 'foldkit/html';
@@ -11,6 +12,14 @@ import {
 } from '@/docs/components/pages/checkbox-list/shared';
 import * as CheckboxList from '@/stylex/checkbox-list';
 import * as Badge from '@/stylex/badge';
+import { className } from '@/stylex/style';
+
+const styles = stylex.create({
+  wide: {
+    maxWidth: '28rem',
+    width: '100%',
+  },
+});
 
 const ChangedValue = defineMessageUnion({
   ChangedValue: { values: S.Array(S.String) },
@@ -92,23 +101,25 @@ export const checkboxListStylexPreviewProgram = definePreviewProgram<
     }
   },
   view: (index, model, h) =>
-    CheckboxList.checkboxList(
-      {
-        id: `docs-checkbox-list-${String(index)}`,
-        label: fixtureLabel(index),
-        ...descriptionSpread(index),
-        value: model.value,
-        onChange: values => ChangedValue.ChangedValue({ values: [...values] }),
-        ...(fixtureDividers(index) ? { hasDividers: true as const } : {}),
-        items: buildItems(
-          checkboxListFixtures[index] ?? checkboxListFixtures[0],
-          model.value,
-          values => ChangedValue.ChangedValue({ values: [...values] }),
-          h,
-        ),
-      },
-      h,
-    ),
+    h.div([h.Class(className(styles.wide))], [
+      CheckboxList.checkboxList(
+        {
+          id: `docs-checkbox-list-${String(index)}`,
+          label: fixtureLabel(index),
+          ...descriptionSpread(index),
+          value: model.value,
+          onChange: values => ChangedValue.ChangedValue({ values: [...values] }),
+          ...(fixtureDividers(index) ? { hasDividers: true as const } : {}),
+          items: buildItems(
+            checkboxListFixtures[index] ?? checkboxListFixtures[0],
+            model.value,
+            values => ChangedValue.ChangedValue({ values: [...values] }),
+            h,
+          ),
+        },
+        h,
+      ),
+    ]),
 });
 
 const descriptionSpread = (
@@ -135,16 +146,18 @@ export const checkboxListStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   const previewModel = model as { value: ReadonlyArray<string> };
   const emit = (values: ReadonlyArray<string>): Msg =>
     onMessageJson(JSON.stringify({ _tag: 'ChangedValue', values: [...values] }));
-  return CheckboxList.checkboxList(
-    {
-      id: `docs-checkbox-list-${String(exampleIndex)}`,
-      label: fixture.label,
-      ...(fixture.helperText === undefined ? {} : { description: fixture.helperText }),
-      value: previewModel.value,
-      onChange: values => emit(values),
-      ...(fixture.hasDividers === true ? { hasDividers: true } : {}),
-      items: buildItems(fixture, previewModel.value, emit, h),
-    },
-    h,
-  );
+  return h.div([h.Class(className(styles.wide))], [
+    CheckboxList.checkboxList(
+      {
+        id: `docs-checkbox-list-${String(exampleIndex)}`,
+        label: fixture.label,
+        ...(fixture.helperText === undefined ? {} : { description: fixture.helperText }),
+        value: previewModel.value,
+        onChange: values => emit(values),
+        ...(fixture.hasDividers === true ? { hasDividers: true } : {}),
+        items: buildItems(fixture, previewModel.value, emit, h),
+      },
+      h,
+    ),
+  ]);
 };
