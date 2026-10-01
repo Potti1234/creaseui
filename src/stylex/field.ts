@@ -1,4 +1,5 @@
 import * as stylex from "@stylexjs/stylex";
+import type { StaticStyles } from "@stylexjs/stylex";
 import type { Html, HtmlBuilder } from "foldkit/html";
 import {
   type ControlFieldProps as SharedControlFieldProps,
@@ -7,6 +8,15 @@ import {
   renderControlField,
 } from "@/lib/field";
 import type { ComponentLayoutStyle } from "./contracts";
+import {
+  fieldDisabledScope,
+  fieldGroupScope,
+  fieldHorizontalScope,
+  fieldLabelScope,
+  fieldResponsiveScope,
+  fieldVerticalScope,
+} from "./field.markers.stylex";
+import { foundationTokens } from "./foundations-tokens.stylex";
 import { className } from "./style";
 import { tokens } from "./tokens.stylex";
 export type { ControlFieldParts, FieldError } from "@/lib/field";
@@ -18,21 +28,55 @@ type Slot = Readonly<{
   children: ReadonlyArray<Html | string>;
 }>;
 const styles = stylex.create({
-  set: { gap: "1.5rem", display: "flex", flexDirection: "column" },
-  legend: { fontSize: "1rem", fontWeight: 500, marginBottom: "0.75rem" },
-  legendLabel: { fontSize: "0.875rem" },
+  set: {
+    gap: {
+      default: "1.5rem",
+      ':has(>[data-slot=checkbox-group])': "0.75rem",
+      ':has(>[data-slot=radio-group])': "0.75rem",
+    },
+    display: "flex",
+    flexDirection: "column",
+  },
+  legend: { fontSize: "1rem", lineHeight: '1.5rem', fontWeight: 500, marginBottom: "0.75rem" },
+  legendLabel: { fontSize: "0.875rem", lineHeight: '1.25rem' },
   group: {
-    gap: "1.75rem",
+    containerName: "field-group",
+    containerType: "inline-size",
+    gap: {
+      default: "1.75rem",
+      [stylex.when.ancestor(":is(*)", fieldGroupScope)]: "1rem",
+    },
     display: "flex",
     flexDirection: "column",
     width: "100%",
   },
-  field: { gap: "0.5rem", display: "flex", width: "100%" },
+  field: {
+    gap: "0.5rem",
+    display: "flex",
+    padding: {
+      default: null,
+      [stylex.when.ancestor(":is(*)", fieldLabelScope)]: "1rem",
+    },
+    width: "100%",
+  },
   vertical: { flexDirection: "column" },
-  horizontal: { alignItems: "center", flexDirection: "row" },
-  responsive: { flexDirection: "column" },
+  horizontal: {
+    alignItems: {
+      default: "center",
+      ':has(>[data-slot=field-content])': "flex-start",
+    },
+    flexDirection: "row",
+  },
+  responsive: {
+    alignItems: {
+      "@container field-group (min-width: 28rem)": "center",
+    },
+    flexDirection: {
+      default: "column",
+      "@container field-group (min-width: 28rem)": "row",
+    },
+  },
   invalid: { color: tokens.destructive },
-  disabled: { opacity: 0.5 },
   content: {
     flex: "1",
     gap: "0.375rem",
@@ -44,15 +88,57 @@ const styles = stylex.create({
     gap: "0.5rem",
     alignItems: "center",
     display: "flex",
-    fontSize: "0.875rem",
+    flex: {
+      default: null,
+      [stylex.when.ancestor(":not(:has(> [data-slot=field-content]))", fieldHorizontalScope)]: "auto",
+      [stylex.when.ancestor(":not(:has(> [data-slot=field-content]))", fieldResponsiveScope)]: "auto",
+    },
+    fontSize: "0.875rem", lineHeight: '1.25rem',
     fontWeight: 500,
   },
-  fontNormal: {
-    fontWeight: 400,
+  controlLabel: { lineHeight: 1, userSelect: "none" },
+  fieldLabel: {
+    backgroundColor: {
+      default: null,
+      ':has([data-checked])':
+        "color-mix(in oklab, var(--primary) 5%, transparent)",
+    },
+    borderColor: {
+      default: tokens.border,
+      ':has([data-checked])': tokens.primary,
+    },
+    borderRadius: {
+      default: null,
+      ':has(>[data-slot=field])': foundationTokens.radiusMd,
+    },
+    borderStyle: {
+      default: null,
+      ':has(>[data-slot=field])': "solid",
+    },
+    borderWidth: {
+      default: null,
+      ':has(>[data-slot=field])': 1,
+    },
+    flexDirection: {
+      default: null,
+      ':has(>[data-slot=field])': "column",
+    },
     lineHeight: 1.375,
     userSelect: "none",
-    width: "fit-content",
+    width: {
+      default: "fit-content",
+      ':has(>[data-slot=field])': "100%",
+      [stylex.when.ancestor(":is(*)", fieldVerticalScope)]: "100%",
+      [stylex.when.ancestor(":is(*)", fieldResponsiveScope)]: "100%",
+    },
   },
+  labelDisabled: {
+    opacity: {
+      default: null,
+      [stylex.when.ancestor(":is(*)", fieldDisabledScope)]: 0.5,
+    },
+  },
+  fontNormal: { fontWeight: 400 },
   title: {
     gap: "0.5rem",
     alignItems: "center",
@@ -60,7 +146,11 @@ const styles = stylex.create({
     fontSize: "0.875rem",
     fontWeight: 500,
     lineHeight: 1.375,
-    width: "fit-content",
+    width: {
+      default: "fit-content",
+      [stylex.when.ancestor(":is(*)", fieldVerticalScope)]: "100%",
+      [stylex.when.ancestor(":is(*)", fieldResponsiveScope)]: "100%",
+    },
   },
   description: {
     color: tokens.mutedForeground,
@@ -68,7 +158,13 @@ const styles = stylex.create({
     fontWeight: 400,
     lineHeight: 1.5,
   },
-  separator: { position: "relative", height: "1.25rem" },
+  separator: {
+    fontSize: "0.875rem",
+    lineHeight: "1.25rem",
+    marginBlock: "-0.5rem",
+    position: "relative",
+    height: "1.25rem",
+  },
   rule: {
     inset: 0,
     backgroundColor: tokens.border,
@@ -86,7 +182,7 @@ const styles = stylex.create({
     position: "relative",
     width: "fit-content",
   },
-  error: { color: tokens.destructive, fontSize: "0.875rem", fontWeight: 400 },
+  error: { color: tokens.destructive, fontSize: "0.875rem", lineHeight: '1.25rem', fontWeight: 400 },
   errorList: {
     gap: "0.25rem",
     display: "flex",
@@ -137,12 +233,31 @@ export const fieldGroup = <Msg>(
       ...(p.variant === undefined
         ? []
         : [h.DataAttribute("variant", p.variant)]),
-      h.Class(className(styles.group, p.layoutStyle)),
+      h.Class(
+        className(
+          styles.group,
+          // eslint-disable-next-line no-restricted-syntax -- marker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
+          fieldGroupScope as unknown as StaticStyles,
+          p.layoutStyle,
+        ),
+      ),
     ],
     [...p.children],
   );
+const orientationMarker = (
+  orientation: NonNullable<FieldVariants["orientation"]>,
+): StaticStyles =>
+  (orientation === "horizontal"
+    ? fieldHorizontalScope
+    : orientation === "responsive"
+      ? fieldResponsiveScope
+      : fieldVerticalScope) as unknown as StaticStyles;
 export const fieldVariants = (o: FieldVariants = {}): string =>
-  className(styles.field, styles[o.orientation ?? "vertical"]);
+  className(
+    styles.field,
+    styles[o.orientation ?? "vertical"] as StaticStyles,
+    orientationMarker(o.orientation ?? "vertical"),
+  );
 export type ControlFieldProps<Msg> = SharedControlFieldProps<Msg> &
   Readonly<{ layoutStyle?: ComponentLayoutStyle }>;
 export const controlField = <Msg>(
@@ -157,14 +272,19 @@ export const controlField = <Msg>(
         h.Class(
           className(
             styles.field,
-            styles[orientation],
+            styles[orientation] as StaticStyles,
             (p.isInvalid === true || p.error !== undefined || fieldErrorMessages(p.errors).length > 0) && styles.invalid,
-            p.isDisabled && styles.disabled,
+            p.isDisabled && (fieldDisabledScope as unknown as StaticStyles),
+            orientationMarker(orientation),
             p.layoutStyle,
           ),
         ),
       ],
-      label: [h.Class(className(styles.label))],
+      label: [
+        h.Class(
+          className(styles.label, styles.controlLabel, styles.labelDisabled),
+        ),
+      ],
       description: [h.Class(className(styles.description))],
       error: [h.Class(className(styles.error))],
       errorList: [h.Class(className(styles.errorList))],
@@ -192,9 +312,10 @@ export const field = <Msg>(p: FieldProps, h: HtmlBuilder<Msg>): Html => {
       h.Class(
         className(
           styles.field,
-          styles[orientation],
+          styles[orientation] as StaticStyles,
           p.isInvalid && styles.invalid,
-          p.isDisabled && styles.disabled,
+          p.isDisabled && (fieldDisabledScope as unknown as StaticStyles),
+          orientationMarker(orientation),
           p.layoutStyle,
         ),
       ),
@@ -219,7 +340,17 @@ export const fieldLabel = <Msg>(
     [
       h.DataAttribute("slot", "field-label"),
       ...(p.for === undefined ? [] : [h.For(p.for)]),
-      h.Class(className(styles.label, p.weight === 'normal' && styles.fontNormal, p.layoutStyle)),
+      h.Class(
+        className(
+          styles.label,
+          styles.fieldLabel,
+          styles.labelDisabled,
+          // eslint-disable-next-line no-restricted-syntax -- marker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
+          fieldLabelScope as unknown as StaticStyles,
+          p.weight === 'normal' && styles.fontNormal,
+          p.layoutStyle,
+        ),
+      ),
     ],
     [...p.children],
   );
@@ -227,7 +358,7 @@ export const fieldTitle = <Msg>(p: Slot, h: HtmlBuilder<Msg>): Html =>
   h.div(
     [
       h.DataAttribute("slot", "field-label"),
-      h.Class(className(styles.title, p.layoutStyle)),
+      h.Class(className(styles.title, styles.labelDisabled, p.layoutStyle)),
     ],
     [...p.children],
   );

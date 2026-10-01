@@ -28,7 +28,7 @@ const styles = stylex.create({
     flexDirection: 'column',
   },
   accent: { color: 'var(--primary)' },
-  amount: { fontSize: '0.875rem', fontVariantNumeric: 'tabular-nums' },
+  amount: { fontSize: '0.875rem', lineHeight: '1.25rem', fontVariantNumeric: 'tabular-nums' },
   itemEnd: { marginInlineStart: 'auto' },
   srOnly: {
     margin: '-1px',

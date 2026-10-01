@@ -38,17 +38,17 @@ const styles = stylex.create({
     height: '1.5rem',
     width: '1.5rem',
   },
-  captionIcon: { fontSize: '0.875rem' },
-  iconSm: { fontSize: '0.875rem' },
-  popoverBody: { gap: '0.75rem', display: 'grid', fontSize: '0.875rem', },
+  captionIcon: { fontSize: '0.875rem', lineHeight: '1.25rem' },
+  iconSm: { fontSize: '0.875rem', lineHeight: '1.25rem' },
+  popoverBody: { gap: '0.75rem', display: 'grid', fontSize: '0.875rem', lineHeight: '1.25rem', },
   popoverHead: { gap: '0.25rem', display: 'grid', },
-  popoverTitle: { fontSize: '0.875rem', fontWeight: 500 },
-  popoverCopy: { color: tokens.mutedForeground, fontSize: '0.875rem' },
+  popoverTitle: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
+  popoverCopy: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
   popoverFootnote: {
     color: tokens.mutedForeground,
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
   },
-  menuIcon: { fontSize: '1rem' },
+  menuIcon: { fontSize: '1rem', lineHeight: '1.5rem' },
 });
 
 type PreviewSnapshot = Readonly<{

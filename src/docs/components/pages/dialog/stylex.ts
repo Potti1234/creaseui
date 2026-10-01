@@ -23,7 +23,7 @@ const styles = stylex.create({
     borderWidth: '1px',
     paddingBlock: '0.5rem',
     paddingInline: '1rem',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
   },
   confirm: {
     borderColor: 'var(--primary)',
@@ -57,7 +57,7 @@ const styles = stylex.create({
     height: '1px',
     width: '1px',
   },
-  copy: { fontSize: '0.875rem' },
+  copy: { fontSize: '0.875rem', lineHeight: '1.25rem' },
 });
 
 type PreviewModel = { name: string; username: string };

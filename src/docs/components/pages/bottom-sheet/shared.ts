@@ -299,7 +299,7 @@ const emitReviewSheets = (isStyleX: boolean): string => {
 const emitStyles = `const styles = stylex.create({
   main: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   sheetBody: { display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem' },
-  sheetHeading: { fontSize: '1rem', fontWeight: 600, marginBlock: 0, marginInline: 0 },
+  sheetHeading: { fontSize: '1rem', lineHeight: '1.5rem', fontWeight: 600, marginBlock: 0, marginInline: 0 },
   sheetText: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   sheetMeta: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
   filterRows: { display: 'flex', flexDirection: 'column', gap: '0.5rem' },
@@ -308,17 +308,17 @@ const emitStyles = `const styles = stylex.create({
   footerRow: { display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' },
   triggerRow: { display: 'flex', flexWrap: 'wrap', gap: '0.5rem' },
   pageStack: { display: 'flex', flexDirection: 'column', gap: '0.75rem', padding: '1rem' },
-  pageHeading: { fontSize: '1rem', fontWeight: 600, marginBlock: 0, marginInline: 0 },
+  pageHeading: { fontSize: '1rem', lineHeight: '1.5rem', fontWeight: 600, marginBlock: 0, marginInline: 0 },
   timeRow: { alignItems: 'center', display: 'flex', gap: '0.5rem' },
-  timeLabel: { fontSize: '0.875rem', fontWeight: 500 },
-  timeMeta: { color: 'var(--muted-foreground)', fontSize: '0.75rem' },
+  timeLabel: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
+  timeMeta: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
   stepsList: { display: 'flex', flexDirection: 'column' },
   stepRow: { alignItems: 'center', display: 'flex', gap: '0.75rem', paddingBlock: '0.5rem' },
   stepTextWrap: { flexBasis: '0%', flexGrow: 1, flexShrink: 1 },
-  stepLabel: { fontSize: '0.875rem' },
-  stepDetail: { color: 'var(--muted-foreground)', fontSize: '0.75rem' },
-  stepDistance: { color: 'var(--muted-foreground)', fontSize: '0.75rem' },
-  itemLabel: { fontSize: '0.875rem', fontWeight: 500 },
+  stepLabel: { fontSize: '0.875rem', lineHeight: '1.25rem' },
+  stepDetail: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
+  stepDistance: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
+  itemLabel: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
 })`;
 
 // ————— program emission

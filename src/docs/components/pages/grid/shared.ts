@@ -397,8 +397,8 @@ const styles = stylex.create({
   gridPanel: { height: '100%', overflow: 'auto', padding: '1rem' },
   filler: { height: '100%' },
   group: { height: '100%', width: '100%' },
-  label: { fontSize: '0.875rem', fontWeight: 500 },
-  supporting: { fontSize: '0.75rem' },
+  label: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
+  supporting: { fontSize: '0.75rem', lineHeight: '1rem' },
 })`
       : '';
   return foldkitApplication({
@@ -482,8 +482,8 @@ const extraSourceFor = (kind: GridFixture['kind']): string => {
 const stylexStylesFor = (kind: GridFixture['kind']): string => {
   const entries: Array<string> = [];
   if (kind === 'spanning' || kind === 'gallery' || kind === 'dashboard') {
-    entries.push(`  label: { fontSize: '0.875rem', fontWeight: 500 }`);
-    entries.push(`  supporting: { fontSize: '0.75rem' }`);
+    entries.push(`  label: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 }`);
+    entries.push(`  supporting: { fontSize: '0.75rem', lineHeight: '1rem' }`);
   }
   if (kind === 'spanning') {
     entries.push(`  featuredCard: {
@@ -498,7 +498,7 @@ const stylexStylesFor = (kind: GridFixture['kind']): string => {
   if (kind === 'spanColumns' || kind === 'spanShowcase') {
     entries.push(`  tallCard: { height: '5rem' }`);
     entries.push(
-      `  body: { color: 'var(--muted-foreground)', fontSize: '0.875rem' }`,
+      `  body: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' }`,
     );
   }
   if (entries.length === 0) return '';

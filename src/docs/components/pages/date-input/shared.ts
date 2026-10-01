@@ -76,7 +76,7 @@ const styles = stylex.create({
     minWidth: '15rem',
     width: '100%',
   },
-  supporting: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },
+  supporting: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
 })`;
 
 const stackClass = (isStyleX: boolean): string =>

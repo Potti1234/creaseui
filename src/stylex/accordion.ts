@@ -70,7 +70,7 @@ const styles = stylex.create({
   },
   panel: {
     overflow: 'hidden',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
   },
   trigger: {
     borderColor: {
@@ -92,7 +92,7 @@ const styles = stylex.create({
     },
     display: 'flex',
     flexGrow: 1,
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     fontWeight: 500,
     justifyContent: 'space-between',
     opacity: { default: 1, ':disabled': 0.5 },

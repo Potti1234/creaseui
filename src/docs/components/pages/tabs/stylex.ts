@@ -14,7 +14,7 @@ import * as Tabs from '@/stylex/tabs';
 const styles = stylex.create({
   cardText: {
     color: 'var(--muted-foreground)',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
   },
   demoWidth: { width: '25rem' },
 });

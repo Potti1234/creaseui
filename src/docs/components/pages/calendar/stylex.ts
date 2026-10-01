@@ -51,7 +51,7 @@ const styles = stylex.create({
     display: 'flex',
     justifyContent: 'space-between',
   },
-  jalaliTitle: { fontSize: '0.875rem', fontWeight: 500 },
+  jalaliTitle: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
   jalaliGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(7, minmax(0, 1fr))',

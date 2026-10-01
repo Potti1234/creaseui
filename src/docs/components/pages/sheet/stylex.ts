@@ -31,7 +31,7 @@ const styles = stylex.create({
     paddingInline: '1rem',
     backgroundColor: 'var(--primary)',
     color: 'var(--primary-foreground)',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
   },
   footerCancel: {
     borderColor: 'var(--border)',
@@ -40,7 +40,7 @@ const styles = stylex.create({
     borderWidth: '1px',
     paddingBlock: '0.5rem',
     paddingInline: '1rem',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
   },
 });
 

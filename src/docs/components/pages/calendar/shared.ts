@@ -490,7 +490,7 @@ const styles = stylex.create({
     width: 'fit-content',
   },
   header: { alignItems: 'center', display: 'flex', justifyContent: 'space-between' },
-  title: { fontSize: '0.875rem', fontWeight: 500 },
+  title: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
   grid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(7, minmax(0, 1fr))',

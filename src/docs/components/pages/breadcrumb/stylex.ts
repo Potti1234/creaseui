@@ -13,7 +13,7 @@ import * as Breadcrumb from '@/stylex/breadcrumb';
 import * as DropdownMenu from '@/stylex/dropdown-menu';
 
 const styles = stylex.create({
-  chevron: { fontSize: '0.875rem' },
+  chevron: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   dropdownTrigger: {
     gap: '0.25rem',
     alignItems: 'center',

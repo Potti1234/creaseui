@@ -341,7 +341,7 @@ const stylexStylesSource = (fixture: AvatarFixture): string => {
     ? `\n  badgeIcon: { fontSize: '0.5rem' },`
     : '';
   const countIcon = needsCountIcon(fixture)
-    ? `\n  countIcon: { fontSize: '1rem' },`
+    ? `\n  countIcon: { fontSize: '1rem', lineHeight: '1.5rem' },`
     : '';
   return `const styles = stylex.create({${hero}${sizesRow}${badgeIcon}${countIcon}
 })

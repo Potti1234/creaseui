@@ -36,7 +36,7 @@ import { className } from '@/stylex/style';
 import { tokens } from '../../stylex/tokens.stylex';
 
 const styles = stylex.create({
-  amount: { fontSize: '1.875rem', fontVariantNumeric: 'tabular-nums', fontWeight: 600 },
+  amount: { fontSize: '1.875rem', lineHeight: '2.25rem', fontVariantNumeric: 'tabular-nums', fontWeight: 600 },
   button: { width: '100%' },
   cardDescription: { textAlign: 'center' },
   content: { gap: '0.75rem',
@@ -51,12 +51,12 @@ const styles = stylex.create({
   grid: { gap: { default: '1rem', '@media (min-width: 1920px)': '3rem', '@media (min-width: 768px)': '2.5rem' }, display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', },
   itemContent: { gap: '0.75rem', display: 'flex', flexDirection: 'column', },
   itemStack: { alignItems: 'stretch', display: 'flex', flexDirection: 'column', width: '100%' },
-  label: { color: tokens.mutedForeground, fontSize: '0.875rem' },
+  label: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
   row: { alignItems: 'center', display: 'flex', justifyContent: 'space-between' },
   targets: { gap: '0.75rem', display: 'flex', flexDirection: 'column', },
-  title: { color: tokens.mutedForeground, fontSize: '0.75rem', fontWeight: 500, letterSpacing: '0.05em', textTransform: 'uppercase' },
-  value: { fontSize: '0.875rem', fontVariantNumeric: 'tabular-nums', fontWeight: 600 },
-  valueMedium: { fontSize: '0.875rem', fontVariantNumeric: 'tabular-nums', fontWeight: 500 },
+  title: { color: tokens.mutedForeground, fontSize: '0.75rem', lineHeight: '1rem', fontWeight: 500, letterSpacing: '0.05em', textTransform: 'uppercase' },
+  value: { fontSize: '0.875rem', lineHeight: '1.25rem', fontVariantNumeric: 'tabular-nums', fontWeight: 600 },
+  valueMedium: { fontSize: '0.875rem', lineHeight: '1.25rem', fontVariantNumeric: 'tabular-nums', fontWeight: 500 },
 });
 
 export const Model = S.Struct({

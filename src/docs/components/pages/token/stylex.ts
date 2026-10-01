@@ -19,7 +19,7 @@ const styles = stylex.create({
     fontSize: '0.75rem',
     lineHeight: '1.25rem',
   },
-  iconSm: { fontSize: '0.75rem' },
+  iconSm: { fontSize: '0.75rem', lineHeight: '1rem' },
 });
 
 /* Literal icon names keep `icons:generate` statically scannable. */

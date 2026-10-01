@@ -22,9 +22,9 @@ const styles = stylex.create({
   trigger: { fontWeight: 400, justifyContent: 'flex-start', textAlign: 'left', width: '15rem' },
   field: { gap: '0.5rem', display: 'grid' },
   fieldRow: { gap: '0.5rem', alignItems: 'center', display: 'flex', flexWrap: 'wrap' },
-  input: { borderColor: tokens.border, borderRadius: tokens.controlRadius, borderStyle: 'solid', borderWidth: 1, paddingInline: '0.75rem', backgroundColor: tokens.background, flexGrow: 1, fontSize: '0.875rem', height: '2.5rem', minWidth: 0 },
-  inputLabel: { fontSize: '0.875rem', fontWeight: 500 },
-  error: { color: tokens.destructive, fontSize: '0.875rem' },
+  input: { borderColor: tokens.border, borderRadius: tokens.controlRadius, borderStyle: 'solid', borderWidth: 1, paddingInline: '0.75rem', backgroundColor: tokens.background, flexGrow: 1, fontSize: '0.875rem', lineHeight: '1.25rem', height: '2.5rem', minWidth: 0 },
+  inputLabel: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
+  error: { color: tokens.destructive, fontSize: '0.875rem', lineHeight: '1.25rem' },
   mobileDialog: { position: { default: null, '@media (max-width: 639px)': 'fixed' }, bottom: { default: null, '@media (max-width: 639px)': '0.75rem' }, left: { default: null, '@media (max-width: 639px)': '0.75rem' }, right: { default: null, '@media (max-width: 639px)': '0.75rem' }, top: { default: null, '@media (max-width: 639px)': 'auto' }, width: { default: null, '@media (max-width: 639px)': 'auto' } },
 })
 

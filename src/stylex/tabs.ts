@@ -62,7 +62,7 @@ const styles = stylex.create({
       ":hover": tokens.foreground,
     },
     display: "inline-flex",
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
     fontWeight: 500,
     justifyContent: "center",
     outlineStyle: "none",

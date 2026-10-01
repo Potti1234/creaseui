@@ -37,7 +37,7 @@ const styles = stylex.create({
     backgroundColor: tokens.card,
     clipPath: { default: 'inset(50%)', ':focus': 'none' },
     color: tokens.primary,
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     fontWeight: 600,
     insetInlineStart: { default: 0, ':focus': '0.5rem' },
     position: { default: 'absolute', ':focus': 'fixed' },

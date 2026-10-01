@@ -98,8 +98,8 @@ export const dialogRtlFields = [
 ] as const;
 
 const emitStyles = `const styles = stylex.create({
-  action: { borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: '1px', paddingBlock: '0.5rem', paddingInline: '1rem', fontSize: '0.875rem' },
-  confirm: { backgroundColor: 'var(--primary)', borderRadius: '0.375rem', color: 'var(--primary-foreground)', paddingBlock: '0.5rem', paddingInline: '1rem', fontSize: '0.875rem' },
+  action: { borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: '1px', paddingBlock: '0.5rem', paddingInline: '1rem', fontSize: '0.875rem', lineHeight: '1.25rem' },
+  confirm: { backgroundColor: 'var(--primary)', borderRadius: '0.375rem', color: 'var(--primary-foreground)', paddingBlock: '0.5rem', paddingInline: '1rem', fontSize: '0.875rem', lineHeight: '1.25rem' },
   compact: { maxWidth: '24rem' },
   shareWidth: { maxWidth: '28rem' },
   scrollArea: { marginInline: '-1rem', maxHeight: '50vh', overflowY: 'auto', paddingInline: '1rem' },
@@ -108,7 +108,7 @@ const emitStyles = `const styles = stylex.create({
   shareRow: { alignItems: 'center', display: 'flex', gap: '0.5rem' },
   shareCol: { display: 'grid', flex: '1 1 0%', gap: '0.5rem' },
   srOnly: { position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', borderWidth: 0 },
-  copy: { fontSize: '0.875rem' },
+  copy: { fontSize: '0.875rem', lineHeight: '1.25rem' },
 })`;
 
 const emitContent = (fixture: DialogFixture, isStyleX: boolean): string => {

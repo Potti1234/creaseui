@@ -13,7 +13,7 @@ for (const kind of chartFamilyKinds) Chart.registerChart(chartFamilyHostId(kind)
 for (const kind of chartUpstreamKinds) Chart.registerChart(chartUpstreamHostId(kind), (theme, variant) => chartUpstreamOption(kind, theme, variant));
 
 const styles = stylex.create({
-  button: { borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: 1, paddingBlock: '0.5rem', paddingInline: '0.75rem', fontSize: '0.875rem' },
+  button: { borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: 1, paddingBlock: '0.5rem', paddingInline: '0.75rem', fontSize: '0.875rem', lineHeight: '1.25rem' },
   chart: { maxWidth: '36rem' },
   chartHost: { height: '16rem', width: '100%' },
   demoRow: { display: 'flex', flexDirection: 'column' },
@@ -33,7 +33,7 @@ const styles = stylex.create({
  borderTopWidth: 1, },
   demoButtonActive: { backgroundColor: 'var(--muted)' },
   demoButtonBorder: { borderLeftWidth: 1 },
-  demoLabel: { color: 'var(--muted-foreground)', fontSize: '0.75rem' },
+  demoLabel: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
   demoTotal: { fontSize: '1.125rem', fontWeight: 700, lineHeight: 1 },
   frame: { gap: '0.75rem', display: 'grid', maxWidth: '36rem', width: '100%', },
   row: { gap: '1rem', display: 'flex', flexWrap: 'wrap', },

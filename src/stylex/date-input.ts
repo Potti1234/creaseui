@@ -88,7 +88,7 @@ const styles = stylex.create({
   optional: { color: tokens.mutedForeground, fontWeight: 400 },
   description: {
     color: tokens.mutedForeground,
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
   },
   wrapper: {
     borderColor: {
@@ -188,7 +188,7 @@ const styles = stylex.create({
   input: {
     flex: "1",
     backgroundColor: tokens.transparent,
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
     outlineStyle: "none",
     minWidth: 0,
   },
@@ -244,9 +244,9 @@ const styles = stylex.create({
     display: "inline-flex",
     flexShrink: 0,
   },
-  statusError: { color: tokens.destructive, fontSize: "0.875rem" },
-  statusWarning: { color: tokens.alertWarning, fontSize: "0.875rem" },
-  statusSuccess: { color: tokens.alertSuccess, fontSize: "0.875rem" },
+  statusError: { color: tokens.destructive, fontSize: "0.875rem", lineHeight: '1.25rem' },
+  statusWarning: { color: tokens.alertWarning, fontSize: "0.875rem", lineHeight: '1.25rem' },
+  statusSuccess: { color: tokens.alertSuccess, fontSize: "0.875rem", lineHeight: '1.25rem' },
   control: { width: "100%" },
   invalidAlert: {
     clip: "rect(0, 0, 0, 0)",

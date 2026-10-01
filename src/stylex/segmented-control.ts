@@ -131,22 +131,22 @@ const styles = stylex.create({
   },
   itemSizeSm: {
     paddingInline: '0.5rem',
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     height: '1.5rem',
   },
   itemSizeMd: {
     paddingInline: '0.75rem',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     height: '1.75rem',
   },
   itemSizeLg: {
     paddingInline: '0.75rem',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     height: '2rem',
   },
-  iconSizeSm: { fontSize: '0.875rem', height: '0.875rem', width: '0.875rem' },
-  iconSizeMd: { fontSize: '1rem', height: '1rem', width: '1rem' },
-  iconSizeLg: { fontSize: '1.125rem', height: '1.125rem', width: '1.125rem' },
+  iconSizeSm: { fontSize: '0.875rem', lineHeight: '1.25rem', height: '0.875rem', width: '0.875rem' },
+  iconSizeMd: { fontSize: '1rem', lineHeight: '1.5rem', height: '1rem', width: '1rem' },
+  iconSizeLg: { fontSize: '1.125rem', lineHeight: '1.75rem', height: '1.125rem', width: '1.125rem' },
 })
 
 const ITEM_SIZE_STYLE: Readonly<Record<SegmentedControlSize, unknown>> = {

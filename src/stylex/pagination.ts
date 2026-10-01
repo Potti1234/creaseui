@@ -18,7 +18,7 @@ const styles = stylex.create({
   disabled: { cursor: interactionTokens.cursorDisabled, opacity: 0.5 },
   content: { gap: '0.25rem', alignItems: 'center', display: 'flex', flexDirection: 'row', },
   ellipsis: { alignItems: 'center', display: 'flex', justifyContent: 'center', height: '2.25rem', width: '2.25rem', },
-  link: { borderRadius: tokens.controlRadius, alignItems: 'center', backgroundColor: { default: tokens.transparent, ':hover': tokens.accent }, color: { default: tokens.foreground, ':hover': tokens.accentForeground }, display: 'inline-flex', fontSize: '0.875rem', fontWeight: 500, justifyContent: 'center', textDecorationLine: 'none', },
+  link: { borderRadius: tokens.controlRadius, alignItems: 'center', backgroundColor: { default: tokens.transparent, ':hover': tokens.accent }, color: { default: tokens.foreground, ':hover': tokens.accentForeground }, display: 'inline-flex', fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500, justifyContent: 'center', textDecorationLine: 'none', },
   nav: { marginInline: 'auto', display: 'flex', justifyContent: 'center', width: '100%', },
   sizeDefault: { paddingInline: '0.75rem', height: '2rem', },
   sizeIcon: { height: '2rem', width: '2rem' },

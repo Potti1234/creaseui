@@ -89,7 +89,7 @@ const emitStyles = `const styles = stylex.create({
     alignItems: 'center',
     color: 'var(--muted-foreground)',
     display: 'inline-flex',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     gap: '0.25rem',
   },
   inputWidth: { width: '75%' },

@@ -66,8 +66,8 @@ const styles = stylex.create({
     width: 1,
   },
   requiredMark: { color: tokens.destructive },
-  optional: { color: tokens.mutedForeground, fontSize: '0.875rem' },
-  description: { color: tokens.mutedForeground, fontSize: '0.875rem' },
+  optional: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
+  description: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
   trigger: {
     borderColor: {
       default: tokens.input,
@@ -89,7 +89,7 @@ const styles = stylex.create({
     color: tokens.foreground,
     cursor: interactionTokens.cursorAction,
     display: 'flex',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     justifyContent: 'space-between',
     outlineStyle: 'none',
     transitionDuration: interactionTokens.motionFast,
@@ -127,7 +127,7 @@ const styles = stylex.create({
     color: tokens.foreground,
     cursor: interactionTokens.cursorAction,
     display: 'flex',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     fontWeight: 500,
     justifyContent: 'space-between',
     outlineStyle: 'none',
@@ -183,14 +183,14 @@ const styles = stylex.create({
     color: tokens.foreground,
     display: 'inline-flex',
     flexShrink: 0,
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     fontWeight: 500,
     height: '1.25rem',
   },
   triggerOverflow: {
     color: tokens.mutedForeground,
     flexShrink: 0,
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     fontWeight: 500,
   },
   triggerIcon: {
@@ -258,7 +258,7 @@ const styles = stylex.create({
     alignItems: 'center',
     cursor: interactionTokens.cursorDefault,
     display: 'flex',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     outlineStyle: 'none',
     paddingInlineEnd: '2rem',
     paddingInlineStart: '0.5rem',
@@ -306,7 +306,7 @@ const styles = stylex.create({
     paddingBlock: '0.375rem',
     paddingInline: '0.5rem',
     color: tokens.mutedForeground,
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
   },
   statusError: {
     color: tokens.destructive,
@@ -323,9 +323,9 @@ const styles = stylex.create({
     display: 'inline-flex',
     flexShrink: 0,
   },
-  statusMessageError: { color: tokens.destructive, fontSize: '0.875rem' },
-  statusMessageWarning: { color: tokens.alertWarning, fontSize: '0.875rem' },
-  statusMessageSuccess: { color: tokens.alertSuccess, fontSize: '0.875rem' },
+  statusMessageError: { color: tokens.destructive, fontSize: '0.875rem', lineHeight: '1.25rem' },
+  statusMessageWarning: { color: tokens.alertWarning, fontSize: '0.875rem', lineHeight: '1.25rem' },
+  statusMessageSuccess: { color: tokens.alertSuccess, fontSize: '0.875rem', lineHeight: '1.25rem' },
 })
 
 const STATUS_STYLE = {

@@ -62,7 +62,7 @@ const styles = stylex.create({
   verticalWrap: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1.5rem' },
   controlledWrap: { display: 'grid', gap: '0.75rem', maxWidth: '24rem', width: '100%' },
   controlledRow: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' },
-  controlledValue: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },
+  controlledValue: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
 })
 `;
 

@@ -72,7 +72,7 @@ const typeStyles = stylex.create({
     lineHeight: 1.6667,
   },
   code: {
-    fontFamily: 'monospace',
+    fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     fontSize: '0.875rem',
     lineHeight: 1.4286,
   },
@@ -138,19 +138,19 @@ const sizeStyles = stylex.create({
     fontSize: '0.625rem',
   },
   sm: {
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
   },
   base: {
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
   },
   lg: {
     fontSize: '1.0625rem',
   },
   xl: {
-    fontSize: '1.25rem',
+    fontSize: '1.25rem', lineHeight: '1.75rem',
   },
   '2xl': {
-    fontSize: '1.5rem',
+    fontSize: '1.5rem', lineHeight: '2rem',
   },
   '3xl': {
     fontSize: '1.8125rem',

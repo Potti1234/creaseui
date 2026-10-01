@@ -20,7 +20,7 @@ const styles = stylex.create({
     color: tokens.cardForeground,
     display: 'flex',
     flexDirection: 'column',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
   },
   cardFlush: {
     overflow: 'hidden',

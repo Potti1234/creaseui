@@ -28,13 +28,13 @@ const styles = stylex.create({
   weightNormal: { fontSize: '1.5rem', fontWeight: 400, lineHeight: 1, },
   weightMedium: { fontSize: '1.5rem', fontWeight: 500, lineHeight: 1, },
   weightBold: { fontSize: '1.5rem', fontWeight: 700, lineHeight: 1, },
-  weightLabel: { color: 'var(--muted-foreground)', fontSize: '0.75rem', },
+  weightLabel: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem', },
   inlineCode: {
     borderRadius: '0.375rem',
     paddingBlock: '0.125rem',
     paddingInline: '0.25rem',
     backgroundColor: 'var(--muted)',
-    fontFamily: 'monospace',
+    fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
   },
 });
 

@@ -125,9 +125,9 @@ const styles = stylex.create({
     animationTimingFunction: interactionTokens.easingLinear,
     color: tokens.statusPlateInk,
     display: 'inline-flex',
-    fontSize: '1rem',
+    fontSize: '1rem', lineHeight: '1.5rem',
   },
-  iconXsm: { fontSize: '0.75rem' },
+  iconXsm: { fontSize: '0.75rem', lineHeight: '1rem' },
   interactiveButton: {
     padding: 0,
     borderStyle: 'none',

@@ -24,7 +24,7 @@ const styles = stylex.create({
   iconSpin: { transform: 'rotate(180deg)', height: '1rem', width: '1rem', },
   grid2: { gap: '0.5rem', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', },
   grid2Top: { gap: '0.5rem', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', paddingTop: '0.5rem', },
-  tree: { fontFamily: 'monospace', fontSize: '0.875rem', lineHeight: '1.25rem', maxWidth: '20rem', width: '100%', },
+  tree: { fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)', fontSize: '0.875rem', lineHeight: '1.25rem', maxWidth: '20rem', width: '100%', },
   treeRow: { gap: '0.25rem', alignItems: 'center', display: 'flex', width: '100%', },
   treeContent: { gap: '0.25rem', display: 'grid', paddingInlineStart: '1rem', paddingTop: '0.25rem', },
   muted: { color: 'var(--muted-foreground)' },

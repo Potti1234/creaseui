@@ -519,7 +519,7 @@ const styles = stylex.create({
     },
     cursor: interactionTokens.cursorAction,
     display: "flex",
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
     outlineStyle: "none",
     textAlign: "start",
     transitionDuration: interactionTokens.motionFast,

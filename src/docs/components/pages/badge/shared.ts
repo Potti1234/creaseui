@@ -270,7 +270,7 @@ const stylexStylesSource = (fixture: BadgeFixture): string => {
     borderColor: 'transparent',
     display: 'inline-flex',
     flexShrink: 0,
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     fontWeight: 500,
     height: '1.25rem',
     justifyContent: 'center',

@@ -21,7 +21,7 @@ const styles = stylex.create({
       default: foundationTokens.shadowXs,
       ":focus-visible": tokens.focusRingShadow,
     },
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
     outlineStyle: "none",
     paddingInlineEnd: "2rem",
     paddingInlineStart: "0.625rem",
@@ -56,7 +56,7 @@ const styles = stylex.create({
     lineHeight: 1,
     userSelect: "none",
   },
-  description: { color: tokens.mutedForeground, fontSize: "0.875rem" },
+  description: { color: tokens.mutedForeground, fontSize: "0.875rem", lineHeight: '1.25rem' },
 });
 export type NativeSelectOption = Readonly<{
   value: string;

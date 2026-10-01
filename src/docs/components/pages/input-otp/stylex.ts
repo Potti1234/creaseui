@@ -15,10 +15,10 @@ import { className } from '@/stylex/style';
 
 const styles = stylex.create({
   stack: { gap: '0.5rem', display: 'grid', },
-  status: { fontSize: '0.875rem', textAlign: 'center' },
+  status: { fontSize: '0.875rem', lineHeight: '1.25rem', textAlign: 'center' },
   row: { alignItems: 'center', display: 'flex', justifyContent: 'space-between', },
   submit: { width: '100%' },
-  support: { color: 'var(--muted-foreground)', fontSize: '0.875rem', },
+  support: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem', },
   link: { textDecorationLine: 'underline', textUnderlineOffset: '4px' },
   card: { marginInline: 'auto', maxWidth: '28rem' },
   medium: { fontWeight: 500 },

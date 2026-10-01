@@ -31,18 +31,18 @@ const styles = stylex.create({
   },
   marker: {
     color: tokens.mutedForeground,
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     textAlign: 'center',
   },
   metrics: {
     color: tokens.mutedForeground,
     columnGap: '0.75rem',
     display: 'grid',
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
     rowGap: '0.125rem',
   },
-  following: { color: tokens.mutedForeground, fontSize: '0.75rem' },
+  following: { color: tokens.mutedForeground, fontSize: '0.75rem', lineHeight: '1rem' },
   row: {
     opacity: 1,
     transform: 'translateY(0)',

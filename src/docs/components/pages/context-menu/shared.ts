@@ -253,7 +253,7 @@ const styles = stylex.create({
     borderWidth: '1px',
     borderStyle: 'dashed',
     borderColor: 'var(--border)',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
   },
 })` : ''}`,
     model: `export const Item = S.Literals([${literalValues}])

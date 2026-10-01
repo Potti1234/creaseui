@@ -107,7 +107,7 @@ const styles = stylex.create({
   disabledInk: {
     color: tokens.mutedForeground,
     flexShrink: 0,
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     opacity: 0.6,
     whiteSpace: 'nowrap',
   },

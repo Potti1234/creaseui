@@ -79,7 +79,7 @@ const styles = stylex.create({
     width: '1px',
   },
   labelIndicator: {
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     fontWeight: 400,
   },
   description: {
@@ -264,12 +264,12 @@ const styles = stylex.create({
   },
   emptyTitle: {
     color: tokens.foreground,
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     fontWeight: 500,
   },
   emptyDescription: {
     color: tokens.mutedForeground,
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     marginBlockStart: '0.25rem',
   },
   statusDetached: {

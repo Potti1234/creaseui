@@ -175,9 +175,9 @@ const styles = stylex.create({
     minHeight: '100vh',
     padding: '2rem',
   },
-  supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem' },
-  body: { fontSize: '0.875rem' },
-  bodyBold: { fontSize: '0.875rem', fontWeight: 700 },
+  supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
+  body: { fontSize: '0.875rem', lineHeight: '1.25rem' },
+  bodyBold: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 700 },
 })`
       : '';
   const bodyMarkup =
@@ -310,8 +310,8 @@ const emitBody = (
 
 const stylexStylesFor = (kind: VisuallyHiddenFixture['kind']): string => {
   const entries: Array<string> = [
-    `  supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem' }`,
-    `  body: { fontSize: '0.875rem' }`,
+    `  supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' }`,
+    `  body: { fontSize: '0.875rem', lineHeight: '1.25rem' }`,
     `  smallIcon: {
     color: 'var(--muted-foreground)',
     height: '1rem',

@@ -13,7 +13,7 @@ const styles = stylex.create({
   content: { gap: "0.75rem", display: "flex", flexDirection: "column" },
   eyebrow: {
     color: tokens.mutedForeground,
-    fontSize: "0.75rem",
+    fontSize: "0.75rem", lineHeight: '1rem',
     fontWeight: 400,
     letterSpacing: "0.05em",
     textAlign: "center",
@@ -56,13 +56,13 @@ const styles = stylex.create({
     color: tokens.secondaryForeground,
     cursor: interactionTokens.cursorAction,
     display: "inline-flex",
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
     fontWeight: 500,
     justifyContent: "center",
     height: "2rem",
     width: "100%",
   },
-  hint: { fontSize: "0.75rem", textAlign: "center" },
+  hint: { fontSize: "0.75rem", lineHeight: '1rem', textAlign: "center" },
 });
 
 export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {

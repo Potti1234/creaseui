@@ -193,7 +193,7 @@ const styles = stylex.create({
     },
     display: 'flex',
     flexShrink: 0,
-    fontSize: '1rem',
+    fontSize: '1rem', lineHeight: '1.5rem',
     justifyContent: 'center',
     marginInlineEnd: 'calc(0.25rem * -1)',
     marginInlineStart: '0.25rem',
@@ -202,7 +202,7 @@ const styles = stylex.create({
   },
   chevronSvg: {
     display: 'flex',
-    fontSize: '1rem',
+    fontSize: '1rem', lineHeight: '1.5rem',
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'transform',
     transitionTimingFunction: interactionTokens.easingStandard,

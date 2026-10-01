@@ -17,7 +17,7 @@ const styles = stylex.create({
     alignItems: 'center',
     aspectRatio: '1/1',
     display: 'flex',
-    fontSize: '2.25rem',
+    fontSize: '2.25rem', lineHeight: '2.5rem',
     fontWeight: 600,
     justifyContent: 'center',
   },
@@ -25,7 +25,7 @@ const styles = stylex.create({
   apiStatus: {
     paddingBlock: '0.5rem',
     color: 'var(--muted-foreground)',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     textAlign: 'center',
   },
 });

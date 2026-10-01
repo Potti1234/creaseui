@@ -24,7 +24,7 @@ const styles = stylex.create({
   right: { left: '100%', marginLeft: '0.25rem' },
   menuContent: { minWidth: '8rem', overflow: 'visible', padding: '0.25rem', position: 'absolute', width: 'max-content' },
   submenuPanel: { minWidth: '8rem', overflow: 'visible', padding: '0.25rem', width: 'max-content', zIndex: 50 },
-  shortcut: { color: tokens.mutedForeground, fontSize: '0.75rem', letterSpacing: '0.1em', marginLeft: 'auto' },
+  shortcut: { color: tokens.mutedForeground, fontSize: '0.75rem', lineHeight: '1rem', letterSpacing: '0.1em', marginLeft: 'auto' },
   top: { bottom: '100%', marginBottom: '0.25rem' },
 })
 

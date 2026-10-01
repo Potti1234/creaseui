@@ -48,7 +48,7 @@ const styles = stylex.create({
     color: tokens.mutedForeground,
     cursor: interactionTokens.cursorText,
     display: "flex",
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
     fontWeight: 500,
     justifyContent: "center",
     userSelect: "none",
@@ -78,7 +78,7 @@ const styles = stylex.create({
     backgroundColor: foundationTokens.transparent,
     color: tokens.foreground,
     display: "flex",
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
     height: "1.5rem",
   },
   buttonSm: { paddingInline: "0.625rem", height: "2rem" },
@@ -89,7 +89,7 @@ const styles = stylex.create({
     alignItems: "center",
     color: tokens.mutedForeground,
     display: "flex",
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
   },
   input: {
     borderColor: foundationTokens.transparent,
@@ -102,7 +102,7 @@ const styles = stylex.create({
     backgroundColor: foundationTokens.transparent,
     boxShadow: foundationTokens.shadowNone,
     fontFamily: "inherit",
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
     outlineStyle: "none",
     height: "2rem",
     minWidth: 0,
@@ -119,7 +119,7 @@ const styles = stylex.create({
     backgroundColor: foundationTokens.transparent,
     boxShadow: foundationTokens.shadowNone,
     fontFamily: "inherit",
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
     outlineStyle: "none",
     minHeight: "4rem",
     minWidth: 0,
@@ -127,7 +127,7 @@ const styles = stylex.create({
   },
   invalid: { color: tokens.destructive },
   disabled: { cursor: interactionTokens.cursorDisabled, opacity: 0.5 },
-  mono: { fontFamily: 'monospace' },
+  mono: { fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)' },
 });
 export const inputGroup = <Msg>(p: SlotProps, h: HtmlBuilder<Msg>): Html =>
   h.div(

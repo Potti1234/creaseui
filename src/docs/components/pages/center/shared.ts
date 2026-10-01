@@ -137,9 +137,9 @@ const emitBody = (
 const stylexStylesFor = (kind: CenterFixture['kind']): string => {
   const entries: Array<string> = [];
   if (kind === 'showcase') {
-    entries.push(`  heading: { fontSize: '0.875rem', fontWeight: 600 }`);
+    entries.push(`  heading: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 600 }`);
     entries.push(
-      `  body: { color: 'var(--muted-foreground)', fontSize: '0.875rem' }`,
+      `  body: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' }`,
     );
   }
   if (kind === 'horizontal' || kind === 'insideCard') {
@@ -151,9 +151,9 @@ const stylexStylesFor = (kind: CenterFixture['kind']): string => {
     entries.push(
       `  icon: { color: 'var(--muted-foreground)', height: '1.5rem', width: '1.5rem' }`,
     );
-    entries.push(`  heading: { fontSize: '0.875rem', fontWeight: 600 }`);
+    entries.push(`  heading: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 600 }`);
     entries.push(
-      `  body: { color: 'var(--muted-foreground)', fontSize: '0.75rem' }`,
+      `  body: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' }`,
     );
   }
   if (entries.length === 0) return '';

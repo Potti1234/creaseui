@@ -17,9 +17,9 @@ import * as Stack from '@/stylex/stack';
 import * as VisuallyHidden from '@/stylex/visually-hidden';
 
 const styles = stylex.create({
-  supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem' },
-  body: { fontSize: '0.875rem' },
-  bodyBold: { fontSize: '0.875rem', fontWeight: 700 },
+  supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
+  body: { fontSize: '0.875rem', lineHeight: '1.25rem' },
+  bodyBold: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 700 },
   display: { fontSize: '1.8125rem', fontWeight: 400, lineHeight: '1.2414' },
   smallIcon: {
     color: 'var(--muted-foreground)',

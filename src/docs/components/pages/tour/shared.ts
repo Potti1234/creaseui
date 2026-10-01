@@ -126,7 +126,7 @@ export const tourFixtures: ReadonlyArray<TourFixture> = [
 const emitStyles = `const styles = stylex.create({
   main: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   card: { borderColor: 'var(--border)', borderRadius: '0.5rem', borderStyle: 'solid', borderWidth: '1px', display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '28rem', padding: '1.5rem', width: '100%' },
-  heading: { fontSize: '1.125rem', fontWeight: 600 },
+  heading: { fontSize: '1.125rem', lineHeight: '1.75rem', fontWeight: 600 },
   body: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
   actions: { display: 'flex', flexWrap: 'wrap', gap: '0.5rem' },
 })`;

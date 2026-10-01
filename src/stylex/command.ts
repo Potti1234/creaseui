@@ -14,7 +14,7 @@ import { className } from './style'
 
 const styles = stylex.create({
   contents: { display: 'contents' },
-  empty: { paddingBlock: '1.5rem', fontSize: '0.875rem', textAlign: 'center', },
+  empty: { paddingBlock: '1.5rem', fontSize: '0.875rem', lineHeight: '1.25rem', textAlign: 'center', },
 })
 
 const isStaticStyle = (value: unknown): value is StaticStyles =>

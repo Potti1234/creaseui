@@ -117,7 +117,7 @@ const styles = stylex.create({
     height: '1rem',
     width: '1rem',
   },
-  iconXsm: { fontSize: '0.75rem' },
+  iconXsm: { fontSize: '0.75rem', lineHeight: '1rem' },
 });
 
 const colorDefault = stylex.create({

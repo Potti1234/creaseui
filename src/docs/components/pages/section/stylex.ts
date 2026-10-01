@@ -14,10 +14,10 @@ import * as Section from '@/stylex/section';
 import * as Stack from '@/stylex/stack';
 
 const styles = stylex.create({
-  boldBody: { fontSize: '0.875rem', fontWeight: 600 },
-  supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem' },
-  bodyMuted: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },
-  body: { fontSize: '0.875rem' },
+  boldBody: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 600 },
+  supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
+  bodyMuted: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
+  body: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   display: { fontSize: '1.8125rem', fontWeight: 400, lineHeight: '1.2414' },
 });
 

@@ -757,7 +757,7 @@ const styles = stylex.create({
     borderWidth: 1,
     backgroundColor: "transparent",
     color: tokens.foreground,
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
     outlineStyle: "none",
     height: "2.25rem",
     paddingLeft: "2rem",
@@ -889,8 +889,7 @@ const styles = stylex.create({
     paddingInline: "0.75rem",
     alignItems: "center",
     display: "flex",
-    fontSize: "0.875rem",
-    position: "relative",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
     minWidth: 0,
   },
   itemDragging: {
@@ -901,6 +900,7 @@ const styles = stylex.create({
     userSelect: "none",
   },
   itemDropBefore: {
+    position: "relative",
     "::before": {
       borderRadius: "50%",
       insetInline: 0,
@@ -914,6 +914,7 @@ const styles = stylex.create({
     },
   },
   itemDropAfter: {
+    position: "relative",
     "::after": {
       borderRadius: "50%",
       insetInline: 0,

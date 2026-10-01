@@ -9,7 +9,7 @@ import { collapseBreadcrumbItems, type BreadcrumbTrailItem } from '@/lib/breadcr
 export * from '@/lib/breadcrumb'
 type Slot = Readonly<{ layoutStyle?: ComponentLayoutStyle; children: ReadonlyArray<Html | string> }>
 const styles = stylex.create({
-  nav: {}, list: { gap: '0.375rem', alignItems: 'center', color: tokens.mutedForeground, display: 'flex', flexWrap: 'wrap', fontSize: '0.875rem', overflowWrap: 'break-word', }, item: { gap: '0.375rem', alignItems: 'center', display: 'inline-flex', },
+  nav: {}, list: { gap: '0.375rem', alignItems: 'center', color: tokens.mutedForeground, display: 'flex', flexWrap: 'wrap', fontSize: '0.875rem', lineHeight: '1.25rem', overflowWrap: 'break-word', }, item: { gap: '0.375rem', alignItems: 'center', display: 'inline-flex', },
   link: { color: { default: tokens.mutedForeground, ':hover': tokens.foreground }, transitionDuration: interactionTokens.motionFast, transitionProperty: 'color' }, page: { color: tokens.foreground, fontWeight: 400 }, separator: { height: '0.875rem', width: '0.875rem' }, separatorRtl: { transform: 'rotate(180deg)' }, ellipsis: { alignItems: 'center', display: 'flex', justifyContent: 'center', height: '2.25rem', width: '2.25rem', }, hidden: { overflow: 'hidden', clip: 'rect(0,0,0,0)', position: 'absolute', whiteSpace: 'nowrap', height: '1px', width: '1px', },
 })
 export type BreadcrumbProps = Slot & Readonly<{ ariaLabel?: string; direction?: 'ltr' | 'rtl' }>

@@ -33,7 +33,7 @@ const styles = stylex.create({
     flexWrap: 'wrap',
   },
   badgeIcon: { fontSize: '0.5rem' },
-  countIcon: { fontSize: '1rem' },
+  countIcon: { fontSize: '1rem', lineHeight: '1.5rem' },
 });
 
 type PreviewSnapshot = {

@@ -86,11 +86,11 @@ const styles = stylex.create({
   tagsFrame: { height: '18rem', width: '12rem', borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: 1, overflow: 'hidden' },
   tagsContent: { padding: '1rem' },
   tagsHeading: { fontSize: '0.875rem', fontWeight: 500, lineHeight: 1, marginBottom: '1rem' },
-  tag: { fontSize: '0.875rem' },
+  tag: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   separator: { marginBlock: '0.5rem' },
   horizontalFrame: { width: '20rem', borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: 1, overflow: 'hidden', padding: '1rem' },
   horizontalContent: { display: 'flex', gap: '0.75rem', width: 'max-content' },
-  pill: { borderRadius: '0.375rem', paddingBlock: '0.5rem', paddingInline: '0.75rem', backgroundColor: 'var(--muted)', fontSize: '0.875rem' },
+  pill: { borderRadius: '0.375rem', paddingBlock: '0.5rem', paddingInline: '0.75rem', backgroundColor: 'var(--muted)', fontSize: '0.875rem', lineHeight: '1.25rem' },
 })`;
 
 export const scrollAreaExamples = (

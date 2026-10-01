@@ -30,7 +30,7 @@ const styles = stylex.create({
   content: { gap: '0.5rem', display: 'grid', },
   contentWide: { gap: '1rem', display: 'grid', },
   heading: { fontWeight: 500 },
-  copy: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },
+  copy: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
   labelHalf: { width: '50%' },
 });
 

@@ -31,7 +31,7 @@ const styles = stylex.create({
   endText: {
     color: 'var(--muted-foreground)',
     flexShrink: 0,
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
   },
   endMenu: {
     padding: 0,

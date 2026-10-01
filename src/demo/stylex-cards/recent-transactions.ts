@@ -23,9 +23,9 @@ import { cardTokens } from './complex-card-tokens.stylex';
 import { tokens } from '../../stylex/tokens.stylex';
 
 const styles = stylex.create({
-  amount: { fontSize: '0.875rem', fontVariantNumeric: 'tabular-nums', fontWeight: 600 },
-  category: { color: tokens.mutedForeground, fontSize: '0.875rem' },
-  date: { color: tokens.mutedForeground, fontSize: '0.875rem' },
+  amount: { fontSize: '0.875rem', lineHeight: '1.25rem', fontVariantNumeric: 'tabular-nums', fontWeight: 600 },
+  category: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
+  date: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
   income: { color: cardTokens.positive },
   merchant: { fontWeight: 500 },
   stack: { display: 'flex', flexDirection: 'column' },

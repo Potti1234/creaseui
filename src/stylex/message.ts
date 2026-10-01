@@ -39,7 +39,7 @@ const styles = stylex.create({
     alignItems: 'center',
     color: tokens.mutedForeground,
     display: 'flex',
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     fontWeight: 500,
     maxWidth: '100%',
     minWidth: 0,
@@ -50,7 +50,7 @@ const styles = stylex.create({
     alignItems: 'center',
     color: tokens.mutedForeground,
     display: 'flex',
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     fontWeight: 500,
     maxWidth: '100%',
     minWidth: 0,
@@ -58,12 +58,12 @@ const styles = stylex.create({
   message: {
     gap: '0.5rem',
     display: 'flex',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     position: 'relative',
     minWidth: 0,
     width: '100%',
   },
-  actions: { gap: '0.5rem', paddingInline: '0.75rem', alignItems: 'center', display: 'flex', fontSize: '0.75rem', maxWidth: '100%', minWidth: 0 },
+  actions: { gap: '0.5rem', paddingInline: '0.75rem', alignItems: 'center', display: 'flex', fontSize: '0.75rem', lineHeight: '1rem', maxWidth: '100%', minWidth: 0 },
 })
 
 const part = <Msg>(slot: string, style: StaticStyles, props: ChildrenProps, h: HtmlBuilder<Msg>): Html =>

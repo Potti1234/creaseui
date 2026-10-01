@@ -142,8 +142,8 @@ const emitApplication = (
   row: { alignItems: 'center', display: 'flex', flexWrap: 'wrap', gap: '1rem' },
   inline: { alignItems: 'center', display: 'flex', gap: '0.375rem' },
   column: { display: 'flex', flexDirection: 'column', gap: '0.375rem' },
-  label: { fontSize: '0.875rem', fontWeight: 500 },
-  text: { fontSize: '0.875rem' },
+  label: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
+  text: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   input: { width: '14rem' },
 })`
     : '';

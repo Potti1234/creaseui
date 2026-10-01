@@ -28,7 +28,7 @@ const styles = stylex.create({
     lineHeight: 1,
     marginBottom: '1rem',
   },
-  tag: { fontSize: '0.875rem' },
+  tag: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   separator: { marginBlock: '0.5rem' },
   horizontalFrame: {
     padding: '1rem',
@@ -49,7 +49,7 @@ const styles = stylex.create({
     paddingBlock: '0.5rem',
     paddingInline: '0.75rem',
     backgroundColor: 'var(--muted)',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
   },
 });
 

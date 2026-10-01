@@ -8,7 +8,7 @@ import { tokens } from './tokens.stylex'
 export type { FormError, FormMethod } from '@/lib/form'
 export { formControlIds } from '@/lib/form'
 type Slot=Readonly<{layoutStyle?:ComponentLayoutStyle;children:ReadonlyArray<Html|string>}>
-const styles=stylex.create({form:{gap:'1.5rem', display:'flex', flexDirection:'column'},description:{color:tokens.mutedForeground,fontSize:'0.875rem'},summary:{padding:'1rem', borderColor:tokens.destructive, borderRadius:tokens.controlRadius, borderStyle:'solid', borderWidth:'1px', color:tokens.foreground, fontSize:'0.875rem',},summaryTitle:{fontWeight:500},summaryList:{paddingInlineStart:'1.25rem', marginTop:'0.5rem',},summaryLink:{textDecoration:'underline', color:tokens.foreground, textUnderlineOffset:'4px',}})
+const styles=stylex.create({form:{gap:'1.5rem', display:'flex', flexDirection:'column'},description:{color:tokens.mutedForeground,fontSize:'0.875rem', lineHeight: '1.25rem'},summary:{padding:'1rem', borderColor:tokens.destructive, borderRadius:tokens.controlRadius, borderStyle:'solid', borderWidth:'1px', color:tokens.foreground, fontSize:'0.875rem', lineHeight: '1.25rem',},summaryTitle:{fontWeight:500},summaryList:{paddingInlineStart:'1.25rem', marginTop:'0.5rem',},summaryLink:{textDecoration:'underline', color:tokens.foreground, textUnderlineOffset:'4px',}})
 export type FormProps<Msg>=FormBehaviorProps<Msg>&Readonly<{layoutStyle?:ComponentLayoutStyle}>
 export const form=<Msg>(p:FormProps<Msg>,h:HtmlBuilder<Msg>):Html=>renderForm(p,[h.Class(className(styles.form,p.layoutStyle))],h)
 export type ErrorSummaryProps<Msg>=SharedErrorSummaryProps<Msg>&Readonly<{layoutStyle?:ComponentLayoutStyle}>

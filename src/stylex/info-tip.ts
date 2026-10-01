@@ -63,10 +63,10 @@ const styles = stylex.create({
     verticalAlign: 'middle',
   },
   content: { overflowY: 'visible' },
-  iconXsm: { fontSize: '0.75rem' },
-  iconSm: { fontSize: '1rem' },
-  iconMd: { fontSize: '1.25rem' },
-  iconLg: { fontSize: '1.5rem' },
+  iconXsm: { fontSize: '0.75rem', lineHeight: '1rem' },
+  iconSm: { fontSize: '1rem', lineHeight: '1.5rem' },
+  iconMd: { fontSize: '1.25rem', lineHeight: '1.75rem' },
+  iconLg: { fontSize: '1.5rem', lineHeight: '2rem' },
 });
 
 export type InfoTipSize = 'xsm' | 'sm' | 'md' | 'lg';

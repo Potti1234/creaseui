@@ -30,17 +30,17 @@ export type ChartContainerProps = Readonly<{ config: ChartConfig; children: Read
 const styles = stylex.create({
   chart: { height: 'auto', width: '100%' },
   interactiveChart: { display: 'block', height: 'auto', minHeight: '15rem', width: '100%' },
-  container: { aspectRatio: '16 / 9', display: 'flex', fontSize: '0.75rem', justifyContent: 'center' },
+  container: { aspectRatio: '16 / 9', display: 'flex', fontSize: '0.75rem', lineHeight: '1rem', justifyContent: 'center' },
   donut: { marginInline: 'auto', aspectRatio: '1 / 1', height: 'auto', width: '100%', },
   donutCompact: { maxWidth: '18rem' },
   key: { borderRadius: complexTokens.smallRadius, backgroundColor: 'currentColor', flexShrink: 0, height: '0.5rem', width: '0.5rem', },
   legend: { gap: '1rem', alignItems: 'center', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', },
   legendItem: { gap: '0.375rem', alignItems: 'center', display: 'flex', },
   muted: { color: tokens.mutedForeground },
-  tooltip: { borderColor: tokens.border, borderRadius: tokens.controlRadius, borderStyle: 'solid', borderWidth: 1, gap: '0.375rem', paddingBlock: '0.375rem', paddingInline: '0.625rem', backgroundColor: tokens.background, boxShadow: tokens.shadowCard, display: 'grid', fontSize: '0.75rem', minWidth: '8rem', },
+  tooltip: { borderColor: tokens.border, borderRadius: tokens.controlRadius, borderStyle: 'solid', borderWidth: 1, gap: '0.375rem', paddingBlock: '0.375rem', paddingInline: '0.625rem', backgroundColor: tokens.background, boxShadow: tokens.shadowCard, display: 'grid', fontSize: '0.75rem', lineHeight: '1rem', minWidth: '8rem', },
   tooltipItem: { gap: '0.5rem', alignItems: 'center', display: 'flex', },
   tooltipLabel: { fontWeight: 500 },
-  tooltipValue: { color: tokens.foreground, fontFamily: 'ui-monospace, monospace', fontVariantNumeric: 'tabular-nums', fontWeight: 500, marginLeft: 'auto' },
+  tooltipValue: { color: tokens.foreground, fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)', fontVariantNumeric: 'tabular-nums', fontWeight: 500, marginLeft: 'auto' },
 })
 
 export const chartContainer = <Msg>(props: ChartContainerProps, h: HtmlBuilder<Msg>): Html => {

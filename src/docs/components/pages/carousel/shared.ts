@@ -189,14 +189,14 @@ const viewBodySource = (
 const stylexStylesSource = (fixture: CarouselFixture): string => {
   const parts: Array<string> = [`  carousel: { width: '100%' },`];
   parts.push(
-    `  slideContent: { alignItems: 'center', aspectRatio: '1/1', display: 'flex', fontSize: '2.25rem', fontWeight: 600, justifyContent: 'center', padding: '1.5rem' },`,
+    `  slideContent: { alignItems: 'center', aspectRatio: '1/1', display: 'flex', fontSize: '2.25rem', lineHeight: '2.5rem', fontWeight: 600, justifyContent: 'center', padding: '1.5rem' },`,
   );
   if (fixture.padded === true)
     parts.push(`  slidePadding: { padding: '0.5rem' },`);
   if (fixture.status === true)
     parts.push(
       `  apiWrap: { marginInline: 'auto', maxWidth: '20rem' },`,
-      `  apiStatus: { color: 'var(--muted-foreground)', fontSize: '0.875rem', paddingBlock: '0.5rem', textAlign: 'center' },`,
+      `  apiStatus: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem', paddingBlock: '0.5rem', textAlign: 'center' },`,
     );
   return `
 const styles = stylex.create({

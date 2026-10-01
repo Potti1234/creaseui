@@ -53,7 +53,7 @@ const styles = stylex.create({
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
   },
-  indicatorLabel: { fontSize: '0.875rem', fontWeight: 500 },
+  indicatorLabel: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
 });
 
 type PreviewMessageCarrier<Msg> = (messageJson: string) => Msg;

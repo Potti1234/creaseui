@@ -15,7 +15,7 @@ const styles = stylex.create({
     alignItems: 'center',
     display: 'flex',
     flexShrink: 0,
-    fontSize: '1rem',
+    fontSize: '1rem', lineHeight: '1.5rem',
     fontWeight: 500,
     justifyContent: 'center',
     textAlign: 'center',

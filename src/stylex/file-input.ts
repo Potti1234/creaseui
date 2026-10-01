@@ -70,7 +70,7 @@ const styles = stylex.create({
     width: '1px',
   },
   labelIndicator: {
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     fontWeight: 400,
   },
   description: {

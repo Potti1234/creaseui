@@ -23,12 +23,12 @@ const styles = stylex.create({
     borderWidth: '1px',
     alignItems: 'center',
     display: 'flex',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     justifyContent: 'center',
     height: '100%',
     width: '100%',
   },
-  status: { color: 'var(--muted-foreground)', fontSize: '0.875rem', },
+  status: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem', },
   icon: { height: '1rem', width: '1rem', },
 });
 

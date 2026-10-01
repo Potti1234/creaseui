@@ -58,7 +58,7 @@ const styles = stylex.create({
   groupWrapped: { gap: '0.25rem', flexWrap: 'wrap' },
   groupVertical: { alignItems: 'stretch', flexDirection: 'column', },
   outlineGroup: { boxShadow: foundationTokens.shadowXs },
-  item: { borderColor: foundationTokens.transparent, borderRadius: '0px', borderStyle: 'solid', borderWidth: 0, gap: '0.5rem', paddingInline: '0.75rem', alignItems: 'center', backgroundColor: { default: foundationTokens.transparent, ':hover': foundationTokens.muted }, color: tokens.foreground, display: 'inline-flex', fontSize: '0.875rem', fontWeight: 500, justifyContent: 'center', height: '2.25rem', minWidth: 0 },
+  item: { borderColor: foundationTokens.transparent, borderRadius: '0px', borderStyle: 'solid', borderWidth: 0, gap: '0.5rem', paddingInline: '0.75rem', alignItems: 'center', backgroundColor: { default: foundationTokens.transparent, ':hover': foundationTokens.muted }, color: tokens.foreground, display: 'inline-flex', fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500, justifyContent: 'center', height: '2.25rem', minWidth: 0 },
   itemWrapped: { borderRadius: foundationTokens.radiusMd },
   outline: { borderColor: tokens.input, borderWidth: 1 },
   outlineVerticalRest: { borderTopWidth: 0 },

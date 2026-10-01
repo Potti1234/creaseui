@@ -24,7 +24,7 @@ const styles = stylex.create({
     alignItems: 'center',
     color: tokens.mutedForeground,
     display: 'flex',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     position: 'relative',
     textAlign: 'left',
     minHeight: '1rem',

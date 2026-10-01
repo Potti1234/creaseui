@@ -64,8 +64,8 @@ const styles = stylex.create({
     width: 1,
   },
   requiredMark: { color: tokens.destructive },
-  optional: { color: tokens.mutedForeground, fontSize: '0.875rem' },
-  description: { color: tokens.mutedForeground, fontSize: '0.875rem' },
+  optional: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
+  description: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
   wrapper: {
     borderColor: {
       default: tokens.input,
@@ -150,7 +150,7 @@ const styles = stylex.create({
     color: tokens.foreground,
     display: 'inline-flex',
     flexShrink: 0,
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     fontWeight: 500,
     whiteSpace: 'nowrap',
     maxWidth: '100%',
@@ -205,7 +205,7 @@ const styles = stylex.create({
     display: 'block',
     flexGrow: 1,
     fontFamily: 'inherit',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     outlineStyle: 'none',
     minWidth: 0,
     '::placeholder': { color: tokens.mutedForeground },
@@ -218,7 +218,7 @@ const styles = stylex.create({
     alignItems: 'center',
     cursor: interactionTokens.cursorDefault,
     display: 'flex',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     outlineStyle: 'none',
     position: 'relative',
     userSelect: 'none',
@@ -270,7 +270,7 @@ const styles = stylex.create({
   resultCount: {
     color: tokens.mutedForeground,
     flexShrink: 0,
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
   },
   statusError: {
     color: tokens.destructive,
@@ -287,9 +287,9 @@ const styles = stylex.create({
     display: 'inline-flex',
     flexShrink: 0,
   },
-  statusMessageError: { color: tokens.destructive, fontSize: '0.875rem' },
-  statusMessageWarning: { color: tokens.alertWarning, fontSize: '0.875rem' },
-  statusMessageSuccess: { color: tokens.alertSuccess, fontSize: '0.875rem' },
+  statusMessageError: { color: tokens.destructive, fontSize: '0.875rem', lineHeight: '1.25rem' },
+  statusMessageWarning: { color: tokens.alertWarning, fontSize: '0.875rem', lineHeight: '1.25rem' },
+  statusMessageSuccess: { color: tokens.alertSuccess, fontSize: '0.875rem', lineHeight: '1.25rem' },
 })
 
 const STATUS_STYLE = {

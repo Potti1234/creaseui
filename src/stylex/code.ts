@@ -23,7 +23,7 @@ const styles = stylex.create({
     paddingBlock: 0,
     paddingInline: '0.25rem',
     backgroundColor: tokens.muted,
-    fontFamily: 'monospace',
+    fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     fontSize: '0.875rem',
     lineHeight: 'inherit',
     overflowWrap: 'break-word',

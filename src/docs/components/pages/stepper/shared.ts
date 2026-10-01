@@ -280,7 +280,7 @@ ${isStyleX ? `const styles = stylex.create({
   frame: { width: '${fixture.width ?? 640}px' },
   panelRow: { display: 'flex', flexWrap: 'wrap', gap: '3rem' },
   panel: { width: '220px' },
-  panelHeading: { fontSize: '0.875rem', fontWeight: 500 },
+  panelHeading: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
 })
 ` : ''}`,
     model: `export const Model = S.Struct({

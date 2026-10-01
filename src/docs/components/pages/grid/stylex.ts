@@ -17,9 +17,9 @@ import * as Resizable from '@/stylex/resizable';
 import * as Stack from '@/stylex/stack';
 
 const styles = stylex.create({
-  label: { fontSize: '0.875rem', fontWeight: 500 },
-  supporting: { fontSize: '0.75rem' },
-  body: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },
+  label: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
+  supporting: { fontSize: '0.75rem', lineHeight: '1rem' },
+  body: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
   tallCard: { height: '5rem' },
   featuredCard: {
     padding: '1rem',

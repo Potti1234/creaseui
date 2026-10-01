@@ -433,7 +433,7 @@ const styles = stylex.create({
   flyoutHeader: {
     paddingInline: '0.5rem',
     color: tokens.mutedForeground,
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     fontWeight: 600,
     paddingBlockEnd: '0.25rem',
     paddingBlockStart: '0.375rem',

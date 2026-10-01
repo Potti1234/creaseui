@@ -188,17 +188,17 @@ const styles = stylex.create({
   },
   marker: {
     color: 'var(--muted-foreground)',
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     textAlign: 'center',
   },
   metrics: {
     color: 'var(--muted-foreground)',
     display: 'grid',
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     gap: '0.125rem 0.75rem',
     gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
   },
-  following: { color: 'var(--muted-foreground)', fontSize: '0.75rem' },
+  following: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
   row: {
     opacity: 1,
     transform: 'translateY(0)',

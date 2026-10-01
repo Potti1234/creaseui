@@ -16,7 +16,7 @@ const styles = stylex.create({
   column: { gap: '0.5rem', display: 'flex', flexDirection: 'column', },
   caption: {
     color: 'var(--muted-foreground)',
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     fontWeight: 600,
   },
   itemIcon: { height: '1rem', width: '1rem' },

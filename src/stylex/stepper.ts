@@ -278,7 +278,7 @@ const styles = stylex.create({
   labelInProgress: { fontWeight: 600 },
   labelNotStarted: { color: tokens.mutedForeground },
   labelDisabled: { color: tokens.mutedForeground },
-  optionalText: { color: tokens.mutedForeground, fontSize: '0.875rem' },
+  optionalText: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
   description: {
     color: tokens.mutedForeground,
     display: 'block',

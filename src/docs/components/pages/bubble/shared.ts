@@ -628,21 +628,21 @@ const stylexStylesSource = (fixture: BubbleFixture): string => {
     parts.push(`\n  preLine: { whiteSpace: 'pre-line' },`);
   if (needsCollapsible(fixture)) {
     parts.push(
-      `\n  chevron: { fontSize: '1rem' },`,
+      `\n  chevron: { fontSize: '1rem', lineHeight: '1.5rem' },`,
       `\n  triggerLink: { alignItems: 'center', color: 'var(--muted-foreground)', display: 'inline-flex', gap: '0.25rem', padding: 0 },`,
     );
   }
   if (needsTooltip(fixture) || needsPopover(fixture)) {
     parts.push(
-      `\n  icon: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },`,
+      `\n  icon: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },`,
       `\n  iconTrigger: { height: '1.5rem', width: '1.5rem' },`,
     );
   }
   if (needsPopover(fixture)) {
     parts.push(
       `\n  popoverContent: { display: 'grid', gap: '0.25rem' },`,
-      `\n  popoverTitle: { fontSize: '0.875rem', fontWeight: 500 },`,
-      `\n  popoverCopy: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },`,
+      `\n  popoverTitle: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },`,
+      `\n  popoverCopy: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },`,
     );
   }
   return `const styles = stylex.create({${parts.join('')}

@@ -51,7 +51,7 @@ import { className } from '@/stylex/style'`
     ? `\nconst styles = stylex.create({
   frame: { maxWidth: '${fixture.widthClass.stylex === 'w12' ? '12rem' : fixture.widthClass.stylex === 'w10' ? '10rem' : '24rem'}', width: '100%', borderRadius: '0.5rem', backgroundColor: 'var(--muted)', overflow: 'hidden' },
   content: { borderRadius: '0.5rem', objectFit: 'cover', width: '100%', height: '100%' },
-  caption: { marginTop: '0.5rem', textAlign: 'center', fontSize: '0.875rem', color: 'var(--muted-foreground)' },
+  caption: { marginTop: '0.5rem', textAlign: 'center', fontSize: '0.875rem', lineHeight: '1.25rem', color: 'var(--muted-foreground)' },
 })\n`
     : '';
   const imgExpr = `h.img([h.Src('${IMAGE_URL}'), h.Alt('Photo'), h.Class(${

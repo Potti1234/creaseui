@@ -21,7 +21,7 @@ const styles = stylex.create({
   stack: { gap: '0.5rem', display: 'grid', },
   icon: { height: '1rem', width: '1rem', },
   itemCol: { display: 'flex', flexDirection: 'column' },
-  itemMeta: { color: 'var(--muted-foreground)', fontSize: '0.75rem' },
+  itemMeta: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
   chipsBox: {
     gap: '0.25rem',
     alignItems: 'center',
@@ -41,7 +41,7 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: 'var(--accent)',
     display: 'flex',
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     fontWeight: 500,
   },
   chipButton: {

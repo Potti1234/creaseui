@@ -27,7 +27,7 @@ const styles = stylex.create({
   },
   caption: {
     color: 'var(--muted-foreground)',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     textAlign: 'center',
     marginTop: '0.5rem',
   },

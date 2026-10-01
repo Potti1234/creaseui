@@ -18,7 +18,7 @@ export const update = MenubarBehavior.update
 
 const styles = stylex.create({
   root: { padding: '0.25rem', borderColor: tokens.border, borderRadius: tokens.controlRadius, borderStyle: 'solid', borderWidth: 1, gap: '0.25rem', alignItems: 'center', backgroundColor: tokens.background, boxShadow: tokens.shadowSm, display: 'flex', height: '2.25rem' },
-  trigger: { borderRadius: tokens.controlRadius, paddingBlock: '0.25rem', paddingInline: '0.5rem', backgroundColor: { default: tokens.transparent, ':hover': tokens.accent }, fontSize: '0.875rem', fontWeight: 500 },
+  trigger: { borderRadius: tokens.controlRadius, paddingBlock: '0.25rem', paddingInline: '0.5rem', backgroundColor: { default: tokens.transparent, ':hover': tokens.accent }, fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
   triggerActive: { backgroundColor: tokens.accent },
   menuHost: { position: 'relative' },
   menuHostRaised: { zIndex: 50 },

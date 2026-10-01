@@ -23,7 +23,7 @@ const styles = stylex.create({
     minHeight: '100vh',
   },
   headerRow: { gap: '0.75rem', alignItems: 'center', display: 'flex', },
-  pageTitle: { fontSize: '1rem', fontWeight: 700 },
+  pageTitle: { fontSize: '1rem', lineHeight: '1.5rem', fontWeight: 700 },
   navContent: { padding: '0.5rem', gap: '0.5rem', display: 'flex', flexDirection: 'column', },
   navIcon: { height: '1rem', width: '1rem' },
   toggleIcon: { height: '1.25rem', width: '1.25rem' },

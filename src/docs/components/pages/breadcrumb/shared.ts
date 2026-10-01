@@ -244,7 +244,7 @@ ${
   fixture.items.some(item => item.kind === 'dropdown')
     ? `
 const styles = stylex.create({
-  chevron: { fontSize: '0.875rem' },
+  chevron: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   dropdownTrigger: { alignItems: 'center', display: 'flex', gap: '0.25rem' },
 })
 `

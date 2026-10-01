@@ -44,7 +44,7 @@ const styles = stylex.create({
     width: '100%',
   },
   preLine: { whiteSpace: 'pre-line' },
-  chevron: { fontSize: '1rem' },
+  chevron: { fontSize: '1rem', lineHeight: '1.5rem' },
   triggerLink: {
     padding: 0,
     gap: '0.25rem',
@@ -52,12 +52,12 @@ const styles = stylex.create({
     color: 'var(--muted-foreground)',
     display: 'inline-flex',
   },
-  icon: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },
+  icon: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
   iconTrigger: { height: '1.5rem', width: '1.5rem' },
   popoverContent: { gap: '0.25rem', display: 'grid', },
-  popoverTitle: { fontSize: '0.875rem', fontWeight: 500 },
-  popoverCopy: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },
-  feedback: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },
+  popoverTitle: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
+  popoverCopy: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
+  feedback: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
 });
 
 type PreviewSnapshot = Readonly<{

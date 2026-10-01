@@ -44,10 +44,10 @@ const styles = stylex.create({
   column: { gap: '1rem', display: 'flex', flexDirection: 'column', },
   body: { padding: '1rem', height: '10rem', },
   bodySm: { padding: '1rem', height: '8rem', },
-  heading: { margin: 0, fontSize: '1rem', fontWeight: 500, },
+  heading: { margin: 0, fontSize: '1rem', lineHeight: '1.5rem', fontWeight: 500, },
   readout: {
     color: tokens.mutedForeground,
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     whiteSpace: 'nowrap',
   },
   searchWidth: { width: '10rem' },
@@ -60,7 +60,7 @@ const styles = stylex.create({
     flexDirection: 'column',
     textAlign: 'center',
   },
-  emptyTitle: { margin: 0, fontSize: '0.875rem', fontWeight: 500, },
+  emptyTitle: { margin: 0, fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500, },
   tableBottom: {
     borderColor: tokens.border,
     borderStyle: 'solid',

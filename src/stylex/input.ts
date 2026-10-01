@@ -38,7 +38,7 @@ const styles = stylex.create({
     color: tokens.foreground,
     display: 'flex',
     fontFamily: 'inherit',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     outlineStyle: 'none',
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'color, border-color, box-shadow',

@@ -26,7 +26,7 @@ const styles = stylex.create({
     boxShadow: { default: tokens.shadowNone, ':focus-visible': tokens.focusRingShadow },
     color: { default: tokens.foreground, ':hover': tokens.accentForeground },
     display: 'inline-flex',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     fontWeight: 500,
     justifyContent: 'center',
     outlineStyle: 'none',
