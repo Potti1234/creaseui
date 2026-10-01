@@ -30,7 +30,12 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run dev -- --host 127.0.0.1 --port 4173',
+    // CI serves the production build: the vite dev server transforms pages on
+    // demand and saturated runners take >30s per cold page load, which trips
+    // page.goto timeouts under parallel workers.
+    command: process.env.CI
+      ? 'npm run preview -- --host 127.0.0.1 --port 4173'
+      : 'npm run dev -- --host 127.0.0.1 --port 4173',
     url: 'http://127.0.0.1:4173',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

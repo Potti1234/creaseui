@@ -55,5 +55,8 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
+      - name: Build site
+        run: npm run build
+
       - name: Run browser and accessibility tests
         run: npm run test:e2e
