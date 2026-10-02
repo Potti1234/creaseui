@@ -45,7 +45,7 @@ const styles = stylex.create({
     height: "2.5rem",
     width: "2.5rem",
   },
-  title: { fontSize: "1.125rem", fontWeight: 500, letterSpacing: "-0.025em" },
+  title: { fontSize: "1.125rem", fontWeight: 500, letterSpacing: "-0.025em", lineHeight: '1.75rem', },
   description: {
     color: tokens.mutedForeground,
     fontSize: "0.875rem",
@@ -56,7 +56,7 @@ const styles = stylex.create({
     alignItems: "center",
     display: "flex",
     flexDirection: "column",
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
     maxWidth: "24rem",
     minWidth: 0,
     width: "100%",

@@ -6,6 +6,7 @@ import {
   logStreamLiveScript,
   type LogFixtureEntry,
 } from '@/docs/components/pages/log-stream/shared';
+import * as Button from '@/stylex/button';
 import * as LogStream from '@/stylex/log-stream';
 import * as StatusDot from '@/stylex/status-dot';
 
@@ -80,30 +81,23 @@ export const logStreamStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         [h.Class('flex-1 text-xs leading-5 text-muted-foreground')],
         [`${String(preview.entries.length)} rows`],
       ),
-      h.button(
-        [
-          h.Type('button'),
-          h.Class(
-            'inline-flex h-8 items-center justify-center rounded-md border border-input bg-background px-3 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50',
-          ),
-          h.Disabled(
+      Button.button(
+        {
+          variant: 'secondary',
+          children: ['Append line'],
+          isDisabled:
             preview.entries.length - baseCount >= logStreamLiveScript.length,
-          ),
-          h.OnClick(
-            onMessageJson(JSON.stringify({ _tag: 'ClickedAppend' })),
-          ),
-        ],
-        ['Append line'],
+          onClick: onMessageJson(JSON.stringify({ _tag: 'ClickedAppend' })),
+        },
+        h,
       ),
-      h.button(
-        [
-          h.Type('button'),
-          h.Class(
-            'inline-flex h-8 items-center justify-center rounded-md px-3 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground',
-          ),
-          h.OnClick(onMessageJson(JSON.stringify({ _tag: 'ClickedReset' }))),
-        ],
-        ['Reset'],
+      Button.button(
+        {
+          variant: 'ghost',
+          children: ['Reset'],
+          onClick: onMessageJson(JSON.stringify({ _tag: 'ClickedReset' })),
+        },
+        h,
       ),
     ]),
     stream,

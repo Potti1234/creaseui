@@ -42,6 +42,9 @@ const styles = stylex.create({
   },
   fullWidth: { width: '100%' },
   itemWidth: { width: '16rem' },
+  mediaImg: { aspectRatio: '1', objectFit: 'cover', width: '100%' },
+  mediaIcon: { height: '1rem', width: '1rem' },
+  actionIcon: { flexShrink: 0, height: '0.75rem', width: '0.75rem' },
 });
 
 type PreviewSnapshot = {
@@ -76,8 +79,16 @@ const itemView = <Msg>(
               item.spinner === true
                 ? Spinner.spinner({ size: 'md', isDecorative: true }, h)
                 : item.src !== undefined
-                  ? h.img([h.Src(item.src), h.Alt(item.alt ?? item.name)])
-                  : Icon.icon(item.icon ?? 'file', {}, h),
+                  ? h.img([
+                      h.Src(item.src),
+                      h.Alt(item.alt ?? item.name),
+                      h.Class(className(styles.mediaImg)),
+                    ])
+                  : Icon.icon(
+                      item.icon ?? 'file',
+                      { class: className(styles.mediaIcon) },
+                      h,
+                    ),
             ],
           },
           h,
@@ -118,7 +129,13 @@ const itemView = <Msg>(
                           }),
                         ),
                         label: action.label,
-                        children: [Icon.icon(action.icon, {}, h)],
+                        children: [
+                          Icon.icon(
+                            action.icon,
+                            { class: className(styles.actionIcon) },
+                            h,
+                          ),
+                        ],
                       },
                       h,
                     ),

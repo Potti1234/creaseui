@@ -27,7 +27,7 @@ const styles = stylex.create({
     alignItems: "center",
     display: "flex",
     flexWrap: "wrap",
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
     outlineStyle: "none",
   },
   outline: { borderColor: tokens.border },
@@ -37,9 +37,17 @@ const styles = stylex.create({
   media: {
     gap: "0.5rem",
     alignItems: "center",
+    alignSelf: {
+      default: null,
+      [stylex.when.ancestor(":has([data-slot=item-description])")]: "flex-start",
+    },
     display: "flex",
     flexShrink: 0,
     justifyContent: "center",
+    translate: {
+      default: null,
+      [stylex.when.ancestor(":has([data-slot=item-description])")]: "0px 0.125rem",
+    },
   },
   mediaIcon: {
     borderColor: tokens.border,
@@ -73,10 +81,14 @@ const styles = stylex.create({
     width: "fit-content",
   },
   description: {
+    overflow: "hidden",
+    WebkitBoxOrient: "vertical",
     color: tokens.mutedForeground,
+    display: "-webkit-box",
     fontSize: "0.875rem",
     fontWeight: 400,
     lineHeight: 1.5,
+    textWrap: "balance",
   },
   actions: { gap: "0.5rem", alignItems: "center", display: "flex" },
   header: {
@@ -96,6 +108,7 @@ const styles = stylex.create({
   group: { display: "flex", flexDirection: "column" },
   groupSm: { gap: "0.625rem" },
   groupMd: { gap: "0.75rem" },
+  groupLg: { gap: "1rem" },
   cols2: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))" },
   cols3: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))" },
   cols4: { display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))" },
@@ -140,6 +153,8 @@ export const item = <Msg>(p: ItemProps, h: HtmlBuilder<Msg>): Html => {
           variant === "muted" && styles.muted,
           size === "sm" && styles.sm,
           size === "xs" && styles.xs,
+          // eslint-disable-next-line no-restricted-syntax -- reason: defaultMarker is stylex.props-compatible but absent from the narrow StaticStyles surface.
+          stylex.defaultMarker() as unknown as StaticStyles,
           p.layoutStyle,
         ),
       ),
@@ -193,19 +208,20 @@ export const itemDescription = <Msg>(p: SlotProps, h: HtmlBuilder<Msg>): Html =>
     [
       h.DataAttribute("slot", "item-description"),
       h.Class(className(styles.description, p.layoutStyle)),
+      h.Style({ WebkitLineClamp: "2" }),
     ],
     [...p.children],
   );
 export const itemActions = slotDiv("item-actions", styles.actions);
 export const itemHeader = slotDiv("item-header", styles.header);
 export const itemFooter = slotDiv("item-footer", styles.footer);
-export type ItemGroupProps = SlotProps & Readonly<{ spacing?: "none" | "sm" | "md"; columns?: 2 | 3 | 4 }>;
+export type ItemGroupProps = SlotProps & Readonly<{ spacing?: "none" | "sm" | "md" | "lg"; columns?: 2 | 3 | 4 }>;
 export const itemGroup = <Msg>(p: ItemGroupProps, h: HtmlBuilder<Msg>): Html =>
   h.div(
     [
       h.Role("list"),
       h.DataAttribute("slot", "item-group"),
-      h.Class(className(styles.group, p.spacing === "sm" && styles.groupSm, p.spacing === "md" && styles.groupMd, p.columns === 2 && styles.cols2, p.columns === 3 && styles.cols3, p.columns === 4 && styles.cols4, p.layoutStyle)),
+      h.Class(className(styles.group, p.spacing === "sm" && styles.groupSm, p.spacing === "md" && styles.groupMd, p.spacing === "lg" && styles.groupLg, p.columns === 2 && styles.cols2, p.columns === 3 && styles.cols3, p.columns === 4 && styles.cols4, p.layoutStyle)),
     ],
     [...p.children],
   );

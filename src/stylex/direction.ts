@@ -1,18 +1,7 @@
-const styles = stylex.create({
-  root: { display: 'contents' },
-})
+import type { Html, HtmlBuilder } from 'foldkit/html';
 
-const isStaticStyle = (value: unknown): value is StaticStyles =>
-  typeof value === 'object' && value !== null
-const cn = (...values: ReadonlyArray<unknown>): string =>
-  className(...values.filter(isStaticStyle))
-
-import * as stylex from '@stylexjs/stylex'
-import type { StaticStyles } from '@stylexjs/stylex'
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
-
-import type { Html, HtmlBuilder } from 'foldkit/html';
 
 export type Direction = 'ltr' | 'rtl';
 
@@ -27,9 +16,8 @@ export const direction = <Msg>(
   return h.div(
     [
       h.Dir(props.direction),
-      h.Class(className(styles.root, props.layoutStyle)),
+      h.Class(className(props.layoutStyle)),
     ],
     [...props.children],
   );
 };
-

@@ -2,6 +2,7 @@ import * as stylex from '@stylexjs/stylex';
 import type { HtmlBuilder } from 'foldkit/html';
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import * as Button from '@/stylex/button';
 import * as ButtonGroup from '@/stylex/button-group';
 import * as Icon from '@/lib/icon';
@@ -20,12 +21,14 @@ const styles = stylex.create({
     flexDirection: 'column',
   },
   row: { gap: '1rem', display: 'flex', flexWrap: 'wrap', },
-  muted: { color: tokens.mutedForeground },
+  muted: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
+  kbdShift: { transform: 'translateX(0.125rem)' },
   tooltipContent: {
     gap: '0.25rem',
     alignItems: 'center',
     display: 'inline-flex',
   },
+  iconMd: { height: '1rem', width: '1rem' },
   inputStack: {
     gap: '1.5rem',
     display: 'flex',
@@ -85,9 +88,14 @@ const kbdSxView = <Msg>(
       return h.div([h.Class(sx(styles.stack))], [
         Button.button({
           variant: 'outline',
+          iconInset: 'end',
           children: [
             'Accept ',
-            Kbd.kbd({ icon: 'inline-end', children: ['⏎'] }, h),
+            Kbd.kbd({
+              icon: 'inline-end',
+              layoutStyle: styles.kbdShift as ComponentLayoutStyle,
+              children: ['⏎'],
+            }, h),
           ],
         }, h),
       ]);
@@ -145,7 +153,7 @@ const kbdSxView = <Msg>(
               ariaLabel: 'Search',
             }, h),
             InputGroup.inputGroupAddon({
-              children: [Icon.icon('search', {}, h)],
+              children: [Icon.icon('search', { class: className(styles.iconMd) }, h)],
             }, h),
             InputGroup.inputGroupAddon({
               align: 'inline-end',

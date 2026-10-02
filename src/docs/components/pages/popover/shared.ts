@@ -66,8 +66,8 @@ const legacySource = (
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n" : ''}
-import * as Popover from '@/${isStyleX ? 'stylex' : 'ui'}/popover'${isStyleX ? "\n\nconst styles = stylex.create({\n  content: { display: 'grid', gap: '0.5rem' },\n  heading: { fontWeight: 500 },\n  copy: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },\n  input: { borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: '1px', paddingBlock: '0.5rem', paddingInline: '0.75rem' },\n})" : ''}`,
+${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport type { ComponentLayoutStyle } from '@/stylex/contracts'\nimport { className } from '@/stylex/style'\n" : ''}
+import * as Popover from '@/${isStyleX ? 'stylex' : 'ui'}/popover'${isStyleX ? "\n\nconst styles = stylex.create({\n  trigger: { borderColor: 'var(--border)', borderRadius: 'var(--radius-md)', borderStyle: 'solid', borderWidth: '1px', fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500, padding: '0.5rem 1rem' },\n  content: { display: 'grid', gap: '0.5rem' },\n  heading: { fontWeight: 500 },\n  copy: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },\n  input: { borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: '1px', paddingBlock: '0.5rem', paddingInline: '0.75rem' },\n})" : ''}`,
     model: `export const Model = S.Struct({ popover: Popover.Model })
 export type Model = typeof Model.Type`,
     messages: `import { taggedStruct } from 'foldkit/schema'
@@ -92,7 +92,7 @@ export type Message = typeof Message.Type`,
       model: model.popover,
       toParentMessage: message => GotPopoverMessage({ message }),
       trigger: 'Open dimensions',
-      ${isStyleX ? '' : "triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium',"}
+      ${isStyleX ? 'triggerLayoutStyle: styles.trigger as ComponentLayoutStyle,' : "triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium',"}
       side: '${fixture.side}',
       align: '${fixture.align}',
       content: h.div([h.Class(${isStyleX ? "className(styles.content)" : "'grid gap-2'"})], [
@@ -109,12 +109,14 @@ export type Message = typeof Message.Type`,
 const STYLES_BLOCK = `
 const styles = stylex.create({
   wrap: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '1.5rem' },
+  trigger: { borderColor: 'var(--border)', borderRadius: 'var(--radius-md)', borderStyle: 'solid', borderWidth: '1px', fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500, padding: '0.5rem 1rem' },
+  triggerSm: { borderColor: 'var(--border)', borderRadius: 'var(--radius-md)', borderStyle: 'solid', borderWidth: '1px', fontSize: '0.875rem', lineHeight: '1.25rem', padding: '0.375rem 0.75rem' },
   panel: { width: '10rem' },
   panelWide: { width: '16rem' },
   content: { display: 'grid', gap: '0.5rem' },
   contentWide: { display: 'grid', gap: '1rem' },
   heading: { fontWeight: 500 },
-  copy: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },
+  copy: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
   fieldGroup: { display: 'grid', gap: '1rem' },
   labelHalf: { width: '50%' },
 })
@@ -130,6 +132,7 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
 ${isStyleX ? `
 import * as stylex from '@stylexjs/stylex'
+import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import { className } from '@/stylex/style'
 ` : ''}
 import * as Popover from '@/${isStyleX ? 'stylex' : 'ui'}/popover'${isStyleX ? STYLES_BLOCK : ''}`,
@@ -166,7 +169,7 @@ export type Message = typeof Message.Type`,
       model: model.popover,
       toParentMessage: message => GotPopoverMessage({ message }),
       trigger: 'Open Popover',
-      ${isStyleX ? '' : "triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium',"}
+      ${isStyleX ? 'triggerLayoutStyle: styles.trigger as ComponentLayoutStyle,' : "triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium',"}
       align: 'start',
       content: h.div([h.Class(${isStyleX ? 'className(styles.content)' : "'grid gap-2'"})], [
         h.h4([h.Class(${isStyleX ? 'className(styles.heading)' : "'font-medium'"})], ['Dimensions']),
@@ -192,7 +195,7 @@ const multiSource = (
       model: model.popovers['${instance.id}'] ?? Popover.init({ id: 'popover-${instance.id}', isAnimated: true, contentFocus: true }),
       toParentMessage: message => GotPopoverMessage({ id: '${instance.id}', message }),
       trigger: '${escape(instance.trigger)}',
-      ${isStyleX ? '' : "triggerClass: 'rounded-md border px-3 py-1.5 text-sm',"}
+      ${isStyleX ? 'triggerLayoutStyle: styles.triggerSm as ComponentLayoutStyle,' : "triggerClass: 'rounded-md border px-3 py-1.5 text-sm',"}
       side: '${instance.side}',
       align: '${instance.align}',${instance.rtl === true ? `
       direction: 'rtl',
@@ -209,6 +212,7 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
 ${isStyleX ? `
 import * as stylex from '@stylexjs/stylex'
+import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import { className } from '@/stylex/style'
 ` : ''}
 import * as Popover from '@/${isStyleX ? 'stylex' : 'ui'}/popover'${isStyleX ? STYLES_BLOCK : ''}`,
@@ -288,6 +292,7 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
 ${isStyleX ? `
 import * as stylex from '@stylexjs/stylex'
+import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import { className } from '@/stylex/style'
 ` : ''}
 import * as Field from '@/${isStyleX ? 'stylex' : 'ui'}/field'
@@ -343,7 +348,7 @@ export type Message = typeof Message.Type`,
       model: model.popover,
       toParentMessage: message => GotPopoverMessage({ message }),
       trigger: 'Open Popover',
-      ${isStyleX ? '' : "triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium',"}
+      ${isStyleX ? 'triggerLayoutStyle: styles.trigger as ComponentLayoutStyle,' : "triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium',"}
       align: 'start',
       ${isStyleX ? '' : "class: 'w-64',"}
       content: h.div([h.Class(${isStyleX ? 'className(styles.content)' : "'grid gap-4'"})], [

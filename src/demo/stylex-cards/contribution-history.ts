@@ -21,10 +21,11 @@ const styles = stylex.create({
     fontSize: "0.75rem",
     fontWeight: 500,
     letterSpacing: "0.05em",
+ lineHeight: '1rem',
     textTransform: "uppercase",
   },
-  summaryValue: { fontSize: "1.125rem", fontWeight: 600 },
-  summaryDescription: { color: tokens.mutedForeground, fontSize: "0.875rem" },
+  summaryValue: { fontSize: "1.125rem", fontWeight: 600, lineHeight: '1.75rem', },
+  summaryDescription: { color: tokens.mutedForeground, fontSize: "0.875rem", lineHeight: '1.25rem' },
   chart: { height: "12.5rem", width: "100%" },
   summaryGrid: {
     gap: "0.75rem",

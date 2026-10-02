@@ -150,7 +150,7 @@ const styles = stylex.create({
     minWidth: '15rem',
     width: '100%',
   },
-  supporting: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },
+  supporting: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
   toolbar: { alignItems: 'center', display: 'flex', gap: '0.5rem' },
   button: {
     backgroundColor: 'transparent',
@@ -158,7 +158,7 @@ const styles = stylex.create({
     borderWidth: 0,
     color: 'var(--foreground)',
     cursor: 'pointer',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     fontWeight: 500,
     paddingBlock: '0.375rem',
     paddingInline: '0.75rem',

@@ -6,13 +6,31 @@ import { Listbox as ListboxPrimitive } from '@foldkit/ui';
 import * as Icon from '@/lib/icon';
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
+import { joinStyles } from './button-group-join.stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
 import type { ComponentLayoutStyle } from './contracts'
+import { foundationTokens } from './foundations-tokens.stylex'
 import { themedAnchor } from './overlay-boundary'
 import { className } from './style'
+import { tokens } from './tokens.stylex'
 
 const styles = stylex.create({
   contents: { display: 'contents' },
+  trigger: {
+    boxShadow: {
+      default: foundationTokens.shadowXs,
+      ':focus-visible': tokens.focusRingShadow,
+    },
+    color: {
+      default: tokens.foreground,
+      ':is([data-placeholder])': tokens.mutedForeground,
+    },
+    display: 'flex',
+    whiteSpace: 'nowrap',
+    height: '2rem',
+    minHeight: 0,
+  },
+  iconDim: { opacity: 0.5 },
 })
 
 const isStaticStyle = (value: unknown): value is StaticStyles =>
@@ -190,10 +208,17 @@ const renderSelect = <Item, Value extends string, Msg>(
           [hs.DataAttribute('slot', 'select-value')],
           [selectedLabel ?? props.placeholder ?? ''],
         ),
-        Icon.chevronDown({ class: className(overlayStyles.icon) }, h),
+        Icon.chevronDown({ class: className(overlayStyles.icon, styles.iconDim) }, h),
       ],
     ),
-    buttonClassName: cn(TRIGGER_CLASS, props.triggerLayoutStyle),
+    buttonClassName: cn(
+      TRIGGER_CLASS,
+      styles.trigger,
+      joinStyles.join,
+      joinStyles.triggerFit,
+      joinStyles.triggerRadiusBack,
+      props.triggerLayoutStyle,
+    ),
     isDisabled: props.isDisabled ?? false,
     isReadOnly: props.isReadOnly ?? false,
     isInvalid: props.isInvalid ?? false,

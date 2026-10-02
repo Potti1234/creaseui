@@ -177,6 +177,7 @@ const styles = stylex.create({
     fontStyle: 'normal',
     fontVariantNumeric: 'tabular-nums',
   },
+  sizeLineHeight: { lineHeight: 1.5 },
 })
 
 export type TimerProps<Msg> = Readonly<{
@@ -212,6 +213,7 @@ export const timer = <Msg>(props: TimerProps<Msg>, h: HtmlBuilder<Msg>): Html =>
             color: props.color ?? 'secondary',
             ...(props.weight === undefined ? {} : { weight: props.weight }),
           }),
+          ...(props.size === undefined ? [] : [styles.sizeLineHeight]),
           props.layoutStyle,
         ),
       ),

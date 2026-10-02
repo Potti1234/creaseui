@@ -24,14 +24,14 @@ import { cardTokens } from './complex-card-tokens.stylex';
 
 const styles = stylex.create({
   controls: { gap: '0.75rem', alignItems: 'center', display: 'flex', justifyContent: 'space-between', },
-  description: { fontSize: '0.75rem', letterSpacing: '0.05em', textTransform: 'uppercase' },
-  holdingMedia: { borderColor: tokens.border, borderRadius: tokens.cardRadius, borderStyle: 'solid', borderWidth: 1, alignItems: 'center', backgroundColor: cardTokens.transparent, display: 'flex', fontSize: '0.75rem', fontWeight: 500, justifyContent: 'center', height: '2.5rem', width: '2.5rem', },
+  description: { fontSize: '0.75rem', letterSpacing: '0.05em', lineHeight: '1rem', textTransform: 'uppercase', },
+  holdingMedia: { borderColor: tokens.border, borderRadius: tokens.cardRadius, borderStyle: 'solid', borderWidth: 1, alignItems: 'center', backgroundColor: cardTokens.transparent, display: 'flex', fontSize: '0.75rem', fontWeight: 500, justifyContent: 'center', lineHeight: '1rem', height: '2.5rem', width: '2.5rem', },
   input: { maxWidth: '24rem' },
   meta: { gap: '1.5rem', alignItems: 'center', display: 'flex', flexShrink: 0, },
   toggle: { gap: '0.25rem' },
   value: { gap: '0.125rem', alignItems: 'flex-end', display: 'flex', flexDirection: 'column', },
   valueAmount: { fontVariantNumeric: 'tabular-nums', fontWeight: 500 },
-  valueLabel: { color: tokens.mutedForeground, fontSize: '0.75rem', letterSpacing: '0.05em', textTransform: 'uppercase' },
+  valueLabel: { color: tokens.mutedForeground, fontSize: '0.75rem', letterSpacing: '0.05em', lineHeight: '1rem', textTransform: 'uppercase', },
 });
 
 const HOLDINGS = [

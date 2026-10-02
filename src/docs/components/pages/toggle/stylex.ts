@@ -17,6 +17,7 @@ const styles = stylex.create({
     display: 'flex',
     flexWrap: 'wrap',
   },
+  iconMd: { flexShrink: 0, pointerEvents: 'none', height: '1rem', width: '1rem', },
 });
 
 interface TogglePreviewShape {
@@ -43,7 +44,7 @@ const itemToggle = <Msg>(
       children:
         item.icon === undefined
           ? [item.label]
-          : [Icon.icon(item.icon, {}, h), item.label],
+          : [Icon.icon(item.icon, { class: className(styles.iconMd) }, h), item.label],
     },
     h,
   );

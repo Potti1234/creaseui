@@ -145,14 +145,14 @@ const emitStyles = (fixture: InputGroupFixture): string => {
   if (fixture.kind === 'align') {
     extras.push(
       "  stack: { display: 'grid', width: '100%', maxWidth: '24rem', gap: '2.5rem' },",
-      "  monoText: { fontFamily: 'monospace' },",
+      "  monoText: { fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace)' },",
     );
   }
   if (fixture.kind === 'textarea') {
     extras.push("  codeArea: { minHeight: '200px' },");
   }
   if (fixture.kind === 'text') {
-    extras.push("  textXs: { fontSize: '0.75rem' },");
+    extras.push("  textXs: { fontSize: '0.75rem', lineHeight: '1rem' },");
   }
   if (fixture.kind === 'button' || fixture.kind === 'custom') {
     extras.push("  push: { marginInlineStart: 'auto' },");
@@ -166,7 +166,7 @@ const emitStyles = (fixture: InputGroupFixture): string => {
   if (fixture.kind === 'button') {
     extras.push(
       "  iconButton: { display: 'flex', alignItems: 'center', justifyContent: 'center', width: '1.5rem', height: '1.5rem', borderRadius: 'calc(var(--radius) - 5px)', color: 'var(--muted-foreground)' },",
-      "  popoverContent: { display: 'flex', flexDirection: 'column', gap: '0.25rem', borderRadius: '0.75rem', fontSize: '0.875rem' },",
+      "  popoverContent: { display: 'flex', flexDirection: 'column', gap: '0.25rem', borderRadius: '0.75rem', fontSize: '0.875rem', lineHeight: '1.25rem' },",
       "  popoverTitle: { fontWeight: 500 },",
       "  favorite: { fill: 'var(--primary)', stroke: 'var(--primary)' },",
     );
@@ -174,7 +174,7 @@ const emitStyles = (fixture: InputGroupFixture): string => {
 
   if (fixture.kind === 'custom') {
     extras.push(
-      "  customArea: { display: 'flex', fieldSizing: 'content', minHeight: '4rem', width: '100%', resize: 'none', borderRadius: '0.375rem', backgroundColor: 'transparent', paddingInline: '0.75rem', paddingBlock: '0.625rem', fontSize: '1rem', outlineStyle: 'none' },",
+      "  customArea: { display: 'flex', fieldSizing: 'content', minHeight: '4rem', width: '100%', resize: 'none', borderRadius: '0.375rem', backgroundColor: 'transparent', paddingInline: '0.75rem', paddingBlock: '0.625rem', fontSize: '1rem', lineHeight: '1.5rem', outlineStyle: 'none' },",
     );
   }
   return `

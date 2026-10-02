@@ -162,18 +162,18 @@ const emitBody = (
 
 const stylexStylesFor = (kind: SectionFixture['kind']): string => {
   const entries: Array<string> = [];
-  entries.push(`  boldBody: { fontSize: '0.875rem', fontWeight: 600 }`);
+  entries.push(`  boldBody: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 600 }`);
   entries.push(
-    `  supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem' }`,
+    `  supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' }`,
   );
   entries.push(
-    `  bodyMuted: { color: 'var(--muted-foreground)', fontSize: '0.875rem' }`,
+    `  bodyMuted: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' }`,
   );
   if (kind === 'wash') {
     entries.push(
       `  display: { fontSize: '1.8125rem', fontWeight: 400, lineHeight: '1.2414' }`,
     );
-    entries.push(`  body: { fontSize: '0.875rem' }`);
+    entries.push(`  body: { fontSize: '0.875rem', lineHeight: '1.25rem' }`);
   }
   return `import * as stylex from '@stylexjs/stylex'
 

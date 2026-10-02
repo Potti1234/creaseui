@@ -25,7 +25,7 @@ const styles = stylex.create({
   menuContent: { minWidth: '8rem', overflow: 'visible', padding: '0.25rem', position: 'absolute', width: 'max-content' },
   submenuPanel: { minWidth: '8rem', overflow: 'visible', padding: '0.25rem', width: 'max-content', zIndex: 50 },
   separatorMargins: { marginBlock: '0.25rem' },
-  shortcut: { color: tokens.mutedForeground, fontSize: '0.75rem', letterSpacing: '0.1em', marginLeft: 'auto' },
+  shortcut: { color: tokens.mutedForeground, fontSize: '0.75rem', lineHeight: '1rem', letterSpacing: '0.1em', marginLeft: 'auto' },
   top: { bottom: '100%', marginBottom: '0.25rem' },
 })
 
@@ -46,7 +46,8 @@ import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
 import { buttonVisualStyles } from './button'
-import { separator } from './separator'
+import { joinStyles } from './button-group-join.stylex'
+import { separator } from './separator' 
 import type { ButtonSize, ButtonVariant, ComponentLayoutStyle } from './contracts'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
@@ -531,21 +532,20 @@ export const dropdownMenu = <Item extends string, Msg>(
           h.DataAttribute('slot', 'dropdown-menu-trigger'),
           h.Style({ anchorName: `--${props.model.id}-menu` }),
           ...(props.triggerTabindex === undefined ? [] : [h.Tabindex(props.triggerTabindex)]),
-          ...(props.triggerLayoutStyle === undefined
-            ? []
-            : [h.Class(className(props.triggerLayoutStyle))]),
-          ...(props.triggerButtonVariant === undefined && props.triggerButtonSize === undefined
-            ? []
-            : [
-                h.Class(
-                  className(
-                    ...buttonVisualStyles({
-                      variant: props.triggerButtonVariant ?? 'default',
-                      size: props.triggerButtonSize ?? 'default',
-                    }),
-                  ),
-                ),
-              ]),
+          h.Class(
+            className(
+              joinStyles.join,
+              ...(props.triggerButtonVariant === undefined && props.triggerButtonSize === undefined
+                ? []
+                : buttonVisualStyles({
+                    variant: props.triggerButtonVariant ?? 'default',
+                    size: props.triggerButtonSize ?? 'default',
+                  })),
+              ...(props.triggerLayoutStyle === undefined
+                ? []
+                : [props.triggerLayoutStyle]),
+            ),
+          ),
           h.OnKeyDownPreventDefault((key, modifiers) => {
             const message = props.model.isOpen
               ? menuKey(

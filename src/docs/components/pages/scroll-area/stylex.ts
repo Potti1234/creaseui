@@ -14,7 +14,7 @@ import { className } from '@/stylex/style';
 const styles = stylex.create({
   tagsFrame: {
     borderColor: 'var(--border)',
-    borderRadius: '0.375rem',
+    borderRadius: '0.5rem',
     borderStyle: 'solid',
     borderWidth: 1,
     overflow: 'hidden',
@@ -28,12 +28,12 @@ const styles = stylex.create({
     lineHeight: 1,
     marginBottom: '1rem',
   },
-  tag: { fontSize: '0.875rem' },
+  tag: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   separator: { marginBlock: '0.5rem' },
   horizontalFrame: {
     padding: '1rem',
     borderColor: 'var(--border)',
-    borderRadius: '0.375rem',
+    borderRadius: '0.5rem',
     borderStyle: 'solid',
     borderWidth: 1,
     overflow: 'hidden',
@@ -45,11 +45,11 @@ const styles = stylex.create({
     width: 'max-content',
   },
   pill: {
-    borderRadius: '0.375rem',
+    borderRadius: '0.5rem',
     paddingBlock: '0.5rem',
     paddingInline: '0.75rem',
     backgroundColor: 'var(--muted)',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
   },
 });
 

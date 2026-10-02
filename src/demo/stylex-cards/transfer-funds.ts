@@ -35,11 +35,11 @@ const styles = stylex.create({
   fields: { gap: '1.3125rem', display: 'flex', flexDirection: 'column', },
   itemContent: { gap: '0.75rem', display: 'flex', flexDirection: 'column', width: '100%', },
   itemStack: { alignItems: 'stretch', display: 'flex', flexDirection: 'column', width: '100%' },
-  mutedLabel: { color: tokens.mutedForeground, fontSize: '0.875rem' },
+  mutedLabel: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
   row: { alignItems: 'center', display: 'flex', justifyContent: 'space-between' },
-  totalLabel: { fontSize: '0.875rem', fontWeight: 500 },
-  totalValue: { fontSize: '0.875rem', fontVariantNumeric: 'tabular-nums', fontWeight: 600 },
-  value: { fontSize: '0.875rem', fontVariantNumeric: 'tabular-nums', fontWeight: 500 },
+  totalLabel: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem', },
+  totalValue: { fontSize: '0.875rem', fontVariantNumeric: 'tabular-nums', fontWeight: 600, lineHeight: '1.25rem', },
+  value: { fontSize: '0.875rem', fontVariantNumeric: 'tabular-nums', fontWeight: 500, lineHeight: '1.25rem', },
   visuallyHidden: { overflow: 'hidden', clip: 'rect(0 0 0 0)', clipPath: 'inset(50%)', position: 'absolute', whiteSpace: 'nowrap', height: '1px', width: '1px', },
 });
 

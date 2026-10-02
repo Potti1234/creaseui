@@ -14,6 +14,7 @@ import {
 import * as Icon from '@/lib/icon';
 import * as Button from '@/stylex/button';
 import * as Combobox from '@/stylex/combobox';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import { className } from '@/stylex/style';
 
 const styles = stylex.create({
@@ -21,10 +22,17 @@ const styles = stylex.create({
   stack: { gap: '0.5rem', display: 'grid', },
   icon: { height: '1rem', width: '1rem', },
   itemCol: { display: 'flex', flexDirection: 'column' },
-  itemMeta: { color: 'var(--muted-foreground)', fontSize: '0.75rem' },
+  itemMeta: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
   chipsBox: {
+    borderColor: 'var(--border)',
+    borderRadius: '0.5rem',
+    borderStyle: 'solid',
+    borderWidth: '1px',
     gap: '0.25rem',
+    paddingBlock: '0.25rem',
+    paddingInline: '0.375rem',
     alignItems: 'center',
+    backgroundColor: 'transparent',
     display: 'flex',
     flexWrap: 'wrap',
     maxWidth: '20rem',
@@ -32,7 +40,7 @@ const styles = stylex.create({
   },
   chip: {
     borderColor: 'var(--border)',
-    borderRadius: '0.375rem',
+    borderRadius: '0.5rem',
     borderStyle: 'solid',
     borderWidth: '1px',
     gap: '0.25rem',
@@ -43,9 +51,10 @@ const styles = stylex.create({
     display: 'flex',
     fontSize: '0.75rem',
     fontWeight: 500,
+ lineHeight: '1rem',
   },
   chipButton: {
-    borderRadius: '0.125rem',
+    borderRadius: '0.375rem',
     alignItems: 'center',
     display: 'inline-flex',
     justifyContent: 'center',
@@ -53,15 +62,20 @@ const styles = stylex.create({
   },
   chipIcon: { height: '0.75rem', width: '0.75rem' },
   multiInput: {
+    paddingInline: '0.25rem',
+    flexBasis: '0%',
     flexGrow: 1,
+    borderBottomStyle: 'none',
+    borderBottomWidth: 0,
     height: '1.75rem',
     minWidth: '4rem',
   },
   chevron: { opacity: 0.5, height: '1rem', width: '1rem', },
   toggleButton: {
+    borderRadius: '0.375rem',
     alignSelf: 'center',
     flexShrink: 0,
-    marginInlineEnd: '0.25rem',
+    opacity: 0.7,
     height: '1.5rem',
     width: '1.5rem',
   },
@@ -205,7 +219,7 @@ export const comboboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           trigger: {
             content: Icon.chevronsUpDown({ class: className(styles.chevron) }, h),
             ariaLabel: 'Toggle options',
-            layoutStyle: styles.toggleButton,
+            layoutStyle: styles.toggleButton as ComponentLayoutStyle,
           },
         },
         h,
@@ -272,7 +286,7 @@ export const comboboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
               ? 'Select a framework'
               : '',
           ariaLabel: 'Frameworks',
-          triggerLayoutStyle: styles.multiInput,
+          triggerLayoutStyle: styles.multiInput as ComponentLayoutStyle,
         },
         h,
       ),

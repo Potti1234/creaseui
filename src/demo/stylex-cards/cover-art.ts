@@ -16,6 +16,7 @@ const styles = stylex.create({
     fontSize: "0.75rem",
     fontWeight: 400,
     letterSpacing: "0.05em",
+ lineHeight: '1rem',
     textAlign: "center",
     textTransform: "uppercase",
   },
@@ -59,10 +60,11 @@ const styles = stylex.create({
     fontSize: "0.875rem",
     fontWeight: 500,
     justifyContent: "center",
+ lineHeight: '1.25rem',
     height: "2rem",
     width: "100%",
   },
-  hint: { fontSize: "0.75rem", textAlign: "center" },
+  hint: { fontSize: "0.75rem", lineHeight: '1rem', textAlign: "center" },
 });
 
 export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {

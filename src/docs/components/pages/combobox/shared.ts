@@ -389,7 +389,7 @@ const styles = stylex.create({
     backgroundColor: 'var(--accent)',
     paddingInline: '0.375rem',
     paddingBlock: '0.125rem',
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     fontWeight: 500,
   },
   chipButton: {

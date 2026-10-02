@@ -21,6 +21,7 @@ import type { ComponentLayoutStyle } from './contracts';
 import { foundationTokens } from './foundations-tokens.stylex';
 import { interactionTokens } from './interaction-tokens.stylex.const';
 import { className } from './style';
+import { complexTokens } from './complex-tokens.stylex';
 import { tokens } from './tokens.stylex';
 
 /* Ported from Meta Astryx CodeBlock (packages/core/src/CodeBlock/CodeBlock.tsx)
@@ -41,28 +42,20 @@ export type CodeBlockSize = 'sm' | 'md';
 
 export type CodeBlockContainer = 'card' | 'section';
 
-/* astryx syntax token types → Crease UI tokens. astryx uses a dedicated
-   11-hue syntax palette (syntax-accent/syntax-green/syntax-orange/syntax-blue/
-   syntax-purple/syntax-cyan/syntax-teal/…); the mapping keeps each astryx
-   family on its nearest Crease token.
-   PORT-NOTE: needs tokens 'syntaxKeyword'/'syntaxFunction' (astrxy accent/
-   blue) — mapped to tokens.primary.
-   PORT-NOTE: needs token 'syntaxType' (astrxy purple) — mapped to
-   tokens.destructive.
-   PORT-NOTE: needs tokens 'syntaxOperator'/'syntaxProperty'/'syntaxAttribute'
-   (astrxy cyan/teal) — mapped to tokens.alertSuccess. */
+/* astryx syntax token types → Crease UI chart/semantic colors, mirroring
+   tokenColorClass in src/ui/code-block.ts (text-chart-N utilities). */
 const tokenColorStyles = stylex.create({
-  keyword: { color: tokens.primary },
-  string: { color: tokens.alertSuccess },
+  keyword: { color: complexTokens.chart3 },
+  string: { color: complexTokens.chart2 },
   comment: { color: tokens.mutedForeground },
-  number: { color: tokens.alertWarning },
-  constant: { color: tokens.alertWarning },
-  function: { color: tokens.primary },
-  type: { color: tokens.destructive },
+  number: { color: complexTokens.chart4 },
+  constant: { color: complexTokens.chart4 },
+  function: { color: complexTokens.chart3 },
+  type: { color: complexTokens.chart5 },
   variable: { color: tokens.foreground },
-  operator: { color: tokens.alertSuccess },
-  property: { color: tokens.alertSuccess },
-  attribute: { color: tokens.alertSuccess },
+  operator: { color: complexTokens.chart2 },
+  property: { color: complexTokens.chart2 },
+  attribute: { color: complexTokens.chart2 },
   tag: { color: tokens.destructive },
   punctuation: { color: tokens.mutedForeground },
 });
@@ -102,7 +95,7 @@ const styles = stylex.create({
     display: 'flex',
     justifyContent: 'space-between',
     position: 'sticky',
-    zIndex: 1,
+    zIndex: 10,
     top: 0,
   },
   headerWithDivider: {
@@ -157,7 +150,7 @@ const styles = stylex.create({
     alignItems: 'center',
     color: tokens.mutedForeground,
     display: 'flex',
-    fontFamily: 'monospace',
+    fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     fontSize: '0.75rem',
     fontWeight: 500,
     lineHeight: 1.6667,
@@ -215,17 +208,16 @@ const styles = stylex.create({
     flexBasis: '0%',
     flexGrow: '1',
     flexShrink: '1',
-    fontFamily: 'monospace',
-    overflowWrap: 'normal',
+    fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     tabSize: 2,
     whiteSpace: 'pre',
     wordBreak: 'normal',
   },
   codeSm: {
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
   },
   codeMd: {
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
   },
   codeWrapped: {
     overflowWrap: 'break-word',
@@ -236,15 +228,13 @@ const styles = stylex.create({
     position: 'relative',
     '::after': {
       insetBlock: 0,
-      borderInlineStartColor: tokens.border,
-      borderInlineStartStyle: 'solid',
-      borderInlineStartWidth: '1px',
+      backgroundColor: tokens.border,
       content: '""',
       insetInlineStart:
         'calc(1rem + var(--_codeblock-gutter-width) + 0.75rem)',
       pointerEvents: 'none',
       position: 'absolute',
-      width: 0,
+      width: '1px',
     },
   },
   line: {
@@ -258,7 +248,7 @@ const styles = stylex.create({
       alignSelf: 'start',
       color: tokens.mutedForeground,
       content: 'attr(data-line)',
-      fontFamily: 'monospace',
+      fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
       gridColumnStart: '1',
       textAlign: 'end',
       userSelect: 'none',
@@ -280,6 +270,7 @@ const styles = stylex.create({
     position: 'absolute',
     top: '0.5rem',
   },
+  copyButtonInk: { color: tokens.mutedForeground },
 });
 
 const buildSpanLine = <Msg>(
@@ -377,6 +368,7 @@ export const codeBlock = <Msg>(
           onClick: props.toParentMessage(
             Message.ClickedCopyCode({ code: props.code }),
           ),
+          layoutStyle: styles.copyButtonInk as ComponentLayoutStyle,
           children: [
             isCopied
               ? Icon.icon<Msg>('check', {}, h)

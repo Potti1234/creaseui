@@ -18,7 +18,7 @@ const styles = stylex.create({
     minWidth: '15rem',
     width: '100%',
   },
-  supporting: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },
+  supporting: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
   button: {
     borderRadius: 'calc(var(--radius) - 2px)',
     borderWidth: 0,
@@ -29,6 +29,7 @@ const styles = stylex.create({
     cursor: 'pointer',
     fontSize: '0.875rem',
     fontWeight: 500,
+ lineHeight: '1.25rem',
   },
 });
 

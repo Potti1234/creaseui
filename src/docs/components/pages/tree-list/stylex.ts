@@ -18,6 +18,7 @@ const styles = stylex.create({
     color: 'var(--muted-foreground)',
     fontSize: '0.75rem',
     fontWeight: 600,
+ lineHeight: '1rem',
   },
   itemIcon: { height: '1rem', width: '1rem' },
 });

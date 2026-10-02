@@ -7,6 +7,7 @@ import * as Icon from '@/lib/icon'
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
 import { complexTokens } from './complex-tokens.stylex'
+import { foundationTokens } from './foundations-tokens.stylex';
 import { tokens } from './tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
 
@@ -18,10 +19,12 @@ export type SidebarVariant = 'sidebar' | 'floating' | 'inset'
 export type SidebarCollapsible = 'offcanvas' | 'icon' | 'none'
 type Slot = Readonly<{ children: ReadonlyArray<Html | string>; layoutStyle?: ComponentLayoutStyle }>
 
+const pulse = stylex.keyframes({ '50%': { opacity: 0.5 } })
 const styles = stylex.create({
-  action: { padding: 0, borderRadius: tokens.controlRadius, alignItems: 'center', aspectRatio: '1 / 1', backgroundColor: { default: tokens.transparent, ':hover': complexTokens.sidebarAccent }, color: { default: complexTokens.sidebarForeground, ':hover': complexTokens.sidebarAccentForeground }, display: 'flex', justifyContent: 'center', position: 'absolute', right: '0.75rem', top: '0.875rem', width: '1.25rem', },
+  action: { padding: 0, borderRadius: tokens.controlRadius, alignItems: 'center', aspectRatio: '1 / 1', backgroundColor: { default: tokens.transparent, ':hover': complexTokens.sidebarAccent }, color: { default: complexTokens.sidebarForeground, ':hover': complexTokens.sidebarAccentForeground }, display: 'flex', justifyContent: 'center', outlineStyle: 'none', position: 'absolute', right: '0.75rem', top: '0.875rem', width: '1.25rem',  },
   backdrop: { backgroundColor: complexTokens.overlaySurface, display: { default: 'block', '@media (min-width: 768px)': 'none' }, opacity: 0.5, position: 'fixed', zIndex: 40, bottom: 0, left: 0, right: 0, top: 0, },
-  badge: { paddingInline: '0.25rem', alignItems: 'center', color: complexTokens.sidebarForeground, display: 'flex', fontSize: '0.75rem', fontVariantNumeric: 'tabular-nums', fontWeight: 500, justifyContent: 'center', pointerEvents: 'none', position: 'absolute', height: '1.25rem', minWidth: '1.25rem', right: '0.25rem', top: '0.375rem', },
+  badge: { borderRadius: tokens.controlRadius, paddingInline: '0.25rem', alignItems: 'center', color: complexTokens.sidebarForeground, display: 'flex', fontSize: '0.75rem', fontVariantNumeric: 'tabular-nums', fontWeight: 500, justifyContent: 'center', lineHeight: '1rem', pointerEvents: 'none', position: 'absolute', userSelect: 'none', height: '1.25rem', minWidth: '1.25rem', right: '0.25rem', top: '0.375rem', },
+  actionHalo: { inset: '-0.5rem', display: { default: 'block', '@media (min-width: 768px)': 'none' }, position: 'absolute', },
   collapsedIcon: { overflow: 'hidden', width: 'var(--sidebar-width-icon)' },
   collapsedOffcanvas: { transform: 'translateX(-100%)' },
   collapsedOffcanvasRight: { transform: 'translateX(100%)' },
@@ -36,9 +39,9 @@ const styles = stylex.create({
   footer: { padding: '0.5rem', gap: '0.5rem', display: 'flex', flexDirection: 'column', },
   group: { padding: '0.5rem', display: 'flex', flexDirection: 'column', position: 'relative', minWidth: 0, width: '100%', },
   groupFirst: { paddingBottom: '0.25rem' },
-  groupLater: { paddingTop: '0.25rem' },
-  groupContent: { fontSize: '0.875rem', width: '100%' },
-  groupLabel: { overflow: 'hidden', paddingInline: '0.5rem', alignItems: 'center', color: complexTokens.sidebarForeground, display: 'flex', flexShrink: 0, fontSize: '0.75rem', fontWeight: 500, opacity: 0.7, whiteSpace: 'nowrap', height: '2rem', },
+  groupLater: { paddingTop: '0.5rem' },
+  groupContent: { fontSize: '0.875rem', lineHeight: '1.25rem', width: '100%' },
+  groupLabel: { borderRadius: tokens.controlRadius, paddingInline: '0.5rem', alignItems: 'center', color: `color-mix(in oklab, ${complexTokens.sidebarForeground} 70%, transparent)`, display: 'flex', flexShrink: 0, fontSize: '0.75rem', fontWeight: 500, lineHeight: '1rem', outlineStyle: 'none', height: '2rem', },
   header: { padding: '0.5rem', gap: '0.5rem', display: 'flex', flexDirection: 'column', },
   inset: { backgroundColor: tokens.background,
  display: 'flex',
@@ -48,30 +51,30 @@ const styles = stylex.create({
  flexShrink: '1',
  position: 'relative',
  width: '100%', },
-  insetVariant: { margin: { default: 0, '@media (min-width: 768px)': '0.5rem' }, borderRadius: tokens.radius, boxShadow: { default: tokens.shadowNone, '@media (min-width: 768px)': tokens.shadowCard }, marginLeft: { default: 0, '@media (min-width: 768px)': 0 }, },
+  insetVariant: { margin: { default: 0, '@media (min-width: 768px)': '0.5rem' }, borderRadius: { default: null, '@media (min-width: 768px)': foundationTokens.radiusXl }, boxShadow: { default: tokens.shadowNone, '@media (min-width: 768px)': foundationTokens.shadowSm }, marginLeft: { default: 0, '@media (min-width: 768px)': 0 }, },
   insetVariantCollapsed: { marginLeft: { default: 0, '@media (min-width: 768px)': '0.5rem' } },
   inner: { backgroundColor: complexTokens.sidebar, color: complexTokens.sidebarForeground, display: 'flex', flexDirection: 'column', height: '100%', width: '100%' },
-  innerFloating: { borderColor: complexTokens.sidebarBorder, borderRadius: tokens.radius, borderStyle: 'solid', borderWidth: 1, boxShadow: tokens.shadowCard },
-  input: { borderColor: { default: tokens.input, ':focus-visible': tokens.ring }, borderRadius: tokens.controlRadius, borderStyle: 'solid', borderWidth: 1, paddingInline: '0.625rem', backgroundColor: tokens.background, boxShadow: { default: tokens.shadowNone, ':focus-visible': tokens.focusRingShadow }, fontSize: '0.875rem', outlineStyle: 'none', height: '2rem', minWidth: 0, width: '100%', },
+  innerFloating: { borderColor: complexTokens.sidebarBorder, borderRadius: tokens.radius, borderStyle: 'solid', borderWidth: 1, boxShadow: foundationTokens.shadowSm },
+  input: { borderColor: { default: tokens.input, ':focus-visible': tokens.ring }, borderRadius: tokens.controlRadius, borderStyle: 'solid', borderWidth: 1, paddingBlock: '0.25rem', paddingInline: '0.625rem', backgroundColor: tokens.background, boxShadow: { default: tokens.shadowNone, ':focus-visible': tokens.focusRingShadow }, display: 'flex', fontSize: { default: '1rem', '@media (min-width: 768px)': '0.875rem' }, lineHeight: { default: '1.5rem', '@media (min-width: 768px)': '1.25rem' }, outlineStyle: 'none', height: '2rem', minWidth: 0, width: '100%', },
   menu: { gap: '0.25rem', display: 'flex', flexDirection: 'column', minWidth: 0, width: '100%', },
-  menuAction: { padding: 0, borderRadius: tokens.controlRadius, alignItems: 'center', backgroundColor: { default: tokens.transparent, ':hover': complexTokens.sidebarAccent }, color: complexTokens.sidebarForeground, display: 'flex', justifyContent: 'center', position: 'absolute', height: '1.25rem', right: '0.25rem', top: '0.375rem', width: '1.25rem', },
+  menuAction: { padding: 0, borderRadius: tokens.controlRadius, alignItems: 'center', backgroundColor: { default: tokens.transparent, ':hover': complexTokens.sidebarAccent }, color: complexTokens.sidebarForeground, display: 'flex', justifyContent: 'center', outlineStyle: 'none', position: 'absolute', height: '1.25rem', right: '0.25rem', top: '0.375rem', width: '1.25rem',  },
   menuActionHover: { opacity: { default: 0, ':focus-visible': 1, ':hover': 1, } },
-  menuButton: { padding: '0.5rem', borderRadius: tokens.controlRadius, gap: '0.5rem', overflow: 'hidden', alignItems: 'center', backgroundColor: { default: tokens.transparent, ':hover': complexTokens.sidebarAccent, ':active': complexTokens.sidebarAccent }, color: { default: complexTokens.sidebarForeground, ':hover': complexTokens.sidebarAccentForeground }, display: 'flex', textAlign: 'left', transitionProperty: 'width, height, padding', width: '100%', },
+  menuButton: { padding: '0.5rem', borderRadius: tokens.controlRadius, gap: '0.5rem', overflow: 'hidden', alignItems: 'center', backgroundColor: { default: tokens.transparent, ':hover': complexTokens.sidebarAccent, ':active': complexTokens.sidebarAccent }, color: { default: complexTokens.sidebarForeground, ':hover': complexTokens.sidebarAccentForeground }, display: 'flex', outlineStyle: 'none', textAlign: 'left', transitionProperty: 'width, height, padding', width: '100%', },
   menuButtonActive: { backgroundColor: complexTokens.sidebarAccent, color: complexTokens.sidebarAccentForeground, fontWeight: 500 },
-  menuButtonDefault: { fontSize: '0.875rem', height: '2rem' },
-  menuButtonLg: { fontSize: '0.875rem', height: '3rem' },
-  menuButtonOutline: { backgroundColor: { default: tokens.background, ':hover': complexTokens.sidebarAccent }, boxShadow: complexTokens.resizeShadow },
+  menuButtonDefault: { fontSize: '0.875rem', lineHeight: '1.25rem', height: '2rem' },
+  menuButtonLg: { fontSize: '0.875rem', lineHeight: '1.25rem', height: '3rem' },
+  menuButtonOutline: { backgroundColor: { default: tokens.background, ':hover': complexTokens.sidebarAccent }, boxShadow: { default: complexTokens.sidebarEdgeRing, ':hover': complexTokens.sidebarAccentRing } },
   menuButtonPrimary: { backgroundColor: { default: tokens.primary, ':hover': tokens.primary }, color: { default: tokens.primaryForeground, ':hover': tokens.primaryForeground }, fontWeight: 600 },
-  menuButtonSm: { fontSize: '0.75rem', height: '1.75rem' },
+  menuButtonSm: { fontSize: '0.75rem', lineHeight: '1rem', height: '1.75rem' },
   menuItem: { position: 'relative' },
   mobile: { backgroundColor: complexTokens.sidebar, color: complexTokens.sidebarForeground, display: { default: 'flex', '@media (min-width: 768px)': 'none' }, flexDirection: 'column', position: 'fixed', zIndex: 50, bottom: 0, maxWidth: 'calc(100vw - 2rem)', top: 0, width: 'var(--sidebar-width-mobile)', },
   mobileClose: { borderRadius: tokens.controlRadius, alignItems: 'center', backgroundColor: { default: tokens.transparent, ':hover': complexTokens.sidebarAccent }, color: { default: complexTokens.sidebarForeground, ':hover': complexTokens.sidebarAccentForeground }, display: { default: 'inline-flex', '@media (min-width: 768px)': 'none' }, justifyContent: 'center', position: 'absolute', height: '2rem', right: '0.5rem', top: '0.5rem', width: '2rem', },
-  panel: { backgroundColor: complexTokens.sidebar, color: complexTokens.sidebarForeground, display: 'flex', flexDirection: 'column', borderRightColor: complexTokens.sidebarBorder, borderRightStyle: 'solid', borderRightWidth: 1, height: '100%', minWidth: 0, width: '100%', },
+  panel: { backgroundColor: complexTokens.sidebar, color: complexTokens.sidebarForeground, display: 'flex', flexDirection: 'column', height: '100%', width: 'var(--sidebar-width)', },
   panelTransparent: { backgroundColor: tokens.transparent },
-  rail: { cursor: interactionTokens.cursorResizeHorizontal, display: { default: 'none', '@media (min-width: 640px)': 'block' }, position: 'absolute', zIndex: 20, bottom: 0, top: 0, width: '1rem', },
+  rail: { backgroundPosition: 'center', backgroundImage: { default: 'none', ':hover': `linear-gradient(${complexTokens.sidebarBorder}, ${complexTokens.sidebarBorder})` }, backgroundRepeat: 'no-repeat', backgroundSize: '2px 100%', cursor: interactionTokens.cursorResizeHorizontal, display: { default: 'none', '@media (min-width: 640px)': 'flex' }, position: 'absolute', transform: 'translateX(-50%)', zIndex: 20, bottom: 0, right: '-1rem', top: 0, width: '1rem', '::after': { backgroundColor: 'transparent', content: '""', position: 'absolute', bottom: 0, left: '50%', top: 0, width: '2px', }, },
   right: { left: 'auto', right: 0 },
-  root: { color: complexTokens.sidebarForeground, position: 'relative' },
-  sidebarGap: { backgroundColor: tokens.transparent, display: { default: 'none', '@media (min-width: 768px)': 'block' }, flexShrink: 0, transitionDuration: interactionTokens.motionModerate, transitionProperty: 'width', width: 'var(--sidebar-width)' },
+  root: { color: complexTokens.sidebarForeground },
+  sidebarGap: { backgroundColor: tokens.transparent, display: { default: 'none', '@media (min-width: 768px)': 'block' }, position: 'relative', transitionDuration: interactionTokens.motionModerate, transitionProperty: 'width', width: 'var(--sidebar-width)' },
   sidebarGapCollapsedIcon: { width: 'var(--sidebar-width-icon)' },
   sidebarGapCollapsedFloating: { width: 'calc(var(--sidebar-width-icon) + 1rem)' },
   sidebarGapCollapsedOffcanvas: { width: 0 },
@@ -82,25 +85,35 @@ const styles = stylex.create({
   sidebarContainerContained: { position: 'absolute', height: '100%' },
   sidebarContainerFloating: { padding: '0.5rem' },
   sidebarContainerFloatingCollapsed: { width: 'calc(var(--sidebar-width-icon) + 1rem)' },
-  skeleton: { gap: '0.5rem', paddingInline: '0.5rem', alignItems: 'center', display: 'flex', height: '2rem', },
-  skeletonIcon: { borderRadius: tokens.controlRadius, backgroundColor: complexTokens.sidebarAccent, height: '1rem', width: '1rem', },
+  skeleton: { borderRadius: tokens.controlRadius, gap: '0.5rem', paddingInline: '0.5rem', alignItems: 'center', display: 'flex', height: '2rem', },
+  skeletonIcon: { borderRadius: tokens.controlRadius, animationDuration: interactionTokens.motionLoopSlow, animationIterationCount: 'infinite', animationName: pulse, animationTimingFunction: interactionTokens.easingPulse, backgroundColor: complexTokens.sidebarAccent, height: '1rem', width: '1rem', },
   skeletonText: { borderRadius: tokens.controlRadius,
+ animationDuration: interactionTokens.motionLoopSlow,
+ animationIterationCount: 'infinite',
+ animationName: pulse,
+ animationTimingFunction: interactionTokens.easingPulse,
  backgroundColor: complexTokens.sidebarAccent,
  flexBasis: '0%',
  flexGrow: '1',
  flexShrink: '1',
  height: '1rem',
  maxWidth: 'var(--skeleton-width)', },
-  srOnly: { margin: -1, padding: 0, overflow: 'hidden', position: 'absolute', height: 1, width: 1, },
+  srOnly: { margin: -1, padding: 0, borderWidth: 0, overflow: 'hidden', clipPath: 'inset(50%)', position: 'absolute', whiteSpace: 'nowrap', height: 1, width: 1, },
   sub: { gap: '0.25rem', marginInline: '0.875rem', paddingBlock: '0.125rem', paddingInline: '0.625rem', display: 'flex', flexDirection: 'column', transform: 'translateX(1px)', borderLeftColor: complexTokens.sidebarBorder, borderLeftStyle: 'solid', borderLeftWidth: 1, minWidth: 0, },
-  subButton: { borderRadius: tokens.controlRadius, gap: '0.5rem', overflow: 'hidden', paddingInline: '0.5rem', alignItems: 'center', backgroundColor: { default: tokens.transparent, ':hover': complexTokens.sidebarAccent }, color: { default: complexTokens.sidebarForeground, ':hover': complexTokens.sidebarAccentForeground }, display: 'flex', textDecorationLine: 'none', transform: 'translateX(-1px)', height: '1.75rem', minWidth: 0, },
-  subMd: { fontSize: '0.875rem' },
-  subSm: { fontSize: '0.75rem' },
-  trigger: { borderRadius: tokens.controlRadius, alignItems: 'center', backgroundColor: { default: tokens.transparent, ':hover': complexTokens.sidebarAccent }, display: 'inline-flex', justifyContent: 'center', height: '1.75rem', width: '1.75rem', },
+  subButton: { borderRadius: tokens.controlRadius, gap: '0.5rem', overflow: 'hidden', paddingInline: '0.5rem', alignItems: 'center', backgroundColor: { default: tokens.transparent, ':hover': complexTokens.sidebarAccent }, color: { default: complexTokens.sidebarForeground, ':hover': complexTokens.sidebarAccentForeground }, display: 'flex', outlineStyle: 'none', textDecorationLine: 'none', transform: 'translateX(-1px)', height: '1.75rem', minWidth: 0, },
+  subButtonActive: { backgroundColor: complexTokens.sidebarAccent, color: complexTokens.sidebarAccentForeground },
+  containerBorderLeft: { borderLeftColor: tokens.border, borderLeftStyle: 'solid', borderLeftWidth: 1 },
+  containerBorderRight: { borderRightColor: tokens.border, borderRightStyle: 'solid', borderRightWidth: 1 },
+  subMd: { fontSize: '0.875rem', lineHeight: '1.25rem' },
+  subSm: { fontSize: '0.75rem', lineHeight: '1rem' },
+  trigger: { borderColor: tokens.transparent, borderRadius: tokens.controlRadius, borderStyle: 'solid', borderWidth: 1, alignItems: 'center', backgroundClip: 'padding-box', backgroundColor: { default: tokens.transparent, ':hover': tokens.muted }, color: { default: null, ':hover': tokens.foreground }, display: 'inline-flex', flexShrink: 0, fontSize: '0.875rem', fontWeight: 500, justifyContent: 'center', lineHeight: '1.25rem', outlineStyle: 'none', userSelect: 'none', whiteSpace: 'nowrap', height: '1.75rem', minHeight: 0, minWidth: 0, width: '1.75rem', },
+  triggerIcon: { flexShrink: 0, height: '1rem', width: '1rem' },
+  railRight: { left: 0, right: 'auto' },
+  tooltip: { borderRadius: tokens.controlRadius, paddingBlock: '0.25rem', paddingInline: '0.5rem', backgroundColor: tokens.primary, color: tokens.primaryForeground, display: 'none', fontSize: '0.75rem', lineHeight: '1rem', opacity: 0, pointerEvents: 'none', position: 'fixed', whiteSpace: 'nowrap', zIndex: 50, left: 'calc(var(--sidebar-width-icon) + 0.5rem)', },
   triggerDesktop: { display: { default: 'none', '@media (min-width: 768px)': 'inline-flex' } },
   triggerMobile: { display: { default: 'inline-flex', '@media (min-width: 768px)': 'none' } },
-  triggerWrapper: { display: 'contents' },
-  wrapper: { display: 'flex', minHeight: '100svh', width: '100%' },
+  triggerWrapper: { display: 'block' },
+  wrapper: { backgroundColor: tokens.transparent, display: 'flex', minHeight: '100svh', width: '100%' },
 })
 
 const slotDiv = (slot: string, sidebarPart: string, base: StaticStyles) => <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => h.div([h.DataAttribute('slot', slot), h.DataAttribute('sidebar', sidebarPart), h.Class(className(base, props.layoutStyle))], [...props.children])
@@ -116,14 +129,14 @@ export const sidebar = <Msg>(props: SidebarProps<Msg>, h: HtmlBuilder<Msg>): Htm
   return h.div([h.DataAttribute('state', state), h.DataAttribute('collapsible', collapsed ? collapsible : ''), h.DataAttribute('variant', variant), h.DataAttribute('side', side), h.DataAttribute('slot', 'sidebar'), h.Class(className(styles.root, props.layoutStyle))], [
     ...((props.isMobileOpen ?? false) ? [h.button([h.Type('button'), h.AriaLabel('Close sidebar backdrop'), ...(props.onMobileDismiss === undefined ? [] : [h.OnClick(props.onMobileDismiss), h.OnKeyDownPreventDefault((key) => key === 'Escape' ? Option.some(props.onMobileDismiss!) : Option.none())]), h.Class(className(styles.backdrop))], []), h.aside([h.DataAttribute('slot', 'sidebar-mobile'), h.Role('dialog'), h.AriaModal(true), h.AriaLabel('Sidebar'), ...(props.onMobileDismiss === undefined ? [] : [h.OnKeyDownPreventDefault((key) => key === 'Escape' ? Option.some(props.onMobileDismiss!) : Option.none())]), h.Class(className(styles.mobile, side === 'right' && styles.right))], [...props.children, ...(props.onMobileDismiss === undefined ? [] : [h.button([h.Type('button'), h.AriaLabel('Close sidebar'), h.OnClick(props.onMobileDismiss), h.Class(className(styles.mobileClose))], [Icon.x({}, h)])])])] : []),
     h.div([h.DataAttribute('slot', 'sidebar-gap'), h.Class(className(styles.sidebarGap, collapsed && collapsible === 'offcanvas' && styles.sidebarGapCollapsedOffcanvas, collapsed && collapsible === 'icon' && (variant === 'floating' || variant === 'inset' ? styles.sidebarGapCollapsedFloating : styles.sidebarGapCollapsedIcon)))], []),
-    h.div([h.DataAttribute('slot', 'sidebar-container'), h.Class(className(styles.sidebarContainer, props.belowHeader === true && styles.sidebarBelowHeader, props.presentation === 'contained' && styles.sidebarContainerContained, side === 'right' && styles.right, (variant === 'floating' || variant === 'inset') && styles.sidebarContainerFloating, collapsed && collapsible === 'offcanvas' && (side === 'right' ? styles.collapsedOffcanvasRight : styles.collapsedOffcanvas), collapsed && collapsible === 'icon' && (variant === 'floating' || variant === 'inset' ? styles.sidebarContainerFloatingCollapsed : styles.collapsedIcon)))], [h.div([h.DataAttribute('sidebar', 'sidebar'), h.DataAttribute('slot', 'sidebar-inner'), h.Class(className(styles.inner, variant === 'floating' && styles.innerFloating))], [...props.children])]),
+    h.div([h.DataAttribute('slot', 'sidebar-container'), h.Class(className(styles.sidebarContainer, props.belowHeader === true && styles.sidebarBelowHeader, props.presentation === 'contained' && styles.sidebarContainerContained, side === 'right' && styles.right, variant === 'sidebar' && (side === 'right' ? styles.containerBorderLeft : styles.containerBorderRight), (variant === 'floating' || variant === 'inset') && styles.sidebarContainerFloating, collapsed && collapsible === 'offcanvas' && (side === 'right' ? styles.collapsedOffcanvasRight : styles.collapsedOffcanvas), collapsed && collapsible === 'icon' && (variant === 'floating' || variant === 'inset' ? styles.sidebarContainerFloatingCollapsed : styles.collapsedIcon)))], [h.div([h.DataAttribute('sidebar', 'sidebar'), h.DataAttribute('slot', 'sidebar-inner'), h.Class(className(styles.inner, variant === 'floating' && styles.innerFloating))], [...props.children])]),
   ])
 }
 
 export type SidebarTriggerProps<Msg> = Readonly<{ onClick: Msg; onMobileClick?: Msg; layoutStyle?: ComponentLayoutStyle }>
-export const sidebarTrigger = <Msg>(props: SidebarTriggerProps<Msg>, h: HtmlBuilder<Msg>): Html => { const trigger = (onClick: Msg, visibility?: StaticStyles): Html => h.button([h.DataAttribute('sidebar', 'trigger'), h.DataAttribute('slot', 'sidebar-trigger'), h.OnClick(onClick), h.Type('button'), h.Class(className(styles.trigger, visibility, props.layoutStyle))], [Icon.panelLeft<Msg>({}, h), h.span([h.Class(className(styles.srOnly))], ['Toggle Sidebar'])]); return props.onMobileClick === undefined ? trigger(props.onClick) : h.span([h.DataAttribute('slot', 'sidebar-responsive-trigger'), h.Class(className(styles.triggerWrapper))], [trigger(props.onMobileClick, styles.triggerMobile), trigger(props.onClick, styles.triggerDesktop)]) }
-export type SidebarRailProps<Msg> = Readonly<{ onClick: Msg }>
-export const sidebarRail = <Msg>(props: SidebarRailProps<Msg>, h: HtmlBuilder<Msg>): Html => h.button([h.DataAttribute('sidebar', 'rail'), h.DataAttribute('slot', 'sidebar-rail'), h.AriaLabel('Toggle Sidebar'), h.Attribute('tabindex', '-1'), h.OnClick(props.onClick), h.Title('Toggle Sidebar'), h.Type('button'), h.Class(className(styles.rail))], [])
+export const sidebarTrigger = <Msg>(props: SidebarTriggerProps<Msg>, h: HtmlBuilder<Msg>): Html => { const trigger = (onClick: Msg, visibility?: StaticStyles): Html => h.button([h.DataAttribute('sidebar', 'trigger'), h.DataAttribute('slot', 'sidebar-trigger'), h.OnClick(onClick), h.Type('button'), h.Class(className(styles.trigger, visibility, props.layoutStyle))], [Icon.panelLeft<Msg>({ class: className(styles.triggerIcon) }, h), h.span([h.Class(className(styles.srOnly))], ['Toggle Sidebar'])]); return props.onMobileClick === undefined ? trigger(props.onClick) : h.span([h.DataAttribute('slot', 'sidebar-responsive-trigger'), h.Class(className(styles.triggerWrapper))], [trigger(props.onMobileClick, styles.triggerMobile), trigger(props.onClick, styles.triggerDesktop)]) }
+export type SidebarRailProps<Msg> = Readonly<{ onClick: Msg; side?: SidebarSide }>
+export const sidebarRail = <Msg>(props: SidebarRailProps<Msg>, h: HtmlBuilder<Msg>): Html => h.button([h.DataAttribute('sidebar', 'rail'), h.DataAttribute('slot', 'sidebar-rail'), h.AriaLabel('Toggle Sidebar'), h.Attribute('tabindex', '-1'), h.OnClick(props.onClick), h.Title('Toggle Sidebar'), h.Type('button'), h.Class(className(styles.rail, props.side === 'right' && styles.railRight))], [])
 
 export type SidebarInsetProps = Slot & Readonly<{ variant?: SidebarVariant; state?: SidebarState }>
 export const sidebarInset = <Msg>(props: SidebarInsetProps, h: HtmlBuilder<Msg>): Html => h.main([h.DataAttribute('slot', 'sidebar-inset'), h.Class(className(styles.inset, props.variant === 'inset' && styles.insetVariant, props.variant === 'inset' && props.state === 'collapsed' && styles.insetVariantCollapsed, props.layoutStyle))], [...props.children])
@@ -138,7 +151,7 @@ export type SidebarGroupProps = Slot & Readonly<{ spacing?: 'default' | 'first' 
 export const sidebarGroup = <Msg>(props: SidebarGroupProps, h: HtmlBuilder<Msg>): Html => h.div([h.DataAttribute('slot', 'sidebar-group'), h.DataAttribute('sidebar', 'group'), h.Class(className(styles.group, props.spacing === 'first' && styles.groupFirst, props.spacing === 'later' && styles.groupLater, props.layoutStyle))], [...props.children])
 export const sidebarGroupLabel = slotDiv('sidebar-group-label', 'group-label', styles.groupLabel)
 export type SidebarActionProps<Msg> = Slot & Readonly<{ onClick?: Msg }>
-export const sidebarGroupAction = <Msg>(props: SidebarActionProps<Msg>, h: HtmlBuilder<Msg>): Html => h.button([h.DataAttribute('slot', 'sidebar-group-action'), h.DataAttribute('sidebar', 'group-action'), ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]), h.Type('button'), h.Class(className(styles.action, props.layoutStyle))], [...props.children])
+export const sidebarGroupAction = <Msg>(props: SidebarActionProps<Msg>, h: HtmlBuilder<Msg>): Html => h.button([h.DataAttribute('slot', 'sidebar-group-action'), h.DataAttribute('sidebar', 'group-action'), ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]), h.Type('button'), h.Class(className(styles.action, props.layoutStyle))], [h.span([h.AriaHidden(true), h.Class(className(styles.actionHalo))], []), ...props.children])
 export const sidebarGroupContent = slotDiv('sidebar-group-content', 'group-content', styles.groupContent)
 export const sidebarMenu = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => h.ul([h.DataAttribute('slot', 'sidebar-menu'), h.DataAttribute('sidebar', 'menu'), h.Class(className(styles.menu, props.layoutStyle))], [...props.children])
 export const sidebarMenuItem = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => h.li([h.DataAttribute('slot', 'sidebar-menu-item'), h.DataAttribute('sidebar', 'menu-item'), h.Class(className(styles.menuItem, props.layoutStyle))], [...props.children])
@@ -147,14 +160,14 @@ export type SidebarMenuButtonVariants = Readonly<{ variant?: 'default' | 'outlin
 const menuSizes = { default: styles.menuButtonDefault, sm: styles.menuButtonSm, lg: styles.menuButtonLg } as const
 export const sidebarMenuButtonVariants = (options: SidebarMenuButtonVariants = {}): string => className(styles.menuButton, options.variant === 'outline' && styles.menuButtonOutline, options.variant === 'primary' && styles.menuButtonPrimary, menuSizes[options.size ?? 'default'])
 export type SidebarMenuButtonProps<Msg> = Readonly<{ children: ReadonlyArray<Html | string>; onClick?: Msg; ariaExpanded?: boolean; href?: string; isActive?: boolean; variant?: SidebarMenuButtonVariants['variant']; size?: SidebarMenuButtonVariants['size']; tooltip?: string; layoutStyle?: ComponentLayoutStyle }>
-export const sidebarMenuButton = <Msg>(props: SidebarMenuButtonProps<Msg>, h: HtmlBuilder<Msg>): Html => { const size = props.size ?? 'default'; const attributes = [h.DataAttribute('slot', 'sidebar-menu-button'), h.DataAttribute('sidebar', 'menu-button'), h.DataAttribute('size', size), ...((props.isActive ?? false) ? [h.DataAttribute('active', '')] : []), ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]), ...(props.ariaExpanded === undefined ? [] : [h.AriaExpanded(props.ariaExpanded)]), h.Class(className(styles.menuButton, props.variant === 'outline' && styles.menuButtonOutline, props.variant === 'primary' && styles.menuButtonPrimary, menuSizes[size], props.isActive === true && styles.menuButtonActive, props.layoutStyle))]; const children = [...props.children]; return props.href === undefined ? h.button([...attributes, h.Type('button'), ...(props.tooltip === undefined ? [] : [h.Title(props.tooltip), h.AriaLabel(props.tooltip)])], children) : h.a([h.Href(props.href), ...attributes, ...(props.tooltip === undefined ? [] : [h.Title(props.tooltip), h.AriaLabel(props.tooltip)])], children) }
+export const sidebarMenuButton = <Msg>(props: SidebarMenuButtonProps<Msg>, h: HtmlBuilder<Msg>): Html => { const size = props.size ?? 'default'; const attributes = [h.DataAttribute('slot', 'sidebar-menu-button'), h.DataAttribute('sidebar', 'menu-button'), h.DataAttribute('size', size), ...((props.isActive ?? false) ? [h.DataAttribute('active', '')] : []), ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]), ...(props.ariaExpanded === undefined ? [] : [h.AriaExpanded(props.ariaExpanded)]), h.Class(className(styles.menuButton, props.variant === 'outline' && styles.menuButtonOutline, props.variant === 'primary' && styles.menuButtonPrimary, menuSizes[size], props.isActive === true && styles.menuButtonActive, props.layoutStyle))]; const children = [...props.children, ...(props.tooltip === undefined ? [] : [h.span([h.Role('tooltip'), h.Class(className(styles.tooltip))], [props.tooltip])])]; return props.href === undefined ? h.button([...attributes, h.Type('button'), ...(props.tooltip === undefined ? [] : [h.Title(props.tooltip), h.AriaLabel(props.tooltip)])], children) : h.a([h.Href(props.href), ...attributes, ...(props.tooltip === undefined ? [] : [h.Title(props.tooltip), h.AriaLabel(props.tooltip)])], children) }
 
 export type SidebarMenuActionProps<Msg> = SidebarActionProps<Msg> & Readonly<{ showOnHover?: boolean }>
-export const sidebarMenuAction = <Msg>(props: SidebarMenuActionProps<Msg>, h: HtmlBuilder<Msg>): Html => h.button([h.DataAttribute('slot', 'sidebar-menu-action'), h.DataAttribute('sidebar', 'menu-action'), ...((props.showOnHover ?? false) ? [h.DataAttribute('show-on-hover', '')] : []), ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]), h.Type('button'), h.Class(className(styles.menuAction, props.showOnHover === true && styles.menuActionHover, props.layoutStyle))], [...props.children])
+export const sidebarMenuAction = <Msg>(props: SidebarMenuActionProps<Msg>, h: HtmlBuilder<Msg>): Html => h.button([h.DataAttribute('slot', 'sidebar-menu-action'), h.DataAttribute('sidebar', 'menu-action'), ...((props.showOnHover ?? false) ? [h.DataAttribute('show-on-hover', '')] : []), ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]), h.Type('button'), h.Class(className(styles.menuAction, props.showOnHover === true && styles.menuActionHover, props.layoutStyle))], [h.span([h.AriaHidden(true), h.Class(className(styles.actionHalo))], []), ...props.children])
 export const sidebarMenuBadge = slotDiv('sidebar-menu-badge', 'menu-badge', styles.badge)
 export type SidebarMenuSkeletonProps = Readonly<{ showIcon?: boolean; widthPercent?: number; layoutStyle?: ComponentLayoutStyle }>
 export const sidebarMenuSkeleton = <Msg>(props: SidebarMenuSkeletonProps = {}, h: HtmlBuilder<Msg>): Html => { const widthPercent = Math.min(90, Math.max(50, props.widthPercent ?? 70)); return h.div([h.DataAttribute('slot', 'sidebar-menu-skeleton'), h.DataAttribute('sidebar', 'menu-skeleton'), h.Class(className(styles.skeleton, props.layoutStyle))], [...((props.showIcon ?? false) ? [h.div([h.DataAttribute('slot', 'skeleton'), h.DataAttribute('sidebar', 'menu-skeleton-icon'), h.Class(className(styles.skeletonIcon))], [])] : []), h.div([h.DataAttribute('slot', 'skeleton'), h.DataAttribute('sidebar', 'menu-skeleton-text'), h.Style({ '--skeleton-width': `${widthPercent}%` }), h.Class(className(styles.skeletonText))], [])]) }
 export const sidebarMenuSub = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => h.ul([h.DataAttribute('slot', 'sidebar-menu-sub'), h.DataAttribute('sidebar', 'menu-sub'), h.Class(className(styles.sub, props.layoutStyle))], [...props.children])
 export const sidebarMenuSubItem = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => h.li([h.DataAttribute('slot', 'sidebar-menu-sub-item'), h.DataAttribute('sidebar', 'menu-sub-item'), h.Class(className(styles.menuItem, props.layoutStyle))], [...props.children])
 export type SidebarMenuSubButtonProps<Msg> = Readonly<{ children: ReadonlyArray<Html | string>; href?: string; onClick?: Msg; size?: 'sm' | 'md'; isActive?: boolean; layoutStyle?: ComponentLayoutStyle }>
-export const sidebarMenuSubButton = <Msg>(props: SidebarMenuSubButtonProps<Msg>, h: HtmlBuilder<Msg>): Html => { const size = props.size ?? 'md'; return h.a([h.DataAttribute('slot', 'sidebar-menu-sub-button'), h.DataAttribute('sidebar', 'menu-sub-button'), h.DataAttribute('size', size), ...((props.isActive ?? false) ? [h.DataAttribute('active', '')] : []), ...(props.href === undefined ? [] : [h.Href(props.href)]), ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]), h.Class(className(styles.subButton, size === 'sm' ? styles.subSm : styles.subMd, props.isActive === true && styles.menuButtonActive, props.layoutStyle))], [...props.children]) }
+export const sidebarMenuSubButton = <Msg>(props: SidebarMenuSubButtonProps<Msg>, h: HtmlBuilder<Msg>): Html => { const size = props.size ?? 'md'; return h.a([h.DataAttribute('slot', 'sidebar-menu-sub-button'), h.DataAttribute('sidebar', 'menu-sub-button'), h.DataAttribute('size', size), ...((props.isActive ?? false) ? [h.DataAttribute('active', '')] : []), ...(props.href === undefined ? [] : [h.Href(props.href)]), ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]), h.Class(className(styles.subButton, size === 'sm' ? styles.subSm : styles.subMd, props.isActive === true && styles.subButtonActive, props.layoutStyle))], [...props.children]) }

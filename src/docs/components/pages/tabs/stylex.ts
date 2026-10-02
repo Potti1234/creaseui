@@ -12,10 +12,7 @@ import * as Icon from '@/lib/icon';
 import * as Tabs from '@/stylex/tabs';
 
 const styles = stylex.create({
-  cardText: {
-    color: 'var(--muted-foreground)',
-    fontSize: '0.875rem',
-  },
+  iconSize: { flexShrink: 0, height: '1rem', width: '1rem' },
   demoWidth: { width: '25rem' },
 });
 
@@ -37,7 +34,7 @@ const cardView = <Msg>(card: TabsCardSpec, h: HtmlBuilder<Msg>): Html =>
       }, h),
       Card.cardContent({
         children: [
-          h.span([h.Class(stylex.props(styles.cardText).className ?? '')], [card.text]),
+          card.text,
         ],
       }, h),
     ],
@@ -64,7 +61,7 @@ export const tabsStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       label:
         tab.icon === undefined
           ? tab.label
-          : h.span([], [Icon.icon(tab.icon, {}, h), tab.label]),
+          : h.span([], [Icon.icon(tab.icon, { class: stylex.props(styles.iconSize).className ?? '' }, h), tab.label]),
       content: tab.card === undefined ? tab.content : cardView(tab.card, h),
       ...(tab.isDisabled === true ? { isDisabled: true } : {}),
     })),

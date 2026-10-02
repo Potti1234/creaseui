@@ -18,10 +18,10 @@ interface PreviewShape {
 }
 
 const widthStyle = stylex.create({
-  w300: { width: '18.75rem' },
-  w360: { width: '22.5rem' },
-  w400: { width: '25rem' },
-  w500: { width: '31.25rem' },
+  w300: { maxWidth: '18.75rem', width: '100%', },
+  w360: { maxWidth: '22.5rem', width: '100%', },
+  w400: { maxWidth: '25rem', width: '100%', },
+  w500: { maxWidth: '31.25rem', width: '100%', },
 });
 
 const widthFor = (px: number) =>

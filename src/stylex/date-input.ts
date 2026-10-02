@@ -76,6 +76,9 @@ const styles = stylex.create({
     userSelect: "none",
   },
   labelHidden: {
+    margin: "-1px",
+    padding: 0,
+    borderWidth: 0,
     overflow: "hidden",
     clip: "rect(0, 0, 0, 0)",
     clipPath: "inset(50%)",
@@ -88,7 +91,7 @@ const styles = stylex.create({
   optional: { color: tokens.mutedForeground, fontWeight: 400 },
   description: {
     color: tokens.mutedForeground,
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
   },
   wrapper: {
     borderColor: {
@@ -165,7 +168,10 @@ const styles = stylex.create({
   iconButton: {
     borderRadius: foundationTokens.radiusSm,
     alignItems: "center",
-    backgroundColor: tokens.transparent,
+    backgroundColor: {
+      default: tokens.transparent,
+      ":hover": tokens.accent,
+    },
     color: {
       default: tokens.mutedForeground,
       ":hover": tokens.foreground,
@@ -188,7 +194,7 @@ const styles = stylex.create({
   input: {
     flex: "1",
     backgroundColor: tokens.transparent,
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
     outlineStyle: "none",
     minWidth: 0,
   },
@@ -196,7 +202,10 @@ const styles = stylex.create({
   clearButton: {
     borderRadius: foundationTokens.radiusSm,
     alignItems: "center",
-    backgroundColor: tokens.transparent,
+    backgroundColor: {
+      default: tokens.transparent,
+      ":hover": tokens.accent,
+    },
     color: {
       default: tokens.mutedForeground,
       ":hover": tokens.foreground,
@@ -244,15 +253,19 @@ const styles = stylex.create({
     display: "inline-flex",
     flexShrink: 0,
   },
-  statusError: { color: tokens.destructive, fontSize: "0.875rem" },
-  statusWarning: { color: tokens.alertWarning, fontSize: "0.875rem" },
-  statusSuccess: { color: tokens.alertSuccess, fontSize: "0.875rem" },
+  statusError: { color: tokens.destructive, fontSize: "0.875rem", lineHeight: '1.25rem' },
+  statusWarning: { color: tokens.alertWarning, fontSize: "0.875rem", lineHeight: '1.25rem' },
+  statusSuccess: { color: tokens.alertSuccess, fontSize: "0.875rem", lineHeight: '1.25rem' },
   control: { width: "100%" },
+  fieldFit: { width: "fit-content" },
   invalidAlert: {
+    borderWidth: 0,
     clip: "rect(0, 0, 0, 0)",
     clipPath: "inset(50%)",
     height: "1px",
+    margin: "-1px",
     overflow: "hidden",
+    padding: 0,
     position: "absolute",
     whiteSpace: "nowrap",
     width: "1px",
@@ -386,7 +399,7 @@ export const dateInput = <Msg>(
       h.Class(
         className(
           styles.field,
-          ...(props.width === undefined ? [styles.control] : []),
+          ...(props.width === undefined ? [styles.fieldFit] : [styles.control]),
           props.layoutStyle,
         ),
       ),

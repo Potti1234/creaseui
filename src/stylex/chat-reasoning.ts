@@ -6,6 +6,7 @@ import { defineMessageUnion } from 'foldkit/message'
 
 import * as Icon from '@/lib/icon'
 import type { ComponentLayoutStyle } from './contracts'
+import { foundationTokens } from './foundations-tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
@@ -55,8 +56,8 @@ export const update = (model: Model, message: Message): UpdateReturn => {
 }
 
 const shimmerSweep = stylex.keyframes({
-  from: { backgroundPosition: '200% 0' },
-  to: { backgroundPosition: '-200% 0' },
+  from: { backgroundPosition: '100% 0' },
+  to: { backgroundPosition: '0 0' },
 })
 
 const styles = stylex.create({
@@ -66,7 +67,10 @@ const styles = stylex.create({
     marginBlockStart: '0.5rem',
   },
   header: {
-    borderRadius: tokens.controlRadius,
+    borderRadius: {
+      default: '0px',
+      ':focus-visible': foundationTokens.radiusSm,
+    },
     gap: '0.375rem',
     paddingBlock: '0.125rem',
     alignItems: 'center',
@@ -105,29 +109,31 @@ const styles = stylex.create({
     whiteSpace: 'nowrap',
   },
   disabledInk: {
-    color: tokens.mutedForeground,
+    color: foundationTokens.mutedForeground50,
     flexShrink: 0,
-    fontSize: '0.75rem',
-    opacity: 0.6,
+    fontSize: '0.75rem', lineHeight: '1rem',
+  },
+  disabledInkNowrap: {
+    color: foundationTokens.mutedForeground50,
+    flexShrink: 0,
+    fontSize: '0.75rem', lineHeight: '1.25rem',
     whiteSpace: 'nowrap',
   },
   preview: {
     overflow: 'hidden',
-    color: tokens.mutedForeground,
+    color: foundationTokens.mutedForeground50,
     fontSize: '0.75rem',
     lineHeight: '1.25rem',
-    opacity: 0.6,
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     minWidth: 0,
   },
   chevron: {
     alignItems: 'center',
-    color: tokens.mutedForeground,
+    color: foundationTokens.mutedForeground50,
     display: 'inline-flex',
     flexShrink: 0,
     justifyContent: 'center',
-    opacity: 0.6,
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'transform',
     transitionTimingFunction: interactionTokens.easingStandard,
@@ -138,15 +144,18 @@ const styles = stylex.create({
     transform: 'rotate(180deg)',
   },
   shimmer: {
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    backgroundPosition: '0 0',
     /* PORT-NOTE: astryx shimmer sweep is 4s; nearest loop token is 2s. */
     animationDuration: interactionTokens.motionLoopSlow,
     animationIterationCount: 'infinite',
     animationName: shimmerSweep,
     animationTimingFunction: interactionTokens.easingLinear,
     backgroundClip: 'text',
-    backgroundImage: `linear-gradient(90deg, currentColor 0%, color-mix(in oklch, currentColor 40%, transparent) 50%, currentColor 100%)`,
-    backgroundSize: '200% 100%',
-    color: tokens.transparent,
+    backgroundImage: 'linear-gradient(calc(90deg + 20deg), currentColor calc(50% - (3ch + 40px)), color-mix(in oklch, oklch(from currentColor l c h / calc(alpha * 0.2)), currentColor 50%) calc(50% - (3ch + 40px) * 0.5), oklch(from currentColor l c h / calc(alpha * 0.2)) 50%, color-mix(in oklch, oklch(from currentColor l c h / calc(alpha * 0.2)), currentColor 50%) calc(50% + (3ch + 40px) * 0.5), currentColor calc(50% + (3ch + 40px)))',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'calc(200% + (3ch + 40px) * 2) 100%',
   },
   content: {
     display: 'grid',
@@ -282,7 +291,7 @@ export const chatReasoning = <Msg>(
                       ['·'],
                     ),
                     h.span(
-                      [h.Class(className(styles.disabledInk))],
+                      [h.Class(className(styles.disabledInkNowrap))],
                       [props.duration],
                     ),
                   ]

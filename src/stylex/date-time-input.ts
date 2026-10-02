@@ -88,6 +88,8 @@ const styles = stylex.create({
   },
   labelHidden: {
     margin: -1,
+    padding: 0,
+    borderWidth: 0,
     overflow: "hidden",
     clip: "rect(0 0 0 0)",
     position: "absolute",
@@ -97,9 +99,10 @@ const styles = stylex.create({
   },
   requiredMark: { color: tokens.destructive },
   optional: { color: tokens.mutedForeground, fontWeight: 400 },
-  description: { color: tokens.mutedForeground, fontSize: "0.875rem" },
+  description: { color: tokens.mutedForeground, fontSize: "0.875rem", lineHeight: '1.25rem' },
   row: { gap: "0.5rem", display: "flex", flexWrap: "wrap" },
   fullWidth: { width: "100%" },
+  fieldFit: { width: "fit-content" },
   wrapper: {
     borderColor: {
       default: tokens.input,
@@ -164,7 +167,10 @@ const styles = stylex.create({
   iconButton: {
     borderRadius: foundationTokens.radiusSm,
     alignItems: "center",
-    backgroundColor: "transparent",
+    backgroundColor: {
+      default: tokens.transparent,
+      ":hover": tokens.accent,
+    },
     color: {
       default: tokens.mutedForeground,
       ":hover": tokens.foreground,
@@ -181,7 +187,6 @@ const styles = stylex.create({
   },
   icon: {
     alignItems: "center",
-    color: tokens.mutedForeground,
     display: "inline-flex",
     flexShrink: 0,
     justifyContent: "center",
@@ -190,9 +195,10 @@ const styles = stylex.create({
     backgroundColor: "transparent",
     color: tokens.foreground,
     display: "block",
+    flexBasis: "0%",
     flexGrow: 1,
     fontFamily: "inherit",
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
     outlineStyle: "none",
     minWidth: 0,
     "::placeholder": { color: tokens.mutedForeground },
@@ -202,7 +208,10 @@ const styles = stylex.create({
   clearButton: {
     borderRadius: foundationTokens.radiusSm,
     alignItems: "center",
-    backgroundColor: "transparent",
+    backgroundColor: {
+      default: tokens.transparent,
+      ":hover": tokens.accent,
+    },
     color: {
       default: tokens.mutedForeground,
       ":hover": tokens.foreground,
@@ -226,22 +235,25 @@ const styles = stylex.create({
   },
   statusError: {
     color: tokens.destructive,
+    alignItems: "center",
     display: "inline-flex",
     flexShrink: 0,
   },
   statusWarning: {
     color: tokens.alertWarning,
+    alignItems: "center",
     display: "inline-flex",
     flexShrink: 0,
   },
   statusSuccess: {
     color: tokens.alertSuccess,
+    alignItems: "center",
     display: "inline-flex",
     flexShrink: 0,
   },
-  statusMessageError: { color: tokens.destructive, fontSize: "0.875rem" },
-  statusMessageWarning: { color: tokens.alertWarning, fontSize: "0.875rem" },
-  statusMessageSuccess: { color: tokens.alertSuccess, fontSize: "0.875rem" },
+  statusMessageError: { color: tokens.destructive, fontSize: "0.875rem", lineHeight: '1.25rem' },
+  statusMessageWarning: { color: tokens.alertWarning, fontSize: "0.875rem", lineHeight: '1.25rem' },
+  statusMessageSuccess: { color: tokens.alertSuccess, fontSize: "0.875rem", lineHeight: '1.25rem' },
   iconSize: { height: "1rem", width: "1rem" },
   clearIconSize: { height: "0.875rem", width: "0.875rem" },
   iconMuted: { color: tokens.mutedForeground, height: "1rem", width: "1rem" },
@@ -265,7 +277,7 @@ const styles = stylex.create({
     cursor: interactionTokens.cursorAction,
     display: "flex",
     fontFamily: "inherit",
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
     paddingBlock: "0.375rem",
     paddingInline: "0.5rem",
     textAlign: "start",
@@ -275,10 +287,12 @@ const styles = stylex.create({
   timeOptionSm: { paddingBlock: "0.25rem", paddingInline: "0.5rem" },
   timeOptionLg: { paddingBlock: "0.5rem" },
   srOnly: {
+    borderWidth: 0,
     clip: "rect(0 0 0 0)",
     height: 1,
     margin: -1,
     overflow: "hidden",
+    padding: 0,
     position: "absolute",
     whiteSpace: "nowrap",
     width: 1,
@@ -816,7 +830,7 @@ export const dateTimeInput = <Msg>(
       h.Class(
         className(
           styles.field,
-          props.width === undefined ? null : styles.fullWidth,
+          props.width === undefined ? styles.fieldFit : styles.fullWidth,
           props.layoutStyle,
         ),
       ),

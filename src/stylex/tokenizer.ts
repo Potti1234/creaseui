@@ -64,8 +64,8 @@ const styles = stylex.create({
     width: 1,
   },
   requiredMark: { color: tokens.destructive },
-  optional: { color: tokens.mutedForeground, fontSize: '0.875rem' },
-  description: { color: tokens.mutedForeground, fontSize: '0.875rem' },
+  optional: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
+  description: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
   wrapper: {
     borderColor: {
       default: tokens.input,
@@ -87,6 +87,7 @@ const styles = stylex.create({
     cursor: interactionTokens.cursorDefault,
     display: 'flex',
     flexWrap: 'wrap',
+    opacity: { default: null, ':is([aria-disabled="true"])': 0.5 },
     outlineStyle: 'none',
     position: 'relative',
     transitionDuration: interactionTokens.motionFast,
@@ -98,7 +99,6 @@ const styles = stylex.create({
   wrapperWithTokens: {
     paddingBlock: 'calc(0.25rem - 1px)',
     paddingInline: 'calc(0.25rem - 1px)',
-    rowGap: 'calc(0.25rem - 1px)',
   },
   wrapperError: {
     borderColor: {
@@ -142,7 +142,7 @@ const styles = stylex.create({
   },
   iconSize: { height: '1rem', width: '1rem' },
   token: {
-    borderRadius: foundationTokens.radiusSm,
+    borderRadius: foundationTokens.radiusBase,
     gap: '0.25rem',
     overflow: 'hidden',
     alignItems: 'center',
@@ -152,6 +152,7 @@ const styles = stylex.create({
     flexShrink: 0,
     fontSize: '0.75rem',
     fontWeight: 500,
+ lineHeight: '1rem',
     whiteSpace: 'nowrap',
     maxWidth: '100%',
   },
@@ -175,7 +176,6 @@ const styles = stylex.create({
     display: 'inline-flex',
     flexShrink: 0,
     justifyContent: 'center',
-    marginInlineEnd: 'calc(-1 * 0.25rem)',
     outlineStyle: 'none',
     height: '1rem',
     width: '1rem',
@@ -203,9 +203,10 @@ const styles = stylex.create({
     backgroundColor: 'transparent',
     color: tokens.foreground,
     display: 'block',
+    flexBasis: '0%',
     flexGrow: 1,
     fontFamily: 'inherit',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     outlineStyle: 'none',
     minWidth: 0,
     '::placeholder': { color: tokens.mutedForeground },
@@ -218,7 +219,7 @@ const styles = stylex.create({
     alignItems: 'center',
     cursor: interactionTokens.cursorDefault,
     display: 'flex',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     outlineStyle: 'none',
     position: 'relative',
     userSelect: 'none',
@@ -270,26 +271,29 @@ const styles = stylex.create({
   resultCount: {
     color: tokens.mutedForeground,
     flexShrink: 0,
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
   },
   statusError: {
+    alignItems: 'center',
     color: tokens.destructive,
     display: 'inline-flex',
     flexShrink: 0,
   },
   statusWarning: {
+    alignItems: 'center',
     color: tokens.alertWarning,
     display: 'inline-flex',
     flexShrink: 0,
   },
   statusSuccess: {
+    alignItems: 'center',
     color: tokens.alertSuccess,
     display: 'inline-flex',
     flexShrink: 0,
   },
-  statusMessageError: { color: tokens.destructive, fontSize: '0.875rem' },
-  statusMessageWarning: { color: tokens.alertWarning, fontSize: '0.875rem' },
-  statusMessageSuccess: { color: tokens.alertSuccess, fontSize: '0.875rem' },
+  statusMessageError: { color: tokens.destructive, fontSize: '0.875rem', lineHeight: '1.25rem' },
+  statusMessageWarning: { color: tokens.alertWarning, fontSize: '0.875rem', lineHeight: '1.25rem' },
+  statusMessageSuccess: { color: tokens.alertSuccess, fontSize: '0.875rem', lineHeight: '1.25rem' },
 })
 
 const STATUS_STYLE = {
@@ -603,8 +607,9 @@ export const tokenizer = <Msg>(
               [
                 h.Class(
                   className(
-                    styles.startIcon,
-                    model.tokens.length > 0 && styles.startIconWithTokens,
+                    model.tokens.length > 0
+                      ? styles.startIconWithTokens
+                      : styles.startIcon,
                   ),
                 ),
                 h.AriaHidden(true),

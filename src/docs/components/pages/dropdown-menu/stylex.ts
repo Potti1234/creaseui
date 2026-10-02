@@ -10,12 +10,25 @@ import {
   resolveItemConfig,
 } from '@/docs/components/pages/dropdown-menu/shared';
 import * as Avatar from '@/stylex/avatar';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import * as DropdownMenu from '@/stylex/dropdown-menu';
 import * as Icon from '@/lib/icon';
 
 const styles = stylex.create({
   frame: { gap: '0.75rem', display: 'grid', justifyItems: 'center' },
   status: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
+  trigger: {
+    borderColor: 'var(--border)',
+    borderRadius: 'var(--radius-md)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingBlock: '0.5rem',
+    paddingInline: '1rem',
+    fontSize: '0.875rem',
+ fontWeight: 500,
+ lineHeight: '1.25rem',
+  },
+  triggerAvatar: { borderRadius: '9999px' },
 });
 
 export const dropdownMenuStyleXPreview: StyleXExamplePreviewProvider = <Msg>(exampleIndex: number, model: unknown, onMessageJson: (messageJson: string) => Msg, h: HtmlBuilder<Msg>) => {
@@ -42,6 +55,9 @@ export const dropdownMenuStyleXPreview: StyleXExamplePreviewProvider = <Msg>(exa
     model: previewModel.dropdownMenu,
     toParentMessage: message => onMessageJson(JSON.stringify({ _tag: 'GotDropdownPreviewMessage', message })),
     trigger,
+    triggerLayoutStyle: (fixture.trigger.kind === 'avatar'
+      ? styles.triggerAvatar
+      : styles.trigger) as ComponentLayoutStyle,
     ariaLabel: `${fixture.title} menu`,
     items: fixtureItems(fixture),
     itemToConfig: item => {

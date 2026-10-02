@@ -195,8 +195,8 @@ const styles = stylex.create({
   field: { display: 'grid', gap: '0.75rem' },
   loremWrap: { overflowY: 'auto', paddingInline: '1rem' },
   paragraph: { marginBottom: '0.5rem', lineHeight: 1.625 },
-  footerSave: { borderRadius: '0.375rem', backgroundColor: 'var(--primary)', color: 'var(--primary-foreground)', paddingBlock: '0.5rem', paddingInline: '1rem', fontSize: '0.875rem' },
-  footerCancel: { borderRadius: '0.375rem', borderColor: 'var(--border)', borderStyle: 'solid', borderWidth: '1px', paddingBlock: '0.5rem', paddingInline: '1rem', fontSize: '0.875rem' },
+  footerSave: { borderRadius: '0.375rem', backgroundColor: 'var(--primary)', color: 'var(--primary-foreground)', paddingBlock: '0.5rem', paddingInline: '1rem', fontSize: '0.875rem', lineHeight: '1.25rem' },
+  footerCancel: { borderRadius: '0.375rem', borderColor: 'var(--border)', borderStyle: 'solid', borderWidth: '1px', paddingBlock: '0.5rem', paddingInline: '1rem', fontSize: '0.875rem', lineHeight: '1.25rem' },
 })` : ''}${usesLorem ? `
 
 const LOREM: ReadonlyArray<string> = Array.from({ length: ${LOREM_PARAGRAPHS} }, () =>

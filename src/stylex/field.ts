@@ -1,4 +1,5 @@
 import * as stylex from "@stylexjs/stylex";
+import type { StaticStyles } from "@stylexjs/stylex";
 import { Fieldset as FieldsetPrimitive } from "@foldkit/ui";
 import type { Html, HtmlBuilder } from "foldkit/html";
 import {
@@ -8,6 +9,15 @@ import {
   renderControlField,
 } from "@/lib/field";
 import type { ComponentLayoutStyle } from "./contracts";
+import {
+  fieldDisabledScope,
+  fieldGroupScope,
+  fieldHorizontalScope,
+  fieldLabelScope,
+  fieldResponsiveScope,
+  fieldVerticalScope,
+} from "./field.markers.stylex";
+import { foundationTokens } from "./foundations-tokens.stylex";
 import { className } from "./style";
 import { tokens } from "./tokens.stylex";
 export type { ControlFieldParts, FieldError } from "@/lib/field";
@@ -24,21 +34,63 @@ type Slot = Readonly<{
   children: ReadonlyArray<Html | string>;
 }>;
 const styles = stylex.create({
-  set: { gap: "1.5rem", display: "flex", flexDirection: "column" },
-  legend: { fontSize: "1rem", fontWeight: 500, marginBottom: "0.75rem" },
-  legendLabel: { fontSize: "0.875rem" },
+  set: {
+    gap: {
+      default: "1.5rem",
+      ':has(>[data-slot=checkbox-group])': "0.75rem",
+      ':has(>[data-slot=radio-group])': "0.75rem",
+    },
+    display: "flex",
+    flexDirection: "column",
+  },
+  legend: { fontSize: "1rem", fontWeight: 500, lineHeight: '1.5rem', marginBottom: "0.75rem", },
+  legendLabel: { fontSize: "0.875rem", lineHeight: '1.25rem' },
   group: {
-    gap: "1.75rem",
+    gap: {
+      '[data-slot="checkbox-group"]': "0.75rem",
+      default: "1.75rem",
+      ':where([data-slot="field-group"] > *)': "1rem",
+    },
+    containerName: "field-group",
+    containerType: "inline-size",
     display: "flex",
     flexDirection: "column",
     width: "100%",
   },
-  field: { gap: "0.5rem", display: "flex", width: "100%" },
+  field: {
+    padding: {
+      default: null,
+      ':where([data-slot="field-label"] > *)': "1rem",
+    },
+    gap: "0.5rem",
+    display: "flex",
+    marginBlockEnd: {
+      default: null,
+      ':where([data-slot="form"] > *:not(:last-child))': "1.5rem",
+    },
+    width: "100%",
+  },
   vertical: { flexDirection: "column" },
-  horizontal: { alignItems: "center", flexDirection: "row" },
-  responsive: { flexDirection: "column" },
+  horizontal: {
+    alignItems: {
+      default: "center",
+      ':has(>[data-slot=field-content])': "flex-start",
+    },
+    flexDirection: "row",
+  },
+  responsive: {
+    alignItems: {
+      "@container field-group (min-width: 28rem)": {
+        default: "center",
+        ':has(> [data-slot="field-content"])': "flex-start",
+      },
+    },
+    flexDirection: {
+      default: "column",
+      "@container field-group (min-width: 28rem)": "row",
+    },
+  },
   invalid: { color: tokens.destructive },
-  disabled: { opacity: 0.5 },
   content: {
     flex: "1",
     gap: "0.375rem",
@@ -47,26 +99,101 @@ const styles = stylex.create({
     lineHeight: 1.375,
   },
   label: {
+    flex: {
+      default: null,
+      ':where([data-slot="field"][data-orientation="horizontal"] > *)': "auto",
+      "@container field-group (min-width: 28rem)": {
+        default: null,
+        ':where([data-slot="field"][data-orientation="responsive"] > *)': "auto",
+      },
+    },
     gap: "0.5rem",
     alignItems: "center",
     display: "flex",
     fontSize: "0.875rem",
     fontWeight: 500,
+ lineHeight: '1.25rem',
+    width: {
+      default: null,
+      ':where([data-slot="field"][data-orientation="responsive"] > *)': "100%",
+      ':where([data-slot="field"][data-orientation="vertical"] > *)': "100%",
+      "@container field-group (min-width: 28rem)": {
+        default: null,
+        ':where([data-slot="field"][data-orientation="responsive"] > *)': "auto",
+      },
+    },
   },
-  fontNormal: {
-    fontWeight: 400,
+  controlLabel: { lineHeight: 1, userSelect: "none" },
+  fieldLabel: {
+    borderColor: {
+      default: tokens.border,
+      ':has([data-checked])': tokens.primary,
+    },
+    borderRadius: {
+      default: null,
+      ':has(>[data-slot=field])': foundationTokens.radiusMd,
+    },
+    borderStyle: {
+      default: null,
+      ':has(>[data-slot=field])': "solid",
+    },
+    borderWidth: {
+      default: null,
+      ':has(>[data-slot=field])': 1,
+    },
+    backgroundColor: {
+      default: null,
+      ':has([data-checked])':
+        foundationTokens.primaryFaint,
+    },
+    flexDirection: {
+      default: null,
+      ':has(>[data-slot=field])': "column",
+    },
     lineHeight: 1.375,
     userSelect: "none",
-    width: "fit-content",
+    width: {
+      default: "fit-content",
+      ':where([data-slot="field"][data-orientation="responsive"] > *)': "100%",
+      ':where([data-slot="field"][data-orientation="vertical"] > *)': "100%",
+      ':has(>[data-slot=field])': "100%",
+      "@container field-group (min-width: 28rem)": {
+        default: null,
+        ':where([data-slot="field"][data-orientation="responsive"] > *)': "auto",
+      },
+    },
   },
+  labelDisabled: {
+    opacity: {
+      default: null,
+      [stylex.when.ancestor(":is(*)", fieldDisabledScope)]: 0.5,
+    },
+  },
+  fontNormal: { fontWeight: 400 },
   title: {
+    flex: {
+      default: null,
+      ':where([data-slot="field"][data-orientation="horizontal"] > *)': "auto",
+      "@container field-group (min-width: 28rem)": {
+        default: null,
+        ':where([data-slot="field"][data-orientation="responsive"] > *)': "auto",
+      },
+    },
     gap: "0.5rem",
     alignItems: "center",
     display: "flex",
     fontSize: "0.875rem",
     fontWeight: 500,
     lineHeight: 1.375,
-    width: "fit-content",
+    width: {
+      default: "fit-content",
+      ':where([data-slot="field"][data-orientation="responsive"] > *)': "100%",
+      ':where([data-slot="field"][data-orientation="vertical"] > *)': "100%",
+      "@container field-group (min-width: 28rem)": {
+        default: null,
+        ':where([data-slot="field"][data-orientation="responsive"] > *)': "auto",
+      },
+    },
   },
   description: {
     color: tokens.mutedForeground,
@@ -74,10 +201,33 @@ const styles = stylex.create({
     fontWeight: 400,
     lineHeight: 1.5,
   },
-  separator: { position: "relative", height: "1.25rem" },
+  descriptionSpacing: {
+    textWrap: {
+      default: null,
+      ':where([data-slot="field"]:has([data-orientation="horizontal"]) *)': "balance",
+    },
+    marginTop: {
+      default: null,
+      ':is([data-slot="field-legend"][data-variant="legend"] + *)': "-0.375rem",
+      ':last-child': "0px",
+      ':nth-last-child(2)': "-0.25rem",
+    },
+  },
+  separator: {
+    marginBlock: "-0.5rem",
+    fontSize: "0.875rem",
+    lineHeight: "1.25rem",
+    marginBlockEnd: {
+      default: null,
+      ':where([data-slot="field-group"][data-variant="outline"] *)': "-0.5rem",
+    },
+    position: "relative",
+    height: "1.25rem",
+  },
   rule: {
     inset: 0,
     backgroundColor: tokens.border,
+    flexShrink: 0,
     position: "absolute",
     height: "1px",
     top: "50%",
@@ -92,7 +242,7 @@ const styles = stylex.create({
     position: "relative",
     width: "fit-content",
   },
-  error: { color: tokens.destructive, fontSize: "0.875rem", fontWeight: 400 },
+  error: { color: tokens.destructive, fontSize: "0.875rem", fontWeight: 400, lineHeight: '1.25rem', },
   errorList: {
     gap: "0.25rem",
     display: "flex",
@@ -173,12 +323,32 @@ export const fieldGroup = <Msg>(
       ...(p.variant === undefined
         ? []
         : [h.DataAttribute("variant", p.variant)]),
-      h.Class(className(styles.group, p.layoutStyle)),
+      h.Class(
+        className(
+          styles.group,
+          // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
+          fieldGroupScope as unknown as StaticStyles,
+          p.layoutStyle,
+        ),
+      ),
     ],
     [...p.children],
   );
+const orientationMarker = (
+  orientation: NonNullable<FieldVariants["orientation"]>,
+): StaticStyles =>
+  // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
+  (orientation === "horizontal"
+    ? fieldHorizontalScope
+    : orientation === "responsive"
+      ? fieldResponsiveScope
+      : fieldVerticalScope) as unknown as StaticStyles;
 export const fieldVariants = (o: FieldVariants = {}): string =>
-  className(styles.field, styles[o.orientation ?? "vertical"]);
+  className(
+    styles.field,
+    styles[o.orientation ?? "vertical"] as StaticStyles,
+    orientationMarker(o.orientation ?? "vertical"),
+  );
 export type ControlFieldProps<Msg> = SharedControlFieldProps<Msg> &
   Readonly<{ layoutStyle?: ComponentLayoutStyle }>;
 export const controlField = <Msg>(
@@ -193,14 +363,20 @@ export const controlField = <Msg>(
         h.Class(
           className(
             styles.field,
-            styles[orientation],
+            styles[orientation] as StaticStyles,
             (p.isInvalid === true || p.error !== undefined || fieldErrorMessages(p.errors).length > 0) && styles.invalid,
-            p.isDisabled && styles.disabled,
+            // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
+            p.isDisabled && (fieldDisabledScope as unknown as StaticStyles),
+            orientationMarker(orientation),
             p.layoutStyle,
           ),
         ),
       ],
-      label: [h.Class(className(styles.label))],
+      label: [
+        h.Class(
+          className(styles.label, styles.controlLabel, styles.labelDisabled),
+        ),
+      ],
       description: [h.Class(className(styles.description))],
       error: [h.Class(className(styles.error))],
       errorList: [h.Class(className(styles.errorList))],
@@ -228,9 +404,11 @@ export const field = <Msg>(p: FieldProps, h: HtmlBuilder<Msg>): Html => {
       h.Class(
         className(
           styles.field,
-          styles[orientation],
+          styles[orientation] as StaticStyles,
           p.isInvalid && styles.invalid,
-          p.isDisabled && styles.disabled,
+          // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
+          p.isDisabled && (fieldDisabledScope as unknown as StaticStyles),
+          orientationMarker(orientation),
           p.layoutStyle,
         ),
       ),
@@ -255,7 +433,17 @@ export const fieldLabel = <Msg>(
     [
       h.DataAttribute("slot", "field-label"),
       ...(p.for === undefined ? [] : [h.For(p.for)]),
-      h.Class(className(styles.label, p.weight === 'normal' && styles.fontNormal, p.layoutStyle)),
+      h.Class(
+        className(
+          styles.label,
+          styles.fieldLabel,
+          styles.labelDisabled,
+          // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
+          fieldLabelScope as unknown as StaticStyles,
+          p.weight === 'normal' && styles.fontNormal,
+          p.layoutStyle,
+        ),
+      ),
     ],
     [...p.children],
   );
@@ -263,7 +451,7 @@ export const fieldTitle = <Msg>(p: Slot, h: HtmlBuilder<Msg>): Html =>
   h.div(
     [
       h.DataAttribute("slot", "field-label"),
-      h.Class(className(styles.title, p.layoutStyle)),
+      h.Class(className(styles.title, styles.labelDisabled, p.layoutStyle)),
     ],
     [...p.children],
   );
@@ -275,7 +463,13 @@ export const fieldDescription = <Msg>(
     [
       h.DataAttribute("slot", "field-description"),
       ...(p.id === undefined ? [] : [h.Id(p.id)]),
-      h.Class(className(styles.description, p.layoutStyle)),
+      h.Class(
+        className(
+          styles.description,
+          styles.descriptionSpacing,
+          p.layoutStyle,
+        ),
+      ),
     ],
     [...p.children],
   );

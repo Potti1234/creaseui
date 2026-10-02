@@ -50,7 +50,6 @@ const styles = stylex.create({
     display: 'inline-flex',
     fontWeight: 500,
     justifyContent: 'center',
-    lineHeight: 1,
     position: 'relative',
     userSelect: 'none',
   },
@@ -168,6 +167,7 @@ export const avatarGroupOverflow = <Msg>(
       minWidth: `${chipSize}px`,
       height: `${chipSize}px`,
       fontSize: `${fontSize}px`,
+      lineHeight: '1',
       marginInlineStart: 'var(--avatar-group-overlap)',
     }),
   ];

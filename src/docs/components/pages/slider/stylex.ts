@@ -11,19 +11,19 @@ import * as Slider from '@/stylex/slider';
 import { className } from '@/stylex/style';
 
 const styles = stylex.create({
-  slider: { maxWidth: '24rem', width: '100%' },
+  slider: { maxWidth: '20rem', width: '100%' },
   verticalWrap: {
     gap: '1.5rem',
     alignItems: 'center',
     display: 'flex',
     justifyContent: 'center',
-    maxWidth: '24rem',
+    maxWidth: '20rem',
     width: '100%',
   },
   controlledWrap: {
     gap: '0.75rem',
     display: 'grid',
-    maxWidth: '24rem',
+    maxWidth: '20rem',
     width: '100%',
   },
   controlledRow: {
@@ -32,8 +32,8 @@ const styles = stylex.create({
     display: 'flex',
     justifyContent: 'space-between',
   },
-  label: { fontSize: '0.875rem', fontWeight: 500 },
-  controlledValue: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },
+  label: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem', },
+  controlledValue: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
   verticalSlider: { height: '10rem' },
 });
 

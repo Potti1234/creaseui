@@ -18,17 +18,14 @@ import { className } from '@/stylex/style';
 import { tokens } from '../../../../stylex/tokens.stylex';
 
 const styles = stylex.create({
-  frame640: { width: '640px' },
-  frame560: { width: '560px' },
   frame400: { width: '400px' },
-  frame680: { width: '680px' },
-  frame320: { width: '320px' },
   panelRow: { gap: '3rem', display: 'flex', flexWrap: 'wrap', },
   panel: { width: '220px' },
   panelHeading: {
     marginInline: 0,
     fontSize: '0.875rem',
     fontWeight: 500,
+ lineHeight: '1.25rem',
     marginBlockEnd: '0.5rem',
     marginBlockStart: 0,
   },
@@ -38,22 +35,9 @@ const styles = stylex.create({
   fullWidth: { width: '100%' },
   cardStack: { gap: '0.5rem', display: 'flex', flexDirection: 'column', },
   cardTitleRow: { gap: '0.5rem', alignItems: 'center', display: 'flex', },
-  cardLabel: { fontSize: '0.875rem', fontWeight: 500 },
-  cardMeta: { margin: 0, color: tokens.mutedForeground, fontSize: '0.75rem', },
+  cardLabel: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem', },
+  cardMeta: { margin: 0, color: tokens.mutedForeground, fontSize: '0.75rem', lineHeight: '1rem', },
 });
-
-const frameFor = (width: number | undefined) =>
-  width === 640
-    ? styles.frame640
-    : width === 560
-      ? styles.frame560
-      : width === 400
-        ? styles.frame400
-        : width === 680
-          ? styles.frame680
-          : width === 320
-            ? styles.frame320
-            : styles.fullWidth;
 
 interface PreviewShape {
   readonly controls: ReadonlyArray<Stepper.Model>;
@@ -254,5 +238,8 @@ export const stepperStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       : panels[0] ?? h.empty;
   return fixture.width === undefined
     ? inner
-    : h.div([h.Class(className(frameFor(fixture.width)))], [inner]);
+    : h.div(
+        [h.Class(fixture.width === 400 ? className(styles.frame400) : '')],
+        [inner],
+      );
 };

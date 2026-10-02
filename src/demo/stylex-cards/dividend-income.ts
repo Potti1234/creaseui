@@ -41,6 +41,7 @@ const styles = stylex.create({
     fontSize: "0.875rem",
     fontVariantNumeric: "tabular-nums",
     fontWeight: 600,
+ lineHeight: '1.25rem',
   },
 });
 

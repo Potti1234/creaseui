@@ -76,6 +76,7 @@ const styles = stylex.create({
   labelIndicator: {
     fontSize: '0.75rem',
     fontWeight: 400,
+ lineHeight: '1rem',
   },
   description: {
     color: tokens.mutedForeground,
@@ -87,6 +88,7 @@ const styles = stylex.create({
     flexDirection: 'column',
     isolation: 'isolate',
     position: 'relative',
+    zIndex: 0,
   },
   wrapper: {
     borderRadius: foundationTokens.radiusMd,
@@ -162,6 +164,7 @@ const styles = stylex.create({
     backgroundColor: 'transparent',
     color: tokens.foreground,
     display: 'block',
+    flexBasis: '0%',
     flexGrow: 1,
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
@@ -257,6 +260,7 @@ const styles = stylex.create({
     color: tokens.alertSuccess,
   },
   statusText: {
+    flexBasis: '0%',
     flexGrow: 1,
   },
   statusIconRow: {

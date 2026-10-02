@@ -18,6 +18,7 @@ const styles = stylex.create({
     fontSize: '1rem',
     fontWeight: 500,
     justifyContent: 'center',
+ lineHeight: '1.5rem',
     textAlign: 'center',
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'color, background-color',

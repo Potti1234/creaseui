@@ -15,20 +15,20 @@ import { className } from '@/stylex/style';
 
 const styles = stylex.create({
   stack: { gap: '0.75rem', display: 'grid', justifyItems: 'center', },
-  target: { aspectRatio: '16 / 9', width: '20rem', },
   targetInner: {
     borderColor: 'var(--border)',
-    borderRadius: '0.75rem',
+    borderRadius: 'var(--radius-xl)',
     borderStyle: 'dashed',
     borderWidth: '1px',
     alignItems: 'center',
+    aspectRatio: '16 / 9',
     display: 'flex',
     fontSize: '0.875rem',
     justifyContent: 'center',
-    height: '100%',
-    width: '100%',
+ lineHeight: '1.25rem',
+    width: '20rem',
   },
-  status: { color: 'var(--muted-foreground)', fontSize: '0.875rem', },
+  status: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem', },
   icon: { height: '1rem', width: '1rem', },
 });
 
@@ -63,7 +63,6 @@ export const contextMenuStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             [h.Class(className(styles.targetInner))],
             ['Right click here'],
           ),
-          layoutStyle: styles.target,
           ariaLabel: `${fixture.title} menu`,
           items: fixtureItems(fixture),
           itemToConfig: item => {

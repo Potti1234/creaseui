@@ -8,13 +8,16 @@ import { className } from "./style";
 import { tokens } from "./tokens.stylex";
 import { interactionTokens } from './interaction-tokens.stylex.const'
 const styles = stylex.create({
-  wrapper: { position: "relative", width: "fit-content" },
+  wrapper: { opacity: { default: 1, ':has(select:disabled)': 0.5 }, position: "relative", width: "fit-content", },
   control: {
     borderColor: { default: tokens.input, ":focus-visible": tokens.ring },
     borderRadius: foundationTokens.radiusMd,
     borderStyle: "solid",
     borderWidth: 1,
-    paddingBlock: "0.375rem",
+    paddingBlock: {
+      default: "0.375rem",
+      ':is([data-size="sm"])': "0.25rem",
+    },
     appearance: "none",
     backgroundColor: foundationTokens.transparent,
     boxShadow: {
@@ -22,18 +25,22 @@ const styles = stylex.create({
       ":focus-visible": tokens.focusRingShadow,
     },
     fontSize: "0.875rem",
+ lineHeight: '1.25rem',
     outlineStyle: "none",
-    paddingInlineEnd: "2rem",
-    paddingInlineStart: "0.625rem",
     height: "2rem",
     minWidth: 0,
+    paddingLeft: "0.625rem",
+    paddingRight: "2rem",
     width: "100%",
   },
   invalid: {
     borderColor: tokens.destructive,
-    boxShadow: tokens.destructiveRingShadow,
+    boxShadow: {
+      default: foundationTokens.shadowXs,
+      ":focus-visible": tokens.destructiveRingShadow,
+    },
   },
-  disabled: { cursor: interactionTokens.cursorDisabled, opacity: 0.5, pointerEvents: "none" },
+  disabled: { cursor: interactionTokens.cursorDisabled, pointerEvents: "none" },
   icon: {
     color: tokens.mutedForeground,
     opacity: 0.5,
@@ -45,7 +52,7 @@ const styles = stylex.create({
     top: "50%",
     width: "1rem",
   },
-  option: { backgroundColor: foundationTokens.popover, color: foundationTokens.popoverForeground },
+  option: { backgroundColor: foundationTokens.nativeOptionSurface, color: foundationTokens.nativeOptionInk },
   field: { gap: "0.5rem", display: "grid" },
   label: {
     gap: "0.5rem",
@@ -56,7 +63,7 @@ const styles = stylex.create({
     lineHeight: 1,
     userSelect: "none",
   },
-  description: { color: tokens.mutedForeground, fontSize: "0.875rem" },
+  description: { color: tokens.mutedForeground, fontSize: "0.875rem", lineHeight: '1.25rem' },
 });
 export type NativeSelectOption = Readonly<{
   value: string;

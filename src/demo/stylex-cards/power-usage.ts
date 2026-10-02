@@ -21,7 +21,7 @@ const styles = stylex.create({
   batteryRow: { gap: '0.5rem', alignItems: 'center', display: 'flex', width: '100%', },
   body: { gap: '1rem', display: 'flex', flexDirection: 'column', },
   chart: { height: '8.75rem', width: '100%', },
-  label: { color: tokens.mutedForeground, fontSize: '0.875rem' },
+  label: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
   metric: { gap: '0.125rem', display: 'flex', flexDirection: 'column', },
   metrics: { gap: '1rem', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', },
   progress: { flexGrow: 1 },
@@ -34,9 +34,9 @@ const styles = stylex.create({
     height: '0.5rem',
     width: '100%',
   },
-  usage: { fontSize: '1.125rem', fontVariantNumeric: 'tabular-nums', fontWeight: 600 },
+  usage: { fontSize: '1.125rem', fontVariantNumeric: 'tabular-nums', fontWeight: 600, lineHeight: '1.75rem', },
   usageAccent: { color: interactionCardTokens.usageAccent },
-  value: { fontSize: '0.875rem', fontVariantNumeric: 'tabular-nums', fontWeight: 500 },
+  value: { fontSize: '0.875rem', fontVariantNumeric: 'tabular-nums', fontWeight: 500, lineHeight: '1.25rem', },
 })
 
 const chartData = [

@@ -12,9 +12,10 @@ const styles = stylex.create({
   visuallyHidden: {
     margin: -1,
     padding: 0,
-    borderStyle: 'none',
+    borderWidth: 0,
     overflow: 'hidden',
     clip: 'rect(0, 0, 0, 0)',
+    clipPath: 'inset(50%)',
     insetBlockStart: 0,
     insetInlineStart: 0,
     pointerEvents: 'none',

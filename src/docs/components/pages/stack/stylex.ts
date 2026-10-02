@@ -20,19 +20,21 @@ import * as Stack from '@/stylex/stack';
 const styles = stylex.create({
   supporting: {
     color: 'var(--muted-foreground)',
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
   },
   name: {
     fontSize: '0.875rem',
     fontWeight: 600,
+ lineHeight: '1.25rem',
   },
   heading: {
     fontSize: '0.75rem',
     fontWeight: 600,
+ lineHeight: '1rem',
   },
   body: {
     color: 'var(--muted-foreground)',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
   },
 });
 

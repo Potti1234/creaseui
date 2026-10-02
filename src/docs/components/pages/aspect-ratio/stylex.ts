@@ -4,22 +4,30 @@ import type { HtmlBuilder } from 'foldkit/html';
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
 import { aspectRatioFixtures } from '@/docs/components/pages/aspect-ratio/shared';
 import * as AspectRatio from '@/stylex/aspect-ratio';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import { className } from '@/stylex/style';
 
 const IMAGE_URL = 'https://avatar.vercel.sh/shadcn1';
 
 const styles = stylex.create({
   frame: {
-    borderRadius: '0.5rem',
+    width: '100%',
+  },
+  frameMedia: {
+    borderRadius: 'var(--radius)',
     overflow: 'hidden',
     backgroundColor: 'var(--muted)',
-    width: '100%',
+  },
+  ratioBox: {
+    borderRadius: 'var(--radius)',
+    overflow: 'hidden',
+    backgroundColor: 'var(--muted)',
   },
   w12: { maxWidth: '12rem' },
   w10: { maxWidth: '10rem' },
   w24: { maxWidth: '24rem' },
   image: {
-    borderRadius: '0.5rem',
+    borderRadius: 'var(--radius)',
     filter: 'grayscale(100%)',
     objectFit: 'cover',
     height: '100%',
@@ -27,7 +35,7 @@ const styles = stylex.create({
   },
   caption: {
     color: 'var(--muted-foreground)',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     textAlign: 'center',
     marginTop: '0.5rem',
   },
@@ -49,12 +57,17 @@ export const aspectRatioStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   const fixture = aspectRatioFixtures[exampleIndex] ?? aspectRatioFixtures[0];
   return h.figure(
     [
-      h.Class(className(styles.frame, frameWidth[fixture.widthClass.stylex])),
+      h.Class(className(
+        styles.frame,
+        fixture.widthClass.stylex !== 'w24' && styles.frameMedia,
+        frameWidth[fixture.widthClass.stylex],
+      )),
       ...(fixture.direction === 'rtl' ? [h.Dir('rtl')] : []),
     ],
     [
       AspectRatio.aspectRatio({
         ratio: ratioValue(fixture.ratioExpr),
+        layoutStyle: styles.ratioBox as ComponentLayoutStyle,
         children: [
           h.img([
             h.Src(IMAGE_URL),

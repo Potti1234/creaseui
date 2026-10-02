@@ -62,6 +62,7 @@ const styles = stylex.create({
     opacity: 0.5,
   },
   srOnly: {
+    margin: '-1px',
     overflow: 'hidden',
     clipPath: 'inset(50%)',
     position: 'absolute',
@@ -72,6 +73,7 @@ const styles = stylex.create({
   labelIndicator: {
     fontSize: '0.75rem',
     fontWeight: 400,
+ lineHeight: '1rem',
   },
   description: {
     color: tokens.mutedForeground,
@@ -81,8 +83,8 @@ const styles = stylex.create({
   statusWrapper: {
     display: 'flex',
     flexDirection: 'column',
-    isolation: 'isolate',
     position: 'relative',
+    zIndex: 0,
   },
   container: {
     borderRadius: foundationTokens.radiusMd,
@@ -169,6 +171,7 @@ const styles = stylex.create({
     },
   },
   triggerWrapper: {
+    margin: '-1px',
     overflow: 'hidden',
     clipPath: 'inset(50%)',
     position: 'absolute',
@@ -186,7 +189,9 @@ const styles = stylex.create({
   namesCompact: {
     overflow: 'hidden',
     color: tokens.foreground,
-    flexGrow: 1,
+    flexBasis: '0%',
+    flexGrow: '1',
+    flexShrink: '1',
     fontSize: '0.875rem',
     fontWeight: 500,
     lineHeight: '1.25rem',
@@ -201,7 +206,9 @@ const styles = stylex.create({
   },
   placeholderCompact: {
     overflow: 'hidden',
-    flexGrow: 1,
+    flexBasis: '0%',
+    flexGrow: '1',
+    flexShrink: '1',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     minWidth: 0,
@@ -302,7 +309,9 @@ const styles = stylex.create({
     color: tokens.alertSuccess,
   },
   statusText: {
-    flexGrow: 1,
+    flexBasis: '0%',
+    flexGrow: '1',
+    flexShrink: '1',
   },
   statusIconRow: {
     alignItems: 'center',

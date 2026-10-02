@@ -1,5 +1,8 @@
 import * as stylex from '@stylexjs/stylex';
+import { Effect, Queue, Schema as S, Stream } from 'effect';
 import type { HtmlBuilder } from 'foldkit/html';
+import { defineMessageUnion } from 'foldkit/message';
+import * as Mount from 'foldkit/mount';
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
 import {
   messageScrollerFixtures,
@@ -8,6 +11,8 @@ import {
 import * as Bubble from '@/stylex/bubble';
 import * as Button from '@/stylex/button';
 import * as MessageScroller from '@/stylex/message-scroller';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
+import { foundationTokens } from '../../../../stylex/foundations-tokens.stylex';
 import { className } from '@/stylex/style';
 import { tokens } from '../../../../stylex/tokens.stylex';
 
@@ -19,10 +24,9 @@ const styles = stylex.create({
     maxWidth: '28rem',
     width: '100%',
   },
-  toolbar: { gap: '0.5rem', display: 'flex', flexWrap: 'wrap', },
   frame: {
     borderColor: tokens.border,
-    borderRadius: '0.375rem',
+    borderRadius: foundationTokens.radiusMd,
     borderStyle: 'solid',
     borderWidth: 1,
     position: 'relative',
@@ -31,7 +35,7 @@ const styles = stylex.create({
   },
   marker: {
     color: tokens.mutedForeground,
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     textAlign: 'center',
   },
   metrics: {
@@ -40,16 +44,22 @@ const styles = stylex.create({
     display: 'grid',
     fontSize: '0.75rem',
     gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+ lineHeight: '1rem',
     rowGap: '0.125rem',
   },
-  following: { color: tokens.mutedForeground, fontSize: '0.75rem' },
+  following: { color: tokens.mutedForeground, fontSize: '0.75rem', lineHeight: '1rem' },
   row: {
     opacity: 1,
     transform: 'translateY(0)',
     transitionDuration: '300ms',
-    transitionProperty: 'opacity, transform',
+    transitionProperty: 'all',
   },
-  rowEntering: { opacity: 0, transform: 'translateY(0.5rem)' },
+  rowEntering: {
+    opacity: 0,
+    transform: 'translateY(0.5rem)',
+    transitionDuration: '300ms',
+    transitionProperty: 'all',
+  },
 });
 
 type PreviewChatMessage = Readonly<{
@@ -83,40 +93,83 @@ const chatRow = <Msg>(
         fixture.kind === 'group-chat'
           ? message.role === 'marker'
           : message.role === 'user',
+      ...(fixture.kind === 'animation'
+        ? {
+            layoutStyle: (preview.animatingIds.includes(message.id)
+              ? styles.rowEntering
+              : styles.row) as ComponentLayoutStyle,
+          }
+        : {}),
       children: [
-        h.div(
-          [
-            ...(fixture.kind === 'animation'
-              ? [
-                  h.Class(
-                    className(
-                      styles.row,
-                      ...(preview.animatingIds.includes(message.id)
-                        ? [styles.rowEntering]
-                        : []),
-                    ),
-                  ),
-                ]
-              : []),
-          ],
-          [
-            message.role === 'marker'
-              ? h.div([h.Class(className(styles.marker))], [message.text])
-              : Bubble.bubble(
-                  {
-                    align: message.role === 'user' ? 'end' : 'start',
-                    children: [
-                      Bubble.bubbleContent({ children: [message.text] }, h),
-                    ],
-                  },
-                  h,
-                ),
-          ],
-        ),
+        message.role === 'marker'
+          ? h.div([h.Class(className(styles.marker))], [message.text])
+          : Bubble.bubble(
+              {
+                align: message.role === 'user' ? 'end' : 'start',
+                children: [
+                  Bubble.bubbleContent({ children: [message.text] }, h),
+                ],
+              },
+              h,
+            ),
       ],
     },
     h,
   );
+
+const PreviewMessage = defineMessageUnion({
+  ObservedVisibility: { ids: S.Array(S.Int) },
+});
+
+const ObserveVisibleMessages = Mount.defineStream(
+  'ObserveVisibleMessagesPreview',
+  {
+    messages: [PreviewMessage.ObservedVisibility],
+    execute: ({ element }) =>
+      Stream.callback<typeof PreviewMessage.ObservedVisibility.Type>(queue =>
+        Effect.gen(function* () {
+          yield* Effect.acquireRelease(
+            Effect.sync(() => {
+              if (!(element instanceof HTMLElement)) return undefined;
+              const viewport = element.querySelector(
+                '[data-slot="message-scroller-viewport"]',
+              );
+              if (!(viewport instanceof HTMLElement)) return undefined;
+              const visible = new Set<number>();
+              const observer = new IntersectionObserver(
+                entries => {
+                  for (const entry of entries) {
+                    const raw = (entry.target as HTMLElement).dataset
+                      .messageId;
+                    const id = Number(raw?.replace('msg-', ''));
+                    if (Number.isNaN(id)) continue;
+                    if (entry.isIntersecting) visible.add(id);
+                    else visible.delete(id);
+                  }
+                  Queue.offerUnsafe(
+                    queue,
+                    PreviewMessage.ObservedVisibility({
+                      ids: [...visible].sort((a, b) => a - b),
+                    }),
+                  );
+                },
+                { root: viewport, threshold: 0.5 },
+              );
+              viewport
+                .querySelectorAll('[data-message-id]')
+                .forEach(item => observer.observe(item));
+              return observer;
+            }),
+            observer =>
+              Effect.sync(() => {
+                if (observer !== undefined) observer.disconnect();
+              }),
+          );
+          return yield* Effect.never;
+        }),
+      ),
+  },
+);
 
 const toolbarButton = <Msg>(
   label: string,
@@ -149,7 +202,7 @@ export const messageScrollerStyleXPreview: StyleXExamplePreviewProvider = <
       JSON.stringify({ _tag: 'GotScrollerMessage', message }),
     );
 
-  const scrollerFrame = h.div([h.Class(className(styles.frame))], [
+  const frameEl = h.div([h.Class(className(styles.frame))], [
     MessageScroller.messageScroller(
       {
         children: [
@@ -195,6 +248,20 @@ export const messageScrollerStyleXPreview: StyleXExamplePreviewProvider = <
       h,
     ),
   ]);
+
+  const scrollerFrame =
+    fixture.kind === 'visibility'
+      ? h.div(
+          [
+            h.OnMount(
+              Mount.mapMessage(ObserveVisibleMessages(), message =>
+                onMessageJson(JSON.stringify(message)),
+              ),
+            ),
+          ],
+          [frameEl],
+        )
+      : frameEl;
 
   const toolbar = (() => {
     switch (fixture.kind) {
@@ -321,9 +388,7 @@ export const messageScrollerStyleXPreview: StyleXExamplePreviewProvider = <
   })();
 
   return h.div([h.Class(className(styles.column))], [
-    ...(toolbar.length === 0
-      ? []
-      : [h.div([h.Class(className(styles.toolbar))], toolbar)]),
+    ...toolbar,
     ...header,
     scrollerFrame,
   ]);

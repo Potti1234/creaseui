@@ -14,13 +14,13 @@ import * as InputOtp from '@/stylex/input-otp';
 import { className } from '@/stylex/style';
 
 const styles = stylex.create({
-  stack: { gap: '0.5rem', display: 'grid', },
-  status: { fontSize: '0.875rem', textAlign: 'center' },
+  controlledOtp: { marginBottom: '0.5rem', minHeight: 0, minWidth: 0 },
+  status: { fontSize: '0.875rem', lineHeight: '1.25rem', textAlign: 'center', minHeight: 0, minWidth: 0, },
   row: { alignItems: 'center', display: 'flex', justifyContent: 'space-between', },
   submit: { width: '100%' },
-  support: { color: 'var(--muted-foreground)', fontSize: '0.875rem', },
+  support: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem', },
   link: { textDecorationLine: 'underline', textUnderlineOffset: '4px' },
-  card: { marginInline: 'auto', maxWidth: '28rem' },
+  card: { marginInline: 'auto', maxWidth: '28rem', width: 'fit-content' },
   medium: { fontWeight: 500 },
   fieldFit: { width: 'fit-content' },
   fieldRtl: { marginInline: 'auto', maxWidth: '20rem' },
@@ -85,8 +85,8 @@ export const inputOtpStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         separator: sep2,
       });
     case 'controlled':
-      return h.div([h.Class(className(styles.stack))], [
-        otp('controlled', 'otp-controlled', { ariaLabel: 'One-time password' }),
+      return h.div([], [
+        otp('controlled', 'otp-controlled', { ariaLabel: 'One-time password', layoutStyle: styles.controlledOtp }),
         h.p([h.Class(className(styles.status))], [
           m.values['controlled'] === undefined || m.values['controlled'] === ''
             ? 'Enter your one-time password.'
@@ -148,7 +148,7 @@ export const inputOtpStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                   }),
                   Field.fieldDescription({
                     children: [
-                      h.a([h.Href('#')], ['I no longer have access to this email address.']),
+                      h.a([h.Href('#'), h.Class(className(styles.link))], ['I no longer have access to this email address.']),
                     ],
                   }, h),
                 ],

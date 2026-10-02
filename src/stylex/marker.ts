@@ -1,4 +1,5 @@
 import * as stylex from '@stylexjs/stylex';
+import type { StaticStyles } from '@stylexjs/stylex';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import type { ComponentLayoutStyle } from './contracts';
@@ -24,14 +25,35 @@ const styles = stylex.create({
     alignItems: 'center',
     color: tokens.mutedForeground,
     display: 'flex',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     position: 'relative',
     textAlign: 'left',
     minHeight: '1rem',
     width: '100%',
   },
   default: {},
-  separator: {},
+  separator: {
+    '::after': {
+      backgroundColor: tokens.border,
+      content: '""',
+      flexBasis: '0%',
+      flexGrow: 1,
+      flexShrink: 1,
+      height: '1px',
+      marginLeft: '0.25rem',
+      minWidth: 0,
+    },
+    '::before': {
+      backgroundColor: tokens.border,
+      content: '""',
+      flexBasis: '0%',
+      flexGrow: 1,
+      flexShrink: 1,
+      height: '1px',
+      marginRight: '0.25rem',
+      minWidth: 0,
+    },
+  },
   border: {
     borderBlockEndColor: tokens.border,
     borderBlockEndStyle: 'solid',
@@ -44,17 +66,23 @@ const styles = stylex.create({
       ':hover': tokens.foreground,
     },
     cursor: interactionTokens.cursorAction,
-    textDecorationLine: {
-      default: 'none',
-      ':hover': 'none',
-    },
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'color',
     width: 'fit-content',
   },
-  column: { alignItems: 'flex-start', flexDirection: 'column', },
+  interactiveAnchor: {
+    textDecorationLine: 'underline',
+    textUnderlineOffset: '0.1875rem',
+  },
+  column: { flexDirection: 'column', },
   icon: { flexShrink: 0, height: '1rem', width: '1rem' },
   content: { overflowWrap: 'break-word', minWidth: 0 },
+  separatorContent: {
+    flexBasis: { default: null, [stylex.when.ancestor(':is([data-variant=separator])')]: 'auto' },
+    flexGrow: { default: null, [stylex.when.ancestor(':is([data-variant=separator])')]: 0 },
+    flexShrink: { default: null, [stylex.when.ancestor(':is([data-variant=separator])')]: 0 },
+    textAlign: { default: null, [stylex.when.ancestor(':is([data-variant=separator])')]: 'center' },
+  },
   shimmer: {
     WebkitTextFillColor: 'transparent',
     animationDuration: interactionTokens.motionLoopSlow,
@@ -63,9 +91,9 @@ const styles = stylex.create({
     animationTimingFunction: interactionTokens.easingLinear,
     backgroundClip: 'text',
     backgroundImage:
-      'linear-gradient(110deg, currentColor calc(50% - 3ch - 40px), color-mix(in oklch, color-mix(in oklch, currentColor 20%, transparent), currentColor 50%) calc(50% - 1.5ch - 20px), color-mix(in oklch, currentColor 20%, transparent) 50%, color-mix(in oklch, color-mix(in oklch, currentColor 20%, transparent), currentColor 50%) calc(50% + 1.5ch + 20px), currentColor calc(50% + 3ch + 40px))',
+      'linear-gradient(110deg, currentColor calc(50% - (3ch + 40px)), color-mix(in oklch, color-mix(in oklch, currentColor 20%, transparent), currentColor 50%) calc(50% - (3ch + 40px) * 0.5), color-mix(in oklch, currentColor 20%, transparent) 50%, color-mix(in oklch, color-mix(in oklch, currentColor 20%, transparent), currentColor 50%) calc(50% + (3ch + 40px) * 0.5), currentColor calc(50% + (3ch + 40px)))',
     backgroundRepeat: 'no-repeat',
-    backgroundSize: 'calc(200% + 6ch + 80px) 100%',
+    backgroundSize: 'calc(200% + (3ch + 40px) * 2) 100%',
   },
 });
 
@@ -102,6 +130,9 @@ export const marker = <Msg>(
         styles[props.variant ?? 'default'],
         ...(props.direction === 'column' ? [styles.column] : []),
         ...(element === 'div' ? [] : [styles.interactive]),
+        ...(element === 'a' ? [styles.interactiveAnchor] : []),
+        // eslint-disable-next-line no-restricted-syntax -- reason: defaultMarker is stylex.props-compatible but absent from the narrow StaticStyles surface.
+        stylex.defaultMarker() as unknown as StaticStyles,
         props.layoutStyle,
       ),
     ),
@@ -148,6 +179,7 @@ export const markerContent = <Msg>(
       h.Class(
         className(
           styles.content,
+          styles.separatorContent,
           ...(props.shimmer === true ? [styles.shimmer] : []),
           props.layoutStyle,
         ),

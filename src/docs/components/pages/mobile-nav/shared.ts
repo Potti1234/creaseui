@@ -154,7 +154,7 @@ export const mobileNavFixtures: ReadonlyArray<MobileNavFixture> = [
 const emitStyles = `const styles = stylex.create({
   main: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   headerRow: { alignItems: 'center', display: 'flex', gap: '0.75rem' },
-  pageTitle: { fontSize: '1rem', fontWeight: 700 },
+  pageTitle: { fontSize: '1rem', lineHeight: '1.5rem', fontWeight: 700 },
   navContent: { display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.5rem' },
   navIcon: { height: '1rem', width: '1rem' },
 })`;

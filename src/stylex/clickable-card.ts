@@ -1,5 +1,4 @@
 import * as stylex from "@stylexjs/stylex";
-import type { StaticStyles } from "@stylexjs/stylex";
 import type { Html, HtmlBuilder } from "foldkit/html";
 
 import type {
@@ -8,10 +7,10 @@ import type {
   CardVariant,
 } from "@/lib/card-surface";
 import { pressableAttributes } from "@/lib/clickable-card";
-import { clickableCardScope } from "./card.markers.stylex";
 import type { ComponentLayoutStyle } from "./contracts";
 import { interactionTokens } from "./interaction-tokens.stylex.const";
 import { className } from "./style";
+import { foundationTokens } from './foundations-tokens.stylex';
 import { tokens } from "./tokens.stylex";
 
 /* Ported from Meta Astryx ClickableCard.tsx — an interactive card that acts as
@@ -27,11 +26,8 @@ export type {
 } from "@/lib/card-surface";
 export { Message } from "@/lib/clickable-card";
 
-/* Press/hover tint is painted by the overlay div, a child of the card:
-   state arrives through when.ancestor on the component-scoped marker.
-   The when.ancestor calls must stay inline inside stylex.create — the
-   babel plugin does not compile them when hoisted to top-level consts
-   and they throw at module evaluation. */
+/* Press/hover tint is painted by a ::after layer on the card itself,
+   matching the Tailwind after:* utilities. */
 const styles = stylex.create({
   surface: {
     borderRadius: tokens.cardRadius,
@@ -41,26 +37,17 @@ const styles = stylex.create({
   },
   interactive: {
     textDecoration: "none",
+    backgroundImage: {
+      default: 'none',
+      ':hover': `linear-gradient(${foundationTokens.foregroundFaint}, ${foundationTokens.foregroundFaint})`,
+      ':active': `linear-gradient(${foundationTokens.foregroundSoft}, ${foundationTokens.foregroundSoft})`,
+    },
     color: "inherit",
     cursor: interactionTokens.cursorAction,
   },
   disabled: {
     cursor: interactionTokens.cursorDefault,
     opacity: 0.5,
-  },
-  overlay: {
-    inset: 0,
-    backgroundColor: tokens.foreground,
-    opacity: {
-      default: "0",
-      [stylex.when.ancestor(":hover", clickableCardScope)]: "0.05",
-      [stylex.when.ancestor(":active", clickableCardScope)]: "0.1",
-    },
-    pointerEvents: "none",
-    position: "absolute",
-    transitionDuration: interactionTokens.motionFast,
-    transitionProperty: "opacity",
-    transitionTimingFunction: interactionTokens.easingStandard,
   },
   bordered: {
     borderColor: {
@@ -208,8 +195,6 @@ export const clickableCard = <Msg>(
             : undefined,
           hasBorder && styles.bordered,
           isDisabled ? styles.disabled : styles.interactive,
-          // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-          clickableCardScope as unknown as StaticStyles,
           props.layoutStyle,
         ),
       ),
@@ -255,20 +240,6 @@ export const clickableCard = <Msg>(
             [],
           ),
       ...(props.children ?? []),
-      // Press/hover overlay, painted over the card content like astryx's
-      // ::after layer. Inert: pointer-events none + aria-hidden.
-      ...(isDisabled
-        ? []
-        : [
-            h.div(
-              [
-                h.DataAttribute("slot", "clickable-card-overlay"),
-                h.AriaHidden(true),
-                h.Class(className(styles.overlay)),
-              ],
-              [],
-            ),
-          ]),
     ],
   );
 };

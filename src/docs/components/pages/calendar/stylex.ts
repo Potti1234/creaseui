@@ -20,28 +20,73 @@ import * as Card from '@/stylex/card';
 import * as Field from '@/stylex/field';
 import * as Icon from '@/lib/icon';
 import * as InputGroup from '@/stylex/input-group';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import { className } from '@/stylex/style';
 import { tokens } from '../../../../stylex/tokens.stylex';
 
 const styles = stylex.create({
   cardFit: {
     marginInline: 'auto',
+    boxShadow: 'rgb(0 0 0 / 0.1) 0px 1px 3px 0px, rgb(0 0 0 / 0.1) 0px 1px 2px -1px',
     maxWidth: '18.75rem',
     width: 'fit-content',
   },
-  presetButton: { flexGrow: '1' },
+  cardFitBare: {
+    marginInline: 'auto',
+    boxShadow: 'rgb(0 0 0 / 0.1) 0px 1px 3px 0px, rgb(0 0 0 / 0.1) 0px 1px 2px -1px',
+    width: 'fit-content',
+  },
+  cardFitFlush: {
+    marginInline: 'auto',
+    paddingBlock: 0,
+    boxShadow: 'rgb(0 0 0 / 0.1) 0px 1px 3px 0px, rgb(0 0 0 / 0.1) 0px 1px 2px -1px',
+    width: 'fit-content',
+  },
+  calendarInCard: {
+    backgroundColor: 'transparent',
+    lineHeight: 'calc(20 / 14)',
+  },
+  jalaliNavButton: {
+    borderColor: 'transparent',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    gap: 'normal',
+    backgroundClip: 'padding-box',
+  },
+  footerPresets: {
+    gap: '0.5rem',
+    borderEndEndRadius: '0.875rem',
+    borderEndStartRadius: '0.875rem',
+    display: 'flex',
+    flexWrap: 'wrap',
+    borderTopColor: tokens.border,
+    borderTopStyle: 'solid',
+    borderTopWidth: 1,
+    paddingTop: 'var(--card-spacing,1.5rem)',
+  },
+  footerTime: {
+    backgroundColor: tokens.card,
+    borderEndEndRadius: '0.875rem',
+    borderEndStartRadius: '0.875rem',
+    borderTopColor: tokens.border,
+    borderTopStyle: 'solid',
+    borderTopWidth: 1,
+    paddingTop: 'var(--card-spacing,1.5rem)',
+  },
+  presetButton: { borderRadius: '0.5rem', backgroundClip: 'padding-box', flexBasis: '0%', flexGrow: '1', flexShrink: 1, },
   bordered: {
     borderColor: tokens.border,
-    borderRadius: '0.5rem',
+    borderRadius: '0.625rem',
     borderStyle: 'solid',
     borderWidth: 1,
     width: 'fit-content',
   },
   icon: { color: tokens.mutedForeground, height: '1rem', width: '1rem' },
+  navIcon: { flexShrink: 0, height: '1rem', width: '1rem' },
   jalaliContainer: {
     padding: '0.75rem',
     borderColor: tokens.border,
-    borderRadius: '0.5rem',
+    borderRadius: '0.625rem',
     borderStyle: 'solid',
     borderWidth: 1,
     width: 'fit-content',
@@ -51,8 +96,9 @@ const styles = stylex.create({
     display: 'flex',
     justifyContent: 'space-between',
   },
-  jalaliTitle: { fontSize: '0.875rem', fontWeight: 500 },
+  jalaliTitle: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem', },
   jalaliGrid: {
+    gap: 0,
     display: 'grid',
     gridTemplateColumns: 'repeat(7, minmax(0, 1fr))',
     marginTop: '0.5rem',
@@ -62,15 +108,16 @@ const styles = stylex.create({
     color: tokens.mutedForeground,
     display: 'flex',
     fontSize: '0.8rem',
+    fontWeight: 400,
     justifyContent: 'center',
     height: '2rem',
     width: '2rem',
   },
   jalaliDay: {
-    borderRadius: '0.375rem',
+    borderRadius: '0.5rem',
     borderStyle: 'none',
     alignItems: 'center',
-    backgroundColor: 'transparent',
+    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
     cursor: 'pointer',
     display: 'flex',
     fontSize: '0.8rem',
@@ -138,6 +185,11 @@ const calendarView = <Msg>(
         ),
       ...(fixture.layout === 'range'
         ? { range: { start: preview.rangeStart, end: preview.rangeEnd } }
+        : {}),
+      ...(fixture.card === true ||
+      fixture.layout === 'presets' ||
+      fixture.layout === 'time'
+        ? { layoutStyle: styles.calendarInCard as ComponentLayoutStyle }
         : {}),
       ...(fixture.weekNumbers === true ? { weekNumbers: true } : {}),
       ...(fixture.direction === 'rtl' ? { direction: 'rtl' as const } : {}),
@@ -271,12 +323,13 @@ const jalaliView = <Msg>(
           {
             variant: 'ghost',
             size: 'icon',
+            layoutStyle: styles.jalaliNavButton as ComponentLayoutStyle,
             ariaLabel: 'Previous month',
             onClick: onMessageJson(
               JSON.stringify({ _tag: 'PressedJalaliPreviousMonth' }),
             ),
             children: [
-              Icon.chevronRight({ class: className(styles.icon) }, h),
+              Icon.chevronRight({ class: className(styles.navIcon) }, h),
             ],
           },
           h,
@@ -291,11 +344,12 @@ const jalaliView = <Msg>(
           {
             variant: 'ghost',
             size: 'icon',
+            layoutStyle: styles.jalaliNavButton as ComponentLayoutStyle,
             ariaLabel: 'Next month',
             onClick: onMessageJson(
               JSON.stringify({ _tag: 'PressedJalaliNextMonth' }),
             ),
-            children: [Icon.chevronLeft({ class: className(styles.icon) }, h)],
+            children: [Icon.chevronLeft({ class: className(styles.navIcon) }, h)],
           },
           h,
         ),
@@ -331,7 +385,7 @@ export const calendarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     return Card.card(
       {
         size: 'sm',
-        layoutStyle: styles.cardFit,
+        layoutStyle: styles.cardFit as ComponentLayoutStyle,
         children: [
           Card.cardContent(
             { children: [calendarView(fixture, preview, onMessageJson, h)] },
@@ -339,12 +393,13 @@ export const calendarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           ),
           Card.cardFooter(
             {
+              layoutStyle: styles.footerPresets as ComponentLayoutStyle,
               children: PRESETS.map(preset =>
                 Button.button(
                   {
                     variant: 'outline',
                     size: 'sm',
-                    layoutStyle: styles.presetButton,
+                    layoutStyle: styles.presetButton as ComponentLayoutStyle,
                     onClick: onMessageJson(
                       JSON.stringify({
                         _tag: 'ClickedPreset',
@@ -368,7 +423,7 @@ export const calendarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     return Card.card(
       {
         size: 'sm',
-        layoutStyle: styles.cardFit,
+        layoutStyle: styles.cardFitBare as ComponentLayoutStyle,
         children: [
           Card.cardContent(
             { children: [calendarView(fixture, preview, onMessageJson, h)] },
@@ -376,6 +431,7 @@ export const calendarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           ),
           Card.cardFooter(
             {
+              layoutStyle: styles.footerTime as ComponentLayoutStyle,
               children: [
                 Field.fieldGroup(
                   {
@@ -400,7 +456,7 @@ export const calendarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   if (fixture.card === true)
     return Card.card(
       {
-        layoutStyle: styles.cardFit,
+        layoutStyle: styles.cardFitFlush as ComponentLayoutStyle,
         children: [
           Card.cardContent({ children: [calendar] }, h),
         ],

@@ -68,6 +68,7 @@ export type DateRangePreset = Readonly<{
 
 const styles = stylex.create({
   field: { gap: "0.5rem", display: "grid" },
+  root: { position: "relative" },
   label: {
     gap: "0.5rem",
     alignItems: "center",
@@ -78,7 +79,7 @@ const styles = stylex.create({
     userSelect: "none",
   },
   optional: { color: tokens.mutedForeground, fontWeight: 400 },
-  description: { color: tokens.mutedForeground, fontSize: "0.875rem" },
+  description: { color: tokens.mutedForeground, fontSize: "0.875rem", lineHeight: '1.25rem' },
   wrapper: {
     borderColor: {
       default: tokens.input,
@@ -126,7 +127,10 @@ const styles = stylex.create({
   iconButton: {
     borderRadius: foundationTokens.radiusSm,
     alignItems: "center",
-    backgroundColor: "transparent",
+    backgroundColor: {
+      default: tokens.transparent,
+      ":hover": tokens.accent,
+    },
     color: {
       default: tokens.mutedForeground,
       ":hover": tokens.foreground,
@@ -150,9 +154,10 @@ const styles = stylex.create({
       ":disabled": interactionTokens.cursorDefault,
     },
     display: "block",
+    flexBasis: "0%",
     flexGrow: 1,
     fontFamily: "inherit",
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
     outlineStyle: "none",
     textAlign: "start",
     textOverflow: "ellipsis",
@@ -163,7 +168,10 @@ const styles = stylex.create({
   clearButton: {
     borderRadius: foundationTokens.radiusSm,
     alignItems: "center",
-    backgroundColor: "transparent",
+    backgroundColor: {
+      default: tokens.transparent,
+      ":hover": tokens.accent,
+    },
     color: {
       default: tokens.mutedForeground,
       ":hover": tokens.foreground,
@@ -187,22 +195,25 @@ const styles = stylex.create({
   },
   statusError: {
     color: tokens.destructive,
+    alignItems: "center",
     display: "inline-flex",
     flexShrink: 0,
   },
   statusWarning: {
     color: tokens.alertWarning,
+    alignItems: "center",
     display: "inline-flex",
     flexShrink: 0,
   },
   statusSuccess: {
     color: tokens.alertSuccess,
+    alignItems: "center",
     display: "inline-flex",
     flexShrink: 0,
   },
-  statusMessageError: { color: tokens.destructive, fontSize: "0.875rem" },
-  statusMessageWarning: { color: tokens.alertWarning, fontSize: "0.875rem" },
-  statusMessageSuccess: { color: tokens.alertSuccess, fontSize: "0.875rem" },
+  statusMessageError: { color: tokens.destructive, fontSize: "0.875rem", lineHeight: '1.25rem' },
+  statusMessageWarning: { color: tokens.alertWarning, fontSize: "0.875rem", lineHeight: '1.25rem' },
+  statusMessageSuccess: { color: tokens.alertSuccess, fontSize: "0.875rem", lineHeight: '1.25rem' },
   panel: {
     padding: 0,
     width: "auto",
@@ -231,7 +242,7 @@ const styles = stylex.create({
     },
     display: "block",
     fontFamily: "inherit",
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
     outlineStyle: "none",
     paddingBlock: "0.25rem",
     paddingInline: "0.5rem",
@@ -394,11 +405,22 @@ export const dateRangeInput = <Msg>(
            of the wrapper (inside a neutral outer div) so wrapper diffs never
            reference portaled nodes (insertBefore crash on clear insert). */
         h.div(
-          [...(direction === undefined ? [] : [h.Dir(direction)])],
           [
-            h.div(
+            h.DataAttribute("slot", "date-range-input"),
+            h.DataAttribute("invalid", isInvalid ? "true" : "false"),
+            ...(direction === undefined ? [] : [h.Dir(direction)]),
+            h.Class(
+              className(
+                styles.root,
+                isEffectivelyDisabled && styles.wrapperDisabled,
+              ),
+            ),
+          ],
+          [
+                h.div(
               [
-                h.DataAttribute("slot", "date-range-input"),
+                h.DataAttribute("slot", "date-range-input-wrapper"),
+                h.AriaDisabled(isEffectivelyDisabled),
                 h.DataAttribute("invalid", isInvalid ? "true" : "false"),
                 h.Class(
                   className(
@@ -413,7 +435,6 @@ export const dateRangeInput = <Msg>(
                           : styles.wrapperSuccess,
                     isInvalid && styles.wrapperInvalid,
                     isEffectivelyDisabled && styles.wrapperDisabled,
-                    props.layoutStyle,
                   ),
                 ),
               ],
@@ -501,7 +522,7 @@ export const dateRangeInput = <Msg>(
                 ...(status === undefined ? [] : [statusIcon(status.type, h)]),
               ],
             ),
-            ...(isVisible
+        ...(isVisible
               ? [
                   h.div(
                     [...backdrop, h.Class(className(overlayStyles.backdrop))],
@@ -617,7 +638,7 @@ export const dateRangeInput = <Msg>(
       h.Role("group"),
       h.DataAttribute("invalid", isInvalid ? "true" : "false"),
       ...(width === undefined ? [] : [h.Style({ width: `${width}px` })]),
-      h.Class(className(styles.field)),
+      h.Class(className(styles.field, props.layoutStyle)),
     ],
     [
       ...(isLabelHidden

@@ -312,8 +312,8 @@ ${isStyleX ? `const styles = stylex.create({
   weightNormal: { fontSize: '1.5rem', lineHeight: 1, fontWeight: 400 },
   weightMedium: { fontSize: '1.5rem', lineHeight: 1, fontWeight: 500 },
   weightBold: { fontSize: '1.5rem', lineHeight: 1, fontWeight: 700 },
-  weightLabel: { fontSize: '0.75rem', color: 'var(--muted-foreground)' },
-  inlineCode: { borderRadius: '0.375rem', backgroundColor: 'var(--muted)', paddingInline: '0.25rem', paddingBlock: '0.125rem', fontFamily: 'monospace' },
+  weightLabel: { fontSize: '0.75rem', lineHeight: '1rem', color: 'var(--muted-foreground)' },
+  inlineCode: { borderRadius: '0.375rem', backgroundColor: 'var(--muted)', paddingInline: '0.25rem', paddingBlock: '0.125rem', fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)' },
 })
 ` : ''}`,
     model: `const ExampleGroup = ToggleGroup.create<string>()

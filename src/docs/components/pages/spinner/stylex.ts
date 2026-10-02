@@ -2,6 +2,7 @@ import * as stylex from '@stylexjs/stylex';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import {
   spinnerFixtures,
   type SpinnerFixture,
@@ -16,7 +17,7 @@ import * as Spinner from '@/stylex/spinner';
 import { className } from '@/stylex/style';
 
 const styles = stylex.create({
-  wrap: { maxWidth: '24rem', width: '100%' },
+  wrap: { maxWidth: '20rem', width: '100%' },
   wrapMd: { maxWidth: '28rem', width: '100%' },
   column: { gap: '1rem', display: 'flex', flexDirection: 'column', },
   row: { gap: '1.5rem', alignItems: 'center', display: 'flex', },
@@ -27,9 +28,11 @@ const styles = stylex.create({
     display: 'flex',
     flexDirection: 'column',
   },
-  accent: { color: 'var(--primary)' },
-  amount: { fontSize: '0.875rem', fontVariantNumeric: 'tabular-nums' },
-  itemEnd: { marginInlineStart: 'auto' },
+  accent: { color: 'var(--chart-2)' },
+  amount: { fontSize: '0.875rem', fontVariantNumeric: 'tabular-nums', lineHeight: '1.25rem', },
+  itemEnd: { flexBasis: 'auto', flexGrow: 0, flexShrink: 0, justifyContent: 'flex-end' },
+  spinnerIcon: { flexShrink: 0 },
+  iconMd: { height: '1rem', width: '1rem' },
   srOnly: {
     margin: '-1px',
     overflow: 'hidden',
@@ -77,7 +80,7 @@ const itemView = <Msg>(rtl: boolean, h: HtmlBuilder<Msg>): Html =>
             ),
             Item.itemContent(
               {
-                layoutStyle: styles.itemEnd,
+                layoutStyle: styles.itemEnd as ComponentLayoutStyle,
                 children: [
                   h.span(
                     [h.Class(className(styles.amount))],
@@ -123,9 +126,10 @@ const fixtureView = <Msg>(
           {
             size: 'sm',
             isDisabled: true,
+            iconInset: 'start',
             children: [
               Spinner.spinner(
-                { isDecorative: true, dataIcon: 'inline-start' },
+                { isDecorative: true, dataIcon: 'inline-start', layoutStyle: styles.spinnerIcon },
                 h,
               ),
               'Loading...',
@@ -138,9 +142,10 @@ const fixtureView = <Msg>(
             variant: 'outline',
             size: 'sm',
             isDisabled: true,
+            iconInset: 'start',
             children: [
               Spinner.spinner(
-                { isDecorative: true, dataIcon: 'inline-start' },
+                { isDecorative: true, dataIcon: 'inline-start', layoutStyle: styles.spinnerIcon },
                 h,
               ),
               'Please wait',
@@ -153,9 +158,10 @@ const fixtureView = <Msg>(
             variant: 'secondary',
             size: 'sm',
             isDisabled: true,
+            iconInset: 'start',
             children: [
               Spinner.spinner(
-                { isDecorative: true, dataIcon: 'inline-start' },
+                { isDecorative: true, dataIcon: 'inline-start', layoutStyle: styles.spinnerIcon },
                 h,
               ),
               'Processing',
@@ -168,9 +174,10 @@ const fixtureView = <Msg>(
       return h.div([h.Class(className(styles.rowSm))], [
         Badge.badge(
           {
+            iconInset: 'start',
             children: [
               Spinner.spinner(
-                { isDecorative: true, dataIcon: 'inline-start' },
+                { isDecorative: true, dataIcon: 'inline-start', size: 'sm' },
                 h,
               ),
               'Syncing',
@@ -181,9 +188,10 @@ const fixtureView = <Msg>(
         Badge.badge(
           {
             variant: 'secondary',
+            iconInset: 'start',
             children: [
               Spinner.spinner(
-                { isDecorative: true, dataIcon: 'inline-start' },
+                { isDecorative: true, dataIcon: 'inline-start', size: 'sm' },
                 h,
               ),
               'Updating',
@@ -194,9 +202,10 @@ const fixtureView = <Msg>(
         Badge.badge(
           {
             variant: 'outline',
+            iconInset: 'start',
             children: [
               Spinner.spinner(
-                { isDecorative: true, dataIcon: 'inline-start' },
+                { isDecorative: true, dataIcon: 'inline-start', size: 'sm' },
                 h,
               ),
               'Processing',
@@ -256,7 +265,7 @@ const fixtureView = <Msg>(
                       {
                         variant: 'default',
                         children: [
-                          Icon.arrowUp({}, h),
+                          Icon.arrowUp({ class: className(styles.iconMd) }, h),
                           h.span([h.Class(className(styles.srOnly))], ['Send']),
                         ],
                       },
@@ -282,7 +291,7 @@ const fixtureView = <Msg>(
                     {
                       variant: 'icon',
                       children: [
-                        Spinner.spinner({ isDecorative: true }, h),
+                        Spinner.spinner({ isDecorative: true, layoutStyle: styles.spinnerIcon }, h),
                       ],
                     },
                     h,

@@ -33,6 +33,7 @@ const styles = stylex.create({
     cursor: 'pointer',
     fontSize: '0.875rem',
     fontWeight: 500,
+ lineHeight: '1.25rem',
   },
 });
 

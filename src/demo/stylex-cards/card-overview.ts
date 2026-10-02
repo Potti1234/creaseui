@@ -13,7 +13,7 @@ const styles = stylex.create({
     display: "grid",
     gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
   },
-  amount: { fontSize: "1.5rem", fontVariantNumeric: "tabular-nums" },
+  amount: { fontSize: "1.5rem", fontVariantNumeric: "tabular-nums", lineHeight: '2rem', },
   tabular: { fontVariantNumeric: "tabular-nums" },
   paymentContent: {
     display: "flex",
@@ -24,7 +24,7 @@ const styles = stylex.create({
     justifyContent: "space-between",
   },
   stack: { gap: "0.25rem", display: "flex", flexDirection: "column" },
-  titleLarge: { fontSize: "1.5rem" },
+  titleLarge: { fontSize: "1.5rem", lineHeight: '2rem' },
   payButton: { marginTop: "0.75rem", width: "100%" },
   activityCard: { gridColumnEnd: "span 2", gridColumnStart: "span 2" },
   activityContent: { gap: "0.5rem", display: "flex", flexDirection: "column" },

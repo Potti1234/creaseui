@@ -16,9 +16,9 @@ import { className } from '@/stylex/style';
 const styles = stylex.create({
   wrap: { gap: '1.5rem', alignItems: 'flex-start', display: 'flex', height: '24rem', },
   navWrap: { height: '24rem' },
-  itemIcon: { height: '1rem', width: '1rem' },
+  itemIcon: { height: '0.875rem', width: '0.875rem' },
   headingIconTile: {
-    borderRadius: 'var(--radius)',
+    borderRadius: 'calc(var(--radius) - 2px)',
     alignItems: 'center',
     backgroundColor: 'var(--primary)',
     color: 'var(--primary-foreground)',
@@ -27,15 +27,15 @@ const styles = stylex.create({
     height: '1.5rem',
     width: '1.5rem',
   },
-  headingIconGlyph: { height: '1rem', width: '1rem' },
+  headingIconGlyph: { height: '1.25rem', width: '1.25rem' },
   endText: {
     color: 'var(--muted-foreground)',
     flexShrink: 0,
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
   },
   endMenu: {
     padding: 0,
-    borderRadius: 'var(--radius)',
+    borderRadius: 'calc(var(--radius) - 4px)',
     borderStyle: 'none',
     borderWidth: 0,
     alignItems: 'center',

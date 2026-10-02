@@ -16,17 +16,24 @@ import { className } from '@/stylex/style';
 const styles = stylex.create({
   cardSm: { marginInline: 'auto', maxWidth: '24rem', width: '100%', },
   cardXs: { marginInline: 'auto', maxWidth: '20rem', width: '100%', },
-  fullWidth: { width: '100%' },
   triggerRow: { gap: '0.5rem', alignItems: 'center', display: 'flex', fontSize: '0.875rem', fontWeight: 500, justifyContent: 'space-between', lineHeight: '1.25rem', width: '100%', },
-  contentStack: { padding: '0.625rem', gap: '0.5rem', alignItems: 'flex-start', display: 'flex', flexDirection: 'column', fontSize: '0.875rem', lineHeight: '1.25rem', paddingTop: 0, },
+  triggerBtn: { borderRadius: '0.5rem', paddingBlock: '0.375rem', paddingInline: '0.5rem', backgroundColor: { default: null, ':hover': 'var(--muted)' }, fontWeight: 500, width: '100%', },
+  triggerTree: { borderRadius: '0.25rem', paddingBlock: '0.125rem', paddingInline: '0.25rem', backgroundColor: { default: null, ':hover': 'var(--muted)' }, textAlign: 'start', width: '100%', },
+  triggerRtl: { borderRadius: '0.5rem', alignItems: 'center', backgroundColor: { default: null, ':hover': 'var(--muted)' }, display: 'inline-flex', justifyContent: 'center', height: '2rem', width: '2rem', },
+  triggerSingle: { borderColor: 'var(--border)', borderRadius: '0.5rem', borderStyle: 'solid', borderWidth: '1px', display: 'block', paddingBlock: '0.5rem', paddingInline: '0.75rem', fontSize: '0.875rem', lineHeight: '1.25rem', textAlign: 'start', width: '100%', },
+  contentPad: { padding: '0.625rem', },
+  contentTop: { paddingTop: '0.5rem' },
+  panelGrid: { gap: '0.25rem', display: 'grid', paddingInlineStart: '1rem', paddingTop: '0.25rem', },
+  panelStack: { gap: '0.5rem', display: 'flex', flexDirection: 'column', },
+  contentSingle: { color: 'var(--muted-foreground)', display: 'block', fontSize: '0.875rem', lineHeight: '1.25rem', paddingTop: '0.75rem', },
+  contentStack: { gap: '0.5rem', alignItems: 'flex-start', display: 'flex', flexDirection: 'column', fontSize: '0.875rem', lineHeight: '1.25rem', },
   icon: { height: '1rem', width: '1rem', },
   iconSm: { height: '0.875rem', width: '0.875rem', },
   iconSpin: { transform: 'rotate(180deg)', height: '1rem', width: '1rem', },
   grid2: { gap: '0.5rem', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', },
-  grid2Top: { gap: '0.5rem', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', paddingTop: '0.5rem', },
-  tree: { fontFamily: 'monospace', fontSize: '0.875rem', lineHeight: '1.25rem', maxWidth: '20rem', width: '100%', },
+  tree: { fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)', fontSize: '0.875rem', lineHeight: '1.25rem', maxWidth: '20rem', width: '100%', },
   treeRow: { gap: '0.25rem', alignItems: 'center', display: 'flex', width: '100%', },
-  treeContent: { gap: '0.25rem', display: 'grid', paddingInlineStart: '1rem', paddingTop: '0.25rem', },
+  treeContent: { gap: '0.25rem', display: 'grid', },
   muted: { color: 'var(--muted-foreground)' },
   srOnly: {
  margin: '-1px',
@@ -34,6 +41,7 @@ const styles = stylex.create({
  borderWidth: 0,
     overflow: 'hidden',
  clip: 'rect(0, 0, 0, 0)',
+ clipPath: 'inset(50%)',
     position: 'absolute',
  whiteSpace: 'nowrap',
  height: '1px',
@@ -44,7 +52,7 @@ const styles = stylex.create({
   orderTitle: { fontSize: '0.875rem', fontWeight: 600, lineHeight: '1.25rem', },
   bordered: {
  borderColor: 'var(--border)',
-    borderRadius: '0.375rem',
+    borderRadius: '0.5rem',
  borderStyle: 'solid',
  borderWidth: '1px',
     paddingBlock: '0.5rem',
@@ -57,7 +65,7 @@ const styles = stylex.create({
   },
   box: {
  borderColor: 'var(--border)',
-    borderRadius: '0.375rem',
+    borderRadius: '0.5rem',
  borderStyle: 'solid',
  borderWidth: '1px',
     paddingBlock: '0.5rem',
@@ -105,9 +113,8 @@ export const collapsibleStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
               id: `docs-collapsible-${String(exampleIndex)}`,
               isOpen: preview.isOpen,
               onToggle: toggle,
-              trigger: h.span([h.Class(className(styles.triggerRow))], ['Product details', chevron(preview.isOpen)]),
-              triggerLayoutStyle: styles.fullWidth,
-              content: h.div([h.Class(className(styles.contentStack))], [
+              trigger: h.span([h.Class(className(styles.triggerRow, styles.triggerBtn))], ['Product details', chevron(preview.isOpen)]),
+              content: h.div([h.Class(className(styles.contentStack, styles.contentPad))], [
                 'This panel can be expanded or collapsed to reveal additional content.',
                 Button.button({ children: ['Learn More'], size: 'xs' }, h),
               ]),
@@ -144,9 +151,8 @@ export const collapsibleStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
               id: `docs-collapsible-${String(exampleIndex)}-panel`,
               isOpen: preview.isOpen,
               onToggle: toggle,
-              trigger: h.span([h.Class(className(styles.triggerRow))], ['More radii', chevron(preview.isOpen)]),
-              triggerLayoutStyle: styles.fullWidth,
-              content: h.div([h.Class(className(styles.grid2Top))], [radiusInput('bottom'), radiusInput('left')]),
+              trigger: h.span([h.Class(className(styles.triggerRow, styles.triggerBtn))], ['More radii', chevron(preview.isOpen)]),
+              content: h.div([h.Class(className(styles.grid2, styles.contentTop))], [radiusInput('bottom'), radiusInput('left')]),
             }, h),
           ],
         }, h),
@@ -160,12 +166,11 @@ export const collapsibleStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         id: `docs-collapsible-tree-${id}`,
         isOpen: preview.open.includes(id),
         onToggle: isOpen => onMessageJson(JSON.stringify({ _tag: 'ToggledNode', id, isOpen })),
-        trigger: h.span([h.Class(className(styles.treeRow))], [
+        trigger: h.span([h.Class(className(styles.treeRow, styles.triggerTree))], [
           Icon.icon(preview.open.includes(id) ? 'chevron-down' : 'chevron-right', { class: className(styles.iconSm) }, h),
           name,
         ]),
-        triggerLayoutStyle: styles.fullWidth,
-        content: h.div([h.Class(className(styles.treeContent))], children),
+        content: h.div([h.Class(className(styles.treeContent, styles.panelGrid))], children),
       }, h);
     const fileRow = (name: string): Html =>
       h.span([h.Class(className(styles.muted))], [name]);
@@ -199,8 +204,8 @@ export const collapsibleStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           isOpen: preview.isOpen,
           onToggle: toggle,
           ariaLabel: 'Toggle order details',
-          trigger: Icon.icon('chevrons-up-down', { class: className(styles.icon) }, h),
-          content: h.div([h.Class(className(styles.boxStack))], [
+          trigger: h.span([h.Class(className(styles.triggerRtl))], [Icon.icon('chevrons-up-down', { class: className(styles.icon) }, h)]),
+          content: h.div([h.Class(className(styles.boxStack, styles.panelStack))], [
             h.div([h.Class(className(styles.box))], [
               h.p([h.Class(className(styles.medium))], ['عنوان الشحن']),
               h.p([h.Class(className(styles.muted))], ['شارع السوق 100، سان فرانسيسكو']),
@@ -224,7 +229,7 @@ export const collapsibleStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     isOpen: preview.isOpen,
     onToggle: toggle,
     isDisabled: true,
-    trigger: 'Unavailable details',
-    content: 'Foldkit keeps disclosure state in the application Model.',
+    trigger: h.span([h.Class(className(styles.triggerSingle))], ['Unavailable details']),
+    content: h.span([h.Class(className(styles.contentSingle))], ['Foldkit keeps disclosure state in the application Model.']),
   }, h);
 };

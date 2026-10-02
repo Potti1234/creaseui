@@ -38,10 +38,10 @@ const base = stylex.create({
     width: 'fit-content',
   },
   iconInsetStart: {
-    paddingInlineStart: '0.375rem',
+    paddingLeft: '0.375rem',
   },
   iconInsetEnd: {
-    paddingInlineEnd: '0.375rem',
+    paddingRight: '0.375rem',
   },
 })
 

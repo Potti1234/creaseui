@@ -18,10 +18,10 @@ export * from '@/lib/toast'
 const styles = stylex.create({
   action: { paddingInline: '0.75rem', backgroundColor: { default: tokens.transparent, ':hover': tokens.secondary }, flexShrink: 0, },
   body: { gap: '0.25rem', display: 'grid', flexGrow: 1, },
-  description: { color: tokens.mutedForeground, fontSize: '0.875rem' },
+  description: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
   dismiss: { padding: '0.25rem', color: { default: tokens.mutedForeground, ':hover': tokens.foreground }, opacity: { default: 0.7, ':focus': 1 }, position: 'absolute', right: '0.5rem', top: '0.5rem', },
   icon: { flexShrink: 0, height: '1rem', marginTop: '0.125rem', width: '1rem' },
-  title: { fontSize: '0.875rem', fontWeight: 600 },
+  title: { fontSize: '0.875rem', fontWeight: 600, lineHeight: '1.25rem', },
   toast: { padding: '1rem', borderColor: tokens.border, borderRadius: tokens.radius, borderStyle: 'solid', borderWidth: 1, gap: '0.75rem', overflow: 'hidden', alignItems: 'flex-start', backgroundColor: tokens.background, boxShadow: tokens.shadowCard, color: tokens.foreground, display: 'flex', pointerEvents: 'auto', position: 'relative', transitionDuration: { default: interactionTokens.motionFast, '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone }, transitionProperty: 'opacity, transform', paddingRight: '2rem', width: '100%', },
   viewport: { padding: '1rem', gap: '0.5rem', display: 'flex', flexDirection: 'column', pointerEvents: 'none', position: 'fixed', zIndex: 100, maxHeight: '100vh', maxWidth: { default: '100%', '@media (min-width: 640px)': '26.25rem' }, width: { default: '100%', '@media (min-width: 640px)': 'auto' }, },
   viewportBottom: { flexDirection: { default: 'column-reverse', '@media (min-width: 640px)': 'column' } },

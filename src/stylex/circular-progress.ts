@@ -5,6 +5,8 @@ import type { Html, HtmlBuilder } from 'foldkit/html';
 import type { ComponentLayoutStyle } from './contracts';
 import { interactionTokens } from './interaction-tokens.stylex.const';
 import { className } from './style';
+import { foundationTokens } from './foundations-tokens.stylex';
+import { complexTokens } from './complex-tokens.stylex';
 import { tokens } from './tokens.stylex';
 
 /* Ported from Meta Astryx CircularProgress (packages/lab/src/CircularProgress/CircularProgress.tsx) —
@@ -47,11 +49,11 @@ const styles = stylex.create({
     animationTimingFunction: interactionTokens.easingLinear,
   },
   track: { fill: 'none' },
-  trackAccent: { stroke: tokens.primary, opacity: 0.2 },
-  trackSuccess: { stroke: tokens.alertSuccess, opacity: 0.2 },
-  trackWarning: { stroke: tokens.alertWarning, opacity: 0.2 },
-  trackError: { stroke: tokens.destructive, opacity: 0.2 },
-  trackNeutral: { stroke: tokens.border },
+  trackAccent: { stroke: foundationTokens.primarySoft20 },
+  trackSuccess: { stroke: complexTokens.chart2Soft20 },
+  trackWarning: { stroke: complexTokens.chart4Soft20 },
+  trackError: { stroke: complexTokens.destructiveSoft20 },
+  trackNeutral: { stroke: tokens.muted },
   fill: {
     fill: 'none',
     strokeLinecap: 'round',
@@ -106,6 +108,7 @@ const styles = stylex.create({
     borderWidth: 0,
     overflow: 'hidden',
     clip: 'rect(0, 0, 0, 0)',
+    clipPath: 'inset(50%)',
     position: 'absolute',
     whiteSpace: 'nowrap',
     height: '1px',

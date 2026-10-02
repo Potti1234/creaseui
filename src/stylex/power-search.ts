@@ -9,6 +9,7 @@ import * as Icon from '@/lib/icon';
 import type { ComponentLayoutStyle } from './contracts';
 import { className } from './style';
 import { interactionTokens } from './interaction-tokens.stylex.const';
+import { foundationTokens } from './foundations-tokens.stylex';
 import { tokens } from './tokens.stylex';
 import { astryxTextStylex } from './astryx-text';
 
@@ -2020,6 +2021,8 @@ const styles = stylex.create({
     gap: '0.25rem',
     alignItems: 'center',
     backgroundColor: 'transparent',
+    boxShadow:
+      foundationTokens.shadowXs,
     display: 'flex',
     flexWrap: 'wrap',
     minHeight: '2.25rem',
@@ -2060,7 +2063,7 @@ const styles = stylex.create({
   },
   chipInteractive: {
     backgroundColor: {
-      default: null,
+      default: tokens.muted,
       ':hover': tokens.accent,
     },
     transitionDuration: interactionTokens.motionFast,
@@ -2088,7 +2091,6 @@ const styles = stylex.create({
     display: 'inline-flex',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
-    maxWidth: '100%',
   },
   tokenLabel: {
     overflow: 'hidden',
@@ -2137,7 +2139,7 @@ const styles = stylex.create({
     flex: '1',
     backgroundColor: 'transparent',
     color: tokens.foreground,
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     outlineStyle: 'none',
     minWidth: '5rem',
   },
@@ -2172,7 +2174,7 @@ const styles = stylex.create({
     color: tokens.cardForeground,
     cursor: interactionTokens.cursorDefault,
     display: 'flex',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     outlineStyle: 'none',
     textAlign: 'left',
     userSelect: 'none',
@@ -2194,7 +2196,7 @@ const styles = stylex.create({
   menuItemDescription: {
     overflow: 'hidden',
     color: tokens.mutedForeground,
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     marginLeft: 'auto',
@@ -2203,6 +2205,7 @@ const styles = stylex.create({
     color: tokens.mutedForeground,
     fontSize: '0.75rem',
     fontWeight: 500,
+ lineHeight: '1rem',
     paddingBottom: '0.25rem',
     paddingLeft: '0.5rem',
     paddingRight: '0.5rem',
@@ -2244,6 +2247,7 @@ const styles = stylex.create({
     color: tokens.mutedForeground,
     fontSize: '0.75rem',
     fontWeight: 500,
+ lineHeight: '1rem',
     marginBottom: '0.25rem',
   },
   inputControl: {
@@ -2253,7 +2257,7 @@ const styles = stylex.create({
     borderWidth: 1,
     backgroundColor: 'transparent',
     color: tokens.foreground,
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     outlineStyle: 'none',
     height: '2rem',
     paddingLeft: '0.5rem',
@@ -2297,7 +2301,7 @@ const styles = stylex.create({
     flex: '1',
     backgroundColor: 'transparent',
     color: tokens.foreground,
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     outlineStyle: 'none',
     minWidth: '4rem',
   },
@@ -2307,7 +2311,7 @@ const styles = stylex.create({
     backgroundColor: 'transparent',
     color: tokens.mutedForeground,
     cursor: interactionTokens.cursorAction,
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     outlineStyle: 'none',
     textAlign: 'left',
     paddingLeft: '0.25rem',
@@ -2337,6 +2341,7 @@ const styles = stylex.create({
     display: 'inline-flex',
     fontSize: '0.875rem',
     fontWeight: 500,
+ lineHeight: '1.25rem',
     height: '2rem',
     paddingLeft: '0.75rem',
     paddingRight: '0.75rem',
@@ -2354,6 +2359,7 @@ const styles = stylex.create({
     display: 'inline-flex',
     fontSize: '0.875rem',
     fontWeight: 500,
+ lineHeight: '1.25rem',
     height: '2rem',
     paddingLeft: '0.75rem',
     paddingRight: '0.75rem',
@@ -2386,6 +2392,7 @@ const styles = stylex.create({
     cursor: interactionTokens.cursorAction,
     fontSize: '0.75rem',
     fontWeight: 500,
+ lineHeight: '1rem',
   },
   removeSubButton: {
     padding: 0,
@@ -2409,9 +2416,9 @@ const styles = stylex.create({
   srOnly: {
     margin: -1,
     padding: 0,
-    borderStyle: 'none',
+    borderWidth: 0,
     overflow: 'hidden',
-    clip: 'rect(0, 0, 0, 0)',
+    clipPath: 'inset(50%)',
     position: 'absolute',
     whiteSpace: 'nowrap',
     height: 1,

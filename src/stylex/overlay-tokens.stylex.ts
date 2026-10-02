@@ -96,7 +96,7 @@ export const overlayStyles = stylex.create({
     backgroundColor: tokens.transparent,
     color: tokens.foreground,
     fontFamily: 'inherit',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     outlineStyle: 'none',
     height: '2.5rem',
     width: '100%',
@@ -129,7 +129,7 @@ export const overlayStyles = stylex.create({
     },
     cursor: interactionTokens.cursorDefault,
     display: 'flex',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     opacity: {
       default: 1,
       ':is([data-disabled], [aria-disabled="true"])': 0.5,
@@ -147,7 +147,7 @@ export const overlayStyles = stylex.create({
     paddingBlock: '0.375rem',
     paddingInline: '0.5rem',
     color: tokens.mutedForeground,
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
   },
   list: {
     padding: '0.25rem',
@@ -227,6 +227,7 @@ export const overlayStyles = stylex.create({
     color: tokens.mutedForeground,
     fontSize: '0.75rem',
     letterSpacing: '0.1em',
+ lineHeight: '1rem',
     marginLeft: 'auto',
   },
   title: {
@@ -241,7 +242,7 @@ export const overlayStyles = stylex.create({
     paddingInline: '0.75rem',
     backgroundColor: tokens.primary,
     color: tokens.primaryForeground,
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     position: 'relative',
     zIndex: 50,
     width: 'fit-content',
@@ -268,6 +269,7 @@ export const overlayStyles = stylex.create({
     display: 'inline-flex',
     fontSize: '0.875rem',
     justifyContent: 'space-between',
+ lineHeight: '1.25rem',
     opacity: {
       default: 1,
       ':is([data-disabled], [aria-disabled="true"])': 0.5,

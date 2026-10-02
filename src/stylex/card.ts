@@ -4,6 +4,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
+import { foundationTokens } from './foundations-tokens.stylex';
 import { tokens } from './tokens.stylex'
 
 const styles = stylex.create({
@@ -16,25 +17,40 @@ const styles = stylex.create({
     overflow: 'hidden',
     paddingBlock: 'var(--card-spacing,1.5rem)',
     backgroundColor: tokens.card,
-    boxShadow: tokens.shadowCard,
+    boxShadow:
+      foundationTokens.shadowSm,
     color: tokens.cardForeground,
     display: 'flex',
     flexDirection: 'column',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
   },
   cardFlush: {
     overflow: 'hidden',
-    paddingBlock: 0,
+    paddingTop: 0,
   },
   header: {
     gap: '0.25rem',
     paddingInline: 'var(--card-spacing,1.5rem)',
+    alignItems: 'flex-start',
+    containerName: 'card-header',
+    containerType: 'inline-size',
     display: 'grid',
+    gridAutoRows: 'min-content',
+    gridTemplateColumns: {
+      default: null,
+      ':has([data-slot=card-action])': '1fr auto',
+    },
+    gridTemplateRows: {
+      default: null,
+      ':has([data-slot=card-description])': 'auto auto',
+    },
+    borderTopLeftRadius: tokens.cardRadius,
+    borderTopRightRadius: tokens.cardRadius,
   },
   title: {
-    fontSize: '1rem',
+    fontSize: 'var(--card-title-fs, 1rem)',
     fontWeight: 500,
-    lineHeight: 'normal',
+    lineHeight: foundationTokens.leadingNormal,
   },
   description: {
     color: tokens.mutedForeground,
@@ -58,6 +74,8 @@ const styles = stylex.create({
     paddingInline: 'var(--card-spacing,1.5rem)',
     alignItems: 'center',
     display: 'flex',
+    borderBottomLeftRadius: tokens.cardRadius,
+    borderBottomRightRadius: tokens.cardRadius,
   },
 })
 
@@ -71,6 +89,8 @@ export type CardProps = Slot & Readonly<{
   element?: 'div' | 'section' | 'article'
   density?: 'default' | 'flush'
   size?: 'default' | 'sm'
+  /** Overrides the --card-spacing CSS variable (spacing demo). */
+  spacing?: string
 }>
 
 const slot =
@@ -85,7 +105,11 @@ export const card = <Msg>(props: CardProps, h: HtmlBuilder<Msg>): Html => {
   const attributes = [
     h.DataAttribute('slot', 'card'),
     h.DataAttribute('size', props.size ?? 'default'),
-    h.Style({ '--card-spacing': props.size === 'sm' ? '1rem' : '1.5rem' }),
+    h.Style({
+      '--card-spacing':
+        props.spacing ?? (props.size === 'sm' ? '1rem' : '1.5rem'),
+      '--card-title-fs': props.size === 'sm' ? '0.875rem' : '1rem',
+    }),
     h.Class(className(
       styles.card,
       props.density === 'flush' && styles.cardFlush,

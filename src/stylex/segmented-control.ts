@@ -84,7 +84,7 @@ const styles = stylex.create({
       ':hover:not(:is([data-checked], [aria-disabled="true"]))': foundationTokens.foregroundSoft,
       ':is([data-checked])': tokens.background,
     },
-    boxShadow: { default: 'none', ':is([data-checked])': tokens.shadowSm },
+    boxShadow: { default: 'none', ':is([data-checked])': foundationTokens.shadowSm },
     color: { default: tokens.mutedForeground, ':is([data-checked])': tokens.foreground },
     cursor: { default: interactionTokens.cursorAction, ':is([aria-disabled="true"])': interactionTokens.cursorDefault },
     display: 'inline-flex',
@@ -122,8 +122,12 @@ const styles = stylex.create({
     minWidth: 0,
   },
   itemLabelHidden: {
+    margin: '-1px',
+    padding: 0,
+    borderWidth: 0,
     overflow: 'hidden',
     clip: 'rect(0,0,0,0)',
+    clipPath: 'inset(50%)',
     position: 'absolute',
     whiteSpace: 'nowrap',
     height: '1px',
@@ -131,22 +135,22 @@ const styles = stylex.create({
   },
   itemSizeSm: {
     paddingInline: '0.5rem',
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     height: '1.5rem',
   },
   itemSizeMd: {
     paddingInline: '0.75rem',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     height: '1.75rem',
   },
   itemSizeLg: {
     paddingInline: '0.75rem',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     height: '2rem',
   },
-  iconSizeSm: { fontSize: '0.875rem', height: '0.875rem', width: '0.875rem' },
-  iconSizeMd: { fontSize: '1rem', height: '1rem', width: '1rem' },
-  iconSizeLg: { fontSize: '1.125rem', height: '1.125rem', width: '1.125rem' },
+  iconSizeSm: { height: '0.875rem', width: '0.875rem' },
+  iconSizeMd: { height: '1rem', width: '1rem' },
+  iconSizeLg: { height: '1.125rem', width: '1.125rem' },
 })
 
 const ITEM_SIZE_STYLE: Readonly<Record<SegmentedControlSize, unknown>> = {

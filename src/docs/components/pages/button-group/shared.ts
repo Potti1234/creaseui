@@ -690,16 +690,16 @@ const stylexStylesSource = (fixture: ButtonGroupFixture): string => {
   if (needs.voice)
     parts.push(
       `  voiceButton: { alignItems: 'center', borderRadius: foundationTokens.radiusSm, color: 'var(--muted-foreground)', display: 'inline-flex', height: '1.5rem', justifyContent: 'center', width: '1.5rem' },`,
-      `  captionIcon: { fontSize: '0.875rem' },`,
+      `  captionIcon: { fontSize: '0.875rem', lineHeight: '1.25rem' },`,
     );
   if (!needs.voice && needs.tooltip)
-    parts.push(`  captionIcon: { fontSize: '0.875rem' },`);
+    parts.push(`  captionIcon: { fontSize: '0.875rem', lineHeight: '1.25rem' },`);
   if (needs.popover)
     parts.push(
-      `  popoverBody: { display: 'grid', fontSize: '0.875rem', gap: '0.75rem' },`,
+      `  popoverBody: { display: 'grid', fontSize: '0.875rem', lineHeight: '1.25rem', gap: '0.75rem' },`,
       `  popoverHead: { display: 'grid', gap: '0.25rem' },`,
-      `  popoverTitle: { fontSize: '0.875rem', fontWeight: 500 },`,
-      `  popoverCopy: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },`,
+      `  popoverTitle: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },`,
+      `  popoverCopy: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },`,
     );
   return parts.length === 0
     ? ''

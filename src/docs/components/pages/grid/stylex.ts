@@ -10,38 +10,42 @@ import {
   gridStats,
   gridTeams,
 } from '@/docs/components/pages/grid/shared';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import { className } from '@/stylex/style';
 import * as Card from '@/stylex/card';
 import * as Grid from '@/stylex/grid';
 import * as Resizable from '@/stylex/resizable';
 import * as Stack from '@/stylex/stack';
 
+// The Tailwind Card carries `shadow-sm`, whose serialized value includes the
+// theme's base ring/border shadows — overriding tokens.shadowCard verbatim so
+// both renderers produce the identical box-shadow.
+const CARD_SHADOW =
+  'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 2px -1px';
+
 const styles = stylex.create({
-  label: { fontSize: '0.875rem', fontWeight: 500 },
-  supporting: { fontSize: '0.75rem' },
-  body: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },
-  tallCard: { height: '5rem' },
+  label: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem', },
+  supporting: { fontSize: '0.75rem', lineHeight: '1rem' },
+  body: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
+  cardShadow: { boxShadow: CARD_SHADOW },
+  tallCard: { boxShadow: CARD_SHADOW, height: '5rem', },
   featuredCard: {
-    padding: '1rem',
-    borderColor:
-      'light-dark(oklch(0.917 0.08 205.041), oklch(0.45 0.085 224.283))',
-    borderRadius: '0.75rem',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    backgroundColor:
-      'light-dark(oklch(0.984 0.019 200.873), oklch(0.302 0.056 225.514))',
+    borderColor: 'oklch(0.917 0.08 205.041)',
+    backgroundColor: 'oklch(0.984 0.019 200.873)',
+    boxShadow: CARD_SHADOW,
   },
   shell: {
-    borderRadius: '0.75rem',
-    overflow: 'hidden',
+    gap: 0,
+    paddingBlock: 0,
     backgroundColor: 'var(--muted)',
+    boxShadow: CARD_SHADOW,
     height: '25rem',
     maxWidth: '31.25rem',
     width: '100%',
   },
   gridPanel: { padding: '1rem', overflow: 'auto', height: '100%', },
   filler: { height: '100%' },
-  group: { height: '100%', width: '100%' },
+  group: { borderRadius: 'var(--radius-lg)', borderWidth: 0, height: '100%', width: '100%', },
 });
 
 type PreviewModel = Readonly<{
@@ -70,6 +74,7 @@ const card = <Msg>(
   Card.card(
     {
       size: 'sm',
+      layoutStyle: styles.cardShadow as ComponentLayoutStyle,
       children: [Card.cardContent({ children: [...children] }, h)],
     },
     h,
@@ -82,7 +87,7 @@ const tallCard = <Msg>(
   Card.card(
     {
       size: 'sm',
-      layoutStyle: styles.tallCard,
+      layoutStyle: styles.tallCard as ComponentLayoutStyle,
       children: [Card.cardContent({ children: [...children] }, h)],
     },
     h,
@@ -92,7 +97,14 @@ const featuredCard = <Msg>(
   children: ReadonlyArray<Html | string>,
   h: HtmlBuilder<Msg>,
 ): Html =>
-  h.div([h.Class(className(styles.featuredCard))], [...children]);
+  Card.card(
+    {
+      size: 'sm',
+      layoutStyle: styles.featuredCard as ComponentLayoutStyle,
+      children: [Card.cardContent({ children: [...children] }, h)],
+    },
+    h,
+  );
 
 const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Grid.grid(
@@ -180,50 +192,56 @@ const autoFitView = <Msg>(
   onMessageJson: (json: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html =>
-  h.div([h.Class(className(styles.shell))], [
-    Resizable.resizable(
-      {
-        model: model.resizable,
-        toParentMessage: message => msg(onMessageJson, { message }),
-        direction: 'horizontal',
-        minSize: 20,
-        maxSize: 96,
-        extent: 500,
-        withHandle: true,
-        ariaLabel: 'Resize grid',
-        layoutStyle: styles.group,
-        first: h.div([h.Class(className(styles.gridPanel))], [
-          Grid.grid(
-            {
-              columns: { minWidth: 180, repeat: 'fit' },
-              gap: 4,
-              width: '100%',
-              children: gridTeams.map(team =>
-                card(
-                  [
-                    Stack.vStack(
-                      {
-                        gap: 1,
-                        children: [
-                          label(team.name, h),
-                          supporting(`${String(team.members)} members`, h),
-                        ],
-                      },
+  Card.card(
+    {
+      layoutStyle: styles.shell as ComponentLayoutStyle,
+      children: [
+        Resizable.resizable(
+          {
+            model: model.resizable,
+            toParentMessage: message => msg(onMessageJson, { message }),
+            direction: 'horizontal',
+            minSize: 20,
+            maxSize: 96,
+            extent: 500,
+            withHandle: true,
+            ariaLabel: 'Resize grid',
+            layoutStyle: styles.group as ComponentLayoutStyle,
+            first: h.div([h.Class(className(styles.gridPanel))], [
+              Grid.grid(
+                {
+                  columns: { minWidth: 180, repeat: 'fit' },
+                  gap: 4,
+                  width: '100%',
+                  children: gridTeams.map(team =>
+                    card(
+                      [
+                        Stack.vStack(
+                          {
+                            gap: 1,
+                            children: [
+                              label(team.name, h),
+                              supporting(`${String(team.members)} members`, h),
+                            ],
+                          },
+                          h,
+                        ),
+                      ],
                       h,
                     ),
-                  ],
-                  h,
-                ),
+                  ),
+                },
+                h,
               ),
-            },
-            h,
-          ),
-        ]),
-        second: h.div([h.Class(className(styles.filler))], []),
-      },
-      h,
-    ),
-  ]);
+            ]),
+            second: h.div([h.Class(className(styles.filler))], []),
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  );
 
 const dashboardView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Grid.grid(

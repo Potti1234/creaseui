@@ -202,7 +202,7 @@ const badgeSource = (
 
 const itemCallSource = (
   item: AvatarItemSpec,
-  index: number,
+  overlap: boolean,
   grouped: boolean,
   renderer: 'tailwind' | 'stylex',
 ): string => {
@@ -222,7 +222,7 @@ const itemCallSource = (
       : '';
   const groupProps =
     renderer === 'stylex' && grouped
-      ? `\n      ring: true,${index === 0 ? '' : '\n      overlap: true,'}`
+      ? `\n      ring: true,${overlap ? '\n      overlap: true,' : ''}`
       : '';
   return `Avatar.avatar({${sizeProp}${avatarGrayscale}${groupProps}
       children: [
@@ -258,8 +258,13 @@ const clusterSource = (
   renderer: 'tailwind' | 'stylex',
 ): string => {
   if (cluster.grouped === true) {
+    const hasCount =
+      cluster.count !== undefined || cluster.countIcon === true;
     const items = cluster.items
-      .map((item, index) => `\n        ${itemCallSource(item, index, true, renderer)},`)
+      .map(
+        (item, index) =>
+          `\n        ${itemCallSource(item, index < cluster.items.length - 1 || hasCount, true, renderer)},`,
+      )
       .join('');
     const grayscale =
       cluster.grayscale === true
@@ -288,7 +293,7 @@ const clusterSource = (
         }, h)`;
     const triggerProps =
       renderer === 'stylex'
-        ? `\n      triggerButtonVariant: 'ghost',\n      triggerButtonSize: 'icon',`
+        ? `\n      triggerLayoutStyle: styles.avatarTrigger as ComponentLayoutStyle,`
         : `\n      triggerClass: 'rounded-full',`;
     return `DropdownMenu.dropdownMenu({
       model: model.menu,
@@ -307,7 +312,7 @@ const clusterSource = (
     }, h)`;
   }
   return cluster.items
-    .map((entry, index) => itemCallSource(entry, index, false, renderer))
+    .map(entry => itemCallSource(entry, false, false, renderer))
     .join(',\n      ');
 };
 
@@ -338,12 +343,15 @@ const stylexStylesSource = (fixture: AvatarFixture): string => {
       ? `\n  sizesRow: { alignItems: 'center', display: 'flex', filter: 'grayscale(100%)', flexWrap: 'wrap', gap: '0.5rem' },`
       : '';
   const badgeIcon = needsBadgeIcon(fixture)
-    ? `\n  badgeIcon: { fontSize: '0.5rem' },`
+    ? `\n  badgeIcon: { height: '0.5rem', width: '0.5rem' },`
     : '';
   const countIcon = needsCountIcon(fixture)
-    ? `\n  countIcon: { fontSize: '1rem' },`
+    ? `\n  countIcon: { height: '1rem', width: '1rem' },`
     : '';
-  return `const styles = stylex.create({${hero}${sizesRow}${badgeIcon}${countIcon}
+  const avatarTrigger = needsMenu(fixture)
+    ? `\n  avatarTrigger: { borderRadius: '50%' },`
+    : '';
+  return `const styles = stylex.create({${hero}${sizesRow}${badgeIcon}${countIcon}${avatarTrigger}
 })
 
 `;
@@ -360,7 +368,7 @@ const componentImports = (
 
 ${stylexStylesSource(fixture)}`
       : '';
-  return `${stylexBits}import * as Avatar from '@/${ui}/avatar'${needsMenu(fixture) ? `\nimport * as DropdownMenu from '@/${ui}/dropdown-menu'` : ''}${needsIcon(fixture) ? `\nimport * as Icon from '@/lib/icon'` : ''}`;
+  return `${stylexBits}import * as Avatar from '@/${ui}/avatar'${needsMenu(fixture) ? `\nimport * as DropdownMenu from '@/${ui}/dropdown-menu'` : ''}${needsIcon(fixture) ? `\nimport * as Icon from '@/lib/icon'` : ''}${renderer === 'stylex' && needsMenu(fixture) ? `\nimport type { ComponentLayoutStyle } from '@/stylex/contracts'` : ''}`;
 };
 
 const source = (

@@ -176,7 +176,7 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
     isStyleX
       ? `import * as stylex from '@stylexjs/stylex'
 
-const styles = stylex.create({ column: { display: 'flex', flexDirection: 'column', gap: '0.5rem' }, gapLarge: { display: 'flex', flexDirection: 'column', gap: '2.5rem' }, row: { display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }, caption: { fontSize: '0.75rem', lineHeight: '1.25rem', color: 'var(--muted-foreground)' }, iconSm: { fontSize: '0.75rem' } })`
+const styles = stylex.create({ column: { display: 'flex', flexDirection: 'column', gap: '0.5rem' }, gapLarge: { display: 'flex', flexDirection: 'column', gap: '2.5rem' }, row: { display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }, caption: { fontSize: '0.75rem', lineHeight: '1.25rem', color: 'var(--muted-foreground)' }, iconSm: { fontSize: '0.75rem', lineHeight: '1rem' } })`
       : '',
   ]
     .filter(Boolean)

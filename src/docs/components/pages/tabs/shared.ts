@@ -251,7 +251,7 @@ const emitSource = (
   const values = fixture.tabs.map(tab => `'${tab.value}'`).join(', ');
   const sxBlock =
     isStyleX && usesCard
-      ? `\nconst styles = stylex.create({\n  cardText: { fontSize: '0.875rem', color: 'var(--muted-foreground)' },\n  demoWidth: { width: '25rem' },\n})`
+      ? `\nconst styles = stylex.create({\n  cardText: { fontSize: '0.875rem', lineHeight: '1.25rem', color: 'var(--muted-foreground)' },\n  demoWidth: { width: '25rem' },\n})`
       : '';
   return foldkitApplication({
     title: `Tabs — ${fixture.title}`,

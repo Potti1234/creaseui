@@ -71,6 +71,9 @@ const styles = stylex.create({
     opacity: 0.5,
   },
   srOnly: {
+    margin: -1,
+    padding: 0,
+    borderWidth: 0,
     overflow: 'hidden',
     clipPath: 'inset(50%)',
     position: 'absolute',
@@ -81,6 +84,7 @@ const styles = stylex.create({
   labelIndicator: {
     fontSize: '0.75rem',
     fontWeight: 400,
+ lineHeight: '1rem',
   },
   description: {
     color: tokens.mutedForeground,
@@ -119,20 +123,18 @@ const styles = stylex.create({
     display: 'grid',
     rowGap: {
       [containerQuery]: '0.5rem',
-      default: 0,
+      default: null,
     },
     minWidth: 0,
   },
   fields: {
-    gap: {
-      [containerQuery]: '0.5rem',
-      default: '0.25rem',
-    },
     alignItems: 'end',
+    columnGap: '0.25rem',
     display: {
       [containerQuery]: 'contents',
       default: 'grid',
     },
+    rowGap: '0.5rem',
     minWidth: 0,
   },
   fieldCell: {
@@ -266,10 +268,11 @@ const styles = stylex.create({
     color: tokens.foreground,
     fontSize: '0.875rem',
     fontWeight: 500,
+ lineHeight: '1.25rem',
   },
   emptyDescription: {
     color: tokens.mutedForeground,
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     marginBlockStart: '0.25rem',
   },
   statusDetached: {

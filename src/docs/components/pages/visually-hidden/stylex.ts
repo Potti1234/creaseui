@@ -17,9 +17,9 @@ import * as Stack from '@/stylex/stack';
 import * as VisuallyHidden from '@/stylex/visually-hidden';
 
 const styles = stylex.create({
-  supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem' },
-  body: { fontSize: '0.875rem' },
-  bodyBold: { fontSize: '0.875rem', fontWeight: 700 },
+  supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
+  body: { fontSize: '0.875rem', lineHeight: '1.25rem' },
+  bodyBold: { fontSize: '0.875rem', fontWeight: 700, lineHeight: '1.25rem', },
   display: { fontSize: '1.8125rem', fontWeight: 400, lineHeight: '1.2414' },
   smallIcon: {
     color: 'var(--muted-foreground)',
@@ -32,10 +32,26 @@ const styles = stylex.create({
     width: '1rem',
   },
   mutedCard: {
-    padding: '1rem',
-    borderRadius: '0.75rem',
+    borderColor: 'rgba(0, 0, 0, 0)',
+    borderRadius: '0.875rem',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    gap: '1rem',
+    overflow: 'hidden',
+    paddingBlock: '1rem',
     backgroundColor: 'var(--muted)',
+    display: 'flex',
+    flexDirection: 'column',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
   },
+  mutedCardContent: {
+    gap: '0.75rem',
+    paddingInline: '1rem',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  iconBtn4: { flexShrink: 0, height: '1rem', width: '1rem' },
 });
 
 const COLUMNS = ['Backlog', 'In progress', 'Done'] as const;
@@ -54,7 +70,10 @@ const display = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
 const mutedCard = <Msg>(
   children: ReadonlyArray<Html | string>,
   h: HtmlBuilder<Msg>,
-): Html => h.div([h.Class(className(styles.mutedCard))], [...children]);
+): Html =>
+  h.div([h.Class(className(styles.mutedCard))], [
+    h.div([h.Class(className(styles.mutedCardContent))], [...children]),
+  ]);
 
 const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.vStack(
@@ -86,7 +105,7 @@ const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                                   variant: 'ghost',
                                   size: 'icon',
                                   ariaLabel: action.label,
-                                  children: [icon(action.icon, {}, h)],
+                                  children: [icon(action.icon, { class: className(styles.iconBtn4) }, h)],
                                 },
                                 h,
                               ),

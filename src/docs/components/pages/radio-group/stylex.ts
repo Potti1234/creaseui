@@ -22,6 +22,9 @@ const styles = stylex.create({
     maxWidth: '20rem',
     width: '100%',
   },
+  descOffset: {
+    marginTop: '-0.375rem',
+  },
 });
 
 type PreviewModel = Readonly<{
@@ -67,7 +70,10 @@ export const radioGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         children: [
           Field.fieldLegend({ children: [fixture.fieldLegend ?? ''] }, h),
           Field.fieldDescription(
-            { children: [fixture.fieldDescription ?? ''] },
+            {
+              layoutStyle: styles.descOffset,
+              children: [fixture.fieldDescription ?? ''],
+            },
             h,
           ),
           group(fixture, previewModel, onMessageJson, h),

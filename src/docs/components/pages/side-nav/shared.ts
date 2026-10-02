@@ -646,7 +646,7 @@ const stylexStylesSource = (fixture: SideNavFixture): string => {
   }
   if (needsEndText) {
     entries.push(
-      `endText: { color: 'var(--muted-foreground)', fontSize: '0.75rem' }`,
+      `endText: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' }`,
     );
   }
   if (needsEndMenu) {

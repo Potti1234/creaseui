@@ -22,7 +22,7 @@ const styles = stylex.create({
     alignItems: "center",
     color: tokens.mutedForeground,
     display: "flex",
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
   },
   lockIcon: { height: "1rem", width: "1rem" },
   camera: {

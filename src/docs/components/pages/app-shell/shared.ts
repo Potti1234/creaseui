@@ -250,7 +250,7 @@ const stylexStyles = `import * as stylex from '@stylexjs/stylex'
 const styles = stylex.create({
   fill: { height: '100%', minHeight: 0, width: '100%' },
   heading: { fontSize: '1.0625rem', fontWeight: 600 },
-  body: { fontSize: '0.875rem' },
+  body: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   logoLink: { alignItems: 'center', display: 'flex', gap: '0.5rem' },
   logoChip: {
     alignItems: 'center',
@@ -263,7 +263,7 @@ const styles = stylex.create({
     width: '1.5rem',
   },
   logoIcon: { height: '1rem', width: '1rem' },
-  logoText: { fontSize: '0.875rem', fontWeight: 600 },
+  logoText: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 600 },
   sideNav: {
     display: 'flex',
     flexDirection: 'column',
@@ -274,7 +274,7 @@ const styles = stylex.create({
   },
   navSectionTitle: {
     color: 'var(--muted-foreground)',
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
     fontWeight: 500,
     paddingBlockEnd: '0.25rem',
     paddingInline: '0.5rem',
@@ -284,7 +284,7 @@ const styles = stylex.create({
     borderRadius: '0.375rem',
     color: 'var(--muted-foreground)',
     display: 'flex',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     gap: '0.5rem',
     height: '1.5rem',
     paddingInline: '0.5rem',
@@ -294,7 +294,7 @@ const styles = stylex.create({
     backgroundColor: 'var(--accent)',
     borderRadius: '0.375rem',
     display: 'flex',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     fontWeight: 500,
     gap: '0.5rem',
     height: '1.5rem',
@@ -312,13 +312,13 @@ const styles = stylex.create({
   topNavItem: {
     borderRadius: '0.375rem',
     color: 'var(--muted-foreground)',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     paddingBlock: '0.25rem',
     paddingInline: '0.5rem',
   },
   topNavItemSelected: {
     borderRadius: '0.375rem',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     fontWeight: 500,
     paddingBlock: '0.25rem',
     paddingInline: '0.5rem',

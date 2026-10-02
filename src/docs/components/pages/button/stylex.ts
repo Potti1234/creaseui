@@ -17,8 +17,11 @@ import {
 import * as Icon from '@/lib/icon';
 import * as Button from '@/stylex/button';
 import * as ButtonGroup from '@/stylex/button-group';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import * as DropdownMenu from '@/stylex/dropdown-menu';
+import { foundationTokens } from '../../../../stylex/foundations-tokens.stylex';
 import * as Spinner from '@/stylex/spinner';
+import { className } from '@/stylex/style';
 
 const styles = stylex.create({
   row: {
@@ -31,13 +34,22 @@ const styles = stylex.create({
     gap: '2rem',
     alignItems: 'flex-start',
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: { default: 'column', '@media (min-width: 40rem)': 'row' },
   },
   tierGroup: {
     gap: '0.5rem',
     alignItems: 'flex-start',
     display: 'flex',
   },
+  iconMd: { flexShrink: 0, pointerEvents: 'none', height: '1rem', width: '1rem', },
+  spinnerIcon: { flexShrink: 0, pointerEvents: 'none' },
+  iconRtl: { transform: 'rotate(180deg)' },
+  triggerBorderTransparent: { borderColor: foundationTokens.transparent },
+  iconXs: { flexShrink: 0, pointerEvents: 'none', height: '0.75rem', width: '0.75rem', },
+  joinedRight: { borderBottomRightRadius: 0, borderTopRightRadius: 0, },
+  joinedLeft: { borderBottomLeftRadius: 0, borderLeftWidth: 0, borderTopLeftRadius: 0, },
+  hiddenSmFlex: { display: { default: 'none', '@media (min-width: 40rem)': 'flex' } },
+
 });
 
 type PreviewModel = Readonly<{
@@ -50,15 +62,17 @@ const itemChildren = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Array<Html | string> => {
   const children: Array<Html | string> = [];
+  const size = item.size ?? 'default';
+  const iconClass = className(size === 'xs' || size === 'icon-xs' ? styles.iconXs : styles.iconMd, ...(item.iconClass === undefined ? [] : [styles.iconRtl]));
   if (item.spinner === 'start')
-    children.push(Spinner.spinner({ isDecorative: true, dataIcon: 'inline-start' }, h));
+    children.push(Spinner.spinner({ isDecorative: true, dataIcon: 'inline-start', layoutStyle: styles.spinnerIcon as ComponentLayoutStyle }, h));
   if (item.icon !== undefined && (item.iconPosition ?? 'start') === 'start')
-    children.push(Icon.icon(item.icon, { dataIcon: 'inline-start' }, h));
+    children.push(Icon.icon(item.icon, { dataIcon: 'inline-start', class: iconClass }, h));
   if (item.label !== undefined) children.push(item.label);
   if (item.icon !== undefined && item.iconPosition === 'end')
-    children.push(Icon.icon(item.icon, { dataIcon: 'inline-end' }, h));
+    children.push(Icon.icon(item.icon, { dataIcon: 'inline-end', class: iconClass }, h));
   if (item.spinner === 'end')
-    children.push(Spinner.spinner({ isDecorative: true, dataIcon: 'inline-end' }, h));
+    children.push(Spinner.spinner({ isDecorative: true, dataIcon: 'inline-end', layoutStyle: styles.spinnerIcon as ComponentLayoutStyle }, h));
   return children;
 };
 
@@ -112,20 +126,21 @@ const buttonGroupHtml = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html =>
   ButtonGroup.buttonGroup({ children: [
-    ButtonGroup.buttonGroup({ children: [
-      Button.button({ variant: 'outline', size: 'icon', ariaLabel: 'Go Back', children: [Icon.icon('arrow-left', {}, h)] }, h),
+    ButtonGroup.buttonGroup({ layoutStyle: styles.hiddenSmFlex as ComponentLayoutStyle, children: [
+      Button.button({ variant: 'outline', size: 'icon', ariaLabel: 'Go Back', children: [Icon.icon('arrow-left', { class: className(styles.iconMd) }, h)] }, h),
     ] }, h),
     ButtonGroup.buttonGroup({ children: [
-      Button.button({ variant: 'outline', children: ['Archive'] }, h),
-      Button.button({ variant: 'outline', children: ['Report'] }, h),
+      Button.button({ variant: 'outline', layoutStyle: styles.joinedRight as ComponentLayoutStyle, children: ['Archive'] }, h),
+      Button.button({ variant: 'outline', layoutStyle: styles.joinedLeft as ComponentLayoutStyle, children: ['Report'] }, h),
     ] }, h),
     ButtonGroup.buttonGroup({ children: [
-      Button.button({ variant: 'outline', children: ['Snooze'] }, h),
+      Button.button({ variant: 'outline', layoutStyle: styles.joinedRight as ComponentLayoutStyle, children: ['Snooze'] }, h),
       DropdownMenu.dropdownMenu({
         model: model.menu,
         toParentMessage: message =>
           onMessageJson(JSON.stringify({ _tag: 'GotMenuMessage', message })),
-        trigger: Icon.icon('ellipsis', {}, h),
+        trigger: Icon.icon('ellipsis', { class: className(styles.iconMd) }, h),
+        triggerLayoutStyle: styles.triggerBorderTransparent as ComponentLayoutStyle,
         triggerButtonVariant: 'outline',
         triggerButtonSize: 'icon',
         ariaLabel: 'More options',

@@ -172,7 +172,7 @@ const styles = stylex.create({
     // VisuallyHidden: keeps the aria-labelledby target without the chrome.
     borderWidth: 0,
     overflow: 'hidden',
-    clip: 'rect(0, 0, 0, 0)',
+    clipPath: 'inset(50%)',
     position: 'absolute',
     whiteSpace: 'nowrap',
     height: '1px',
@@ -215,6 +215,7 @@ const styles = stylex.create({
     flexDirection: 'column',
     width: '100%',
   },
+  itemIndent: { width: '100%' },
   itemRowWrapper: {
     borderRadius: foundationTokens.radiusMd,
     gap: '0.25rem',
@@ -229,7 +230,6 @@ const styles = stylex.create({
   item: {
     borderRadius: foundationTokens.radiusMd,
     gap: '0.5rem',
-    overflow: 'hidden',
     paddingInline: '0.5rem',
     textDecoration: 'none',
     alignItems: 'center',
@@ -264,9 +264,7 @@ const styles = stylex.create({
     fontWeight: 500,
   },
   itemDisabled: {
-    color: tokens.mutedForeground,
     cursor: interactionTokens.cursorDefault,
-    opacity: 0.5,
     pointerEvents: 'none',
   },
   itemSm: {
@@ -435,6 +433,7 @@ const styles = stylex.create({
     color: tokens.mutedForeground,
     fontSize: '0.75rem',
     fontWeight: 600,
+ lineHeight: '1rem',
     paddingBlockEnd: '0.25rem',
     paddingBlockStart: '0.375rem',
   },
@@ -875,8 +874,8 @@ const renderItem = <Msg>(
           styles.item,
           styles.railItem,
           size === 'lg' && styles.railItemLg,
-          !isDisabled && styles.itemInteractive,
-          isSelected && styles.itemSelected,
+          styles.itemInteractive,
+          styles.itemSelected,
           isDisabled && styles.itemDisabled,
         ),
       ),
@@ -1001,8 +1000,8 @@ const renderItem = <Msg>(
       className(
         styles.item,
         SIZE_STYLES[size],
-        !isDisabled && styles.itemInteractive,
-        isSelected && styles.itemSelected,
+        styles.itemInteractive,
+        styles.itemSelected,
         isDisabled && styles.itemDisabled,
       ),
     ),
@@ -1107,7 +1106,7 @@ const renderItem = <Msg>(
     [
       h.div(
         [
-          h.Class(className(styles.itemColumn)),
+          h.Class(className(styles.itemIndent)),
           h.Style(
             level > 0 ? { paddingInlineStart: `${indentPx}px` } : {},
           ),
@@ -1709,7 +1708,11 @@ const render = <Msg>(
       h.Class(className(styles.nav, viewInputs.layoutStyle)),
       h.AriaLabel(viewInputs.ariaLabel ?? 'Primary'),
       h.Dir(direction),
-      h.Style({ width: `${SideNavLib.visibleWidth(model)}px` }),
+      h.Style(
+        model.isResizable && !collapsed
+          ? ({ width: `${model.width}px` } as Record<string, string>)
+          : {},
+      ),
       h.DataAttribute('collapsed', collapsed ? 'true' : 'false'),
       h.DataAttribute('slot', 'side-nav'),
     ],

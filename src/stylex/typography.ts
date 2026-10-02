@@ -11,9 +11,9 @@ const styles = stylex.create({
   h2: { borderBlockEndColor: tokens.border, borderBlockEndStyle: 'solid', borderBlockEndWidth: 1, fontSize: '1.875rem', fontWeight: 600, letterSpacing: '-0.025em', lineHeight: '2.25rem', paddingBottom: '0.5rem', scrollMarginTop: '5rem' },
   h3: { fontSize: '1.5rem', fontWeight: 600, letterSpacing: '-0.025em', lineHeight: '2rem', scrollMarginTop: '5rem' },
   h4: { fontSize: '1.25rem', fontWeight: 600, letterSpacing: '-0.025em', lineHeight: '1.75rem', scrollMarginTop: '5rem' },
-  p: { lineHeight: '1.75rem' }, blockquote: { borderInlineStartColor: tokens.border, borderInlineStartStyle: 'solid', borderInlineStartWidth: 2, fontStyle: 'italic', paddingInlineStart: '1.5rem', marginTop: '1.5rem', },
-  code: { borderRadius: foundationTokens.radiusSm, paddingBlock: '0.2rem', paddingInline: '0.3rem', backgroundColor: foundationTokens.muted, fontFamily: 'monospace', fontSize: '0.875rem', fontWeight: 600, position: 'relative', },
-  lead: { color: tokens.mutedForeground, fontSize: '1.25rem', lineHeight: '1.75rem' }, large: { fontSize: '1.125rem', fontWeight: 600 }, small: { fontSize: '0.875rem', fontWeight: 500, lineHeight: 1 }, muted: { color: tokens.mutedForeground, fontSize: '0.875rem' },
+  p: { lineHeight: '1.75rem', marginTop: { default: null, ':not(:first-child)': '1.5rem' } }, blockquote: { fontStyle: 'italic', borderLeftColor: tokens.border, borderLeftStyle: 'solid', borderLeftWidth: 2, marginTop: '1.5rem', paddingLeft: '1.5rem', },
+  code: { borderRadius: foundationTokens.radiusBase, paddingBlock: '0.2rem', paddingInline: '0.3rem', backgroundColor: foundationTokens.muted, fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)', fontSize: '0.875rem', fontWeight: 600, lineHeight: '1.25rem', position: 'relative', },
+  lead: { color: tokens.mutedForeground, fontSize: '1.25rem', lineHeight: '1.75rem' }, large: { fontSize: '1.125rem', fontWeight: 600, lineHeight: '1.75rem', }, small: { fontSize: '0.875rem', fontWeight: 500, lineHeight: 1 }, muted: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
 })
 export const typographyH1 = <Msg>(p: TextProps, h: HtmlBuilder<Msg>): Html => h.h1([h.DataAttribute('slot','typography-h1'),h.Class(className(styles.h1,p.layoutStyle))],[...p.children])
 export const typographyH2 = <Msg>(p: TextProps, h: HtmlBuilder<Msg>): Html => h.h2([h.DataAttribute('slot','typography-h2'),h.Class(className(styles.h2,p.layoutStyle))],[...p.children])

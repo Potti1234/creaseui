@@ -23,7 +23,7 @@ const styles = stylex.create({
   card: {
     padding: '1.5rem',
     borderColor: 'var(--border)',
-    borderRadius: '0.5rem',
+    borderRadius: 'var(--radius)',
     borderStyle: 'solid',
     borderWidth: '1px',
     gap: '1rem',
@@ -32,7 +32,7 @@ const styles = stylex.create({
     maxWidth: '28rem',
     width: '100%',
   },
-  heading: { fontSize: '1.125rem', fontWeight: 600 },
+  heading: { fontSize: '1.125rem', fontWeight: 600, lineHeight: '1.75rem', },
   body: {
     color: 'var(--muted-foreground)',
     fontSize: '0.875rem',

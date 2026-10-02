@@ -14,7 +14,7 @@ const styles = stylex.create({
   root: {
     borderRadius: foundationTokens.radiusFull,
     overflow: "hidden",
-    backgroundColor: foundationTokens.primarySoft,
+    backgroundColor: foundationTokens.primarySoft20,
     position: "relative",
     height: "0.5rem",
     width: "100%",

@@ -37,16 +37,15 @@ const styles = stylex.create({
   icon: {
     color: tokens.mutedForeground,
     flexShrink: 0,
-    transform: 'rotate(0deg)',
+    transform: 'translateY(0.125rem) rotate(0deg)',
     transitionDuration: interactionTokens.motionModerate,
     transitionProperty: 'transform',
     transitionTimingFunction: interactionTokens.easingStandard,
     height: '1rem',
-    marginTop: '0.125rem',
     width: '1rem',
   },
   iconOpen: {
-    transform: 'rotate(180deg)',
+    transform: 'translateY(0.125rem) rotate(180deg)',
   },
   item: {
     borderBottomColor: tokens.border,
@@ -68,15 +67,19 @@ const styles = stylex.create({
   itemBorderedLast: {
     borderBottomWidth: 0,
   },
+  itemLast: {
+    borderBottomWidth: 0,
+  },
   panel: {
     overflow: 'hidden',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
   },
   trigger: {
     borderColor: {
       default: tokens.transparent,
       ':focus-visible': tokens.ring,
     },
+    borderRadius: foundationTokens.radiusMd,
     gap: '1rem',
     paddingBlock: '0.625rem',
     alignItems: 'flex-start',
@@ -91,10 +94,13 @@ const styles = stylex.create({
       ':disabled': interactionTokens.cursorDisabled,
     },
     display: 'flex',
+    flexBasis: '0%',
     flexGrow: 1,
+    flexShrink: 1,
     fontSize: '0.875rem',
     fontWeight: 500,
     justifyContent: 'space-between',
+ lineHeight: '1.25rem',
     opacity: { default: 1, ':disabled': 0.5 },
     outlineStyle: 'none',
     textAlign: 'left',
@@ -170,9 +176,10 @@ const render = <Msg>(
                     viewInputs.bordered === true
                       ? styles.itemBordered
                       : styles.item,
-                    viewInputs.bordered === true &&
-                      index === viewInputs.items.length - 1 &&
-                      styles.itemBorderedLast,
+                    index === viewInputs.items.length - 1 &&
+                      (viewInputs.bordered === true
+                        ? styles.itemBorderedLast
+                        : styles.itemLast),
                     viewInputs.itemLayoutStyle,
                   ),
                 ),

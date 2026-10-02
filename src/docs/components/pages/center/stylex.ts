@@ -14,14 +14,15 @@ import * as Center from '@/stylex/center';
 import * as Stack from '@/stylex/stack';
 
 const styles = stylex.create({
-  heading: { fontSize: '0.875rem', fontWeight: 600 },
-  body: { color: 'var(--muted-foreground)', fontSize: '0.875rem' },
-  supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem' },
+  heading: { fontSize: '0.875rem', fontWeight: 600, lineHeight: '1.25rem', },
+  body: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
+  supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
   icon: {
     color: 'var(--muted-foreground)',
     height: '1.5rem',
     width: '1.5rem',
   },
+  iconBtn4: { flexShrink: 0, height: '1rem', width: '1rem' },
   cardWide: { width: '32.5rem' },
   cardNarrow: { width: '25rem' },
 });
@@ -58,7 +59,7 @@ const horizontalView = <Msg>(h: HtmlBuilder<Msg>): Html => {
         variant: 'ghost',
         size: 'icon-sm',
         ariaLabel: label,
-        children: [icon(name, {}, h)],
+        children: [icon(name, { class: className(styles.iconBtn4) }, h)],
       },
       h,
     );

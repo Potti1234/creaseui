@@ -2,8 +2,8 @@ import * as stylex from '@stylexjs/stylex';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 
 import type { ComponentLayoutStyle } from './contracts';
-import { foundationTokens } from './foundations-tokens.stylex';
 import { className } from './style';
+import { foundationTokens } from './foundations-tokens.stylex';
 import { tokens } from './tokens.stylex';
 
 /* Ported from Meta Astryx Code (packages/core/src/Code/Code.tsx) — examples
@@ -17,17 +17,14 @@ export type CodeSize = 'inherit';
 
 const styles = stylex.create({
   base: {
-    /* PORT-NOTE: needs token 'radiusInner' = 4px — astryx's inner radius;
-       radiusSm (calc(var(--radius) - 4px) = 6px) is the nearest token. */
-    borderRadius: foundationTokens.radiusSm,
+    borderRadius: foundationTokens.radiusBase,
     paddingBlock: 0,
     paddingInline: '0.25rem',
     backgroundColor: tokens.muted,
-    fontFamily: 'monospace',
+    fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     fontSize: '0.875rem',
     lineHeight: 'inherit',
     overflowWrap: 'break-word',
-    wordBreak: 'break-word',
   },
 });
 
@@ -45,7 +42,7 @@ const colorStyles = stylex.create({
 
 const sizeStyles = stylex.create({
   inherit: {
-    fontSize: 'inherit',
+    fontSize: '0.875rem',
     lineHeight: 'inherit',
   },
 });

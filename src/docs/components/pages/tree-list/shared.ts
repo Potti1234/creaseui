@@ -332,7 +332,7 @@ const styles = stylex.create({${needsIcon ? `\n  itemIcon: { height: '1rem', wid
       multi
         ? `\n  wrap: { display: 'flex', alignItems: 'flex-start', gap: '1.5rem' },
   column: { display: 'flex', flexDirection: 'column', gap: '0.5rem' },
-  caption: { color: 'var(--muted-foreground)', fontSize: '0.75rem', fontWeight: 600 },`
+  caption: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem', fontWeight: 600 },`
         : ''
     }
 })`

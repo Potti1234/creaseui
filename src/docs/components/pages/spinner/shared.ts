@@ -23,7 +23,7 @@ const styles = stylex.create({
   rowSm: { alignItems: 'center', display: 'flex', gap: '1rem' },
   centerCol: { alignItems: 'center', display: 'flex', flexDirection: 'column', gap: '1rem' },
   accent: { color: 'var(--primary)' },
-  amount: { fontSize: '0.875rem', fontVariantNumeric: 'tabular-nums' },
+  amount: { fontSize: '0.875rem', lineHeight: '1.25rem', fontVariantNumeric: 'tabular-nums' },
   itemEnd: { marginInlineStart: 'auto' },
 })
 `;

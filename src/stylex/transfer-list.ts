@@ -559,7 +559,6 @@ const styles = stylex.create({
     gap: "0.5rem",
     alignItems: "flex-end",
     display: "flex",
-    minWidth: 0,
   },
   searchWrap: {
     flex: "1",
@@ -575,6 +574,7 @@ const styles = stylex.create({
     top: "50%",
   },
   searchInput: {
+
     height: "2.25rem",
     paddingLeft: "2rem",
     paddingRight: "2rem",
@@ -681,8 +681,7 @@ const styles = stylex.create({
     paddingInline: "0.75rem",
     alignItems: "center",
     display: "flex",
-    fontSize: "0.875rem",
-    position: "relative",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
     minWidth: 0,
   },
   itemDragging: {
@@ -693,6 +692,7 @@ const styles = stylex.create({
     userSelect: "none",
   },
   itemDropBefore: {
+    position: "relative",
     "::before": {
       borderRadius: "50%",
       insetInline: 0,
@@ -706,6 +706,7 @@ const styles = stylex.create({
     },
   },
   itemDropAfter: {
+    position: "relative",
     "::after": {
       borderRadius: "50%",
       insetInline: 0,

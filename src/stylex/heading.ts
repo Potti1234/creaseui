@@ -24,32 +24,32 @@ const levelStyles = stylex.create({
   '1': {
     fontSize: '1.5rem',
     fontWeight: 600,
-    lineHeight: 1.3333,
+    lineHeight: '2rem',
   },
   '2': {
     fontSize: '1.25rem',
     fontWeight: 600,
-    lineHeight: 1.4,
+    lineHeight: '1.75rem',
   },
   '3': {
     fontSize: '1.0625rem',
     fontWeight: 600,
-    lineHeight: 1.4118,
+    lineHeight: '1.5rem',
   },
   '4': {
     fontSize: '0.875rem',
     fontWeight: 600,
-    lineHeight: 1.4286,
+    lineHeight: '1.25rem',
   },
   '5': {
     fontSize: '0.75rem',
     fontWeight: 600,
-    lineHeight: 1.6667,
+    lineHeight: '1.25rem',
   },
   '6': {
     fontSize: '0.625rem',
     fontWeight: 600,
-    lineHeight: 1.6,
+    lineHeight: '1rem',
   },
 });
 
@@ -57,17 +57,17 @@ const typeStyles = stylex.create({
   'display-1': {
     fontSize: '2.625rem',
     fontWeight: 400,
-    lineHeight: 1.2381,
+    lineHeight: '3.25rem',
   },
   'display-2': {
     fontSize: '2.1875rem',
     fontWeight: 400,
-    lineHeight: 1.2571,
+    lineHeight: '2.75rem',
   },
   'display-3': {
     fontSize: '1.8125rem',
     fontWeight: 400,
-    lineHeight: 1.2414,
+    lineHeight: '2.25rem',
   },
 });
 

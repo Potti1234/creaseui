@@ -19,6 +19,8 @@ import * as Popover from '@/stylex/popover';
 import * as Select from '@/stylex/select';
 import * as Textarea from '@/stylex/textarea';
 import * as Tooltip from '@/stylex/tooltip';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
+import { foundationTokens } from '../../../../stylex/foundations-tokens.stylex';
 import { className } from '@/stylex/style';
 import { tokens } from '../../../../stylex/tokens.stylex';
 
@@ -30,7 +32,7 @@ const styles = stylex.create({
     flexDirection: 'column',
   },
   voiceButton: {
-    borderRadius: '0.5rem',
+    borderRadius: 'calc(var(--radius) - 5px)',
     alignItems: 'center',
     color: tokens.mutedForeground,
     display: 'inline-flex',
@@ -38,17 +40,70 @@ const styles = stylex.create({
     height: '1.5rem',
     width: '1.5rem',
   },
-  captionIcon: { fontSize: '0.875rem' },
-  iconSm: { fontSize: '0.875rem' },
-  popoverBody: { gap: '0.75rem', display: 'grid', fontSize: '0.875rem', },
+  iconSm: { fontSize: '0.875rem', lineHeight: '1.25rem' },
+  iconMd: { flexShrink: 0, pointerEvents: 'none', height: '1rem', width: '1rem', },
+  iconMdPlain: { height: '1rem', width: '1rem', },
+  iconMdRtl: { flexShrink: 0, pointerEvents: 'none', transform: 'rotate(180deg)', height: '1rem', width: '1rem', },
+  joinedHFirst: { borderBottomLeftRadius: 'var(--radius-md)', borderBottomRightRadius: 0, borderTopLeftRadius: 'var(--radius-md)', borderTopRightRadius: 0, },
+  joinedHLast: { borderBottomLeftRadius: 0, borderBottomRightRadius: 'var(--radius-md)', borderLeftWidth: 0, borderTopLeftRadius: 0, borderTopRightRadius: 'var(--radius-md)', },
+  joinedHMid: { borderRadius: 0, borderLeftWidth: 0 },
+  joinedVFirst: { borderBottomLeftRadius: 0, borderBottomRightRadius: 0, borderTopLeftRadius: 'var(--radius-md)', borderTopRightRadius: 'var(--radius-md)', },
+  joinedVLast: { borderBottomLeftRadius: 'var(--radius-md)', borderBottomRightRadius: 'var(--radius-md)', borderTopLeftRadius: 0, borderTopRightRadius: 0, borderTopWidth: 0, },
+  joinedVMid: { borderRadius: 0, borderTopWidth: 0 },
+  joinedSingle: { borderRadius: 'var(--radius-md)' },
+  inputFlex: { flexBasis: '0%',
+ flexGrow: '1',
+ flexShrink: '1', },
+  hiddenSmFlex: { display: { default: 'none', '@media (min-width: 40rem)': 'flex' } },
+  pillRadius: { '--radius': '9999rem', '--radius-md': 'calc(9999rem - 2px)' },
+  dropdownIconTrigger: {
+    borderColor: tokens.input,
+    borderRadius: foundationTokens.radiusMd,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    alignItems: 'center',
+    backgroundColor: tokens.background,
+    display: 'inline-flex',
+    justifyContent: 'center',
+    height: '2.25rem',
+    width: '2.25rem',
+  },
+  dropdownTextTrigger: {
+    borderColor: tokens.input,
+    borderRadius: foundationTokens.radiusMd,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    alignItems: 'center',
+    backgroundColor: tokens.background,
+    display: 'inline-flex',
+    justifyContent: 'center',
+    height: '2.25rem',
+    paddingLeft: '0.75rem',
+    paddingRight: '0.75rem',
+  },
+  selectTrigger: {
+    boxShadow: foundationTokens.shadowXs,
+    display: 'flex',
+    fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
+    whiteSpace: 'nowrap',
+    height: '2rem',
+    minHeight: 0,
+    width: 'fit-content',
+  },
+  inputGroupInput: { display: 'flex' },
+  inputGroupInputEnd: { display: 'flex', paddingRight: '0.5rem' },
+  inputGroupAddon: { order: 9999 },
+  inputGroupAddonButton: { order: 9999, marginRight: '-0.45rem' },
+  tooltipTrigger: { color: tokens.mutedForeground },
+  popoverBody: { gap: '0.75rem', display: 'grid', fontSize: '0.875rem', lineHeight: '1.25rem', },
   popoverHead: { gap: '0.25rem', display: 'grid', },
-  popoverTitle: { fontSize: '0.875rem', fontWeight: 500 },
-  popoverCopy: { color: tokens.mutedForeground, fontSize: '0.875rem' },
+  popoverTitle: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem', },
+  popoverCopy: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
   popoverFootnote: {
     color: tokens.mutedForeground,
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
   },
-  menuIcon: { fontSize: '1rem' },
+  menuIcon: { fontSize: '1rem', lineHeight: '1.5rem' },
 });
 
 type PreviewSnapshot = Readonly<{
@@ -203,10 +258,43 @@ const FIELD_TAG: Record<string, string> = {
 const fixtureKey = (fixture: ButtonGroupFixture): string =>
   fixture.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
+type JoinPosition = 'first' | 'middle' | 'last';
+
+type GroupContext = Readonly<{
+  position?: JoinPosition | undefined;
+  orientation: 'horizontal' | 'vertical';
+}>;
+
+const joinStyle = (ctx: GroupContext): ComponentLayoutStyle => {
+  if (ctx.position === undefined) return styles.joinedSingle as ComponentLayoutStyle;
+  const map =
+    ctx.orientation === 'vertical'
+      ? { first: styles.joinedVFirst, middle: styles.joinedVMid, last: styles.joinedVLast }
+      : { first: styles.joinedHFirst, middle: styles.joinedHMid, last: styles.joinedHLast };
+  return map[ctx.position] as ComponentLayoutStyle;
+};
+
+const childContext = (
+  index: number,
+  count: number,
+  orientation: 'horizontal' | 'vertical',
+): GroupContext => ({
+  position:
+    count === 1
+      ? undefined
+      : index === 0
+        ? 'first'
+        : index === count - 1
+          ? 'last'
+          : 'middle',
+  orientation,
+});
+
 const nodeView = <Msg>(
   model: PreviewSnapshot,
   fixture: ButtonGroupFixture,
   node: BgNode,
+  ctx: GroupContext | undefined,
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
@@ -220,15 +308,18 @@ const nodeView = <Msg>(
           ...(node.ariaLabel === undefined
             ? {}
             : { ariaLabel: node.ariaLabel }),
+          ...(ctx === undefined ? {} : { layoutStyle: joinStyle(ctx) }),
           children: [
             ...(node.icon === undefined
               ? []
               : [
                   Icon.icon(
                     node.icon,
-                    node.rtlRotate === true
-                      ? { class: className(styles.captionIcon) }
-                      : {},
+                    {
+                      class: className(
+                        fixture.direction === 'rtl' && node.rtlRotate === true ? styles.iconMdRtl : styles.iconMd,
+                      ),
+                    },
                     h,
                   ),
                 ]),
@@ -249,12 +340,18 @@ const nodeView = <Msg>(
               JSON.stringify({ _tag: FIELD_TAG[node.field], value }),
             ),
           placeholder: node.placeholder,
+          ...(ctx === undefined
+            ? {}
+            : {
+                layoutStyle: [joinStyle(ctx), styles.inputFlex] as ComponentLayoutStyle,
+              }),
         },
         h,
       );
     case 'inputGroup':
       return InputGroup.inputGroup(
         {
+          ...(ctx === undefined ? {} : { layoutStyle: joinStyle(ctx) }),
           children: [
             InputGroup.inputGroupInput(
               {
@@ -271,6 +368,7 @@ const nodeView = <Msg>(
                   : 'Send a message...',
                 ...(node.voiceToggle ? { isDisabled: model.voiceEnabled } : {}),
                 ariaLabel: 'Message',
+                layoutStyle: (node.voiceToggle ? styles.inputGroupInputEnd : styles.inputGroupInput) as ComponentLayoutStyle,
               },
               h,
             ),
@@ -278,6 +376,7 @@ const nodeView = <Msg>(
               ? InputGroup.inputGroupAddon(
                   {
                     align: 'inline-end',
+                    layoutStyle: styles.inputGroupAddonButton as ComponentLayoutStyle,
                     children: [
                       h.button(
                         [
@@ -306,9 +405,11 @@ const nodeView = <Msg>(
                       onMessageJson(
                         JSON.stringify({ _tag: 'GotTooltipMessage', message }),
                       ),
+                    triggerLayoutStyle: styles.tooltipTrigger as ComponentLayoutStyle,
                     trigger: InputGroup.inputGroupAddon(
                       {
                         align: 'inline-end',
+                        layoutStyle: styles.inputGroupAddon as ComponentLayoutStyle,
                         children: [
                           Icon.icon(
                             'audio-lines',
@@ -341,6 +442,7 @@ const nodeView = <Msg>(
           itemToValue: item => item.value,
           itemToLabel: item => `${item.value} ${item.label}`,
           ariaLabel: 'Currency',
+          triggerLayoutStyle: styles.selectTrigger as ComponentLayoutStyle,
         },
         h,
       );
@@ -358,13 +460,13 @@ const nodeView = <Msg>(
                   'ellipsis',
                   {
                     ariaLabel: isRtl ? 'مزيد من الخيارات' : 'More Options',
-                    class: className(styles.menuIcon),
+                    class: className(styles.iconMdPlain),
                   },
                   h,
                 )
-              : Icon.icon('chevron-down', { ariaLabel: 'Options' }, h),
-          triggerButtonVariant: 'outline',
-          triggerButtonSize: node.menu === 'demo' ? 'icon' : 'default',
+              : Icon.icon('chevron-down', { ariaLabel: 'Options', class: className(styles.iconMdPlain) }, h),
+          triggerLayoutStyle:
+            (node.menu === 'demo' ? styles.dropdownIconTrigger : styles.dropdownTextTrigger) as ComponentLayoutStyle,
           items: node.menu === 'demo' ? DEMO_ITEMS : CONVERSATION_ITEMS,
           itemToConfig: menuItemToConfig(model, node.menu, isRtl, h),
           align: 'end',
@@ -382,9 +484,10 @@ const nodeView = <Msg>(
             ),
           trigger: Icon.icon(
             'chevron-down',
-            { ariaLabel: 'Open Popover' },
+            { ariaLabel: 'Open Popover', class: className(styles.iconMdPlain) },
             h,
           ),
+          triggerLayoutStyle: styles.dropdownIconTrigger as ComponentLayoutStyle,
           align: 'end',
           content: h.div([h.Class(className(styles.popoverBody))], [
             h.div([h.Class(className(styles.popoverHead))], [
@@ -421,10 +524,19 @@ const nodeView = <Msg>(
     case 'group':
       return ButtonGroup.buttonGroup(
         {
-          children: node.children.map(child =>
-            nodeView(model, fixture, child, onMessageJson, h),
+          ...(node.rtlHidden === true
+            ? { layoutStyle: styles.hiddenSmFlex as ComponentLayoutStyle }
+            : {}),
+          children: node.children.map((child, index) =>
+            nodeView(
+              model,
+              fixture,
+              child,
+              childContext(index, node.children.length, 'horizontal'),
+              onMessageJson,
+              h,
+            ),
           ),
-          
         },
         h,
       );
@@ -432,7 +544,7 @@ const nodeView = <Msg>(
       return h.div(
         [h.Class(className(styles.stack))],
         node.children.map(child =>
-          nodeView(model, fixture, child, onMessageJson, h),
+          nodeView(model, fixture, child, undefined, onMessageJson, h),
         ),
       );
   }
@@ -449,7 +561,7 @@ const fixtureView = <Msg>(
   const [firstNode] = fixture.nodes;
   const group =
     ungrouped && firstNode !== undefined
-      ? nodeView(model, fixture, firstNode, onMessageJson, h)
+      ? nodeView(model, fixture, firstNode, undefined, onMessageJson, h)
       : ButtonGroup.buttonGroup(
           {
             ...(fixture.orientation === 'vertical'
@@ -458,8 +570,22 @@ const fixtureView = <Msg>(
             ...(fixture.ariaLabel === undefined
               ? {}
               : { ariaLabel: fixture.ariaLabel }),
-            children: fixture.nodes.map(node =>
-              nodeView(model, fixture, node, onMessageJson, h),
+            ...(fixture.rounded === true
+              ? { layoutStyle: styles.pillRadius as ComponentLayoutStyle }
+              : {}),
+            children: fixture.nodes.map((node, index) =>
+              nodeView(
+                model,
+                fixture,
+                node,
+                childContext(
+                  index,
+                  fixture.nodes.length,
+                  fixture.orientation === 'vertical' ? 'vertical' : 'horizontal',
+                ),
+                onMessageJson,
+                h,
+              ),
             ),
           },
           h,

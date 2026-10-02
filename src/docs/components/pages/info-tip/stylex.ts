@@ -15,8 +15,8 @@ const styles = stylex.create({
   row: { gap: '1rem', alignItems: 'center', display: 'flex', flexWrap: 'wrap', },
   inline: { gap: '0.375rem', alignItems: 'center', display: 'flex', },
   column: { gap: '0.375rem', display: 'flex', flexDirection: 'column', },
-  label: { fontSize: '0.875rem', fontWeight: 500 },
-  text: { fontSize: '0.875rem' },
+  label: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem', },
+  text: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   input: { width: '14rem' },
 });
 

@@ -192,9 +192,8 @@ const styles = stylex.create({
     fontWeight: 600,
   },
   itemDisabled: {
-    color: tokens.mutedForeground,
+    color: `color-mix(in oklab, ${tokens.mutedForeground} 50%, transparent)`,
     cursor: interactionTokens.cursorDefault,
-    opacity: 0.5,
     pointerEvents: "none",
   },
   itemIconOnly: {
@@ -215,7 +214,7 @@ const styles = stylex.create({
     display: "inline-flex",
     fontFamily: "inherit",
     fontSize: "0.875rem",
-    fontWeight: 500,
+    fontWeight: "inherit",
     lineHeight: "1.25rem",
     outlineStyle: "none",
     transitionDuration: interactionTokens.motionFast,
@@ -519,7 +518,7 @@ const styles = stylex.create({
     },
     cursor: interactionTokens.cursorAction,
     display: "flex",
-    fontSize: "0.875rem",
+    fontSize: "0.875rem", lineHeight: '1.25rem',
     outlineStyle: "none",
     textAlign: "start",
     transitionDuration: interactionTokens.motionFast,

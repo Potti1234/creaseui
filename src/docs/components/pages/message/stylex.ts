@@ -41,6 +41,8 @@ const styles = stylex.create({
   fontNormal: { fontWeight: 400 },
   destructive: { color: 'var(--destructive)', fontWeight: 400, },
   fontMedium: { fontWeight: 500 },
+  mediaImage: { aspectRatio: '1', objectFit: 'cover', width: '100%' },
+  iconMd: { height: '1rem', width: '1rem' },
 });
 
 const sx = (style: stylex.StaticStyles): string => className(style);
@@ -58,7 +60,13 @@ const bubble = <Msg>(part: BubblePart, h: HtmlBuilder<Msg>): Html =>
     {
       ...(part.variant === 'muted' ? { variant: 'muted' as const } : {}),
       children: [
-        Bubble.bubbleContent({ children: [part.content] }, h),
+        Bubble.bubbleContent(
+          {
+            ...(part.variant === 'muted' ? { variant: 'muted' as const } : {}),
+            children: [part.content],
+          },
+          h,
+        ),
         ...(part.reactions === undefined
           ? []
           : [
@@ -94,7 +102,7 @@ const part = <Msg>(
               {
                 variant: 'image',
                 children: [
-                  h.img([h.Src(ATTACHMENT_IMAGE_URL), h.Alt('Workspace')]),
+                  h.img([h.Src(ATTACHMENT_IMAGE_URL), h.Alt('Workspace'), h.Class(sx(styles.mediaImage))]),
                 ],
               },
               h,
@@ -108,7 +116,7 @@ const part = <Msg>(
         {
           children: [
             Attachment.attachmentMedia(
-              { children: [Icon.icon('file-text', {}, h)] },
+              { children: [Icon.icon('file-text', { class: className(styles.iconMd) }, h)] },
               h,
             ),
             Attachment.attachmentContent(
@@ -177,7 +185,7 @@ const footer = <Msg>(
           size: 'icon',
           ariaLabel: label,
           onClick: send(onMessageJson, 'ClickedAction'),
-          children: [Icon.icon(icon, {}, h)],
+          children: [Icon.icon(icon, { class: className(styles.iconMd) }, h)],
         },
         h,
       );
@@ -196,7 +204,13 @@ const footer = <Msg>(
     return Message.messageFooter(
       {
         children: [
-          h.span([h.Class(sx(styles.destructive))], ['Failed to send']),
+          h.span(
+            [
+              h.Class(sx(styles.destructive)),
+              h.DataAttribute('variant', 'ghost'),
+            ],
+            ['Failed to send'],
+          ),
           Button.button(
             {
               variant: 'ghost',

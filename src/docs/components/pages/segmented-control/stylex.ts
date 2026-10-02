@@ -12,6 +12,7 @@ import { className } from '@/stylex/style';
 
 const styles = stylex.create({
   frame: { width: '400px' },
+  iconFill: { height: '100%', width: '100%', },
 });
 
 const Bundle = SegmentedControl.create<string>();
@@ -27,7 +28,7 @@ const optionConfig = <Msg>(
 ): SegmentedControl.SegmentedControlItem<string> => ({
   value: option.value,
   label: option.label,
-  ...(option.icon !== undefined ? { icon: Icon.icon(option.icon, {}, h) } : {}),
+  ...(option.icon !== undefined ? { icon: Icon.icon(option.icon, { class: className(styles.iconFill) }, h) } : {}),
   ...(option.isLabelHidden === true ? { isLabelHidden: true } : {}),
   ...(option.isDisabled === true ? { isDisabled: true } : {}),
 });

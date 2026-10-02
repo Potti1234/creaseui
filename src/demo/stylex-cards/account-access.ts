@@ -46,6 +46,7 @@ const styles = stylex.create({
     fontSize: "0.75rem",
     fontWeight: 500,
     letterSpacing: "0.05em",
+ lineHeight: '1rem',
     textTransform: "uppercase",
   },
   footer: { gap: "1rem", display: "flex", flexDirection: "column", width: "100%" },

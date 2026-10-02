@@ -2,15 +2,15 @@ import * as stylex from '@stylexjs/stylex';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
 import { dataTableFixtures, payments, type Payment } from '@/docs/components/pages/data-table/shared';
+import type { ComponentLayoutStyle } from '@/stylex/contracts';
 import * as DataTable from '@/stylex/data-table';
-import { className } from '@/stylex/style';
 
-const styles = stylex.create({ amount: { display: 'block', textAlign: 'right' } });
+const styles = stylex.create({ amount: { textAlign: 'right' } });
 
-const columns = <Msg>(h: HtmlBuilder<Msg>, rtl: boolean): ReadonlyArray<DataTable.DataTableColumn<Payment>> => [
+const columns = (rtl: boolean): ReadonlyArray<DataTable.DataTableColumn<Payment>> => [
   { key: 'status', header: rtl ? 'الحالة' : 'Status', cell: row => row.status, sortValue: row => row.status },
   { key: 'email', header: rtl ? 'البريد الإلكتروني' : 'Email', cell: row => row.email, sortValue: row => row.email },
-  { key: 'amount', header: rtl ? 'المبلغ' : 'Amount', cell: row => h.span([h.Class(className(styles.amount))], [`$${row.amount.toFixed(2)}`]), sortValue: row => row.amount },
+  { key: 'amount', header: rtl ? 'المبلغ' : 'Amount', layoutStyle: styles.amount as ComponentLayoutStyle, cell: row => `$${row.amount.toFixed(2)}`, sortValue: row => row.amount },
 ];
 
 export const dataTableStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
@@ -34,7 +34,7 @@ export const dataTableStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
               JSON.stringify({ _tag: 'GotDataTablePreviewMessage', message }),
             ),
           rows: payments,
-          columns: columns(h, fixture.rtl),
+          columns: columns(fixture.rtl),
           rowKey: row => row.id,
           ...(fixture.filter
             ? {

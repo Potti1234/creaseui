@@ -88,12 +88,12 @@ const emitStyles = (fixture: InputOtpFixture): string => {
   const extras: Array<string> = [];
   if (fixture.kind === 'controlled') {
     extras.push("  stack: { display: 'grid', gap: '0.5rem' },");
-    extras.push("  status: { fontSize: '0.875rem', textAlign: 'center' },");
+    extras.push("  status: { fontSize: '0.875rem', lineHeight: '1.25rem', textAlign: 'center' },");
   }
   if (fixture.kind === 'form') {
     extras.push("  row: { display: 'flex', alignItems: 'center', justifyContent: 'space-between' },");
     extras.push("  submit: { width: '100%' },");
-    extras.push("  support: { fontSize: '0.875rem', color: 'var(--muted-foreground)' },");
+    extras.push("  support: { fontSize: '0.875rem', lineHeight: '1.25rem', color: 'var(--muted-foreground)' },");
     extras.push("  link: { textDecorationLine: 'underline', textUnderlineOffset: '4px' },");
     extras.push("  card: { marginInline: 'auto', maxWidth: '28rem' },");
     extras.push("  medium: { fontWeight: 500 },");

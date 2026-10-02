@@ -383,16 +383,16 @@ const stylexStylesFor = (kind: StackFixture['kind']): string => {
   const entries: Array<string> = [];
   if (kind !== 'hBasic' && kind !== 'vBasic') {
     entries.push(
-      `  supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem' }`,
+      `  supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' }`,
     );
   }
   if (kind === 'fillItem') {
-    entries.push(`  name: { fontSize: '0.875rem', fontWeight: 600 }`);
+    entries.push(`  name: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 600 }`);
   }
   if (kind === 'vBasic') {
-    entries.push(`  heading: { fontSize: '0.75rem', fontWeight: 600 }`);
+    entries.push(`  heading: { fontSize: '0.75rem', lineHeight: '1rem', fontWeight: 600 }`);
     entries.push(
-      `  body: { color: 'var(--muted-foreground)', fontSize: '0.875rem' }`,
+      `  body: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' }`,
     );
   }
   if (entries.length === 0) return '';

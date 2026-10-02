@@ -15,6 +15,7 @@ import type {
   ComponentLayoutStyle,
   HasExactlyKeys,
 } from './contracts'
+import { joinStyles } from './button-group-join.stylex'
 import { foundationTokens } from './foundations-tokens.stylex'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
@@ -30,10 +31,9 @@ const base = stylex.create({
     },
     borderRadius: tokens.controlRadius,
     borderStyle: 'solid',
-    borderWidth: 0,
-    gap: '0.5rem',
+    borderWidth: 1,
     alignItems: 'center',
-    appearance: 'none',
+    backgroundClip: 'padding-box',
     boxShadow: {
       default: tokens.shadowNone,
       ':focus-visible': tokens.focusRingShadow,
@@ -58,6 +58,7 @@ const base = stylex.create({
     },
     transitionProperty: 'background-color, color, border-color, box-shadow, transform',
     transitionTimingFunction: interactionTokens.easingStandard,
+    userSelect: 'none',
     whiteSpace: 'nowrap',
   },
   disabled: {
@@ -87,10 +88,14 @@ const variants = stylex.create({
     borderWidth: 1,
     backgroundColor: {
       default: tokens.background,
+      ':is([aria-expanded="true"])': tokens.muted,
       ':hover': tokens.muted,
     },
     boxShadow: tokens.shadowSm,
-    color: tokens.foreground,
+    color: {
+      default: tokens.foreground,
+      ':is([aria-expanded="true"])': tokens.foreground,
+    },
   },
   secondary: {
     backgroundColor: {
@@ -102,10 +107,12 @@ const variants = stylex.create({
   ghost: {
     backgroundColor: {
       default: tokens.transparent,
+      ':is([aria-expanded="true"])': tokens.muted,
       ':hover': tokens.mutedHover,
     },
     color: {
-      default: tokens.foreground,
+      default: null,
+      ':is([aria-expanded="true"])': tokens.foreground,
       ':hover': tokens.foreground,
     },
   },
@@ -127,7 +134,7 @@ const sizes = stylex.create({
     height: '2.25rem',
   },
   xs: {
-    borderRadius: foundationTokens.radiusSm,
+    borderRadius: foundationTokens.radiusMdCap8,
     gap: '0.25rem',
     paddingInline: '0.5rem',
     fontSize: '0.75rem',
@@ -135,7 +142,7 @@ const sizes = stylex.create({
     height: '1.5rem',
   },
   sm: {
-    borderRadius: foundationTokens.radiusSm,
+    borderRadius: foundationTokens.radiusMdCap10,
     gap: '0.25rem',
     paddingInline: '0.625rem',
     height: '2rem',
@@ -151,13 +158,14 @@ const sizes = stylex.create({
     width: '2.25rem',
   },
   'icon-xs': {
-    borderRadius: foundationTokens.radiusSm,
+    borderRadius: foundationTokens.radiusMdCap8,
     paddingInline: 0,
+    fontSize: '0.75rem',
     height: '1.5rem',
     width: '1.5rem',
   },
   'icon-sm': {
-    borderRadius: foundationTokens.radiusSm,
+    borderRadius: foundationTokens.radiusMdCap10,
     paddingInline: 0,
     height: '2rem',
     width: '2rem',
@@ -173,10 +181,10 @@ const sizes = stylex.create({
    (has-data-[icon=inline-*]); StyleX cannot select descendants, so the
    docs pass `iconInset` explicitly. */
 const iconInset = stylex.create({
-  startCompact: { paddingInlineStart: '0.375rem' },
-  startRoomy: { paddingInlineStart: '0.5rem' },
-  endCompact: { paddingInlineEnd: '0.375rem' },
-  endRoomy: { paddingInlineEnd: '0.5rem' },
+  startCompact: { paddingLeft: '0.375rem' },
+  startRoomy: { paddingLeft: '0.5rem' },
+  endCompact: { paddingRight: '0.375rem' },
+  endRoomy: { paddingRight: '0.5rem' },
 })
 
 const shape = stylex.create({
@@ -220,10 +228,14 @@ export const buttonVisualStyles = ({
 ]
 
 export const button = <Msg>(props: ButtonProps<Msg>, h: HtmlBuilder<Msg>): Html => {
+  const variant = props.variant ?? 'default'
   const size = props.size ?? 'default'
   return renderButton(
     props,
-    [h.Class(className(base.root, variants[props.variant ?? 'default'], sizes[size], (props.isDisabled === true || props.isLoading === true) && base.disabled, props.rounded === true && shape.rounded, ...(props.iconInset === undefined ? [] : [iconInsetFor(size, props.iconInset)]), props.layoutStyle))],
+    [
+      h.DataAttribute('variant', variant),
+      ...(props.dataSize === undefined ? [h.DataAttribute('size', size)] : []),
+      h.Class(className(base.root, joinStyles.join, variants[variant], sizes[size], (props.isDisabled === true || props.isLoading === true) && base.disabled, props.rounded === true && shape.rounded, ...(props.iconInset === undefined ? [] : [iconInsetFor(size, props.iconInset)]), props.layoutStyle))],
     h,
   )
 }
@@ -243,10 +255,14 @@ export const buttonLink = <Msg>(
   props: ButtonLinkProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
+  const variant = props.variant ?? 'default'
   const size = props.size ?? 'default'
   return renderButtonLink(
     props,
-    [h.Class(className(base.root, variants[props.variant ?? 'default'], sizes[size], props.rounded === true && shape.rounded, ...(props.iconInset === undefined ? [] : [iconInsetFor(size, props.iconInset)]), props.layoutStyle))],
+    [
+      h.DataAttribute('variant', variant),
+      ...(props.dataSize === undefined ? [h.DataAttribute('size', size)] : []),
+      h.Class(className(base.root, joinStyles.join, variants[variant], sizes[size], props.rounded === true && shape.rounded, ...(props.iconInset === undefined ? [] : [iconInsetFor(size, props.iconInset)]), props.layoutStyle))],
     h,
   )
 }

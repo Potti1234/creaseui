@@ -18,6 +18,11 @@ const styles = stylex.create({
     display: 'flex',
     flexDirection: 'column',
   },
+  cardColumn: {
+    gap: '0.5rem',
+    display: 'flex',
+    flexDirection: 'column',
+  },
   demoColumn: {
     gap: '1.5rem',
     display: 'flex',
@@ -164,7 +169,7 @@ const renderFixture = <Msg>(
               {
                 children: [
                   h.div(
-                    [h.Class(className(styles.column))],
+                    [h.Class(className(styles.cardColumn))],
                     [
                       Heading.heading(
                         { level: 3, children: ['Card Title'] },

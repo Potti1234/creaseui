@@ -55,41 +55,41 @@ export type TextElement = 'span' | 'p' | 'div' | 'label' | 'h1' | 'h2' | 'h3';
 const typeStyles = stylex.create({
   body: {
     fontSize: '0.875rem',
-    lineHeight: 1.4286,
+    lineHeight: '1.25rem',
   },
   large: {
     fontSize: '1.0625rem',
     fontWeight: 600,
-    lineHeight: 1.4118,
+    lineHeight: '1.5rem',
   },
   label: {
     fontSize: '0.875rem',
     fontWeight: 500,
-    lineHeight: 1.4286,
+    lineHeight: '1.25rem',
   },
   supporting: {
     fontSize: '0.75rem',
-    lineHeight: 1.6667,
+    lineHeight: '1.25rem',
   },
   code: {
-    fontFamily: 'monospace',
+    fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     fontSize: '0.875rem',
-    lineHeight: 1.4286,
+    lineHeight: '1.25rem',
   },
   'display-1': {
     fontSize: '2.625rem',
     fontWeight: 400,
-    lineHeight: 1.2381,
+    lineHeight: '3.25rem',
   },
   'display-2': {
     fontSize: '2.1875rem',
     fontWeight: 400,
-    lineHeight: 1.2571,
+    lineHeight: '2.75rem',
   },
   'display-3': {
     fontSize: '1.8125rem',
     fontWeight: 400,
-    lineHeight: 1.2414,
+    lineHeight: '2.25rem',
   },
   inherit: {
     fontFamily: 'inherit',
@@ -138,19 +138,19 @@ const sizeStyles = stylex.create({
     fontSize: '0.625rem',
   },
   sm: {
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
   },
   base: {
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
   },
   lg: {
     fontSize: '1.0625rem',
   },
   xl: {
-    fontSize: '1.25rem',
+    fontSize: '1.25rem', lineHeight: '1.75rem',
   },
   '2xl': {
-    fontSize: '1.5rem',
+    fontSize: '1.5rem', lineHeight: '2rem',
   },
   '3xl': {
     fontSize: '1.8125rem',

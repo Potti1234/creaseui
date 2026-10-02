@@ -28,6 +28,7 @@ const styles = stylex.create({
     display: "grid",
     fontSize: "0.875rem",
     gridTemplateColumns: "1rem 1fr",
+ lineHeight: '1.25rem',
     position: "relative",
     rowGap: "0.125rem",
     width: "100%",
@@ -38,9 +39,12 @@ const styles = stylex.create({
   success: { color: tokens.alertSuccess },
   warning: { color: tokens.alertWarning },
   error: { color: tokens.destructive },
-  icon: { gridRow: 'span 2', gridColumnStart: '1', height: '1rem', width: '1rem' },
+  icon: { gridColumnStart: '1',
+ gridRowEnd: 'span 2',
+ gridRowStart: 'span 2',
+ height: '1rem',
+ width: '1rem', },
   title: {
-    overflow: "hidden",
     fontWeight: 500,
     gridColumnStart: "2",
     letterSpacing: "-0.025em",
@@ -53,6 +57,7 @@ const styles = stylex.create({
     fontSize: "0.875rem",
     gridColumnStart: "2",
     justifyItems: "start",
+ lineHeight: '1.25rem',
   },
 });
 export const alertVariants = (options: AlertVariants = {}): string =>

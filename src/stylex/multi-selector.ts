@@ -47,6 +47,11 @@ const styles = stylex.create({
     flexDirection: 'column',
     width: '100%',
   },
+  listboxFrame: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+  },
   label: {
     color: tokens.foreground,
     fontSize: '0.875rem',
@@ -66,8 +71,8 @@ const styles = stylex.create({
     width: 1,
   },
   requiredMark: { color: tokens.destructive },
-  optional: { color: tokens.mutedForeground, fontSize: '0.875rem' },
-  description: { color: tokens.mutedForeground, fontSize: '0.875rem' },
+  optional: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
+  description: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
   trigger: {
     borderColor: {
       default: tokens.input,
@@ -91,6 +96,7 @@ const styles = stylex.create({
     display: 'flex',
     fontSize: '0.875rem',
     justifyContent: 'space-between',
+ lineHeight: '1.25rem',
     outlineStyle: 'none',
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'color, box-shadow',
@@ -130,6 +136,7 @@ const styles = stylex.create({
     fontSize: '0.875rem',
     fontWeight: 500,
     justifyContent: 'space-between',
+ lineHeight: '1.25rem',
     outlineStyle: 'none',
     transform: {
       default: 'scale(1)',
@@ -157,7 +164,7 @@ const styles = stylex.create({
     overflow: 'hidden',
     alignItems: 'center',
     display: 'flex',
-    flexBasis: 0,
+    flexBasis: '0%',
     flexGrow: 1,
     flexShrink: 1,
     minWidth: 0,
@@ -185,6 +192,7 @@ const styles = stylex.create({
     flexShrink: 0,
     fontSize: '0.75rem',
     fontWeight: 500,
+ lineHeight: '1rem',
     height: '1.25rem',
   },
   triggerOverflow: {
@@ -192,6 +200,7 @@ const styles = stylex.create({
     flexShrink: 0,
     fontSize: '0.875rem',
     fontWeight: 500,
+ lineHeight: '1.25rem',
   },
   triggerIcon: {
     alignItems: 'center',
@@ -258,7 +267,7 @@ const styles = stylex.create({
     alignItems: 'center',
     cursor: interactionTokens.cursorDefault,
     display: 'flex',
-    fontSize: '0.875rem',
+    fontSize: '0.875rem', lineHeight: '1.25rem',
     outlineStyle: 'none',
     paddingInlineEnd: '2rem',
     paddingInlineStart: '0.5rem',
@@ -306,7 +315,7 @@ const styles = stylex.create({
     paddingBlock: '0.375rem',
     paddingInline: '0.5rem',
     color: tokens.mutedForeground,
-    fontSize: '0.75rem',
+    fontSize: '0.75rem', lineHeight: '1rem',
   },
   statusError: {
     color: tokens.destructive,
@@ -323,9 +332,9 @@ const styles = stylex.create({
     display: 'inline-flex',
     flexShrink: 0,
   },
-  statusMessageError: { color: tokens.destructive, fontSize: '0.875rem' },
-  statusMessageWarning: { color: tokens.alertWarning, fontSize: '0.875rem' },
-  statusMessageSuccess: { color: tokens.alertSuccess, fontSize: '0.875rem' },
+  statusMessageError: { color: tokens.destructive, fontSize: '0.875rem', lineHeight: '1.25rem' },
+  statusMessageWarning: { color: tokens.alertWarning, fontSize: '0.875rem', lineHeight: '1.25rem' },
+  statusMessageSuccess: { color: tokens.alertSuccess, fontSize: '0.875rem', lineHeight: '1.25rem' },
 })
 
 const STATUS_STYLE = {
@@ -711,7 +720,7 @@ export const multiSelector = <Msg>(
     ]),
     itemsScrollClassName: className(styles.viewport),
     backdropClassName: className(overlayStyles.backdrop),
-    className: className(styles.field),
+    className: className(styles.listboxFrame),
     attributes: childAttributes([
       h.DataAttribute('slot', 'multi-selector'),
       ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),

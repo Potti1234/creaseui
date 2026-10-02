@@ -2,6 +2,8 @@ import * as stylex from "@stylexjs/stylex";
 import type { StaticStyles } from "@stylexjs/stylex";
 import type { Html, HtmlBuilder } from "foldkit/html";
 import type { ComponentLayoutStyle } from "./contracts";
+import { attachmentScope } from "./attachment.markers.stylex";
+import { messageScope } from "./message.markers.stylex";
 import { buttonVisualStyles } from "./button";
 import { foundationTokens } from "./foundations-tokens.stylex";
 import { className } from "./style";
@@ -22,62 +24,174 @@ const styles = stylex.create({
     borderStyle: "solid",
     borderWidth: 1,
     gap: "0.5rem",
-    alignItems: "center",
-    backgroundColor: tokens.card,
+    paddingBlock: {
+      default: null,
+      ':has([data-slot=attachment-content]):not(:has([data-slot=attachment-media]))': '0.5rem',
+      ':has([data-slot=attachment-media])': '0.5rem',
+    },
+    paddingInline: {
+      default: null,
+      ':has([data-slot=attachment-content]):not(:has([data-slot=attachment-media]))': '0.625rem',
+      ':has([data-slot=attachment-media])': '0.5rem',
+    },
+    alignSelf: {
+      default: null,
+      [stylex.when.ancestor('[data-align="end"]', messageScope)]: 'flex-end',
+    },
+    backgroundColor: {
+      default: tokens.card,
+      ':has(> a):hover': `color-mix(in oklab, ${tokens.muted} 50%, transparent)`,
+      ':has(> button):hover': `color-mix(in oklab, ${tokens.muted} 50%, transparent)`,
+    },
     boxShadow: {
       default: tokens.shadowNone,
-      ':focus-within': tokens.focusRingShadow,
+      ':focus-within': foundationTokens.ringShadow1,
     },
     color: tokens.cardForeground,
     display: "flex",
     flexShrink: 0,
     flexWrap: "wrap",
+    fontSize: "0.875rem",
+    lineHeight: '1.25rem',
     position: "relative",
     transitionDuration: interactionTokens.motionFast,
-    transitionProperty: "background-color",
+    transitionProperty: "color, background-color, border-color, text-decoration-color, fill, stroke",
     maxWidth: "100%",
     minWidth: 0,
     width: "fit-content",
   },
-  sm: { gap: "0.625rem", fontSize: "0.75rem" },
+  sm: {
+    gap: "0.625rem",
+    paddingBlock: {
+      default: null,
+      ':has([data-slot=attachment-content]):not(:has([data-slot=attachment-media]))': '0.375rem',
+      ':has([data-slot=attachment-media])': '0.375rem',
+    },
+    paddingInline: {
+      default: null,
+      ':has([data-slot=attachment-content]):not(:has([data-slot=attachment-media]))': '0.5rem',
+      ':has([data-slot=attachment-media])': '0.375rem',
+    },
+    fontSize: "0.75rem",
+    lineHeight: '1rem',
+  },
   xs: {
     borderRadius: foundationTokens.radiusLg,
     gap: "0.375rem",
+    paddingBlock: {
+      default: null,
+      ':has([data-slot=attachment-content]):not(:has([data-slot=attachment-media]))': '0.25rem',
+      ':has([data-slot=attachment-media])': '0.25rem',
+    },
+    paddingInline: {
+      default: null,
+      ':has([data-slot=attachment-content]):not(:has([data-slot=attachment-media]))': '0.375rem',
+      ':has([data-slot=attachment-media])': '0.25rem',
+    },
     fontSize: "0.75rem",
+ lineHeight: '1rem',
   },
-  horizontal: { minWidth: "10rem" },
-  vertical: { alignItems: "stretch", flexDirection: "column", width: "6rem" },
-  error: { borderColor: tokens.destructive },
+  horizontal: { alignItems: "center", minWidth: "10rem" },
+  vertical: {
+    flexDirection: "column",
+    width: {
+      default: '6rem',
+      ':has([data-slot=attachment-content])': '7.5rem',
+    },
+  },
+  error: {
+    borderColor: `color-mix(in oklab, ${tokens.destructive} 30%, transparent)`,
+  },
   idle: { borderStyle: "dashed" },
   media: {
-    borderRadius: foundationTokens.radiusLg,
+    borderRadius: {
+      default: foundationTokens.radiusLg,
+      [stylex.when.ancestor('[data-size=xs]', attachmentScope)]:
+        foundationTokens.radiusMd,
+    },
     overflow: "hidden",
     alignItems: "center",
     aspectRatio: "1",
-    backgroundColor: foundationTokens.muted,
-    color: tokens.foreground,
+    backgroundColor: {
+      default: foundationTokens.muted,
+      [stylex.when.ancestor('[data-state=error]', attachmentScope)]:
+        `color-mix(in oklab, ${tokens.destructive} 10%, transparent)`,
+    },
+    color: {
+      default: tokens.foreground,
+      [stylex.when.ancestor('[data-state=error]', attachmentScope)]:
+        tokens.destructive,
+    },
     display: "flex",
     flexShrink: 0,
     justifyContent: "center",
     position: "relative",
-    height: "2.5rem",
-    width: "2.5rem",
+    height: {
+      default: '2.5rem',
+      [stylex.when.ancestor('[data-orientation=vertical]', attachmentScope)]:
+        'auto',
+      [stylex.when.ancestor('[data-size=sm]', attachmentScope)]: '2rem',
+      [stylex.when.ancestor('[data-size=xs]', attachmentScope)]: '1.75rem',
+    },
+    width: {
+      default: '2.5rem',
+      [stylex.when.ancestor('[data-orientation=vertical]', attachmentScope)]:
+        '100%',
+      [stylex.when.ancestor('[data-size=sm]', attachmentScope)]: '2rem',
+      [stylex.when.ancestor('[data-size=xs]', attachmentScope)]: '1.75rem',
+    },
   },
-  mediaImage: { opacity: 0.6 },
-  content: { flex: "1", lineHeight: 1.25, maxWidth: "100%", minWidth: 0 },
+  mediaImage: {
+    opacity: {
+      default: 0.6,
+      [stylex.when.ancestor('[data-state=done]', attachmentScope)]: 1,
+    },
+  },
+  content: {
+    flex: "1",
+    paddingInline: {
+      default: null,
+      [stylex.when.ancestor('[data-orientation=vertical]', attachmentScope)]:
+        '0.25rem',
+    },
+    lineHeight: 1.25,
+    maxWidth: "100%",
+    minWidth: 0,
+  },
   actions: {
+    gap: {
+      default: null,
+      [stylex.when.ancestor('[data-orientation=vertical]', attachmentScope)]:
+        '0.25rem',
+    },
     alignItems: "center",
     display: "flex",
     flexShrink: 0,
-    position: "relative",
+    position: {
+      default: 'relative',
+      [stylex.when.ancestor('[data-orientation=vertical]', attachmentScope)]:
+        'absolute',
+    },
     zIndex: 20,
+    right: {
+      default: null,
+      [stylex.when.ancestor('[data-orientation=vertical]', attachmentScope)]:
+        '0.75rem',
+    },
+    top: {
+      default: null,
+      [stylex.when.ancestor('[data-orientation=vertical]', attachmentScope)]:
+        '0.75rem',
+    },
   },
   group: {
     gap: "0.75rem",
     paddingBlock: "0.25rem",
+    scrollSnapType: 'x mandatory',
     display: "flex",
     minWidth: 0,
     overflowX: "auto",
+    overscrollBehaviorX: 'contain',
   },
   title: {
     overflow: "hidden",
@@ -90,16 +204,37 @@ const styles = stylex.create({
   },
   description: {
     overflow: "hidden",
-    color: tokens.mutedForeground,
+    color: {
+      default: tokens.mutedForeground,
+      [stylex.when.ancestor('[data-state=error]', attachmentScope)]:
+        `color-mix(in oklab, ${tokens.destructive} 80%, transparent)`,
+    },
     display: "block",
-    fontSize: "0.75rem",
+    fontSize: "0.75rem", lineHeight: '1rem',
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     marginTop: "0.125rem",
     maxWidth: "100%",
     minWidth: 0,
   },
-  trigger: { inset: 0, outlineStyle: "none", position: "absolute", zIndex: 10 },
+  trigger: {
+    inset: 0,
+    boxShadow: {
+      default: null,
+      ':focus-visible': tokens.focusRingShadow,
+    },
+    outlineStyle: "none",
+    position: "absolute",
+    zIndex: 10,
+  },
+  action: {
+    borderColor: tokens.transparent,
+    borderRadius: foundationTokens.radiusMdCap8,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    gap: 'normal',
+    backgroundClip: 'padding-box',
+  },
 });
 export const attachmentVariants = (
   o: Readonly<{ size?: Size | null; orientation?: Orientation | null }> = {},
@@ -134,6 +269,8 @@ export const attachment = <Msg>(
           styles[orientation],
           state === "error" && styles.error,
           state === "idle" && styles.idle,
+          // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
+          attachmentScope as unknown as StaticStyles,
           p.layoutStyle,
         ),
       ),
@@ -186,6 +323,7 @@ export const attachmentAction = <Msg>(
       h.Class(
         className(
           ...buttonVisualStyles({ variant: "ghost", size: "icon-xs" }),
+          styles.action,
           p.layoutStyle,
         ),
       ),
